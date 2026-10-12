@@ -8,7 +8,7 @@
 
 5Skagen
 
-6Gothemburg
+6Gothenburg
 
 7Copenhagen
 
@@ -16,7 +16,7 @@
 
 9Esbjerg
 
-10Flesburg
+10Flensburg
 
 11Kiel
 
@@ -24,13 +24,13 @@
 
 13Rostock
 
-14Stetin
+14Stettin
 
 15Gdynia
 
 16Danzig
 
-17Konisburg
+17Konigsberg
 
 18Rusne
 
@@ -52,7 +52,7 @@
 
 29Ostrava
 
-30Prauge
+30Prague
 
 31Bratislava
 
@@ -68,9 +68,9 @@
 
 37Munich
 
-38Memingen
+38Memmingen
 
-39Insbruck
+39Innsbruck
 
 40Zurich
 
@@ -108,7 +108,7 @@
 
 57Rotterdam
 
-58Ultrech
+58Utrecht
 
 59Dusseldorf
 
@@ -130,7 +130,7 @@
 
 68Wolfsburg
 
-69Magdenburg
+69Magdeburg
 
 70Jena
 

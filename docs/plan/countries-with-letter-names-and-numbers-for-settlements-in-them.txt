@@ -1,34 +1,34 @@
 a Norway 1,2
-b gothemberg 6
+b Gothenburg 6
 c Stockholm 3
-d upper Denmark 4,5
-e lower Denmark 8,9
+d Upper Denmark 4,5
+e Lower Denmark 8,9
 f Schleswig 10,11,12
-g 	Mecklenburg13,14
-h Gdadynsk15,79,80,81
+g Mecklenburg 13,14
+h Gdansk 15,79,80,81
 i Prussia 16,17,20
 j Lithuania 18,19,89
-k eastern poland21,22
-l warsaw 84,87,88
+k Eastern Poland 21,22
+l Warsaw 84,87,88
 m Rzeszow 23
-n lviv 24
+n Lviv 24
 o Silesia 85,86
-p hungary 26, 31
-q Bohemia28,29,30
-s Austria32,33,35
-t Salzburg34
-u Tyrol39
-v Bavaria36,37,38,71
+p Hungary 26,31
+q Bohemia 28,29,30
+s Austria 32,33,35
+t Salzburg 34
+u Tyrol 39
+v Bavaria 36,37,38,71
 w Ulm 48
 x Stuttgart 49
-y Lower Germnay 46,47
+y Lower Germany 46,47
 z Switzerland 40,41
-aa Ellsas Lothering 42,45
+aa Elsass-Lothringen 42,45
 ab Nancy 43,44
 ac Luxemburg 53
 ad Trier 52,60
 ae Liege 55
-af Belgium 56, 54
+af Belgium 54,56
 ag Netherlands 57,58
 ah Munster 64
 ai Bremen 65
@@ -39,7 +39,7 @@ am Jena 70
 an Ruhr 59,61,62,63
 ao Frankfurt 50,51
 ap Saxony 72,73,74
-aq Magdenburg 69
+aq Magdeburg 69
 ar Brandenburg 75,76,77,78
 as Poznan 82,83
 at Copenhagen 7

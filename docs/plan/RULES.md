@@ -30,24 +30,33 @@ Start **1440 AD**.
 Every **town** (small circle) starts at **10,000 pop**; every **city** (big dot) at **20,000**.
 
 ```
-money per year = bank
+money per year = bank interest
                + core pop × 2
                + non-core pop × 1
-               − soldiers × 1.5
+               − soldiers × 1.5      (cannon crew and ship crew count as soldiers)
 ```
 
 **Pop growth:** +1% per year, **+0.5%** if on a river or coast.
 **Soldiers may never exceed total population.**
 
+**Casualties cost population.** Every soldier who dies is removed from your population, not
+just from the army — whether killed in battle, by snipers, in a lost storm, or when a siege
+timer expires. Each lost cannon also kills its **10 crew**, and each ship sunk at sea kills its
+**50 crew**. The loss is spread across all settlements you own **in proportion to their
+population**, so a 20K city loses twice as many people as a 10K town. Lost people come back
+only through growth or **Buy people**.
+
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
 **Courthouse**. Special coring (§9) waives both.
 
-**Bank:** `0.25% per month` (≈3.04%/year compounded). Withdraw any time.
+**Bank:** deposits earn `0.25% per month` interest (≈3.04%/year compounded). Withdraw any time.
+Bank interest is **money only** — it never counts toward research (§4).
 
 **Debt.** You may **not buy anything** that would take your treasury below zero. Debt therefore
-only arises when upkeep exceeds income. That is allowed — you repay it later — but once
-**10 years have passed** and your debt exceeds **pop × 10**, you go bankrupt: buildings are sold
-off to clear it, then soldiers and weapons.
+only arises when upkeep exceeds income. That is allowed — you repay it later. The **10-year
+clock starts when your treasury first goes below zero** and resets once the debt is fully
+repaid. If the debt is still unpaid **10 years after it began** and exceeds **pop × 10**, you go
+bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 
 ### Starting values
 | | |
@@ -75,7 +84,7 @@ lost, name a new one from any city you own; if you own no city, any settlement.
 | **Muskets** (1000) | 0.01M | x1.5MR | ×1.3 |
 | **Rifles** (1000) | 0.02M | x4MR | ×2 |
 | **Cannons** (100) | 0.02M | x1.5MR | ×13 each · needs 1000 men |
-| **Sniper** | 0.01M | x1MR | Mountain only |
+| **Snipers** (20) | 0.01M | x1MR | Mountain only |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 ships** | 0.1M | — | ×1 each |
 | **10 gunships** | 0.2M | x3MR | ×3 each |
@@ -83,6 +92,8 @@ lost, name a new one from any city you own; if you own no city, any settlement.
 
 **Every cannon needs 10 crewmen.** Cannon crew do **not** count as men in the power formula.
 **Every ship needs 50 crew at sea.** Ships in port need no crew.
+**Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2) and count
+toward your conscription cap (§9).
 
 ---
 
@@ -96,7 +107,7 @@ Naval (unlocked) ──▶ Better Ships ──▶ Steam Ships   [not supposed to
 ```
 
 ```
-R per year = max(0, net money per year + x10K)
+R per year = max(0, net money per year − bank interest + x10K)
 x0.1MR of research = 1 year of progress
 ```
 
@@ -129,7 +140,15 @@ loser  loses  (P_winner ÷ P_loser ) × 30 %      capped at 100%
 | 3:1 | 10% | 90% |
 | 3.4:1+ | 9% | wiped out |
 
-**After the battle:** winner may advance or hold. Loser retreats to the nearest settlement.
+Men killed are also lost from your population — see *Casualties cost population* (§2).
+
+**Ties.** If both sides end with exactly equal power, the **defender wins**. The defender is
+the side holding the settlement or province where the battle happens; if neither holds it, the
+army that arrived there first.
+
+**After the battle:** winner may advance or hold. Loser retreats to the nearest settlement
+owned by itself or a **military ally** (§10). If neither it nor any military ally owns a
+settlement, there is nowhere to retreat and **the whole losing army dies**.
 
 ### Defence
 | Situation | Multiplier |
@@ -181,7 +200,8 @@ loses all its troops.**
 ```
 power = (ships + gunships × 3 + steam ships × 8) × (d6 + 6)
 ```
-Damage as in a land battle, applied to ships (rounded).
+Damage as in a land battle, applied to ships (rounded). Crew of sunk ships are lost from
+your population (§2).
 
 **Blockade:** the settlement's growth becomes **−0.5% total** — no other growth bonus applies.
 
@@ -211,7 +231,7 @@ cancelling the rest of its path.
 **Orders:** `move` · `besiege` · `storm`.
 
 **Battle cooldown:** one resolution per pair of armies per 3 months. The loser retreats
-immediately toward the nearest settlement it owns.
+immediately, as in §5 *After the battle*.
 
 **Straits (dashed lines).** An army may cross if you control **≥10 ships** in that sea zone (see
 *Sea zones* in the scenario) and
@@ -232,7 +252,8 @@ You cannot change again for **5 years**.
 | Total War | 25% | −30% |
 | Scrap the Barrel | 40% | −80% |
 
-The percentage applies to **core manpower + half of non-core**.
+The percentage applies to **core manpower + half of non-core**. Cannon crew and ship crew
+at sea count toward this limit.
 
 ---
 

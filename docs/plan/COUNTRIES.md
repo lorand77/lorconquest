@@ -77,16 +77,19 @@ Victory requires **45 of 87 settlements** — still a bare majority of the map.
 
 ## THE FOUR GREAT POWERS
 
-Each 50K country starts with 4 settlements and 2,000 men. None of them border each other, so
-each has its own zone to grow into before they collide.
+Each 50K country starts with 4 settlements and 2,000 men. V Bavaria and AN Ruhr border none
+of the others, so each has its own zone to grow into. **AR Brandenburg and H Gdansk share a
+border** — AR's eastern edge runs along H's western edge, between G Mecklenburg and AS Poznań —
+so those two can collide from the first year.
 
 - **H Gdansk** (15, 79, 80, 81) — 25 ships, the largest navy on the map. Sits on the Vistula
-  mouth between Prussia and Poland. Outside the HRE, so its path runs through Poland.
+  mouth between Prussia and Poland, with AR Brandenburg on its western flank. Outside the HRE,
+  so its path runs through Poland.
 - **V Bavaria** (36, 37, 38, 71) — ringed by the small Swabian states (W Ulm, X Stuttgart,
   Y Lower Germany, T Salzburg, U Tyrol, AM Jena). The best expansion position on the map.
 - **AN Ruhr** (59, 61, 62, 63) — the densest cluster in the west, with five 10K neighbours.
-- **AR Brandenburg** (75, 76, 77, 78) — open ground, flanked by AP Saxony (40K) and AS Poznań.
-  The most exposed of the four.
+- **AR Brandenburg** (75, 76, 77, 78) — open ground, flanked by AP Saxony (40K), AS Poznań and
+  H Gdansk (50K). The most exposed of the four — the only one that borders another great power.
 
 ## THE RACE FOR THE EMPIRE
 
@@ -96,10 +99,13 @@ Proposing the HRE requires **10 HRE settlements**, once per country, ever.
 |---|---|---|
 | **V Bavaria** | 4 | + W Ulm, X Stuttgart, Y Lower Germany, AM Jena, T Salzburg = **10** |
 | **AN Ruhr** | 4 | + AH Münster, AO Frankfurt, AD Trier, AE Liège = **10** |
-| **AR Brandenburg** | 4 | + AQ Magdeburg, AL Wolfsburg, AK Hanover, AP Saxony = **11** |
+| **AR Brandenburg** | 4 | + AQ Magdeburg, AL Wolfsburg, AK Hanover, AP Saxony = **10** |
 
-Three great powers, three routes of four or five small conquests each. Whoever gets there first
-and rolls well takes the Empire — and each only gets one attempt.
+Three great powers, all exactly ten settlements away. Bavaria needs five small conquests; Ruhr
+and Brandenburg need four each — but Brandenburg's four include AP Saxony (40K, three
+settlements), the hardest single target on any route, and it must watch H Gdansk at its back
+while it does so. Whoever gets there first and rolls well takes the Empire — and each only gets
+one attempt.
 
 **H Gdansk cannot propose** (no HRE settlements), so its win condition runs through Poland:
 L Warsaw, AS Poznań, K Eastern Poland, I Prussia.
