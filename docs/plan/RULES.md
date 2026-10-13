@@ -37,7 +37,6 @@ money per year = bank interest
 ```
 
 **Pop growth:** +1% per year, **+0.5%** if on a river or coast.
-**Soldiers may never exceed total population.**
 
 **Casualties cost population.** Every soldier who dies is removed from your population, not
 just from the army — whether killed in battle, by snipers, in a lost storm, or when a siege
@@ -47,7 +46,7 @@ population**, so a 20K city loses twice as many people as a 10K town. Lost peopl
 only through growth or **Buy people**.
 
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
-**Courthouse**. Special coring (§9) waives both.
+**Courthouse**. Special coring (see *Special coring* in the scenario) waives both.
 
 **Bank:** deposits earn `0.25% per month` interest (≈3.04%/year compounded). Withdraw any time.
 Bank interest is **money only** — it never counts toward research (§4).
@@ -64,6 +63,7 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 | Treasury | **x0.1M** |
 | Soldiers | pop ÷ 25, equipped with swords |
 | Ships | pop ÷ 2000 — **coastal countries only** |
+| Cores | **every starting settlement is core** |
 
 **Capital.** Each country names a capital at setup — a city if it owns one. If the capital is
 lost, name a new one from any city you own; if you own no city, any settlement.
@@ -75,7 +75,7 @@ lost, name a new one from any city you own; if you own no city, any settlement.
 | Item | Cost | Tech cost | Effect |
 |---|---|---|---|
 | **Walls** | 0.1M | — | ×1.8 defence, doubles siege time |
-| **Library** | 0.075M | — | +40% research from settlement |
+| **Library** | 0.075M | — | +5% of total R · max one per settlement · capped at +50% (see §4) |
 | **Workshop** | 0.075M | — | +3500 money from settlement |
 | **Market** | 0.075M | — | +10% money from settlement |
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
@@ -91,7 +91,8 @@ lost, name a new one from any city you own; if you own no city, any settlement.
 | **10 steam ships** | 0.5M | x20MR | ×8 each |
 
 **Every cannon needs 10 crewmen.** Cannon crew do **not** count as men in the power formula.
-**Every ship needs 50 crew at sea.** Ships in port need no crew.
+**Every ship needs 50 crew at sea.** Ships in port need no crew. **Ships have no upkeep** of
+their own — only their crew at sea do.
 **Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2) and count
 toward your conscription cap (§9).
 
@@ -107,11 +108,16 @@ Naval (unlocked) ──▶ Better Ships ──▶ Steam Ships   [not supposed to
 ```
 
 ```
-R per year = max(0, net money per year − bank interest + x10K)
-x0.1MR of research = 1 year of progress
+R per year = max(0, net money per year − bank interest + x10K) × (1 + 0.05 × libraries)
+             libraries counts at most 10
 ```
 
-Money and R are **separate pools**. Pay R over the duration. **Unspent R banks.**
+Money and R are **separate pools**. R builds up every year; a tech unlocks as soon as you
+have paid its full R cost. **Unspent R banks.**
+
+**Libraries.** Each Library you own adds **+5%** to your R per year. Bonuses **add up** — they
+do not multiply — and the total is **capped at +50%** (10 Libraries). A settlement can hold only
+one Library.
 
 ---
 
@@ -180,6 +186,9 @@ The mountain ×2 does **not** apply to snipers. Losses are applied as in a norma
 
 ## 6. TAKING A SETTLEMENT
 
+**Undefended settlement** — if no enemy army is in it, an army that enters captures it
+immediately. No battle is fought and no one dies.
+
 **Storm** — a field battle with the defender's bonus applied. If the attacker wins, the settlement
 falls immediately and the defender rolls d6: **1–3** escapes with normal losses, **4–6** loses
 everything.
@@ -190,8 +199,10 @@ n = pop ÷ 20000 years      ×2 if walls
 ```
 **The siege length is fixed when the siege begins and cannot change while it runs.**
 
-The garrison may sortie at any time before the timer expires. **When it expires the defender
-loses all its troops.**
+**Sortie.** The garrison may order `sortie` at any time before the timer expires. It marches out
+and fights the besieging army in a normal land battle (§5). If the garrison wins, the besiegers
+retreat and the siege ends. If it loses, it falls back inside and the siege continues on the
+same timer. **When the timer expires the defender loses all its troops.**
 
 ---
 
@@ -203,7 +214,13 @@ power = (ships + gunships × 3 + steam ships × 8) × (d6 + 6)
 Damage as in a land battle, applied to ships (rounded). Crew of sunk ships are lost from
 your population (§2).
 
-**Blockade:** the settlement's growth becomes **−0.5% total** — no other growth bonus applies.
+**Fleet orders.** Sail a fleet into a sea zone (zones are defined in the scenario), then give it
+one of two orders:
+
+- `blockade` — pick an enemy port in that sea zone. While the blockade holds, that settlement's
+  growth becomes **−0.5% total** — no other growth bonus applies.
+- `patrol` — the fleet engages **any enemy ship in that sea zone**. Distance inside the zone does
+  not matter; being in the same zone is enough.
 
 ---
 
@@ -228,7 +245,8 @@ form a new one.
 **Zone of control.** An army entering a province with an enemy army stops there and engages,
 cancelling the rest of its path.
 
-**Orders:** `move` · `besiege` · `storm`.
+**Orders:** `move` · `besiege` · `storm` · `sortie` (garrison only, §6).
+**Fleet orders:** `move` · `blockade` · `patrol` (§7).
 
 **Battle cooldown:** one resolution per pair of armies per 3 months. The loser retreats
 immediately, as in §5 *After the battle*.
@@ -275,11 +293,12 @@ Rolled at the start of each year.
 
 | Event | Chance | Effect |
 |---|---|---|
-| Good harvest | 10% | +10% tax that year |
+| Good harvest | 10% | +10% money that year |
 | Plague | 5% | −10% pop |
 | Peasant uprising | 15% *(only if a plague struck in the last year)* | See below |
 
-**Peasant uprising.** A rebel country forms with **3% of your pop**, armed with swords, spawning
+**Peasant uprising.** A rebel country forms with soldiers equal to **3% of your total population**
+(every settlement you own, core and non-core), armed with swords, spawning
 outside your capital. It holds cores on everything and attacks towns and cities, favouring
 undefended ones and your core territory. **There is no peace with peasants.**
 

@@ -46,8 +46,8 @@ All others are towns (10K).
 | **AF** | Belgium | 54, 56 | 20K | 800 | — | ✓ |
 | **AG** | Netherlands | 57, 58 | 30K | 1,200 | 15 | ✓ |
 | **AH** | Münster | 64 | 10K | 400 | — | ✓ |
-| **AI** | Bremen | 65 | 10K | 400 | 5? | ✓ |
-| **AJ** | Hamburg | 66 | 20K | 800 | 10? | ✓ |
+| **AI** | Bremen | 65 | 10K | 400 | 5 | ✓ |
+| **AJ** | Hamburg | 66 | 20K | 800 | 10 | ✓ |
 | **AK** | Hanover | 67 | 10K | 400 | — | ✓ |
 | **AL** | Wolfsburg | 68 | 10K | 400 | — | ✓ |
 | **AM** | Jena | 70 | 10K | 400 | — | ✓ |
@@ -115,10 +115,12 @@ L Warsaw, AS Poznań, K Eastern Poland, I Prussia.
 ## NAVAL POWERS
 
 A country is coastal only if one of its **settlements** sits on the drawn coastline. A province
-touching water is not enough, and a river port inland of the coast is not enough.
+touching water is not enough, and a river port inland of the coast is not enough — except for
+the two ports named below by ruling.
 
-**Ports (confirmed):** 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 57, 89
-**Borderline — you decide:** 65 Bremen, 66 Hamburg
+**Ports:** 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 57, 65, 66, 89
+**Ports by ruling:** 65 Bremen, 66 Hamburg — ports even though the map does not draw them on the
+coastline.
 **Not ports:** 8, 12, 20, 54, 56, 58, 64, 75, 79, 80, 81 and all other inland settlements
 
 | Country | Ports held | Ships | Can cross straits (10+)? |
@@ -134,12 +136,12 @@ touching water is not enough, and a river port inland of the coast is not enough
 | E Lower Denmark | 9 | 10 | **exactly** |
 | AT Copenhagen | 7 | 10 | **exactly** |
 | G Mecklenburg | 13, 14 | 10 | **exactly** |
+| AJ Hamburg | 66 | 10 | **exactly** |
 | B Gothenburg | 6 | 5 | no |
-| *AJ Hamburg* | *66?* | *10* | *exactly* |
-| *AI Bremen* | *65?* | *5* | *no* |
+| AI Bremen | 65 | 5 | no |
 
-**12 confirmed naval powers · 165 ships** (180 if Bremen and Hamburg count).
-**AF Belgium is landlocked** — 54 and 56 both sit below the coastline.
+**14 naval powers · 180 ships.**
+**AF Belgium is landlocked** — 54 Brussels and 56 Antwerp are both inland.
 
 ## NOTES TO CHECK
 
