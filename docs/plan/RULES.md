@@ -27,7 +27,7 @@ Start **1440 AD**.
 
 ## 2. ECONOMY
 
-Every **town** (small circle) starts at **10,000 pop**; every **city** (big dot) at **20,000**.
+Every **town** (red circle) starts at **10,000 pop**; every **city** (red square) at **20,000**.
 
 ```
 money per year = bank interest
@@ -84,7 +84,7 @@ lost, name a new one from any city you own; if you own no city, any settlement.
 | **Muskets** (1000) | 0.01M | x1.5MR | ×1.3 |
 | **Rifles** (1000) | 0.02M | x4MR | ×2 |
 | **Cannons** (100) | 0.02M | x1.5MR | ×13 each · needs 1000 men |
-| **Snipers** (20) | 0.01M | x1MR | Mountain only |
+| **Snipers** (20) | 0.01M | x1MR | Bought and stationed at a mountain pass you own (§8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 ships** | 0.1M | — | ×1 each |
 | **10 gunships** | 0.2M | x3MR | ×3 each |
@@ -150,7 +150,8 @@ Men killed are also lost from your population — see *Casualties cost populatio
 
 **Ties.** If both sides end with exactly equal power, the **defender wins**. The defender is
 the side holding the settlement or province where the battle happens; if neither holds it, the
-army that arrived there first.
+army that arrived there first. At a mountain pass, the defender is the army that reached the pass
+first.
 
 **After the battle:** winner may advance or hold. Loser retreats to the nearest settlement
 owned by itself or a **military ally** (§10). If neither it nor any military ally owns a
@@ -159,16 +160,18 @@ settlement, there is nowhere to retreat and **the whole losing army dies**.
 ### Defence
 | Situation | Multiplier |
 |---|---|
-| Mountain | ×2 |
+| Defending a mountain pass (§8) | ×2 |
 | Defending a settlement | ×1.2 |
 | Settlement with walls | ×1.8 |
 
-The defender takes **either** the mountain **or** the settlement bonus — they never stack.
+The mountain ×2 applies **only at mountain passes**. A pass has no settlement, so the pass and
+settlement bonuses never stack.
 
 Every 100 cannons the attacker brings lowers the wall multiplier by **0.3**, floored at **1.2**.
 
 ### Snipers
-Mountain only. Cannot move or attack — they wait for an army to pass.
+Snipers are **bought and stationed only at a mountain pass your country owns** (§8). They cannot
+move or attack — they wait for an army to pass through.
 ```
 damage = number of snipers × d6 × 10      max 25 snipers per battle
 Total damage may never exceed 50% of the passing army.
@@ -180,7 +183,7 @@ each sniper counts as **50 power**:
 ```
 sniper power = snipers × 50 × (d6 + 6)
 ```
-The mountain ×2 does **not** apply to snipers. Losses are applied as in a normal battle.
+The pass ×2 does **not** apply to snipers. Losses are applied as in a normal battle.
 
 ---
 
@@ -238,9 +241,23 @@ form a new one.
 | Movement | |
 |---|---|
 | Army, one settlement | 0.5 years (avg) |
+| Army, settlement ↔ mountain pass | 0.5 years (avg) |
 | River crossing | +2 months |
-| Mountain | ×2 time |
 | Navy | 3 coastal settlements per year |
+
+**Mountain passes (yellow triangles).** Some routes cross the mountains through a pass. A pass is
+a node on the map, like a settlement with no people in it, and the route runs settlement → pass →
+settlement.
+
+- **Armies can be sent to a pass** and stay there. Each leg (settlement to pass, pass to settlement)
+  is one step, so a route through a pass takes twice as long as an ordinary route.
+- **An army defending a pass gets ×2** defence (§5).
+- **Snipers** are bought and stationed only at passes (§5).
+- **Each pass belongs to one country** — whoever's territory it lies in, i.e. whoever owns the
+  settlement whose land the pass is in (listed in the scenario). It changes hands with that
+  settlement. Only the owner can buy snipers there.
+- **Snipers stay when a pass changes hands** — they still belong to the country that bought them.
+  A country's snipers are removed only when that country **no longer owns any city**.
 
 **Zone of control.** An army entering a province with an enemy army stops there and engages,
 cancelling the rest of its path.
@@ -342,6 +359,22 @@ Settlements 25 and 27 were deleted from the map and are not part of any region.
 ## Sea zones
 
 **North Sea · Skagerrak–Kattegat · Baltic.** A fleet operates in one zone at a time.
+
+## Mountain passes
+
+7 passes, shown as yellow triangles on `map-connections.png` and numbered west to east. A pass
+lies in one settlement's land and belongs to whoever owns that settlement. Every route listed
+runs settlement → pass → settlement.
+
+| Pass | Routes through it | In the land of | Owner at start |
+|---|---|---|---|
+| **P1** | 41 Bern – 42 Geneva · 41 Bern – 45 Strassburg · 41 Bern – 46 Basel | 41 Bern | Z Switzerland |
+| **P2** | 41 Bern – 47 Konstanz · 40 Zurich – 47 Konstanz | 40 Zurich | Z Switzerland |
+| **P3** | 39 Innsbruck – 40 Zurich | 40 Zurich | Z Switzerland |
+| **P4** | 30 Prague – 36 Passau · 30 Prague – 72 Chemnitz | 30 Prague | Q Bohemia |
+| **P5** | 30 Prague – 73 Dresden · 30 Prague – 85 Breslau · 29 Ostrava – 85 Breslau | 30 Prague | Q Bohemia |
+| **P6** | 28 Brno – 35 Linz · 28 Brno – 33 Vienna · 28 Brno – 31 Bratislava · 28 Brno – 32 Hainburg | 28 Brno | Q Bohemia |
+| **P7** | 29 Ostrava – 86 Krakow | 29 Ostrava | Q Bohemia |
 
 ## The Holy Roman Empire
 
