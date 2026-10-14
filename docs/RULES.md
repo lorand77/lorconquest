@@ -3,9 +3,9 @@
 
 > **Scenario scaling.** `x` is a per-scenario cost multiplier. `x0.1M` means `x × 0.1M`.
 > `x` applies to **tech costs, starting treasury and the flat R bonus only** — never to shop prices.
-> For Mitteleuropa, **x = 1**. Town and city populations (10K / 20K) are the same in every
-> scenario; what changes between scenarios is the map, country sizes, costs, coring, and the
-> victory condition.
+> Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](SCENARIO.md).
+> Town and city populations (10K / 20K) are the same in every scenario; what changes between
+> scenarios is the map, country sizes, costs, coring, and the victory condition.
 
 ---
 
@@ -46,7 +46,7 @@ population**, so a 20K city loses twice as many people as a 10K town. Lost peopl
 only through growth or **Buy people**.
 
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
-**Courthouse**. Special coring (see *Special coring* in the scenario) waives both.
+**Courthouse**. Special coring (see [Special coring](SCENARIO.md#special-coring)) waives both.
 
 **Bank:** deposits earn `0.25% per month` interest (≈3.04%/year compounded). Withdraw any time.
 Bank interest is **money only** — it never counts toward research (§4).
@@ -217,8 +217,8 @@ power = (ships + gunships × 3 + steam ships × 8) × (d6 + 6)
 Damage as in a land battle, applied to ships (rounded). Crew of sunk ships are lost from
 your population (§2).
 
-**Fleet orders.** Sail a fleet into a sea zone (zones are defined in the scenario), then give it
-one of two orders:
+**Fleet orders.** Sail a fleet into a sea zone (zones are listed in
+[SCENARIO.md](SCENARIO.md#sea-zones)), then give it one of two orders:
 
 - `blockade` — pick an enemy port in that sea zone. While the blockade holds, that settlement's
   growth becomes **−0.5% total** — no other growth bonus applies.
@@ -254,8 +254,8 @@ settlement.
 - **An army defending a pass gets ×2** defence (§5).
 - **Snipers** are bought and stationed only at passes (§5).
 - **Each pass belongs to one country** — whoever's territory it lies in, i.e. whoever owns the
-  settlement whose land the pass is in (listed in the scenario). It changes hands with that
-  settlement. Only the owner can buy snipers there.
+  settlement whose land the pass is in (listed in [SCENARIO.md](SCENARIO.md#mountain-passes)).
+  It changes hands with that settlement. Only the owner can buy snipers there.
 - **Snipers stay when a pass changes hands** — they still belong to the country that bought them.
   A country's snipers are removed only when that country **no longer owns any city**.
 
@@ -269,9 +269,8 @@ cancelling the rest of its path.
 immediately, as in §5 *After the battle*.
 
 **Straits (dashed lines).** An army may cross if you control **≥10 ships** in that sea zone (see
-*Sea zones* in the scenario) and
-no enemy fleet contests it. Crossing consumes the entire year. If an enemy fleet is present,
-fight a naval battle first — lose and the crossing fails.
+[Sea zones](SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing consumes the entire
+year. If an enemy fleet is present, fight a naval battle first — lose and the crossing fails.
 
 ---
 
@@ -319,83 +318,3 @@ Rolled at the start of each year.
 outside your capital. It holds cores on everything and attacks towns and cities, favouring
 undefended ones and your core territory. **There is no peace with peasants.**
 
----
-
-# SCENARIO: MITTELEUROPA
-
-*Everything below is specific to this map.*
-
-**x = 1** · 87 settlements · 45 countries · country sizes 10K–50K
-
-## Special coring
-*(no Courthouse and no 20-year wait)*
-
-You may proclaim a region when **both** are true:
-
-1. Your **capital** lies within the region.
-2. You control **100%** of its settlements.
-
-Every settlement in the region becomes core immediately. If you later lose one and retake it, it
-is core again on capture.
-
-| Formable | Settlements | Count |
-|---|---|---|
-| **Unite Austria** | 32, 33, 34, 35, 39 | 5 |
-| **Unite Czechoslovakia** | 26, 28, 29, 30, 31 | 5 |
-| **Unite the Benelux** | 53, 54, 55, 56, 57, 58 | 6 |
-| **Unite French-speaking people** | 41, 42, 43, 44, 45, 53, 54, 55 | 8 |
-| **Unite Scandinavia** | 1–9 | 9 |
-| **Old Poland** | 22, 23, 80, 81, 83, 84, 85, 86, 87, 88 | 10 |
-| **AustroHungary** | 23, 24, 26, 28–35, 39, 86 | 13 |
-| **Modern Poland** | 14, 15, 16, 20, 22, 23, 79–88 | 16 |
-| **Polish–Lithuanian Commonwealth** | Modern Poland + 17, 18, 19, 21, 24, 89 | 22 |
-| **Germany** (1990) | 10–13, 36–38, 47–52, 59–78 | 33 |
-| **Post Germany** (1930) | Germany + 14, 17, 20, 79, 85 | 38 |
-| **Greater Germany** (Kaiser 1880) | Post Germany + 16, 19, 45, 80, 82, 83 | 44 |
-| **Greater German Reich** (all German-speaking) | Greater Germany + 28, 29, 30, 32–35, 39, 40, 46, 53 | 55 |
-
-Settlements 25 and 27 were deleted from the map and are not part of any region.
-
-## Sea zones
-
-**North Sea · Skagerrak–Kattegat · Baltic.** A fleet operates in one zone at a time.
-
-## Mountain passes
-
-7 passes, shown as yellow triangles on `map-connections.png` and numbered west to east. A pass
-lies in one settlement's land and belongs to whoever owns that settlement. Every route listed
-runs settlement → pass → settlement.
-
-| Pass | Routes through it | In the land of | Owner at start |
-|---|---|---|---|
-| **P1** | 41 Bern – 42 Geneva · 41 Bern – 45 Strassburg · 41 Bern – 46 Basel | 41 Bern | Z Switzerland |
-| **P2** | 41 Bern – 47 Konstanz · 40 Zurich – 47 Konstanz | 40 Zurich | Z Switzerland |
-| **P3** | 39 Innsbruck – 40 Zurich | 40 Zurich | Z Switzerland |
-| **P4** | 30 Prague – 36 Passau · 30 Prague – 72 Chemnitz | 30 Prague | Q Bohemia |
-| **P5** | 30 Prague – 73 Dresden · 30 Prague – 85 Breslau · 29 Ostrava – 85 Breslau | 30 Prague | Q Bohemia |
-| **P6** | 28 Brno – 35 Linz · 28 Brno – 33 Vienna · 28 Brno – 31 Bratislava · 28 Brno – 32 Hainburg | 28 Brno | Q Bohemia |
-| **P7** | 29 Ostrava – 86 Krakow | 29 Ostrava | Q Bohemia |
-
-## The Holy Roman Empire
-
-> **HRE settlements:** 10–14, 28–30, 32–42, 44–78, 85 *(55 settlements)*
-
-Of the two countries partly inside the Empire, O Silesia's **85** is in and **86** is out, and
-AB Nancy's **44** is in and **43** is out.
-
-Demand to become leader of the Empire under your hegemony. You must control **at least 10
-settlements inside the HRE**, and may propose **only once, ever**.
-
-```
-chance each German state joins = your soldiers ÷ their soldiers × 10 %
-0% if you do not have more soldiers than they do
-```
-
-Protectorates pay you **10%** of their income.
-
-## Victory
-
-> **Control or vassalize 45 settlements.** Protectorates count as half — unless you demand one
-> become a vassal and it agrees.
-
-There is **no end date**. The game ends only when a player reaches 45.
