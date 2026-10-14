@@ -17,7 +17,7 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 **x = 1** (see the scenario scaling note in RULES.md)
 
 <!-- generated:summary -->
-87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 198 land routes, 4 straits, 7 mountain passes
+87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 197 land routes, 4 straits, 7 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -118,9 +118,9 @@ Settlements 25 and 27 were deleted from the map.
 | 24 | Lviv | LVI | town |  |  | 1276 | 819 | 21, 22, 23 |  |
 | 26 | Kassa | HUN | town |  |  | 1074 | 1030 | 29, 31 |  |
 | 28 | Brno | BOH | town |  | HRE | 828 | 943 | 29, 30, 31, 32, 33, 35 |  |
-| 29 | Ostrava | BOH | town |  | HRE | 884 | 886 | 26, 28, 30, 85, 86 |  |
+| 29 | Ostrava | BOH | town |  | HRE | 884 | 886 | 26, 28, 30, 86 |  |
 | 30 | Prague | BOH | city |  | HRE | 776 | 867 | 28, 29, 36, 72, 73, 85 |  |
-| 31 | Bratislava | HUN | city |  |  | 863 | 1089 | 26, 28, 32 |  |
+| 31 | Pozsony | HUN | city |  |  | 863 | 1089 | 26, 28, 32 |  |
 | 32 | Hainburg | AUS | town |  | HRE | 809 | 1065 | 28, 31, 33 |  |
 | 33 | Vienna | AUS | city |  | HRE | 754 | 1037 | 28, 32, 34, 35 |  |
 | 34 | Salzburg | SAL | town |  | HRE | 635 | 1031 | 33, 35, 39 |  |
@@ -174,7 +174,7 @@ Settlements 25 and 27 were deleted from the map.
 | 82 | Pila | POZ | town |  |  | 845 | 541 | 77, 78, 80, 83, 84 |  |
 | 83 | Poznan | POZ | town |  |  | 789 | 637 | 73, 74, 77, 82, 84, 85 |  |
 | 84 | Lodz | WAR | town |  |  | 922 | 624 | 80, 81, 82, 83, 85, 86, 87, 88 |  |
-| 85 | Breslau | SIL | town |  | HRE | 813 | 750 | 29, 30, 73, 83, 84, 86 |  |
+| 85 | Breslau | SIL | town |  | HRE | 813 | 750 | 30, 73, 83, 84, 86 |  |
 | 86 | Krakow | SIL | town |  |  | 955 | 795 | 23, 29, 84, 85, 87 |  |
 | 87 | Radom | WAR | town |  |  | 1055 | 704 | 22, 23, 84, 86, 88 |  |
 | 88 | Warsaw | WAR | city |  |  | 1064 | 608 | 16, 20, 21, 22, 81, 84, 87 |  |
@@ -192,7 +192,7 @@ settlement. A pass belongs to whoever owns the settlement whose land it lies in 
 | P2 | 335 | 1048 | 41-47, 40-47 | 40 Zurich | SWI Switzerland |
 | P3 | 409 | 1085 | 39-40 | 40 Zurich | SWI Switzerland |
 | P4 | 709 | 857 | 30-36, 30-72 | 30 Prague | BOH Bohemia |
-| P5 | 802 | 800 | 30-73, 30-85, 29-85 | 30 Prague | BOH Bohemia |
+| P5 | 802 | 800 | 30-73, 30-85 | 30 Prague | BOH Bohemia |
 | P6 | 805 | 980 | 28-35, 28-33, 28-31, 28-32 | 28 Brno | BOH Bohemia |
 | P7 | 910 | 852 | 29-86 | 29 Ostrava | BOH Bohemia |
 

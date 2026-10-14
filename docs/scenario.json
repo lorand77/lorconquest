@@ -589,8 +589,7 @@
    "land" : 30,
    "routes" : [
     "30-73",
-    "30-85",
-    "29-85"
+    "30-85"
    ],
    "x" : 802,
    "y" : 800
@@ -1120,14 +1119,6 @@
    "id" : "route-29-30",
    "pass" : null,
    "to" : 30,
-   "type" : "land"
-  },
-  {
-   "crossesRiver" : false,
-   "from" : 29,
-   "id" : "route-29-85",
-   "pass" : "P5",
-   "to" : 85,
    "type" : "land"
   },
   {
@@ -2756,7 +2747,6 @@
     26,
     28,
     30,
-    85,
     86
    ],
    "country" : "BOH",
@@ -2804,7 +2794,7 @@
    "hre" : false,
    "id" : 31,
    "land" : "land-31",
-   "name" : "Bratislava",
+   "name" : "Pozsony",
    "pop" : 20000,
    "port" : false,
    "river" : true,
@@ -3936,7 +3926,6 @@
   },
   {
    "borders" : [
-    29,
     30,
     73,
     83,
