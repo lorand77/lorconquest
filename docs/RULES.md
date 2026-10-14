@@ -104,7 +104,7 @@ toward your conscription cap (§9).
 Swords (unlocked) ──▶ Muskets ──▶ Cannons ──┬──▶ Rifles
                                              └──▶ Snipers
 
-Naval (unlocked) ──▶ Better Ships ──▶ Steam Ships   [not supposed to get this]
+Naval (unlocked) ──▶ Gunships ──▶ Steam Ships   [not supposed to get this]
 ```
 
 ```

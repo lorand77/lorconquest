@@ -114,7 +114,7 @@ Settlements 25 and 27 were deleted from the map.
 | 20 | Olsztyn | PRU | town |  |  | 1145 | 466 | 16, 17, 21, 88 |  |
 | 21 | Brest | EPL | town |  |  | 1228 | 597 | 20, 22, 24, 88 |  |
 | 22 | Lublin | EPL | town |  |  | 1171 | 672 | 21, 23, 24, 87, 88 |  |
-| 23 | Rzeszow | RZE | town |  |  | 1155 | 770 | 22, 24, 86, 87 |  |
+| 23 | Rzeszów | RZE | town |  |  | 1155 | 770 | 22, 24, 86, 87 |  |
 | 24 | Lviv | LVI | town |  |  | 1276 | 819 | 21, 22, 23 |  |
 | 26 | Kassa | HUN | town |  |  | 1074 | 1030 | 29, 31 |  |
 | 28 | Brno | BOH | town |  | HRE | 828 | 943 | 29, 30, 31, 32, 33, 35 |  |
@@ -144,7 +144,7 @@ Settlements 25 and 27 were deleted from the map.
 | 52 | Trier | TRI | town |  | HRE | 200 | 859 | 44, 45, 49, 50, 53, 60 |  |
 | 53 | Luxemburg | LUX | town |  | HRE | 102 | 883 | 44, 52, 54, 60 |  |
 | 54 | Brussels | BEL | town |  | HRE | 36 | 802 | 53, 55, 56, 60 |  |
-| 55 | Liege | LIE | town |  | HRE | 122 | 729 | 54, 56, 58, 59, 60, 61 |  |
+| 55 | Liège | LIE | town |  | HRE | 122 | 729 | 54, 56, 58, 59, 60, 61 |  |
 | 56 | Antwerp | BEL | town |  | HRE | 38 | 676 | 54, 55, 57, 58 |  |
 | 57 | Rotterdam | NED | city | port | HRE | 49 | 565 | 56, 58, 64 |  |
 | 58 | Utrecht | NED | town |  | HRE | 119 | 618 | 55, 56, 57, 59, 63, 64 |  |
@@ -153,7 +153,7 @@ Settlements 25 and 27 were deleted from the map.
 | 61 | Cologne | RUH | town |  | HRE | 252 | 718 | 51, 55, 59, 60 |  |
 | 62 | Essen | RUH | town |  | HRE | 252 | 644 | 51, 59, 63, 70 |  |
 | 63 | Dortmund | RUH | town |  | HRE | 272 | 614 | 58, 59, 62, 64, 67, 68, 70 |  |
-| 64 | Munster | MST | town |  | HRE | 188 | 530 | 57, 58, 63, 65, 67 |  |
+| 64 | Münster | MST | town |  | HRE | 188 | 530 | 57, 58, 63, 65, 67 |  |
 | 65 | Bremen | BRE | town | port | HRE | 213 | 444 | 64, 66 |  |
 | 66 | Hamburg | HAM | city | port | HRE | 307 | 434 | 9, 11, 12, 65, 67 |  |
 | 67 | Hanover | HAN | town |  | HRE | 329 | 516 | 12, 63, 64, 66, 68, 69 |  |
@@ -172,10 +172,10 @@ Settlements 25 and 27 were deleted from the map.
 | 80 | Bydgoszcz | GDA | town |  |  | 881 | 487 | 15, 78, 79, 81, 82, 84 |  |
 | 81 | Plock | GDA | town |  |  | 1000 | 499 | 15, 16, 80, 84, 88 |  |
 | 82 | Pila | POZ | town |  |  | 845 | 541 | 77, 78, 80, 83, 84 |  |
-| 83 | Poznan | POZ | town |  |  | 789 | 637 | 73, 74, 77, 82, 84, 85 |  |
+| 83 | Poznań | POZ | town |  |  | 789 | 637 | 73, 74, 77, 82, 84, 85 |  |
 | 84 | Lodz | WAR | town |  |  | 922 | 624 | 80, 81, 82, 83, 85, 86, 87, 88 |  |
 | 85 | Breslau | SIL | town |  | HRE | 813 | 750 | 30, 73, 83, 84, 86 |  |
-| 86 | Krakow | SIL | town |  |  | 955 | 795 | 23, 29, 84, 85, 87 |  |
+| 86 | Kraków | SIL | town |  |  | 955 | 795 | 23, 29, 84, 85, 87 |  |
 | 87 | Radom | WAR | town |  |  | 1055 | 704 | 22, 23, 84, 86, 88 |  |
 | 88 | Warsaw | WAR | city |  |  | 1064 | 608 | 16, 20, 21, 22, 81, 84, 87 |  |
 | 89 | Palanga | LIT | town | port |  | 1142 | 42 | 19 |  |
@@ -313,51 +313,56 @@ script, so re-read it after changing countries or borders.*
 
 Each 50K country starts with 4 settlements and 2,000 men. Bavaria and Ruhr border none
 of the others, so each has its own zone to grow into. **Brandenburg and Gdansk share a
-border** — Brandenburg's eastern edge runs along Gdansk's western edge, between Mecklenburg
-and Poznań — so those two can collide from the first year.
+border** — Brandenburg's eastern edge (78 Seelow Heights) runs along Gdansk's western edge
+(79 Szczecinek, 80 Bydgoszcz), between Mecklenburg and Poznań — so those two can collide from
+the first year.
 
-- **Gdansk** — 25 ships, the largest navy on the map. Sits on the Vistula mouth between
-  Prussia and Poland, with Brandenburg on its western flank. Outside the HRE, so its path
-  runs through Poland.
-- **Bavaria** — ringed by the small Swabian states (Ulm, Stuttgart, Lower Germany,
-  Salzburg, Tyrol, Jena). The best expansion position on the map.
+- **Gdansk** — 25 ships, the largest navy on the map. Holds the Pomeranian coast at 15 Gdynia
+  and runs inland to 81 Plock, with Prussia (which holds 16 Danzig itself) to the east, Poland
+  to the south and Brandenburg on its western flank. Outside the HRE, so its path runs through
+  Poland.
+- **Bavaria** — ringed by small states (Ulm, Stuttgart, Lower Germany, Tyrol, Jena), with
+  Austria, Bohemia and Saxony beyond them. The best expansion position on the map.
 - **Ruhr** — the densest cluster in the west, with five 10K neighbours.
-- **Brandenburg** — open ground, flanked by Saxony (40K), Poznań and Gdansk (50K).
-  The most exposed of the four — the only one that borders another great power.
+- **Brandenburg** — open ground, flanked by Saxony (40K), Schleswig (40K), Poznań and
+  Gdansk (50K). With Gdansk, one of the only two great powers that border another, and the
+  most exposed of the four.
 
 ### The race for the Empire
 
-| Power | Starts with | Shortest path to 10 HRE settlements |
-|---|---|---|
-| **Bavaria** | 4 | + Ulm, Stuttgart, Lower Germany, Jena, Salzburg = **10** |
-| **Ruhr** | 4 | + Münster, Frankfurt, Trier, Liège = **10** |
-| **Brandenburg** | 4 | + Magdeburg, Wolfsburg, Hanover, Saxony = **10** |
+| Power | Starts with | Fewest conquests to 10 HRE settlements | Without fighting a 40K+ power |
+|---|---|---|---|
+| **Bavaria** | 4 | Bohemia, Austria (**2**) | Ulm, Stuttgart, Lower Germany, Tyrol, Jena (**5**) |
+| **Ruhr** | 4 | Netherlands, Frankfurt, Trier (**3**) | the same |
+| **Brandenburg** | 4 | Mecklenburg, Magdeburg, Saxony (**3**) | Mecklenburg, Magdeburg, Hanover, Hamburg (**4**) |
 
-Three great powers, all exactly ten settlements away. Bavaria needs five small conquests; Ruhr
-and Brandenburg need four each — but Brandenburg's four include Saxony (40K, three
-settlements), the hardest single target on any route, and it must watch Gdansk at its back
-while it does so. Whoever gets there first and rolls well takes the Empire — and each only gets
-one attempt.
+All three start with 4 HRE settlements and need 6 more. Bavaria's fastest route runs through
+two 40K neighbours; its safe route is five small conquests. Ruhr's three targets are all
+20–30K. Brandenburg can only skip Saxony (40K, three settlements) by working north and west
+through Magdeburg — and must watch Gdansk at its back either way. Whoever gets there first and
+rolls well takes the Empire — and each only gets one attempt.
 
-**Gdansk cannot propose** (no HRE settlements), so its win condition runs through Poland:
-Warsaw, Poznań, Eastern Poland, Prussia.
+**Gdansk starts with no HRE settlements**, so it would have to conquer ten before it could
+propose. Its natural path runs through Poland instead: Warsaw, Poznań, Eastern Poland, Prussia.
 
 ### Map history
 
 - Six long routes over the mountains were removed from *Borders*: 24-26, 23-26, 26-86, 33-39,
   29-31, 28-36.
+- 29-85 Ostrava–Breslau was removed from *Borders* as well.
 - 56 Antwerp is inland, so Belgium has no ships.
 
 ### Notes to check
 
-1. **Contiguity of ELS and NAN.** Elsass-Lothringen is Geneva (42) + Strassburg
-   (45); Nancy is Lyon (43) + Nancy (44). On the map those pairs look far apart. Non-contiguous
-   countries interact badly with "loser retreats to nearest city" and with movement — worth
-   confirming.
-2. **Sea zone transitions.** Naval movement is 3 coastal settlements per turn, but nothing says
+1. **Borders and routes disagree.** These lands share a border on the map but have no route:
+   49-51, 49-60, 58-62, 55-62 (on top of the removed routes above); 39-47, 51-60 and 64-66
+   only touch at a point. These routes join lands that do not touch: 50-52, 50-60, 58-59,
+   59-63. Either may be intended, but neither is checked by the script.
+2. **Sea zone transitions.** Naval movement is 3 coastal settlements per year, but nothing says
    whether a fleet can pass between the North Sea and the Baltic without forcing the Danish
    straits. If it must, Upper Denmark, Lower Denmark, Copenhagen and Schleswig control the only
    gate between the two seas.
 3. **Naming:** "Lower Germany" (46 Basel, 47 Konstanz) is the far south — "Upper Rhine" or
    "Lake Constance" fits the geography better. "Silesia" includes 86 Kraków, which is
-   Lesser Poland.
+   Lesser Poland. "Gdansk" does not hold 16 Danzig (Gdańsk) — Prussia does; "Pomerania"
+   fits its lands better.
