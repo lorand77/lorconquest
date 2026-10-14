@@ -1,34 +1,56 @@
 #!/usr/bin/perl
-# Draw docs/map.png from docs/SCENARIO.md (the single source of map data) on top of docs/map-base.png
-# (the hand-drawn sea, coast, borders and rivers), and refresh the generated parts of SCENARIO.md.
+# Build the map and game data from docs/SCENARIO.md (map facts) and docs/map-base.svg (map geometry):
+#   docs/map.svg         the map, every part addressable by id/class for the web game
+#   docs/scenario.json   the scenario as data for the game
+# and refresh the generated parts of SCENARIO.md.
 #
-#   perl tools/map.pl              check the data, redraw map.png, refresh SCENARIO.md
+#   perl tools/map.pl              check the data, rebuild map.svg and scenario.json, refresh SCENARIO.md
 #   perl tools/map.pl mountains    the same, but first move any mountain that touches something
 #
 # Only core Perl is needed.
 use strict; use warnings; use utf8; use open qw(:std :encoding(UTF-8));
-use File::Basename qw(dirname); use Cwd qw(abs_path); use Compress::Zlib;
+use File::Basename qw(dirname); use Cwd qw(abs_path); use JSON::PP;
 
 my $ROOT = dirname(dirname(abs_path(__FILE__)));
-my ($DOC, $BASE, $OUT) = map { "$ROOT/docs/$_" } qw(SCENARIO.md map-base.png map.png);
+my ($DOC, $BASE, $SVG, $JSON) = map { "$ROOT/docs/$_" } qw(SCENARIO.md map-base.svg map.svg scenario.json);
 my $MODE = shift // 'draw'; die "usage: $0 [mountains]\n" unless $MODE =~ /^(draw|mountains)$/;
 
-# ---------- look ----------
-my @SEA = (153, 217, 234); my @BORDER = (127, 127, 127); my @RIVER = (0, 162, 232);
-my @RED = (201, 22, 31);                 # towns (circle r=9) and cities (22px square)
-my @LINE = (190, 190, 190);              # connections; straits dashed
-my @PASS = (255, 230, 0); my $PASS_SIDE = 20;
-my @LABEL = (70, 70, 70);                # country codes
+# ---------- look (sizes in map units = pixels at 100%) ----------
+my $STYLE = <<'CSS';
+.sea{fill:#99d9ea}
+.landmass{fill:#fff}
+.land{fill:#fff}
+.coast{fill:none;stroke:#000;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.frame{fill:none;stroke:#7f7f7f;stroke-width:4}
+.edge{fill:none;stroke-linejoin:round;stroke-linecap:round}
+.border{stroke:#7f7f7f;stroke-width:2.5}
+.province{stroke:none}
+.river{fill:none;stroke:#00a2e8;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.route{fill:none;stroke:#bebebe;stroke-width:1.4}
+.strait{stroke-dasharray:3.5 3.5}
+.mtn-lit{fill:#c4aa88}
+.mtn-shade{fill:#967656}
+.mtn-snow{fill:#fcfcfc}
+.mtn-snow-shade{fill:#d6dce4}
+.mtn-outline{fill:none;stroke:#5f4128;stroke-width:1.4;stroke-linejoin:round}
+.pass{fill:#ffe600;stroke:#282828;stroke-width:1.5;stroke-linejoin:round}
+.marker{fill:#c9161f}
+.number{fill:#fff;font-size:10px;font-weight:bold;text-anchor:middle}
+.label{fill:#464646;font-size:15px;text-anchor:middle}
+.label.small{font-size:10px}
+CSS
+my ($PASS_SIDE, $TOWN_R, $CITY_SIDE) = (20, 9, 22);
 my ($MTN_W, $MTN_H) = (30, 26);
-my @MTN_OUT = (95, 65, 40); my @MTN_LIT = (196, 170, 136); my @MTN_SHADE = (150, 118, 86);
-my @MTN_SNOW = (252, 252, 252); my @MTN_SNOWS = (214, 220, 228);
 my ($MTN_GAP, $MTN_REACH) = (5, 40);     # clear space around a mountain; how far `mountains` may move one
+my $RIVER_NEAR = 24;                     # a settlement this close to a river is "on a river" (RULES.md §2)
+my $CHAR_W = 0.72;                       # rough width of a capital letter, in em, for placing labels
 
 # =====================================================================================
 # SCENARIO.md
 # =====================================================================================
 open my $fh, '<', $DOC or die "$DOC: $!"; my @doc = <$fh>; close $fh; chomp @doc;
 my @ERR; sub err { push @ERR, sprintf(shift, @_) }
+sub check { die "$_[0] has errors:\n" . join('', map { "  $_\n" } @ERR) if @ERR }
 
 sub section { my $t = shift; my ($s) = grep { $doc[$_] =~ /^## \Q$t\E\s*$/ } 0 .. $#doc; die "SCENARIO.md: no '## $t' section\n" unless defined $s;
     my $e = $s + 1; $e++ while $e <= $#doc && $doc[$e] !~ /^#{1,2} /; return ($s, $e - 1) }
@@ -36,13 +58,14 @@ sub cells { my $l = shift; $l =~ s/^\s*\|//; $l =~ s/\|\s*$//; map { my $c = $_;
 # table($section) -> (\@header, \@rows as hashes, first line, last line)
 sub table { my ($s, $e) = section(shift); my $i = $s; $i++ while $i <= $e && $doc[$i] !~ /^\|/; die "SCENARIO.md: no table under '$doc[$s]'\n" if $i > $e;
     my @h = cells($doc[$i]); my $j = $i + 2; my @rows;
-    while ($j <= $#doc && $doc[$j] =~ /^\|/) { my @c = cells($doc[$j]); my %r; @r{@h} = @c; $r{_line} = $j + 1; push @rows, \%r; $j++ }
+    while ($j <= $#doc && $doc[$j] =~ /^\|/) { my @c = cells($doc[$j]); my %r; @r{@h} = map { $_ // '' } @c; $r{_line} = $j + 1; push @rows, \%r; $j++ }
     return (\@h, \@rows, $i, $j - 1) }
 sub ids { my $s = shift // ''; grep { /\S/ } split /\s*,\s*/, $s }
 
 my (%CN, @CORDER);                       # country code -> name, in table order
 { my (undef, $rows) = table('Countries');
-  for my $r (@$rows) { my ($c, $n) = @$r{qw(Code Country)}; err("Countries line %d: duplicate code %s", $r->{_line}, $c) if $CN{$c}; $CN{$c} = $n; push @CORDER, $c } }
+  for my $r (@$rows) { my ($c, $n) = @$r{qw(Code Country)}; err("Countries line %d: duplicate code %s", $r->{_line}, $c) if $CN{$c};
+      err("Countries line %d: code '%s' must be capital letters", $r->{_line}, $c) unless $c =~ /^[A-Z]+$/; $CN{$c} = $n; push @CORDER, $c } }
 
 my %S;                                   # id -> { name country city port hre x y nb[] st[] }
 { my (undef, $rows) = table('Settlements');
@@ -70,134 +93,117 @@ my @PASSES;
       push @PASSES, { id => $r->{Pass}, x => $r->{X}, y => $r->{Y}, routes => \@routes } } }
 my %VIA; for my $p (@PASSES) { for (@{ $p->{routes} }) { err("route %s goes through two passes", $_) if $VIA{$_}; $VIA{$_} = $p } }
 
-my @PEAKS; my ($MTN_FROM, $MTN_TO);      # the ``` block under ## Mountains
+my @PEAKS;                               # the ``` block under ## Mountains
 { my ($s, $e) = section('Mountains'); my @f = grep { $doc[$_] =~ /^```/ } $s .. $e; die "SCENARIO.md: no ``` block under ## Mountains\n" unless @f >= 2;
-  ($MTN_FROM, $MTN_TO) = @f[0, 1]; for my $i ($MTN_FROM + 1 .. $MTN_TO - 1) { push @PEAKS, [ $1, $2 ] while $doc[$i] =~ /(\d+),(\d+)/g } }
-
-die "SCENARIO.md has errors:\n" . join('', map { "  $_\n" } @ERR) if @ERR;
+  for my $i ($f[0] + 1 .. $f[1] - 1) { push @PEAKS, [ $1, $2 ] while $doc[$i] =~ /(\d+),(\d+)/g } }
+check('SCENARIO.md');
 
 # =====================================================================================
-# picture
+# map-base.svg: one shape per settlement's land, and the rivers
 # =====================================================================================
-my ($W, $H, $B) = load_png($BASE);
+open $fh, '<', $BASE or die "$BASE: $!"; my $base = do { local $/; <$fh> }; close $fh; $base =~ s/<!--.*?-->//gs;
+my ($W, $H) = $base =~ /viewBox="0 0 ([\d.]+) ([\d.]+)"/ or die "map-base.svg: no viewBox\n";
+die "map-base.svg: transforms are not supported (in Inkscape: Edit > Preferences > Behavior > Transforms > Store transformation: optimized, then nudge the item)\n" if $base =~ /transform=/;
+# path data -> list of rings (straight segments only)
+sub parse_d { my ($d, $what) = @_; my (@rings, @cur, $cx, $cy, $sx, $sy, $cmd);
+    die "map-base.svg: $what uses curves; only straight segments are allowed\n" if $d =~ /[CcSsQqTtAa]/;
+    my @tok = $d =~ /([MmLlHhVvZz])|([-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)/g; @tok = grep { defined } @tok; my $i = 0;
+    my $close = sub { push @rings, [@cur] if @cur >= 3; @cur = () };
+    while ($i < @tok) {
+        if ($tok[$i] =~ /^[A-Za-z]$/) { $cmd = $tok[$i++]; if ($cmd =~ /[Zz]/) { $close->(); ($cx, $cy) = ($sx, $sy); next } }
+        die "map-base.svg: $what: bad path data\n" unless defined $cmd;
+        if ($cmd =~ /[MmLl]/) { my ($x, $y) = @tok[$i, $i + 1]; $i += 2; if ($cmd =~ /[ml]/ && defined $cx) { $x += $cx; $y += $cy }
+            if ($cmd =~ /[Mm]/) { $close->(); ($sx, $sy) = ($x, $y); $cmd = $cmd eq 'm' ? 'l' : 'L' } ($cx, $cy) = ($x, $y); push @cur, [$x, $y] }
+        elsif ($cmd eq 'H') { $cx = $tok[$i++]; push @cur, [$cx, $cy] } elsif ($cmd eq 'h') { $cx += $tok[$i++]; push @cur, [$cx, $cy] }
+        elsif ($cmd eq 'V') { $cy = $tok[$i++]; push @cur, [$cx, $cy] } elsif ($cmd eq 'v') { $cy += $tok[$i++]; push @cur, [$cx, $cy] } }
+    my @open = @cur; $close->(); return (\@rings, \@open) }
+sub rnd { 0 + sprintf '%.2f', $_[0] }
+my (%LANDS, @RIVERS);
+for my $a ($base =~ /<path\b([^>]*)>/g) { my ($id) = $a =~ /\bid="([^"]*)"/; my ($d) = $a =~ /\bd="([^"]*)"/; next unless defined $d;
+    if (defined $id && $id =~ /^land-(\d+)$/) { my ($r) = parse_d($d, $id); $LANDS{$1} = [ map { [ map { [ rnd($_->[0]), rnd($_->[1]) ] } @$_ ] } @$r ];
+        err("map-base.svg: %s has no closed shape", $id) unless @$r } }
+my ($rivg) = $base =~ /<g\b[^>]*\bid="rivers"[^>]*>(.*?)<\/g>/s;      # rivers: the paths in the group with id "rivers"
+for my $a (($rivg // '') =~ /<path\b([^>]*)>/g) { my ($d) = $a =~ /\bd="([^"]*)"/ or next; my (undef, $open) = parse_d($d, 'a river'); push @RIVERS, $open if @$open >= 2 }
+for my $id (sort { $a <=> $b } keys %S) { err("map-base.svg: no land-%d for settlement %d", $id, $id) unless $LANDS{$id} }
+for my $id (sort { $a <=> $b } keys %LANDS) { err("map-base.svg: land-%d has no settlement in SCENARIO.md", $id) unless $S{$id} }
+check('map-base.svg');
+
+sub inside { my ($x, $y, $rings) = @_; my $in = 0;
+    for my $r (@$rings) { for my $i (0 .. $#$r) { my ($a, $b) = ($r->[$i], $r->[ $i - 1 ]);
+        $in = !$in if ($a->[1] > $y) != ($b->[1] > $y) && $x < $a->[0] + ($y - $a->[1]) / ($b->[1] - $a->[1]) * ($b->[0] - $a->[0]) } } $in }
+sub land_at { my ($x, $y) = @_; for my $id (sort { $a <=> $b } keys %LANDS) { return $id if inside($x, $y, $LANDS{$id}) } 0 }
+for my $id (sort { $a <=> $b } keys %S) { err("settlement %d (%d,%d) is not inside land-%d", $id, $S{$id}{x}, $S{$id}{y}, $id) unless inside($S{$id}{x}, $S{$id}{y}, $LANDS{$id}) }
+for my $p (@PASSES) { $p->{owner} = land_at($p->{x}, $p->{y}) or err("pass %s (%d,%d) is not on land", $p->{id}, $p->{x}, $p->{y}) }
+
+# edges: every side of every land is shared with exactly one neighbour, or is coast, or lies on the frame
+my (%SEG, %PK); sub pk { "$_[0][0],$_[0][1]" }
+for my $id (sort { $a <=> $b } keys %LANDS) { for my $r (@{ $LANDS{$id} }) { for my $i (0 .. $#$r) { my ($a, $b) = ($r->[$i], $r->[ ($i + 1) % @$r ]); next if pk($a) eq pk($b);
+    my $k = pk($a) lt pk($b) ? pk($a) . '|' . pk($b) : pk($b) . '|' . pk($a); $PK{ pk($_) } = $_ for $a, $b; push @{ $SEG{$k} }, $id } } }
+my (%PAIR, @COAST, @FRAME);              # "a-b" -> segments; segment = [p, q]
+for my $k (sort keys %SEG) { my @own = @{ $SEG{$k} }; my ($p, $q) = map { $PK{$_} } split /\|/, $k;
+    if (@own > 2) { err("edge %s is shared by more than two lands (%s)", $k, join ', ', map { "land-$_" } @own); next }
+    if (@own == 2) { my ($a, $b) = sort { $a <=> $b } @own; err("land-%d overlaps itself at %s", $a, $k) if $a == $b; push @{ $PAIR{"$a-$b"} }, [$p, $q]; next }
+    if (($p->[0] == 0 && $q->[0] == 0) || ($p->[0] == $W && $q->[0] == $W) || ($p->[1] == 0 && $q->[1] == 0) || ($p->[1] == $H && $q->[1] == $H)) { push @FRAME, [$p, $q]; next }
+    my ($mx, $my) = (($p->[0] + $q->[0]) / 2, ($p->[1] + $q->[1]) / 2); my ($nx, $ny) = ($q->[1] - $p->[1], $p->[0] - $q->[0]); my $nl = sqrt($nx * $nx + $ny * $ny) || 1;
+    ($nx, $ny) = ($nx / $nl * 0.75, $ny / $nl * 0.75);
+    if (land_at($mx + $nx, $my + $ny) && land_at($mx - $nx, $my - $ny)) { err("land-%d: its edge near %.0f,%.0f does not match its neighbour's points exactly", $own[0], $mx, $my); next }
+    push @COAST, [$p, $q] }
+check('map-base.svg');
+# join segments into as few polylines as possible
+sub chains { my @segs = @_; my %adj; for my $i (0 .. $#segs) { push @{ $adj{ pk($segs[$i][0]) } }, $i; push @{ $adj{ pk($segs[$i][1]) } }, $i }
+    my (%used, @out);
+    my $walk = sub { my ($start, $i) = @_; my @pts = ($PK{$start}); my $cur = $start;
+        while (defined $i && !$used{$i}) { $used{$i} = 1; my ($a, $b) = map { pk($_) } @{ $segs[$i] }; $cur = $a eq $cur ? $b : $a; push @pts, $PK{$cur};
+            ($i) = grep { !$used{$_} } @{ $adj{$cur} }; last if @{ $adj{$cur} } != 2 } push @out, \@pts };
+    for my $v (sort grep { @{ $adj{$_} } != 2 } keys %adj) { for my $i (@{ $adj{$v} }) { $walk->($v, $i) unless $used{$i} } }
+    for my $i (0 .. $#segs) { $walk->(pk($segs[$i][0]), $i) unless $used{$i} }
+    return @out }
+
+# =====================================================================================
+# layout on a pixel grid: which land each pixel is in, what is already drawn there
+# =====================================================================================
+my @REG = map { [ (0) x $W ] } 1 .. $H; my %OVER;
+for my $id (sort { $a <=> $b } keys %LANDS) { my @e; for my $r (@{ $LANDS{$id} }) { push @e, map { [ $r->[$_], $r->[ $_ - 1 ] ] } 0 .. $#$r }
+    my ($y0, $y1) = (1e9, -1); for (@e) { for my $p (@$_) { $y0 = $p->[1] if $p->[1] < $y0; $y1 = $p->[1] if $p->[1] > $y1 } }
+    for my $y (($y0 < 0 ? 0 : int $y0) .. ($y1 >= $H ? $H - 1 : int $y1)) { my $py = $y + 0.5;
+        my @xs = sort { $a <=> $b } map { my ($a, $b) = @$_; ($a->[1] > $py) != ($b->[1] > $py) ? $a->[0] + ($py - $a->[1]) / ($b->[1] - $a->[1]) * ($b->[0] - $a->[0]) : () } @e;
+        while (@xs >= 2) { my ($l, $r) = splice @xs, 0, 2; for my $x (int($l + 0.5) .. int($r + 0.5) - 1) { next unless $x >= 0 && $x < $W;
+            $OVER{ $REG[$y][$x] < $id ? "$REG[$y][$x]-$id" : "$id-$REG[$y][$x]" }++ if $REG[$y][$x]; $REG[$y][$x] = $id } } } }
+for my $k (sort keys %OVER) { err("land-%s and land-%s overlap (%d px)", split(/-/, $k), $OVER{$k}) if $OVER{$k} > 3 }
+{ my (%seen, @gaps);      # anything that is not land must be sea: a small patch of it is a gap between lands
+  for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { next if $REG[$y][$x] || $seen{"$x,$y"}; my @st = ([$x, $y]); $seen{"$x,$y"} = 1; my $n = 0;
+      while (my $p = pop @st) { $n++; for ([1, 0], [-1, 0], [0, 1], [0, -1]) { my ($u, $v) = ($p->[0] + $_->[0], $p->[1] + $_->[1]);
+          next if $u < 0 || $v < 0 || $u >= $W || $v >= $H || $REG[$v][$u] || $seen{"$u,$v"}++; push @st, [$u, $v] } }
+      push @gaps, "$x,$y" if $n < 2000 } }
+  err("%d gap(s) between lands, first near %s: neighbouring lands must share exactly the same points", scalar @gaps, join(' ', @gaps[0 .. ($#gaps < 2 ? $#gaps : 2)])) if @gaps }
+check('map-base.svg');
 sub inb { $_[0] >= 0 && $_[1] >= 0 && $_[0] < $W && $_[1] < $H }
-sub rgb { my ($img, $x, $y) = @_; my $p = $img->[$y][$x]; ($p->[0], $p->[1], $p->[2]) }
-sub is_white { my ($r, $g, $b) = @_; $r == 255 && $g == 255 && $b == 255 }
-sub is_sea   { my ($r, $g, $b) = @_; $r == $SEA[0] && $g == $SEA[1] && $b == $SEA[2] }
-sub is_gray  { my ($r, $g, $b) = @_; $r == $g && $g == $b && $r >= 100 && $r <= 215 }
-sub is_black { my ($r, $g, $b) = @_; $r < 70 && $g < 70 && $b < 70 }
-sub is_river { my ($r, $g, $b) = @_; $b > 150 && $r < 120 && !is_sea($r, $g, $b) }
-my @N4 = ([1, 0], [-1, 0], [0, 1], [0, -1]);
-for my $id (sort { $a <=> $b } keys %S) { my $s = $S{$id}; err("settlement %d (%d,%d) is off the map", $id, $s->{x}, $s->{y}) unless inb($s->{x}, $s->{y}) }
-for my $p (@PASSES) { err("pass %s (%d,%d) is off the map", $p->{id}, $p->{x}, $p->{y}) unless inb($p->{x}, $p->{y}) }
-die "SCENARIO.md has errors:\n" . join('', map { "  $_\n" } @ERR) if @ERR;
+my @OCC = map { [ (0) x $W ] } 1 .. $H;
+sub occ_seg { my ($x1, $y1, $x2, $y2, $hw) = @_; my ($dx, $dy) = ($x2 - $x1, $y2 - $y1); my $L2 = $dx * $dx + $dy * $dy;
+    for my $y (int(($y1 < $y2 ? $y1 : $y2) - $hw) - 1 .. int(($y1 > $y2 ? $y1 : $y2) + $hw) + 1) { for my $x (int(($x1 < $x2 ? $x1 : $x2) - $hw) - 1 .. int(($x1 > $x2 ? $x1 : $x2) + $hw) + 1) {
+        next unless inb($x, $y); my ($px, $py) = ($x + 0.5, $y + 0.5); my $t = $L2 ? (($px - $x1) * $dx + ($py - $y1) * $dy) / $L2 : 0; $t = $t < 0 ? 0 : $t > 1 ? 1 : $t;
+        $OCC[$y][$x] = 1 if ($px - $x1 - $t * $dx)**2 + ($py - $y1 - $t * $dy)**2 <= ($hw + 0.5)**2 } } }
+sub occ_line { my ($pts, $hw) = @_; occ_seg(@{ $pts->[$_ - 1] }, @{ $pts->[$_] }, $hw) for 1 .. $#$pts }
+sub occ_box { my ($x0, $y0, $x1, $y1) = @_; for my $y (int $y0 .. int $y1) { for my $x (int $x0 .. int $x1) { $OCC[$y][$x] = 1 if inb($x, $y) } } }
 
-# marker footprint: pixel -> settlement id
-my %MK;
-for my $id (keys %S) { my ($cx, $cy) = @{ $S{$id} }{qw(x y)};
-    if ($S{$id}{city}) { for my $y ($cy - 11 .. $cy + 10) { for my $x ($cx - 11 .. $cx + 10) { $MK{"$x,$y"} = $id } } }
-    else { for my $y ($cy - 11 .. $cy + 11) { for my $x ($cx - 11 .. $cx + 11) { $MK{"$x,$y"} = $id if ($x + 0.5 - $cx)**2 + ($y + 0.5 - $cy)**2 <= 9.5**2 } } } }
+# routes: [x1, y1, x2, y2, key, strait]; a route through a pass is two segments
+my @ROUTESEG;
+for my $e (sort keys %LAND) { my ($a, $b) = split /-/, $e; my @A = @{ $S{$a} }{qw(x y)}; my @B = @{ $S{$b} }{qw(x y)};
+    if (my $p = $VIA{$e}) { push @ROUTESEG, [@A, $p->{x}, $p->{y}, $e, 0], [$p->{x}, $p->{y}, @B, $e, 0] } else { push @ROUTESEG, [@A, @B, $e, 0] } }
+push @ROUTESEG, [ @{ $S{ (split /-/)[0] } }{qw(x y)}, @{ $S{ (split /-/)[1] } }{qw(x y)}, $_, 1 ] for sort keys %STRAIT;
 
-# provinces: areas walled in by borders, coast and sea (rivers do not split them)
-my %WALL;
-for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { my @c = rgb($B, $x, $y); $WALL{"$x,$y"} = 1 if is_sea(@c) || is_black(@c) || is_gray(@c) } }
-for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { next unless is_river(rgb($B, $x, $y));     # a river running along a border is still a border
-    for my $d ([1, 0], [0, 1], [1, 1], [1, -1]) { my ($f, $b) = (0, 0);
-        for my $k (1 .. 4) { $f ||= inb($x + $d->[0] * $k, $y + $d->[1] * $k) && is_gray(rgb($B, $x + $d->[0] * $k, $y + $d->[1] * $k));
-                             $b ||= inb($x - $d->[0] * $k, $y - $d->[1] * $k) && is_gray(rgb($B, $x - $d->[0] * $k, $y - $d->[1] * $k)) }
-        if ($f && $b) { $WALL{"$x,$y"} = 1; last } } } }
-my @PROV = map { [ (0) x $W ] } 1 .. $H; my $NPROV = 0;
-for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { next if $PROV[$y][$x] || $WALL{"$x,$y"}; $NPROV++; my @s = ([$x, $y]); $PROV[$y][$x] = $NPROV;
-    while (my $e = pop @s) { for (@N4) { my ($u, $v) = ($e->[0] + $_->[0], $e->[1] + $_->[1]);
-        next if !inb($u, $v) || $PROV[$v][$u] || $WALL{"$u,$v"}; $PROV[$v][$u] = $NPROV; push @s, [$u, $v] } } } }
-sub prov_near { my ($x, $y) = @_; for my $r (0 .. 8) { for my $dy (-$r .. $r) { for my $dx (-$r .. $r) { my ($u, $v) = ($x + $dx, $y + $dy);
-    return $PROV[$v][$u] if inb($u, $v) && $PROV[$v][$u] } } } 0 }
+occ_line($_, 1.0) for chains(@COAST); occ_line($_, 1.25) for map { chains(@{ $PAIR{$_} }) } grep { my ($a, $b) = split /-/; $S{$a}{country} ne $S{$b}{country} } keys %PAIR;
+occ_line($_, 1.25) for @RIVERS; occ_seg(@$_[0 .. 3], 1.0) for @ROUTESEG;
+for my $s (values %S) { occ_box($s->{x} - 11, $s->{y} - 11, $s->{x} + 10, $s->{y} + 10) }
+for my $p (@PASSES) { occ_box($p->{x} - 11, $p->{y} - 13, $p->{x} + 11, $p->{y} + 7) }
+occ_box(0, 0, $W - 1, 1); occ_box(0, $H - 2, $W - 1, $H - 1); occ_box(0, 0, 1, $H - 1); occ_box($W - 2, 0, $W - 1, $H - 1);
 
-# owner of each pass: the settlement whose land it lies in (nearest marker without crossing a border)
-for my $p (@PASSES) { my ($sx, $sy) = ($p->{x}, $p->{y});
-    if ($WALL{"$sx,$sy"}) { my $bd = 1e9; my @to; for my $dy (-6 .. 6) { for my $dx (-6 .. 6) { my $d = $dx * $dx + $dy * $dy;   # on a border line: start from the nearest open land
-        ($bd, @to) = ($d, $sx + $dx, $sy + $dy) if !$WALL{ ($sx + $dx) . "," . ($sy + $dy) } && $d < $bd } } ($sx, $sy) = @to if @to }
-    my %seen = ("$sx,$sy" => 1); my @q = ([$sx, $sy]); my $own = $MK{"$sx,$sy"};
-    B: while (@q && !defined $own) { my @n; for my $c (@q) { for (@N4) { my ($u, $v) = ($c->[0] + $_->[0], $c->[1] + $_->[1]); my $k = "$u,$v";
-        next if !inb($u, $v) || $seen{$k}++; if (defined $MK{$k}) { $own = $MK{$k}; last B } next if $WALL{$k}; push @n, [$u, $v] } } @q = @n }
-    die "pass $p->{id}: cannot tell whose land it is in\n" unless defined $own; $p->{owner} = $own }
-
-# ---------- drawing helpers ----------
-my @I = map { [ map { [@$_] } @$_ ] } @$B;
-sub blend { my ($x, $y, $c, $a) = @_; return unless inb($x, $y) && $a > 0; my $p = $I[$y][$x]; $I[$y][$x] = [ (map { int($c->[$_] * $a + $p->[$_] * (1 - $a) + 0.5) } 0 .. 2), 255 ] }
-# capsule coverage (4x4 supersampling) of the segment x1,y1-x2,y2 with half-width hw, kept as max per pixel
-sub seg_cov { my ($cov, $x1, $y1, $x2, $y2, $hw) = @_; my ($dx, $dy) = ($x2 - $x1, $y2 - $y1); my $L2 = $dx * $dx + $dy * $dy;
-    for my $y (int(($y1 < $y2 ? $y1 : $y2) - $hw) - 1 .. int(($y1 > $y2 ? $y1 : $y2) + $hw) + 1) {
-        for my $x (int(($x1 < $x2 ? $x1 : $x2) - $hw) - 1 .. int(($x1 > $x2 ? $x1 : $x2) + $hw) + 1) { my $n = 0;
-            for my $sy (0 .. 3) { for my $sx (0 .. 3) { my ($px, $py) = ($x + ($sx + 0.5) / 4, $y + ($sy + 0.5) / 4);
-                my $t = $L2 ? (($px - $x1) * $dx + ($py - $y1) * $dy) / $L2 : 0; $t = $t < 0 ? 0 : $t > 1 ? 1 : $t;
-                $n++ if ($px - $x1 - $t * $dx)**2 + ($py - $y1 - $t * $dy)**2 <= $hw * $hw } }
-            $cov->{"$x,$y"} = $n if $n > ($cov->{"$x,$y"} // 0) } } }
-# connection segments: [x1, y1, x2, y2, dashed]; a route through a pass is two segments
-sub segments { my @s;
-    for my $e (sort keys %LAND) { my ($a, $b) = split /-/, $e; my @A = @{ $S{$a} }{qw(x y)}; my @Bp = @{ $S{$b} }{qw(x y)};
-        if (my $p = $VIA{$e}) { my @P = ($p->{x} + 0.5, $p->{y} + 0.5); push @s, [@A, @P, 0], [@P, @Bp, 0] } else { push @s, [@A, @Bp, 0] } }
-    push @s, [ @{ $S{ (split /-/)[0] } }{qw(x y)}, @{ $S{ (split /-/)[1] } }{qw(x y)}, 1 ] for sort keys %STRAIT;
-    return @s }
-
-# ---------- connections ----------
-{ my %cov;
-  for my $s (segments()) { my ($x1, $y1, $x2, $y2, $dashed) = @$s;
-      if (!$dashed) { seg_cov(\%cov, $x1, $y1, $x2, $y2, 0.7); next }
-      my $n = int(sqrt(($x2 - $x1)**2 + ($y2 - $y1)**2) / 7);
-      for my $i (grep { $_ % 2 == 0 } 0 .. $n - 1) { seg_cov(\%cov, $x1 + ($x2 - $x1) * $i / $n, $y1 + ($y2 - $y1) * $i / $n, $x1 + ($x2 - $x1) * ($i + 1) / $n, $y1 + ($y2 - $y1) * ($i + 1) / $n, 0.7) } }
-  for my $k (keys %cov) { my ($x, $y) = split /,/, $k; blend($x, $y, \@LINE, $cov{$k} / 16) } }
-
-# ---------- passes: yellow triangles with a dark outline ----------
-for my $p (@PASSES) { my ($cx, $cy) = ($p->{x} + 0.5, $p->{y} + 0.5); my $h = $PASS_SIDE * sqrt(3) / 2;
-    my @v = ([$cx, $cy - 2 * $h / 3], [$cx - $PASS_SIDE / 2, $cy + $h / 3], [$cx + $PASS_SIDE / 2, $cy + $h / 3]);
-    my $inside = sub { my ($x, $y, $grow) = @_;
-        for my $i (0 .. 2) { my ($ax, $ay) = @{ $v[$i] }; my ($bx, $by) = @{ $v[($i + 1) % 3] };
-            my ($nx, $ny) = ($by - $ay, -($bx - $ax)); my $nl = sqrt($nx * $nx + $ny * $ny); ($nx, $ny) = ($nx / $nl, $ny / $nl);
-            ($nx, $ny) = (-$nx, -$ny) if ($cx - $ax) * $nx + ($cy - $ay) * $ny > 0;
-            return 0 if ($x - $ax) * $nx + ($y - $ay) * $ny > $grow } 1 };
-    for my $y (int($cy - $h) - 2 .. int($cy + $h / 2) + 2) { for my $x (int($cx - $PASS_SIDE / 2) - 2 .. int($cx + $PASS_SIDE / 2) + 2) { next unless inb($x, $y);
-        my ($in, $out) = (0, 0);
-        for my $sy (0 .. 3) { for my $sx (0 .. 3) { my ($px, $py) = ($x + ($sx + 0.5) / 4, $y + ($sy + 0.5) / 4); $out++ if $inside->($px, $py, 0.6); $in++ if $inside->($px, $py, -0.9) } }
-        next unless $out; my ($af, $al) = ($in / 16, ($out - $in) / 16); my $q = $I[$y][$x];
-        $I[$y][$x] = [ (map { int($PASS[$_] * $af + 40 * $al + $q->[$_] * (1 - $af - $al) + 0.5) } 0 .. 2), 255 ] } } }
-
-# ---------- settlements, numbered ----------
-my %FONT = map { my ($ch, @rows) = split /\//; ($ch => \@rows) } (
-    '0/.###./#...#/#...#/#...#/#...#/#...#/.###.', '1/..#../.##../..#../..#../..#../..#../.###.', '2/.###./#...#/....#/...#./..#../.#.../#####',
-    '3/#####/...#./..#../...#./....#/#...#/.###.', '4/...#./..##./.#.#./#..#./#####/...#./...#.', '5/#####/#..../####./....#/....#/#...#/.###.',
-    '6/..##./.#.../#..../####./#...#/#...#/.###.', '7/#####/....#/...#./..#../.#.../.#.../.#...', '8/.###./#...#/#...#/.###./#...#/#...#/.###.',
-    '9/.###./#...#/#...#/.####/....#/...#./.##..', 'A/.###./#...#/#...#/#####/#...#/#...#/#...#', 'B/####./#...#/#...#/####./#...#/#...#/####.',
-    'C/.###./#...#/#..../#..../#..../#...#/.###.', 'D/####./#...#/#...#/#...#/#...#/#...#/####.', 'E/#####/#..../#..../####./#..../#..../#####',
-    'F/#####/#..../#..../####./#..../#..../#....', 'G/.###./#...#/#..../#.###/#...#/#...#/.####', 'H/#...#/#...#/#...#/#####/#...#/#...#/#...#',
-    'I/.###./..#../..#../..#../..#../..#../.###.', 'J/..###/...#./...#./...#./...#./#..#./.##..', 'K/#...#/#..#./#.#../##.../#.#../#..#./#...#',
-    'L/#..../#..../#..../#..../#..../#..../#####', 'M/#...#/##.##/#.#.#/#.#.#/#...#/#...#/#...#', 'N/#...#/#...#/##..#/#.#.#/#..##/#...#/#...#',
-    'O/.###./#...#/#...#/#...#/#...#/#...#/.###.', 'P/####./#...#/#...#/####./#..../#..../#....', 'Q/.###./#...#/#...#/#...#/#.#.#/#..#./.##.#',
-    'R/####./#...#/#...#/####./#.#../#..#./#...#', 'S/.####/#..../#..../.###./....#/....#/####.', 'T/#####/..#../..#../..#../..#../..#../..#..',
-    'U/#...#/#...#/#...#/#...#/#...#/#...#/.###.', 'V/#...#/#...#/#...#/#...#/#...#/.#.#./..#..', 'W/#...#/#...#/#...#/#.#.#/#.#.#/#.#.#/.#.#.',
-    'X/#...#/#...#/.#.#./..#../.#.#./#...#/#...#', 'Y/#...#/#...#/.#.#./..#../..#../..#../..#..', 'Z/#####/....#/...#./..#../.#.../#..../#####');
-sub text_size { my ($t, $s) = @_; ((length($t) * 6 - 1) * $s, 7 * $s) }
-sub text { my ($t, $x0, $y0, $s, $c) = @_; my $i = 0;
-    for my $ch (split //, $t) { my $g = $FONT{$ch} or die "no glyph for '$ch'\n";
-        for my $r (0 .. 6) { for my $col (0 .. 4) { next unless substr($g->[$r], $col, 1) eq '#';
-            for my $dy (0 .. $s - 1) { for my $dx (0 .. $s - 1) { my ($x, $y) = ($x0 + ($i * 6 + $col) * $s + $dx, $y0 + $r * $s + $dy); $I[$y][$x] = [@$c, 255] if inb($x, $y) } } } }
-        $i++ } }
-for my $id (sort { $a <=> $b } keys %S) { my ($cx, $cy) = @{ $S{$id} }{qw(x y)};
-    if ($S{$id}{city}) { for my $y ($cy - 11 .. $cy + 10) { for my $x ($cx - 11 .. $cx + 10) { $I[$y][$x] = [@RED, 255] if inb($x, $y) } } }
-    else { for my $y ($cy - 10 .. $cy + 10) { for my $x ($cx - 10 .. $cx + 10) { my $n = 0;
-        for my $sy (0 .. 3) { for my $sx (0 .. 3) { $n++ if ($x + ($sx + 0.5) / 4 - $cx)**2 + ($y + ($sy + 0.5) / 4 - $cy)**2 <= 81 } } blend($x, $y, \@RED, $n / 16) } } }
-    my ($tw, $th) = text_size($id, 1); text($id, $cx - int(($tw + 1) / 2), $cy - 4, 1, [255, 255, 255]) }
-
-# ---------- mountains: each needs clear space all round ----------
-my @DIST = map { [ (1e9) x $W ] } 1 .. $H; my @DQ;
+# ---------- mountains: each needs clear space all round, inside its starting country ----------
+my @DIST = map { [ (1e9) x $W ] } 1 .. $H; my @DQ; my @N4 = ([1, 0], [-1, 0], [0, 1], [0, -1]);
 sub obstacle { my ($x, $y) = @_; return unless inb($x, $y) && $DIST[$y][$x]; $DIST[$y][$x] = 0; push @DQ, [$x, $y] }
 sub spread { while (@DQ) { my @n; for my $c (@DQ) { my $d = $DIST[ $c->[1] ][ $c->[0] ] + 1; next if $d > 12;
     for (@N4) { my ($u, $v) = ($c->[0] + $_->[0], $c->[1] + $_->[1]); next unless inb($u, $v) && $DIST[$v][$u] > $d; $DIST[$v][$u] = $d; push @n, [$u, $v] } } @DQ = @n } }
-for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { obstacle($x, $y) unless is_white(rgb(\@I, $x, $y)) } }
-for my $x (0 .. $W - 1) { obstacle($x, 0); obstacle($x, $H - 1) } for my $y (0 .. $H - 1) { obstacle(0, $y); obstacle($W - 1, $y) }
-for my $s (segments()) { my ($x1, $y1, $x2, $y2) = @$s; my $L = sqrt(($x2 - $x1)**2 + ($y2 - $y1)**2);      # lines are faint: mark their full width
-    for my $i (0 .. int($L * 2)) { my $t = $L ? $i / ($L * 2) : 0; my ($x, $y) = ($x1 + ($x2 - $x1) * $t, $y1 + ($y2 - $y1) * $t);
-        for my $dy (-1 .. 1) { for my $dx (-1 .. 1) { obstacle(int($x + $dx), int($y + $dy)) } } } }
+for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { obstacle($x, $y) if $OCC[$y][$x] || !$REG[$y][$x] } }
 spread();
 sub mtn_inside { my ($ax, $ay, $x, $y, $grow) = @_; my ($hw, $h) = ($MTN_W / 2, $MTN_H);
     return 0 if $y > $ay + $h + $grow || $y < $ay - $grow * 2; return abs($x - $ax) <= $hw * ($y - $ay) / $h + $grow * (1 + $hw / $h) }
@@ -206,90 +212,149 @@ my @OUTLINE;                             # sample points just outside the symbol
   for my $i (0 .. 2) { my ($a, $b) = ($v[$i], $v[($i + 1) % 3]); my $n = int(sqrt(($b->[0] - $a->[0])**2 + ($b->[1] - $a->[1])**2));
       push @OUTLINE, map { [ $a->[0] + ($b->[0] - $a->[0]) * $_ / $n, $a->[1] + ($b->[1] - $a->[1]) * $_ / $n ] } 0 .. $n - 1 }
   push @OUTLINE, [0, $h * 0.66], [-$hw / 2, $h * 0.85], [$hw / 2, $h * 0.85], [0, $h * 0.3] }
-sub mtn_clear { my ($ax, $ay) = @_; for my $s (@OUTLINE) { my ($x, $y) = (int($ax + 0.5 + $s->[0]), int($ay + 0.5 + $s->[1])); return 0 if !inb($x, $y) || $DIST[$y][$x] < $MTN_GAP } 1 }
+sub mtn_clear { my ($ax, $ay) = @_; for my $s (@OUTLINE) { my ($x, $y) = (int($ax + $s->[0]), int($ay + $s->[1])); return 0 if !inb($x, $y) || $DIST[$y][$x] < $MTN_GAP } 1 }
+sub country_at { my ($x, $y) = map { int } @_; return '' unless inb($x, $y); my $id = $REG[$y][$x]; $id ? $S{$id}{country} : '' }
 my @offsets = ([0, 0, 0]);
 if ($MODE eq 'mountains') { @offsets = sort { $a->[2] <=> $b->[2] } grep { $_->[2] <= $MTN_REACH**2 } map { my $dy = $_; map { [$_, $dy, $_ * $_ + $dy * $dy] } -$MTN_REACH .. $MTN_REACH } -$MTN_REACH .. $MTN_REACH }
 my (@placed, @touching, @dropped);
-for my $pk (sort { $a->[1] <=> $b->[1] || $a->[0] <=> $b->[0] } @PEAKS) { my ($px, $py) = @$pk; my $home = prov_near($px, int($py + $MTN_H * 0.66));
-    my ($spot) = map { [ $px + $_->[0], $py + $_->[1] ] } grep { my ($ax, $ay) = ($px + $_->[0], $py + $_->[1]);
-        inb($ax, int($ay + $MTN_H * 0.66)) && $PROV[ int($ay + $MTN_H * 0.66) ][$ax] == $home && mtn_clear($ax, $ay) } @offsets;
+for my $pk (sort { $a->[1] <=> $b->[1] || $a->[0] <=> $b->[0] } @PEAKS) { my ($px, $py) = @$pk; my $home = country_at($px, $py + $MTN_H * 0.66);
+    my ($spot) = map { [ $px + $_->[0], $py + $_->[1] ] } grep { my ($ax, $ay) = ($px + $_->[0], $py + $_->[1]); country_at($ax, $ay + $MTN_H * 0.66) eq $home && mtn_clear($ax, $ay) } @offsets;
     if (!$spot) { if ($MODE eq 'mountains') { push @dropped, $pk; next } push @touching, $pk; $spot = $pk }
-    push @placed, $spot; my ($ax, $ay) = ($spot->[0] + 0.5, $spot->[1] + 0.5);
-    for my $y (int($ay) - 3 .. int($ay + $MTN_H) + 3) { for my $x (int($ax - $MTN_W / 2) - 3 .. int($ax + $MTN_W / 2) + 3) { obstacle($x, $y) if mtn_inside($ax, $ay, $x + 0.5, $y + 0.5, 1.0) } }
+    push @placed, $spot; my ($ax, $ay) = @$spot;
+    for my $y (int($ay) - 3 .. int($ay + $MTN_H) + 3) { for my $x (int($ax - $MTN_W / 2) - 3 .. int($ax + $MTN_W / 2) + 3) {
+        next unless inb($x, $y) && mtn_inside($ax, $ay, $x + 0.5, $y + 0.5, 1.0); obstacle($x, $y); $OCC[$y][$x] = 1 } }
     spread() }
-for my $pk (sort { $a->[1] <=> $b->[1] } @placed) { my ($ax, $ay) = ($pk->[0] + 0.5, $pk->[1] + 0.5); my ($hw, $h) = ($MTN_W / 2, $MTN_H); my $split = $ax + $MTN_W * 0.06;
-    for my $y (int($ay) - 3 .. int($ay + $h) + 2) { for my $x (int($ax - $hw) - 2 .. int($ax + $hw) + 2) { next unless inb($x, $y); my ($n, @acc) = (0, 0, 0, 0);
-        for my $sy (0 .. 3) { for my $sx (0 .. 3) { my ($px, $py) = ($x + ($sx + 0.5) / 4, $y + ($sy + 0.5) / 4); next unless mtn_inside($ax, $ay, $px, $py, 0.9); my @c;
-            if (!mtn_inside($ax, $ay, $px, $py, -0.7)) { @c = @MTN_OUT }
-            else { my $t = ($py - $ay) / $h; my $lit = $px < $ax + ($split - $ax) * $t;
-                @c = $t < 0.34 + 0.05 * sin(($px - $ax) * 1.3) ? ($lit ? @MTN_SNOW : @MTN_SNOWS) : ($lit ? @MTN_LIT : @MTN_SHADE) }
-            $acc[$_] += $c[$_] for 0 .. 2; $n++ } }
-        blend($x, $y, [ map { $_ / ($n || 1) } @acc ], $n / 16) } } }
+@placed = sort { $a->[1] <=> $b->[1] || $a->[0] <=> $b->[0] } @placed;
 
-# ---------- country codes, each in the clearest spot of its land ----------
+# ---------- country codes, each in the clearest spot of its land (or the sea next to it) ----------
 my @LABELS;
-{ my %pc;                                # province -> country (provinces holding settlements of one country only)
-  for my $id (keys %S) { my $p = prov_near($S{$id}{x}, $S{$id}{y}); $pc{$p}{ $S{$id}{country} } = 1 }
-  my @occ = map { [ (0) x ($W + 1) ] } 0 .. $H;      # summed-area table of occupied pixels
-  for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { $occ[$y + 1][$x + 1] = (is_white(rgb(\@I, $x, $y)) ? 0 : 1) + $occ[$y][$x + 1] + $occ[$y + 1][$x] - $occ[$y][$x] } }
-  my $busy = sub { my ($x0, $y0, $x1, $y1) = @_; return 1 if $x0 < 0 || $y0 < 0 || $x1 >= $W || $y1 >= $H;
-      $occ[$y1 + 1][$x1 + 1] - $occ[$y0][$x1 + 1] - $occ[$y1 + 1][$x0] + $occ[$y0][$x0] };
-  my @occs = map { [ (0) x ($W + 1) ] } 0 .. $H;     # the same, but sea counts as free (fallback for small islands)
-  for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { my @c = rgb(\@I, $x, $y); $occs[$y + 1][$x + 1] = (is_white(@c) || is_sea(@c) ? 0 : 1) + $occs[$y][$x + 1] + $occs[$y + 1][$x] - $occs[$y][$x] } }
-  my $busys = sub { my ($x0, $y0, $x1, $y1) = @_; return 1 if $x0 < 0 || $y0 < 0 || $x1 >= $W || $y1 >= $H;
-      $occs[$y1 + 1][$x1 + 1] - $occs[$y0][$x1 + 1] - $occs[$y1 + 1][$x0] + $occs[$y0][$x0] };
-  my %land; for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { next if $x % 2 || $y % 2; my $p = $PROV[$y][$x]; next unless $p && $pc{$p} && keys %{ $pc{$p} } == 1; push @{ $land{ (keys %{ $pc{$p} })[0] } }, [$x, $y] } }
-  my %near; for my $id (sort { $a <=> $b } keys %S) { my ($sx, $sy) = @{ $S{$id} }{qw(x y)};          # around its own settlements
+{ my $sat = sub { my $f = shift; my @t = map { [ (0) x ($W + 1) ] } 0 .. $H;      # summed-area table
+      for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { $t[$y + 1][$x + 1] = $f->($x, $y) + $t[$y][$x + 1] + $t[$y + 1][$x] - $t[$y][$x] } } \@t };
+  my $onland = $sat->(sub { $OCC[$_[1]][$_[0]] || !$REG[ $_[1] ][ $_[0] ] ? 1 : 0 }); my $anywhere = $sat->(sub { $OCC[$_[1]][$_[0]] });
+  my $busy = sub { my ($t, $x0, $y0, $x1, $y1) = @_; ($x0, $y0, $x1, $y1) = map { int } ($x0, $y0, $x1, $y1); return 1 if $x0 < 0 || $y0 < 0 || $x1 >= $W || $y1 >= $H;
+      $t->[$y1 + 1][$x1 + 1] - $t->[$y0][$x1 + 1] - $t->[$y1 + 1][$x0] + $t->[$y0][$x0] };
+  my (%land, %near);
+  for my $y (grep { $_ % 2 == 0 } 0 .. $H - 1) { for my $x (grep { $_ % 2 == 0 } 0 .. $W - 1) { my $id = $REG[$y][$x]; push @{ $land{ $S{$id}{country} } }, [$x, $y] if $id } }
+  for my $id (sort { $a <=> $b } keys %S) { my ($sx, $sy) = @{ $S{$id} }{qw(x y)};
       for (my $y = $sy - 40; $y <= $sy + 40; $y += 2) { for (my $x = $sx - 40; $x <= $sx + 40; $x += 2) { push @{ $near{ $S{$id}{country} } }, [$x, $y] } } }
   for my $c (@CORDER) { my $best;
-      for my $try ([2, \%land, $busy], [1, \%land, $busy], [2, \%near, $busys], [1, \%near, $busys]) { my ($s, $pts, $bz) = @$try; my ($tw, $th) = text_size($c, $s); my $m = 3 * $s;
-          for my $pt (@{ $pts->{$c} // [] }) { my ($x0, $y0) = ($pt->[0] - int($tw / 2), $pt->[1] - int($th / 2));
-              next if $bz->($x0 - $m, $y0 - $m, $x0 + $tw + $m, $y0 + $th + $m);
-              next if grep { $x0 - $m <= $_->[2] && $x0 + $tw + $m >= $_->[0] && $y0 - $m <= $_->[3] && $y0 + $th + $m >= $_->[1] } @LABELS;
-              my $room = 0; $room++ while $room < 40 && !$bz->($x0 - $m - $room, $y0 - $m - $room, $x0 + $tw + $m + $room, $y0 + $th + $m + $room);
-              $best = [$x0, $y0, $x0 + $tw - 1, $y0 + $th - 1, $s, $room] if !$best || $room > $best->[5] }
+      for my $try ([15, \%land, $onland], [10, \%land, $onland], [15, \%near, $anywhere], [10, \%near, $anywhere]) { my ($size, $pts, $t) = @$try;
+          my ($tw, $th) = ($CHAR_W * $size * length($c), $CHAR_W * $size); my $m = $size / 5;
+          for my $pt (@{ $pts->{$c} // [] }) { my ($x0, $y0, $x1, $y1) = ($pt->[0] - $tw / 2 - $m, $pt->[1] - $th / 2 - $m, $pt->[0] + $tw / 2 + $m, $pt->[1] + $th / 2 + $m);
+              next if $busy->($t, $x0, $y0, $x1, $y1) || grep { $x0 <= $_->[2] && $x1 >= $_->[0] && $y0 <= $_->[3] && $y1 >= $_->[1] } @LABELS;
+              my $room = 0; $room++ while $room < 40 && !$busy->($t, $x0 - $room, $y0 - $room, $x1 + $room, $y1 + $room);
+              $best = [$x0, $y0, $x1, $y1, $size, $room, @$pt, $th] if !$best || $room > $best->[5] }
           last if $best }
-      if ($best) { push @LABELS, $best; text($c, $best->[0], $best->[1], $best->[4], \@LABEL) } else { warn "no room for the label of country $c\n" } } }
-save_png($OUT, $W, $H, \@I);
+      if ($best) { push @LABELS, [ @$best, $c ] } else { warn "no room for the label of country $c\n" } } }
+
+# ---------- rivers and routes ----------
+sub cross { my ($a, $b, $c, $d) = @_; my $o = sub { my ($p, $q, $r) = @_; ($q->[0] - $p->[0]) * ($r->[1] - $p->[1]) - ($q->[1] - $p->[1]) * ($r->[0] - $p->[0]) };
+    my ($d1, $d2, $d3, $d4) = ($o->($c, $d, $a), $o->($c, $d, $b), $o->($a, $b, $c), $o->($a, $b, $d)); ($d1 > 0) != ($d2 > 0) && ($d3 > 0) != ($d4 > 0) }
+sub seg_dist { my ($px, $py, $a, $b) = @_; my ($dx, $dy) = ($b->[0] - $a->[0], $b->[1] - $a->[1]); my $L2 = $dx * $dx + $dy * $dy;
+    my $t = $L2 ? (($px - $a->[0]) * $dx + ($py - $a->[1]) * $dy) / $L2 : 0; $t = $t < 0 ? 0 : $t > 1 ? 1 : $t; sqrt(($px - $a->[0] - $t * $dx)**2 + ($py - $a->[1] - $t * $dy)**2) }
+my @RSEG = map { my $r = $_; map { [ $r->[$_ - 1], $r->[$_] ] } 1 .. $#$r } @RIVERS;
+my %CROSS; for my $s (grep { !$_->[5] } @ROUTESEG) { $CROSS{ $s->[4] } = 1 if grep { cross([ @$s[0, 1] ], [ @$s[2, 3] ], @$_) } @RSEG }
+for my $id (keys %S) { my $s = $S{$id}; $s->{river} = (grep { seg_dist($s->{x}, $s->{y}, @$_) <= $RIVER_NEAR } @RSEG) ? 1 : 0 }
 
 # =====================================================================================
-# refresh SCENARIO.md
+# map.svg
+# =====================================================================================
+sub n { my $v = sprintf '%.2f', shift; $v =~ s/\.?0+$//; $v eq '-0' ? 0 : $v }
+sub d_line { 'M' . join(' L', map { n($_->[0]) . ' ' . n($_->[1]) } @{ $_[0] }) }
+sub d_rings { join ' ', map { d_line($_) . ' Z' } @{ $_[0] } }
+sub esc { my $s = shift; $s =~ s/&/&amp;/g; $s =~ s/</&lt;/g; $s =~ s/"/&quot;/g; $s }
+my @o;
+push @o, qq{<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 $W $H" width="$W" height="$H" font-family="Arial, Helvetica, sans-serif">},
+    '<!-- Generated by tools/map.pl from docs/SCENARIO.md and docs/map-base.svg. Do not edit: change those and rerun. -->', "<style>\n$STYLE</style>",
+    qq{<rect id="sea" class="sea" width="$W" height="$H"/>}, 
+    sprintf('<path id="landmass" class="landmass" d="%s"/>', join ' ', map { d_rings($LANDS{$_}) } sort { $a <=> $b } keys %LANDS),      # under the lands: hides hairline seams between them
+    '<g id="lands">';
+push @o, sprintf '  <path id="land-%d" class="land %s" d="%s"/>', $_, $S{$_}{country}, d_rings($LANDS{$_}) for sort { $a <=> $b } keys %LANDS;
+push @o, '</g>', '<g id="edges">', sprintf('  <path id="frame" class="frame" d="%s"/>', join ' ', map { d_line($_) } chains(@FRAME)),
+    sprintf('  <path id="coast" class="coast" d="%s"/>', join ' ', map { d_line($_) } chains(@COAST));
+for my $k (sort { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] || $a[1] <=> $b[1] } keys %PAIR) { my ($a, $b) = split /-/, $k;
+    push @o, sprintf '  <path id="edge-%s" class="edge %s" d="%s"/>', $k, $S{$a}{country} eq $S{$b}{country} ? 'province' : 'border', join ' ', map { d_line($_) } chains(@{ $PAIR{$k} }) }
+push @o, '</g>', '<g id="rivers">', (map { sprintf '  <path class="river" d="%s"/>', d_line($_) } @RIVERS), '</g>', '<g id="routes">';
+for my $e (sort { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] || $a[1] <=> $b[1] } keys %LAND, keys %STRAIT) { my ($a, $b) = split /-/, $e;
+    my @pts = ([ @{ $S{$a} }{qw(x y)} ], $VIA{$e} ? [ $VIA{$e}{x}, $VIA{$e}{y} ] : (), [ @{ $S{$b} }{qw(x y)} ]);
+    push @o, sprintf '  <path id="route-%s" class="route%s" d="%s"/>', $e, $STRAIT{$e} ? ' strait' : '', d_line(\@pts) }
+push @o, '</g>', '<g id="mountains">';
+for my $m (@placed) { my ($ax, $ay) = @$m; my ($hw, $h) = ($MTN_W / 2, $MTN_H); my $sx = $ax + $MTN_W * 0.06; my $sy = $ay + $h * 0.34; my $sw = $hw * 0.34;
+    my $pts = sub { join ' ', map { n($_->[0]) . ',' . n($_->[1]) } @_ };
+    push @o, '  <g class="mountain">',
+        sprintf('    <polygon class="mtn-lit" points="%s"/>', $pts->([$ax, $ay], [$ax - $hw, $ay + $h], [$sx, $ay + $h])),
+        sprintf('    <polygon class="mtn-shade" points="%s"/>', $pts->([$ax, $ay], [$sx, $ay + $h], [$ax + $hw, $ay + $h])),
+        sprintf('    <polygon class="mtn-snow" points="%s"/>', $pts->([$ax, $ay], [$ax - $sw, $sy], [$ax - $sw * 0.5, $sy + 1.5], [$ax + 0.6, $sy + 0.2])),
+        sprintf('    <polygon class="mtn-snow-shade" points="%s"/>', $pts->([$ax, $ay], [$ax + 0.6, $sy + 0.2], [$ax + $sw * 0.55, $sy + 1.3], [$ax + $sw, $sy])),
+        sprintf('    <polygon class="mtn-outline" points="%s"/>', $pts->([$ax, $ay], [$ax - $hw, $ay + $h], [$ax + $hw, $ay + $h])), '  </g>' }
+push @o, '</g>', '<g id="passes">';
+for my $p (@PASSES) { my $h = $PASS_SIDE * sqrt(3) / 2; my ($x, $y) = @$p{qw(x y)};
+    push @o, sprintf '  <polygon id="pass-%s" class="pass" points="%s,%s %s,%s %s,%s"/>', $p->{id}, n($x), n($y - 2 * $h / 3), n($x - $PASS_SIDE / 2), n($y + $h / 3), n($x + $PASS_SIDE / 2), n($y + $h / 3) }
+push @o, '</g>', '<g id="settlements">';
+for my $id (sort { $a <=> $b } keys %S) { my $s = $S{$id}; my ($x, $y) = @$s{qw(x y)};
+    push @o, sprintf '  <g id="settlement-%d" class="settlement %s %s">%s<text class="number" x="%s" y="%s">%d</text></g>', $id, $s->{city} ? 'city' : 'town', $s->{country},
+        $s->{city} ? sprintf('<rect class="marker" x="%s" y="%s" width="%d" height="%d"/>', $x - $CITY_SIDE / 2, $y - $CITY_SIDE / 2, $CITY_SIDE, $CITY_SIDE)
+                   : sprintf('<circle class="marker" cx="%s" cy="%s" r="%d"/>', $x, $y, $TOWN_R), $x, n($y + 3.5), $id }
+push @o, '</g>', '<g id="labels">';
+push @o, sprintf '  <text id="label-%s" class="label%s" x="%s" y="%s">%s</text>', $_->[9], $_->[4] < 15 ? ' small' : '', n($_->[6]), n($_->[7] + $_->[8] / 2), $_->[9] for @LABELS;
+push @o, '</g>', '</svg>';
+open $fh, '>', $SVG or die "$SVG: $!"; print $fh map { "$_\n" } @o; close $fh;
+
+# =====================================================================================
+# derived numbers, scenario.json, SCENARIO.md
 # =====================================================================================
 sub fmt { my $n = shift; 1 while $n =~ s/^(\d+)(\d{3})/$1,$2/; $n }
 sub ranges { my @n = sort { $a <=> $b } @_; my @r;
     while (@n) { my $a = shift @n; my $b = $a; $b = shift @n while @n && $n[0] == $b + 1; push @r, $b == $a ? $a : $b == $a + 1 ? "$a, $b" : "$a–$b" } join ', ', @r }
 my %C;                                   # country -> { ids pop ports hre }
 for my $id (sort { $a <=> $b } keys %S) { my $s = $S{$id}; my $c = $C{ $s->{country} } //= { ids => [], pop => 0, ports => [], hre => 0 };
-    push @{ $c->{ids} }, $id; $c->{pop} += $s->{city} ? 20000 : 10000; push @{ $c->{ports} }, $id if $s->{port}; $c->{hre}++ if $s->{hre} }
-for my $c (values %C) { $c->{army} = $c->{pop} / 25; $c->{ships} = @{ $c->{ports} } ? $c->{pop} / 2000 : 0 }
+    $s->{pop} = $s->{city} ? 20000 : 10000; push @{ $c->{ids} }, $id; $c->{pop} += $s->{pop}; push @{ $c->{ports} }, $id if $s->{port}; $c->{hre}++ if $s->{hre} }
+for my $c (values %C) { $c->{army} = $c->{pop} / 25; $c->{ships} = @{ $c->{ports} } ? $c->{pop} / 2000 : 0; $c->{hrestate} = $c->{hre} == @{ $c->{ids} } ? 'all' : $c->{hre} ? 'part' : 'none' }
 sub cname { "$_[0] $CN{$_[0]}" }
+my @ids = sort { $a <=> $b } keys %S;
+sub bykey { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] || $a[1] <=> $b[1] }
+
+my ($T, $F) = (JSON::PP::true, JSON::PP::false);
+my %json = (
+    source => 'Generated by tools/map.pl from docs/SCENARIO.md and docs/map-base.svg. Do not edit.',
+    map => { svg => 'map.svg', width => 0 + $W, height => 0 + $H },
+    countries => [ map { my $c = $C{$_}; { code => $_, name => $CN{$_}, settlements => [ map { 0 + $_ } @{ $c->{ids} } ], pop => $c->{pop}, army => $c->{army}, ships => $c->{ships}, hre => $c->{hrestate} } } @CORDER ],
+    settlements => [ map { my $s = $S{$_}; { id => 0 + $_, name => $s->{name}, country => $s->{country}, type => $s->{city} ? 'city' : 'town', pop => $s->{pop},
+        port => $s->{port} ? $T : $F, river => $s->{river} ? $T : $F, hre => $s->{hre} ? $T : $F, x => 0 + $s->{x}, y => 0 + $s->{y}, land => "land-$_",
+        borders => [ sort { $a <=> $b } map { 0 + $_ } @{ $s->{nb} } ], straits => [ sort { $a <=> $b } map { 0 + $_ } @{ $s->{st} } ] } } @ids ],
+    routes => [ map { my ($a, $b) = split /-/; { id => "route-$_", from => 0 + $a, to => 0 + $b, type => $STRAIT{$_} ? 'strait' : 'land',
+        pass => $VIA{$_} ? $VIA{$_}{id} : undef, crossesRiver => $CROSS{$_} ? $T : $F } } sort bykey keys %LAND, keys %STRAIT ],
+    passes => [ map { { id => $_->{id}, x => 0 + $_->{x}, y => 0 + $_->{y}, routes => $_->{routes}, land => 0 + $_->{owner} } } @PASSES ],
+);
+open $fh, '>:raw', $JSON or die "$JSON: $!"; print $fh JSON::PP->new->utf8->canonical->pretty->indent_length(1)->encode(\%json); close $fh;
 
 { my ($h, $rows, $i, $j) = table('Countries');
   my @t = ('| Code | Country | Settlements | Pop | Army | Ships | HRE |', '|---|---|---|---|---|---|---|');
   for my $k (@CORDER) { my $c = $C{$k};
-      push @t, sprintf '| %s | %s | %s | %dK | %s | %s | %s |', $k, $CN{$k}, join(', ', @{ $c->{ids} }), $c->{pop} / 1000, fmt($c->{army}),
-          $c->{ships} || '—', $c->{hre} == @{ $c->{ids} } ? '✓' : $c->{hre} ? 'part' : '—' }
+      push @t, sprintf '| %s | %s | %s | %dK | %s | %s | %s |', $k, $CN{$k}, join(', ', @{ $c->{ids} }), $c->{pop} / 1000, fmt($c->{army}), $c->{ships} || '—', { all => '✓', part => 'part', none => '—' }->{ $c->{hrestate} } }
   splice @doc, $i, $j - $i + 1, @t }
 { my ($h, $rows, $i, $j) = table('Mountain passes');
   my @t = ('| Pass | X | Y | Routes | In the land of | Owner at start |', '|---|---|---|---|---|---|');
   push @t, sprintf '| %s | %d | %d | %s | %s | %s |', $_->{id}, $_->{x}, $_->{y}, join(', ', @{ $_->{routes} }), "$_->{owner} $S{ $_->{owner} }{name}", cname($S{ $_->{owner} }{country}) for @PASSES;
   splice @doc, $i, $j - $i + 1, @t }
-if ($MODE eq 'mountains') { my ($s, $e) = section('Mountains'); my ($f, $t) = grep { $doc[$_] =~ /^```/ } $s .. $e; my @p = sort { $a->[1] <=> $b->[1] || $a->[0] <=> $b->[0] } @placed;
+if ($MODE eq 'mountains') { my ($s, $e) = section('Mountains'); my ($f, $t) = grep { $doc[$_] =~ /^```/ } $s .. $e; my @p = @placed;
     my @l; push @l, join '  ', map { "$_->[0],$_->[1]" } splice @p, 0, 8 while @p; splice @doc, $f + 1, $t - $f - 1, @l }
 sub generated { my ($name, @body) = @_; my ($s) = grep { $doc[$_] eq "<!-- generated:$name -->" } 0 .. $#doc; die "SCENARIO.md: no <!-- generated:$name --> marker\n" unless defined $s;
     my $e = $s + 1; $e++ while $e <= $#doc && $doc[$e] ne '<!-- /generated -->'; die "SCENARIO.md: <!-- generated:$name --> is not closed\n" if $e > $#doc;
     splice @doc, $s + 1, $e - $s - 1, @body }
-my @ids = sort { $a <=> $b } keys %S; my @cities = grep { $S{$_}{city} } @ids; my $pop = 0; $pop += $_->{pop} for values %C;
+my @cities = grep { $S{$_}{city} } @ids; my $pop = 0; $pop += $_->{pop} for values %C;
 my %ord; @ord{@CORDER} = 0 .. $#CORDER;
 my @naval = sort { $C{$b}{ships} <=> $C{$a}{ships} || $ord{$a} <=> $ord{$b} } grep { $C{$_}{ships} } @CORDER; my $ships = 0; $ships += $C{$_}{ships} for @naval;
 generated('summary', sprintf('%d settlements (%d cities, %d towns) · %d countries · %s people · %d land routes, %d straits, %d mountain passes',
     scalar @ids, scalar @cities, @ids - @cities, scalar @CORDER, fmt($pop), scalar keys %LAND, scalar keys %STRAIT, scalar @PASSES));
 my %bypop; push @{ $bypop{ $C{$_}{pop} } }, $_ for @CORDER;
-my @hre = grep { $S{$_}{hre} } @ids; my @hrec = grep { $C{$_}{hre} } @CORDER;
+my @hre = grep { $S{$_}{hre} } @ids; my @hrec = grep { $C{$_}{hre} } @CORDER; my @onriver = grep { $S{$_}{river} } @ids; my @crossing = sort bykey keys %CROSS;
 generated('overview',
     "**Cities (20K):** " . join(', ', @cities) . " — all other settlements are towns (10K).", '',
     sprintf("**HRE settlements (%d):** %s — held by %d of the %d countries.", scalar @hre, ranges(@hre), scalar @hrec, scalar @CORDER), '',
     sprintf("**Ports (%d):** %s", scalar(grep { $S{$_}{port} } @ids), join(', ', grep { $S{$_}{port} } @ids)), '',
+    sprintf("**On a river (%d):** %s — within %dpx of a river on the map; grow +0.5%% (RULES.md §2).", scalar @onriver, join(', ', @onriver), $RIVER_NEAR), '',
+    sprintf("**Routes crossing a river (%d):** %s — +2 months to march (RULES.md §8).", scalar @crossing, join(', ', @crossing)), '',
     '| Pop | Countries |', '|---|---|',
     (map { sprintf '| %dK | %d: %s |', $_ / 1000, scalar @{ $bypop{$_} }, join(' · ', map { cname($_) } @{ $bypop{$_} }) } sort { $b <=> $a } keys %bypop), '',
     sprintf('**Naval powers:** %d countries, %d ships. Crossing a strait needs 10 ships (RULES.md §8).', scalar @naval, $ships), '',
@@ -298,31 +363,9 @@ generated('overview',
 open $fh, '>', $DOC or die "$DOC: $!"; print $fh map { "$_\n" } @doc; close $fh;
 
 # ---------- report ----------
-printf "%d settlements, %d countries, %d land routes, %d straits, %d passes, %d mountains -> %s\n",
-    scalar @ids, scalar @CORDER, scalar keys %LAND, scalar keys %STRAIT, scalar @PASSES, scalar @placed, "docs/map.png";
+printf "%d settlements, %d countries, %d land routes (%d cross a river), %d straits, %d passes, %d mountains, %d rivers -> docs/map.svg, docs/scenario.json\n",
+    scalar @ids, scalar @CORDER, scalar keys %LAND, scalar @crossing, scalar keys %STRAIT, scalar @PASSES, scalar @placed, scalar @RIVERS;
 printf "%s at %d,%d: land of %d %s (%s)\n", $_->{id}, $_->{x}, $_->{y}, $_->{owner}, $S{ $_->{owner} }{name}, cname($S{ $_->{owner} }{country}) for @PASSES;
 if (@touching) { warn sprintf "%d mountain(s) touch something: %s -- run `perl tools/map.pl mountains`\n", scalar @touching, join ' ', map { "$_->[0],$_->[1]" } @touching }
 if ($MODE eq 'mountains') { my $moved = grep { my $q = $_; !grep { $_->[0] == $q->[0] && $_->[1] == $q->[1] } @PEAKS } @placed;
     printf "mountains: %d kept, %d moved, %d dropped%s\n", @placed - $moved, $moved, scalar @dropped, @dropped ? ' (no clear spot near ' . join(' ', map { "$_->[0],$_->[1]" } @dropped) . ')' : '' }
-
-# =====================================================================================
-# PNG (8-bit RGB/RGBA)
-# =====================================================================================
-sub load_png { my $f = shift; open my $h, '<:raw', $f or die "$f: $!"; local $/; my $d = <$h>;
-    my ($w, $hh, $ct, $idat, $p) = (0, 0, 0, '', 8);
-    while ($p < length $d) { my ($len, $type) = unpack 'Na4', substr($d, $p, 8); my $c = substr($d, $p + 8, $len);
-        if ($type eq 'IHDR') { ($w, $hh, undef, $ct) = unpack 'NNCC', $c } elsif ($type eq 'IDAT') { $idat .= $c } $p += 12 + $len }
-    my $bpp = $ct == 6 ? 4 : $ct == 2 ? 3 : die "$f: unsupported colour type $ct\n"; my $raw = uncompress($idat) // die "$f: inflate failed\n";
-    my $stride = $w * $bpp; my @pv = (0) x $stride; my @img;
-    for my $y (0 .. $hh - 1) { my $ft = ord substr($raw, $y * ($stride + 1), 1); my @c = unpack 'C*', substr($raw, $y * ($stride + 1) + 1, $stride);
-        for my $i (0 .. $#c) { my $a = $i >= $bpp ? $c[$i - $bpp] : 0; my $b = $pv[$i]; my $cc = $i >= $bpp ? $pv[$i - $bpp] : 0;
-            if    ($ft == 1) { $c[$i] = ($c[$i] + $a) & 255 }
-            elsif ($ft == 2) { $c[$i] = ($c[$i] + $b) & 255 }
-            elsif ($ft == 3) { $c[$i] = ($c[$i] + int(($a + $b) / 2)) & 255 }
-            elsif ($ft == 4) { my $q = $a + $b - $cc; my ($pa, $pb, $pc) = (abs($q - $a), abs($q - $b), abs($q - $cc)); $c[$i] = ($c[$i] + ($pa <= $pb && $pa <= $pc ? $a : $pb <= $pc ? $b : $cc)) & 255 } }
-        @pv = @c; push @img, [ map { [ @c[$_ * $bpp .. $_ * $bpp + 2], $bpp == 4 ? $c[$_ * $bpp + 3] : 255 ] } 0 .. $w - 1 ] }
-    return ($w, $hh, \@img) }
-sub save_png { my ($f, $w, $h, $img) = @_; my $raw = ''; $raw .= "\0" . pack 'C*', map { @$_ } @{ $img->[$_] } for 0 .. $h - 1;
-    my $chunk = sub { pack('N', length $_[1]) . $_[0] . $_[1] . pack('N', crc32($_[0] . $_[1])) };
-    open my $o, '>:raw', $f or die "$f: $!";
-    print $o "\x89PNG\r\n\x1a\n", $chunk->('IHDR', pack 'NNCCCCC', $w, $h, 8, 6, 0, 0, 0), $chunk->('IDAT', compress($raw, 9)), $chunk->('IEND', ''); close $o }

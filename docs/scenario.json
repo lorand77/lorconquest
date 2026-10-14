@@ -1,0 +1,4043 @@
+{
+ "countries" : [
+  {
+   "army" : 1200,
+   "code" : "NOR",
+   "hre" : "none",
+   "name" : "Norway",
+   "pop" : 30000,
+   "settlements" : [
+    1,
+    2
+   ],
+   "ships" : 15
+  },
+  {
+   "army" : 400,
+   "code" : "GOT",
+   "hre" : "none",
+   "name" : "Gothenburg",
+   "pop" : 10000,
+   "settlements" : [
+    6
+   ],
+   "ships" : 5
+  },
+  {
+   "army" : 800,
+   "code" : "STO",
+   "hre" : "none",
+   "name" : "Stockholm",
+   "pop" : 20000,
+   "settlements" : [
+    3
+   ],
+   "ships" : 10
+  },
+  {
+   "army" : 800,
+   "code" : "UDK",
+   "hre" : "none",
+   "name" : "Upper Denmark",
+   "pop" : 20000,
+   "settlements" : [
+    4,
+    5
+   ],
+   "ships" : 10
+  },
+  {
+   "army" : 800,
+   "code" : "LDK",
+   "hre" : "none",
+   "name" : "Lower Denmark",
+   "pop" : 20000,
+   "settlements" : [
+    8,
+    9
+   ],
+   "ships" : 10
+  },
+  {
+   "army" : 800,
+   "code" : "CPH",
+   "hre" : "none",
+   "name" : "Copenhagen",
+   "pop" : 20000,
+   "settlements" : [
+    7
+   ],
+   "ships" : 10
+  },
+  {
+   "army" : 1600,
+   "code" : "SCH",
+   "hre" : "all",
+   "name" : "Schleswig",
+   "pop" : 40000,
+   "settlements" : [
+    10,
+    11,
+    12
+   ],
+   "ships" : 20
+  },
+  {
+   "army" : 800,
+   "code" : "MEC",
+   "hre" : "all",
+   "name" : "Mecklenburg",
+   "pop" : 20000,
+   "settlements" : [
+    13,
+    14
+   ],
+   "ships" : 10
+  },
+  {
+   "army" : 2000,
+   "code" : "GDA",
+   "hre" : "none",
+   "name" : "Gdansk",
+   "pop" : 50000,
+   "settlements" : [
+    15,
+    79,
+    80,
+    81
+   ],
+   "ships" : 25
+  },
+  {
+   "army" : 1600,
+   "code" : "PRU",
+   "hre" : "none",
+   "name" : "Prussia",
+   "pop" : 40000,
+   "settlements" : [
+    16,
+    17,
+    20
+   ],
+   "ships" : 20
+  },
+  {
+   "army" : 1200,
+   "code" : "LIT",
+   "hre" : "none",
+   "name" : "Lithuania",
+   "pop" : 30000,
+   "settlements" : [
+    18,
+    19,
+    89
+   ],
+   "ships" : 15
+  },
+  {
+   "army" : 800,
+   "code" : "EPL",
+   "hre" : "none",
+   "name" : "Eastern Poland",
+   "pop" : 20000,
+   "settlements" : [
+    21,
+    22
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1600,
+   "code" : "WAR",
+   "hre" : "none",
+   "name" : "Warsaw",
+   "pop" : 40000,
+   "settlements" : [
+    84,
+    87,
+    88
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "RZE",
+   "hre" : "none",
+   "name" : "Rzeszów",
+   "pop" : 10000,
+   "settlements" : [
+    23
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "LVI",
+   "hre" : "none",
+   "name" : "Lviv",
+   "pop" : 10000,
+   "settlements" : [
+    24
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "POZ",
+   "hre" : "none",
+   "name" : "Poznań",
+   "pop" : 20000,
+   "settlements" : [
+    82,
+    83
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "SIL",
+   "hre" : "part",
+   "name" : "Silesia",
+   "pop" : 20000,
+   "settlements" : [
+    85,
+    86
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1200,
+   "code" : "HUN",
+   "hre" : "none",
+   "name" : "Hungary",
+   "pop" : 30000,
+   "settlements" : [
+    26,
+    31
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1600,
+   "code" : "BOH",
+   "hre" : "all",
+   "name" : "Bohemia",
+   "pop" : 40000,
+   "settlements" : [
+    28,
+    29,
+    30
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1600,
+   "code" : "AUS",
+   "hre" : "all",
+   "name" : "Austria",
+   "pop" : 40000,
+   "settlements" : [
+    32,
+    33,
+    35
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "SAL",
+   "hre" : "all",
+   "name" : "Salzburg",
+   "pop" : 10000,
+   "settlements" : [
+    34
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "TYR",
+   "hre" : "all",
+   "name" : "Tyrol",
+   "pop" : 10000,
+   "settlements" : [
+    39
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 2000,
+   "code" : "BAV",
+   "hre" : "all",
+   "name" : "Bavaria",
+   "pop" : 50000,
+   "settlements" : [
+    36,
+    37,
+    38,
+    71
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "ULM",
+   "hre" : "all",
+   "name" : "Ulm",
+   "pop" : 10000,
+   "settlements" : [
+    48
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "STU",
+   "hre" : "all",
+   "name" : "Stuttgart",
+   "pop" : 20000,
+   "settlements" : [
+    49
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "LGE",
+   "hre" : "all",
+   "name" : "Lower Germany",
+   "pop" : 20000,
+   "settlements" : [
+    46,
+    47
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1200,
+   "code" : "SWI",
+   "hre" : "all",
+   "name" : "Switzerland",
+   "pop" : 30000,
+   "settlements" : [
+    40,
+    41
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1200,
+   "code" : "ELS",
+   "hre" : "all",
+   "name" : "Elsass-Lothringen",
+   "pop" : 30000,
+   "settlements" : [
+    42,
+    45
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "NAN",
+   "hre" : "part",
+   "name" : "Nancy",
+   "pop" : 20000,
+   "settlements" : [
+    43,
+    44
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "LUX",
+   "hre" : "all",
+   "name" : "Luxemburg",
+   "pop" : 10000,
+   "settlements" : [
+    53
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "TRI",
+   "hre" : "all",
+   "name" : "Trier",
+   "pop" : 20000,
+   "settlements" : [
+    52,
+    60
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "LIE",
+   "hre" : "all",
+   "name" : "Liège",
+   "pop" : 10000,
+   "settlements" : [
+    55
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "BEL",
+   "hre" : "all",
+   "name" : "Belgium",
+   "pop" : 20000,
+   "settlements" : [
+    54,
+    56
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1200,
+   "code" : "NED",
+   "hre" : "all",
+   "name" : "Netherlands",
+   "pop" : 30000,
+   "settlements" : [
+    57,
+    58
+   ],
+   "ships" : 15
+  },
+  {
+   "army" : 400,
+   "code" : "MST",
+   "hre" : "all",
+   "name" : "Münster",
+   "pop" : 10000,
+   "settlements" : [
+    64
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "BRE",
+   "hre" : "all",
+   "name" : "Bremen",
+   "pop" : 10000,
+   "settlements" : [
+    65
+   ],
+   "ships" : 5
+  },
+  {
+   "army" : 800,
+   "code" : "HAM",
+   "hre" : "all",
+   "name" : "Hamburg",
+   "pop" : 20000,
+   "settlements" : [
+    66
+   ],
+   "ships" : 10
+  },
+  {
+   "army" : 400,
+   "code" : "HAN",
+   "hre" : "all",
+   "name" : "Hanover",
+   "pop" : 10000,
+   "settlements" : [
+    67
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "WOL",
+   "hre" : "all",
+   "name" : "Wolfsburg",
+   "pop" : 10000,
+   "settlements" : [
+    68
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "JEN",
+   "hre" : "all",
+   "name" : "Jena",
+   "pop" : 10000,
+   "settlements" : [
+    70
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 2000,
+   "code" : "RUH",
+   "hre" : "all",
+   "name" : "Ruhr",
+   "pop" : 50000,
+   "settlements" : [
+    59,
+    61,
+    62,
+    63
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 800,
+   "code" : "FRA",
+   "hre" : "all",
+   "name" : "Frankfurt",
+   "pop" : 20000,
+   "settlements" : [
+    50,
+    51
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 1600,
+   "code" : "SAX",
+   "hre" : "all",
+   "name" : "Saxony",
+   "pop" : 40000,
+   "settlements" : [
+    72,
+    73,
+    74
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 400,
+   "code" : "MAG",
+   "hre" : "all",
+   "name" : "Magdeburg",
+   "pop" : 10000,
+   "settlements" : [
+    69
+   ],
+   "ships" : 0
+  },
+  {
+   "army" : 2000,
+   "code" : "BRB",
+   "hre" : "all",
+   "name" : "Brandenburg",
+   "pop" : 50000,
+   "settlements" : [
+    75,
+    76,
+    77,
+    78
+   ],
+   "ships" : 0
+  }
+ ],
+ "map" : {
+  "height" : 1165,
+  "svg" : "map.svg",
+  "width" : 1308
+ },
+ "passes" : [
+  {
+   "id" : "P1",
+   "land" : 41,
+   "routes" : [
+    "41-42",
+    "41-45",
+    "41-46"
+   ],
+   "x" : 262,
+   "y" : 1068
+  },
+  {
+   "id" : "P2",
+   "land" : 40,
+   "routes" : [
+    "41-47",
+    "40-47"
+   ],
+   "x" : 335,
+   "y" : 1048
+  },
+  {
+   "id" : "P3",
+   "land" : 40,
+   "routes" : [
+    "39-40"
+   ],
+   "x" : 409,
+   "y" : 1085
+  },
+  {
+   "id" : "P4",
+   "land" : 30,
+   "routes" : [
+    "30-36",
+    "30-72"
+   ],
+   "x" : 709,
+   "y" : 857
+  },
+  {
+   "id" : "P5",
+   "land" : 30,
+   "routes" : [
+    "30-73",
+    "30-85",
+    "29-85"
+   ],
+   "x" : 802,
+   "y" : 800
+  },
+  {
+   "id" : "P6",
+   "land" : 28,
+   "routes" : [
+    "28-35",
+    "28-33",
+    "28-31",
+    "28-32"
+   ],
+   "x" : 805,
+   "y" : 980
+  },
+  {
+   "id" : "P7",
+   "land" : 29,
+   "routes" : [
+    "29-86"
+   ],
+   "x" : 910,
+   "y" : 852
+  }
+ ],
+ "routes" : [
+  {
+   "crossesRiver" : false,
+   "from" : 1,
+   "id" : "route-1-2",
+   "pass" : null,
+   "to" : 2,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 1,
+   "id" : "route-1-4",
+   "pass" : null,
+   "to" : 4,
+   "type" : "strait"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 2,
+   "id" : "route-2-5",
+   "pass" : null,
+   "to" : 5,
+   "type" : "strait"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 2,
+   "id" : "route-2-6",
+   "pass" : null,
+   "to" : 6,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 3,
+   "id" : "route-3-6",
+   "pass" : null,
+   "to" : 6,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 4,
+   "id" : "route-4-5",
+   "pass" : null,
+   "to" : 5,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 4,
+   "id" : "route-4-8",
+   "pass" : null,
+   "to" : 8,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 5,
+   "id" : "route-5-8",
+   "pass" : null,
+   "to" : 8,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 6,
+   "id" : "route-6-7",
+   "pass" : null,
+   "to" : 7,
+   "type" : "strait"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 7,
+   "id" : "route-7-10",
+   "pass" : null,
+   "to" : 10,
+   "type" : "strait"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 8,
+   "id" : "route-8-9",
+   "pass" : null,
+   "to" : 9,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 8,
+   "id" : "route-8-10",
+   "pass" : null,
+   "to" : 10,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 8,
+   "id" : "route-8-11",
+   "pass" : null,
+   "to" : 11,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 9,
+   "id" : "route-9-11",
+   "pass" : null,
+   "to" : 11,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 9,
+   "id" : "route-9-66",
+   "pass" : null,
+   "to" : 66,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 10,
+   "id" : "route-10-11",
+   "pass" : null,
+   "to" : 11,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 11,
+   "id" : "route-11-12",
+   "pass" : null,
+   "to" : 12,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 11,
+   "id" : "route-11-13",
+   "pass" : null,
+   "to" : 13,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 11,
+   "id" : "route-11-66",
+   "pass" : null,
+   "to" : 66,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 12,
+   "id" : "route-12-13",
+   "pass" : null,
+   "to" : 13,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 12,
+   "id" : "route-12-66",
+   "pass" : null,
+   "to" : 66,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 12,
+   "id" : "route-12-67",
+   "pass" : null,
+   "to" : 67,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 12,
+   "id" : "route-12-69",
+   "pass" : null,
+   "to" : 69,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 12,
+   "id" : "route-12-75",
+   "pass" : null,
+   "to" : 75,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 13,
+   "id" : "route-13-14",
+   "pass" : null,
+   "to" : 14,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 13,
+   "id" : "route-13-75",
+   "pass" : null,
+   "to" : 75,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 13,
+   "id" : "route-13-76",
+   "pass" : null,
+   "to" : 76,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 14,
+   "id" : "route-14-76",
+   "pass" : null,
+   "to" : 76,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 14,
+   "id" : "route-14-78",
+   "pass" : null,
+   "to" : 78,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 14,
+   "id" : "route-14-79",
+   "pass" : null,
+   "to" : 79,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 15,
+   "id" : "route-15-16",
+   "pass" : null,
+   "to" : 16,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 15,
+   "id" : "route-15-79",
+   "pass" : null,
+   "to" : 79,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 15,
+   "id" : "route-15-80",
+   "pass" : null,
+   "to" : 80,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 15,
+   "id" : "route-15-81",
+   "pass" : null,
+   "to" : 81,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 16,
+   "id" : "route-16-17",
+   "pass" : null,
+   "to" : 17,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 16,
+   "id" : "route-16-20",
+   "pass" : null,
+   "to" : 20,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 16,
+   "id" : "route-16-81",
+   "pass" : null,
+   "to" : 81,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 16,
+   "id" : "route-16-88",
+   "pass" : null,
+   "to" : 88,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 17,
+   "id" : "route-17-18",
+   "pass" : null,
+   "to" : 18,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 17,
+   "id" : "route-17-20",
+   "pass" : null,
+   "to" : 20,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 18,
+   "id" : "route-18-19",
+   "pass" : null,
+   "to" : 19,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 19,
+   "id" : "route-19-89",
+   "pass" : null,
+   "to" : 89,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 20,
+   "id" : "route-20-21",
+   "pass" : null,
+   "to" : 21,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 20,
+   "id" : "route-20-88",
+   "pass" : null,
+   "to" : 88,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 21,
+   "id" : "route-21-22",
+   "pass" : null,
+   "to" : 22,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 21,
+   "id" : "route-21-24",
+   "pass" : null,
+   "to" : 24,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 21,
+   "id" : "route-21-88",
+   "pass" : null,
+   "to" : 88,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 22,
+   "id" : "route-22-23",
+   "pass" : null,
+   "to" : 23,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 22,
+   "id" : "route-22-24",
+   "pass" : null,
+   "to" : 24,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 22,
+   "id" : "route-22-87",
+   "pass" : null,
+   "to" : 87,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 22,
+   "id" : "route-22-88",
+   "pass" : null,
+   "to" : 88,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 23,
+   "id" : "route-23-24",
+   "pass" : null,
+   "to" : 24,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 23,
+   "id" : "route-23-86",
+   "pass" : null,
+   "to" : 86,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 23,
+   "id" : "route-23-87",
+   "pass" : null,
+   "to" : 87,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 26,
+   "id" : "route-26-29",
+   "pass" : null,
+   "to" : 29,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 26,
+   "id" : "route-26-31",
+   "pass" : null,
+   "to" : 31,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 28,
+   "id" : "route-28-29",
+   "pass" : null,
+   "to" : 29,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 28,
+   "id" : "route-28-30",
+   "pass" : null,
+   "to" : 30,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 28,
+   "id" : "route-28-31",
+   "pass" : "P6",
+   "to" : 31,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 28,
+   "id" : "route-28-32",
+   "pass" : "P6",
+   "to" : 32,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 28,
+   "id" : "route-28-33",
+   "pass" : "P6",
+   "to" : 33,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 28,
+   "id" : "route-28-35",
+   "pass" : "P6",
+   "to" : 35,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 29,
+   "id" : "route-29-30",
+   "pass" : null,
+   "to" : 30,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 29,
+   "id" : "route-29-85",
+   "pass" : "P5",
+   "to" : 85,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 29,
+   "id" : "route-29-86",
+   "pass" : "P7",
+   "to" : 86,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 30,
+   "id" : "route-30-36",
+   "pass" : "P4",
+   "to" : 36,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 30,
+   "id" : "route-30-72",
+   "pass" : "P4",
+   "to" : 72,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 30,
+   "id" : "route-30-73",
+   "pass" : "P5",
+   "to" : 73,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 30,
+   "id" : "route-30-85",
+   "pass" : "P5",
+   "to" : 85,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 31,
+   "id" : "route-31-32",
+   "pass" : null,
+   "to" : 32,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 32,
+   "id" : "route-32-33",
+   "pass" : null,
+   "to" : 33,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 33,
+   "id" : "route-33-34",
+   "pass" : null,
+   "to" : 34,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 33,
+   "id" : "route-33-35",
+   "pass" : null,
+   "to" : 35,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 34,
+   "id" : "route-34-35",
+   "pass" : null,
+   "to" : 35,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 34,
+   "id" : "route-34-39",
+   "pass" : null,
+   "to" : 39,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 35,
+   "id" : "route-35-36",
+   "pass" : null,
+   "to" : 36,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 35,
+   "id" : "route-35-37",
+   "pass" : null,
+   "to" : 37,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 35,
+   "id" : "route-35-38",
+   "pass" : null,
+   "to" : 38,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 35,
+   "id" : "route-35-39",
+   "pass" : null,
+   "to" : 39,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 36,
+   "id" : "route-36-37",
+   "pass" : null,
+   "to" : 37,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 36,
+   "id" : "route-36-71",
+   "pass" : null,
+   "to" : 71,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 36,
+   "id" : "route-36-72",
+   "pass" : null,
+   "to" : 72,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 37,
+   "id" : "route-37-38",
+   "pass" : null,
+   "to" : 38,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 37,
+   "id" : "route-37-48",
+   "pass" : null,
+   "to" : 48,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 37,
+   "id" : "route-37-71",
+   "pass" : null,
+   "to" : 71,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 38,
+   "id" : "route-38-39",
+   "pass" : null,
+   "to" : 39,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 38,
+   "id" : "route-38-47",
+   "pass" : null,
+   "to" : 47,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 38,
+   "id" : "route-38-48",
+   "pass" : null,
+   "to" : 48,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 38,
+   "id" : "route-38-49",
+   "pass" : null,
+   "to" : 49,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 39,
+   "id" : "route-39-40",
+   "pass" : "P3",
+   "to" : 40,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 40,
+   "id" : "route-40-41",
+   "pass" : null,
+   "to" : 41,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 40,
+   "id" : "route-40-47",
+   "pass" : "P2",
+   "to" : 47,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 41,
+   "id" : "route-41-42",
+   "pass" : "P1",
+   "to" : 42,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 41,
+   "id" : "route-41-45",
+   "pass" : "P1",
+   "to" : 45,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 41,
+   "id" : "route-41-46",
+   "pass" : "P1",
+   "to" : 46,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 41,
+   "id" : "route-41-47",
+   "pass" : "P2",
+   "to" : 47,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 42,
+   "id" : "route-42-43",
+   "pass" : null,
+   "to" : 43,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 42,
+   "id" : "route-42-44",
+   "pass" : null,
+   "to" : 44,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 42,
+   "id" : "route-42-45",
+   "pass" : null,
+   "to" : 45,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 43,
+   "id" : "route-43-44",
+   "pass" : null,
+   "to" : 44,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 44,
+   "id" : "route-44-45",
+   "pass" : null,
+   "to" : 45,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 44,
+   "id" : "route-44-52",
+   "pass" : null,
+   "to" : 52,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 44,
+   "id" : "route-44-53",
+   "pass" : null,
+   "to" : 53,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 45,
+   "id" : "route-45-46",
+   "pass" : null,
+   "to" : 46,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 45,
+   "id" : "route-45-49",
+   "pass" : null,
+   "to" : 49,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 45,
+   "id" : "route-45-52",
+   "pass" : null,
+   "to" : 52,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 46,
+   "id" : "route-46-47",
+   "pass" : null,
+   "to" : 47,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 46,
+   "id" : "route-46-49",
+   "pass" : null,
+   "to" : 49,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 47,
+   "id" : "route-47-49",
+   "pass" : null,
+   "to" : 49,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 48,
+   "id" : "route-48-49",
+   "pass" : null,
+   "to" : 49,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 48,
+   "id" : "route-48-50",
+   "pass" : null,
+   "to" : 50,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 48,
+   "id" : "route-48-70",
+   "pass" : null,
+   "to" : 70,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 48,
+   "id" : "route-48-71",
+   "pass" : null,
+   "to" : 71,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 49,
+   "id" : "route-49-50",
+   "pass" : null,
+   "to" : 50,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 49,
+   "id" : "route-49-52",
+   "pass" : null,
+   "to" : 52,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 50,
+   "id" : "route-50-51",
+   "pass" : null,
+   "to" : 51,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 50,
+   "id" : "route-50-52",
+   "pass" : null,
+   "to" : 52,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 50,
+   "id" : "route-50-60",
+   "pass" : null,
+   "to" : 60,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 50,
+   "id" : "route-50-70",
+   "pass" : null,
+   "to" : 70,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 51,
+   "id" : "route-51-59",
+   "pass" : null,
+   "to" : 59,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 51,
+   "id" : "route-51-61",
+   "pass" : null,
+   "to" : 61,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 51,
+   "id" : "route-51-62",
+   "pass" : null,
+   "to" : 62,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 51,
+   "id" : "route-51-70",
+   "pass" : null,
+   "to" : 70,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 52,
+   "id" : "route-52-53",
+   "pass" : null,
+   "to" : 53,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 52,
+   "id" : "route-52-60",
+   "pass" : null,
+   "to" : 60,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 53,
+   "id" : "route-53-54",
+   "pass" : null,
+   "to" : 54,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 53,
+   "id" : "route-53-60",
+   "pass" : null,
+   "to" : 60,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 54,
+   "id" : "route-54-55",
+   "pass" : null,
+   "to" : 55,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 54,
+   "id" : "route-54-56",
+   "pass" : null,
+   "to" : 56,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 54,
+   "id" : "route-54-60",
+   "pass" : null,
+   "to" : 60,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 55,
+   "id" : "route-55-56",
+   "pass" : null,
+   "to" : 56,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 55,
+   "id" : "route-55-58",
+   "pass" : null,
+   "to" : 58,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 55,
+   "id" : "route-55-59",
+   "pass" : null,
+   "to" : 59,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 55,
+   "id" : "route-55-60",
+   "pass" : null,
+   "to" : 60,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 55,
+   "id" : "route-55-61",
+   "pass" : null,
+   "to" : 61,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 56,
+   "id" : "route-56-57",
+   "pass" : null,
+   "to" : 57,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 56,
+   "id" : "route-56-58",
+   "pass" : null,
+   "to" : 58,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 57,
+   "id" : "route-57-58",
+   "pass" : null,
+   "to" : 58,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 57,
+   "id" : "route-57-64",
+   "pass" : null,
+   "to" : 64,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 58,
+   "id" : "route-58-59",
+   "pass" : null,
+   "to" : 59,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 58,
+   "id" : "route-58-63",
+   "pass" : null,
+   "to" : 63,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 58,
+   "id" : "route-58-64",
+   "pass" : null,
+   "to" : 64,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 59,
+   "id" : "route-59-61",
+   "pass" : null,
+   "to" : 61,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 59,
+   "id" : "route-59-62",
+   "pass" : null,
+   "to" : 62,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 59,
+   "id" : "route-59-63",
+   "pass" : null,
+   "to" : 63,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 60,
+   "id" : "route-60-61",
+   "pass" : null,
+   "to" : 61,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 62,
+   "id" : "route-62-63",
+   "pass" : null,
+   "to" : 63,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 62,
+   "id" : "route-62-70",
+   "pass" : null,
+   "to" : 70,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 63,
+   "id" : "route-63-64",
+   "pass" : null,
+   "to" : 64,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 63,
+   "id" : "route-63-67",
+   "pass" : null,
+   "to" : 67,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 63,
+   "id" : "route-63-68",
+   "pass" : null,
+   "to" : 68,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 63,
+   "id" : "route-63-70",
+   "pass" : null,
+   "to" : 70,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 64,
+   "id" : "route-64-65",
+   "pass" : null,
+   "to" : 65,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 64,
+   "id" : "route-64-67",
+   "pass" : null,
+   "to" : 67,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 65,
+   "id" : "route-65-66",
+   "pass" : null,
+   "to" : 66,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 66,
+   "id" : "route-66-67",
+   "pass" : null,
+   "to" : 67,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 67,
+   "id" : "route-67-68",
+   "pass" : null,
+   "to" : 68,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 67,
+   "id" : "route-67-69",
+   "pass" : null,
+   "to" : 69,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 68,
+   "id" : "route-68-69",
+   "pass" : null,
+   "to" : 69,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 68,
+   "id" : "route-68-70",
+   "pass" : null,
+   "to" : 70,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 69,
+   "id" : "route-69-70",
+   "pass" : null,
+   "to" : 70,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 69,
+   "id" : "route-69-74",
+   "pass" : null,
+   "to" : 74,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 69,
+   "id" : "route-69-75",
+   "pass" : null,
+   "to" : 75,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 70,
+   "id" : "route-70-71",
+   "pass" : null,
+   "to" : 71,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 70,
+   "id" : "route-70-74",
+   "pass" : null,
+   "to" : 74,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 71,
+   "id" : "route-71-72",
+   "pass" : null,
+   "to" : 72,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 71,
+   "id" : "route-71-74",
+   "pass" : null,
+   "to" : 74,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 72,
+   "id" : "route-72-73",
+   "pass" : null,
+   "to" : 73,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 72,
+   "id" : "route-72-74",
+   "pass" : null,
+   "to" : 74,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 73,
+   "id" : "route-73-74",
+   "pass" : null,
+   "to" : 74,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 73,
+   "id" : "route-73-83",
+   "pass" : null,
+   "to" : 83,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 73,
+   "id" : "route-73-85",
+   "pass" : null,
+   "to" : 85,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 74,
+   "id" : "route-74-75",
+   "pass" : null,
+   "to" : 75,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 74,
+   "id" : "route-74-76",
+   "pass" : null,
+   "to" : 76,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 74,
+   "id" : "route-74-77",
+   "pass" : null,
+   "to" : 77,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 74,
+   "id" : "route-74-83",
+   "pass" : null,
+   "to" : 83,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 75,
+   "id" : "route-75-76",
+   "pass" : null,
+   "to" : 76,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 76,
+   "id" : "route-76-77",
+   "pass" : null,
+   "to" : 77,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 76,
+   "id" : "route-76-78",
+   "pass" : null,
+   "to" : 78,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 77,
+   "id" : "route-77-78",
+   "pass" : null,
+   "to" : 78,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 77,
+   "id" : "route-77-82",
+   "pass" : null,
+   "to" : 82,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 77,
+   "id" : "route-77-83",
+   "pass" : null,
+   "to" : 83,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 78,
+   "id" : "route-78-79",
+   "pass" : null,
+   "to" : 79,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 78,
+   "id" : "route-78-80",
+   "pass" : null,
+   "to" : 80,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 78,
+   "id" : "route-78-82",
+   "pass" : null,
+   "to" : 82,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 79,
+   "id" : "route-79-80",
+   "pass" : null,
+   "to" : 80,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 80,
+   "id" : "route-80-81",
+   "pass" : null,
+   "to" : 81,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 80,
+   "id" : "route-80-82",
+   "pass" : null,
+   "to" : 82,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 80,
+   "id" : "route-80-84",
+   "pass" : null,
+   "to" : 84,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 81,
+   "id" : "route-81-84",
+   "pass" : null,
+   "to" : 84,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 81,
+   "id" : "route-81-88",
+   "pass" : null,
+   "to" : 88,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 82,
+   "id" : "route-82-83",
+   "pass" : null,
+   "to" : 83,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 82,
+   "id" : "route-82-84",
+   "pass" : null,
+   "to" : 84,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 83,
+   "id" : "route-83-84",
+   "pass" : null,
+   "to" : 84,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 83,
+   "id" : "route-83-85",
+   "pass" : null,
+   "to" : 85,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 84,
+   "id" : "route-84-85",
+   "pass" : null,
+   "to" : 85,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 84,
+   "id" : "route-84-86",
+   "pass" : null,
+   "to" : 86,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 84,
+   "id" : "route-84-87",
+   "pass" : null,
+   "to" : 87,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 84,
+   "id" : "route-84-88",
+   "pass" : null,
+   "to" : 88,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : true,
+   "from" : 85,
+   "id" : "route-85-86",
+   "pass" : null,
+   "to" : 86,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 86,
+   "id" : "route-86-87",
+   "pass" : null,
+   "to" : 87,
+   "type" : "land"
+  },
+  {
+   "crossesRiver" : false,
+   "from" : 87,
+   "id" : "route-87-88",
+   "pass" : null,
+   "to" : 88,
+   "type" : "land"
+  }
+ ],
+ "settlements" : [
+  {
+   "borders" : [
+    2
+   ],
+   "country" : "NOR",
+   "hre" : false,
+   "id" : 1,
+   "land" : "land-1",
+   "name" : "Kristiansand",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [
+    4
+   ],
+   "type" : "town",
+   "x" : 233,
+   "y" : 147
+  },
+  {
+   "borders" : [
+    1,
+    6
+   ],
+   "country" : "NOR",
+   "hre" : false,
+   "id" : 2,
+   "land" : "land-2",
+   "name" : "Oslo",
+   "pop" : 20000,
+   "port" : true,
+   "river" : false,
+   "straits" : [
+    5
+   ],
+   "type" : "city",
+   "x" : 446,
+   "y" : 51
+  },
+  {
+   "borders" : [
+    6
+   ],
+   "country" : "STO",
+   "hre" : false,
+   "id" : 3,
+   "land" : "land-3",
+   "name" : "Stockholm",
+   "pop" : 20000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 772,
+   "y" : 34
+  },
+  {
+   "borders" : [
+    5,
+    8
+   ],
+   "country" : "UDK",
+   "hre" : false,
+   "id" : 4,
+   "land" : "land-4",
+   "name" : "Thisted",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [
+    1
+   ],
+   "type" : "town",
+   "x" : 330,
+   "y" : 186
+  },
+  {
+   "borders" : [
+    4,
+    8
+   ],
+   "country" : "UDK",
+   "hre" : false,
+   "id" : 5,
+   "land" : "land-5",
+   "name" : "Skagen",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [
+    2
+   ],
+   "type" : "town",
+   "x" : 448,
+   "y" : 177
+  },
+  {
+   "borders" : [
+    2,
+    3
+   ],
+   "country" : "GOT",
+   "hre" : false,
+   "id" : 6,
+   "land" : "land-6",
+   "name" : "Gothenburg",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [
+    7
+   ],
+   "type" : "town",
+   "x" : 581,
+   "y" : 190
+  },
+  {
+   "borders" : [],
+   "country" : "CPH",
+   "hre" : false,
+   "id" : 7,
+   "land" : "land-7",
+   "name" : "Copenhagen",
+   "pop" : 20000,
+   "port" : true,
+   "river" : false,
+   "straits" : [
+    6,
+    10
+   ],
+   "type" : "city",
+   "x" : 519,
+   "y" : 280
+  },
+  {
+   "borders" : [
+    4,
+    5,
+    9,
+    10,
+    11
+   ],
+   "country" : "LDK",
+   "hre" : false,
+   "id" : 8,
+   "land" : "land-8",
+   "name" : "Herning",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 368,
+   "y" : 248
+  },
+  {
+   "borders" : [
+    8,
+    11,
+    66
+   ],
+   "country" : "LDK",
+   "hre" : false,
+   "id" : 9,
+   "land" : "land-9",
+   "name" : "Esbjerg",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 313,
+   "y" : 297
+  },
+  {
+   "borders" : [
+    8,
+    11
+   ],
+   "country" : "SCH",
+   "hre" : true,
+   "id" : 10,
+   "land" : "land-10",
+   "name" : "Flensburg",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [
+    7
+   ],
+   "type" : "town",
+   "x" : 420,
+   "y" : 305
+  },
+  {
+   "borders" : [
+    8,
+    9,
+    10,
+    12,
+    13,
+    66
+   ],
+   "country" : "SCH",
+   "hre" : true,
+   "id" : 11,
+   "land" : "land-11",
+   "name" : "Kiel",
+   "pop" : 20000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 435,
+   "y" : 376
+  },
+  {
+   "borders" : [
+    11,
+    13,
+    66,
+    67,
+    69,
+    75
+   ],
+   "country" : "SCH",
+   "hre" : true,
+   "id" : 12,
+   "land" : "land-12",
+   "name" : "Luneburg",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 402,
+   "y" : 445
+  },
+  {
+   "borders" : [
+    11,
+    12,
+    14,
+    75,
+    76
+   ],
+   "country" : "MEC",
+   "hre" : true,
+   "id" : 13,
+   "land" : "land-13",
+   "name" : "Rostock",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 558,
+   "y" : 419
+  },
+  {
+   "borders" : [
+    13,
+    76,
+    78,
+    79
+   ],
+   "country" : "MEC",
+   "hre" : true,
+   "id" : 14,
+   "land" : "land-14",
+   "name" : "Stettin",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 655,
+   "y" : 409
+  },
+  {
+   "borders" : [
+    16,
+    79,
+    80,
+    81
+   ],
+   "country" : "GDA",
+   "hre" : false,
+   "id" : 15,
+   "land" : "land-15",
+   "name" : "Gdynia",
+   "pop" : 20000,
+   "port" : true,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 924,
+   "y" : 399
+  },
+  {
+   "borders" : [
+    15,
+    17,
+    20,
+    81,
+    88
+   ],
+   "country" : "PRU",
+   "hre" : false,
+   "id" : 16,
+   "land" : "land-16",
+   "name" : "Danzig",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1052,
+   "y" : 402
+  },
+  {
+   "borders" : [
+    16,
+    18,
+    20
+   ],
+   "country" : "PRU",
+   "hre" : false,
+   "id" : 17,
+   "land" : "land-17",
+   "name" : "Konigsberg",
+   "pop" : 20000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 1119,
+   "y" : 390
+  },
+  {
+   "borders" : [
+    17,
+    19
+   ],
+   "country" : "LIT",
+   "hre" : false,
+   "id" : 18,
+   "land" : "land-18",
+   "name" : "Rusne",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1135,
+   "y" : 301
+  },
+  {
+   "borders" : [
+    18,
+    89
+   ],
+   "country" : "LIT",
+   "hre" : false,
+   "id" : 19,
+   "land" : "land-19",
+   "name" : "Klaipeda",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1151,
+   "y" : 161
+  },
+  {
+   "borders" : [
+    16,
+    17,
+    21,
+    88
+   ],
+   "country" : "PRU",
+   "hre" : false,
+   "id" : 20,
+   "land" : "land-20",
+   "name" : "Olsztyn",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1145,
+   "y" : 466
+  },
+  {
+   "borders" : [
+    20,
+    22,
+    24,
+    88
+   ],
+   "country" : "EPL",
+   "hre" : false,
+   "id" : 21,
+   "land" : "land-21",
+   "name" : "Brest",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1228,
+   "y" : 597
+  },
+  {
+   "borders" : [
+    21,
+    23,
+    24,
+    87,
+    88
+   ],
+   "country" : "EPL",
+   "hre" : false,
+   "id" : 22,
+   "land" : "land-22",
+   "name" : "Lublin",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1171,
+   "y" : 672
+  },
+  {
+   "borders" : [
+    22,
+    24,
+    86,
+    87
+   ],
+   "country" : "RZE",
+   "hre" : false,
+   "id" : 23,
+   "land" : "land-23",
+   "name" : "Rzeszow",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1155,
+   "y" : 770
+  },
+  {
+   "borders" : [
+    21,
+    22,
+    23
+   ],
+   "country" : "LVI",
+   "hre" : false,
+   "id" : 24,
+   "land" : "land-24",
+   "name" : "Lviv",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1276,
+   "y" : 819
+  },
+  {
+   "borders" : [
+    29,
+    31
+   ],
+   "country" : "HUN",
+   "hre" : false,
+   "id" : 26,
+   "land" : "land-26",
+   "name" : "Kassa",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1074,
+   "y" : 1030
+  },
+  {
+   "borders" : [
+    29,
+    30,
+    31,
+    32,
+    33,
+    35
+   ],
+   "country" : "BOH",
+   "hre" : true,
+   "id" : 28,
+   "land" : "land-28",
+   "name" : "Brno",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 828,
+   "y" : 943
+  },
+  {
+   "borders" : [
+    26,
+    28,
+    30,
+    85,
+    86
+   ],
+   "country" : "BOH",
+   "hre" : true,
+   "id" : 29,
+   "land" : "land-29",
+   "name" : "Ostrava",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 884,
+   "y" : 886
+  },
+  {
+   "borders" : [
+    28,
+    29,
+    36,
+    72,
+    73,
+    85
+   ],
+   "country" : "BOH",
+   "hre" : true,
+   "id" : 30,
+   "land" : "land-30",
+   "name" : "Prague",
+   "pop" : 20000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 776,
+   "y" : 867
+  },
+  {
+   "borders" : [
+    26,
+    28,
+    32
+   ],
+   "country" : "HUN",
+   "hre" : false,
+   "id" : 31,
+   "land" : "land-31",
+   "name" : "Bratislava",
+   "pop" : 20000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 863,
+   "y" : 1089
+  },
+  {
+   "borders" : [
+    28,
+    31,
+    33
+   ],
+   "country" : "AUS",
+   "hre" : true,
+   "id" : 32,
+   "land" : "land-32",
+   "name" : "Hainburg",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 809,
+   "y" : 1065
+  },
+  {
+   "borders" : [
+    28,
+    32,
+    34,
+    35
+   ],
+   "country" : "AUS",
+   "hre" : true,
+   "id" : 33,
+   "land" : "land-33",
+   "name" : "Vienna",
+   "pop" : 20000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 754,
+   "y" : 1037
+  },
+  {
+   "borders" : [
+    33,
+    35,
+    39
+   ],
+   "country" : "SAL",
+   "hre" : true,
+   "id" : 34,
+   "land" : "land-34",
+   "name" : "Salzburg",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 635,
+   "y" : 1031
+  },
+  {
+   "borders" : [
+    28,
+    33,
+    34,
+    36,
+    37,
+    38,
+    39
+   ],
+   "country" : "AUS",
+   "hre" : true,
+   "id" : 35,
+   "land" : "land-35",
+   "name" : "Linz",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 667,
+   "y" : 982
+  },
+  {
+   "borders" : [
+    30,
+    35,
+    37,
+    71,
+    72
+   ],
+   "country" : "BAV",
+   "hre" : true,
+   "id" : 36,
+   "land" : "land-36",
+   "name" : "Passau",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 626,
+   "y" : 918
+  },
+  {
+   "borders" : [
+    35,
+    36,
+    38,
+    48,
+    71
+   ],
+   "country" : "BAV",
+   "hre" : true,
+   "id" : 37,
+   "land" : "land-37",
+   "name" : "Munich",
+   "pop" : 20000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 557,
+   "y" : 920
+  },
+  {
+   "borders" : [
+    35,
+    37,
+    39,
+    47,
+    48,
+    49
+   ],
+   "country" : "BAV",
+   "hre" : true,
+   "id" : 38,
+   "land" : "land-38",
+   "name" : "Memmingen",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 499,
+   "y" : 978
+  },
+  {
+   "borders" : [
+    34,
+    35,
+    38,
+    40
+   ],
+   "country" : "TYR",
+   "hre" : true,
+   "id" : 39,
+   "land" : "land-39",
+   "name" : "Innsbruck",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 525,
+   "y" : 1085
+  },
+  {
+   "borders" : [
+    39,
+    41,
+    47
+   ],
+   "country" : "SWI",
+   "hre" : true,
+   "id" : 40,
+   "land" : "land-40",
+   "name" : "Zurich",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 349,
+   "y" : 1085
+  },
+  {
+   "borders" : [
+    40,
+    42,
+    45,
+    46,
+    47
+   ],
+   "country" : "SWI",
+   "hre" : true,
+   "id" : 41,
+   "land" : "land-41",
+   "name" : "Bern",
+   "pop" : 20000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 290,
+   "y" : 1098
+  },
+  {
+   "borders" : [
+    41,
+    43,
+    44,
+    45
+   ],
+   "country" : "ELS",
+   "hre" : true,
+   "id" : 42,
+   "land" : "land-42",
+   "name" : "Geneva",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 169,
+   "y" : 1113
+  },
+  {
+   "borders" : [
+    42,
+    44
+   ],
+   "country" : "NAN",
+   "hre" : false,
+   "id" : 43,
+   "land" : "land-43",
+   "name" : "Lyon",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 119,
+   "y" : 1088
+  },
+  {
+   "borders" : [
+    42,
+    43,
+    45,
+    52,
+    53
+   ],
+   "country" : "NAN",
+   "hre" : true,
+   "id" : 44,
+   "land" : "land-44",
+   "name" : "Nancy",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 125,
+   "y" : 1022
+  },
+  {
+   "borders" : [
+    41,
+    42,
+    44,
+    46,
+    49,
+    52
+   ],
+   "country" : "ELS",
+   "hre" : true,
+   "id" : 45,
+   "land" : "land-45",
+   "name" : "Strassburg",
+   "pop" : 20000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 179,
+   "y" : 981
+  },
+  {
+   "borders" : [
+    41,
+    45,
+    47,
+    49
+   ],
+   "country" : "LGE",
+   "hre" : true,
+   "id" : 46,
+   "land" : "land-46",
+   "name" : "Basel",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 258,
+   "y" : 965
+  },
+  {
+   "borders" : [
+    38,
+    40,
+    41,
+    46,
+    49
+   ],
+   "country" : "LGE",
+   "hre" : true,
+   "id" : 47,
+   "land" : "land-47",
+   "name" : "Konstanz",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 363,
+   "y" : 973
+  },
+  {
+   "borders" : [
+    37,
+    38,
+    49,
+    50,
+    70,
+    71
+   ],
+   "country" : "ULM",
+   "hre" : true,
+   "id" : 48,
+   "land" : "land-48",
+   "name" : "Ulm",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 446,
+   "y" : 914
+  },
+  {
+   "borders" : [
+    38,
+    45,
+    46,
+    47,
+    48,
+    50,
+    52
+   ],
+   "country" : "STU",
+   "hre" : true,
+   "id" : 49,
+   "land" : "land-49",
+   "name" : "Stuttgart",
+   "pop" : 20000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 338,
+   "y" : 888
+  },
+  {
+   "borders" : [
+    48,
+    49,
+    51,
+    52,
+    60,
+    70
+   ],
+   "country" : "FRA",
+   "hre" : true,
+   "id" : 50,
+   "land" : "land-50",
+   "name" : "Frankfurt",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 327,
+   "y" : 803
+  },
+  {
+   "borders" : [
+    50,
+    59,
+    61,
+    62,
+    70
+   ],
+   "country" : "FRA",
+   "hre" : true,
+   "id" : 51,
+   "land" : "land-51",
+   "name" : "Bonn",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 292,
+   "y" : 752
+  },
+  {
+   "borders" : [
+    44,
+    45,
+    49,
+    50,
+    53,
+    60
+   ],
+   "country" : "TRI",
+   "hre" : true,
+   "id" : 52,
+   "land" : "land-52",
+   "name" : "Trier",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 200,
+   "y" : 859
+  },
+  {
+   "borders" : [
+    44,
+    52,
+    54,
+    60
+   ],
+   "country" : "LUX",
+   "hre" : true,
+   "id" : 53,
+   "land" : "land-53",
+   "name" : "Luxemburg",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 102,
+   "y" : 883
+  },
+  {
+   "borders" : [
+    53,
+    55,
+    56,
+    60
+   ],
+   "country" : "BEL",
+   "hre" : true,
+   "id" : 54,
+   "land" : "land-54",
+   "name" : "Brussels",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 36,
+   "y" : 802
+  },
+  {
+   "borders" : [
+    54,
+    56,
+    58,
+    59,
+    60,
+    61
+   ],
+   "country" : "LIE",
+   "hre" : true,
+   "id" : 55,
+   "land" : "land-55",
+   "name" : "Liege",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 122,
+   "y" : 729
+  },
+  {
+   "borders" : [
+    54,
+    55,
+    57,
+    58
+   ],
+   "country" : "BEL",
+   "hre" : true,
+   "id" : 56,
+   "land" : "land-56",
+   "name" : "Antwerp",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 38,
+   "y" : 676
+  },
+  {
+   "borders" : [
+    56,
+    58,
+    64
+   ],
+   "country" : "NED",
+   "hre" : true,
+   "id" : 57,
+   "land" : "land-57",
+   "name" : "Rotterdam",
+   "pop" : 20000,
+   "port" : true,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 49,
+   "y" : 565
+  },
+  {
+   "borders" : [
+    55,
+    56,
+    57,
+    59,
+    63,
+    64
+   ],
+   "country" : "NED",
+   "hre" : true,
+   "id" : 58,
+   "land" : "land-58",
+   "name" : "Utrecht",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 119,
+   "y" : 618
+  },
+  {
+   "borders" : [
+    51,
+    55,
+    58,
+    61,
+    62,
+    63
+   ],
+   "country" : "RUH",
+   "hre" : true,
+   "id" : 59,
+   "land" : "land-59",
+   "name" : "Dusseldorf",
+   "pop" : 20000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 222,
+   "y" : 678
+  },
+  {
+   "borders" : [
+    50,
+    52,
+    53,
+    54,
+    55,
+    61
+   ],
+   "country" : "TRI",
+   "hre" : true,
+   "id" : 60,
+   "land" : "land-60",
+   "name" : "Duren",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 191,
+   "y" : 787
+  },
+  {
+   "borders" : [
+    51,
+    55,
+    59,
+    60
+   ],
+   "country" : "RUH",
+   "hre" : true,
+   "id" : 61,
+   "land" : "land-61",
+   "name" : "Cologne",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 252,
+   "y" : 718
+  },
+  {
+   "borders" : [
+    51,
+    59,
+    63,
+    70
+   ],
+   "country" : "RUH",
+   "hre" : true,
+   "id" : 62,
+   "land" : "land-62",
+   "name" : "Essen",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 252,
+   "y" : 644
+  },
+  {
+   "borders" : [
+    58,
+    59,
+    62,
+    64,
+    67,
+    68,
+    70
+   ],
+   "country" : "RUH",
+   "hre" : true,
+   "id" : 63,
+   "land" : "land-63",
+   "name" : "Dortmund",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 272,
+   "y" : 614
+  },
+  {
+   "borders" : [
+    57,
+    58,
+    63,
+    65,
+    67
+   ],
+   "country" : "MST",
+   "hre" : true,
+   "id" : 64,
+   "land" : "land-64",
+   "name" : "Munster",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 188,
+   "y" : 530
+  },
+  {
+   "borders" : [
+    64,
+    66
+   ],
+   "country" : "BRE",
+   "hre" : true,
+   "id" : 65,
+   "land" : "land-65",
+   "name" : "Bremen",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 213,
+   "y" : 444
+  },
+  {
+   "borders" : [
+    9,
+    11,
+    12,
+    65,
+    67
+   ],
+   "country" : "HAM",
+   "hre" : true,
+   "id" : 66,
+   "land" : "land-66",
+   "name" : "Hamburg",
+   "pop" : 20000,
+   "port" : true,
+   "river" : true,
+   "straits" : [],
+   "type" : "city",
+   "x" : 307,
+   "y" : 434
+  },
+  {
+   "borders" : [
+    12,
+    63,
+    64,
+    66,
+    68,
+    69
+   ],
+   "country" : "HAN",
+   "hre" : true,
+   "id" : 67,
+   "land" : "land-67",
+   "name" : "Hanover",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 329,
+   "y" : 516
+  },
+  {
+   "borders" : [
+    63,
+    67,
+    69,
+    70
+   ],
+   "country" : "WOL",
+   "hre" : true,
+   "id" : 68,
+   "land" : "land-68",
+   "name" : "Wolfsburg",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 415,
+   "y" : 590
+  },
+  {
+   "borders" : [
+    12,
+    67,
+    68,
+    70,
+    74,
+    75
+   ],
+   "country" : "MAG",
+   "hre" : true,
+   "id" : 69,
+   "land" : "land-69",
+   "name" : "Magdeburg",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 502,
+   "y" : 539
+  },
+  {
+   "borders" : [
+    48,
+    50,
+    51,
+    62,
+    63,
+    68,
+    69,
+    71,
+    74
+   ],
+   "country" : "JEN",
+   "hre" : true,
+   "id" : 70,
+   "land" : "land-70",
+   "name" : "Jena",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 450,
+   "y" : 677
+  },
+  {
+   "borders" : [
+    36,
+    37,
+    48,
+    70,
+    72,
+    74
+   ],
+   "country" : "BAV",
+   "hre" : true,
+   "id" : 71,
+   "land" : "land-71",
+   "name" : "Bamberg",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 570,
+   "y" : 775
+  },
+  {
+   "borders" : [
+    30,
+    36,
+    71,
+    73,
+    74
+   ],
+   "country" : "SAX",
+   "hre" : true,
+   "id" : 72,
+   "land" : "land-72",
+   "name" : "Chemnitz",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 673,
+   "y" : 801
+  },
+  {
+   "borders" : [
+    30,
+    72,
+    74,
+    83,
+    85
+   ],
+   "country" : "SAX",
+   "hre" : true,
+   "id" : 73,
+   "land" : "land-73",
+   "name" : "Dresden",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 750,
+   "y" : 709
+  },
+  {
+   "borders" : [
+    69,
+    70,
+    71,
+    72,
+    73,
+    75,
+    76,
+    77,
+    83
+   ],
+   "country" : "SAX",
+   "hre" : true,
+   "id" : 74,
+   "land" : "land-74",
+   "name" : "Leipzig",
+   "pop" : 20000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 602,
+   "y" : 636
+  },
+  {
+   "borders" : [
+    12,
+    13,
+    69,
+    74,
+    76
+   ],
+   "country" : "BRB",
+   "hre" : true,
+   "id" : 75,
+   "land" : "land-75",
+   "name" : "Schwerin",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 557,
+   "y" : 471
+  },
+  {
+   "borders" : [
+    13,
+    14,
+    74,
+    75,
+    77,
+    78
+   ],
+   "country" : "BRB",
+   "hre" : true,
+   "id" : 76,
+   "land" : "land-76",
+   "name" : "Berlin",
+   "pop" : 20000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 623,
+   "y" : 495
+  },
+  {
+   "borders" : [
+    74,
+    76,
+    78,
+    82,
+    83
+   ],
+   "country" : "BRB",
+   "hre" : true,
+   "id" : 77,
+   "land" : "land-77",
+   "name" : "Cottbus",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 701,
+   "y" : 580
+  },
+  {
+   "borders" : [
+    14,
+    76,
+    77,
+    79,
+    80,
+    82
+   ],
+   "country" : "BRB",
+   "hre" : true,
+   "id" : 78,
+   "land" : "land-78",
+   "name" : "Seelow Heights",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 735,
+   "y" : 465
+  },
+  {
+   "borders" : [
+    14,
+    15,
+    78,
+    80
+   ],
+   "country" : "GDA",
+   "hre" : false,
+   "id" : 79,
+   "land" : "land-79",
+   "name" : "Szczecinek",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 858,
+   "y" : 434
+  },
+  {
+   "borders" : [
+    15,
+    78,
+    79,
+    81,
+    82,
+    84
+   ],
+   "country" : "GDA",
+   "hre" : false,
+   "id" : 80,
+   "land" : "land-80",
+   "name" : "Bydgoszcz",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 881,
+   "y" : 487
+  },
+  {
+   "borders" : [
+    15,
+    16,
+    80,
+    84,
+    88
+   ],
+   "country" : "GDA",
+   "hre" : false,
+   "id" : 81,
+   "land" : "land-81",
+   "name" : "Plock",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1000,
+   "y" : 499
+  },
+  {
+   "borders" : [
+    77,
+    78,
+    80,
+    83,
+    84
+   ],
+   "country" : "POZ",
+   "hre" : false,
+   "id" : 82,
+   "land" : "land-82",
+   "name" : "Pila",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 845,
+   "y" : 541
+  },
+  {
+   "borders" : [
+    73,
+    74,
+    77,
+    82,
+    84,
+    85
+   ],
+   "country" : "POZ",
+   "hre" : false,
+   "id" : 83,
+   "land" : "land-83",
+   "name" : "Poznan",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 789,
+   "y" : 637
+  },
+  {
+   "borders" : [
+    80,
+    81,
+    82,
+    83,
+    85,
+    86,
+    87,
+    88
+   ],
+   "country" : "WAR",
+   "hre" : false,
+   "id" : 84,
+   "land" : "land-84",
+   "name" : "Lodz",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 922,
+   "y" : 624
+  },
+  {
+   "borders" : [
+    29,
+    30,
+    73,
+    83,
+    84,
+    86
+   ],
+   "country" : "SIL",
+   "hre" : true,
+   "id" : 85,
+   "land" : "land-85",
+   "name" : "Breslau",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 813,
+   "y" : 750
+  },
+  {
+   "borders" : [
+    23,
+    29,
+    84,
+    85,
+    87
+   ],
+   "country" : "SIL",
+   "hre" : false,
+   "id" : 86,
+   "land" : "land-86",
+   "name" : "Krakow",
+   "pop" : 10000,
+   "port" : false,
+   "river" : true,
+   "straits" : [],
+   "type" : "town",
+   "x" : 955,
+   "y" : 795
+  },
+  {
+   "borders" : [
+    22,
+    23,
+    84,
+    86,
+    88
+   ],
+   "country" : "WAR",
+   "hre" : false,
+   "id" : 87,
+   "land" : "land-87",
+   "name" : "Radom",
+   "pop" : 10000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1055,
+   "y" : 704
+  },
+  {
+   "borders" : [
+    16,
+    20,
+    21,
+    22,
+    81,
+    84,
+    87
+   ],
+   "country" : "WAR",
+   "hre" : false,
+   "id" : 88,
+   "land" : "land-88",
+   "name" : "Warsaw",
+   "pop" : 20000,
+   "port" : false,
+   "river" : false,
+   "straits" : [],
+   "type" : "city",
+   "x" : 1064,
+   "y" : 608
+  },
+  {
+   "borders" : [
+    19
+   ],
+   "country" : "LIT",
+   "hre" : false,
+   "id" : 89,
+   "land" : "land-89",
+   "name" : "Palanga",
+   "pop" : 10000,
+   "port" : true,
+   "river" : false,
+   "straits" : [],
+   "type" : "town",
+   "x" : 1142,
+   "y" : 42
+  }
+ ],
+ "source" : "Generated by tools/map.pl from docs/SCENARIO.md and docs/map-base.svg. Do not edit."
+}

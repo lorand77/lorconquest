@@ -2,12 +2,13 @@
 
 *Everything here is specific to this map; the general rules are in [RULES.md](RULES.md).*
 
-This file is the **only** place the map's facts are written down. [map.png](map.png) is drawn from
-it on top of the hand-drawn [map-base.png](map-base.png) (sea, coast, borders, rivers). After
-changing anything here, run:
+This file is the **only** place the map's facts are written down. The map's shapes — one per
+settlement's land, plus the rivers — are in [map-base.svg](map-base.svg) (edit it in Inkscape).
+From the two, a script builds [map.svg](map.svg), the map the game shows, and
+[scenario.json](scenario.json), this scenario as data for the game. After changing either, run:
 
 ```
-perl tools/map.pl              # check the data, redraw map.png, refresh the generated parts below
+perl tools/map.pl              # check everything, rebuild map.svg and scenario.json, refresh this file
 perl tools/map.pl mountains    # the same, but first move any mountain that touches something
 ```
 
@@ -19,7 +20,7 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 198 land routes, 4 straits, 7 mountain passes
 <!-- /generated -->
 
-![Map](map.png)
+![Map](map.svg)
 
 ## Countries
 
@@ -79,7 +80,9 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 - **Port** — the settlement sits on the coast. 65 Bremen and 66 Hamburg are ports **by ruling**,
   though the map does not draw them on the coastline.
 - **HRE** — inside the Holy Roman Empire.
-- **X, Y** — marker centre in pixels on the map.
+- **X, Y** — marker centre, in map units (the coordinates of map.svg). The settlement's land is
+  the shape `land-ID` in map-base.svg; country borders are drawn wherever two lands belong to
+  different countries.
 - **Borders** — settlements an army can march to in one step (every route is listed under both
   ends). Routes through a mountain pass are listed here too; the pass itself is in
   *Mountain passes*.
@@ -195,14 +198,14 @@ settlement. A pass belongs to whoever owns the settlement whose land it lies in 
 
 ## Mountains
 
-Decoration only — mountains have no rules effect outside the passes. Apex positions (x,y in
-pixels); `perl tools/map.pl mountains` moves any that touch something else.
+Decoration only — mountains have no rules effect outside the passes. Apex positions (x,y in map
+units); `perl tools/map.pl mountains` moves any that touch something else.
 
 ```
-769,767  738,780  846,795  721,813  873,814  808,816  932,849  705,870
-1197,870  1009,873  1259,880  1138,883  1067,894  701,912  1213,915  1153,916
-1256,917  791,936  744,943  1266,955  837,971  877,1002  370,1037  407,1041
-645,1044  250,1081  611,1081  547,1085  482,1092  371,1096  325,1097  297,1115
+769,767  738,780  847,796  738,813  874,814  808,816  933,849  705,871
+1197,871  1008,874  1259,880  1138,883  1067,894  701,912  1213,915  1153,916
+1256,917  791,935  744,943  1266,955  837,970  877,1002  370,1038  407,1040
+647,1046  250,1081  611,1081  547,1085  482,1093  371,1096  326,1097  297,1115
 267,1130
 ```
 
@@ -214,6 +217,10 @@ pixels); `perl tools/map.pl mountains` moves any that touch something else.
 **HRE settlements (55):** 10–14, 28–30, 32–42, 44–78, 85 — held by 30 of the 45 countries.
 
 **Ports (21):** 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 57, 65, 66, 89
+
+**On a river (25):** 15, 31, 32, 33, 35, 38, 42, 45, 48, 49, 50, 51, 57, 58, 59, 61, 66, 67, 68, 70, 80, 82, 83, 85, 86 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
+
+**Routes crossing a river (44):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 35-39, 38-39, 41-42, 41-45, 45-46, 45-49, 48-49, 48-71, 49-50, 50-52, 50-60, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 83-85, 84-85, 85-86 — +2 months to march (RULES.md §8).
 
 | Pop | Countries |
 |---|---|
