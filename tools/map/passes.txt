@@ -1,0 +1,8 @@
+# Mountain passes: id, position (px on map-clean.png), routes that run settlement -> pass -> settlement.
+P1 262 1068 41-42 41-45 41-46
+P2 335 1048 41-47 40-47
+P3 409 1085 39-40
+P4 709 857 30-36 30-72
+P5 802 800 30-73 30-85 29-85
+P6 805 980 28-35 28-33 28-31 28-32
+P7 910 852 29-86
