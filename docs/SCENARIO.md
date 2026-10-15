@@ -17,7 +17,7 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 **x = 1** (see the scenario scaling note in RULES.md)
 
 <!-- generated:summary -->
-87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 197 land routes, 4 straits, 7 mountain passes
+87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 190 land routes, 4 straits, 7 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -117,18 +117,18 @@ Settlements 25 and 27 were deleted from the map.
 | 23 | Rzeszów | RZE | town |  |  | 1155 | 770 | 22, 24, 86, 87 |  |
 | 24 | Lviv | LVI | town |  |  | 1276 | 819 | 21, 22, 23 |  |
 | 26 | Kassa | HUN | town |  |  | 1074 | 1030 | 29, 31 |  |
-| 28 | Brno | BOH | town |  | HRE | 828 | 943 | 29, 30, 31, 32, 33, 35 |  |
+| 28 | Brno | BOH | town |  | HRE | 828 | 943 | 29, 30, 32, 33, 35 |  |
 | 29 | Ostrava | BOH | town |  | HRE | 884 | 886 | 26, 28, 30, 86 |  |
 | 30 | Prague | BOH | city |  | HRE | 776 | 867 | 28, 29, 36, 72, 73, 85 |  |
-| 31 | Pozsony | HUN | city |  |  | 863 | 1089 | 26, 28, 32 |  |
+| 31 | Pozsony | HUN | city |  |  | 863 | 1089 | 26, 32 |  |
 | 32 | Hainburg | AUS | town |  | HRE | 809 | 1065 | 28, 31, 33 |  |
 | 33 | Vienna | AUS | city |  | HRE | 754 | 1037 | 28, 32, 34, 35 |  |
 | 34 | Salzburg | SAL | town |  | HRE | 635 | 1031 | 33, 35, 39 |  |
-| 35 | Linz | AUS | town |  | HRE | 667 | 982 | 28, 33, 34, 36, 37, 38, 39 |  |
+| 35 | Linz | AUS | town |  | HRE | 667 | 982 | 28, 33, 34, 36, 37, 38 |  |
 | 36 | Passau | BAV | town |  | HRE | 626 | 918 | 30, 35, 37, 71, 72 |  |
 | 37 | Munich | BAV | city |  | HRE | 557 | 920 | 35, 36, 38, 48, 71 |  |
 | 38 | Memmingen | BAV | town |  | HRE | 499 | 978 | 35, 37, 39, 47, 48, 49 |  |
-| 39 | Innsbruck | TYR | town |  | HRE | 525 | 1085 | 34, 35, 38, 40 |  |
+| 39 | Innsbruck | TYR | town |  | HRE | 525 | 1085 | 34, 38, 40 |  |
 | 40 | Zurich | SWI | town |  | HRE | 349 | 1085 | 39, 41, 47 |  |
 | 41 | Bern | SWI | city |  | HRE | 290 | 1098 | 40, 42, 45, 46, 47 |  |
 | 42 | Geneva | ELS | town |  | HRE | 169 | 1113 | 41, 43, 44, 45 |  |
@@ -137,29 +137,29 @@ Settlements 25 and 27 were deleted from the map.
 | 45 | Strassburg | ELS | city |  | HRE | 179 | 981 | 41, 42, 44, 46, 49, 52 |  |
 | 46 | Basel | LGE | town |  | HRE | 258 | 965 | 41, 45, 47, 49 |  |
 | 47 | Konstanz | LGE | town |  | HRE | 363 | 973 | 38, 40, 41, 46, 49 |  |
-| 48 | Ulm | ULM | town |  | HRE | 446 | 914 | 37, 38, 49, 50, 70, 71 |  |
+| 48 | Ulm | ULM | town |  | HRE | 446 | 914 | 37, 38, 49, 50, 71 |  |
 | 49 | Stuttgart | STU | city |  | HRE | 338 | 888 | 38, 45, 46, 47, 48, 50, 52 |  |
-| 50 | Frankfurt | FRA | town |  | HRE | 327 | 803 | 48, 49, 51, 52, 60, 70 |  |
-| 51 | Bonn | FRA | town |  | HRE | 292 | 752 | 50, 59, 61, 62, 70 |  |
-| 52 | Trier | TRI | town |  | HRE | 200 | 859 | 44, 45, 49, 50, 53, 60 |  |
+| 50 | Frankfurt | FRA | town |  | HRE | 327 | 803 | 48, 49, 51, 70 |  |
+| 51 | Bonn | FRA | town |  | HRE | 292 | 752 | 50, 61, 62, 70 |  |
+| 52 | Trier | TRI | town |  | HRE | 200 | 859 | 44, 45, 49, 53, 60 |  |
 | 53 | Luxemburg | LUX | town |  | HRE | 102 | 883 | 44, 52, 54, 60 |  |
 | 54 | Brussels | BEL | town |  | HRE | 36 | 802 | 53, 55, 56, 60 |  |
 | 55 | Liège | LIE | town |  | HRE | 122 | 729 | 54, 56, 58, 59, 60, 61 |  |
 | 56 | Antwerp | BEL | town |  | HRE | 38 | 676 | 54, 55, 57, 58 |  |
 | 57 | Rotterdam | NED | city | port | HRE | 49 | 565 | 56, 58, 64 |  |
 | 58 | Utrecht | NED | town |  | HRE | 119 | 618 | 55, 56, 57, 59, 63, 64 |  |
-| 59 | Dusseldorf | RUH | city |  | HRE | 222 | 678 | 51, 55, 58, 61, 62, 63 |  |
-| 60 | Duren | TRI | town |  | HRE | 191 | 787 | 50, 52, 53, 54, 55, 61 |  |
+| 59 | Dusseldorf | RUH | city |  | HRE | 222 | 678 | 55, 58, 61, 62 |  |
+| 60 | Duren | TRI | town |  | HRE | 191 | 787 | 52, 53, 54, 55, 61 |  |
 | 61 | Cologne | RUH | town |  | HRE | 252 | 718 | 51, 55, 59, 60 |  |
 | 62 | Essen | RUH | town |  | HRE | 252 | 644 | 51, 59, 63, 70 |  |
-| 63 | Dortmund | RUH | town |  | HRE | 272 | 614 | 58, 59, 62, 64, 67, 68, 70 |  |
+| 63 | Dortmund | RUH | town |  | HRE | 272 | 614 | 58, 62, 64, 67, 68, 70 |  |
 | 64 | Münster | MST | town |  | HRE | 188 | 530 | 57, 58, 63, 65, 67 |  |
 | 65 | Bremen | BRE | town | port | HRE | 213 | 444 | 64, 66 |  |
 | 66 | Hamburg | HAM | city | port | HRE | 307 | 434 | 9, 11, 12, 65, 67 |  |
 | 67 | Hanover | HAN | town |  | HRE | 329 | 516 | 12, 63, 64, 66, 68, 69 |  |
 | 68 | Wolfsburg | WOL | town |  | HRE | 415 | 590 | 63, 67, 69, 70 |  |
 | 69 | Magdeburg | MAG | town |  | HRE | 502 | 539 | 12, 67, 68, 70, 74, 75 |  |
-| 70 | Jena | JEN | town |  | HRE | 450 | 677 | 48, 50, 51, 62, 63, 68, 69, 71, 74 |  |
+| 70 | Jena | JEN | town |  | HRE | 450 | 677 | 50, 51, 62, 63, 68, 69, 71, 74 |  |
 | 71 | Bamberg | BAV | town |  | HRE | 570 | 775 | 36, 37, 48, 70, 72, 74 |  |
 | 72 | Chemnitz | SAX | town |  | HRE | 673 | 801 | 30, 36, 71, 73, 74 |  |
 | 73 | Dresden | SAX | town |  | HRE | 750 | 709 | 30, 72, 74, 83, 85 |  |
@@ -193,7 +193,7 @@ settlement. A pass belongs to whoever owns the settlement whose land it lies in 
 | P3 | 409 | 1085 | 39-40 | 40 Zurich | SWI Switzerland |
 | P4 | 709 | 857 | 30-36, 30-72 | 30 Prague | BOH Bohemia |
 | P5 | 802 | 800 | 30-73, 30-85 | 30 Prague | BOH Bohemia |
-| P6 | 805 | 980 | 28-35, 28-33, 28-31, 28-32 | 28 Brno | BOH Bohemia |
+| P6 | 805 | 980 | 28-35, 28-33, 28-32 | 28 Brno | BOH Bohemia |
 | P7 | 910 | 852 | 29-86 | 29 Ostrava | BOH Bohemia |
 
 ## Mountains
@@ -202,7 +202,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 units); `perl tools/map.pl mountains` moves any that touch something else.
 
 ```
-769,767  738,780  847,796  738,813  874,814  808,816  933,849  705,871
+768,767  738,780  847,796  738,813  874,814  808,816  933,849  705,871
 1197,871  1008,874  1259,880  1138,883  1067,894  701,912  1213,915  1153,916
 1256,917  791,935  744,943  1266,955  837,970  877,1002  370,1038  407,1040
 647,1046  250,1081  611,1081  547,1085  482,1093  371,1096  326,1097  297,1115
@@ -220,7 +220,7 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **On a river (25):** 15, 31, 32, 33, 35, 38, 42, 45, 48, 49, 50, 51, 57, 58, 59, 61, 66, 67, 68, 70, 80, 82, 83, 85, 86 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
 
-**Routes crossing a river (44):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 35-39, 38-39, 41-42, 41-45, 45-46, 45-49, 48-49, 48-71, 49-50, 50-52, 50-60, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 83-85, 84-85, 85-86 — +2 months to march (RULES.md §8).
+**Routes crossing a river (40):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 41-42, 41-45, 45-46, 45-49, 48-49, 48-71, 49-50, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 83-85, 84-85, 85-86 — +2 months to march (RULES.md §8).
 
 | Pop | Countries |
 |---|---|
@@ -349,15 +349,17 @@ propose. Its natural path runs through Poland instead: Warsaw, Poznań, Eastern 
 
 - Six long routes over the mountains were removed from *Borders*: 24-26, 23-26, 26-86, 33-39,
   29-31, 28-36.
-- 29-85 Ostrava–Breslau was removed from *Borders* as well.
+- 29-85 was removed from *Borders* as well, and later seven routes that looked odd on the map:
+  28-31 (through pass P6), 35-39, 48-70, 50-52, 50-60, 51-59, 59-63. (23-87 was removed too, then
+  put back.)
 - 56 Antwerp is inland, so Belgium has no ships.
 
 ### Notes to check
 
 1. **Borders and routes disagree.** These lands share a border on the map but have no route:
    49-51, 49-60, 58-62, 55-62 (on top of the removed routes above); 39-47, 51-60 and 64-66
-   only touch at a point. These routes join lands that do not touch: 50-52, 50-60, 58-59,
-   59-63. Either may be intended, but neither is checked by the script.
+   only touch at a point. This route joins lands that do not touch: 58-59.
+   Either may be intended, but the script checks neither.
 2. **Sea zone transitions.** Naval movement is 3 coastal settlements per year, but nothing says
    whether a fleet can pass between the North Sea and the Baltic without forcing the Danish
    straits. If it must, Upper Denmark, Lower Denmark, Copenhagen and Schleswig control the only

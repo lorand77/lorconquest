@@ -326,17 +326,17 @@
   <path id="edge-87-88" class="edge province" d="M1001 651 L1055 651 L1063 660 L1119 660"/>
 </g>
 <g id="rivers">
-  <path class="river" d="M941.5 386.5 L942.5 437.5 L933.5 461.5 L932.5 472.5 L928.5 482.5 L919.5 490.5 L899.5 496.5 L894.5 496.5 L891.5 498.5 L882.5 499.5 L870.5 506.5 L862.5 508.5 L860.5 511.5 L856.5 511.5 L850.5 514.5 L838.5 522.5 L829.5 532.5 L825.5 544.5 L820.5 553.5 L820.5 556.5 L812.5 569.5 L812.5 573.5 L806.5 582.5 L802.5 596.5 L802.5 603.5 L800.5 609.5 L800.5 629.5 L797.5 632.5 L796.5 641.5 L796.5 644.5 L799.5 647.5 L798.5 651.5 L798.5 695.5 L804.5 716.5 L812.5 727.5 L814.5 732.5 L822.5 741.5 L847.5 761.5 L851.5 762.5 L865.5 771.5 L870.5 772.5 L876.5 776.5 L879.5 776.5 L883.5 779.5 L886.5 779.5 L892.5 783.5 L895.5 783.5 L901.5 787.5 L924.5 796.5 L943.5 808.5 L947.5 812.5 L969.5 851.5"/>
-  <path class="river" d="M276.5 422.5 L278.5 427.5 L295.5 447.5 L298.5 452.5 L299.5 459.5 L306.5 471.5 L330.5 491.5 L340.5 511.5 L341.5 530.5 L349.5 538.5 L370.5 552.5 L391.5 572.5 L397.5 588.5 L410.5 611.5 L418.5 630.5 L427.5 639.5 L434.5 642.5 L449.5 657.5 L455.5 666.5 L458.5 674.5 L488.5 703.5 L502.5 710.5 L516.5 723.5 L525.5 740.5 L528.5 748.5 L528.5 752.5 L535.5 770.5 L539.5 775.5 L548.5 792.5 L556.5 800.5"/>
-  <path class="river" d="M16.5 570.5 L35.5 583.5 L43.5 591.5 L68.5 606.5 L74.5 612.5 L83.5 617.5 L87.5 621.5 L100.5 626.5 L104.5 629.5 L107.5 629.5 L114.5 634.5 L118.5 635.5 L128.5 641.5 L132.5 646.5 L140.5 650.5 L160.5 656.5 L171.5 656.5 L178.5 660.5 L215.5 696.5 L227.5 711.5 L237.5 721.5 L259.5 750.5 L281.5 768.5 L292.5 779.5 L297.5 793.5 L309.5 813.5 L320.5 824.5 L323.5 825.5 L340.5 841.5 L352.5 850.5 L355.5 857.5 L355.5 879.5 L356.5 881.5 L375.5 900.5 L380.5 903.5 L396.5 909.5 L401.5 909.5 L407.5 912.5 L411.5 912.5 L420.5 916.5 L438.5 931.5 L447.5 948.5"/>
+  <path class="river" d="M942.1 383.3 L942.5 437.5 L933.5 461.5 L932.5 472.5 L928.5 482.5 L919.5 490.5 L899.5 496.5 L894.5 496.5 L891.5 498.5 L882.5 499.5 L870.5 506.5 L862.5 508.5 L860.5 511.5 L856.5 511.5 L850.5 514.5 L838.5 522.5 L829.5 532.5 L825.5 544.5 L820.5 553.5 L820.5 556.5 L812.5 569.5 L812.5 573.5 L806.5 582.5 L802.5 596.5 L802.5 603.5 L800.5 609.5 L800.5 629.5 L797.5 632.5 L796.5 641.5 L796.5 644.5 L799.5 647.5 L798.5 651.5 L798.5 695.5 L804.5 716.5 L812.5 727.5 L814.5 732.5 L822.5 741.5 L847.5 761.5 L851.5 762.5 L865.5 771.5 L870.5 772.5 L876.5 776.5 L879.5 776.5 L883.5 779.5 L886.5 779.5 L892.5 783.5 L895.5 783.5 L901.5 787.5 L924.5 796.5 L943.5 808.5 L947.5 812.5 L969.5 851.5"/>
+  <path class="river" d="M276.6 420.4 L278.5 427.5 L295.5 447.5 L298.5 452.5 L299.5 459.5 L306.5 471.5 L330.5 491.5 L340.5 511.5 L341.5 530.5 L349.5 538.5 L370.5 552.5 L391.5 572.5 L397.5 588.5 L410.5 611.5 L418.5 630.5 L427.5 639.5 L434.5 642.5 L449.5 657.5 L455.5 666.5 L458.5 674.5 L488.5 703.5 L502.5 710.5 L516.5 723.5 L525.5 740.5 L528.5 748.5 L528.5 752.5 L535.5 770.5 L539.5 775.5 L548.5 792.5 L556.5 800.5"/>
+  <path class="river" d="M18.3 572 L35.5 583.5 L43.5 591.5 L68.5 606.5 L74.5 612.5 L83.5 617.5 L87.5 621.5 L100.5 626.5 L104.5 629.5 L107.5 629.5 L114.5 634.5 L118.5 635.5 L128.5 641.5 L132.5 646.5 L140.5 650.5 L160.5 656.5 L171.5 656.5 L178.5 660.5 L215.5 696.5 L227.5 711.5 L237.5 721.5 L259.5 750.5 L281.5 768.5 L292.5 779.5 L297.5 793.5 L309.5 813.5 L320.5 824.5 L323.5 825.5 L340.5 841.5 L352.5 850.5 L355.5 857.5 L355.5 879.5 L356.5 881.5 L375.5 900.5 L380.5 903.5 L396.5 909.5 L401.5 909.5 L407.5 912.5 L411.5 912.5 L420.5 916.5 L438.5 931.5 L447.5 948.5"/>
   <path class="river" d="M168.5 1164.5 L171.5 1151.5 L174.5 1145.5 L174.5 1141.5 L176.5 1138.5 L177.5 1115.5 L181.5 1104.5 L181.5 1100.5 L184.5 1094.5 L184.5 1079.5 L186.5 1076.5 L186.5 1070.5 L192.5 1050.5 L194.5 963.5 L190.5 956.5 L190.5 952.5"/>
   <path class="river" d="M491.5 996.5 L495.5 997.5 L506.5 994.5 L524.5 994.5 L535.5 992.5 L545.5 992.5 L569.5 988.5 L572.5 985.5 L576.5 985.5 L579.5 983.5 L606.5 982.5 L616.5 983.5 L619.5 985.5 L624.5 985.5 L630.5 988.5 L634.5 988.5 L681.5 1007.5 L719.5 1007.5 L726.5 1010.5 L731.5 1010.5 L739.5 1014.5 L752.5 1016.5 L765.5 1022.5 L771.5 1028.5 L780.5 1038.5 L783.5 1044.5 L794.5 1058.5 L796.5 1064.5 L810.5 1079.5 L830.5 1086.5 L837.5 1092.5 L844.5 1095.5 L865.5 1112.5 L891.5 1126.5 L908.5 1141.5 L933.5 1154.5 L946.5 1164.5"/>
 </g>
 <g id="routes">
-  <path id="route-1-2" class="route" d="M233 147 L446 51"/>
+  <path id="route-1-2" class="route" d="M233 147 L372.5 69.5 L446 51"/>
   <path id="route-1-4" class="route strait" d="M233 147 L330 186"/>
   <path id="route-2-5" class="route strait" d="M446 51 L448 177"/>
-  <path id="route-2-6" class="route" d="M446 51 L581 190"/>
+  <path id="route-2-6" class="route" d="M446 51 L479.5 63.5 L581 190"/>
   <path id="route-3-6" class="route" d="M772 34 L581 190"/>
   <path id="route-4-5" class="route" d="M330 186 L448 177"/>
   <path id="route-4-8" class="route" d="M330 186 L368 248"/>
@@ -347,10 +347,10 @@
   <path id="route-8-10" class="route" d="M368 248 L420 305"/>
   <path id="route-8-11" class="route" d="M368 248 L435 376"/>
   <path id="route-9-11" class="route" d="M313 297 L435 376"/>
-  <path id="route-9-66" class="route" d="M313 297 L307 434"/>
+  <path id="route-9-66" class="route" d="M313 297 L318.5 417.5 L307 434"/>
   <path id="route-10-11" class="route" d="M420 305 L435 376"/>
   <path id="route-11-12" class="route" d="M435 376 L402 445"/>
-  <path id="route-11-13" class="route" d="M435 376 L558 419"/>
+  <path id="route-11-13" class="route" d="M435 376 L499.5 417.5 L558 419"/>
   <path id="route-11-66" class="route" d="M435 376 L307 434"/>
   <path id="route-12-13" class="route" d="M402 445 L558 419"/>
   <path id="route-12-66" class="route" d="M402 445 L307 434"/>
@@ -381,17 +381,16 @@
   <path id="route-21-24" class="route" d="M1228 597 L1276 819"/>
   <path id="route-21-88" class="route" d="M1228 597 L1064 608"/>
   <path id="route-22-23" class="route" d="M1171 672 L1155 770"/>
-  <path id="route-22-24" class="route" d="M1171 672 L1276 819"/>
+  <path id="route-22-24" class="route" d="M1171 672 L1225.5 736.5 L1276 819"/>
   <path id="route-22-87" class="route" d="M1171 672 L1055 704"/>
   <path id="route-22-88" class="route" d="M1171 672 L1064 608"/>
   <path id="route-23-24" class="route" d="M1155 770 L1276 819"/>
   <path id="route-23-86" class="route" d="M1155 770 L955 795"/>
-  <path id="route-23-87" class="route" d="M1155 770 L1055 704"/>
+  <path id="route-23-87" class="route" d="M1155 770 L1086.5 751.5 L1055 704"/>
   <path id="route-26-29" class="route" d="M1074 1030 L884 886"/>
   <path id="route-26-31" class="route" d="M1074 1030 L863 1089"/>
   <path id="route-28-29" class="route" d="M828 943 L884 886"/>
   <path id="route-28-30" class="route" d="M828 943 L776 867"/>
-  <path id="route-28-31" class="route" d="M828 943 L805 980 L863 1089"/>
   <path id="route-28-32" class="route" d="M828 943 L805 980 L809 1065"/>
   <path id="route-28-33" class="route" d="M828 943 L805 980 L754 1037"/>
   <path id="route-28-35" class="route" d="M828 943 L805 980 L667 982"/>
@@ -399,7 +398,7 @@
   <path id="route-29-86" class="route" d="M884 886 L910 852 L955 795"/>
   <path id="route-30-36" class="route" d="M776 867 L709 857 L626 918"/>
   <path id="route-30-72" class="route" d="M776 867 L709 857 L673 801"/>
-  <path id="route-30-73" class="route" d="M776 867 L802 800 L750 709"/>
+  <path id="route-30-73" class="route" d="M776 867 L802 800 L758.5 745.5 L750 709"/>
   <path id="route-30-85" class="route" d="M776 867 L802 800 L813 750"/>
   <path id="route-31-32" class="route" d="M863 1089 L809 1065"/>
   <path id="route-32-33" class="route" d="M809 1065 L754 1037"/>
@@ -410,14 +409,13 @@
   <path id="route-35-36" class="route" d="M667 982 L626 918"/>
   <path id="route-35-37" class="route" d="M667 982 L557 920"/>
   <path id="route-35-38" class="route" d="M667 982 L499 978"/>
-  <path id="route-35-39" class="route" d="M667 982 L525 1085"/>
   <path id="route-36-37" class="route" d="M626 918 L557 920"/>
   <path id="route-36-71" class="route" d="M626 918 L570 775"/>
   <path id="route-36-72" class="route" d="M626 918 L673 801"/>
   <path id="route-37-38" class="route" d="M557 920 L499 978"/>
   <path id="route-37-48" class="route" d="M557 920 L446 914"/>
   <path id="route-37-71" class="route" d="M557 920 L570 775"/>
-  <path id="route-38-39" class="route" d="M499 978 L525 1085"/>
+  <path id="route-38-39" class="route" d="M499 978 L484.5 993.5 L525 1085"/>
   <path id="route-38-47" class="route" d="M499 978 L363 973"/>
   <path id="route-38-48" class="route" d="M499 978 L446 914"/>
   <path id="route-38-49" class="route" d="M499 978 L338 888"/>
@@ -433,7 +431,7 @@
   <path id="route-42-45" class="route" d="M169 1113 L179 981"/>
   <path id="route-43-44" class="route" d="M119 1088 L125 1022"/>
   <path id="route-44-45" class="route" d="M125 1022 L179 981"/>
-  <path id="route-44-52" class="route" d="M125 1022 L200 859"/>
+  <path id="route-44-52" class="route" d="M125 1022 L140.5 910.5 L200 859"/>
   <path id="route-44-53" class="route" d="M125 1022 L102 883"/>
   <path id="route-45-46" class="route" d="M179 981 L258 965"/>
   <path id="route-45-49" class="route" d="M179 981 L338 888"/>
@@ -443,15 +441,11 @@
   <path id="route-47-49" class="route" d="M363 973 L338 888"/>
   <path id="route-48-49" class="route" d="M446 914 L338 888"/>
   <path id="route-48-50" class="route" d="M446 914 L327 803"/>
-  <path id="route-48-70" class="route" d="M446 914 L450 677"/>
   <path id="route-48-71" class="route" d="M446 914 L570 775"/>
   <path id="route-49-50" class="route" d="M338 888 L327 803"/>
   <path id="route-49-52" class="route" d="M338 888 L200 859"/>
   <path id="route-50-51" class="route" d="M327 803 L292 752"/>
-  <path id="route-50-52" class="route" d="M327 803 L200 859"/>
-  <path id="route-50-60" class="route" d="M327 803 L191 787"/>
   <path id="route-50-70" class="route" d="M327 803 L450 677"/>
-  <path id="route-51-59" class="route" d="M292 752 L222 678"/>
   <path id="route-51-61" class="route" d="M292 752 L252 718"/>
   <path id="route-51-62" class="route" d="M292 752 L252 644"/>
   <path id="route-51-70" class="route" d="M292 752 L450 677"/>
@@ -466,17 +460,16 @@
   <path id="route-55-58" class="route" d="M122 729 L119 618"/>
   <path id="route-55-59" class="route" d="M122 729 L222 678"/>
   <path id="route-55-60" class="route" d="M122 729 L191 787"/>
-  <path id="route-55-61" class="route" d="M122 729 L252 718"/>
+  <path id="route-55-61" class="route" d="M122 729 L234.5 708.5 L252 718"/>
   <path id="route-56-57" class="route" d="M38 676 L49 565"/>
   <path id="route-56-58" class="route" d="M38 676 L119 618"/>
   <path id="route-57-58" class="route" d="M49 565 L119 618"/>
   <path id="route-57-64" class="route" d="M49 565 L188 530"/>
-  <path id="route-58-59" class="route" d="M119 618 L222 678"/>
+  <path id="route-58-59" class="route" d="M119 618 L201.5 657.5 L222 678"/>
   <path id="route-58-63" class="route" d="M119 618 L272 614"/>
   <path id="route-58-64" class="route" d="M119 618 L188 530"/>
   <path id="route-59-61" class="route" d="M222 678 L252 718"/>
   <path id="route-59-62" class="route" d="M222 678 L252 644"/>
-  <path id="route-59-63" class="route" d="M222 678 L272 614"/>
   <path id="route-60-61" class="route" d="M191 787 L252 718"/>
   <path id="route-62-63" class="route" d="M252 644 L272 614"/>
   <path id="route-62-70" class="route" d="M252 644 L450 677"/>
@@ -516,7 +509,7 @@
   <path id="route-77-83" class="route" d="M701 580 L789 637"/>
   <path id="route-78-79" class="route" d="M735 465 L858 434"/>
   <path id="route-78-80" class="route" d="M735 465 L881 487"/>
-  <path id="route-78-82" class="route" d="M735 465 L845 541"/>
+  <path id="route-78-82" class="route" d="M735 465 L762.5 509.5 L845 541"/>
   <path id="route-79-80" class="route" d="M858 434 L881 487"/>
   <path id="route-80-81" class="route" d="M881 487 L1000 499"/>
   <path id="route-80-82" class="route" d="M881 487 L845 541"/>
@@ -537,11 +530,11 @@
 </g>
 <g id="mountains">
   <g class="mountain">
-    <polygon class="mtn-lit" points="769,767 754,793 770.8,793"/>
-    <polygon class="mtn-shade" points="769,767 770.8,793 784,793"/>
-    <polygon class="mtn-snow" points="769,767 763.9,775.84 766.45,777.34 769.6,776.04"/>
-    <polygon class="mtn-snow-shade" points="769,767 769.6,776.04 771.8,777.14 774.1,775.84"/>
-    <polygon class="mtn-outline" points="769,767 754,793 784,793"/>
+    <polygon class="mtn-lit" points="768,767 753,793 769.8,793"/>
+    <polygon class="mtn-shade" points="768,767 769.8,793 783,793"/>
+    <polygon class="mtn-snow" points="768,767 762.9,775.84 765.45,777.34 768.6,776.04"/>
+    <polygon class="mtn-snow-shade" points="768,767 768.6,776.04 770.8,777.14 773.1,775.84"/>
+    <polygon class="mtn-outline" points="768,767 753,793 783,793"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="738,780 723,806 739.8,806"/>
@@ -867,13 +860,13 @@
   <g id="settlement-89" class="settlement town LIT"><circle class="marker" cx="1142" cy="42" r="9"/><text class="number" x="1142" y="45.5">89</text></g>
 </g>
 <g id="labels">
-  <text id="label-NOR" class="label" x="280" y="55.4">NOR</text>
-  <text id="label-GOT" class="label" x="576" y="85.4">GOT</text>
+  <text id="label-NOR" class="label" x="280" y="51.4">NOR</text>
+  <text id="label-GOT" class="label" x="586" y="89.4">GOT</text>
   <text id="label-STO" class="label" x="706" y="33.4">STO</text>
   <text id="label-UDK" class="label" x="380" y="203.4">UDK</text>
-  <text id="label-LDK" class="label" x="338" y="351.4">LDK</text>
+  <text id="label-LDK" class="label" x="358" y="299.4">LDK</text>
   <text id="label-CPH" class="label" x="553" y="325.4">CPH</text>
-  <text id="label-SCH" class="label" x="454" y="419.4">SCH</text>
+  <text id="label-SCH" class="label" x="448" y="423.4">SCH</text>
   <text id="label-MEC" class="label" x="604" y="435.4">MEC</text>
   <text id="label-GDA" class="label" x="820" y="407.4">GDA</text>
   <text id="label-PRU" class="label" x="1228" y="393.4">PRU</text>
@@ -888,10 +881,10 @@
   <text id="label-BOH" class="label" x="756" y="917.4">BOH</text>
   <text id="label-AUS" class="label" x="742" y="1121.4">AUS</text>
   <text id="label-SAL" class="label small" x="668" y="1047.6">SAL</text>
-  <text id="label-TYR" class="label" x="472" y="1055.4">TYR</text>
+  <text id="label-TYR" class="label" x="602" y="1139.4">TYR</text>
   <text id="label-BAV" class="label" x="496" y="797.4">BAV</text>
-  <text id="label-ULM" class="label" x="418" y="843.4">ULM</text>
-  <text id="label-STU" class="label" x="296" y="855.4">STU</text>
+  <text id="label-ULM" class="label" x="424" y="847.4">ULM</text>
+  <text id="label-STU" class="label" x="288" y="853.4">STU</text>
   <text id="label-LGE" class="label" x="300" y="1007.4">LGE</text>
   <text id="label-SWI" class="label" x="374" y="1147.4">SWI</text>
   <text id="label-ELS" class="label" x="218" y="931.4">ELS</text>
@@ -906,8 +899,8 @@
   <text id="label-HAM" class="label" x="267" y="399.4">HAM</text>
   <text id="label-HAN" class="label" x="380" y="507.4">HAN</text>
   <text id="label-WOL" class="label" x="372" y="617.4">WOL</text>
-  <text id="label-JEN" class="label" x="362" y="689.4">JEN</text>
-  <text id="label-RUH" class="label" x="210" y="641.4">RUH</text>
+  <text id="label-JEN" class="label" x="434" y="749.4">JEN</text>
+  <text id="label-RUH" class="label" x="212" y="639.4">RUH</text>
   <text id="label-FRA" class="label" x="378" y="797.4">FRA</text>
   <text id="label-SAX" class="label" x="684" y="723.4">SAX</text>
   <text id="label-MAG" class="label" x="482" y="491.4">MAG</text>

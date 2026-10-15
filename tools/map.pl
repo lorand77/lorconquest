@@ -9,7 +9,7 @@
 #
 # Only core Perl is needed.
 use strict; use warnings; use utf8; use open qw(:std :encoding(UTF-8));
-use File::Basename qw(dirname); use Cwd qw(abs_path); use JSON::PP;
+use File::Basename qw(dirname); use Cwd qw(abs_path); use JSON::PP; use List::Util qw(min max);
 
 my $ROOT = dirname(dirname(abs_path(__FILE__)));
 my ($DOC, $BASE, $SVG, $JSON) = map { "$ROOT/docs/$_" } qw(SCENARIO.md map-base.svg map.svg scenario.json);
@@ -149,6 +149,9 @@ for my $k (sort keys %SEG) { my @own = @{ $SEG{$k} }; my ($p, $q) = map { $PK{$_
     if (land_at($mx + $nx, $my + $ny) && land_at($mx - $nx, $my - $ny)) { err("land-%d: its edge near %.0f,%.0f does not match its neighbour's points exactly", $own[0], $mx, $my); next }
     push @COAST, [$p, $q] }
 check('map-base.svg');
+# a river that reaches the sea must end exactly on the coastline
+for my $r (@RIVERS) { for my $p ($r->[0], $r->[-1]) { my $d = min(map { seg_dist(@$p, @$_) } @COAST);
+    warn sprintf "map-base.svg: a river ends %.1f from the coast near %.0f,%.0f -- move its end onto the coastline\n", $d, @$p if $d > 0.3 && $d < 12 } }
 # join segments into as few polylines as possible
 sub chains { my @segs = @_; my %adj; for my $i (0 .. $#segs) { push @{ $adj{ pk($segs[$i][0]) } }, $i; push @{ $adj{ pk($segs[$i][1]) } }, $i }
     my (%used, @out);
@@ -186,11 +189,59 @@ sub occ_seg { my ($x1, $y1, $x2, $y2, $hw) = @_; my ($dx, $dy) = ($x2 - $x1, $y2
 sub occ_line { my ($pts, $hw) = @_; occ_seg(@{ $pts->[$_ - 1] }, @{ $pts->[$_] }, $hw) for 1 .. $#$pts }
 sub occ_box { my ($x0, $y0, $x1, $y1) = @_; for my $y (int $y0 .. int $y1) { for my $x (int $x0 .. int $x1) { $OCC[$y][$x] = 1 if inb($x, $y) } } }
 
-# routes: [x1, y1, x2, y2, key, strait]; a route through a pass is two segments
-my @ROUTESEG;
-for my $e (sort keys %LAND) { my ($a, $b) = split /-/, $e; my @A = @{ $S{$a} }{qw(x y)}; my @B = @{ $S{$b} }{qw(x y)};
-    if (my $p = $VIA{$e}) { push @ROUTESEG, [@A, $p->{x}, $p->{y}, $e, 0], [$p->{x}, $p->{y}, @B, $e, 0] } else { push @ROUTESEG, [@A, @B, $e, 0] } }
-push @ROUTESEG, [ @{ $S{ (split /-/)[0] } }{qw(x y)}, @{ $S{ (split /-/)[1] } }{qw(x y)}, $_, 1 ] for sort keys %STRAIT;
+# routes as polylines: settlement -> [pass ->] settlement. A land route may only cross land of the countries it
+# joins (and of its pass). One whose straight line leaves that land - out to sea or through a third country - is
+# bent: the shortest way over the allowed land, kept off the shore and other countries, pulled as straight as it allows.
+my @SEAD = map { [ (99) x $W ] } 1 .. $H;           # distance to the sea, up to 12
+{ my @q; for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { unless ($REG[$y][$x]) { $SEAD[$y][$x] = 0; push @q, [$x, $y] } } }
+  for my $d (1 .. 12) { my @n; for my $c (@q) { for ([1, 0], [-1, 0], [0, 1], [0, -1]) { my ($u, $v) = ($c->[0] + $_->[0], $c->[1] + $_->[1]);
+      next unless inb($u, $v) && $SEAD[$v][$u] > $d; $SEAD[$v][$u] = $d; push @n, [$u, $v] } } @q = @n } }
+my ($ROUTE_SHORE, $ROUTE_MARGIN) = (8, 6);          # a bent route keeps this far from the sea / from other countries where it can
+my @NEARC;                                          # pixels within $ROUTE_MARGIN of another country: every country that close
+{ my @q; for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { my $id = $REG[$y][$x] or next;
+      push @q, [$x, $y] if grep { my ($u, $v) = ($x + $_->[0], $y + $_->[1]); inb($u, $v) && $REG[$v][$u] && $S{ $REG[$v][$u] }{country} ne $S{$id}{country} } [1, 0], [-1, 0], [0, 1], [0, -1] } }
+  my %near = map { ("$_->[0],$_->[1]" => 1) } @q;
+  for (1 .. $ROUTE_MARGIN) { my @n; for my $c (@q) { for ([1, 0], [-1, 0], [0, 1], [0, -1]) { my ($u, $v) = ($c->[0] + $_->[0], $c->[1] + $_->[1]); next if !inb($u, $v) || $near{"$u,$v"}++; push @n, [$u, $v] } } @q = @n }
+  my @disc = grep { $_->[0]**2 + $_->[1]**2 <= $ROUTE_MARGIN**2 } map { my $dy = $_; map { [$_, $dy] } -$ROUTE_MARGIN .. $ROUTE_MARGIN } -$ROUTE_MARGIN .. $ROUTE_MARGIN;
+  for my $k (keys %near) { my ($x, $y) = split /,/, $k; my %c;
+      for (@disc) { my ($u, $v) = ($x + $_->[0], $y + $_->[1]); $c{ $S{ $REG[$v][$u] }{country} } = 1 if inb($u, $v) && $REG[$v][$u] } $NEARC[$y][$x] = [ keys %c ] if keys %c > 1 } }
+# may a route pass this pixel? land at least $clear from the sea, in an allowed country, and (with $margin) not near any other country
+sub pix_ok { my ($x, $y, $clear, $allow, $margin) = @_; return 0 if !inb($x, $y) || $SEAD[$y][$x] < $clear || !$allow->{ $S{ $REG[$y][$x] }{country} };
+    return 0 if $margin && $NEARC[$y][$x] && grep { !$allow->{$_} } @{ $NEARC[$y][$x] }; 1 }
+# does the straight leg a-b only pass such pixels? the part under a marker at either end does not count
+sub leg_ok { my ($a, $b, $clear, $margin, $allow, $skipa, $skipb) = @_; my $L = sqrt(($b->[0] - $a->[0])**2 + ($b->[1] - $a->[1])**2);
+    for my $i (0 .. int $L) { next if ($skipa && $i < 12) || ($skipb && $L - $i < 12); my $t = $L ? $i / $L : 0;
+        return 0 unless pix_ok(int($a->[0] + ($b->[0] - $a->[0]) * $t), int($a->[1] + ($b->[1] - $a->[1]) * $t), $clear, $allow, $margin) } 1 }
+sub land_path { my ($a, $b, $allow, $margin) = @_; my ($sx, $sy, $tx, $ty) = map { int } (@$a, @$b);
+    my ($x0, $x1) = (min($sx, $tx) - 200, max($sx, $tx) + 200); my ($y0, $y1) = (min($sy, $ty) - 200, max($sy, $ty) + 200);
+    my %cost = ("$sx,$sy" => 0); my %par; my @bucket = (["$sx,$sy"]); my $found;
+    B: for (my $c = 0; $c < @bucket; $c++) { for my $k (@{ $bucket[$c] // [] }) { next if $cost{$k} < $c; if ($k eq "$tx,$ty") { $found = 1; last B } my ($x, $y) = split /,/, $k;
+        for ([1, 0, 10], [-1, 0, 10], [0, 1, 10], [0, -1, 10], [1, 1, 14], [1, -1, 14], [-1, 1, 14], [-1, -1, 14]) { my ($u, $v) = ($x + $_->[0], $y + $_->[1]);
+            next if $u < $x0 || $u > $x1 || $v < $y0 || $v > $y1 || !inb($u, $v);
+            my $under = ($u - $sx)**2 + ($v - $sy)**2 < 144 || ($u - $tx)**2 + ($v - $ty)**2 < 144; next unless $under || pix_ok($u, $v, 1, $allow, $margin);
+            my $sd = $SEAD[$v][$u]; my $nc = $c + $_->[2] + ($under || $sd >= 11 ? 0 : (11 - $sd) * 6); my $kk = "$u,$v"; next if exists $cost{$kk} && $cost{$kk} <= $nc;
+            $cost{$kk} = $nc; $par{$kk} = $k; push @{ $bucket[$nc] }, $kk } } }
+    return undef unless $found;
+    my @p; my $k = "$tx,$ty"; while (defined $k) { unshift @p, [ map { $_ + 0.5 } split /,/, $k ]; $k = $par{$k} } $p[0] = [@$a]; $p[-1] = [@$b];
+    my @out = ($p[0]); my $i = 0;
+    while ($i < $#p) { my $j = $#p; $j-- while $j > $i + 1 && !leg_ok($p[$i], $p[$j], $ROUTE_SHORE, $margin, $allow, $i == 0, $j == $#p); push @out, $p[$j]; $i = $j }
+    for (my $k = 1; $k < $#out; $k++) { next unless ($out[$k][0] - $out[$k - 1][0])**2 + ($out[$k][1] - $out[$k - 1][1])**2 < 64; splice @out, $k, 1; $k-- }   # merge corners closer than 8
+    return \@out }
+my (%RPATH, %BENT); my %ANY = map { $_ => 1 } @CORDER;
+for my $e (sort keys %LAND) { my ($a, $b) = split /-/, $e; my @stops = ([ @{ $S{$a} }{qw(x y)} ], $VIA{$e} ? [ $VIA{$e}{x}, $VIA{$e}{y} ] : (), [ @{ $S{$b} }{qw(x y)} ]);
+    my %allow = map { $_ => 1 } $S{$a}{country}, $S{$b}{country}, $VIA{$e} ? $S{ $VIA{$e}{owner} }{country} : ();
+    my @path = ($stops[0]);
+    for my $i (1 .. $#stops) { my ($p, $q) = @stops[$i - 1, $i];
+        if (leg_ok($p, $q, 1, 0, \%allow, 1, 1)) { push @path, $q; next }
+        my $why = leg_ok($p, $q, 1, 0, \%ANY, 1, 1) ? 'country' : 'sea';
+        my $bent = land_path($p, $q, \%allow, $ROUTE_MARGIN); if (!$bent && ($bent = land_path($p, $q, \%allow, 0))) { $BENT{tight}{$e} = 1 }
+        unless ($bent) { warn "route $e: no way over land of " . join('/', sort keys %allow) . " only; drawn straight\n"; push @path, $q; next }
+        push @path, @{ $bent }[1 .. $#$bent]; $BENT{$why}{$e} = 1 }
+    for my $i (1 .. $#path) { warn "route $e still leaves its countries near " . join(',', map { int } @{ $path[$i] }) . "\n" unless leg_ok($path[$i - 1], $path[$i], 1, 0, \%allow, 1, 1) }
+    $RPATH{$e} = \@path }
+$RPATH{$_} = [ map { [ @{ $S{$_} }{qw(x y)} ] } split /-/ ] for keys %STRAIT;
+# route segments: [x1, y1, x2, y2, key, strait]
+my @ROUTESEG = map { my $e = $_; my $p = $RPATH{$e}; map { [ @{ $p->[$_ - 1] }, @{ $p->[$_] }, $e, $STRAIT{$e} ? 1 : 0 ] } 1 .. $#$p } sort keys %RPATH;
 
 occ_line($_, 1.0) for chains(@COAST); occ_line($_, 1.25) for map { chains(@{ $PAIR{$_} }) } grep { my ($a, $b) = split /-/; $S{$a}{country} ne $S{$b}{country} } keys %PAIR;
 occ_line($_, 1.25) for @RIVERS; occ_seg(@$_[0 .. 3], 1.0) for @ROUTESEG;
@@ -276,8 +327,7 @@ for my $k (sort { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] 
     push @o, sprintf '  <path id="edge-%s" class="edge %s" d="%s"/>', $k, $S{$a}{country} eq $S{$b}{country} ? 'province' : 'border', join ' ', map { d_line($_) } chains(@{ $PAIR{$k} }) }
 push @o, '</g>', '<g id="rivers">', (map { sprintf '  <path class="river" d="%s"/>', d_line($_) } @RIVERS), '</g>', '<g id="routes">';
 for my $e (sort { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] || $a[1] <=> $b[1] } keys %LAND, keys %STRAIT) { my ($a, $b) = split /-/, $e;
-    my @pts = ([ @{ $S{$a} }{qw(x y)} ], $VIA{$e} ? [ $VIA{$e}{x}, $VIA{$e}{y} ] : (), [ @{ $S{$b} }{qw(x y)} ]);
-    push @o, sprintf '  <path id="route-%s" class="route%s" d="%s"/>', $e, $STRAIT{$e} ? ' strait' : '', d_line(\@pts) }
+    push @o, sprintf '  <path id="route-%s" class="route%s" d="%s"/>', $e, $STRAIT{$e} ? ' strait' : '', d_line($RPATH{$e}) }
 push @o, '</g>', '<g id="mountains">';
 for my $m (@placed) { my ($ax, $ay) = @$m; my ($hw, $h) = ($MTN_W / 2, $MTN_H); my $sx = $ax + $MTN_W * 0.06; my $sy = $ay + $h * 0.34; my $sw = $hw * 0.34;
     my $pts = sub { join ' ', map { n($_->[0]) . ',' . n($_->[1]) } @_ };
@@ -323,7 +373,7 @@ my %json = (
         port => $s->{port} ? $T : $F, river => $s->{river} ? $T : $F, hre => $s->{hre} ? $T : $F, x => 0 + $s->{x}, y => 0 + $s->{y}, land => "land-$_",
         borders => [ sort { $a <=> $b } map { 0 + $_ } @{ $s->{nb} } ], straits => [ sort { $a <=> $b } map { 0 + $_ } @{ $s->{st} } ] } } @ids ],
     routes => [ map { my ($a, $b) = split /-/; { id => "route-$_", from => 0 + $a, to => 0 + $b, type => $STRAIT{$_} ? 'strait' : 'land',
-        pass => $VIA{$_} ? $VIA{$_}{id} : undef, crossesRiver => $CROSS{$_} ? $T : $F } } sort bykey keys %LAND, keys %STRAIT ],
+        pass => $VIA{$_} ? $VIA{$_}{id} : undef, crossesRiver => $CROSS{$_} ? $T : $F, points => [ map { [ map { 0 + n($_) } @$_ ] } @{ $RPATH{$_} } ] } } sort bykey keys %LAND, keys %STRAIT ],
     passes => [ map { { id => $_->{id}, x => 0 + $_->{x}, y => 0 + $_->{y}, routes => $_->{routes}, land => 0 + $_->{owner} } } @PASSES ],
 );
 open $fh, '>:raw', $JSON or die "$JSON: $!"; print $fh JSON::PP->new->utf8->canonical->pretty->indent_length(1)->encode(\%json); close $fh;
@@ -366,6 +416,9 @@ open $fh, '>', $DOC or die "$DOC: $!"; print $fh map { "$_\n" } @doc; close $fh;
 printf "%d settlements, %d countries, %d land routes (%d cross a river), %d straits, %d passes, %d mountains, %d rivers -> docs/map.svg, docs/scenario.json\n",
     scalar @ids, scalar @CORDER, scalar keys %LAND, scalar @crossing, scalar keys %STRAIT, scalar @PASSES, scalar @placed, scalar @RIVERS;
 printf "%s at %d,%d: land of %d %s (%s)\n", $_->{id}, $_->{x}, $_->{y}, $_->{owner}, $S{ $_->{owner} }{name}, cname($S{ $_->{owner} }{country}) for @PASSES;
+printf "bent around the sea: %s\n", join(', ', sort bykey keys %{ $BENT{sea} }) if $BENT{sea};
+printf "bent around other countries: %s\n", join(', ', sort bykey keys %{ $BENT{country} }) if $BENT{country};
+printf "squeezed through a point where the lands barely touch: %s\n", join(', ', sort bykey keys %{ $BENT{tight} }) if $BENT{tight};
 if (@touching) { warn sprintf "%d mountain(s) touch something: %s -- run `perl tools/map.pl mountains`\n", scalar @touching, join ' ', map { "$_->[0],$_->[1]" } @touching }
 if ($MODE eq 'mountains') { my $moved = grep { my $q = $_; !grep { $_->[0] == $q->[0] && $_->[1] == $q->[1] } @PEAKS } @placed;
     printf "mountains: %d kept, %d moved, %d dropped%s\n", @placed - $moved, $moved, scalar @dropped, @dropped ? ' (no clear spot near ' . join(' ', map { "$_->[0],$_->[1]" } @dropped) . ')' : '' }
