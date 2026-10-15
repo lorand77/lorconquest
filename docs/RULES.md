@@ -229,7 +229,7 @@ your population (§2).
 
 ## 8. ARMIES, FLEETS AND MOVEMENT
 
-*(Movement distances are scenario-specific.)*
+*(The army speed and the route lengths are scenario-specific.)*
 
 **Raising forces.** New armies are made in any **core settlement**. You may add men and upgrade
 weapons in existing armies. You may also **remove men from an army** — their weapons go to a
@@ -240,17 +240,23 @@ form a new one.
 
 | Movement | |
 |---|---|
-| Army, one settlement | 0.5 years (avg) |
-| Army, settlement ↔ mountain pass | 0.5 years (avg) |
+| Army | route length ÷ army speed |
 | River crossing | +2 months |
+| Leg to or from a mountain pass | +3 months |
 | Navy | 3 coastal settlements per year |
+
+**Marching time is proportional to distance.** Every route has a length — the length of its line on
+the map — and an army covers it at the army speed set by the scenario. A route twice as long takes
+twice as long. River crossings and mountain passes add their delays on top.
 
 **Mountain passes (yellow triangles).** Some routes cross the mountains through a pass. A pass is
 a node on the map, like a settlement with no people in it, and the route runs settlement → pass →
 settlement.
 
-- **Armies can be sent to a pass** and stay there. Each leg (settlement to pass, pass to settlement)
-  is one step, so a route through a pass takes twice as long as an ordinary route.
+- **Armies can be sent to a pass** and stay there. The route is split at the pass, and each leg
+  (settlement to pass, pass to settlement) takes time by its own length **plus 3 months** for the
+  climb, so going through a pass costs 6 months on top of the distance. An army that stops at the
+  pass has paid half, and pays the rest when it moves on.
 - **An army defending a pass gets ×2** defence (§5).
 - **Snipers** are bought and stationed only at passes (§5).
 - **Each pass belongs to one country** — whoever's territory it lies in, i.e. whoever owns the

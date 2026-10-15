@@ -1,4 +1,5 @@
 {
+ "armySpeed" : 240,
  "countries" : [
   {
    "army" : 1200,
@@ -620,6 +621,8 @@
    "crossesRiver" : false,
    "from" : 1,
    "id" : "route-1-2",
+   "legs" : null,
+   "length" : 235.37,
    "pass" : null,
    "points" : [
     [
@@ -637,12 +640,15 @@
    ],
    "seaZone" : null,
    "to" : 2,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.98
   },
   {
    "crossesRiver" : false,
    "from" : 1,
    "id" : "route-1-4",
+   "legs" : null,
+   "length" : 104.55,
    "pass" : null,
    "points" : [
     [
@@ -656,12 +662,15 @@
    ],
    "seaZone" : "skagerrak",
    "to" : 4,
-   "type" : "strait"
+   "type" : "strait",
+   "years" : null
   },
   {
    "crossesRiver" : false,
    "from" : 2,
    "id" : "route-2-5",
+   "legs" : null,
+   "length" : 126.02,
    "pass" : null,
    "points" : [
     [
@@ -675,12 +684,15 @@
    ],
    "seaZone" : "oslofjord",
    "to" : 5,
-   "type" : "strait"
+   "type" : "strait",
+   "years" : null
   },
   {
    "crossesRiver" : false,
    "from" : 2,
    "id" : "route-2-6",
+   "legs" : null,
+   "length" : 197.94,
    "pass" : null,
    "points" : [
     [
@@ -698,12 +710,15 @@
    ],
    "seaZone" : null,
    "to" : 6,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.82
   },
   {
    "crossesRiver" : false,
    "from" : 3,
    "id" : "route-3-6",
+   "legs" : null,
+   "length" : 246.61,
    "pass" : null,
    "points" : [
     [
@@ -717,12 +732,15 @@
    ],
    "seaZone" : null,
    "to" : 6,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.03
   },
   {
    "crossesRiver" : false,
    "from" : 4,
    "id" : "route-4-5",
+   "legs" : null,
+   "length" : 118.34,
    "pass" : null,
    "points" : [
     [
@@ -736,12 +754,15 @@
    ],
    "seaZone" : null,
    "to" : 5,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.49
   },
   {
    "crossesRiver" : false,
    "from" : 4,
    "id" : "route-4-8",
+   "legs" : null,
+   "length" : 72.72,
    "pass" : null,
    "points" : [
     [
@@ -755,12 +776,15 @@
    ],
    "seaZone" : null,
    "to" : 8,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
    "from" : 5,
    "id" : "route-5-8",
+   "legs" : null,
+   "length" : 106.96,
    "pass" : null,
    "points" : [
     [
@@ -774,12 +798,15 @@
    ],
    "seaZone" : null,
    "to" : 8,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.45
   },
   {
    "crossesRiver" : false,
    "from" : 6,
    "id" : "route-6-7",
+   "legs" : null,
+   "length" : 109.29,
    "pass" : null,
    "points" : [
     [
@@ -793,12 +820,15 @@
    ],
    "seaZone" : "kattegat",
    "to" : 7,
-   "type" : "strait"
+   "type" : "strait",
+   "years" : null
   },
   {
    "crossesRiver" : false,
    "from" : 7,
    "id" : "route-7-10",
+   "legs" : null,
+   "length" : 102.11,
    "pass" : null,
    "points" : [
     [
@@ -812,12 +842,15 @@
    ],
    "seaZone" : "kattegat",
    "to" : 10,
-   "type" : "strait"
+   "type" : "strait",
+   "years" : null
   },
   {
    "crossesRiver" : false,
    "from" : 8,
    "id" : "route-8-9",
+   "legs" : null,
+   "length" : 73.66,
    "pass" : null,
    "points" : [
     [
@@ -831,12 +864,15 @@
    ],
    "seaZone" : null,
    "to" : 9,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
    "from" : 8,
    "id" : "route-8-10",
+   "legs" : null,
+   "length" : 77.16,
    "pass" : null,
    "points" : [
     [
@@ -850,31 +886,15 @@
    ],
    "seaZone" : null,
    "to" : 10,
-   "type" : "land"
-  },
-  {
-   "crossesRiver" : false,
-   "from" : 8,
-   "id" : "route-8-11",
-   "pass" : null,
-   "points" : [
-    [
-     368,
-     248
-    ],
-    [
-     435,
-     376
-    ]
-   ],
-   "seaZone" : null,
-   "to" : 11,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
    "from" : 9,
    "id" : "route-9-11",
+   "legs" : null,
+   "length" : 145.34,
    "pass" : null,
    "points" : [
     [
@@ -888,12 +908,15 @@
    ],
    "seaZone" : null,
    "to" : 11,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.61
   },
   {
    "crossesRiver" : false,
    "from" : 9,
    "id" : "route-9-66",
+   "legs" : null,
+   "length" : 140.74,
    "pass" : null,
    "points" : [
     [
@@ -911,12 +934,15 @@
    ],
    "seaZone" : null,
    "to" : 66,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
    "from" : 10,
    "id" : "route-10-11",
+   "legs" : null,
+   "length" : 72.57,
    "pass" : null,
    "points" : [
     [
@@ -930,12 +956,15 @@
    ],
    "seaZone" : null,
    "to" : 11,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
    "from" : 11,
    "id" : "route-11-12",
+   "legs" : null,
+   "length" : 76.49,
    "pass" : null,
    "points" : [
     [
@@ -949,12 +978,15 @@
    ],
    "seaZone" : null,
    "to" : 12,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
    "from" : 11,
    "id" : "route-11-13",
+   "legs" : null,
+   "length" : 135.22,
    "pass" : null,
    "points" : [
     [
@@ -972,12 +1004,15 @@
    ],
    "seaZone" : null,
    "to" : 13,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.56
   },
   {
    "crossesRiver" : false,
    "from" : 11,
    "id" : "route-11-66",
+   "legs" : null,
+   "length" : 140.53,
    "pass" : null,
    "points" : [
     [
@@ -991,12 +1026,15 @@
    ],
    "seaZone" : null,
    "to" : 66,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
    "from" : 12,
    "id" : "route-12-13",
+   "legs" : null,
+   "length" : 158.15,
    "pass" : null,
    "points" : [
     [
@@ -1010,12 +1048,15 @@
    ],
    "seaZone" : null,
    "to" : 13,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.66
   },
   {
    "crossesRiver" : false,
    "from" : 12,
    "id" : "route-12-66",
+   "legs" : null,
+   "length" : 95.63,
    "pass" : null,
    "points" : [
     [
@@ -1029,12 +1070,15 @@
    ],
    "seaZone" : null,
    "to" : 66,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.4
   },
   {
    "crossesRiver" : true,
    "from" : 12,
    "id" : "route-12-67",
+   "legs" : null,
+   "length" : 101.83,
    "pass" : null,
    "points" : [
     [
@@ -1048,12 +1092,15 @@
    ],
    "seaZone" : null,
    "to" : 67,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
    "from" : 12,
    "id" : "route-12-69",
+   "legs" : null,
+   "length" : 137.24,
    "pass" : null,
    "points" : [
     [
@@ -1067,12 +1114,15 @@
    ],
    "seaZone" : null,
    "to" : 69,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.57
   },
   {
    "crossesRiver" : false,
    "from" : 12,
    "id" : "route-12-75",
+   "legs" : null,
+   "length" : 157.17,
    "pass" : null,
    "points" : [
     [
@@ -1086,12 +1136,15 @@
    ],
    "seaZone" : null,
    "to" : 75,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.65
   },
   {
    "crossesRiver" : false,
    "from" : 13,
    "id" : "route-13-14",
+   "legs" : null,
+   "length" : 97.51,
    "pass" : null,
    "points" : [
     [
@@ -1105,12 +1158,15 @@
    ],
    "seaZone" : null,
    "to" : 14,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.41
   },
   {
    "crossesRiver" : false,
    "from" : 13,
    "id" : "route-13-75",
+   "legs" : null,
+   "length" : 52.01,
    "pass" : null,
    "points" : [
     [
@@ -1124,12 +1180,15 @@
    ],
    "seaZone" : null,
    "to" : 75,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.22
   },
   {
    "crossesRiver" : false,
    "from" : 13,
    "id" : "route-13-76",
+   "legs" : null,
+   "length" : 100,
    "pass" : null,
    "points" : [
     [
@@ -1143,12 +1202,15 @@
    ],
    "seaZone" : null,
    "to" : 76,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.42
   },
   {
    "crossesRiver" : false,
    "from" : 14,
    "id" : "route-14-76",
+   "legs" : null,
+   "length" : 91.76,
    "pass" : null,
    "points" : [
     [
@@ -1162,12 +1224,15 @@
    ],
    "seaZone" : null,
    "to" : 76,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.38
   },
   {
    "crossesRiver" : false,
    "from" : 14,
    "id" : "route-14-78",
+   "legs" : null,
+   "length" : 97.65,
    "pass" : null,
    "points" : [
     [
@@ -1181,12 +1246,15 @@
    ],
    "seaZone" : null,
    "to" : 78,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.41
   },
   {
    "crossesRiver" : false,
    "from" : 14,
    "id" : "route-14-79",
+   "legs" : null,
+   "length" : 204.53,
    "pass" : null,
    "points" : [
     [
@@ -1200,12 +1268,15 @@
    ],
    "seaZone" : null,
    "to" : 79,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.85
   },
   {
    "crossesRiver" : true,
    "from" : 15,
    "id" : "route-15-16",
+   "legs" : null,
+   "length" : 128.04,
    "pass" : null,
    "points" : [
     [
@@ -1219,12 +1290,15 @@
    ],
    "seaZone" : null,
    "to" : 16,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.7
   },
   {
    "crossesRiver" : false,
    "from" : 15,
    "id" : "route-15-79",
+   "legs" : null,
+   "length" : 74.71,
    "pass" : null,
    "points" : [
     [
@@ -1238,12 +1312,15 @@
    ],
    "seaZone" : null,
    "to" : 79,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
    "from" : 15,
    "id" : "route-15-80",
+   "legs" : null,
+   "length" : 97.94,
    "pass" : null,
    "points" : [
     [
@@ -1257,12 +1334,15 @@
    ],
    "seaZone" : null,
    "to" : 80,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.41
   },
   {
    "crossesRiver" : true,
    "from" : 15,
    "id" : "route-15-81",
+   "legs" : null,
+   "length" : 125.6,
    "pass" : null,
    "points" : [
     [
@@ -1276,12 +1356,15 @@
    ],
    "seaZone" : null,
    "to" : 81,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.69
   },
   {
    "crossesRiver" : false,
    "from" : 16,
    "id" : "route-16-17",
+   "legs" : null,
+   "length" : 68.07,
    "pass" : null,
    "points" : [
     [
@@ -1295,12 +1378,15 @@
    ],
    "seaZone" : null,
    "to" : 17,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
    "from" : 16,
    "id" : "route-16-20",
+   "legs" : null,
+   "length" : 112.89,
    "pass" : null,
    "points" : [
     [
@@ -1314,12 +1400,15 @@
    ],
    "seaZone" : null,
    "to" : 20,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.47
   },
   {
    "crossesRiver" : false,
    "from" : 16,
    "id" : "route-16-81",
+   "legs" : null,
+   "length" : 110.06,
    "pass" : null,
    "points" : [
     [
@@ -1333,12 +1422,15 @@
    ],
    "seaZone" : null,
    "to" : 81,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.46
   },
   {
    "crossesRiver" : false,
    "from" : 16,
    "id" : "route-16-88",
+   "legs" : null,
+   "length" : 206.35,
    "pass" : null,
    "points" : [
     [
@@ -1352,12 +1444,15 @@
    ],
    "seaZone" : null,
    "to" : 88,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.86
   },
   {
    "crossesRiver" : false,
    "from" : 17,
    "id" : "route-17-18",
+   "legs" : null,
+   "length" : 90.43,
    "pass" : null,
    "points" : [
     [
@@ -1371,12 +1466,15 @@
    ],
    "seaZone" : null,
    "to" : 18,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.38
   },
   {
    "crossesRiver" : false,
    "from" : 17,
    "id" : "route-17-20",
+   "legs" : null,
+   "length" : 80.32,
    "pass" : null,
    "points" : [
     [
@@ -1390,12 +1488,15 @@
    ],
    "seaZone" : null,
    "to" : 20,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.33
   },
   {
    "crossesRiver" : false,
    "from" : 18,
    "id" : "route-18-19",
+   "legs" : null,
+   "length" : 140.91,
    "pass" : null,
    "points" : [
     [
@@ -1409,12 +1510,15 @@
    ],
    "seaZone" : null,
    "to" : 19,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
    "from" : 19,
    "id" : "route-19-89",
+   "legs" : null,
+   "length" : 119.34,
    "pass" : null,
    "points" : [
     [
@@ -1428,12 +1532,15 @@
    ],
    "seaZone" : null,
    "to" : 89,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.5
   },
   {
    "crossesRiver" : false,
    "from" : 20,
    "id" : "route-20-21",
+   "legs" : null,
+   "length" : 155.08,
    "pass" : null,
    "points" : [
     [
@@ -1447,12 +1554,15 @@
    ],
    "seaZone" : null,
    "to" : 21,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.65
   },
   {
    "crossesRiver" : false,
    "from" : 20,
    "id" : "route-20-88",
+   "legs" : null,
+   "length" : 163.48,
    "pass" : null,
    "points" : [
     [
@@ -1466,12 +1576,15 @@
    ],
    "seaZone" : null,
    "to" : 88,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.68
   },
   {
    "crossesRiver" : false,
    "from" : 21,
    "id" : "route-21-22",
+   "legs" : null,
+   "length" : 94.2,
    "pass" : null,
    "points" : [
     [
@@ -1485,12 +1598,15 @@
    ],
    "seaZone" : null,
    "to" : 22,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.39
   },
   {
    "crossesRiver" : false,
    "from" : 21,
    "id" : "route-21-24",
+   "legs" : null,
+   "length" : 227.13,
    "pass" : null,
    "points" : [
     [
@@ -1504,12 +1620,15 @@
    ],
    "seaZone" : null,
    "to" : 24,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.95
   },
   {
    "crossesRiver" : false,
    "from" : 21,
    "id" : "route-21-88",
+   "legs" : null,
+   "length" : 164.37,
    "pass" : null,
    "points" : [
     [
@@ -1523,12 +1642,15 @@
    ],
    "seaZone" : null,
    "to" : 88,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.68
   },
   {
    "crossesRiver" : false,
    "from" : 22,
    "id" : "route-22-23",
+   "legs" : null,
+   "length" : 99.3,
    "pass" : null,
    "points" : [
     [
@@ -1542,12 +1664,15 @@
    ],
    "seaZone" : null,
    "to" : 23,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.41
   },
   {
    "crossesRiver" : false,
    "from" : 22,
    "id" : "route-22-24",
+   "legs" : null,
+   "length" : 181.17,
    "pass" : null,
    "points" : [
     [
@@ -1565,12 +1690,15 @@
    ],
    "seaZone" : null,
    "to" : 24,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.75
   },
   {
    "crossesRiver" : false,
    "from" : 22,
    "id" : "route-22-87",
+   "legs" : null,
+   "length" : 120.33,
    "pass" : null,
    "points" : [
     [
@@ -1584,12 +1712,15 @@
    ],
    "seaZone" : null,
    "to" : 87,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.5
   },
   {
    "crossesRiver" : false,
    "from" : 22,
    "id" : "route-22-88",
+   "legs" : null,
+   "length" : 124.68,
    "pass" : null,
    "points" : [
     [
@@ -1603,12 +1734,15 @@
    ],
    "seaZone" : null,
    "to" : 88,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.52
   },
   {
    "crossesRiver" : false,
    "from" : 23,
    "id" : "route-23-24",
+   "legs" : null,
+   "length" : 130.55,
    "pass" : null,
    "points" : [
     [
@@ -1622,12 +1756,15 @@
    ],
    "seaZone" : null,
    "to" : 24,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.54
   },
   {
    "crossesRiver" : false,
    "from" : 23,
    "id" : "route-23-86",
+   "legs" : null,
+   "length" : 201.56,
    "pass" : null,
    "points" : [
     [
@@ -1641,12 +1778,15 @@
    ],
    "seaZone" : null,
    "to" : 86,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.84
   },
   {
    "crossesRiver" : false,
    "from" : 23,
    "id" : "route-23-87",
+   "legs" : null,
+   "length" : 127.95,
    "pass" : null,
    "points" : [
     [
@@ -1664,12 +1804,15 @@
    ],
    "seaZone" : null,
    "to" : 87,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.53
   },
   {
    "crossesRiver" : false,
    "from" : 26,
    "id" : "route-26-29",
+   "legs" : null,
+   "length" : 238.4,
    "pass" : null,
    "points" : [
     [
@@ -1683,12 +1826,15 @@
    ],
    "seaZone" : null,
    "to" : 29,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.99
   },
   {
    "crossesRiver" : false,
    "from" : 26,
    "id" : "route-26-31",
+   "legs" : null,
+   "length" : 219.09,
    "pass" : null,
    "points" : [
     [
@@ -1702,12 +1848,15 @@
    ],
    "seaZone" : null,
    "to" : 31,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.91
   },
   {
    "crossesRiver" : false,
    "from" : 28,
    "id" : "route-28-29",
+   "legs" : null,
+   "length" : 79.91,
    "pass" : null,
    "points" : [
     [
@@ -1721,12 +1870,15 @@
    ],
    "seaZone" : null,
    "to" : 29,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.33
   },
   {
    "crossesRiver" : false,
    "from" : 28,
    "id" : "route-28-30",
+   "legs" : null,
+   "length" : 92.09,
    "pass" : null,
    "points" : [
     [
@@ -1740,12 +1892,24 @@
    ],
    "seaZone" : null,
    "to" : 30,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.38
   },
   {
    "crossesRiver" : false,
    "from" : 28,
    "id" : "route-28-32",
+   "legs" : [
+    {
+     "length" : 43.57,
+     "years" : 0.43
+    },
+    {
+     "length" : 85.09,
+     "years" : 0.6
+    }
+   ],
+   "length" : 128.66,
    "pass" : "P6",
    "points" : [
     [
@@ -1763,12 +1927,24 @@
    ],
    "seaZone" : null,
    "to" : 32,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.04
   },
   {
    "crossesRiver" : true,
    "from" : 28,
    "id" : "route-28-33",
+   "legs" : [
+    {
+     "length" : 43.57,
+     "years" : 0.43
+    },
+    {
+     "length" : 76.49,
+     "years" : 0.74
+    }
+   ],
+   "length" : 120.05,
    "pass" : "P6",
    "points" : [
     [
@@ -1786,12 +1962,24 @@
    ],
    "seaZone" : null,
    "to" : 33,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.17
   },
   {
    "crossesRiver" : false,
    "from" : 28,
    "id" : "route-28-35",
+   "legs" : [
+    {
+     "length" : 43.57,
+     "years" : 0.43
+    },
+    {
+     "length" : 138.01,
+     "years" : 0.83
+    }
+   ],
+   "length" : 181.58,
    "pass" : "P6",
    "points" : [
     [
@@ -1809,12 +1997,15 @@
    ],
    "seaZone" : null,
    "to" : 35,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.26
   },
   {
    "crossesRiver" : false,
    "from" : 29,
    "id" : "route-29-30",
+   "legs" : null,
+   "length" : 109.66,
    "pass" : null,
    "points" : [
     [
@@ -1828,12 +2019,24 @@
    ],
    "seaZone" : null,
    "to" : 30,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.46
   },
   {
    "crossesRiver" : true,
    "from" : 29,
    "id" : "route-29-86",
+   "legs" : [
+    {
+     "length" : 42.8,
+     "years" : 0.43
+    },
+    {
+     "length" : 72.62,
+     "years" : 0.72
+    }
+   ],
+   "length" : 115.42,
    "pass" : "P7",
    "points" : [
     [
@@ -1851,12 +2054,24 @@
    ],
    "seaZone" : null,
    "to" : 86,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.15
   },
   {
    "crossesRiver" : false,
    "from" : 30,
    "id" : "route-30-36",
+   "legs" : [
+    {
+     "length" : 67.74,
+     "years" : 0.53
+    },
+    {
+     "length" : 103,
+     "years" : 0.68
+    }
+   ],
+   "length" : 170.75,
    "pass" : "P4",
    "points" : [
     [
@@ -1874,12 +2089,24 @@
    ],
    "seaZone" : null,
    "to" : 36,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.21
   },
   {
    "crossesRiver" : false,
    "from" : 30,
    "id" : "route-30-72",
+   "legs" : [
+    {
+     "length" : 67.74,
+     "years" : 0.53
+    },
+    {
+     "length" : 66.57,
+     "years" : 0.53
+    }
+   ],
+   "length" : 134.32,
    "pass" : "P4",
    "points" : [
     [
@@ -1897,12 +2124,24 @@
    ],
    "seaZone" : null,
    "to" : 72,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.06
   },
   {
    "crossesRiver" : false,
    "from" : 30,
    "id" : "route-30-73",
+   "legs" : [
+    {
+     "length" : 71.87,
+     "years" : 0.55
+    },
+    {
+     "length" : 107.21,
+     "years" : 0.7
+    }
+   ],
+   "length" : 179.08,
    "pass" : "P5",
    "points" : [
     [
@@ -1924,12 +2163,24 @@
    ],
    "seaZone" : null,
    "to" : 73,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.25
   },
   {
    "crossesRiver" : false,
    "from" : 30,
    "id" : "route-30-85",
+   "legs" : [
+    {
+     "length" : 71.87,
+     "years" : 0.55
+    },
+    {
+     "length" : 51.2,
+     "years" : 0.46
+    }
+   ],
+   "length" : 123.06,
    "pass" : "P5",
    "points" : [
     [
@@ -1947,12 +2198,15 @@
    ],
    "seaZone" : null,
    "to" : 85,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.01
   },
   {
    "crossesRiver" : false,
    "from" : 31,
    "id" : "route-31-32",
+   "legs" : null,
+   "length" : 59.09,
    "pass" : null,
    "points" : [
     [
@@ -1966,12 +2220,15 @@
    ],
    "seaZone" : null,
    "to" : 32,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.25
   },
   {
    "crossesRiver" : true,
    "from" : 32,
    "id" : "route-32-33",
+   "legs" : null,
+   "length" : 61.72,
    "pass" : null,
    "points" : [
     [
@@ -1985,12 +2242,15 @@
    ],
    "seaZone" : null,
    "to" : 33,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.42
   },
   {
    "crossesRiver" : false,
    "from" : 33,
    "id" : "route-33-34",
+   "legs" : null,
+   "length" : 119.15,
    "pass" : null,
    "points" : [
     [
@@ -2004,12 +2264,15 @@
    ],
    "seaZone" : null,
    "to" : 34,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.5
   },
   {
    "crossesRiver" : true,
    "from" : 33,
    "id" : "route-33-35",
+   "legs" : null,
+   "length" : 102.93,
    "pass" : null,
    "points" : [
     [
@@ -2023,12 +2286,15 @@
    ],
    "seaZone" : null,
    "to" : 35,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.6
   },
   {
    "crossesRiver" : true,
    "from" : 34,
    "id" : "route-34-35",
+   "legs" : null,
+   "length" : 58.52,
    "pass" : null,
    "points" : [
     [
@@ -2042,12 +2308,15 @@
    ],
    "seaZone" : null,
    "to" : 35,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.41
   },
   {
    "crossesRiver" : false,
    "from" : 34,
    "id" : "route-34-39",
+   "legs" : null,
+   "length" : 122.54,
    "pass" : null,
    "points" : [
     [
@@ -2061,12 +2330,15 @@
    ],
    "seaZone" : null,
    "to" : 39,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.51
   },
   {
    "crossesRiver" : false,
    "from" : 35,
    "id" : "route-35-36",
+   "legs" : null,
+   "length" : 76.01,
    "pass" : null,
    "points" : [
     [
@@ -2080,12 +2352,15 @@
    ],
    "seaZone" : null,
    "to" : 36,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
    "from" : 35,
    "id" : "route-35-37",
+   "legs" : null,
+   "length" : 126.27,
    "pass" : null,
    "points" : [
     [
@@ -2099,12 +2374,15 @@
    ],
    "seaZone" : null,
    "to" : 37,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.53
   },
   {
    "crossesRiver" : false,
    "from" : 35,
    "id" : "route-35-38",
+   "legs" : null,
+   "length" : 168.05,
    "pass" : null,
    "points" : [
     [
@@ -2118,12 +2396,15 @@
    ],
    "seaZone" : null,
    "to" : 38,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.7
   },
   {
    "crossesRiver" : false,
    "from" : 36,
    "id" : "route-36-37",
+   "legs" : null,
+   "length" : 69.03,
    "pass" : null,
    "points" : [
     [
@@ -2137,12 +2418,15 @@
    ],
    "seaZone" : null,
    "to" : 37,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.29
   },
   {
    "crossesRiver" : false,
    "from" : 36,
    "id" : "route-36-71",
+   "legs" : null,
+   "length" : 153.57,
    "pass" : null,
    "points" : [
     [
@@ -2156,12 +2440,15 @@
    ],
    "seaZone" : null,
    "to" : 71,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.64
   },
   {
    "crossesRiver" : false,
    "from" : 36,
    "id" : "route-36-72",
+   "legs" : null,
+   "length" : 126.09,
    "pass" : null,
    "points" : [
     [
@@ -2175,12 +2462,15 @@
    ],
    "seaZone" : null,
    "to" : 72,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.53
   },
   {
    "crossesRiver" : false,
    "from" : 37,
    "id" : "route-37-38",
+   "legs" : null,
+   "length" : 82.02,
    "pass" : null,
    "points" : [
     [
@@ -2194,12 +2484,15 @@
    ],
    "seaZone" : null,
    "to" : 38,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.34
   },
   {
    "crossesRiver" : false,
    "from" : 37,
    "id" : "route-37-48",
+   "legs" : null,
+   "length" : 111.16,
    "pass" : null,
    "points" : [
     [
@@ -2213,12 +2506,15 @@
    ],
    "seaZone" : null,
    "to" : 48,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.46
   },
   {
    "crossesRiver" : false,
    "from" : 37,
    "id" : "route-37-71",
+   "legs" : null,
+   "length" : 145.58,
    "pass" : null,
    "points" : [
     [
@@ -2232,12 +2528,15 @@
    ],
    "seaZone" : null,
    "to" : 71,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.61
   },
   {
    "crossesRiver" : false,
    "from" : 38,
    "id" : "route-38-39",
+   "legs" : null,
+   "length" : 121.29,
    "pass" : null,
    "points" : [
     [
@@ -2255,12 +2554,15 @@
    ],
    "seaZone" : null,
    "to" : 39,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.51
   },
   {
    "crossesRiver" : false,
    "from" : 38,
    "id" : "route-38-47",
+   "legs" : null,
+   "length" : 136.09,
    "pass" : null,
    "points" : [
     [
@@ -2274,12 +2576,15 @@
    ],
    "seaZone" : null,
    "to" : 47,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.57
   },
   {
    "crossesRiver" : false,
    "from" : 38,
    "id" : "route-38-48",
+   "legs" : null,
+   "length" : 83.1,
    "pass" : null,
    "points" : [
     [
@@ -2293,12 +2598,15 @@
    ],
    "seaZone" : null,
    "to" : 48,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.35
   },
   {
    "crossesRiver" : false,
    "from" : 38,
    "id" : "route-38-49",
+   "legs" : null,
+   "length" : 184.45,
    "pass" : null,
    "points" : [
     [
@@ -2312,12 +2620,24 @@
    ],
    "seaZone" : null,
    "to" : 49,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.77
   },
   {
    "crossesRiver" : false,
    "from" : 39,
    "id" : "route-39-40",
+   "legs" : [
+    {
+     "length" : 116,
+     "years" : 0.73
+    },
+    {
+     "length" : 60,
+     "years" : 0.5
+    }
+   ],
+   "length" : 176,
    "pass" : "P3",
    "points" : [
     [
@@ -2335,12 +2655,15 @@
    ],
    "seaZone" : null,
    "to" : 40,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.23
   },
   {
    "crossesRiver" : false,
    "from" : 40,
    "id" : "route-40-41",
+   "legs" : null,
+   "length" : 60.42,
    "pass" : null,
    "points" : [
     [
@@ -2354,12 +2677,24 @@
    ],
    "seaZone" : null,
    "to" : 41,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
    "from" : 40,
    "id" : "route-40-47",
+   "legs" : [
+    {
+     "length" : 39.56,
+     "years" : 0.41
+    },
+    {
+     "length" : 80.06,
+     "years" : 0.58
+    }
+   ],
+   "length" : 119.62,
    "pass" : "P2",
    "points" : [
     [
@@ -2377,12 +2712,24 @@
    ],
    "seaZone" : null,
    "to" : 47,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1
   },
   {
    "crossesRiver" : true,
    "from" : 41,
    "id" : "route-41-42",
+   "legs" : [
+    {
+     "length" : 41.04,
+     "years" : 0.42
+    },
+    {
+     "length" : 103.32,
+     "years" : 0.85
+    }
+   ],
+   "length" : 144.35,
    "pass" : "P1",
    "points" : [
     [
@@ -2400,12 +2747,24 @@
    ],
    "seaZone" : null,
    "to" : 42,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.27
   },
   {
    "crossesRiver" : true,
    "from" : 41,
    "id" : "route-41-45",
+   "legs" : [
+    {
+     "length" : 41.04,
+     "years" : 0.42
+    },
+    {
+     "length" : 120.24,
+     "years" : 0.92
+    }
+   ],
+   "length" : 161.28,
    "pass" : "P1",
    "points" : [
     [
@@ -2423,12 +2782,24 @@
    ],
    "seaZone" : null,
    "to" : 45,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.34
   },
   {
    "crossesRiver" : false,
    "from" : 41,
    "id" : "route-41-46",
+   "legs" : [
+    {
+     "length" : 41.04,
+     "years" : 0.42
+    },
+    {
+     "length" : 103.08,
+     "years" : 0.68
+    }
+   ],
+   "length" : 144.11,
    "pass" : "P1",
    "points" : [
     [
@@ -2446,12 +2817,24 @@
    ],
    "seaZone" : null,
    "to" : 46,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.1
   },
   {
    "crossesRiver" : false,
    "from" : 41,
    "id" : "route-41-47",
+   "legs" : [
+    {
+     "length" : 67.27,
+     "years" : 0.53
+    },
+    {
+     "length" : 80.06,
+     "years" : 0.58
+    }
+   ],
+   "length" : 147.32,
    "pass" : "P2",
    "points" : [
     [
@@ -2469,12 +2852,15 @@
    ],
    "seaZone" : null,
    "to" : 47,
-   "type" : "land"
+   "type" : "land",
+   "years" : 1.11
   },
   {
    "crossesRiver" : false,
    "from" : 42,
    "id" : "route-42-43",
+   "legs" : null,
+   "length" : 55.9,
    "pass" : null,
    "points" : [
     [
@@ -2488,12 +2874,15 @@
    ],
    "seaZone" : null,
    "to" : 43,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.23
   },
   {
    "crossesRiver" : false,
    "from" : 42,
    "id" : "route-42-44",
+   "legs" : null,
+   "length" : 101.08,
    "pass" : null,
    "points" : [
     [
@@ -2507,12 +2896,15 @@
    ],
    "seaZone" : null,
    "to" : 44,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.42
   },
   {
    "crossesRiver" : false,
    "from" : 42,
    "id" : "route-42-45",
+   "legs" : null,
+   "length" : 132.38,
    "pass" : null,
    "points" : [
     [
@@ -2526,12 +2918,15 @@
    ],
    "seaZone" : null,
    "to" : 45,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.55
   },
   {
    "crossesRiver" : false,
    "from" : 43,
    "id" : "route-43-44",
+   "legs" : null,
+   "length" : 66.27,
    "pass" : null,
    "points" : [
     [
@@ -2545,12 +2940,15 @@
    ],
    "seaZone" : null,
    "to" : 44,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
    "from" : 44,
    "id" : "route-44-45",
+   "legs" : null,
+   "length" : 67.8,
    "pass" : null,
    "points" : [
     [
@@ -2564,12 +2962,15 @@
    ],
    "seaZone" : null,
    "to" : 45,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
    "from" : 44,
    "id" : "route-44-52",
+   "legs" : null,
+   "length" : 191.26,
    "pass" : null,
    "points" : [
     [
@@ -2587,12 +2988,15 @@
    ],
    "seaZone" : null,
    "to" : 52,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.8
   },
   {
    "crossesRiver" : false,
    "from" : 44,
    "id" : "route-44-53",
+   "legs" : null,
+   "length" : 140.89,
    "pass" : null,
    "points" : [
     [
@@ -2606,12 +3010,15 @@
    ],
    "seaZone" : null,
    "to" : 53,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : true,
    "from" : 45,
    "id" : "route-45-46",
+   "legs" : null,
+   "length" : 80.6,
    "pass" : null,
    "points" : [
     [
@@ -2625,31 +3032,15 @@
    ],
    "seaZone" : null,
    "to" : 46,
-   "type" : "land"
-  },
-  {
-   "crossesRiver" : true,
-   "from" : 45,
-   "id" : "route-45-49",
-   "pass" : null,
-   "points" : [
-    [
-     179,
-     981
-    ],
-    [
-     338,
-     888
-    ]
-   ],
-   "seaZone" : null,
-   "to" : 49,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.5
   },
   {
    "crossesRiver" : false,
    "from" : 45,
    "id" : "route-45-52",
+   "legs" : null,
+   "length" : 123.79,
    "pass" : null,
    "points" : [
     [
@@ -2663,12 +3054,15 @@
    ],
    "seaZone" : null,
    "to" : 52,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.52
   },
   {
    "crossesRiver" : false,
    "from" : 46,
    "id" : "route-46-47",
+   "legs" : null,
+   "length" : 105.3,
    "pass" : null,
    "points" : [
     [
@@ -2682,12 +3076,15 @@
    ],
    "seaZone" : null,
    "to" : 47,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.44
   },
   {
    "crossesRiver" : false,
    "from" : 46,
    "id" : "route-46-49",
+   "legs" : null,
+   "length" : 111.04,
    "pass" : null,
    "points" : [
     [
@@ -2701,12 +3098,15 @@
    ],
    "seaZone" : null,
    "to" : 49,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.46
   },
   {
    "crossesRiver" : false,
    "from" : 47,
    "id" : "route-47-49",
+   "legs" : null,
+   "length" : 88.6,
    "pass" : null,
    "points" : [
     [
@@ -2720,12 +3120,15 @@
    ],
    "seaZone" : null,
    "to" : 49,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.37
   },
   {
    "crossesRiver" : true,
    "from" : 48,
    "id" : "route-48-49",
+   "legs" : null,
+   "length" : 111.09,
    "pass" : null,
    "points" : [
     [
@@ -2739,12 +3142,15 @@
    ],
    "seaZone" : null,
    "to" : 49,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.63
   },
   {
    "crossesRiver" : false,
    "from" : 48,
    "id" : "route-48-50",
+   "legs" : null,
+   "length" : 162.73,
    "pass" : null,
    "points" : [
     [
@@ -2758,12 +3164,15 @@
    ],
    "seaZone" : null,
    "to" : 50,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.68
   },
   {
    "crossesRiver" : true,
    "from" : 48,
    "id" : "route-48-71",
+   "legs" : null,
+   "length" : 186.27,
    "pass" : null,
    "points" : [
     [
@@ -2777,12 +3186,15 @@
    ],
    "seaZone" : null,
    "to" : 71,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.94
   },
   {
    "crossesRiver" : true,
    "from" : 49,
    "id" : "route-49-50",
+   "legs" : null,
+   "length" : 85.71,
    "pass" : null,
    "points" : [
     [
@@ -2796,12 +3208,15 @@
    ],
    "seaZone" : null,
    "to" : 50,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.52
   },
   {
    "crossesRiver" : false,
    "from" : 49,
    "id" : "route-49-52",
+   "legs" : null,
+   "length" : 141.01,
    "pass" : null,
    "points" : [
     [
@@ -2815,12 +3230,15 @@
    ],
    "seaZone" : null,
    "to" : 52,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
    "from" : 50,
    "id" : "route-50-51",
+   "legs" : null,
+   "length" : 61.85,
    "pass" : null,
    "points" : [
     [
@@ -2834,12 +3252,15 @@
    ],
    "seaZone" : null,
    "to" : 51,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.26
   },
   {
    "crossesRiver" : false,
    "from" : 50,
    "id" : "route-50-70",
+   "legs" : null,
+   "length" : 176.08,
    "pass" : null,
    "points" : [
     [
@@ -2853,12 +3274,15 @@
    ],
    "seaZone" : null,
    "to" : 70,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.73
   },
   {
    "crossesRiver" : false,
    "from" : 51,
    "id" : "route-51-61",
+   "legs" : null,
+   "length" : 52.5,
    "pass" : null,
    "points" : [
     [
@@ -2872,12 +3296,15 @@
    ],
    "seaZone" : null,
    "to" : 61,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.22
   },
   {
    "crossesRiver" : false,
    "from" : 51,
    "id" : "route-51-62",
+   "legs" : null,
+   "length" : 115.17,
    "pass" : null,
    "points" : [
     [
@@ -2891,12 +3318,15 @@
    ],
    "seaZone" : null,
    "to" : 62,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.48
   },
   {
    "crossesRiver" : false,
    "from" : 51,
    "id" : "route-51-70",
+   "legs" : null,
+   "length" : 174.9,
    "pass" : null,
    "points" : [
     [
@@ -2910,12 +3340,15 @@
    ],
    "seaZone" : null,
    "to" : 70,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.73
   },
   {
    "crossesRiver" : false,
    "from" : 52,
    "id" : "route-52-53",
+   "legs" : null,
+   "length" : 100.9,
    "pass" : null,
    "points" : [
     [
@@ -2929,12 +3362,15 @@
    ],
    "seaZone" : null,
    "to" : 53,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.42
   },
   {
    "crossesRiver" : false,
    "from" : 52,
    "id" : "route-52-60",
+   "legs" : null,
+   "length" : 72.56,
    "pass" : null,
    "points" : [
     [
@@ -2948,12 +3384,15 @@
    ],
    "seaZone" : null,
    "to" : 60,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
    "from" : 53,
    "id" : "route-53-54",
+   "legs" : null,
+   "length" : 104.48,
    "pass" : null,
    "points" : [
     [
@@ -2967,12 +3406,15 @@
    ],
    "seaZone" : null,
    "to" : 54,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.44
   },
   {
    "crossesRiver" : false,
    "from" : 53,
    "id" : "route-53-60",
+   "legs" : null,
+   "length" : 130.91,
    "pass" : null,
    "points" : [
     [
@@ -2986,12 +3428,15 @@
    ],
    "seaZone" : null,
    "to" : 60,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.55
   },
   {
    "crossesRiver" : false,
    "from" : 54,
    "id" : "route-54-55",
+   "legs" : null,
+   "length" : 112.81,
    "pass" : null,
    "points" : [
     [
@@ -3005,12 +3450,15 @@
    ],
    "seaZone" : null,
    "to" : 55,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.47
   },
   {
    "crossesRiver" : false,
    "from" : 54,
    "id" : "route-54-56",
+   "legs" : null,
+   "length" : 126.02,
    "pass" : null,
    "points" : [
     [
@@ -3024,12 +3472,15 @@
    ],
    "seaZone" : null,
    "to" : 56,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.53
   },
   {
    "crossesRiver" : false,
    "from" : 54,
    "id" : "route-54-60",
+   "legs" : null,
+   "length" : 155.72,
    "pass" : null,
    "points" : [
     [
@@ -3043,12 +3494,15 @@
    ],
    "seaZone" : null,
    "to" : 60,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.65
   },
   {
    "crossesRiver" : false,
    "from" : 55,
    "id" : "route-55-56",
+   "legs" : null,
+   "length" : 99.32,
    "pass" : null,
    "points" : [
     [
@@ -3062,12 +3516,15 @@
    ],
    "seaZone" : null,
    "to" : 56,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.41
   },
   {
    "crossesRiver" : true,
    "from" : 55,
    "id" : "route-55-58",
+   "legs" : null,
+   "length" : 111.04,
    "pass" : null,
    "points" : [
     [
@@ -3081,12 +3538,15 @@
    ],
    "seaZone" : null,
    "to" : 58,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.63
   },
   {
    "crossesRiver" : true,
    "from" : 55,
    "id" : "route-55-59",
+   "legs" : null,
+   "length" : 112.25,
    "pass" : null,
    "points" : [
     [
@@ -3100,12 +3560,15 @@
    ],
    "seaZone" : null,
    "to" : 59,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.63
   },
   {
    "crossesRiver" : false,
    "from" : 55,
    "id" : "route-55-60",
+   "legs" : null,
+   "length" : 90.14,
    "pass" : null,
    "points" : [
     [
@@ -3119,12 +3582,15 @@
    ],
    "seaZone" : null,
    "to" : 60,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.38
   },
   {
    "crossesRiver" : true,
    "from" : 55,
    "id" : "route-55-61",
+   "legs" : null,
+   "length" : 134.26,
    "pass" : null,
    "points" : [
     [
@@ -3142,12 +3608,15 @@
    ],
    "seaZone" : null,
    "to" : 61,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.73
   },
   {
    "crossesRiver" : true,
    "from" : 56,
    "id" : "route-56-57",
+   "legs" : null,
+   "length" : 111.54,
    "pass" : null,
    "points" : [
     [
@@ -3161,12 +3630,15 @@
    ],
    "seaZone" : null,
    "to" : 57,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.63
   },
   {
    "crossesRiver" : true,
    "from" : 56,
    "id" : "route-56-58",
+   "legs" : null,
+   "length" : 99.62,
    "pass" : null,
    "points" : [
     [
@@ -3180,12 +3652,15 @@
    ],
    "seaZone" : null,
    "to" : 58,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.58
   },
   {
    "crossesRiver" : false,
    "from" : 57,
    "id" : "route-57-58",
+   "legs" : null,
+   "length" : 87.8,
    "pass" : null,
    "points" : [
     [
@@ -3199,12 +3674,15 @@
    ],
    "seaZone" : null,
    "to" : 58,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.37
   },
   {
    "crossesRiver" : false,
    "from" : 57,
    "id" : "route-57-64",
+   "legs" : null,
+   "length" : 143.34,
    "pass" : null,
    "points" : [
     [
@@ -3218,12 +3696,15 @@
    ],
    "seaZone" : null,
    "to" : 64,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.6
   },
   {
    "crossesRiver" : false,
    "from" : 58,
    "id" : "route-58-59",
+   "legs" : null,
+   "length" : 120.46,
    "pass" : null,
    "points" : [
     [
@@ -3241,12 +3722,15 @@
    ],
    "seaZone" : null,
    "to" : 59,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.5
   },
   {
    "crossesRiver" : false,
    "from" : 58,
    "id" : "route-58-63",
+   "legs" : null,
+   "length" : 153.05,
    "pass" : null,
    "points" : [
     [
@@ -3260,12 +3744,15 @@
    ],
    "seaZone" : null,
    "to" : 63,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.64
   },
   {
    "crossesRiver" : false,
    "from" : 58,
    "id" : "route-58-64",
+   "legs" : null,
+   "length" : 111.83,
    "pass" : null,
    "points" : [
     [
@@ -3279,12 +3766,15 @@
    ],
    "seaZone" : null,
    "to" : 64,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.47
   },
   {
    "crossesRiver" : false,
    "from" : 59,
    "id" : "route-59-61",
+   "legs" : null,
+   "length" : 50,
    "pass" : null,
    "points" : [
     [
@@ -3298,12 +3788,15 @@
    ],
    "seaZone" : null,
    "to" : 61,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
    "from" : 59,
    "id" : "route-59-62",
+   "legs" : null,
+   "length" : 45.34,
    "pass" : null,
    "points" : [
     [
@@ -3317,12 +3810,15 @@
    ],
    "seaZone" : null,
    "to" : 62,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.19
   },
   {
    "crossesRiver" : true,
    "from" : 60,
    "id" : "route-60-61",
+   "legs" : null,
+   "length" : 92.1,
    "pass" : null,
    "points" : [
     [
@@ -3336,12 +3832,15 @@
    ],
    "seaZone" : null,
    "to" : 61,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.55
   },
   {
    "crossesRiver" : false,
    "from" : 62,
    "id" : "route-62-63",
+   "legs" : null,
+   "length" : 36.06,
    "pass" : null,
    "points" : [
     [
@@ -3355,12 +3854,15 @@
    ],
    "seaZone" : null,
    "to" : 63,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.15
   },
   {
    "crossesRiver" : false,
    "from" : 62,
    "id" : "route-62-70",
+   "legs" : null,
+   "length" : 200.73,
    "pass" : null,
    "points" : [
     [
@@ -3374,12 +3876,15 @@
    ],
    "seaZone" : null,
    "to" : 70,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.84
   },
   {
    "crossesRiver" : false,
    "from" : 63,
    "id" : "route-63-64",
+   "legs" : null,
+   "length" : 118.79,
    "pass" : null,
    "points" : [
     [
@@ -3393,12 +3898,15 @@
    ],
    "seaZone" : null,
    "to" : 64,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.49
   },
   {
    "crossesRiver" : false,
    "from" : 63,
    "id" : "route-63-67",
+   "legs" : null,
+   "length" : 113.37,
    "pass" : null,
    "points" : [
     [
@@ -3412,12 +3920,15 @@
    ],
    "seaZone" : null,
    "to" : 67,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.47
   },
   {
    "crossesRiver" : true,
    "from" : 63,
    "id" : "route-63-68",
+   "legs" : null,
+   "length" : 145,
    "pass" : null,
    "points" : [
     [
@@ -3431,12 +3942,15 @@
    ],
    "seaZone" : null,
    "to" : 68,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.77
   },
   {
    "crossesRiver" : false,
    "from" : 63,
    "id" : "route-63-70",
+   "legs" : null,
+   "length" : 188.82,
    "pass" : null,
    "points" : [
     [
@@ -3450,12 +3964,15 @@
    ],
    "seaZone" : null,
    "to" : 70,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.79
   },
   {
    "crossesRiver" : false,
    "from" : 64,
    "id" : "route-64-65",
+   "legs" : null,
+   "length" : 89.56,
    "pass" : null,
    "points" : [
     [
@@ -3469,12 +3986,15 @@
    ],
    "seaZone" : null,
    "to" : 65,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.37
   },
   {
    "crossesRiver" : false,
    "from" : 64,
    "id" : "route-64-67",
+   "legs" : null,
+   "length" : 141.69,
    "pass" : null,
    "points" : [
     [
@@ -3488,12 +4008,15 @@
    ],
    "seaZone" : null,
    "to" : 67,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : true,
    "from" : 65,
    "id" : "route-65-66",
+   "legs" : null,
+   "length" : 94.53,
    "pass" : null,
    "points" : [
     [
@@ -3507,12 +4030,15 @@
    ],
    "seaZone" : null,
    "to" : 66,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.56
   },
   {
    "crossesRiver" : true,
    "from" : 66,
    "id" : "route-66-67",
+   "legs" : null,
+   "length" : 84.9,
    "pass" : null,
    "points" : [
     [
@@ -3526,12 +4052,15 @@
    ],
    "seaZone" : null,
    "to" : 67,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.52
   },
   {
    "crossesRiver" : true,
    "from" : 67,
    "id" : "route-67-68",
+   "legs" : null,
+   "length" : 113.45,
    "pass" : null,
    "points" : [
     [
@@ -3545,12 +4074,15 @@
    ],
    "seaZone" : null,
    "to" : 68,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.64
   },
   {
    "crossesRiver" : true,
    "from" : 67,
    "id" : "route-67-69",
+   "legs" : null,
+   "length" : 174.52,
    "pass" : null,
    "points" : [
     [
@@ -3564,12 +4096,15 @@
    ],
    "seaZone" : null,
    "to" : 69,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.89
   },
   {
    "crossesRiver" : false,
    "from" : 68,
    "id" : "route-68-69",
+   "legs" : null,
+   "length" : 100.85,
    "pass" : null,
    "points" : [
     [
@@ -3583,12 +4118,15 @@
    ],
    "seaZone" : null,
    "to" : 69,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.42
   },
   {
    "crossesRiver" : true,
    "from" : 68,
    "id" : "route-68-70",
+   "legs" : null,
+   "length" : 93.78,
    "pass" : null,
    "points" : [
     [
@@ -3602,12 +4140,15 @@
    ],
    "seaZone" : null,
    "to" : 70,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.56
   },
   {
    "crossesRiver" : true,
    "from" : 69,
    "id" : "route-69-70",
+   "legs" : null,
+   "length" : 147.47,
    "pass" : null,
    "points" : [
     [
@@ -3621,12 +4162,15 @@
    ],
    "seaZone" : null,
    "to" : 70,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.78
   },
   {
    "crossesRiver" : false,
    "from" : 69,
    "id" : "route-69-74",
+   "legs" : null,
+   "length" : 139.32,
    "pass" : null,
    "points" : [
     [
@@ -3640,12 +4184,15 @@
    ],
    "seaZone" : null,
    "to" : 74,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.58
   },
   {
    "crossesRiver" : false,
    "from" : 69,
    "id" : "route-69-75",
+   "legs" : null,
+   "length" : 87.46,
    "pass" : null,
    "points" : [
     [
@@ -3659,12 +4206,15 @@
    ],
    "seaZone" : null,
    "to" : 75,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.36
   },
   {
    "crossesRiver" : true,
    "from" : 70,
    "id" : "route-70-71",
+   "legs" : null,
+   "length" : 154.93,
    "pass" : null,
    "points" : [
     [
@@ -3678,12 +4228,15 @@
    ],
    "seaZone" : null,
    "to" : 71,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.81
   },
   {
    "crossesRiver" : true,
    "from" : 70,
    "id" : "route-70-74",
+   "legs" : null,
+   "length" : 157.43,
    "pass" : null,
    "points" : [
     [
@@ -3697,12 +4250,15 @@
    ],
    "seaZone" : null,
    "to" : 74,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.82
   },
   {
    "crossesRiver" : false,
    "from" : 71,
    "id" : "route-71-72",
+   "legs" : null,
+   "length" : 106.23,
    "pass" : null,
    "points" : [
     [
@@ -3716,12 +4272,15 @@
    ],
    "seaZone" : null,
    "to" : 72,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.44
   },
   {
    "crossesRiver" : false,
    "from" : 71,
    "id" : "route-71-74",
+   "legs" : null,
+   "length" : 142.64,
    "pass" : null,
    "points" : [
     [
@@ -3735,12 +4294,15 @@
    ],
    "seaZone" : null,
    "to" : 74,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
    "from" : 72,
    "id" : "route-72-73",
+   "legs" : null,
+   "length" : 119.97,
    "pass" : null,
    "points" : [
     [
@@ -3754,12 +4316,15 @@
    ],
    "seaZone" : null,
    "to" : 73,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.5
   },
   {
    "crossesRiver" : false,
    "from" : 72,
    "id" : "route-72-74",
+   "legs" : null,
+   "length" : 179.63,
    "pass" : null,
    "points" : [
     [
@@ -3773,12 +4338,15 @@
    ],
    "seaZone" : null,
    "to" : 74,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.75
   },
   {
    "crossesRiver" : false,
    "from" : 73,
    "id" : "route-73-74",
+   "legs" : null,
+   "length" : 165.02,
    "pass" : null,
    "points" : [
     [
@@ -3792,12 +4360,15 @@
    ],
    "seaZone" : null,
    "to" : 74,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.69
   },
   {
    "crossesRiver" : false,
    "from" : 73,
    "id" : "route-73-83",
+   "legs" : null,
+   "length" : 81.88,
    "pass" : null,
    "points" : [
     [
@@ -3811,12 +4382,15 @@
    ],
    "seaZone" : null,
    "to" : 83,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.34
   },
   {
    "crossesRiver" : false,
    "from" : 73,
    "id" : "route-73-85",
+   "legs" : null,
+   "length" : 75.17,
    "pass" : null,
    "points" : [
     [
@@ -3830,12 +4404,15 @@
    ],
    "seaZone" : null,
    "to" : 85,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
    "from" : 74,
    "id" : "route-74-75",
+   "legs" : null,
+   "length" : 171.03,
    "pass" : null,
    "points" : [
     [
@@ -3849,12 +4426,15 @@
    ],
    "seaZone" : null,
    "to" : 75,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.71
   },
   {
    "crossesRiver" : false,
    "from" : 74,
    "id" : "route-74-76",
+   "legs" : null,
+   "length" : 142.56,
    "pass" : null,
    "points" : [
     [
@@ -3868,12 +4448,15 @@
    ],
    "seaZone" : null,
    "to" : 76,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
    "from" : 74,
    "id" : "route-74-77",
+   "legs" : null,
+   "length" : 113.74,
    "pass" : null,
    "points" : [
     [
@@ -3887,12 +4470,15 @@
    ],
    "seaZone" : null,
    "to" : 77,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.47
   },
   {
    "crossesRiver" : false,
    "from" : 74,
    "id" : "route-74-83",
+   "legs" : null,
+   "length" : 187,
    "pass" : null,
    "points" : [
     [
@@ -3906,12 +4492,15 @@
    ],
    "seaZone" : null,
    "to" : 83,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.78
   },
   {
    "crossesRiver" : false,
    "from" : 75,
    "id" : "route-75-76",
+   "legs" : null,
+   "length" : 70.23,
    "pass" : null,
    "points" : [
     [
@@ -3925,12 +4514,15 @@
    ],
    "seaZone" : null,
    "to" : 76,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.29
   },
   {
    "crossesRiver" : false,
    "from" : 76,
    "id" : "route-76-77",
+   "legs" : null,
+   "length" : 115.36,
    "pass" : null,
    "points" : [
     [
@@ -3944,12 +4536,15 @@
    ],
    "seaZone" : null,
    "to" : 77,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.48
   },
   {
    "crossesRiver" : false,
    "from" : 76,
    "id" : "route-76-78",
+   "legs" : null,
+   "length" : 115.95,
    "pass" : null,
    "points" : [
     [
@@ -3963,12 +4558,15 @@
    ],
    "seaZone" : null,
    "to" : 78,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.48
   },
   {
    "crossesRiver" : false,
    "from" : 77,
    "id" : "route-77-78",
+   "legs" : null,
+   "length" : 119.92,
    "pass" : null,
    "points" : [
     [
@@ -3982,12 +4580,15 @@
    ],
    "seaZone" : null,
    "to" : 78,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.5
   },
   {
    "crossesRiver" : true,
    "from" : 77,
    "id" : "route-77-82",
+   "legs" : null,
+   "length" : 149.19,
    "pass" : null,
    "points" : [
     [
@@ -4001,12 +4602,15 @@
    ],
    "seaZone" : null,
    "to" : 82,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.79
   },
   {
    "crossesRiver" : false,
    "from" : 77,
    "id" : "route-77-83",
+   "legs" : null,
+   "length" : 104.85,
    "pass" : null,
    "points" : [
     [
@@ -4020,12 +4624,15 @@
    ],
    "seaZone" : null,
    "to" : 83,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.44
   },
   {
    "crossesRiver" : false,
    "from" : 78,
    "id" : "route-78-79",
+   "legs" : null,
+   "length" : 126.85,
    "pass" : null,
    "points" : [
     [
@@ -4039,12 +4646,15 @@
    ],
    "seaZone" : null,
    "to" : 79,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.53
   },
   {
    "crossesRiver" : false,
    "from" : 78,
    "id" : "route-78-80",
+   "legs" : null,
+   "length" : 147.65,
    "pass" : null,
    "points" : [
     [
@@ -4058,12 +4668,15 @@
    ],
    "seaZone" : null,
    "to" : 80,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.62
   },
   {
    "crossesRiver" : true,
    "from" : 78,
    "id" : "route-78-82",
+   "legs" : null,
+   "length" : 140.62,
    "pass" : null,
    "points" : [
     [
@@ -4081,12 +4694,15 @@
    ],
    "seaZone" : null,
    "to" : 82,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.75
   },
   {
    "crossesRiver" : false,
    "from" : 79,
    "id" : "route-79-80",
+   "legs" : null,
+   "length" : 57.78,
    "pass" : null,
    "points" : [
     [
@@ -4100,12 +4716,15 @@
    ],
    "seaZone" : null,
    "to" : 80,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.24
   },
   {
    "crossesRiver" : true,
    "from" : 80,
    "id" : "route-80-81",
+   "legs" : null,
+   "length" : 119.6,
    "pass" : null,
    "points" : [
     [
@@ -4119,12 +4738,15 @@
    ],
    "seaZone" : null,
    "to" : 81,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.67
   },
   {
    "crossesRiver" : true,
    "from" : 80,
    "id" : "route-80-82",
+   "legs" : null,
+   "length" : 64.9,
    "pass" : null,
    "points" : [
     [
@@ -4138,12 +4760,15 @@
    ],
    "seaZone" : null,
    "to" : 82,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.44
   },
   {
    "crossesRiver" : true,
    "from" : 80,
    "id" : "route-80-84",
+   "legs" : null,
+   "length" : 143,
    "pass" : null,
    "points" : [
     [
@@ -4157,12 +4782,15 @@
    ],
    "seaZone" : null,
    "to" : 84,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.76
   },
   {
    "crossesRiver" : false,
    "from" : 81,
    "id" : "route-81-84",
+   "legs" : null,
+   "length" : 147.34,
    "pass" : null,
    "points" : [
     [
@@ -4176,12 +4804,15 @@
    ],
    "seaZone" : null,
    "to" : 84,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.61
   },
   {
    "crossesRiver" : false,
    "from" : 81,
    "id" : "route-81-88",
+   "legs" : null,
+   "length" : 126.4,
    "pass" : null,
    "points" : [
     [
@@ -4195,12 +4826,15 @@
    ],
    "seaZone" : null,
    "to" : 88,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.53
   },
   {
    "crossesRiver" : true,
    "from" : 82,
    "id" : "route-82-83",
+   "legs" : null,
+   "length" : 111.14,
    "pass" : null,
    "points" : [
     [
@@ -4214,12 +4848,15 @@
    ],
    "seaZone" : null,
    "to" : 83,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.63
   },
   {
    "crossesRiver" : false,
    "from" : 82,
    "id" : "route-82-84",
+   "legs" : null,
+   "length" : 113.22,
    "pass" : null,
    "points" : [
     [
@@ -4233,12 +4870,15 @@
    ],
    "seaZone" : null,
    "to" : 84,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.47
   },
   {
    "crossesRiver" : true,
    "from" : 83,
    "id" : "route-83-84",
+   "legs" : null,
+   "length" : 133.63,
    "pass" : null,
    "points" : [
     [
@@ -4252,12 +4892,15 @@
    ],
    "seaZone" : null,
    "to" : 84,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.72
   },
   {
    "crossesRiver" : true,
    "from" : 83,
    "id" : "route-83-85",
+   "legs" : null,
+   "length" : 115.52,
    "pass" : null,
    "points" : [
     [
@@ -4271,12 +4914,15 @@
    ],
    "seaZone" : null,
    "to" : 85,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.65
   },
   {
    "crossesRiver" : true,
    "from" : 84,
    "id" : "route-84-85",
+   "legs" : null,
+   "length" : 166.6,
    "pass" : null,
    "points" : [
     [
@@ -4290,12 +4936,15 @@
    ],
    "seaZone" : null,
    "to" : 85,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.86
   },
   {
    "crossesRiver" : false,
    "from" : 84,
    "id" : "route-84-86",
+   "legs" : null,
+   "length" : 174.16,
    "pass" : null,
    "points" : [
     [
@@ -4309,12 +4958,15 @@
    ],
    "seaZone" : null,
    "to" : 86,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.73
   },
   {
    "crossesRiver" : false,
    "from" : 84,
    "id" : "route-84-87",
+   "legs" : null,
+   "length" : 155.21,
    "pass" : null,
    "points" : [
     [
@@ -4328,12 +4980,15 @@
    ],
    "seaZone" : null,
    "to" : 87,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.65
   },
   {
    "crossesRiver" : false,
    "from" : 84,
    "id" : "route-84-88",
+   "legs" : null,
+   "length" : 142.9,
    "pass" : null,
    "points" : [
     [
@@ -4347,12 +5002,15 @@
    ],
    "seaZone" : null,
    "to" : 88,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.6
   },
   {
    "crossesRiver" : true,
    "from" : 85,
    "id" : "route-85-86",
+   "legs" : null,
+   "length" : 148.96,
    "pass" : null,
    "points" : [
     [
@@ -4366,12 +5024,15 @@
    ],
    "seaZone" : null,
    "to" : 86,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.79
   },
   {
    "crossesRiver" : false,
    "from" : 86,
    "id" : "route-86-87",
+   "legs" : null,
+   "length" : 135.21,
    "pass" : null,
    "points" : [
     [
@@ -4385,12 +5046,15 @@
    ],
    "seaZone" : null,
    "to" : 87,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.56
   },
   {
    "crossesRiver" : false,
    "from" : 87,
    "id" : "route-87-88",
+   "legs" : null,
+   "length" : 96.42,
    "pass" : null,
    "points" : [
     [
@@ -4404,7 +5068,8 @@
    ],
    "seaZone" : null,
    "to" : 88,
-   "type" : "land"
+   "type" : "land",
+   "years" : 0.4
   }
  ],
  "seaZones" : [
@@ -4672,8 +5337,7 @@
     4,
     5,
     9,
-    10,
-    11
+    10
    ],
    "country" : "LDK",
    "hre" : false,
@@ -4732,7 +5396,6 @@
   },
   {
    "borders" : [
-    8,
     9,
     10,
     12,
@@ -5410,7 +6073,6 @@
     42,
     44,
     46,
-    49,
     52
    ],
    "country" : "ELS",
@@ -5495,7 +6157,6 @@
   {
    "borders" : [
     38,
-    45,
     46,
     47,
     48,

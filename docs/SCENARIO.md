@@ -16,8 +16,10 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 **x = 1** (see the scenario scaling note in RULES.md)
 
+**Army speed:** 240 map units per year — a route takes its length on the map ÷ this (RULES.md §8).
+
 <!-- generated:summary -->
-87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 190 land routes, 4 straits, 7 mountain passes
+87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 188 land routes, 4 straits, 7 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -99,10 +101,10 @@ Settlements 25 and 27 were deleted from the map.
 | 5 | Skagen | UDK | town | port |  | 448 | 177 | 4, 8 | 2 |
 | 6 | Gothenburg | GOT | town | port |  | 581 | 190 | 2, 3 | 7 |
 | 7 | Copenhagen | CPH | city | port |  | 519 | 280 |  | 6, 10 |
-| 8 | Herning | LDK | town |  |  | 368 | 248 | 4, 5, 9, 10, 11 |  |
+| 8 | Herning | LDK | town |  |  | 368 | 248 | 4, 5, 9, 10 |  |
 | 9 | Esbjerg | LDK | town | port |  | 313 | 297 | 8, 11, 66 |  |
 | 10 | Flensburg | SCH | town | port | HRE | 420 | 305 | 8, 11 | 7 |
-| 11 | Kiel | SCH | city | port | HRE | 435 | 376 | 8, 9, 10, 12, 13, 66 |  |
+| 11 | Kiel | SCH | city | port | HRE | 435 | 376 | 9, 10, 12, 13, 66 |  |
 | 12 | Luneburg | SCH | town |  | HRE | 402 | 445 | 11, 13, 66, 67, 69, 75 |  |
 | 13 | Rostock | MEC | town | port | HRE | 558 | 419 | 11, 12, 14, 75, 76 |  |
 | 14 | Stettin | MEC | town | port | HRE | 655 | 409 | 13, 76, 78, 79 |  |
@@ -134,11 +136,11 @@ Settlements 25 and 27 were deleted from the map.
 | 42 | Geneva | ELS | town |  | HRE | 169 | 1113 | 41, 43, 44, 45 |  |
 | 43 | Lyon | NAN | town |  |  | 119 | 1088 | 42, 44 |  |
 | 44 | Nancy | NAN | town |  | HRE | 125 | 1022 | 42, 43, 45, 52, 53 |  |
-| 45 | Strassburg | ELS | city |  | HRE | 179 | 981 | 41, 42, 44, 46, 49, 52 |  |
+| 45 | Strassburg | ELS | city |  | HRE | 179 | 981 | 41, 42, 44, 46, 52 |  |
 | 46 | Basel | LGE | town |  | HRE | 258 | 965 | 41, 45, 47, 49 |  |
 | 47 | Konstanz | LGE | town |  | HRE | 363 | 973 | 38, 40, 41, 46, 49 |  |
 | 48 | Ulm | ULM | town |  | HRE | 446 | 914 | 37, 38, 49, 50, 71 |  |
-| 49 | Stuttgart | STU | city |  | HRE | 338 | 888 | 38, 45, 46, 47, 48, 50, 52 |  |
+| 49 | Stuttgart | STU | city |  | HRE | 338 | 888 | 38, 46, 47, 48, 50, 52 |  |
 | 50 | Frankfurt | FRA | town |  | HRE | 327 | 803 | 48, 49, 51, 70 |  |
 | 51 | Bonn | FRA | town |  | HRE | 292 | 752 | 50, 61, 62, 70 |  |
 | 52 | Trier | TRI | town |  | HRE | 200 | 859 | 44, 45, 49, 53, 60 |  |
@@ -204,8 +206,9 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 ```
 768,767  738,780  847,796  738,813  874,814  933,849  705,871  1197,871
 1008,874  1259,880  1138,883  1067,894  701,912  1213,915  1153,916  1256,917
-791,935  744,943  1266,955  837,970  877,1002  370,1038  407,1040  647,1046
-250,1081  611,1081  547,1085  482,1093  371,1096  326,1097  297,1115  267,1130
+791,935  744,943  1266,955  837,970  877,1002  298,1030  370,1038  407,1040
+647,1046  250,1081  611,1081  547,1085  482,1093  371,1096  326,1097  297,1115
+267,1130
 ```
 
 ## Overview
@@ -219,7 +222,9 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **On a river (25):** 15, 31, 32, 33, 35, 38, 42, 45, 48, 49, 50, 51, 57, 58, 59, 61, 66, 67, 68, 70, 80, 82, 83, 85, 86 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
 
-**Routes crossing a river (40):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 41-42, 41-45, 45-46, 45-49, 48-49, 48-71, 49-50, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 83-85, 84-85, 85-86 — +2 months to march (RULES.md §8).
+**Routes crossing a river (39):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 41-42, 41-45, 45-46, 48-49, 48-71, 49-50, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 83-85, 84-85, 85-86 — +2 months to march (RULES.md §8).
+
+**Marching** at 240 map units a year, +2 months per river crossing, +3 per leg to or from a pass: a route takes 0.15–1.34 years (median 0.55); through a pass 1.00–1.34.
 
 | Pop | Countries |
 |---|---|
@@ -362,7 +367,8 @@ propose. Its natural path runs through Poland instead: Warsaw, Poznań, Eastern 
   29-31, 28-36.
 - 29-85 was removed from *Borders* as well, and later seven routes that looked odd on the map:
   28-31 (through pass P6), 35-39, 48-70, 50-52, 50-60, 51-59, 59-63. (23-87 was removed too, then
-  put back.)
+  put back.) 8-11 and 45-49 were removed because they ran right past 10 Flensburg and 46 Basel,
+  which connect to both ends anyway.
 - 56 Antwerp is inland, so Belgium has no ships.
 
 ### Notes to check
