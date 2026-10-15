@@ -322,7 +322,8 @@ chance each German state joins = your soldiers ÷ their soldiers × 10 %
 0% if you do not have more soldiers than they do
 ```
 
-Protectorates pay you **10%** of their income.
+Every German state that joins becomes your **protectorate** (RULES.md §10) and pays you **10%** of
+its yearly money.
 
 ## Victory
 

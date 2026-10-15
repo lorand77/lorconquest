@@ -190,8 +190,8 @@ The pass ×2 does **not** apply to snipers. Losses are applied as in a normal ba
 
 ## 6. TAKING A SETTLEMENT
 
-**Undefended settlement** — if no enemy army is in it, an army that enters captures it
-immediately. No battle is fought and no one dies.
+**Undefended settlement** — if an enemy's settlement (§10) has no army in it, an army that enters
+captures it immediately. No battle is fought and no one dies.
 
 **Storm** — a field battle with the defender's bonus applied. If the attacker wins, the settlement
 falls immediately and the defender rolls d6: **1–3** escapes with normal losses, **4–6** loses
@@ -305,13 +305,57 @@ at sea count toward this limit.
 
 ## 10. DIPLOMACY
 
-Alliances · Non-aggression pacts · Declarations of war · Guarantees · Peace treaties
+### War
+**War must be declared.** You can only fight a country you are at war with — your **enemy**.
+Battles, sieges, storms, blockades and patrols (§5–§8) act on enemies only. Peasant rebels (§11)
+are always at war with you.
 
-- **Vassal** — pays you **40%** of its income.
-- **Protectorate** — pays you **10%** of its income.
+**Neutral land is open.** Armies may march through and stop in the land of any country they are
+not at war with, but cannot capture, besiege or storm its settlements, and armies that are not at
+war ignore each other — no battle and no zone of control.
 
-**Peace:** if you have conquered everything you dictate terms. Otherwise either side may propose
-peace and both must agree. *(Terms still to be defined.)*
+When you declare war:
+- your target's **defensive allies** and **guarantors** join against you automatically;
+- your **military allies** are called to join you, and so are your target's. Each may refuse at a
+  cost: the alliance with the caller ends.
+
+### Agreements
+| Agreement | Effect | Lasts |
+|---|---|---|
+| **Defensive alliance** | If either side is declared on, the other joins the war automatically | until broken |
+| **Military alliance** | Each side is called into every war the other fights, attacking or defending; it may refuse (above) | until broken |
+| **Guarantee** | One-way: if the guaranteed country is declared on, the guarantor joins automatically | until broken |
+| **Non-aggression pact** | Neither side may declare war on the other | 10 years |
+| **Truce** | Starts when a peace is signed; neither side may declare war on the other | 5 years |
+
+A **military ally** (§5) is any country allied with you, by either kind of alliance, that is
+fighting the same war on your side.
+
+**Breaking an agreement.** You may break any agreement — including declaring war through a pact or
+truce. If you do, **all your alliances end**, and computer countries trust you less for
+**10 years** (see *Computer countries*).
+
+### Subjects
+| | Vassal | Protectorate |
+|---|---|---|
+| Pays you | **40%** of its yearly money (§2), when positive | **10%** of its yearly money (§2), when positive |
+| Joins your wars | every war, automatically — it cannot refuse | never obliged |
+| Its own diplomacy | none: it cannot declare war, make agreements or sign peace | keeps it |
+| Counts as your military ally (§5) | yes | only if it chooses to join the war |
+
+A country becomes your subject through a peace treaty, by agreeing to your demand, or — protectorates
+only — through the Holy Roman Empire ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)).
+
+**Breaking free.** A subject breaks free the moment it has **more soldiers than you**. This is not
+breaking an agreement.
+
+### Peace
+Either side may propose peace, with **any terms both sides agree to**: settlements, money, making
+one side a vassal or protectorate of the other, releasing subjects. If you have conquered all of
+your enemy's settlements, you dictate the terms. Signing peace starts a **truce**.
+
+### Computer countries
+*(How a computer-run country decides whether to accept a proposal is still to be defined.)*
 
 ---
 
