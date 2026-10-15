@@ -332,8 +332,8 @@ A **military ally** (§5) is any country allied with you, by either kind of alli
 fighting the same war on your side.
 
 **Breaking an agreement.** You may break any agreement — including declaring war through a pact or
-truce. If you do, **all your alliances end**, and computer countries trust you less for
-**10 years** (see *Computer countries*).
+truce. If you do, **all your alliances end**, and every computer country's opinion of you
+drops by **40 for 10 years** (see *Computer countries*).
 
 ### Subjects
 | | Vassal | Protectorate |
@@ -352,10 +352,64 @@ breaking an agreement.
 ### Peace
 Either side may propose peace, with **any terms both sides agree to**: settlements, money, making
 one side a vassal or protectorate of the other, releasing subjects. If you have conquered all of
-your enemy's settlements, you dictate the terms. Signing peace starts a **truce**.
+your enemy's settlements, you dictate the terms. Settlements stay with whoever holds them when
+peace is signed, unless the terms move them. Signing peace starts a **truce**.
 
 ### Computer countries
-*(How a computer-run country decides whether to accept a proposal is still to be defined.)*
+A computer-run country answers a proposal the moment it is made. You may make each kind of
+proposal to the same country **once every 5 years**. The HRE proposal is not limited by this —
+it has its own once-ever rule ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)).
+
+**Strength** compares soldiers (§2 — cannon and ship crew included):
+```
+strength = your soldiers ÷ their soldiers
+```
+
+**Opinion.** Every computer country holds an opinion of every other country, from −100 to +100 —
+the sum of everything below that applies:
+
+| Between it and you | Opinion |
+|---|---|
+| You are both at war with the same country | +20 |
+| You both hold HRE settlements | +10 |
+| Each full year since you were last at war with each other (or since the start) | +1, up to +20 |
+| You share a border (a land route joins your settlements) | −15 |
+| You are at war with one of its allies or subjects | −30 |
+| You fought a war against it in the last 20 years | −25 |
+| You broke an agreement with anyone in the last 10 years | −40 |
+
+**Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:
+```
+war score = % of its pop you have taken in this war − % of your pop it has taken
+            + 10 × (strength − 1), this part between −30 and +30
+cost      = settlements you ask for, as % of its pop
+            + 10 for each year of its money (§2) you ask for
+            + 50 to make it your vassal · 25 to make it your protectorate
+```
+Pops are counted as they were when the war began. A plain peace (cost 0) is accepted whenever your
+war score is 0 or more.
+
+**Alliances, guarantees and pacts** — opinion, plus how threatened it feels by its neighbours.
+The computer accepts if `opinion + need ≥ the bar`:
+```
+need = 10 × (its strongest neighbour's soldiers ÷ its soldiers − 1), between 0 and +40
+```
+| Proposal | Bar |
+|---|---|
+| You guarantee it | −20 |
+| Non-aggression pact | 0 |
+| Defensive alliance | +20 |
+| Military alliance | +40 |
+
+A neighbour is any country whose settlements share a land route with its settlements.
+
+**Becoming your subject** — mostly strength, a little opinion. Rolled like the HRE vote
+([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)):
+```
+protectorate chance = strength × 10 % + opinion ÷ 10 %
+vassal chance       = strength × 5 %  + opinion ÷ 10 %      also to turn your protectorate into a vassal
+0% if you do not have more soldiers than they do
+```
 
 ---
 
