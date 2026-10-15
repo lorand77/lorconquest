@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1308 1165" width="1308" height="1165">
 <!-- Map geometry for docs/map.svg (see docs/SCENARIO.md). One shape per settlement's land (id land-N) and the rivers.
      Neighbouring lands must share exactly the same points along their common edge (use snapping in Inkscape).
+     Sea zone dividers (group sea-zones) run from coast to coast and split the sea into the zones named in SCENARIO.md.
      Use straight segments only; tools/map.pl rejects curves and transforms. -->
 <rect width="1308" height="1165" fill="#99d9ea"/>
 <g id="lands" fill="#ffffff" stroke="#7f7f7f" stroke-width="1">
@@ -98,5 +99,12 @@
   <path d="M18.3 572 L35.5 583.5 L43.5 591.5 L68.5 606.5 L74.5 612.5 L83.5 617.5 L87.5 621.5 L100.5 626.5 L104.5 629.5 L107.5 629.5 L114.5 634.5 L118.5 635.5 L128.5 641.5 L132.5 646.5 L140.5 650.5 L160.5 656.5 L171.5 656.5 L178.5 660.5 L215.5 696.5 L227.5 711.5 L237.5 721.5 L259.5 750.5 L281.5 768.5 L292.5 779.5 L297.5 793.5 L309.5 813.5 L320.5 824.5 L323.5 825.5 L340.5 841.5 L352.5 850.5 L355.5 857.5 L355.5 879.5 L356.5 881.5 L375.5 900.5 L380.5 903.5 L396.5 909.5 L401.5 909.5 L407.5 912.5 L411.5 912.5 L420.5 916.5 L438.5 931.5 L447.5 948.5"/>
   <path d="M168.5 1164.5 L171.5 1151.5 L174.5 1145.5 L174.5 1141.5 L176.5 1138.5 L177.5 1115.5 L181.5 1104.5 L181.5 1100.5 L184.5 1094.5 L184.5 1079.5 L186.5 1076.5 L186.5 1070.5 L192.5 1050.5 L194.5 963.5 L190.5 956.5 L190.5 952.5"/>
   <path d="M491.5 996.5 L495.5 997.5 L506.5 994.5 L524.5 994.5 L535.5 992.5 L545.5 992.5 L569.5 988.5 L572.5 985.5 L576.5 985.5 L579.5 983.5 L606.5 982.5 L616.5 983.5 L619.5 985.5 L624.5 985.5 L630.5 988.5 L634.5 988.5 L681.5 1007.5 L719.5 1007.5 L726.5 1010.5 L731.5 1010.5 L739.5 1014.5 L752.5 1016.5 L765.5 1022.5 L771.5 1028.5 L780.5 1038.5 L783.5 1044.5 L794.5 1058.5 L796.5 1064.5 L810.5 1079.5 L830.5 1086.5 L837.5 1092.5 L844.5 1095.5 L865.5 1112.5 L891.5 1126.5 L908.5 1141.5 L933.5 1154.5 L946.5 1164.5"/>
+</g>
+<g id="sea-zones" fill="none" stroke="#3d7f9c" stroke-width="1.5" stroke-dasharray="6 4">
+  <path d="M204.6 155.9 L297 200"/>
+  <path d="M384.9 78.2 L384.7 170.9"/>
+  <path d="M467.6 190 L507.9 150"/>
+  <path d="M650 234.1 L530 404.6"/>
+  <path d="M950 0 L1126.1 340"/>
 </g>
 </svg>

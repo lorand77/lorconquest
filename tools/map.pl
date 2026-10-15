@@ -38,6 +38,8 @@ my $STYLE = <<'CSS';
 .number{fill:#fff;font-size:10px;font-weight:bold;text-anchor:middle}
 .label{fill:#464646;font-size:15px;text-anchor:middle}
 .label.small{font-size:10px}
+.sea-divider{fill:none;stroke:#3d7f9c;stroke-width:1.5;stroke-dasharray:6 4}
+.sea-label{fill:#3d7f9c;font-size:11px;font-style:italic;text-anchor:middle}
 CSS
 my ($PASS_SIDE, $TOWN_R, $CITY_SIDE) = (20, 9, 22);
 my ($MTN_W, $MTN_H) = (30, 26);
@@ -96,6 +98,11 @@ my %VIA; for my $p (@PASSES) { for (@{ $p->{routes} }) { err("route %s goes thro
 my @PEAKS;                               # the ``` block under ## Mountains
 { my ($s, $e) = section('Mountains'); my @f = grep { $doc[$_] =~ /^```/ } $s .. $e; die "SCENARIO.md: no ``` block under ## Mountains\n" unless @f >= 2;
   for my $i ($f[0] + 1 .. $f[1] - 1) { push @PEAKS, [ $1, $2 ] while $doc[$i] =~ /(\d+),(\d+)/g } }
+my @ZONES;                               # sea zones: name, and a point inside it (where the name is drawn)
+{ my (undef, $rows) = table('Sea zones'); my %seen;
+  for my $r (@$rows) { err("Sea zones line %d: X and Y must be whole numbers", $r->{_line}) unless "$r->{X} $r->{Y}" =~ /^\d+ \d+$/;
+      err("Sea zones line %d: duplicate zone %s", $r->{_line}, $r->{Zone}) if $seen{ $r->{Zone} }++;
+      (my $id = lc $r->{Zone}) =~ s/[^a-z0-9]+/-/g; push @ZONES, { name => $r->{Zone}, id => $id, x => $r->{X}, y => $r->{Y} } } }
 check('SCENARIO.md');
 
 # =====================================================================================
@@ -124,6 +131,8 @@ for my $a ($base =~ /<path\b([^>]*)>/g) { my ($id) = $a =~ /\bid="([^"]*)"/; my 
         err("map-base.svg: %s has no closed shape", $id) unless @$r } }
 my ($rivg) = $base =~ /<g\b[^>]*\bid="rivers"[^>]*>(.*?)<\/g>/s;      # rivers: the paths in the group with id "rivers"
 for my $a (($rivg // '') =~ /<path\b([^>]*)>/g) { my ($d) = $a =~ /\bd="([^"]*)"/ or next; my (undef, $open) = parse_d($d, 'a river'); push @RIVERS, $open if @$open >= 2 }
+my ($seag) = $base =~ /<g\b[^>]*\bid="sea-zones"[^>]*>(.*?)<\/g>/s;      # sea zone dividers: the paths in the group with id "sea-zones"
+my @DIVIDERS; for my $a (($seag // '') =~ /<path\b([^>]*)>/g) { my ($d) = $a =~ /\bd="([^"]*)"/ or next; my (undef, $open) = parse_d($d, 'a sea zone divider'); push @DIVIDERS, $open if @$open >= 2 }
 for my $id (sort { $a <=> $b } keys %S) { err("map-base.svg: no land-%d for settlement %d", $id, $id) unless $LANDS{$id} }
 for my $id (sort { $a <=> $b } keys %LANDS) { err("map-base.svg: land-%d has no settlement in SCENARIO.md", $id) unless $S{$id} }
 check('map-base.svg');
@@ -152,6 +161,9 @@ check('map-base.svg');
 # a river that reaches the sea must end exactly on the coastline
 for my $r (@RIVERS) { for my $p ($r->[0], $r->[-1]) { my $d = min(map { seg_dist(@$p, @$_) } @COAST);
     warn sprintf "map-base.svg: a river ends %.1f from the coast near %.0f,%.0f -- move its end onto the coastline\n", $d, @$p if $d > 0.3 && $d < 12 } }
+# a sea zone divider must run from coast (or the map edge) to coast
+for my $r (@DIVIDERS) { for my $p ($r->[0], $r->[-1]) { my $d = min(map { seg_dist(@$p, @$_) } @COAST); my $edge = min($p->[0], $p->[1], $W - $p->[0], $H - $p->[1]);
+    warn sprintf "map-base.svg: a sea zone divider ends %.1f from the coast near %.0f,%.0f -- move its end onto the coastline\n", $d, @$p if $d > 0.5 && $edge > 0.5 } }
 # join segments into as few polylines as possible
 sub chains { my @segs = @_; my %adj; for my $i (0 .. $#segs) { push @{ $adj{ pk($segs[$i][0]) } }, $i; push @{ $adj{ pk($segs[$i][1]) } }, $i }
     my (%used, @out);
@@ -181,6 +193,39 @@ for my $k (sort keys %OVER) { err("land-%s and land-%s overlap (%d px)", split(/
   err("%d gap(s) between lands, first near %s: neighbouring lands must share exactly the same points", scalar @gaps, join(' ', @gaps[0 .. ($#gaps < 2 ? $#gaps : 2)])) if @gaps }
 check('map-base.svg');
 sub inb { $_[0] >= 0 && $_[1] >= 0 && $_[0] < $W && $_[1] < $H }
+
+# sea zones: the sea split by the dividers, each stretch named by the label point inside it
+my @ZG = map { [ (0) x $W ] } 1 .. $H; my %ZOFC;      # pixel -> stretch of sea (1, 2, ...); stretch -> zone
+{ my %bar;
+  for my $r (@DIVIDERS) { for my $i (1 .. $#$r) { my ($a, $b) = @$r[ $i - 1, $i ]; my $L = sqrt(($b->[0] - $a->[0])**2 + ($b->[1] - $a->[1])**2);
+      for my $k (0 .. int($L * 2)) { my $t = $L ? $k / ($L * 2) : 0; my ($x, $y) = ($a->[0] + ($b->[0] - $a->[0]) * $t, $a->[1] + ($b->[1] - $a->[1]) * $t);
+          for my $dy (-1 .. 1) { for my $dx (-1 .. 1) { $bar{ int($x + $dx * 0.75) . ',' . int($y + $dy * 0.75) } = 1 } } } } }
+  my ($n, @size, @first) = (0);
+  for my $y (0 .. $H - 1) { for my $x (0 .. $W - 1) { next if $REG[$y][$x] || $ZG[$y][$x] || $bar{"$x,$y"}; $n++; my @st = ([$x, $y]); $ZG[$y][$x] = $n; $first[$n] = "$x,$y";
+      while (my $p = pop @st) { $size[$n]++; for ([1, 0], [-1, 0], [0, 1], [0, -1]) { my ($u, $v) = ($p->[0] + $_->[0], $p->[1] + $_->[1]);
+          next if !inb($u, $v) || $REG[$v][$u] || $ZG[$v][$u] || $bar{"$u,$v"}; $ZG[$v][$u] = $n; push @st, [$u, $v] } } } }
+  my @q = map { [ split /,/ ] } grep { my ($x, $y) = split /,/; inb($x, $y) && !$REG[$y][$x] } sort keys %bar;      # divider pixels join a neighbouring stretch
+  while (@q) { my @rest; for my $p (@q) { my ($z) = grep { $_ } map { my ($u, $v) = ($p->[0] + $_->[0], $p->[1] + $_->[1]); inb($u, $v) ? $ZG[$v][$u] : 0 } [1, 0], [-1, 0], [0, 1], [0, -1];
+      if ($z) { $ZG[ $p->[1] ][ $p->[0] ] = $z } else { push @rest, $p } } last if @rest == @q; @q = @rest }
+  for my $z (@ZONES) { my $c = inb($z->{x}, $z->{y}) ? $ZG[ $z->{y} ][ $z->{x} ] : 0;
+      err("sea zone %s: %d,%d is not in the sea", $z->{name}, $z->{x}, $z->{y}), next unless $c;
+      err("sea zones %s and %s are one stretch of sea: a divider is missing or does not reach the coast", $ZOFC{$c}{name}, $z->{name}), next if $ZOFC{$c};
+      $ZOFC{$c} = $z }
+  for my $c (1 .. $n) { err("the stretch of sea around %s has no name in the Sea zones table", $first[$c]) if !$ZOFC{$c} && $size[$c] > 2000 } }
+sub zone_at { my ($x, $y) = map { int } @_; inb($x, $y) && $ZG[$y][$x] ? $ZOFC{ $ZG[$y][$x] } : undef }
+for my $id (sort { $a <=> $b } keys %S) { next unless $S{$id}{port}; my ($sx, $sy) = @{ $S{$id} }{qw(x y)}; my ($z, $bd);      # a port faces the nearest sea
+    for my $dy (-40 .. 40) { for my $dx (-40 .. 40) { my $zz = zone_at($sx + $dx, $sy + $dy) or next; my $d = $dx * $dx + $dy * $dy; ($z, $bd) = ($zz, $d) if !defined $bd || $d < $bd } }
+    $z ? ($S{$id}{zone} = $z) : err("port %d %s has no sea within 40 of it", $id, $S{$id}{name}) }
+my %SZ;                                  # strait -> zone it lies in
+for my $e (sort keys %STRAIT) { my ($a, $b) = map { $S{$_} } split /-/, $e; my $L = sqrt(($b->{x} - $a->{x})**2 + ($b->{y} - $a->{y})**2); my %n;
+    for my $i (12 .. int($L) - 12) { my $z = zone_at($a->{x} + ($b->{x} - $a->{x}) * $i / $L, $a->{y} + ($b->{y} - $a->{y}) * $i / $L) or next; $n{ $z->{name} }++ }
+    my @z = sort { $n{$b} <=> $n{$a} || $a cmp $b } keys %n; err("strait %s does not cross the sea", $e), next unless @z;
+    warn "strait $e crosses several sea zones (" . join(', ', @z) . "); it counts as $z[0]\n" if @z > 1; ($SZ{$e}) = grep { $_->{name} eq $z[0] } @ZONES }
+for my $r (@DIVIDERS) { for my $i (1 .. $#$r) { my ($a, $b) = @$r[ $i - 1, $i ]; my ($mx, $my) = (($a->[0] + $b->[0]) / 2, ($a->[1] + $b->[1]) / 2);     # zones either side of a divider
+    my ($nx, $ny) = ($b->[1] - $a->[1], $a->[0] - $b->[0]); my $nl = sqrt($nx * $nx + $ny * $ny) || 1; ($nx, $ny) = ($nx / $nl * 4, $ny / $nl * 4);
+    my ($p, $q) = (zone_at($mx + $nx, $my + $ny), zone_at($mx - $nx, $my - $ny)); next unless $p && $q && $p ne $q; $p->{next}{ $q->{name} } = 1; $q->{next}{ $p->{name} } = 1 } }
+check('map-base.svg');
+sub sea_label_box { my $z = shift; my $w = length($z->{name}) * 6.2; ($z->{x} - $w / 2, $z->{y} - 9, $z->{x} + $w / 2, $z->{y} + 2) }
 my @OCC = map { [ (0) x $W ] } 1 .. $H;
 sub occ_seg { my ($x1, $y1, $x2, $y2, $hw) = @_; my ($dx, $dy) = ($x2 - $x1, $y2 - $y1); my $L2 = $dx * $dx + $dy * $dy;
     for my $y (int(($y1 < $y2 ? $y1 : $y2) - $hw) - 1 .. int(($y1 > $y2 ? $y1 : $y2) + $hw) + 1) { for my $x (int(($x1 < $x2 ? $x1 : $x2) - $hw) - 1 .. int(($x1 > $x2 ? $x1 : $x2) + $hw) + 1) {
@@ -244,7 +289,7 @@ $RPATH{$_} = [ map { [ @{ $S{$_} }{qw(x y)} ] } split /-/ ] for keys %STRAIT;
 my @ROUTESEG = map { my $e = $_; my $p = $RPATH{$e}; map { [ @{ $p->[$_ - 1] }, @{ $p->[$_] }, $e, $STRAIT{$e} ? 1 : 0 ] } 1 .. $#$p } sort keys %RPATH;
 
 occ_line($_, 1.0) for chains(@COAST); occ_line($_, 1.25) for map { chains(@{ $PAIR{$_} }) } grep { my ($a, $b) = split /-/; $S{$a}{country} ne $S{$b}{country} } keys %PAIR;
-occ_line($_, 1.25) for @RIVERS; occ_seg(@$_[0 .. 3], 1.0) for @ROUTESEG;
+occ_line($_, 1.25) for @RIVERS; occ_seg(@$_[0 .. 3], 1.0) for @ROUTESEG; occ_line($_, 1.0) for @DIVIDERS; occ_box(sea_label_box($_)) for @ZONES;
 for my $s (values %S) { occ_box($s->{x} - 11, $s->{y} - 11, $s->{x} + 10, $s->{y} + 10) }
 for my $p (@PASSES) { occ_box($p->{x} - 11, $p->{y} - 13, $p->{x} + 11, $p->{y} + 7) }
 occ_box(0, 0, $W - 1, 1); occ_box(0, $H - 2, $W - 1, $H - 1); occ_box(0, 0, 1, $H - 1); occ_box($W - 2, 0, $W - 1, $H - 1);
@@ -325,7 +370,9 @@ push @o, '</g>', '<g id="edges">', sprintf('  <path id="frame" class="frame" d="
     sprintf('  <path id="coast" class="coast" d="%s"/>', join ' ', map { d_line($_) } chains(@COAST));
 for my $k (sort { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] || $a[1] <=> $b[1] } keys %PAIR) { my ($a, $b) = split /-/, $k;
     push @o, sprintf '  <path id="edge-%s" class="edge %s" d="%s"/>', $k, $S{$a}{country} eq $S{$b}{country} ? 'province' : 'border', join ' ', map { d_line($_) } chains(@{ $PAIR{$k} }) }
-push @o, '</g>', '<g id="rivers">', (map { sprintf '  <path class="river" d="%s"/>', d_line($_) } @RIVERS), '</g>', '<g id="routes">';
+push @o, '</g>', '<g id="rivers">', (map { sprintf '  <path class="river" d="%s"/>', d_line($_) } @RIVERS), '</g>', '<g id="sea-zones">',
+    (map { sprintf '  <path class="sea-divider" d="%s"/>', d_line($_) } @DIVIDERS),
+    (map { sprintf '  <text id="sea-%s" class="sea-label" x="%s" y="%s">%s</text>', $_->{id}, $_->{x}, $_->{y}, esc($_->{name}) } @ZONES), '</g>', '<g id="routes">';
 for my $e (sort { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] || $a[1] <=> $b[1] } keys %LAND, keys %STRAIT) { my ($a, $b) = split /-/, $e;
     push @o, sprintf '  <path id="route-%s" class="route%s" d="%s"/>', $e, $STRAIT{$e} ? ' strait' : '', d_line($RPATH{$e}) }
 push @o, '</g>', '<g id="mountains">';
@@ -370,10 +417,13 @@ my %json = (
     map => { svg => 'map.svg', width => 0 + $W, height => 0 + $H },
     countries => [ map { my $c = $C{$_}; { code => $_, name => $CN{$_}, settlements => [ map { 0 + $_ } @{ $c->{ids} } ], pop => $c->{pop}, army => $c->{army}, ships => $c->{ships}, hre => $c->{hrestate} } } @CORDER ],
     settlements => [ map { my $s = $S{$_}; { id => 0 + $_, name => $s->{name}, country => $s->{country}, type => $s->{city} ? 'city' : 'town', pop => $s->{pop},
-        port => $s->{port} ? $T : $F, river => $s->{river} ? $T : $F, hre => $s->{hre} ? $T : $F, x => 0 + $s->{x}, y => 0 + $s->{y}, land => "land-$_",
+        port => $s->{port} ? $T : $F, river => $s->{river} ? $T : $F, hre => $s->{hre} ? $T : $F, x => 0 + $s->{x}, y => 0 + $s->{y}, land => "land-$_", seaZone => $s->{zone} ? $s->{zone}{id} : undef,
         borders => [ sort { $a <=> $b } map { 0 + $_ } @{ $s->{nb} } ], straits => [ sort { $a <=> $b } map { 0 + $_ } @{ $s->{st} } ] } } @ids ],
     routes => [ map { my ($a, $b) = split /-/; { id => "route-$_", from => 0 + $a, to => 0 + $b, type => $STRAIT{$_} ? 'strait' : 'land',
-        pass => $VIA{$_} ? $VIA{$_}{id} : undef, crossesRiver => $CROSS{$_} ? $T : $F, points => [ map { [ map { 0 + n($_) } @$_ ] } @{ $RPATH{$_} } ] } } sort bykey keys %LAND, keys %STRAIT ],
+        pass => $VIA{$_} ? $VIA{$_}{id} : undef, seaZone => $SZ{$_} ? $SZ{$_}{id} : undef, crossesRiver => $CROSS{$_} ? $T : $F, points => [ map { [ map { 0 + n($_) } @$_ ] } @{ $RPATH{$_} } ] } } sort bykey keys %LAND, keys %STRAIT ],
+    seaZones => [ map { my $z = $_; { id => $z->{id}, name => $z->{name}, label => { x => 0 + $z->{x}, y => 0 + $z->{y} },
+        ports => [ map { 0 + $_ } grep { $S{$_}{zone} && $S{$_}{zone} == $z } @ids ], straits => [ sort bykey grep { $SZ{$_} == $z } keys %SZ ],
+        next => [ map { $_->{id} } grep { $z->{next}{ $_->{name} } } @ZONES ] } } @ZONES ],
     passes => [ map { { id => $_->{id}, x => 0 + $_->{x}, y => 0 + $_->{y}, routes => $_->{routes}, land => 0 + $_->{owner} } } @PASSES ],
 );
 open $fh, '>:raw', $JSON or die "$JSON: $!"; print $fh JSON::PP->new->utf8->canonical->pretty->indent_length(1)->encode(\%json); close $fh;
@@ -382,6 +432,11 @@ open $fh, '>:raw', $JSON or die "$JSON: $!"; print $fh JSON::PP->new->utf8->cano
   my @t = ('| Code | Country | Settlements | Pop | Army | Ships | HRE |', '|---|---|---|---|---|---|---|');
   for my $k (@CORDER) { my $c = $C{$k};
       push @t, sprintf '| %s | %s | %s | %dK | %s | %s | %s |', $k, $CN{$k}, join(', ', @{ $c->{ids} }), $c->{pop} / 1000, fmt($c->{army}), $c->{ships} || '—', { all => '✓', part => 'part', none => '—' }->{ $c->{hrestate} } }
+  splice @doc, $i, $j - $i + 1, @t }
+{ my ($h, $rows, $i, $j) = table('Sea zones');
+  my @t = ('| Zone | X | Y | Ports | Straits | Next to |', '|---|---|---|---|---|---|');
+  for my $z (@ZONES) { push @t, sprintf '| %s | %d | %d | %s | %s | %s |', $z->{name}, $z->{x}, $z->{y}, join(', ', grep { $S{$_}{zone} && $S{$_}{zone} == $z } @ids) || '—',
+      join(', ', sort bykey grep { $SZ{$_} == $z } keys %SZ) || '—', join(', ', map { $_->{name} } grep { $z->{next}{ $_->{name} } } @ZONES) || '—' }
   splice @doc, $i, $j - $i + 1, @t }
 { my ($h, $rows, $i, $j) = table('Mountain passes');
   my @t = ('| Pass | X | Y | Routes | In the land of | Owner at start |', '|---|---|---|---|---|---|');

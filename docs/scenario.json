@@ -635,6 +635,7 @@
      51
     ]
    ],
+   "seaZone" : null,
    "to" : 2,
    "type" : "land"
   },
@@ -653,6 +654,7 @@
      186
     ]
    ],
+   "seaZone" : "skagerrak",
    "to" : 4,
    "type" : "strait"
   },
@@ -671,6 +673,7 @@
      177
     ]
    ],
+   "seaZone" : "oslofjord",
    "to" : 5,
    "type" : "strait"
   },
@@ -693,6 +696,7 @@
      190
     ]
    ],
+   "seaZone" : null,
    "to" : 6,
    "type" : "land"
   },
@@ -711,6 +715,7 @@
      190
     ]
    ],
+   "seaZone" : null,
    "to" : 6,
    "type" : "land"
   },
@@ -729,6 +734,7 @@
      177
     ]
    ],
+   "seaZone" : null,
    "to" : 5,
    "type" : "land"
   },
@@ -747,6 +753,7 @@
      248
     ]
    ],
+   "seaZone" : null,
    "to" : 8,
    "type" : "land"
   },
@@ -765,6 +772,7 @@
      248
     ]
    ],
+   "seaZone" : null,
    "to" : 8,
    "type" : "land"
   },
@@ -783,6 +791,7 @@
      280
     ]
    ],
+   "seaZone" : "kattegat",
    "to" : 7,
    "type" : "strait"
   },
@@ -801,6 +810,7 @@
      305
     ]
    ],
+   "seaZone" : "kattegat",
    "to" : 10,
    "type" : "strait"
   },
@@ -819,6 +829,7 @@
      297
     ]
    ],
+   "seaZone" : null,
    "to" : 9,
    "type" : "land"
   },
@@ -837,6 +848,7 @@
      305
     ]
    ],
+   "seaZone" : null,
    "to" : 10,
    "type" : "land"
   },
@@ -855,6 +867,7 @@
      376
     ]
    ],
+   "seaZone" : null,
    "to" : 11,
    "type" : "land"
   },
@@ -873,6 +886,7 @@
      376
     ]
    ],
+   "seaZone" : null,
    "to" : 11,
    "type" : "land"
   },
@@ -895,6 +909,7 @@
      434
     ]
    ],
+   "seaZone" : null,
    "to" : 66,
    "type" : "land"
   },
@@ -913,6 +928,7 @@
      376
     ]
    ],
+   "seaZone" : null,
    "to" : 11,
    "type" : "land"
   },
@@ -931,6 +947,7 @@
      445
     ]
    ],
+   "seaZone" : null,
    "to" : 12,
    "type" : "land"
   },
@@ -953,6 +970,7 @@
      419
     ]
    ],
+   "seaZone" : null,
    "to" : 13,
    "type" : "land"
   },
@@ -971,6 +989,7 @@
      434
     ]
    ],
+   "seaZone" : null,
    "to" : 66,
    "type" : "land"
   },
@@ -989,6 +1008,7 @@
      419
     ]
    ],
+   "seaZone" : null,
    "to" : 13,
    "type" : "land"
   },
@@ -1007,6 +1027,7 @@
      434
     ]
    ],
+   "seaZone" : null,
    "to" : 66,
    "type" : "land"
   },
@@ -1025,6 +1046,7 @@
      516
     ]
    ],
+   "seaZone" : null,
    "to" : 67,
    "type" : "land"
   },
@@ -1043,6 +1065,7 @@
      539
     ]
    ],
+   "seaZone" : null,
    "to" : 69,
    "type" : "land"
   },
@@ -1061,6 +1084,7 @@
      471
     ]
    ],
+   "seaZone" : null,
    "to" : 75,
    "type" : "land"
   },
@@ -1079,6 +1103,7 @@
      409
     ]
    ],
+   "seaZone" : null,
    "to" : 14,
    "type" : "land"
   },
@@ -1097,6 +1122,7 @@
      471
     ]
    ],
+   "seaZone" : null,
    "to" : 75,
    "type" : "land"
   },
@@ -1115,6 +1141,7 @@
      495
     ]
    ],
+   "seaZone" : null,
    "to" : 76,
    "type" : "land"
   },
@@ -1133,6 +1160,7 @@
      495
     ]
    ],
+   "seaZone" : null,
    "to" : 76,
    "type" : "land"
   },
@@ -1151,6 +1179,7 @@
      465
     ]
    ],
+   "seaZone" : null,
    "to" : 78,
    "type" : "land"
   },
@@ -1169,6 +1198,7 @@
      434
     ]
    ],
+   "seaZone" : null,
    "to" : 79,
    "type" : "land"
   },
@@ -1187,6 +1217,7 @@
      402
     ]
    ],
+   "seaZone" : null,
    "to" : 16,
    "type" : "land"
   },
@@ -1205,6 +1236,7 @@
      434
     ]
    ],
+   "seaZone" : null,
    "to" : 79,
    "type" : "land"
   },
@@ -1223,6 +1255,7 @@
      487
     ]
    ],
+   "seaZone" : null,
    "to" : 80,
    "type" : "land"
   },
@@ -1241,6 +1274,7 @@
      499
     ]
    ],
+   "seaZone" : null,
    "to" : 81,
    "type" : "land"
   },
@@ -1259,6 +1293,7 @@
      390
     ]
    ],
+   "seaZone" : null,
    "to" : 17,
    "type" : "land"
   },
@@ -1277,6 +1312,7 @@
      466
     ]
    ],
+   "seaZone" : null,
    "to" : 20,
    "type" : "land"
   },
@@ -1295,6 +1331,7 @@
      499
     ]
    ],
+   "seaZone" : null,
    "to" : 81,
    "type" : "land"
   },
@@ -1313,6 +1350,7 @@
      608
     ]
    ],
+   "seaZone" : null,
    "to" : 88,
    "type" : "land"
   },
@@ -1331,6 +1369,7 @@
      301
     ]
    ],
+   "seaZone" : null,
    "to" : 18,
    "type" : "land"
   },
@@ -1349,6 +1388,7 @@
      466
     ]
    ],
+   "seaZone" : null,
    "to" : 20,
    "type" : "land"
   },
@@ -1367,6 +1407,7 @@
      161
     ]
    ],
+   "seaZone" : null,
    "to" : 19,
    "type" : "land"
   },
@@ -1385,6 +1426,7 @@
      42
     ]
    ],
+   "seaZone" : null,
    "to" : 89,
    "type" : "land"
   },
@@ -1403,6 +1445,7 @@
      597
     ]
    ],
+   "seaZone" : null,
    "to" : 21,
    "type" : "land"
   },
@@ -1421,6 +1464,7 @@
      608
     ]
    ],
+   "seaZone" : null,
    "to" : 88,
    "type" : "land"
   },
@@ -1439,6 +1483,7 @@
      672
     ]
    ],
+   "seaZone" : null,
    "to" : 22,
    "type" : "land"
   },
@@ -1457,6 +1502,7 @@
      819
     ]
    ],
+   "seaZone" : null,
    "to" : 24,
    "type" : "land"
   },
@@ -1475,6 +1521,7 @@
      608
     ]
    ],
+   "seaZone" : null,
    "to" : 88,
    "type" : "land"
   },
@@ -1493,6 +1540,7 @@
      770
     ]
    ],
+   "seaZone" : null,
    "to" : 23,
    "type" : "land"
   },
@@ -1515,6 +1563,7 @@
      819
     ]
    ],
+   "seaZone" : null,
    "to" : 24,
    "type" : "land"
   },
@@ -1533,6 +1582,7 @@
      704
     ]
    ],
+   "seaZone" : null,
    "to" : 87,
    "type" : "land"
   },
@@ -1551,6 +1601,7 @@
      608
     ]
    ],
+   "seaZone" : null,
    "to" : 88,
    "type" : "land"
   },
@@ -1569,6 +1620,7 @@
      819
     ]
    ],
+   "seaZone" : null,
    "to" : 24,
    "type" : "land"
   },
@@ -1587,6 +1639,7 @@
      795
     ]
    ],
+   "seaZone" : null,
    "to" : 86,
    "type" : "land"
   },
@@ -1609,6 +1662,7 @@
      704
     ]
    ],
+   "seaZone" : null,
    "to" : 87,
    "type" : "land"
   },
@@ -1627,6 +1681,7 @@
      886
     ]
    ],
+   "seaZone" : null,
    "to" : 29,
    "type" : "land"
   },
@@ -1645,6 +1700,7 @@
      1089
     ]
    ],
+   "seaZone" : null,
    "to" : 31,
    "type" : "land"
   },
@@ -1663,6 +1719,7 @@
      886
     ]
    ],
+   "seaZone" : null,
    "to" : 29,
    "type" : "land"
   },
@@ -1681,6 +1738,7 @@
      867
     ]
    ],
+   "seaZone" : null,
    "to" : 30,
    "type" : "land"
   },
@@ -1703,6 +1761,7 @@
      1065
     ]
    ],
+   "seaZone" : null,
    "to" : 32,
    "type" : "land"
   },
@@ -1725,6 +1784,7 @@
      1037
     ]
    ],
+   "seaZone" : null,
    "to" : 33,
    "type" : "land"
   },
@@ -1747,6 +1807,7 @@
      982
     ]
    ],
+   "seaZone" : null,
    "to" : 35,
    "type" : "land"
   },
@@ -1765,6 +1826,7 @@
      867
     ]
    ],
+   "seaZone" : null,
    "to" : 30,
    "type" : "land"
   },
@@ -1787,6 +1849,7 @@
      795
     ]
    ],
+   "seaZone" : null,
    "to" : 86,
    "type" : "land"
   },
@@ -1809,6 +1872,7 @@
      918
     ]
    ],
+   "seaZone" : null,
    "to" : 36,
    "type" : "land"
   },
@@ -1831,6 +1895,7 @@
      801
     ]
    ],
+   "seaZone" : null,
    "to" : 72,
    "type" : "land"
   },
@@ -1857,6 +1922,7 @@
      709
     ]
    ],
+   "seaZone" : null,
    "to" : 73,
    "type" : "land"
   },
@@ -1879,6 +1945,7 @@
      750
     ]
    ],
+   "seaZone" : null,
    "to" : 85,
    "type" : "land"
   },
@@ -1897,6 +1964,7 @@
      1065
     ]
    ],
+   "seaZone" : null,
    "to" : 32,
    "type" : "land"
   },
@@ -1915,6 +1983,7 @@
      1037
     ]
    ],
+   "seaZone" : null,
    "to" : 33,
    "type" : "land"
   },
@@ -1933,6 +2002,7 @@
      1031
     ]
    ],
+   "seaZone" : null,
    "to" : 34,
    "type" : "land"
   },
@@ -1951,6 +2021,7 @@
      982
     ]
    ],
+   "seaZone" : null,
    "to" : 35,
    "type" : "land"
   },
@@ -1969,6 +2040,7 @@
      982
     ]
    ],
+   "seaZone" : null,
    "to" : 35,
    "type" : "land"
   },
@@ -1987,6 +2059,7 @@
      1085
     ]
    ],
+   "seaZone" : null,
    "to" : 39,
    "type" : "land"
   },
@@ -2005,6 +2078,7 @@
      918
     ]
    ],
+   "seaZone" : null,
    "to" : 36,
    "type" : "land"
   },
@@ -2023,6 +2097,7 @@
      920
     ]
    ],
+   "seaZone" : null,
    "to" : 37,
    "type" : "land"
   },
@@ -2041,6 +2116,7 @@
      978
     ]
    ],
+   "seaZone" : null,
    "to" : 38,
    "type" : "land"
   },
@@ -2059,6 +2135,7 @@
      920
     ]
    ],
+   "seaZone" : null,
    "to" : 37,
    "type" : "land"
   },
@@ -2077,6 +2154,7 @@
      775
     ]
    ],
+   "seaZone" : null,
    "to" : 71,
    "type" : "land"
   },
@@ -2095,6 +2173,7 @@
      801
     ]
    ],
+   "seaZone" : null,
    "to" : 72,
    "type" : "land"
   },
@@ -2113,6 +2192,7 @@
      978
     ]
    ],
+   "seaZone" : null,
    "to" : 38,
    "type" : "land"
   },
@@ -2131,6 +2211,7 @@
      914
     ]
    ],
+   "seaZone" : null,
    "to" : 48,
    "type" : "land"
   },
@@ -2149,6 +2230,7 @@
      775
     ]
    ],
+   "seaZone" : null,
    "to" : 71,
    "type" : "land"
   },
@@ -2171,6 +2253,7 @@
      1085
     ]
    ],
+   "seaZone" : null,
    "to" : 39,
    "type" : "land"
   },
@@ -2189,6 +2272,7 @@
      973
     ]
    ],
+   "seaZone" : null,
    "to" : 47,
    "type" : "land"
   },
@@ -2207,6 +2291,7 @@
      914
     ]
    ],
+   "seaZone" : null,
    "to" : 48,
    "type" : "land"
   },
@@ -2225,6 +2310,7 @@
      888
     ]
    ],
+   "seaZone" : null,
    "to" : 49,
    "type" : "land"
   },
@@ -2247,6 +2333,7 @@
      1085
     ]
    ],
+   "seaZone" : null,
    "to" : 40,
    "type" : "land"
   },
@@ -2265,6 +2352,7 @@
      1098
     ]
    ],
+   "seaZone" : null,
    "to" : 41,
    "type" : "land"
   },
@@ -2287,6 +2375,7 @@
      973
     ]
    ],
+   "seaZone" : null,
    "to" : 47,
    "type" : "land"
   },
@@ -2309,6 +2398,7 @@
      1113
     ]
    ],
+   "seaZone" : null,
    "to" : 42,
    "type" : "land"
   },
@@ -2331,6 +2421,7 @@
      981
     ]
    ],
+   "seaZone" : null,
    "to" : 45,
    "type" : "land"
   },
@@ -2353,6 +2444,7 @@
      965
     ]
    ],
+   "seaZone" : null,
    "to" : 46,
    "type" : "land"
   },
@@ -2375,6 +2467,7 @@
      973
     ]
    ],
+   "seaZone" : null,
    "to" : 47,
    "type" : "land"
   },
@@ -2393,6 +2486,7 @@
      1088
     ]
    ],
+   "seaZone" : null,
    "to" : 43,
    "type" : "land"
   },
@@ -2411,6 +2505,7 @@
      1022
     ]
    ],
+   "seaZone" : null,
    "to" : 44,
    "type" : "land"
   },
@@ -2429,6 +2524,7 @@
      981
     ]
    ],
+   "seaZone" : null,
    "to" : 45,
    "type" : "land"
   },
@@ -2447,6 +2543,7 @@
      1022
     ]
    ],
+   "seaZone" : null,
    "to" : 44,
    "type" : "land"
   },
@@ -2465,6 +2562,7 @@
      981
     ]
    ],
+   "seaZone" : null,
    "to" : 45,
    "type" : "land"
   },
@@ -2487,6 +2585,7 @@
      859
     ]
    ],
+   "seaZone" : null,
    "to" : 52,
    "type" : "land"
   },
@@ -2505,6 +2604,7 @@
      883
     ]
    ],
+   "seaZone" : null,
    "to" : 53,
    "type" : "land"
   },
@@ -2523,6 +2623,7 @@
      965
     ]
    ],
+   "seaZone" : null,
    "to" : 46,
    "type" : "land"
   },
@@ -2541,6 +2642,7 @@
      888
     ]
    ],
+   "seaZone" : null,
    "to" : 49,
    "type" : "land"
   },
@@ -2559,6 +2661,7 @@
      859
     ]
    ],
+   "seaZone" : null,
    "to" : 52,
    "type" : "land"
   },
@@ -2577,6 +2680,7 @@
      973
     ]
    ],
+   "seaZone" : null,
    "to" : 47,
    "type" : "land"
   },
@@ -2595,6 +2699,7 @@
      888
     ]
    ],
+   "seaZone" : null,
    "to" : 49,
    "type" : "land"
   },
@@ -2613,6 +2718,7 @@
      888
     ]
    ],
+   "seaZone" : null,
    "to" : 49,
    "type" : "land"
   },
@@ -2631,6 +2737,7 @@
      888
     ]
    ],
+   "seaZone" : null,
    "to" : 49,
    "type" : "land"
   },
@@ -2649,6 +2756,7 @@
      803
     ]
    ],
+   "seaZone" : null,
    "to" : 50,
    "type" : "land"
   },
@@ -2667,6 +2775,7 @@
      775
     ]
    ],
+   "seaZone" : null,
    "to" : 71,
    "type" : "land"
   },
@@ -2685,6 +2794,7 @@
      803
     ]
    ],
+   "seaZone" : null,
    "to" : 50,
    "type" : "land"
   },
@@ -2703,6 +2813,7 @@
      859
     ]
    ],
+   "seaZone" : null,
    "to" : 52,
    "type" : "land"
   },
@@ -2721,6 +2832,7 @@
      752
     ]
    ],
+   "seaZone" : null,
    "to" : 51,
    "type" : "land"
   },
@@ -2739,6 +2851,7 @@
      677
     ]
    ],
+   "seaZone" : null,
    "to" : 70,
    "type" : "land"
   },
@@ -2757,6 +2870,7 @@
      718
     ]
    ],
+   "seaZone" : null,
    "to" : 61,
    "type" : "land"
   },
@@ -2775,6 +2889,7 @@
      644
     ]
    ],
+   "seaZone" : null,
    "to" : 62,
    "type" : "land"
   },
@@ -2793,6 +2908,7 @@
      677
     ]
    ],
+   "seaZone" : null,
    "to" : 70,
    "type" : "land"
   },
@@ -2811,6 +2927,7 @@
      883
     ]
    ],
+   "seaZone" : null,
    "to" : 53,
    "type" : "land"
   },
@@ -2829,6 +2946,7 @@
      787
     ]
    ],
+   "seaZone" : null,
    "to" : 60,
    "type" : "land"
   },
@@ -2847,6 +2965,7 @@
      802
     ]
    ],
+   "seaZone" : null,
    "to" : 54,
    "type" : "land"
   },
@@ -2865,6 +2984,7 @@
      787
     ]
    ],
+   "seaZone" : null,
    "to" : 60,
    "type" : "land"
   },
@@ -2883,6 +3003,7 @@
      729
     ]
    ],
+   "seaZone" : null,
    "to" : 55,
    "type" : "land"
   },
@@ -2901,6 +3022,7 @@
      676
     ]
    ],
+   "seaZone" : null,
    "to" : 56,
    "type" : "land"
   },
@@ -2919,6 +3041,7 @@
      787
     ]
    ],
+   "seaZone" : null,
    "to" : 60,
    "type" : "land"
   },
@@ -2937,6 +3060,7 @@
      676
     ]
    ],
+   "seaZone" : null,
    "to" : 56,
    "type" : "land"
   },
@@ -2955,6 +3079,7 @@
      618
     ]
    ],
+   "seaZone" : null,
    "to" : 58,
    "type" : "land"
   },
@@ -2973,6 +3098,7 @@
      678
     ]
    ],
+   "seaZone" : null,
    "to" : 59,
    "type" : "land"
   },
@@ -2991,6 +3117,7 @@
      787
     ]
    ],
+   "seaZone" : null,
    "to" : 60,
    "type" : "land"
   },
@@ -3013,6 +3140,7 @@
      718
     ]
    ],
+   "seaZone" : null,
    "to" : 61,
    "type" : "land"
   },
@@ -3031,6 +3159,7 @@
      565
     ]
    ],
+   "seaZone" : null,
    "to" : 57,
    "type" : "land"
   },
@@ -3049,6 +3178,7 @@
      618
     ]
    ],
+   "seaZone" : null,
    "to" : 58,
    "type" : "land"
   },
@@ -3067,6 +3197,7 @@
      618
     ]
    ],
+   "seaZone" : null,
    "to" : 58,
    "type" : "land"
   },
@@ -3085,6 +3216,7 @@
      530
     ]
    ],
+   "seaZone" : null,
    "to" : 64,
    "type" : "land"
   },
@@ -3107,6 +3239,7 @@
      678
     ]
    ],
+   "seaZone" : null,
    "to" : 59,
    "type" : "land"
   },
@@ -3125,6 +3258,7 @@
      614
     ]
    ],
+   "seaZone" : null,
    "to" : 63,
    "type" : "land"
   },
@@ -3143,6 +3277,7 @@
      530
     ]
    ],
+   "seaZone" : null,
    "to" : 64,
    "type" : "land"
   },
@@ -3161,6 +3296,7 @@
      718
     ]
    ],
+   "seaZone" : null,
    "to" : 61,
    "type" : "land"
   },
@@ -3179,6 +3315,7 @@
      644
     ]
    ],
+   "seaZone" : null,
    "to" : 62,
    "type" : "land"
   },
@@ -3197,6 +3334,7 @@
      718
     ]
    ],
+   "seaZone" : null,
    "to" : 61,
    "type" : "land"
   },
@@ -3215,6 +3353,7 @@
      614
     ]
    ],
+   "seaZone" : null,
    "to" : 63,
    "type" : "land"
   },
@@ -3233,6 +3372,7 @@
      677
     ]
    ],
+   "seaZone" : null,
    "to" : 70,
    "type" : "land"
   },
@@ -3251,6 +3391,7 @@
      530
     ]
    ],
+   "seaZone" : null,
    "to" : 64,
    "type" : "land"
   },
@@ -3269,6 +3410,7 @@
      516
     ]
    ],
+   "seaZone" : null,
    "to" : 67,
    "type" : "land"
   },
@@ -3287,6 +3429,7 @@
      590
     ]
    ],
+   "seaZone" : null,
    "to" : 68,
    "type" : "land"
   },
@@ -3305,6 +3448,7 @@
      677
     ]
    ],
+   "seaZone" : null,
    "to" : 70,
    "type" : "land"
   },
@@ -3323,6 +3467,7 @@
      444
     ]
    ],
+   "seaZone" : null,
    "to" : 65,
    "type" : "land"
   },
@@ -3341,6 +3486,7 @@
      516
     ]
    ],
+   "seaZone" : null,
    "to" : 67,
    "type" : "land"
   },
@@ -3359,6 +3505,7 @@
      434
     ]
    ],
+   "seaZone" : null,
    "to" : 66,
    "type" : "land"
   },
@@ -3377,6 +3524,7 @@
      516
     ]
    ],
+   "seaZone" : null,
    "to" : 67,
    "type" : "land"
   },
@@ -3395,6 +3543,7 @@
      590
     ]
    ],
+   "seaZone" : null,
    "to" : 68,
    "type" : "land"
   },
@@ -3413,6 +3562,7 @@
      539
     ]
    ],
+   "seaZone" : null,
    "to" : 69,
    "type" : "land"
   },
@@ -3431,6 +3581,7 @@
      539
     ]
    ],
+   "seaZone" : null,
    "to" : 69,
    "type" : "land"
   },
@@ -3449,6 +3600,7 @@
      677
     ]
    ],
+   "seaZone" : null,
    "to" : 70,
    "type" : "land"
   },
@@ -3467,6 +3619,7 @@
      677
     ]
    ],
+   "seaZone" : null,
    "to" : 70,
    "type" : "land"
   },
@@ -3485,6 +3638,7 @@
      636
     ]
    ],
+   "seaZone" : null,
    "to" : 74,
    "type" : "land"
   },
@@ -3503,6 +3657,7 @@
      471
     ]
    ],
+   "seaZone" : null,
    "to" : 75,
    "type" : "land"
   },
@@ -3521,6 +3676,7 @@
      775
     ]
    ],
+   "seaZone" : null,
    "to" : 71,
    "type" : "land"
   },
@@ -3539,6 +3695,7 @@
      636
     ]
    ],
+   "seaZone" : null,
    "to" : 74,
    "type" : "land"
   },
@@ -3557,6 +3714,7 @@
      801
     ]
    ],
+   "seaZone" : null,
    "to" : 72,
    "type" : "land"
   },
@@ -3575,6 +3733,7 @@
      636
     ]
    ],
+   "seaZone" : null,
    "to" : 74,
    "type" : "land"
   },
@@ -3593,6 +3752,7 @@
      709
     ]
    ],
+   "seaZone" : null,
    "to" : 73,
    "type" : "land"
   },
@@ -3611,6 +3771,7 @@
      636
     ]
    ],
+   "seaZone" : null,
    "to" : 74,
    "type" : "land"
   },
@@ -3629,6 +3790,7 @@
      636
     ]
    ],
+   "seaZone" : null,
    "to" : 74,
    "type" : "land"
   },
@@ -3647,6 +3809,7 @@
      637
     ]
    ],
+   "seaZone" : null,
    "to" : 83,
    "type" : "land"
   },
@@ -3665,6 +3828,7 @@
      750
     ]
    ],
+   "seaZone" : null,
    "to" : 85,
    "type" : "land"
   },
@@ -3683,6 +3847,7 @@
      471
     ]
    ],
+   "seaZone" : null,
    "to" : 75,
    "type" : "land"
   },
@@ -3701,6 +3866,7 @@
      495
     ]
    ],
+   "seaZone" : null,
    "to" : 76,
    "type" : "land"
   },
@@ -3719,6 +3885,7 @@
      580
     ]
    ],
+   "seaZone" : null,
    "to" : 77,
    "type" : "land"
   },
@@ -3737,6 +3904,7 @@
      637
     ]
    ],
+   "seaZone" : null,
    "to" : 83,
    "type" : "land"
   },
@@ -3755,6 +3923,7 @@
      495
     ]
    ],
+   "seaZone" : null,
    "to" : 76,
    "type" : "land"
   },
@@ -3773,6 +3942,7 @@
      580
     ]
    ],
+   "seaZone" : null,
    "to" : 77,
    "type" : "land"
   },
@@ -3791,6 +3961,7 @@
      465
     ]
    ],
+   "seaZone" : null,
    "to" : 78,
    "type" : "land"
   },
@@ -3809,6 +3980,7 @@
      465
     ]
    ],
+   "seaZone" : null,
    "to" : 78,
    "type" : "land"
   },
@@ -3827,6 +3999,7 @@
      541
     ]
    ],
+   "seaZone" : null,
    "to" : 82,
    "type" : "land"
   },
@@ -3845,6 +4018,7 @@
      637
     ]
    ],
+   "seaZone" : null,
    "to" : 83,
    "type" : "land"
   },
@@ -3863,6 +4037,7 @@
      434
     ]
    ],
+   "seaZone" : null,
    "to" : 79,
    "type" : "land"
   },
@@ -3881,6 +4056,7 @@
      487
     ]
    ],
+   "seaZone" : null,
    "to" : 80,
    "type" : "land"
   },
@@ -3903,6 +4079,7 @@
      541
     ]
    ],
+   "seaZone" : null,
    "to" : 82,
    "type" : "land"
   },
@@ -3921,6 +4098,7 @@
      487
     ]
    ],
+   "seaZone" : null,
    "to" : 80,
    "type" : "land"
   },
@@ -3939,6 +4117,7 @@
      499
     ]
    ],
+   "seaZone" : null,
    "to" : 81,
    "type" : "land"
   },
@@ -3957,6 +4136,7 @@
      541
     ]
    ],
+   "seaZone" : null,
    "to" : 82,
    "type" : "land"
   },
@@ -3975,6 +4155,7 @@
      624
     ]
    ],
+   "seaZone" : null,
    "to" : 84,
    "type" : "land"
   },
@@ -3993,6 +4174,7 @@
      624
     ]
    ],
+   "seaZone" : null,
    "to" : 84,
    "type" : "land"
   },
@@ -4011,6 +4193,7 @@
      608
     ]
    ],
+   "seaZone" : null,
    "to" : 88,
    "type" : "land"
   },
@@ -4029,6 +4212,7 @@
      637
     ]
    ],
+   "seaZone" : null,
    "to" : 83,
    "type" : "land"
   },
@@ -4047,6 +4231,7 @@
      624
     ]
    ],
+   "seaZone" : null,
    "to" : 84,
    "type" : "land"
   },
@@ -4065,6 +4250,7 @@
      624
     ]
    ],
+   "seaZone" : null,
    "to" : 84,
    "type" : "land"
   },
@@ -4083,6 +4269,7 @@
      750
     ]
    ],
+   "seaZone" : null,
    "to" : 85,
    "type" : "land"
   },
@@ -4101,6 +4288,7 @@
      750
     ]
    ],
+   "seaZone" : null,
    "to" : 85,
    "type" : "land"
   },
@@ -4119,6 +4307,7 @@
      795
     ]
    ],
+   "seaZone" : null,
    "to" : 86,
    "type" : "land"
   },
@@ -4137,6 +4326,7 @@
      704
     ]
    ],
+   "seaZone" : null,
    "to" : 87,
    "type" : "land"
   },
@@ -4155,6 +4345,7 @@
      608
     ]
    ],
+   "seaZone" : null,
    "to" : 88,
    "type" : "land"
   },
@@ -4173,6 +4364,7 @@
      795
     ]
    ],
+   "seaZone" : null,
    "to" : 86,
    "type" : "land"
   },
@@ -4191,6 +4383,7 @@
      704
     ]
    ],
+   "seaZone" : null,
    "to" : 87,
    "type" : "land"
   },
@@ -4209,8 +4402,127 @@
      608
     ]
    ],
+   "seaZone" : null,
    "to" : 88,
    "type" : "land"
+  }
+ ],
+ "seaZones" : [
+  {
+   "id" : "north-sea",
+   "label" : {
+    "x" : 100,
+    "y" : 330
+   },
+   "name" : "North Sea",
+   "next" : [
+    "skagerrak"
+   ],
+   "ports" : [
+    9,
+    57,
+    65,
+    66
+   ],
+   "straits" : []
+  },
+  {
+   "id" : "skagerrak",
+   "label" : {
+    "x" : 330,
+    "y" : 150
+   },
+   "name" : "Skagerrak",
+   "next" : [
+    "north-sea",
+    "oslofjord"
+   ],
+   "ports" : [
+    1,
+    4
+   ],
+   "straits" : [
+    "1-4"
+   ]
+  },
+  {
+   "id" : "oslofjord",
+   "label" : {
+    "x" : 416,
+    "y" : 125
+   },
+   "name" : "Oslofjord",
+   "next" : [
+    "skagerrak",
+    "kattegat"
+   ],
+   "ports" : [
+    2,
+    5
+   ],
+   "straits" : [
+    "2-5"
+   ]
+  },
+  {
+   "id" : "kattegat",
+   "label" : {
+    "x" : 500,
+    "y" : 345
+   },
+   "name" : "Kattegat",
+   "next" : [
+    "oslofjord",
+    "baltic-sea"
+   ],
+   "ports" : [
+    6,
+    7,
+    10,
+    11
+   ],
+   "straits" : [
+    "6-7",
+    "7-10"
+   ]
+  },
+  {
+   "id" : "baltic-sea",
+   "label" : {
+    "x" : 860,
+    "y" : 220
+   },
+   "name" : "Baltic Sea",
+   "next" : [
+    "kattegat",
+    "curonian-sea"
+   ],
+   "ports" : [
+    3,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "straits" : []
+  },
+  {
+   "id" : "curonian-sea",
+   "label" : {
+    "x" : 1066,
+    "y" : 110
+   },
+   "name" : "Curonian Sea",
+   "next" : [
+    "baltic-sea"
+   ],
+   "ports" : [
+    18,
+    19,
+    89
+   ],
+   "straits" : []
   }
  ],
  "settlements" : [
@@ -4226,6 +4538,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "skagerrak",
    "straits" : [
     4
    ],
@@ -4246,6 +4559,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : false,
+   "seaZone" : "oslofjord",
    "straits" : [
     5
    ],
@@ -4265,6 +4579,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : false,
+   "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "city",
    "x" : 772,
@@ -4283,6 +4598,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "skagerrak",
    "straits" : [
     1
    ],
@@ -4303,6 +4619,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "oslofjord",
    "straits" : [
     2
    ],
@@ -4323,6 +4640,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "kattegat",
    "straits" : [
     7
    ],
@@ -4340,6 +4658,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : false,
+   "seaZone" : "kattegat",
    "straits" : [
     6,
     10
@@ -4364,6 +4683,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 368,
@@ -4383,6 +4703,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "north-sea",
    "straits" : [],
    "type" : "town",
    "x" : 313,
@@ -4401,6 +4722,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "kattegat",
    "straits" : [
     7
    ],
@@ -4425,6 +4747,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : false,
+   "seaZone" : "kattegat",
    "straits" : [],
    "type" : "city",
    "x" : 435,
@@ -4447,6 +4770,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 402,
@@ -4468,6 +4792,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "town",
    "x" : 558,
@@ -4488,6 +4813,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "town",
    "x" : 655,
@@ -4508,6 +4834,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : true,
+   "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "city",
    "x" : 924,
@@ -4529,6 +4856,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "town",
    "x" : 1052,
@@ -4548,6 +4876,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : false,
+   "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "city",
    "x" : 1119,
@@ -4566,6 +4895,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "curonian-sea",
    "straits" : [],
    "type" : "town",
    "x" : 1135,
@@ -4584,6 +4914,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "curonian-sea",
    "straits" : [],
    "type" : "town",
    "x" : 1151,
@@ -4604,6 +4935,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1145,
@@ -4624,6 +4956,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1228,
@@ -4645,6 +4978,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1171,
@@ -4665,6 +4999,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1155,
@@ -4684,6 +5019,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1276,
@@ -4702,6 +5038,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1074,
@@ -4723,6 +5060,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 828,
@@ -4743,6 +5081,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 884,
@@ -4765,6 +5104,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 776,
@@ -4783,6 +5123,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 863,
@@ -4802,6 +5143,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 809,
@@ -4822,6 +5164,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 754,
@@ -4841,6 +5184,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 635,
@@ -4863,6 +5207,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 667,
@@ -4884,6 +5229,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 626,
@@ -4905,6 +5251,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 557,
@@ -4927,6 +5274,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 499,
@@ -4946,6 +5294,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 525,
@@ -4965,6 +5314,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 349,
@@ -4986,6 +5336,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 290,
@@ -5006,6 +5357,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 169,
@@ -5024,6 +5376,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 119,
@@ -5045,6 +5398,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 125,
@@ -5067,6 +5421,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 179,
@@ -5087,6 +5442,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 258,
@@ -5108,6 +5464,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 363,
@@ -5129,6 +5486,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 446,
@@ -5152,6 +5510,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 338,
@@ -5172,6 +5531,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 327,
@@ -5192,6 +5552,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 292,
@@ -5213,6 +5574,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 200,
@@ -5233,6 +5595,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 102,
@@ -5253,6 +5616,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 36,
@@ -5275,6 +5639,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 122,
@@ -5295,6 +5660,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 38,
@@ -5314,6 +5680,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : true,
+   "seaZone" : "north-sea",
    "straits" : [],
    "type" : "city",
    "x" : 49,
@@ -5336,6 +5703,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 119,
@@ -5356,6 +5724,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 222,
@@ -5377,6 +5746,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 191,
@@ -5397,6 +5767,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 252,
@@ -5417,6 +5788,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 252,
@@ -5439,6 +5811,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 272,
@@ -5460,6 +5833,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 188,
@@ -5478,6 +5852,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "north-sea",
    "straits" : [],
    "type" : "town",
    "x" : 213,
@@ -5499,6 +5874,7 @@
    "pop" : 20000,
    "port" : true,
    "river" : true,
+   "seaZone" : "north-sea",
    "straits" : [],
    "type" : "city",
    "x" : 307,
@@ -5521,6 +5897,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 329,
@@ -5541,6 +5918,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 415,
@@ -5563,6 +5941,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 502,
@@ -5587,6 +5966,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 450,
@@ -5609,6 +5989,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 570,
@@ -5630,6 +6011,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 673,
@@ -5651,6 +6033,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 750,
@@ -5676,6 +6059,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 602,
@@ -5697,6 +6081,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 557,
@@ -5719,6 +6104,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 623,
@@ -5740,6 +6126,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 701,
@@ -5762,6 +6149,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 735,
@@ -5782,6 +6170,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 858,
@@ -5804,6 +6193,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 881,
@@ -5825,6 +6215,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1000,
@@ -5846,6 +6237,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 845,
@@ -5868,6 +6260,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 789,
@@ -5892,6 +6285,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 922,
@@ -5913,6 +6307,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 813,
@@ -5934,6 +6329,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : true,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 955,
@@ -5955,6 +6351,7 @@
    "pop" : 10000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "town",
    "x" : 1055,
@@ -5978,6 +6375,7 @@
    "pop" : 20000,
    "port" : false,
    "river" : false,
+   "seaZone" : null,
    "straits" : [],
    "type" : "city",
    "x" : 1064,
@@ -5995,6 +6393,7 @@
    "pop" : 10000,
    "port" : true,
    "river" : false,
+   "seaZone" : "curonian-sea",
    "straits" : [],
    "type" : "town",
    "x" : 1142,

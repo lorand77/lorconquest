@@ -202,11 +202,10 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 units); `perl tools/map.pl mountains` moves any that touch something else.
 
 ```
-768,767  738,780  847,796  738,813  874,814  808,816  933,849  705,871
-1197,871  1008,874  1259,880  1138,883  1067,894  701,912  1213,915  1153,916
-1256,917  791,935  744,943  1266,955  837,970  877,1002  370,1038  407,1040
-647,1046  250,1081  611,1081  547,1085  482,1093  371,1096  326,1097  297,1115
-267,1130
+768,767  738,780  847,796  738,813  874,814  933,849  705,871  1197,871
+1008,874  1259,880  1138,883  1067,894  701,912  1213,915  1153,916  1256,917
+791,935  744,943  1266,955  837,970  877,1002  370,1038  407,1040  647,1046
+250,1081  611,1081  547,1085  482,1093  371,1096  326,1097  297,1115  267,1130
 ```
 
 ## Overview
@@ -279,7 +278,19 @@ is core again on capture.
 
 ## Sea zones
 
-**North Sea · Skagerrak–Kattegat · Baltic.** A fleet operates in one zone at a time.
+Six zones, split by the dashed lines in the sea. A fleet operates in one zone at a time (RULES.md §7).
+A port belongs to the zone its coast faces; crossing a strait needs 10 ships in the zone the strait
+lies in (RULES.md §8). *Zone, X and Y are data — X, Y is where the name is drawn, and the zone it
+names is the one around that point; the other columns are generated from the map.*
+
+| Zone | X | Y | Ports | Straits | Next to |
+|---|---|---|---|---|---|
+| North Sea | 100 | 330 | 9, 57, 65, 66 | — | Skagerrak |
+| Skagerrak | 330 | 150 | 1, 4 | 1-4 | North Sea, Oslofjord |
+| Oslofjord | 416 | 125 | 2, 5 | 2-5 | Skagerrak, Kattegat |
+| Kattegat | 500 | 345 | 6, 7, 10, 11 | 6-7, 7-10 | Oslofjord, Baltic Sea |
+| Baltic Sea | 860 | 220 | 3, 13, 14, 15, 16, 17 | — | Kattegat, Curonian Sea |
+| Curonian Sea | 1066 | 110 | 18, 19, 89 | — | Baltic Sea |
 
 ## The Holy Roman Empire
 
@@ -360,10 +371,10 @@ propose. Its natural path runs through Poland instead: Warsaw, Poznań, Eastern 
    49-51, 49-60, 58-62, 55-62 (on top of the removed routes above); 39-47, 51-60 and 64-66
    only touch at a point. This route joins lands that do not touch: 58-59.
    Either may be intended, but the script checks neither.
-2. **Sea zone transitions.** Naval movement is 3 coastal settlements per year, but nothing says
-   whether a fleet can pass between the North Sea and the Baltic without forcing the Danish
-   straits. If it must, Upper Denmark, Lower Denmark, Copenhagen and Schleswig control the only
-   gate between the two seas.
+2. **Moving between sea zones.** Naval movement is 3 coastal settlements per year, but nothing says
+   how a fleet passes from one zone to the next. The six zones form a single chain — North Sea,
+   Skagerrak, Oslofjord, Kattegat, Baltic Sea, Curonian Sea — so every fleet going between the
+   North Sea and the Baltic must sail past the Danish and Norwegian ports.
 3. **Naming:** "Lower Germany" (46 Basel, 47 Konstanz) is the far south — "Upper Rhine" or
    "Lake Constance" fits the geography better. "Silesia" includes 86 Kraków, which is
    Lesser Poland. "Gdansk" does not hold 16 Danzig (Gdańsk) — Prussia does; "Pomerania"
