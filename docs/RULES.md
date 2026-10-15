@@ -14,7 +14,7 @@
 | Game time | Real time |
 |---|---|
 | 1 day | 0.1s |
-| 1 month | 3s |
+| 1 month | ≈3.04s |
 | **1 year** | **36.5s** |
 | 100 years | 60 min |
 
@@ -41,7 +41,8 @@ money per year = bank interest
 **Casualties cost population.** Every soldier who dies is removed from your population, not
 just from the army — whether killed in battle, by snipers, in a lost storm, or when a siege
 timer expires. Each lost cannon also kills its **10 crew**, and each ship sunk at sea kills its
-**50 crew**. The loss is spread across all settlements you own **in proportion to their
+**50 crew**. Snipers count too — each sniper killed when its post is stormed or its pass is lost
+(§8) is one person lost. The loss is spread across all settlements you own **in proportion to their
 population**, so a 20K city loses twice as many people as a 10K town. Lost people come back
 only through growth or **Buy people**.
 
@@ -144,7 +145,7 @@ loser  loses  (P_winner ÷ P_loser ) × 30 %      capped at 100%
 | 1:1 | 30% | 30% |
 | 2:1 | 15% | 60% |
 | 3:1 | 10% | 90% |
-| 3.4:1+ | 9% | wiped out |
+| 10:3 (≈3.33:1) or more | 9% or less | wiped out |
 
 Men killed are also lost from your population — see *Casualties cost population* (§2).
 
@@ -243,11 +244,16 @@ form a new one.
 | Army | route length ÷ army speed |
 | River crossing | +2 months |
 | Leg to or from a mountain pass | +3 months |
-| Navy | 3 coastal settlements per year |
+| Fleet, to a neighbouring sea zone | 2 months |
 
 **Marching time is proportional to distance.** Every route has a length — the length of its line on
 the map — and an army covers it at the army speed set by the scenario. A route twice as long takes
 twice as long. River crossings and mountain passes add their delays on top.
+
+**Fleets move zone to zone.** A fleet is always in exactly one sea zone — at sea, or in one of that
+zone's ports. Sailing to a neighbouring zone takes 2 months; entering or leaving a port in its own
+zone is instant. Which zones neighbour each other is listed in
+[SCENARIO.md](SCENARIO.md#sea-zones).
 
 **Mountain passes (yellow triangles).** Some routes cross the mountains through a pass. A pass is
 a node on the map, like a settlement with no people in it, and the route runs settlement → pass →
@@ -262,8 +268,8 @@ settlement.
 - **Each pass belongs to one country** — whoever's territory it lies in, i.e. whoever owns the
   settlement whose land the pass is in (listed in [SCENARIO.md](SCENARIO.md#mountain-passes)).
   It changes hands with that settlement. Only the owner can buy snipers there.
-- **Snipers stay when a pass changes hands** — they still belong to the country that bought them.
-  A country's snipers are removed only when that country **no longer owns any city**.
+- **Snipers die when the pass changes hands** — if the settlement whose land the pass is in is
+  lost, every sniper stationed at that pass dies.
 
 **Zone of control.** An army entering a province with an enemy army stops there and engages,
 cancelling the rest of its path.
@@ -286,7 +292,7 @@ You cannot change again for **5 years**.
 
 | Government | Max army | Income |
 |---|---|---|
-| Feudal | 6% | — |
+| Feudal | 6.5% | — |
 | Centralized | 10% | −6% |
 | Militarized | 15% | −10% |
 | Total War | 25% | −30% |

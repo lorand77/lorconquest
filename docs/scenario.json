@@ -539,6 +539,7 @@
    "ships" : 0
   }
  ],
+ "fleetHopMonths" : 2,
  "map" : {
   "height" : 1165,
   "svg" : "map.svg",
@@ -4896,16 +4897,20 @@
    "years" : 0.72
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 83,
    "id" : "route-83-85",
    "legs" : null,
-   "length" : 115.52,
+   "length" : 116.69,
    "pass" : null,
    "points" : [
     [
      789,
      637
+    ],
+    [
+     794,
+     700
     ],
     [
      813,
@@ -4915,7 +4920,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 0.65
+   "years" : 0.49
   },
   {
    "crossesRiver" : true,
@@ -5429,7 +5434,7 @@
    "hre" : true,
    "id" : 12,
    "land" : "land-12",
-   "name" : "Luneburg",
+   "name" : "Lüneburg",
    "pop" : 10000,
    "port" : false,
    "river" : false,
@@ -5535,7 +5540,7 @@
    "hre" : false,
    "id" : 17,
    "land" : "land-17",
-   "name" : "Konigsberg",
+   "name" : "Königsberg",
    "pop" : 20000,
    "port" : true,
    "river" : false,
@@ -5554,7 +5559,7 @@
    "hre" : false,
    "id" : 18,
    "land" : "land-18",
-   "name" : "Rusne",
+   "name" : "Rusnė",
    "pop" : 10000,
    "port" : true,
    "river" : false,
@@ -5573,7 +5578,7 @@
    "hre" : false,
    "id" : 19,
    "land" : "land-19",
-   "name" : "Klaipeda",
+   "name" : "Klaipėda",
    "pop" : 10000,
    "port" : true,
    "river" : false,
@@ -5973,7 +5978,7 @@
    "hre" : true,
    "id" : 40,
    "land" : "land-40",
-   "name" : "Zurich",
+   "name" : "Zürich",
    "pop" : 10000,
    "port" : false,
    "river" : false,
@@ -6381,7 +6386,7 @@
    "hre" : true,
    "id" : 59,
    "land" : "land-59",
-   "name" : "Dusseldorf",
+   "name" : "Düsseldorf",
    "pop" : 20000,
    "port" : false,
    "river" : true,
@@ -6403,7 +6408,7 @@
    "hre" : true,
    "id" : 60,
    "land" : "land-60",
-   "name" : "Duren",
+   "name" : "Düren",
    "pop" : 10000,
    "port" : false,
    "river" : false,
@@ -6872,7 +6877,7 @@
    "hre" : false,
    "id" : 81,
    "land" : "land-81",
-   "name" : "Plock",
+   "name" : "Płock",
    "pop" : 10000,
    "port" : false,
    "river" : false,
@@ -6894,7 +6899,7 @@
    "hre" : false,
    "id" : 82,
    "land" : "land-82",
-   "name" : "Pila",
+   "name" : "Piła",
    "pop" : 10000,
    "port" : false,
    "river" : true,
@@ -6942,7 +6947,7 @@
    "hre" : false,
    "id" : 84,
    "land" : "land-84",
-   "name" : "Lodz",
+   "name" : "Łódź",
    "pop" : 10000,
    "port" : false,
    "river" : false,

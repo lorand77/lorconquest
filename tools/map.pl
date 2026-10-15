@@ -94,17 +94,28 @@ my @PASSES;
       for (@routes) { err("pass %s: route %s is not in Borders", $r->{Pass}, $_) unless $LAND{$_} }
       push @PASSES, { id => $r->{Pass}, x => $r->{X}, y => $r->{Y}, routes => \@routes } } }
 my %VIA; for my $p (@PASSES) { for (@{ $p->{routes} }) { err("route %s goes through two passes", $_) if $VIA{$_}; $VIA{$_} = $p } }
+my %BEND;                                # route -> points it is bent through, from the lower-numbered end
+{ my (undef, $rows) = table('Route bends');
+  for my $r (@$rows) { my ($a, $b) = sort { $a <=> $b } split /-/, $r->{Route}; my $e = "$a-$b"; my $l = $r->{_line};
+      err("Route bends line %d: route %s is not in Borders", $l, $r->{Route}), next unless $LAND{$e};
+      err("Route bends line %d: route %s goes through a pass", $l, $e), next if $VIA{$e};
+      err("Route bends line %d: route %s is listed twice", $l, $e), next if $BEND{$e};
+      my @p = map { [ split /,/ ] } split ' ', $r->{Through};
+      err("Route bends line %d: Through must be x,y points in whole map units", $l), next unless @p && !grep { "@$_" !~ /^\d+ \d+$/ } @p;
+      $BEND{$e} = \@p } }
 
 my @PEAKS;                               # the ``` block under ## Mountains
 { my ($s, $e) = section('Mountains'); my @f = grep { $doc[$_] =~ /^```/ } $s .. $e; die "SCENARIO.md: no ``` block under ## Mountains\n" unless @f >= 2;
   for my $i ($f[0] + 1 .. $f[1] - 1) { push @PEAKS, [ $1, $2 ] while $doc[$i] =~ /(\d+),(\d+)/g } }
 my ($SPEED) = map { /^\*\*Army speed:\*\*\s*(\d+(?:\.\d+)?)/ ? $1 : () } @doc;      # army speed, map units per year
 err("SCENARIO.md: no '**Army speed:** N map units per year' line") unless $SPEED;
-my %DELAY;                               # months RULES.md §8 adds to a march: crossing a river, each leg to or from a pass
+my %DELAY;                               # months from RULES.md §8: crossing a river, each leg to or from a pass, a fleet's hop between zones
 { open my $r, '<', "$ROOT/docs/RULES.md" or die "RULES.md: $!";
-  while (<$r>) { $DELAY{river} = $1 if /^\| River crossing \| \+(\d+) months? \|/; $DELAY{pass} = $1 if /^\| Leg to or from a mountain pass \| \+(\d+) months? \|/ } close $r;
+  while (<$r>) { $DELAY{river} = $1 if /^\| River crossing \| \+(\d+) months? \|/; $DELAY{pass} = $1 if /^\| Leg to or from a mountain pass \| \+(\d+) months? \|/;
+      $DELAY{fleet} = $1 if /^\| Fleet, to a neighbouring sea zone \| (\d+) months? \|/ } close $r;
   err("RULES.md: no '| River crossing | +N months |' row in the movement table") unless defined $DELAY{river};
-  err("RULES.md: no '| Leg to or from a mountain pass | +N months |' row in the movement table") unless defined $DELAY{pass} }
+  err("RULES.md: no '| Leg to or from a mountain pass | +N months |' row in the movement table") unless defined $DELAY{pass};
+  err("RULES.md: no '| Fleet, to a neighbouring sea zone | N months |' row in the movement table") unless defined $DELAY{fleet} }
 
 my @ZONES;                               # sea zones: name, and a point inside it (where the name is drawn)
 { my (undef, $rows) = table('Sea zones'); my %seen;
@@ -281,8 +292,9 @@ sub land_path { my ($a, $b, $allow, $margin) = @_; my ($sx, $sy, $tx, $ty) = map
     for (my $k = 1; $k < $#out; $k++) { next unless ($out[$k][0] - $out[$k - 1][0])**2 + ($out[$k][1] - $out[$k - 1][1])**2 < 64; splice @out, $k, 1; $k-- }   # merge corners closer than 8
     return \@out }
 my (%RPATH, %BENT); my %ANY = map { $_ => 1 } @CORDER;
-for my $e (sort keys %LAND) { my ($a, $b) = split /-/, $e; my @stops = ([ @{ $S{$a} }{qw(x y)} ], $VIA{$e} ? [ $VIA{$e}{x}, $VIA{$e}{y} ] : (), [ @{ $S{$b} }{qw(x y)} ]);
+for my $e (sort keys %LAND) { my ($a, $b) = split /-/, $e; my @stops = ([ @{ $S{$a} }{qw(x y)} ], $VIA{$e} ? [ $VIA{$e}{x}, $VIA{$e}{y} ] : (), @{ $BEND{$e} // [] }, [ @{ $S{$b} }{qw(x y)} ]);
     my %allow = map { $_ => 1 } $S{$a}{country}, $S{$b}{country}, $VIA{$e} ? $S{ $VIA{$e}{owner} }{country} : ();
+    for (@{ $BEND{$e} // [] }) { my $id = land_at(@$_); err("route %s: bend point %d,%d is not on land of %s", $e, @$_, join('/', sort keys %allow)) unless $id && $allow{ $S{$id}{country} } }
     my @path = ($stops[0]);
     for my $i (1 .. $#stops) { my ($p, $q) = @stops[$i - 1, $i];
         if (leg_ok($p, $q, 1, 0, \%allow, 1, 1)) { push @path, $q; next }
@@ -292,6 +304,7 @@ for my $e (sort keys %LAND) { my ($a, $b) = split /-/, $e; my @stops = ([ @{ $S{
         push @path, @{ $bent }[1 .. $#$bent]; $BENT{$why}{$e} = 1 }
     for my $i (1 .. $#path) { warn "route $e still leaves its countries near " . join(',', map { int } @{ $path[$i] }) . "\n" unless leg_ok($path[$i - 1], $path[$i], 1, 0, \%allow, 1, 1) }
     $RPATH{$e} = \@path }
+check('SCENARIO.md');
 $RPATH{$_} = [ map { [ @{ $S{$_} }{qw(x y)} ] } split /-/ ] for keys %STRAIT;
 # route segments: [x1, y1, x2, y2, key, strait]
 my @ROUTESEG = map { my $e = $_; my $p = $RPATH{$e}; map { [ @{ $p->[$_ - 1] }, @{ $p->[$_] }, $e, $STRAIT{$e} ? 1 : 0 ] } 1 .. $#$p } sort keys %RPATH;
@@ -362,7 +375,8 @@ sub cross { my ($a, $b, $c, $d) = @_; my $o = sub { my ($p, $q, $r) = @_; ($q->[
 sub seg_dist { my ($px, $py, $a, $b) = @_; my ($dx, $dy) = ($b->[0] - $a->[0], $b->[1] - $a->[1]); my $L2 = $dx * $dx + $dy * $dy;
     my $t = $L2 ? (($px - $a->[0]) * $dx + ($py - $a->[1]) * $dy) / $L2 : 0; $t = $t < 0 ? 0 : $t > 1 ? 1 : $t; sqrt(($px - $a->[0] - $t * $dx)**2 + ($py - $a->[1] - $t * $dy)**2) }
 my @RSEG = map { my $r = $_; map { [ $r->[$_ - 1], $r->[$_] ] } 1 .. $#$r } @RIVERS;
-my %CROSS; for my $s (grep { !$_->[5] } @ROUTESEG) { $CROSS{ $s->[4] } = 1 if grep { cross([ @$s[0, 1] ], [ @$s[2, 3] ], @$_) } @RSEG }
+my %CROSS; for my $s (grep { !$_->[5] } @ROUTESEG) { $CROSS{ $s->[4] } += grep { cross([ @$s[0, 1] ], [ @$s[2, 3] ], @$_) } @RSEG }      # route -> how many times it crosses a river
+for (sort bykey grep { $CROSS{$_} > 1 } keys %CROSS) { warn "route $_ crosses a river $CROSS{$_} times but is charged one crossing -- bend it in Route bends\n" }
 # marching time in years (RULES.md §8): distance at army speed, plus the river and pass delays
 sub crosses_river { my $p = shift; for my $i (1 .. $#$p) { return 1 if grep { cross($p->[$i - 1], $p->[$i], @$_) } @RSEG } 0 }
 my (%YEARS, %LEGYEARS);
@@ -433,7 +447,7 @@ sub bykey { my @a = split /-/, $a; my @b = split /-/, $b; $a[0] <=> $b[0] || $a[
 my ($T, $F) = (JSON::PP::true, JSON::PP::false);
 my %json = (
     source => 'Generated by tools/map.pl from docs/SCENARIO.md and docs/map-base.svg. Do not edit.',
-    map => { svg => 'map.svg', width => 0 + $W, height => 0 + $H }, armySpeed => 0 + $SPEED,
+    map => { svg => 'map.svg', width => 0 + $W, height => 0 + $H }, armySpeed => 0 + $SPEED, fleetHopMonths => 0 + $DELAY{fleet},
     countries => [ map { my $c = $C{$_}; { code => $_, name => $CN{$_}, settlements => [ map { 0 + $_ } @{ $c->{ids} } ], pop => $c->{pop}, army => $c->{army}, ships => $c->{ships}, hre => $c->{hrestate} } } @CORDER ],
     settlements => [ map { my $s = $S{$_}; { id => 0 + $_, name => $s->{name}, country => $s->{country}, type => $s->{city} ? 'city' : 'town', pop => $s->{pop},
         port => $s->{port} ? $T : $F, river => $s->{river} ? $T : $F, hre => $s->{hre} ? $T : $F, x => 0 + $s->{x}, y => 0 + $s->{y}, land => "land-$_", seaZone => $s->{zone} ? $s->{zone}{id} : undef,
@@ -474,7 +488,7 @@ my @naval = sort { $C{$b}{ships} <=> $C{$a}{ships} || $ord{$a} <=> $ord{$b} } gr
 generated('summary', sprintf('%d settlements (%d cities, %d towns) · %d countries · %s people · %d land routes, %d straits, %d mountain passes',
     scalar @ids, scalar @cities, @ids - @cities, scalar @CORDER, fmt($pop), scalar keys %LAND, scalar keys %STRAIT, scalar @PASSES));
 my %bypop; push @{ $bypop{ $C{$_}{pop} } }, $_ for @CORDER;
-my @hre = grep { $S{$_}{hre} } @ids; my @hrec = grep { $C{$_}{hre} } @CORDER; my @onriver = grep { $S{$_}{river} } @ids; my @crossing = sort bykey keys %CROSS;
+my @hre = grep { $S{$_}{hre} } @ids; my @hrec = grep { $C{$_}{hre} } @CORDER; my @onriver = grep { $S{$_}{river} } @ids; my @crossing = sort bykey grep { $CROSS{$_} } keys %CROSS;
 generated('overview',
     "**Cities (20K):** " . join(', ', @cities) . " — all other settlements are towns (10K).", '',
     sprintf("**HRE settlements (%d):** %s — held by %d of the %d countries.", scalar @hre, ranges(@hre), scalar @hrec, scalar @CORDER), '',
@@ -486,9 +500,19 @@ generated('overview',
             $SPEED, $DELAY{river}, $DELAY{pass}, $y[0], $y[-1], $y[$#y / 2], $p[0], $p[-1]) }, '',
     '| Pop | Countries |', '|---|---|',
     (map { sprintf '| %dK | %d: %s |', $_ / 1000, scalar @{ $bypop{$_} }, join(' · ', map { cname($_) } @{ $bypop{$_} }) } sort { $b <=> $a } keys %bypop), '',
-    sprintf('**Naval powers:** %d countries, %d ships. Crossing a strait needs 10 ships (RULES.md §8).', scalar @naval, $ships), '',
-    '| Country | Ports held | Ships | Can cross straits? |', '|---|---|---|---|',
-    (map { sprintf '| %s | %s | %d | %s |', cname($_), join(', ', @{ $C{$_}{ports} }), $C{$_}{ships}, $C{$_}{ships} > 10 ? 'yes' : $C{$_}{ships} == 10 ? '**exactly**' : 'no' } @naval));
+    do { my ($far, @pair) = (0);      # the two sea zones furthest apart, in hops
+        for my $z (@ZONES) { my %d = ($z->{name} => 0); my @q = ($z);
+            while (my $c = shift @q) { for my $nb (grep { $c->{next}{ $_->{name} } } @ZONES) { next if exists $d{ $nb->{name} }; $d{ $nb->{name} } = $d{ $c->{name} } + 1; push @q, $nb;
+                ($far, @pair) = ($d{ $nb->{name} }, $z->{name}, $nb->{name}) if $d{ $nb->{name} } > $far } } }
+        sprintf('**Sailing:** %d months to a neighbouring sea zone (RULES.md §8); the furthest apart, %s and %s, are %d hops (%d months).',
+            $DELAY{fleet}, @pair, $far, $far * $DELAY{fleet}) }, '',
+    sprintf('**Naval powers:** %d countries, %d ships. Crossing a strait needs 10 ships in the sea zone the strait lies in (RULES.md §8), '
+        . 'so at the start a country can only cross the straits of its own ports\' zones; for any other it must first sail 10 ships there.', scalar @naval, $ships), '',
+    '| Country | Ports held | Home zones | Ships | Can cross straits? |', '|---|---|---|---|---|',
+    (map { my $c = $_; my %home = map { $S{$_}{zone}{name} => 1 } @{ $C{$c}{ports} }; my $n = $C{$c}{ships};
+        my @st = sort bykey grep { $home{ $SZ{$_}{name} } } keys %SZ; my $st = join ', ', @st;
+        sprintf '| %s | %s | %s | %d | %s |', cname($c), join(', ', @{ $C{$c}{ports} }), join(', ', map { $_->{name} } grep { $home{ $_->{name} } } @ZONES), $n,
+            !@st ? 'no — no strait in its zones' : $n > 10 ? "yes: $st" : $n == 10 ? "**exactly**: $st" : "no — too few ships for $st" } @naval));
 open $fh, '>', $DOC or die "$DOC: $!"; print $fh map { "$_\n" } @doc; close $fh;
 
 # ---------- report ----------

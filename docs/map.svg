@@ -532,7 +532,7 @@
   <path id="route-82-83" class="route" d="M845 541 L789 637"/>
   <path id="route-82-84" class="route" d="M845 541 L922 624"/>
   <path id="route-83-84" class="route" d="M789 637 L922 624"/>
-  <path id="route-83-85" class="route" d="M789 637 L813 750"/>
+  <path id="route-83-85" class="route" d="M789 637 L794 700 L813 750"/>
   <path id="route-84-85" class="route" d="M922 624 L813 750"/>
   <path id="route-84-86" class="route" d="M922 624 L955 795"/>
   <path id="route-84-87" class="route" d="M922 624 L1055 704"/>

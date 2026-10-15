@@ -105,14 +105,14 @@ Settlements 25 and 27 were deleted from the map.
 | 9 | Esbjerg | LDK | town | port |  | 313 | 297 | 8, 11, 66 |  |
 | 10 | Flensburg | SCH | town | port | HRE | 420 | 305 | 8, 11 | 7 |
 | 11 | Kiel | SCH | city | port | HRE | 435 | 376 | 9, 10, 12, 13, 66 |  |
-| 12 | Luneburg | SCH | town |  | HRE | 402 | 445 | 11, 13, 66, 67, 69, 75 |  |
+| 12 | Lüneburg | SCH | town |  | HRE | 402 | 445 | 11, 13, 66, 67, 69, 75 |  |
 | 13 | Rostock | MEC | town | port | HRE | 558 | 419 | 11, 12, 14, 75, 76 |  |
 | 14 | Stettin | MEC | town | port | HRE | 655 | 409 | 13, 76, 78, 79 |  |
 | 15 | Gdynia | GDA | city | port |  | 924 | 399 | 16, 79, 80, 81 |  |
 | 16 | Danzig | PRU | town | port |  | 1052 | 402 | 15, 17, 20, 81, 88 |  |
-| 17 | Konigsberg | PRU | city | port |  | 1119 | 390 | 16, 18, 20 |  |
-| 18 | Rusne | LIT | town | port |  | 1135 | 301 | 17, 19 |  |
-| 19 | Klaipeda | LIT | town | port |  | 1151 | 161 | 18, 89 |  |
+| 17 | Königsberg | PRU | city | port |  | 1119 | 390 | 16, 18, 20 |  |
+| 18 | Rusnė | LIT | town | port |  | 1135 | 301 | 17, 19 |  |
+| 19 | Klaipėda | LIT | town | port |  | 1151 | 161 | 18, 89 |  |
 | 20 | Olsztyn | PRU | town |  |  | 1145 | 466 | 16, 17, 21, 88 |  |
 | 21 | Brest | EPL | town |  |  | 1228 | 597 | 20, 22, 24, 88 |  |
 | 22 | Lublin | EPL | town |  |  | 1171 | 672 | 21, 23, 24, 87, 88 |  |
@@ -131,7 +131,7 @@ Settlements 25 and 27 were deleted from the map.
 | 37 | Munich | BAV | city |  | HRE | 557 | 920 | 35, 36, 38, 48, 71 |  |
 | 38 | Memmingen | BAV | town |  | HRE | 499 | 978 | 35, 37, 39, 47, 48, 49 |  |
 | 39 | Innsbruck | TYR | town |  | HRE | 525 | 1085 | 34, 38, 40 |  |
-| 40 | Zurich | SWI | town |  | HRE | 349 | 1085 | 39, 41, 47 |  |
+| 40 | Zürich | SWI | town |  | HRE | 349 | 1085 | 39, 41, 47 |  |
 | 41 | Bern | SWI | city |  | HRE | 290 | 1098 | 40, 42, 45, 46, 47 |  |
 | 42 | Geneva | ELS | town |  | HRE | 169 | 1113 | 41, 43, 44, 45 |  |
 | 43 | Lyon | NAN | town |  |  | 119 | 1088 | 42, 44 |  |
@@ -150,8 +150,8 @@ Settlements 25 and 27 were deleted from the map.
 | 56 | Antwerp | BEL | town |  | HRE | 38 | 676 | 54, 55, 57, 58 |  |
 | 57 | Rotterdam | NED | city | port | HRE | 49 | 565 | 56, 58, 64 |  |
 | 58 | Utrecht | NED | town |  | HRE | 119 | 618 | 55, 56, 57, 59, 63, 64 |  |
-| 59 | Dusseldorf | RUH | city |  | HRE | 222 | 678 | 55, 58, 61, 62 |  |
-| 60 | Duren | TRI | town |  | HRE | 191 | 787 | 52, 53, 54, 55, 61 |  |
+| 59 | Düsseldorf | RUH | city |  | HRE | 222 | 678 | 55, 58, 61, 62 |  |
+| 60 | Düren | TRI | town |  | HRE | 191 | 787 | 52, 53, 54, 55, 61 |  |
 | 61 | Cologne | RUH | town |  | HRE | 252 | 718 | 51, 55, 59, 60 |  |
 | 62 | Essen | RUH | town |  | HRE | 252 | 644 | 51, 59, 63, 70 |  |
 | 63 | Dortmund | RUH | town |  | HRE | 272 | 614 | 58, 62, 64, 67, 68, 70 |  |
@@ -172,10 +172,10 @@ Settlements 25 and 27 were deleted from the map.
 | 78 | Seelow Heights | BRB | town |  | HRE | 735 | 465 | 14, 76, 77, 79, 80, 82 |  |
 | 79 | Szczecinek | GDA | town |  |  | 858 | 434 | 14, 15, 78, 80 |  |
 | 80 | Bydgoszcz | GDA | town |  |  | 881 | 487 | 15, 78, 79, 81, 82, 84 |  |
-| 81 | Plock | GDA | town |  |  | 1000 | 499 | 15, 16, 80, 84, 88 |  |
-| 82 | Pila | POZ | town |  |  | 845 | 541 | 77, 78, 80, 83, 84 |  |
+| 81 | Płock | GDA | town |  |  | 1000 | 499 | 15, 16, 80, 84, 88 |  |
+| 82 | Piła | POZ | town |  |  | 845 | 541 | 77, 78, 80, 83, 84 |  |
 | 83 | Poznań | POZ | town |  |  | 789 | 637 | 73, 74, 77, 82, 84, 85 |  |
-| 84 | Lodz | WAR | town |  |  | 922 | 624 | 80, 81, 82, 83, 85, 86, 87, 88 |  |
+| 84 | Łódź | WAR | town |  |  | 922 | 624 | 80, 81, 82, 83, 85, 86, 87, 88 |  |
 | 85 | Breslau | SIL | town |  | HRE | 813 | 750 | 30, 73, 83, 84, 86 |  |
 | 86 | Kraków | SIL | town |  |  | 955 | 795 | 23, 29, 84, 85, 87 |  |
 | 87 | Radom | WAR | town |  |  | 1055 | 704 | 22, 23, 84, 86, 88 |  |
@@ -191,12 +191,23 @@ settlement. A pass belongs to whoever owns the settlement whose land it lies in 
 | Pass | X | Y | Routes | In the land of | Owner at start |
 |---|---|---|---|---|---|
 | P1 | 262 | 1068 | 41-42, 41-45, 41-46 | 41 Bern | SWI Switzerland |
-| P2 | 335 | 1048 | 41-47, 40-47 | 40 Zurich | SWI Switzerland |
-| P3 | 409 | 1085 | 39-40 | 40 Zurich | SWI Switzerland |
+| P2 | 335 | 1048 | 41-47, 40-47 | 40 Zürich | SWI Switzerland |
+| P3 | 409 | 1085 | 39-40 | 40 Zürich | SWI Switzerland |
 | P4 | 709 | 857 | 30-36, 30-72 | 30 Prague | BOH Bohemia |
 | P5 | 802 | 800 | 30-73, 30-85 | 30 Prague | BOH Bohemia |
 | P6 | 805 | 980 | 28-35, 28-33, 28-32 | 28 Brno | BOH Bohemia |
 | P7 | 910 | 852 | 29-86 | 29 Ostrava | BOH Bohemia |
+
+## Route bends
+
+A route is drawn straight, and the script bends it by itself only where the straight line would
+leave its countries' land. List a route here to bend it through points of your own — for example
+to keep it on one side of a river. *All columns are data.* Points are x,y in map units, in order
+from the lower-numbered settlement; the route's length (and so its marching time) follows the bend.
+
+| Route | Through | Why |
+|---|---|---|
+| 83-85 | 794,700 | stays west of the river instead of crossing it twice |
 
 ## Mountains
 
@@ -222,7 +233,7 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **On a river (25):** 15, 31, 32, 33, 35, 38, 42, 45, 48, 49, 50, 51, 57, 58, 59, 61, 66, 67, 68, 70, 80, 82, 83, 85, 86 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
 
-**Routes crossing a river (39):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 41-42, 41-45, 45-46, 48-49, 48-71, 49-50, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 83-85, 84-85, 85-86 — +2 months to march (RULES.md §8).
+**Routes crossing a river (38):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 41-42, 41-45, 45-46, 48-49, 48-71, 49-50, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 84-85, 85-86 — +2 months to march (RULES.md §8).
 
 **Marching** at 240 map units a year, +2 months per river crossing, +3 per leg to or from a pass: a route takes 0.15–1.34 years (median 0.55); through a pass 1.00–1.34.
 
@@ -234,24 +245,26 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 | 20K | 15: STO Stockholm · UDK Upper Denmark · LDK Lower Denmark · CPH Copenhagen · MEC Mecklenburg · EPL Eastern Poland · POZ Poznań · SIL Silesia · STU Stuttgart · LGE Lower Germany · NAN Nancy · TRI Trier · BEL Belgium · HAM Hamburg · FRA Frankfurt |
 | 10K | 14: GOT Gothenburg · RZE Rzeszów · LVI Lviv · SAL Salzburg · TYR Tyrol · ULM Ulm · LUX Luxemburg · LIE Liège · MST Münster · BRE Bremen · HAN Hanover · WOL Wolfsburg · JEN Jena · MAG Magdeburg |
 
-**Naval powers:** 14 countries, 180 ships. Crossing a strait needs 10 ships (RULES.md §8).
+**Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, North Sea and Curonian Sea, are 5 hops (10 months).
 
-| Country | Ports held | Ships | Can cross straits? |
-|---|---|---|---|
-| GDA Gdansk | 15 | 25 | yes |
-| SCH Schleswig | 10, 11 | 20 | yes |
-| PRU Prussia | 16, 17 | 20 | yes |
-| NOR Norway | 1, 2 | 15 | yes |
-| LIT Lithuania | 18, 19, 89 | 15 | yes |
-| NED Netherlands | 57 | 15 | yes |
-| STO Stockholm | 3 | 10 | **exactly** |
-| UDK Upper Denmark | 4, 5 | 10 | **exactly** |
-| LDK Lower Denmark | 9 | 10 | **exactly** |
-| CPH Copenhagen | 7 | 10 | **exactly** |
-| MEC Mecklenburg | 13, 14 | 10 | **exactly** |
-| HAM Hamburg | 66 | 10 | **exactly** |
-| GOT Gothenburg | 6 | 5 | no |
-| BRE Bremen | 65 | 5 | no |
+**Naval powers:** 14 countries, 180 ships. Crossing a strait needs 10 ships in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there.
+
+| Country | Ports held | Home zones | Ships | Can cross straits? |
+|---|---|---|---|---|
+| GDA Gdansk | 15 | Baltic Sea | 25 | no — no strait in its zones |
+| SCH Schleswig | 10, 11 | Kattegat | 20 | yes: 6-7, 7-10 |
+| PRU Prussia | 16, 17 | Baltic Sea | 20 | no — no strait in its zones |
+| NOR Norway | 1, 2 | Skagerrak, Oslofjord | 15 | yes: 1-4, 2-5 |
+| LIT Lithuania | 18, 19, 89 | Curonian Sea | 15 | no — no strait in its zones |
+| NED Netherlands | 57 | North Sea | 15 | no — no strait in its zones |
+| STO Stockholm | 3 | Baltic Sea | 10 | no — no strait in its zones |
+| UDK Upper Denmark | 4, 5 | Skagerrak, Oslofjord | 10 | **exactly**: 1-4, 2-5 |
+| LDK Lower Denmark | 9 | North Sea | 10 | no — no strait in its zones |
+| CPH Copenhagen | 7 | Kattegat | 10 | **exactly**: 6-7, 7-10 |
+| MEC Mecklenburg | 13, 14 | Baltic Sea | 10 | no — no strait in its zones |
+| HAM Hamburg | 66 | North Sea | 10 | no — no strait in its zones |
+| GOT Gothenburg | 6 | Kattegat | 5 | no — too few ships for 6-7, 7-10 |
+| BRE Bremen | 65 | North Sea | 5 | no — no strait in its zones |
 <!-- /generated -->
 
 ## Special coring
@@ -334,7 +347,7 @@ border** — Brandenburg's eastern edge (78 Seelow Heights) runs along Gdansk's 
 the first year.
 
 - **Gdansk** — 25 ships, the largest navy on the map. Holds the Pomeranian coast at 15 Gdynia
-  and runs inland to 81 Plock, with Prussia (which holds 16 Danzig itself) to the east, Poland
+  and runs inland to 81 Płock, with Prussia (which holds 16 Danzig itself) to the east, Poland
   to the south and Brandenburg on its western flank. Outside the HRE, so its path runs through
   Poland.
 - **Bavaria** — ringed by small states (Ulm, Stuttgart, Lower Germany, Tyrol, Jena), with
@@ -377,11 +390,7 @@ propose. Its natural path runs through Poland instead: Warsaw, Poznań, Eastern 
    49-51, 49-60, 58-62, 55-62 (on top of the removed routes above); 39-47, 51-60 and 64-66
    only touch at a point. This route joins lands that do not touch: 58-59.
    Either may be intended, but the script checks neither.
-2. **Moving between sea zones.** Naval movement is 3 coastal settlements per year, but nothing says
-   how a fleet passes from one zone to the next. The six zones form a single chain — North Sea,
-   Skagerrak, Oslofjord, Kattegat, Baltic Sea, Curonian Sea — so every fleet going between the
-   North Sea and the Baltic must sail past the Danish and Norwegian ports.
-3. **Naming:** "Lower Germany" (46 Basel, 47 Konstanz) is the far south — "Upper Rhine" or
+2. **Naming:** "Lower Germany" (46 Basel, 47 Konstanz) is the far south — "Upper Rhine" or
    "Lake Constance" fits the geography better. "Silesia" includes 86 Kraków, which is
    Lesser Poland. "Gdansk" does not hold 16 Danzig (Gdańsk) — Prussia does; "Pomerania"
    fits its lands better.
