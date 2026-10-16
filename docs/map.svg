@@ -328,11 +328,11 @@
   <path id="edge-87-88" class="edge province" d="M1001 651 L1055 651 L1063 660 L1119 660"/>
 </g>
 <g id="rivers">
-  <path class="river" d="M942.1 383.3 L942.5 437.5 L933.5 461.5 L932.5 472.5 L928.5 482.5 L919.5 490.5 L899.5 496.5 L894.5 496.5 L891.5 498.5 L882.5 499.5 L870.5 506.5 L862.5 508.5 L860.5 511.5 L856.5 511.5 L850.5 514.5 L838.5 522.5 L829.5 532.5 L825.5 544.5 L820.5 553.5 L820.5 556.5 L812.5 569.5 L812.5 573.5 L806.5 582.5 L802.5 596.5 L802.5 603.5 L800.5 609.5 L800.5 629.5 L797.5 632.5 L796.5 641.5 L796.5 644.5 L799.5 647.5 L798.5 651.5 L798.5 695.5 L804.5 716.5 L812.5 727.5 L814.5 732.5 L822.5 741.5 L847.5 761.5 L851.5 762.5 L865.5 771.5 L870.5 772.5 L876.5 776.5 L879.5 776.5 L883.5 779.5 L886.5 779.5 L892.5 783.5 L895.5 783.5 L901.5 787.5 L924.5 796.5 L943.5 808.5 L947.5 812.5 L969.5 851.5"/>
-  <path class="river" d="M276.6 420.4 L278.5 427.5 L295.5 447.5 L298.5 452.5 L299.5 459.5 L306.5 471.5 L330.5 491.5 L340.5 511.5 L341.5 530.5 L349.5 538.5 L370.5 552.5 L391.5 572.5 L397.5 588.5 L410.5 611.5 L418.5 630.5 L427.5 639.5 L434.5 642.5 L449.5 657.5 L455.5 666.5 L458.5 674.5 L488.5 703.5 L502.5 710.5 L516.5 723.5 L525.5 740.5 L528.5 748.5 L528.5 752.5 L535.5 770.5 L539.5 775.5 L548.5 792.5 L556.5 800.5"/>
-  <path class="river" d="M18.3 572 L35.5 583.5 L43.5 591.5 L68.5 606.5 L74.5 612.5 L83.5 617.5 L87.5 621.5 L100.5 626.5 L104.5 629.5 L107.5 629.5 L114.5 634.5 L118.5 635.5 L128.5 641.5 L132.5 646.5 L140.5 650.5 L160.5 656.5 L171.5 656.5 L178.5 660.5 L215.5 696.5 L227.5 711.5 L237.5 721.5 L259.5 750.5 L281.5 768.5 L292.5 779.5 L297.5 793.5 L309.5 813.5 L320.5 824.5 L323.5 825.5 L340.5 841.5 L352.5 850.5 L355.5 857.5 L355.5 879.5 L356.5 881.5 L375.5 900.5 L380.5 903.5 L396.5 909.5 L401.5 909.5 L407.5 912.5 L411.5 912.5 L420.5 916.5 L438.5 931.5 L447.5 948.5"/>
-  <path class="river" d="M168.5 1164.5 L171.5 1151.5 L174.5 1145.5 L174.5 1141.5 L176.5 1138.5 L177.5 1115.5 L181.5 1104.5 L181.5 1100.5 L184.5 1094.5 L184.5 1079.5 L186.5 1076.5 L186.5 1070.5 L192.5 1050.5 L194.5 963.5 L190.5 956.5 L190.5 952.5"/>
-  <path class="river" d="M491.5 996.5 L495.5 997.5 L506.5 994.5 L524.5 994.5 L535.5 992.5 L545.5 992.5 L569.5 988.5 L572.5 985.5 L576.5 985.5 L579.5 983.5 L606.5 982.5 L616.5 983.5 L619.5 985.5 L624.5 985.5 L630.5 988.5 L634.5 988.5 L681.5 1007.5 L719.5 1007.5 L726.5 1010.5 L731.5 1010.5 L739.5 1014.5 L752.5 1016.5 L765.5 1022.5 L771.5 1028.5 L780.5 1038.5 L783.5 1044.5 L794.5 1058.5 L796.5 1064.5 L810.5 1079.5 L830.5 1086.5 L837.5 1092.5 L844.5 1095.5 L865.5 1112.5 L891.5 1126.5 L908.5 1141.5 L933.5 1154.5 L946.5 1164.5"/>
+  <path class="river" d="M18.3 572 L35.5 583.5 L43.5 591.5 L68.5 606.5 L74.5 612.5 L83.5 617.5 L87.5 621.5 L100.5 626.5 L104.5 629.5 L107.5 629.5 L114.5 634.5 L118.5 635.5 L128.5 641.5 L132.5 646.5 L140.5 650.5 L160.5 656.5 L171.5 656.5 L178.5 660.5 L215.5 696.5 L227.5 711.5 L237.5 721.5 L259.5 750.5 L281.5 768.5 L282 790 L280 805 L262 860 L225 930 L196 972 L230 985 L258 982 L300 986 L363 990 L405 1015"/>
+  <path class="river" d="M205 1100 L185 1122 L165 1130 L140 1112 L128 1104 L118 1130 L112 1164.5"/>
+  <path class="river" d="M400 945 L425 905 L446 897 L510 880 L560 885 L600 895 L640 903 L652 940 L648 975 L660 1000 L681.5 1007.5 L719.5 1007.5 L726.5 1010.5 L731.5 1010.5 L739.5 1014.5 L752.5 1016.5 L765.5 1022.5 L771.5 1028.5 L780.5 1038.5 L783.5 1044.5 L794.5 1058.5 L796.5 1064.5 L810.5 1079.5 L830.5 1086.5 L837.5 1092.5 L844.5 1095.5 L865.5 1112.5 L891.5 1126.5 L908.5 1141.5 L933.5 1154.5 L946.5 1164.5"/>
+  <path class="river" d="M276.6 420.4 L295 448 L340 462 L430 482 L515 520 L535 560 L600 600 L680 650 L728 700 L742 728 L765 770 L790 830 L795 880 L780 910"/>
+  <path class="river" d="M1035 394.5 L1030 420 L1018 470 L1016 505 L1080 590 L1085 640 L1100 700 L1040 780 L970 810 L940 830"/>
 </g>
 <g id="sea-zones">
   <path class="sea-divider" d="M204.6 155.9 L297 200"/>
@@ -543,18 +543,18 @@
 </g>
 <g id="mountains">
   <g class="mountain">
-    <polygon class="mtn-lit" points="768,767 753,793 769.8,793"/>
-    <polygon class="mtn-shade" points="768,767 769.8,793 783,793"/>
-    <polygon class="mtn-snow" points="768,767 762.9,775.84 765.45,777.34 768.6,776.04"/>
-    <polygon class="mtn-snow-shade" points="768,767 768.6,776.04 770.8,777.14 773.1,775.84"/>
-    <polygon class="mtn-outline" points="768,767 753,793 783,793"/>
+    <polygon class="mtn-lit" points="754,771 739,797 755.8,797"/>
+    <polygon class="mtn-shade" points="754,771 755.8,797 769,797"/>
+    <polygon class="mtn-snow" points="754,771 748.9,779.84 751.45,781.34 754.6,780.04"/>
+    <polygon class="mtn-snow-shade" points="754,771 754.6,780.04 756.8,781.14 759.1,779.84"/>
+    <polygon class="mtn-outline" points="754,771 739,797 769,797"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="738,780 723,806 739.8,806"/>
-    <polygon class="mtn-shade" points="738,780 739.8,806 753,806"/>
-    <polygon class="mtn-snow" points="738,780 732.9,788.84 735.45,790.34 738.6,789.04"/>
-    <polygon class="mtn-snow-shade" points="738,780 738.6,789.04 740.8,790.14 743.1,788.84"/>
-    <polygon class="mtn-outline" points="738,780 723,806 753,806"/>
+    <polygon class="mtn-lit" points="725,786 710,812 726.8,812"/>
+    <polygon class="mtn-shade" points="725,786 726.8,812 740,812"/>
+    <polygon class="mtn-snow" points="725,786 719.9,794.84 722.45,796.34 725.6,795.04"/>
+    <polygon class="mtn-snow-shade" points="725,786 725.6,795.04 727.8,796.14 730.1,794.84"/>
+    <polygon class="mtn-outline" points="725,786 710,812 740,812"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="847,796 832,822 848.8,822"/>
@@ -564,18 +564,18 @@
     <polygon class="mtn-outline" points="847,796 832,822 862,822"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="738,813 723,839 739.8,839"/>
-    <polygon class="mtn-shade" points="738,813 739.8,839 753,839"/>
-    <polygon class="mtn-snow" points="738,813 732.9,821.84 735.45,823.34 738.6,822.04"/>
-    <polygon class="mtn-snow-shade" points="738,813 738.6,822.04 740.8,823.14 743.1,821.84"/>
-    <polygon class="mtn-outline" points="738,813 723,839 753,839"/>
-  </g>
-  <g class="mountain">
     <polygon class="mtn-lit" points="874,814 859,840 875.8,840"/>
     <polygon class="mtn-shade" points="874,814 875.8,840 889,840"/>
     <polygon class="mtn-snow" points="874,814 868.9,822.84 871.45,824.34 874.6,823.04"/>
     <polygon class="mtn-snow-shade" points="874,814 874.6,823.04 876.8,824.14 879.1,822.84"/>
     <polygon class="mtn-outline" points="874,814 859,840 889,840"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="743,817 728,843 744.8,843"/>
+    <polygon class="mtn-shade" points="743,817 744.8,843 758,843"/>
+    <polygon class="mtn-snow" points="743,817 737.9,825.84 740.45,827.34 743.6,826.04"/>
+    <polygon class="mtn-snow-shade" points="743,817 743.6,826.04 745.8,827.14 748.1,825.84"/>
+    <polygon class="mtn-outline" points="743,817 728,843 758,843"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="933,849 918,875 934.8,875"/>
@@ -888,19 +888,19 @@
   <text id="label-WAR" class="label" x="998" y="589.4">WAR</text>
   <text id="label-RZE" class="label" x="1126" y="825.4">RZE</text>
   <text id="label-LVI" class="label" x="1232" y="843.4">LVI</text>
-  <text id="label-POZ" class="label" x="770" y="593.4">POZ</text>
+  <text id="label-POZ" class="label" x="778" y="591.4">POZ</text>
   <text id="label-SIL" class="label" x="888" y="739.4">SIL</text>
   <text id="label-HUN" class="label" x="1144" y="997.4">HUN</text>
-  <text id="label-BOH" class="label" x="756" y="917.4">BOH</text>
+  <text id="label-BOH" class="label" x="826" y="849.4">BOH</text>
   <text id="label-AUS" class="label" x="742" y="1121.4">AUS</text>
   <text id="label-SAL" class="label small" x="668" y="1047.6">SAL</text>
   <text id="label-TYR" class="label" x="602" y="1139.4">TYR</text>
-  <text id="label-BAV" class="label" x="496" y="797.4">BAV</text>
+  <text id="label-BAV" class="label" x="508" y="783.4">BAV</text>
   <text id="label-ULM" class="label" x="424" y="847.4">ULM</text>
-  <text id="label-STU" class="label" x="288" y="853.4">STU</text>
-  <text id="label-LGE" class="label" x="302" y="999.4">LGE</text>
+  <text id="label-STU" class="label" x="300" y="857.4">STU</text>
+  <text id="label-LGE" class="label" x="286" y="1007.4">LGE</text>
   <text id="label-SWI" class="label" x="374" y="1147.4">SWI</text>
-  <text id="label-ELS" class="label" x="218" y="933.4">ELS</text>
+  <text id="label-ELS" class="label" x="204" y="1061.4">ELS</text>
   <text id="label-NAN" class="label" x="58" y="1029.4">NAN</text>
   <text id="label-LUX" class="label" x="46" y="909.4">LUX</text>
   <text id="label-TRI" class="label" x="224" y="819.4">TRI</text>
@@ -911,12 +911,12 @@
   <text id="label-BRE" class="label" x="172" y="467.4">BRE</text>
   <text id="label-HAM" class="label" x="267" y="399.4">HAM</text>
   <text id="label-HAN" class="label" x="380" y="507.4">HAN</text>
-  <text id="label-WOL" class="label" x="372" y="617.4">WOL</text>
+  <text id="label-WOL" class="label" x="382" y="615.4">WOL</text>
   <text id="label-JEN" class="label" x="434" y="749.4">JEN</text>
   <text id="label-RUH" class="label" x="212" y="639.4">RUH</text>
   <text id="label-FRA" class="label" x="378" y="797.4">FRA</text>
   <text id="label-SAX" class="label" x="684" y="723.4">SAX</text>
-  <text id="label-MAG" class="label" x="482" y="491.4">MAG</text>
+  <text id="label-MAG" class="label" x="482" y="489.4">MAG</text>
   <text id="label-BRB" class="label" x="684" y="513.4">BRB</text>
 </g>
 </svg>

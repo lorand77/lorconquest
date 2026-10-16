@@ -1097,7 +1097,7 @@
    "years" : 0.59
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 12,
    "id" : "route-12-69",
    "legs" : null,
@@ -1116,7 +1116,7 @@
    "seaZone" : null,
    "to" : 69,
    "type" : "land",
-   "years" : 0.57
+   "years" : 0.74
   },
   {
    "crossesRiver" : false,
@@ -1339,7 +1339,7 @@
    "years" : 0.41
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 15,
    "id" : "route-15-81",
    "legs" : null,
@@ -1358,7 +1358,7 @@
    "seaZone" : null,
    "to" : 81,
    "type" : "land",
-   "years" : 0.69
+   "years" : 0.52
   },
   {
    "crossesRiver" : false,
@@ -1405,7 +1405,7 @@
    "years" : 0.47
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 16,
    "id" : "route-16-81",
    "legs" : null,
@@ -1424,10 +1424,10 @@
    "seaZone" : null,
    "to" : 81,
    "type" : "land",
-   "years" : 0.46
+   "years" : 0.63
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 16,
    "id" : "route-16-88",
    "legs" : null,
@@ -1446,7 +1446,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.86
+   "years" : 1.03
   },
   {
    "crossesRiver" : false,
@@ -1559,7 +1559,7 @@
    "years" : 0.65
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 20,
    "id" : "route-20-88",
    "legs" : null,
@@ -1578,7 +1578,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.68
+   "years" : 0.85
   },
   {
    "crossesRiver" : false,
@@ -1625,7 +1625,7 @@
    "years" : 0.95
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 21,
    "id" : "route-21-88",
    "legs" : null,
@@ -1644,7 +1644,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.68
+   "years" : 0.85
   },
   {
    "crossesRiver" : false,
@@ -1695,7 +1695,7 @@
    "years" : 0.75
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 22,
    "id" : "route-22-87",
    "legs" : null,
@@ -1714,10 +1714,10 @@
    "seaZone" : null,
    "to" : 87,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.67
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 22,
    "id" : "route-22-88",
    "legs" : null,
@@ -1736,7 +1736,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.52
+   "years" : 0.69
   },
   {
    "crossesRiver" : false,
@@ -1761,7 +1761,7 @@
    "years" : 0.54
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 23,
    "id" : "route-23-86",
    "legs" : null,
@@ -1780,10 +1780,10 @@
    "seaZone" : null,
    "to" : 86,
    "type" : "land",
-   "years" : 0.84
+   "years" : 1.01
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 23,
    "id" : "route-23-87",
    "legs" : null,
@@ -1806,7 +1806,7 @@
    "seaZone" : null,
    "to" : 87,
    "type" : "land",
-   "years" : 0.53
+   "years" : 0.7
   },
   {
    "crossesRiver" : false,
@@ -1875,7 +1875,7 @@
    "years" : 0.33
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 28,
    "id" : "route-28-30",
    "legs" : null,
@@ -1894,7 +1894,7 @@
    "seaZone" : null,
    "to" : 30,
    "type" : "land",
-   "years" : 0.38
+   "years" : 0.55
   },
   {
    "crossesRiver" : false,
@@ -2002,7 +2002,7 @@
    "years" : 1.26
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 29,
    "id" : "route-29-30",
    "legs" : null,
@@ -2021,10 +2021,10 @@
    "seaZone" : null,
    "to" : 30,
    "type" : "land",
-   "years" : 0.46
+   "years" : 0.62
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 29,
    "id" : "route-29-86",
    "legs" : [
@@ -2034,7 +2034,7 @@
     },
     {
      "length" : 72.62,
-     "years" : 0.72
+     "years" : 0.55
     }
    ],
    "length" : 115.42,
@@ -2056,10 +2056,10 @@
    "seaZone" : null,
    "to" : 86,
    "type" : "land",
-   "years" : 1.15
+   "years" : 0.98
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 30,
    "id" : "route-30-36",
    "legs" : [
@@ -2069,7 +2069,7 @@
     },
     {
      "length" : 103,
-     "years" : 0.68
+     "years" : 0.85
     }
    ],
    "length" : 170.75,
@@ -2091,7 +2091,7 @@
    "seaZone" : null,
    "to" : 36,
    "type" : "land",
-   "years" : 1.21
+   "years" : 1.38
   },
   {
    "crossesRiver" : false,
@@ -2129,13 +2129,13 @@
    "years" : 1.06
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 30,
    "id" : "route-30-73",
    "legs" : [
     {
      "length" : 71.87,
-     "years" : 0.55
+     "years" : 0.72
     },
     {
      "length" : 107.21,
@@ -2165,16 +2165,16 @@
    "seaZone" : null,
    "to" : 73,
    "type" : "land",
-   "years" : 1.25
+   "years" : 1.41
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 30,
    "id" : "route-30-85",
    "legs" : [
     {
      "length" : 71.87,
-     "years" : 0.55
+     "years" : 0.72
     },
     {
      "length" : 51.2,
@@ -2200,7 +2200,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 1.01
+   "years" : 1.18
   },
   {
    "crossesRiver" : false,
@@ -2335,7 +2335,7 @@
    "years" : 0.51
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 35,
    "id" : "route-35-36",
    "legs" : null,
@@ -2354,10 +2354,10 @@
    "seaZone" : null,
    "to" : 36,
    "type" : "land",
-   "years" : 0.32
+   "years" : 0.48
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 35,
    "id" : "route-35-37",
    "legs" : null,
@@ -2376,10 +2376,10 @@
    "seaZone" : null,
    "to" : 37,
    "type" : "land",
-   "years" : 0.53
+   "years" : 0.69
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 35,
    "id" : "route-35-38",
    "legs" : null,
@@ -2398,7 +2398,7 @@
    "seaZone" : null,
    "to" : 38,
    "type" : "land",
-   "years" : 0.7
+   "years" : 0.87
   },
   {
    "crossesRiver" : false,
@@ -2423,7 +2423,7 @@
    "years" : 0.29
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 36,
    "id" : "route-36-71",
    "legs" : null,
@@ -2442,10 +2442,10 @@
    "seaZone" : null,
    "to" : 71,
    "type" : "land",
-   "years" : 0.64
+   "years" : 0.81
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 36,
    "id" : "route-36-72",
    "legs" : null,
@@ -2464,7 +2464,7 @@
    "seaZone" : null,
    "to" : 72,
    "type" : "land",
-   "years" : 0.53
+   "years" : 0.69
   },
   {
    "crossesRiver" : false,
@@ -2511,7 +2511,7 @@
    "years" : 0.46
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 37,
    "id" : "route-37-71",
    "legs" : null,
@@ -2530,7 +2530,7 @@
    "seaZone" : null,
    "to" : 71,
    "type" : "land",
-   "years" : 0.61
+   "years" : 0.77
   },
   {
    "crossesRiver" : false,
@@ -2603,7 +2603,7 @@
    "years" : 0.35
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 38,
    "id" : "route-38-49",
    "legs" : null,
@@ -2622,7 +2622,7 @@
    "seaZone" : null,
    "to" : 49,
    "type" : "land",
-   "years" : 0.77
+   "years" : 0.94
   },
   {
    "crossesRiver" : false,
@@ -2682,7 +2682,7 @@
    "years" : 0.25
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 40,
    "id" : "route-40-47",
    "legs" : [
@@ -2692,7 +2692,7 @@
     },
     {
      "length" : 80.06,
-     "years" : 0.58
+     "years" : 0.75
     }
    ],
    "length" : 119.62,
@@ -2714,10 +2714,10 @@
    "seaZone" : null,
    "to" : 47,
    "type" : "land",
-   "years" : 1
+   "years" : 1.17
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 41,
    "id" : "route-41-42",
    "legs" : [
@@ -2727,7 +2727,7 @@
     },
     {
      "length" : 103.32,
-     "years" : 0.85
+     "years" : 0.68
     }
    ],
    "length" : 144.35,
@@ -2749,10 +2749,10 @@
    "seaZone" : null,
    "to" : 42,
    "type" : "land",
-   "years" : 1.27
+   "years" : 1.1
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 41,
    "id" : "route-41-45",
    "legs" : [
@@ -2762,7 +2762,7 @@
     },
     {
      "length" : 120.24,
-     "years" : 0.92
+     "years" : 0.75
     }
    ],
    "length" : 161.28,
@@ -2784,10 +2784,10 @@
    "seaZone" : null,
    "to" : 45,
    "type" : "land",
-   "years" : 1.34
+   "years" : 1.17
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 41,
    "id" : "route-41-46",
    "legs" : [
@@ -2797,7 +2797,7 @@
     },
     {
      "length" : 103.08,
-     "years" : 0.68
+     "years" : 0.85
     }
    ],
    "length" : 144.11,
@@ -2819,10 +2819,10 @@
    "seaZone" : null,
    "to" : 46,
    "type" : "land",
-   "years" : 1.1
+   "years" : 1.27
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 41,
    "id" : "route-41-47",
    "legs" : [
@@ -2832,7 +2832,7 @@
     },
     {
      "length" : 80.06,
-     "years" : 0.58
+     "years" : 0.75
     }
    ],
    "length" : 147.32,
@@ -2854,7 +2854,7 @@
    "seaZone" : null,
    "to" : 47,
    "type" : "land",
-   "years" : 1.11
+   "years" : 1.28
   },
   {
    "crossesRiver" : false,
@@ -3147,7 +3147,7 @@
    "years" : 0.63
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 48,
    "id" : "route-48-50",
    "legs" : null,
@@ -3166,7 +3166,7 @@
    "seaZone" : null,
    "to" : 50,
    "type" : "land",
-   "years" : 0.68
+   "years" : 0.84
   },
   {
    "crossesRiver" : true,
@@ -3191,7 +3191,7 @@
    "years" : 0.94
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 49,
    "id" : "route-49-50",
    "legs" : null,
@@ -3210,10 +3210,10 @@
    "seaZone" : null,
    "to" : 50,
    "type" : "land",
-   "years" : 0.52
+   "years" : 0.36
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 49,
    "id" : "route-49-52",
    "legs" : null,
@@ -3232,7 +3232,7 @@
    "seaZone" : null,
    "to" : 52,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.75
   },
   {
    "crossesRiver" : false,
@@ -3925,7 +3925,7 @@
    "years" : 0.47
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 63,
    "id" : "route-63-68",
    "legs" : null,
@@ -3944,7 +3944,7 @@
    "seaZone" : null,
    "to" : 68,
    "type" : "land",
-   "years" : 0.77
+   "years" : 0.6
   },
   {
    "crossesRiver" : false,
@@ -4057,7 +4057,7 @@
    "years" : 0.52
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 67,
    "id" : "route-67-68",
    "legs" : null,
@@ -4076,10 +4076,10 @@
    "seaZone" : null,
    "to" : 68,
    "type" : "land",
-   "years" : 0.64
+   "years" : 0.47
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 67,
    "id" : "route-67-69",
    "legs" : null,
@@ -4098,7 +4098,7 @@
    "seaZone" : null,
    "to" : 69,
    "type" : "land",
-   "years" : 0.89
+   "years" : 0.73
   },
   {
    "crossesRiver" : false,
@@ -4123,7 +4123,7 @@
    "years" : 0.42
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 68,
    "id" : "route-68-70",
    "legs" : null,
@@ -4142,10 +4142,10 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.56
+   "years" : 0.39
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 69,
    "id" : "route-69-70",
    "legs" : null,
@@ -4164,7 +4164,7 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.78
+   "years" : 0.61
   },
   {
    "crossesRiver" : false,
@@ -4189,7 +4189,7 @@
    "years" : 0.58
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 69,
    "id" : "route-69-75",
    "legs" : null,
@@ -4208,10 +4208,10 @@
    "seaZone" : null,
    "to" : 75,
    "type" : "land",
-   "years" : 0.36
+   "years" : 0.53
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 70,
    "id" : "route-70-71",
    "legs" : null,
@@ -4230,10 +4230,10 @@
    "seaZone" : null,
    "to" : 71,
    "type" : "land",
-   "years" : 0.81
+   "years" : 0.65
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 70,
    "id" : "route-70-74",
    "legs" : null,
@@ -4252,7 +4252,7 @@
    "seaZone" : null,
    "to" : 74,
    "type" : "land",
-   "years" : 0.82
+   "years" : 0.66
   },
   {
    "crossesRiver" : false,
@@ -4299,7 +4299,7 @@
    "years" : 0.59
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 72,
    "id" : "route-72-73",
    "legs" : null,
@@ -4318,7 +4318,7 @@
    "seaZone" : null,
    "to" : 73,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.67
   },
   {
    "crossesRiver" : false,
@@ -4343,7 +4343,7 @@
    "years" : 0.75
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 73,
    "id" : "route-73-74",
    "legs" : null,
@@ -4362,7 +4362,7 @@
    "seaZone" : null,
    "to" : 74,
    "type" : "land",
-   "years" : 0.69
+   "years" : 0.85
   },
   {
    "crossesRiver" : false,
@@ -4409,7 +4409,7 @@
    "years" : 0.31
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 74,
    "id" : "route-74-75",
    "legs" : null,
@@ -4428,10 +4428,10 @@
    "seaZone" : null,
    "to" : 75,
    "type" : "land",
-   "years" : 0.71
+   "years" : 0.88
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 74,
    "id" : "route-74-76",
    "legs" : null,
@@ -4450,10 +4450,10 @@
    "seaZone" : null,
    "to" : 76,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.76
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 74,
    "id" : "route-74-77",
    "legs" : null,
@@ -4472,10 +4472,10 @@
    "seaZone" : null,
    "to" : 77,
    "type" : "land",
-   "years" : 0.47
+   "years" : 0.64
   },
   {
-   "crossesRiver" : false,
+   "crossesRiver" : true,
    "from" : 74,
    "id" : "route-74-83",
    "legs" : null,
@@ -4494,7 +4494,7 @@
    "seaZone" : null,
    "to" : 83,
    "type" : "land",
-   "years" : 0.78
+   "years" : 0.95
   },
   {
    "crossesRiver" : false,
@@ -4585,7 +4585,7 @@
    "years" : 0.5
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 77,
    "id" : "route-77-82",
    "legs" : null,
@@ -4604,7 +4604,7 @@
    "seaZone" : null,
    "to" : 82,
    "type" : "land",
-   "years" : 0.79
+   "years" : 0.62
   },
   {
    "crossesRiver" : false,
@@ -4673,7 +4673,7 @@
    "years" : 0.62
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 78,
    "id" : "route-78-82",
    "legs" : null,
@@ -4696,7 +4696,7 @@
    "seaZone" : null,
    "to" : 82,
    "type" : "land",
-   "years" : 0.75
+   "years" : 0.59
   },
   {
    "crossesRiver" : false,
@@ -4721,7 +4721,7 @@
    "years" : 0.24
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 80,
    "id" : "route-80-81",
    "legs" : null,
@@ -4740,10 +4740,10 @@
    "seaZone" : null,
    "to" : 81,
    "type" : "land",
-   "years" : 0.67
+   "years" : 0.5
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 80,
    "id" : "route-80-82",
    "legs" : null,
@@ -4762,10 +4762,10 @@
    "seaZone" : null,
    "to" : 82,
    "type" : "land",
-   "years" : 0.44
+   "years" : 0.27
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 80,
    "id" : "route-80-84",
    "legs" : null,
@@ -4784,7 +4784,7 @@
    "seaZone" : null,
    "to" : 84,
    "type" : "land",
-   "years" : 0.76
+   "years" : 0.6
   },
   {
    "crossesRiver" : false,
@@ -4831,7 +4831,7 @@
    "years" : 0.53
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 82,
    "id" : "route-82-83",
    "legs" : null,
@@ -4850,7 +4850,7 @@
    "seaZone" : null,
    "to" : 83,
    "type" : "land",
-   "years" : 0.63
+   "years" : 0.46
   },
   {
    "crossesRiver" : false,
@@ -4875,7 +4875,7 @@
    "years" : 0.47
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 83,
    "id" : "route-83-84",
    "legs" : null,
@@ -4894,7 +4894,7 @@
    "seaZone" : null,
    "to" : 84,
    "type" : "land",
-   "years" : 0.72
+   "years" : 0.56
   },
   {
    "crossesRiver" : false,
@@ -4923,7 +4923,7 @@
    "years" : 0.49
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 84,
    "id" : "route-84-85",
    "legs" : null,
@@ -4942,7 +4942,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 0.86
+   "years" : 0.69
   },
   {
    "crossesRiver" : false,
@@ -5011,7 +5011,7 @@
    "years" : 0.6
   },
   {
-   "crossesRiver" : true,
+   "crossesRiver" : false,
    "from" : 85,
    "id" : "route-85-86",
    "legs" : null,
@@ -5030,7 +5030,7 @@
    "seaZone" : null,
    "to" : 86,
    "type" : "land",
-   "years" : 0.79
+   "years" : 0.62
   },
   {
    "crossesRiver" : false,
@@ -5501,7 +5501,7 @@
    "name" : "Gdynia",
    "pop" : 20000,
    "port" : true,
-   "river" : true,
+   "river" : false,
    "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "city",
@@ -5523,7 +5523,7 @@
    "name" : "Danzig",
    "pop" : 10000,
    "port" : true,
-   "river" : false,
+   "river" : true,
    "seaZone" : "baltic-sea",
    "straits" : [],
    "type" : "town",
@@ -5771,7 +5771,7 @@
    "name" : "Prague",
    "pop" : 20000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "city",
@@ -5896,7 +5896,7 @@
    "name" : "Passau",
    "pop" : 10000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -5941,7 +5941,7 @@
    "name" : "Memmingen",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6043,7 +6043,7 @@
    "name" : "Lyon",
    "pop" : 10000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6108,7 +6108,7 @@
    "name" : "Basel",
    "pop" : 10000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6130,7 +6130,7 @@
    "name" : "Konstanz",
    "pop" : 10000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6175,7 +6175,7 @@
    "name" : "Stuttgart",
    "pop" : 20000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "city",
@@ -6196,7 +6196,7 @@
    "name" : "Frankfurt",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6562,7 +6562,7 @@
    "name" : "Hanover",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6583,7 +6583,7 @@
    "name" : "Wolfsburg",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6606,7 +6606,7 @@
    "name" : "Magdeburg",
    "pop" : 10000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6631,7 +6631,7 @@
    "name" : "Jena",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6698,7 +6698,7 @@
    "name" : "Dresden",
    "pop" : 10000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6858,7 +6858,7 @@
    "name" : "Bydgoszcz",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6880,7 +6880,7 @@
    "name" : "Płock",
    "pop" : 10000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6902,7 +6902,7 @@
    "name" : "Piła",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6925,7 +6925,7 @@
    "name" : "Poznań",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -6972,7 +6972,7 @@
    "name" : "Breslau",
    "pop" : 10000,
    "port" : false,
-   "river" : true,
+   "river" : false,
    "seaZone" : null,
    "straits" : [],
    "type" : "town",
@@ -7040,7 +7040,7 @@
    "name" : "Warsaw",
    "pop" : 20000,
    "port" : false,
-   "river" : false,
+   "river" : true,
    "seaZone" : null,
    "straits" : [],
    "type" : "city",

@@ -215,7 +215,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 units); `perl tools/map.pl mountains` moves any that touch something else.
 
 ```
-768,767  738,780  847,796  738,813  874,814  933,849  705,871  1197,871
+754,771  725,786  847,796  874,814  743,817  933,849  705,871  1197,871
 1008,874  1259,880  1138,883  1067,894  701,912  1213,915  1153,916  1256,917
 791,935  744,943  1266,955  837,970  877,1002  298,1030  370,1038  407,1040
 647,1046  250,1081  611,1081  547,1085  482,1093  371,1096  326,1097  297,1115
@@ -231,11 +231,11 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **Ports (21):** 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 57, 65, 66, 89
 
-**On a river (25):** 15, 31, 32, 33, 35, 38, 42, 45, 48, 49, 50, 51, 57, 58, 59, 61, 66, 67, 68, 70, 80, 82, 83, 85, 86 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
+**On a river (24):** 16, 30, 31, 32, 33, 35, 36, 42, 43, 45, 46, 47, 48, 51, 57, 58, 59, 61, 66, 69, 73, 81, 86, 88 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
 
-**Routes crossing a river (38):** 12-67, 15-16, 15-81, 28-33, 29-86, 32-33, 33-35, 34-35, 41-42, 41-45, 45-46, 48-49, 48-71, 49-50, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 63-68, 65-66, 66-67, 67-68, 67-69, 68-70, 69-70, 70-71, 70-74, 77-82, 78-82, 80-81, 80-82, 80-84, 82-83, 83-84, 84-85, 85-86 — +2 months to march (RULES.md §8).
+**Routes crossing a river (50):** 12-67, 12-69, 15-16, 16-81, 16-88, 20-88, 21-88, 22-87, 22-88, 23-86, 23-87, 28-30, 28-33, 29-30, 30-36, 30-73, 30-85, 32-33, 33-35, 34-35, 35-36, 35-37, 35-38, 36-71, 36-72, 37-71, 38-49, 40-47, 41-46, 41-47, 45-46, 48-49, 48-50, 48-71, 49-52, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 65-66, 66-67, 69-75, 72-73, 73-74, 74-75, 74-76, 74-77, 74-83 — +2 months to march (RULES.md §8).
 
-**Marching** at 240 map units a year, +2 months per river crossing, +3 per leg to or from a pass: a route takes 0.15–1.34 years (median 0.55); through a pass 1.00–1.34.
+**Marching** at 240 map units a year, +2 months per river crossing, +3 per leg to or from a pass: a route takes 0.15–1.41 years (median 0.56); through a pass 0.98–1.41.
 
 | Pop | Countries |
 |---|---|
