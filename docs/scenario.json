@@ -3,6 +3,7 @@
  "countries" : [
   {
    "army" : 1200,
+   "capital" : 2,
    "code" : "NOR",
    "hre" : "none",
    "name" : "Norway",
@@ -15,6 +16,7 @@
   },
   {
    "army" : 400,
+   "capital" : 6,
    "code" : "GOT",
    "hre" : "none",
    "name" : "Gothenburg",
@@ -26,6 +28,7 @@
   },
   {
    "army" : 800,
+   "capital" : 3,
    "code" : "STO",
    "hre" : "none",
    "name" : "Stockholm",
@@ -37,6 +40,7 @@
   },
   {
    "army" : 800,
+   "capital" : 4,
    "code" : "UDK",
    "hre" : "none",
    "name" : "Upper Denmark",
@@ -49,6 +53,7 @@
   },
   {
    "army" : 800,
+   "capital" : 8,
    "code" : "LDK",
    "hre" : "none",
    "name" : "Lower Denmark",
@@ -61,6 +66,7 @@
   },
   {
    "army" : 800,
+   "capital" : 7,
    "code" : "CPH",
    "hre" : "none",
    "name" : "Copenhagen",
@@ -72,6 +78,7 @@
   },
   {
    "army" : 1600,
+   "capital" : 11,
    "code" : "SCH",
    "hre" : "all",
    "name" : "Schleswig",
@@ -85,6 +92,7 @@
   },
   {
    "army" : 800,
+   "capital" : 13,
    "code" : "MEC",
    "hre" : "all",
    "name" : "Mecklenburg",
@@ -97,6 +105,7 @@
   },
   {
    "army" : 2000,
+   "capital" : 15,
    "code" : "GDA",
    "hre" : "none",
    "name" : "Gdansk",
@@ -111,6 +120,7 @@
   },
   {
    "army" : 1600,
+   "capital" : 17,
    "code" : "PRU",
    "hre" : "none",
    "name" : "Prussia",
@@ -124,6 +134,7 @@
   },
   {
    "army" : 1200,
+   "capital" : 19,
    "code" : "LIT",
    "hre" : "none",
    "name" : "Lithuania",
@@ -137,6 +148,7 @@
   },
   {
    "army" : 800,
+   "capital" : 22,
    "code" : "EPL",
    "hre" : "none",
    "name" : "Eastern Poland",
@@ -149,6 +161,7 @@
   },
   {
    "army" : 1600,
+   "capital" : 88,
    "code" : "WAR",
    "hre" : "none",
    "name" : "Warsaw",
@@ -162,6 +175,7 @@
   },
   {
    "army" : 400,
+   "capital" : 23,
    "code" : "RZE",
    "hre" : "none",
    "name" : "Rzeszów",
@@ -173,6 +187,7 @@
   },
   {
    "army" : 400,
+   "capital" : 24,
    "code" : "LVI",
    "hre" : "none",
    "name" : "Lviv",
@@ -184,6 +199,7 @@
   },
   {
    "army" : 800,
+   "capital" : 83,
    "code" : "POZ",
    "hre" : "none",
    "name" : "Poznań",
@@ -196,6 +212,7 @@
   },
   {
    "army" : 800,
+   "capital" : 85,
    "code" : "SIL",
    "hre" : "part",
    "name" : "Silesia",
@@ -208,6 +225,7 @@
   },
   {
    "army" : 1200,
+   "capital" : 31,
    "code" : "HUN",
    "hre" : "none",
    "name" : "Hungary",
@@ -220,6 +238,7 @@
   },
   {
    "army" : 1600,
+   "capital" : 30,
    "code" : "BOH",
    "hre" : "all",
    "name" : "Bohemia",
@@ -233,6 +252,7 @@
   },
   {
    "army" : 1600,
+   "capital" : 33,
    "code" : "AUS",
    "hre" : "all",
    "name" : "Austria",
@@ -246,6 +266,7 @@
   },
   {
    "army" : 400,
+   "capital" : 34,
    "code" : "SAL",
    "hre" : "all",
    "name" : "Salzburg",
@@ -257,6 +278,7 @@
   },
   {
    "army" : 400,
+   "capital" : 39,
    "code" : "TYR",
    "hre" : "all",
    "name" : "Tyrol",
@@ -268,6 +290,7 @@
   },
   {
    "army" : 2000,
+   "capital" : 37,
    "code" : "BAV",
    "hre" : "all",
    "name" : "Bavaria",
@@ -282,6 +305,7 @@
   },
   {
    "army" : 400,
+   "capital" : 48,
    "code" : "ULM",
    "hre" : "all",
    "name" : "Ulm",
@@ -293,6 +317,7 @@
   },
   {
    "army" : 800,
+   "capital" : 49,
    "code" : "STU",
    "hre" : "all",
    "name" : "Stuttgart",
@@ -304,6 +329,7 @@
   },
   {
    "army" : 800,
+   "capital" : 46,
    "code" : "LGE",
    "hre" : "all",
    "name" : "Lower Germany",
@@ -316,6 +342,7 @@
   },
   {
    "army" : 1200,
+   "capital" : 41,
    "code" : "SWI",
    "hre" : "all",
    "name" : "Switzerland",
@@ -328,6 +355,7 @@
   },
   {
    "army" : 1200,
+   "capital" : 45,
    "code" : "ELS",
    "hre" : "all",
    "name" : "Elsass-Lothringen",
@@ -340,6 +368,7 @@
   },
   {
    "army" : 800,
+   "capital" : 44,
    "code" : "NAN",
    "hre" : "part",
    "name" : "Nancy",
@@ -352,6 +381,7 @@
   },
   {
    "army" : 400,
+   "capital" : 53,
    "code" : "LUX",
    "hre" : "all",
    "name" : "Luxemburg",
@@ -363,6 +393,7 @@
   },
   {
    "army" : 800,
+   "capital" : 52,
    "code" : "TRI",
    "hre" : "all",
    "name" : "Trier",
@@ -375,6 +406,7 @@
   },
   {
    "army" : 400,
+   "capital" : 55,
    "code" : "LIE",
    "hre" : "all",
    "name" : "Liège",
@@ -386,6 +418,7 @@
   },
   {
    "army" : 800,
+   "capital" : 54,
    "code" : "BEL",
    "hre" : "all",
    "name" : "Belgium",
@@ -398,6 +431,7 @@
   },
   {
    "army" : 1200,
+   "capital" : 57,
    "code" : "NED",
    "hre" : "all",
    "name" : "Netherlands",
@@ -410,6 +444,7 @@
   },
   {
    "army" : 400,
+   "capital" : 64,
    "code" : "MST",
    "hre" : "all",
    "name" : "Münster",
@@ -421,6 +456,7 @@
   },
   {
    "army" : 400,
+   "capital" : 65,
    "code" : "BRE",
    "hre" : "all",
    "name" : "Bremen",
@@ -432,6 +468,7 @@
   },
   {
    "army" : 800,
+   "capital" : 66,
    "code" : "HAM",
    "hre" : "all",
    "name" : "Hamburg",
@@ -443,6 +480,7 @@
   },
   {
    "army" : 400,
+   "capital" : 67,
    "code" : "HAN",
    "hre" : "all",
    "name" : "Hanover",
@@ -454,6 +492,7 @@
   },
   {
    "army" : 400,
+   "capital" : 68,
    "code" : "WOL",
    "hre" : "all",
    "name" : "Wolfsburg",
@@ -465,6 +504,7 @@
   },
   {
    "army" : 400,
+   "capital" : 70,
    "code" : "JEN",
    "hre" : "all",
    "name" : "Jena",
@@ -476,6 +516,7 @@
   },
   {
    "army" : 2000,
+   "capital" : 59,
    "code" : "RUH",
    "hre" : "all",
    "name" : "Ruhr",
@@ -490,6 +531,7 @@
   },
   {
    "army" : 800,
+   "capital" : 50,
    "code" : "FRA",
    "hre" : "all",
    "name" : "Frankfurt",
@@ -502,6 +544,7 @@
   },
   {
    "army" : 1600,
+   "capital" : 74,
    "code" : "SAX",
    "hre" : "all",
    "name" : "Saxony",
@@ -515,6 +558,7 @@
   },
   {
    "army" : 400,
+   "capital" : 69,
    "code" : "MAG",
    "hre" : "all",
    "name" : "Magdeburg",
@@ -526,6 +570,7 @@
   },
   {
    "army" : 2000,
+   "capital" : 76,
    "code" : "BRB",
    "hre" : "all",
    "name" : "Brandenburg",

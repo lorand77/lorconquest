@@ -26,55 +26,55 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 ## Countries
 
-*Code and Country are data; the other columns are generated.*
+*Code, Country and Capital are data (Capital is a settlement ID; the script adds the name); the other columns are generated. A country that owns a city must have one as its capital (RULES.md §2).*
 
-| Code | Country | Settlements | Pop | Army | Ships | HRE |
-|---|---|---|---|---|---|---|
-| NOR | Norway | 1, 2 | 30K | 1,200 | 15 | — |
-| GOT | Gothenburg | 6 | 10K | 400 | 5 | — |
-| STO | Stockholm | 3 | 20K | 800 | 10 | — |
-| UDK | Upper Denmark | 4, 5 | 20K | 800 | 10 | — |
-| LDK | Lower Denmark | 8, 9 | 20K | 800 | 10 | — |
-| CPH | Copenhagen | 7 | 20K | 800 | 10 | — |
-| SCH | Schleswig | 10, 11, 12 | 40K | 1,600 | 20 | ✓ |
-| MEC | Mecklenburg | 13, 14 | 20K | 800 | 10 | ✓ |
-| GDA | Gdansk | 15, 79, 80, 81 | 50K | 2,000 | 25 | — |
-| PRU | Prussia | 16, 17, 20 | 40K | 1,600 | 20 | — |
-| LIT | Lithuania | 18, 19, 89 | 30K | 1,200 | 15 | — |
-| EPL | Eastern Poland | 21, 22 | 20K | 800 | — | — |
-| WAR | Warsaw | 84, 87, 88 | 40K | 1,600 | — | — |
-| RZE | Rzeszów | 23 | 10K | 400 | — | — |
-| LVI | Lviv | 24 | 10K | 400 | — | — |
-| POZ | Poznań | 82, 83 | 20K | 800 | — | — |
-| SIL | Silesia | 85, 86 | 20K | 800 | — | part |
-| HUN | Hungary | 26, 31 | 30K | 1,200 | — | — |
-| BOH | Bohemia | 28, 29, 30 | 40K | 1,600 | — | ✓ |
-| AUS | Austria | 32, 33, 35 | 40K | 1,600 | — | ✓ |
-| SAL | Salzburg | 34 | 10K | 400 | — | ✓ |
-| TYR | Tyrol | 39 | 10K | 400 | — | ✓ |
-| BAV | Bavaria | 36, 37, 38, 71 | 50K | 2,000 | — | ✓ |
-| ULM | Ulm | 48 | 10K | 400 | — | ✓ |
-| STU | Stuttgart | 49 | 20K | 800 | — | ✓ |
-| LGE | Lower Germany | 46, 47 | 20K | 800 | — | ✓ |
-| SWI | Switzerland | 40, 41 | 30K | 1,200 | — | ✓ |
-| ELS | Elsass-Lothringen | 42, 45 | 30K | 1,200 | — | ✓ |
-| NAN | Nancy | 43, 44 | 20K | 800 | — | part |
-| LUX | Luxemburg | 53 | 10K | 400 | — | ✓ |
-| TRI | Trier | 52, 60 | 20K | 800 | — | ✓ |
-| LIE | Liège | 55 | 10K | 400 | — | ✓ |
-| BEL | Belgium | 54, 56 | 20K | 800 | — | ✓ |
-| NED | Netherlands | 57, 58 | 30K | 1,200 | 15 | ✓ |
-| MST | Münster | 64 | 10K | 400 | — | ✓ |
-| BRE | Bremen | 65 | 10K | 400 | 5 | ✓ |
-| HAM | Hamburg | 66 | 20K | 800 | 10 | ✓ |
-| HAN | Hanover | 67 | 10K | 400 | — | ✓ |
-| WOL | Wolfsburg | 68 | 10K | 400 | — | ✓ |
-| JEN | Jena | 70 | 10K | 400 | — | ✓ |
-| RUH | Ruhr | 59, 61, 62, 63 | 50K | 2,000 | — | ✓ |
-| FRA | Frankfurt | 50, 51 | 20K | 800 | — | ✓ |
-| SAX | Saxony | 72, 73, 74 | 40K | 1,600 | — | ✓ |
-| MAG | Magdeburg | 69 | 10K | 400 | — | ✓ |
-| BRB | Brandenburg | 75, 76, 77, 78 | 50K | 2,000 | — | ✓ |
+| Code | Country | Capital | Settlements | Pop | Army | Ships | HRE |
+|---|---|---|---|---|---|---|---|
+| NOR | Norway | 2 Oslo | 1, 2 | 30K | 1,200 | 15 | — |
+| GOT | Gothenburg | 6 Gothenburg | 6 | 10K | 400 | 5 | — |
+| STO | Stockholm | 3 Stockholm | 3 | 20K | 800 | 10 | — |
+| UDK | Upper Denmark | 4 Thisted | 4, 5 | 20K | 800 | 10 | — |
+| LDK | Lower Denmark | 8 Herning | 8, 9 | 20K | 800 | 10 | — |
+| CPH | Copenhagen | 7 Copenhagen | 7 | 20K | 800 | 10 | — |
+| SCH | Schleswig | 11 Kiel | 10, 11, 12 | 40K | 1,600 | 20 | ✓ |
+| MEC | Mecklenburg | 13 Rostock | 13, 14 | 20K | 800 | 10 | ✓ |
+| GDA | Gdansk | 15 Gdynia | 15, 79, 80, 81 | 50K | 2,000 | 25 | — |
+| PRU | Prussia | 17 Königsberg | 16, 17, 20 | 40K | 1,600 | 20 | — |
+| LIT | Lithuania | 19 Klaipėda | 18, 19, 89 | 30K | 1,200 | 15 | — |
+| EPL | Eastern Poland | 22 Lublin | 21, 22 | 20K | 800 | — | — |
+| WAR | Warsaw | 88 Warsaw | 84, 87, 88 | 40K | 1,600 | — | — |
+| RZE | Rzeszów | 23 Rzeszów | 23 | 10K | 400 | — | — |
+| LVI | Lviv | 24 Lviv | 24 | 10K | 400 | — | — |
+| POZ | Poznań | 83 Poznań | 82, 83 | 20K | 800 | — | — |
+| SIL | Silesia | 85 Breslau | 85, 86 | 20K | 800 | — | part |
+| HUN | Hungary | 31 Pozsony | 26, 31 | 30K | 1,200 | — | — |
+| BOH | Bohemia | 30 Prague | 28, 29, 30 | 40K | 1,600 | — | ✓ |
+| AUS | Austria | 33 Vienna | 32, 33, 35 | 40K | 1,600 | — | ✓ |
+| SAL | Salzburg | 34 Salzburg | 34 | 10K | 400 | — | ✓ |
+| TYR | Tyrol | 39 Innsbruck | 39 | 10K | 400 | — | ✓ |
+| BAV | Bavaria | 37 Munich | 36, 37, 38, 71 | 50K | 2,000 | — | ✓ |
+| ULM | Ulm | 48 Ulm | 48 | 10K | 400 | — | ✓ |
+| STU | Stuttgart | 49 Stuttgart | 49 | 20K | 800 | — | ✓ |
+| LGE | Lower Germany | 46 Basel | 46, 47 | 20K | 800 | — | ✓ |
+| SWI | Switzerland | 41 Bern | 40, 41 | 30K | 1,200 | — | ✓ |
+| ELS | Elsass-Lothringen | 45 Strassburg | 42, 45 | 30K | 1,200 | — | ✓ |
+| NAN | Nancy | 44 Nancy | 43, 44 | 20K | 800 | — | part |
+| LUX | Luxemburg | 53 Luxemburg | 53 | 10K | 400 | — | ✓ |
+| TRI | Trier | 52 Trier | 52, 60 | 20K | 800 | — | ✓ |
+| LIE | Liège | 55 Liège | 55 | 10K | 400 | — | ✓ |
+| BEL | Belgium | 54 Brussels | 54, 56 | 20K | 800 | — | ✓ |
+| NED | Netherlands | 57 Rotterdam | 57, 58 | 30K | 1,200 | 15 | ✓ |
+| MST | Münster | 64 Münster | 64 | 10K | 400 | — | ✓ |
+| BRE | Bremen | 65 Bremen | 65 | 10K | 400 | 5 | ✓ |
+| HAM | Hamburg | 66 Hamburg | 66 | 20K | 800 | 10 | ✓ |
+| HAN | Hanover | 67 Hanover | 67 | 10K | 400 | — | ✓ |
+| WOL | Wolfsburg | 68 Wolfsburg | 68 | 10K | 400 | — | ✓ |
+| JEN | Jena | 70 Jena | 70 | 10K | 400 | — | ✓ |
+| RUH | Ruhr | 59 Düsseldorf | 59, 61, 62, 63 | 50K | 2,000 | — | ✓ |
+| FRA | Frankfurt | 50 Frankfurt | 50, 51 | 20K | 800 | — | ✓ |
+| SAX | Saxony | 74 Leipzig | 72, 73, 74 | 40K | 1,600 | — | ✓ |
+| MAG | Magdeburg | 69 Magdeburg | 69 | 10K | 400 | — | ✓ |
+| BRB | Brandenburg | 76 Berlin | 75, 76, 77, 78 | 50K | 2,000 | — | ✓ |
 
 ## Settlements
 
@@ -317,13 +317,20 @@ The Empire is every settlement marked **HRE** above (listed in the *Overview*).
 Demand to become leader of the Empire under your hegemony. You must control **at least 10
 settlements inside the HRE**, and may propose **only once, ever**.
 
+Each German state — every country that holds an HRE settlement — rolls on its own, like a
+protectorate demand (RULES.md §10):
 ```
-chance each German state joins = your soldiers ÷ their soldiers × 10 %
-0% if you do not have more soldiers than they do
+chance each German state joins = size × 10 % + opinion ÷ 10 %
+at most 75%
+0% if your pop is not larger than theirs, or if their opinion of you is below −50
 ```
 
 Every German state that joins becomes your **protectorate** (RULES.md §10) and pays you **10%** of
 its yearly money.
+
+**Every state that refuses turns hostile.** Its opinion of you drops by 30 for 10 years
+(RULES.md §10), and all the states that refused form a **defensive alliance** with each other — the
+League. Declare war on one member and the rest join against you.
 
 ## Victory
 

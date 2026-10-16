@@ -33,14 +33,14 @@ Every **town** (red circle) starts at **10,000 pop**; every **city** (red square
 money per year = bank interest
                + core pop × 2
                + non-core pop × 1
-               − soldiers × 1.5      (cannon crew and ship crew count as soldiers)
+               − soldiers × 5        (cannon crew and ship crew count as soldiers)
 ```
 
 **Pop growth:** +1% per year, **+0.5%** if on a river or coast.
 
 **Casualties cost population.** Every soldier who dies is removed from your population, not
-just from the army — whether killed in battle, by snipers, in a lost storm, or when a siege
-timer expires. Each lost cannon also kills its **10 crew**, and each ship sunk at sea kills its
+just from the army — whether killed in battle, by snipers, in a lost storm, or by disease in a
+siege (§6). Each lost cannon also kills its **10 crew**, and each ship sunk at sea kills its
 **50 crew**. Snipers count too — each sniper killed when its post is stormed or its pass is lost
 (§8) is one person lost. The loss is spread across all settlements you own **in proportion to their
 population**, so a 20K city loses twice as many people as a 10K town. Lost people come back
@@ -49,8 +49,8 @@ only through growth or **Buy people**.
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
 **Courthouse**. Special coring (see [Special coring](SCENARIO.md#special-coring)) waives both.
 
-**Bank:** deposits earn `0.25% per month` interest (≈3.04%/year compounded). Withdraw any time.
-Bank interest is **money only** — it never counts toward research (§4).
+**Bank:** deposits earn `0.125% per month` interest (≈1.5%/year compounded). Withdraw any time.
+Bank interest is **money only** — it never goes to research (§4).
 
 **Debt.** You may **not buy anything** that would take your treasury below zero. Debt therefore
 only arises when upkeep exceeds income. That is allowed — you repay it later. The **10-year
@@ -66,8 +66,9 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 | Ships | pop ÷ 2000 — **coastal countries only** |
 | Cores | **every starting settlement is core** |
 
-**Capital.** Each country names a capital at setup — a city if it owns one. If the capital is
-lost, name a new one from any city you own; if you own no city, any settlement.
+**Capital.** Each country starts with the capital its scenario names — a city if it owns one. If
+the capital is lost, name a new one from any city you own; if you own no city, any settlement.
+The capital trains soldiers twice as fast as other settlements (§8).
 
 ---
 
@@ -80,11 +81,11 @@ lost, name a new one from any city you own; if you own no city, any settlement.
 | **Workshop** | 0.075M | — | +3500 money from settlement |
 | **Market** | 0.075M | — | +10% money from settlement |
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
-| **1000 soldiers** | **free** | — | Men only — weapons bought separately |
-| **Swords** (1000) | 0.005M | unlocked | ×1 |
-| **Muskets** (1000) | 0.01M | x1.5MR | ×1.3 |
-| **Rifles** (1000) | 0.02M | x4MR | ×2 |
-| **Cannons** (100) | 0.02M | x1.5MR | ×13 each · needs 1000 men |
+| **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
+| **Swords** (1000) | 0.025M | unlocked | ×1 |
+| **Muskets** (1000) | 0.05M | x1.5MR | ×1.3 |
+| **Rifles** (1000) | 0.1M | x4MR | ×2 |
+| **Cannons** (100) | 0.1M | x1.5MR | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 men |
 | **Snipers** (20) | 0.01M | x1MR | Bought and stationed at a mountain pass you own (§8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 ships** | 0.1M | — | ×1 each |
@@ -95,7 +96,7 @@ lost, name a new one from any city you own; if you own no city, any settlement.
 **Every ship needs 50 crew at sea.** Ships in port need no crew. **Ships have no upkeep** of
 their own — only their crew at sea do.
 **Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2) and count
-toward your conscription cap (§9).
+toward your conscription cap (§9). **So do snipers** — each sniper is one soldier.
 
 ---
 
@@ -108,13 +109,30 @@ Swords (unlocked) ──▶ Muskets ──▶ Cannons ──┬──▶ Rifles
 Naval (unlocked) ──▶ Gunships ──▶ Steam Ships   [not supposed to get this]
 ```
 
+**Research slider.** You set the slider from **0% to 100%** in steps of 10%. Every country starts
+at **50%**, and you may move it at any time.
+
 ```
-R per year = max(0, net money per year − bank interest + x10K) × (1 + 0.05 × libraries)
-             libraries counts at most 10
+investable = max(0, money per year − bank interest)        (§2, after any tribute you pay, §10)
+R per year = (2 × slider × investable + x10K) × (1 + 0.05 × libraries)
+                                                             libraries counts at most 10
+treasury gets money per year + (1 − 2 × slider) × investable
 ```
 
-Money and R are **separate pools**. R builds up every year; a tech unlocks as soon as you
-have paid its full R cost. **Unspent R banks.**
+| Slider | Treasury gets | R per year (before Libraries) |
+|---|---|---|
+| 0% | money per year + investable (about **double**) | x10K only |
+| **50%** | **money per year** | **investable + x10K** |
+| 100% | money per year − investable (about **nothing**) | 2 × investable + x10K |
+
+At **50%** you get your full money *and* your full research. Each 10% above 50% moves a fifth of
+your investable money from the treasury to research; each 10% below moves it the other way.
+
+Money and R are **separate pools**. R builds up every year; a tech unlocks as soon as you have
+paid its full R cost. **Unspent R banks.** The flat x10K comes whatever the slider says, and bank
+interest always goes to the treasury. When your money per year is zero or less there is nothing
+to invest: the slider does nothing — the treasury takes the loss and you research only the flat
+x10K.
 
 **Libraries.** Each Library you own adds **+5%** to your R per year. Bonuses **add up** — they
 do not multiply — and the total is **capped at +50%** (10 Libraries). A settlement can hold only
@@ -126,13 +144,13 @@ one Library.
 
 ```
 power = (men + cannons × 13) × (d6 + 6)
-        ×2 for the riflemen · ×1.3 for the musketmen
+        ×2 for the riflemen · ×1.3 for the musketmen · ×1.2 for the cannons
 ```
 
 - Cannon crew are **not** counted in `men`.
 - **Men without weapons have power 0.**
 - Multipliers apply per weapon group — if 1,000 men have rifles and the rest swords, only those
-  1,000 get the ×2.
+  1,000 get the ×2. The cannons’ ×1.2 applies only to the `cannons × 13` part.
 
 **Damage** — applied as a percentage of men, cannons and equipment:
 ```
@@ -172,12 +190,14 @@ Every 100 cannons the attacker brings lowers the wall multiplier by **0.3**, flo
 
 ### Snipers
 Snipers are **bought and stationed only at a mountain pass your country owns** (§8). They cannot
-move or attack — they wait for an army to pass through.
+move or attack — they wait for an enemy army to pass through.
 ```
 damage = number of snipers × d6 × 10      max 25 snipers per battle
 Total damage may never exceed 50% of the passing army.
 ```
-Snipers take no losses when they fire, and survivors pass through freely.
+**Once per army per crossing.** Snipers fire once at each enemy army when it enters the pass —
+not again while it stays there, nor when it leaves. An army that leaves and later comes back is
+fired on again. Snipers take no losses when they fire, and survivors pass through freely.
 
 **Clearing snipers.** An army may `storm` the sniper post. Resolve it as a field battle in which
 each sniper counts as **50 power**:
@@ -200,13 +220,23 @@ everything.
 **Siege** —
 ```
 n = pop ÷ 20000 years      ×2 if walls
+                           × (1 − 0.2 per full 100 cannons the besieger brings), at least × 0.4
 ```
-**The siege length is fixed when the siege begins and cannot change while it runs.**
+**The siege length is fixed when the siege begins and cannot change while it runs** — cannons
+that arrive later do not shorten it.
+
+**Disease.** The besieging army loses **1% of its men every month** of the siege. They are lost
+from your population like any casualty (§2). A two-year siege (a walled city) costs about a
+fifth of the army; a six-month siege of an open town about 6%.
 
 **Sortie.** The garrison may order `sortie` at any time before the timer expires. It marches out
 and fights the besieging army in a normal land battle (§5). If the garrison wins, the besiegers
 retreat and the siege ends. If it loses, it falls back inside and the siege continues on the
-same timer. **When the timer expires the defender loses all its troops.**
+same timer.
+
+**Surrender.** When the timer expires the garrison surrenders and the settlement falls to the
+besieger. The garrison is **disbanded on the spot**: its men go back to its country's population
+(no one dies), but its weapons and cannons are lost — they do **not** go to the reserve.
 
 ---
 
@@ -221,8 +251,8 @@ your population (§2).
 **Fleet orders.** Sail a fleet into a sea zone (zones are listed in
 [SCENARIO.md](SCENARIO.md#sea-zones)), then give it one of two orders:
 
-- `blockade` — pick an enemy port in that sea zone. While the blockade holds, that settlement's
-  growth becomes **−0.5% total** — no other growth bonus applies.
+- `blockade` — pick an enemy port in that sea zone. While the blockade holds, **all money from
+  that settlement is halved** (§2, its Workshop and Market included). Its growth is not affected.
 - `patrol` — the fleet engages **any enemy ship in that sea zone**. Distance inside the zone does
   not matter; being in the same zone is enough.
 
@@ -232,12 +262,23 @@ your population (§2).
 
 *(The army speed and the route lengths are scenario-specific.)*
 
-**Raising forces.** New armies are made in any **core settlement**. You may add men and upgrade
-weapons in existing armies. You may also **remove men from an army** — their weapons go to a
-reserve for later use. Fleets work the same way — add ships to an existing task force or
-form a new one.
+**Raising forces.** New soldiers are trained in a **core settlement** and take time to appear:
 
-**Reinforcement:** instant inside core territory; otherwise it arrives on a timer based on distance.
+| Trained in | Time |
+|---|---|
+| Your capital (§2) | 3 months |
+| Any other core settlement | 6 months |
+
+While training, men already count toward your conscription cap (§9) and pay soldier upkeep (§2).
+When they are ready they appear in that settlement and join any army of yours there, or form a
+new one; to reach an army elsewhere they march like any other army. If the settlement is
+captured or stops being core before they are ready, the training is cancelled and the men go
+back to the population.
+
+You may upgrade weapons in an army instantly. You may also **remove men from an army** — they go
+back to the population and their weapons go to a reserve for later use; men raised again must
+be trained again. Fleets work the same way — add ships to an existing task force or form a new
+one.
 
 | Movement | |
 |---|---|
@@ -370,6 +411,13 @@ it has its own once-ever rule ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire))
 strength = your soldiers ÷ their soldiers
 ```
 
+**Size** compares population — every settlement each side owns, core and non-core, not counting
+subjects. Unlike soldiers, population cannot be raised in a hurry, so size is what subject
+demands and the HRE vote are rolled on:
+```
+size = your pop ÷ their pop
+```
+
 **Opinion.** Every computer country holds an opinion of every other country, from −100 to +100 —
 the sum of everything below that applies:
 
@@ -382,6 +430,7 @@ the sum of everything below that applies:
 | You are at war with one of its allies or subjects | −30 |
 | You fought a war against it in the last 20 years | −25 |
 | You broke an agreement with anyone in the last 10 years | −40 |
+| It refused your demand to become your subject, or to join your Empire, in the last 10 years | −30 |
 
 **Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:
 ```
@@ -409,13 +458,17 @@ need = 10 × (its strongest neighbour's soldiers ÷ its soldiers − 1), between
 
 A neighbour is any country whose settlements share a land route with its settlements.
 
-**Becoming your subject** — mostly strength, a little opinion. Rolled like the HRE vote
+**Becoming your subject** — mostly size, a little opinion. The HRE vote is rolled the same way
 ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)):
 ```
-protectorate chance = strength × 10 % + opinion ÷ 10 %
-vassal chance       = strength × 5 %  + opinion ÷ 10 %      also to turn your protectorate into a vassal
-0% if you do not have more soldiers than they do, or if their opinion of you is below −50
+protectorate chance = size × 10 % + opinion ÷ 10 %
+vassal chance       = size × 5 %  + opinion ÷ 10 %      also to turn your protectorate into a vassal
+at most 75%
+0% if your pop is not larger than theirs, or if their opinion of you is below −50
 ```
+**Refusing makes it hostile:** a country that refuses gets the −30 opinion above for 10 years,
+so asking again in 5 years is much less likely to work.
+
 You cannot demand this of a country you are at war with — make it your subject in the peace
 terms instead.
 
