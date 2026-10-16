@@ -310,9 +310,13 @@ at sea count toward this limit.
 Battles, sieges, storms, blockades and patrols (§5–§8) act on enemies only. Peasant rebels (§11)
 are always at war with you.
 
-**Neutral land is open.** Armies may march through and stop in the land of any country they are
-not at war with, but cannot capture, besiege or storm its settlements, and armies that are not at
-war ignore each other — no battle and no zone of control.
+**Neutral land is closed.** An army may only enter land that belongs to its own country, its
+subjects or overlord, its allies (either kind), a country that gives it **military access**, or an
+enemy. Every other country is **neutral**: its land cannot be entered or marched through, its
+mountain passes cannot be used, and a strait cannot be crossed into it. Armies that are not at war
+ignore each other — no battle and no zone of control. When peace is signed, or an alliance or
+military access ends, any army left in land now closed to it returns to the nearest settlement
+its country owns.
 
 When you declare war:
 - your target's **defensive allies** and **guarantors** join against you automatically;
@@ -325,6 +329,7 @@ When you declare war:
 | **Defensive alliance** | If either side is declared on, the other joins the war automatically | until broken |
 | **Military alliance** | Each side is called into every war the other fights, attacking or defending; it may refuse (above) | until broken |
 | **Guarantee** | One-way: if the guaranteed country is declared on, the guarantor joins automatically | until broken |
+| **Military access** | One-way: your armies may enter and march through its land and use its passes and straits. It never joins your wars and you may not capture anything there. It may cancel at any time — that is not breaking an agreement | until cancelled |
 | **Non-aggression pact** | Neither side may declare war on the other | 10 years |
 | **Truce** | Starts when a peace is signed; neither side may declare war on the other | 5 years |
 
@@ -398,6 +403,7 @@ need = 10 × (its strongest neighbour's soldiers ÷ its soldiers − 1), between
 |---|---|
 | You guarantee it | −20 |
 | Non-aggression pact | 0 |
+| It gives you military access | +10 |
 | Defensive alliance | +20 |
 | Military alliance | +40 |
 
@@ -408,8 +414,10 @@ A neighbour is any country whose settlements share a land route with its settlem
 ```
 protectorate chance = strength × 10 % + opinion ÷ 10 %
 vassal chance       = strength × 5 %  + opinion ÷ 10 %      also to turn your protectorate into a vassal
-0% if you do not have more soldiers than they do
+0% if you do not have more soldiers than they do, or if their opinion of you is below −50
 ```
+You cannot demand this of a country you are at war with — make it your subject in the peace
+terms instead.
 
 ---
 
