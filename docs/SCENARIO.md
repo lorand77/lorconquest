@@ -19,7 +19,7 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 **Army speed:** 240 map units per year — a route takes its length on the map ÷ this (RULES.md §8).
 
 <!-- generated:summary -->
-87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 188 land routes, 4 straits, 7 mountain passes
+87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 187 land routes, 4 straits, 7 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -129,7 +129,7 @@ Settlements 25 and 27 were deleted from the map.
 | 35 | Linz | AUS | town |  | HRE | 667 | 982 | 28, 33, 34, 36, 37, 38 |  |
 | 36 | Passau | BAV | town |  | HRE | 626 | 918 | 30, 35, 37, 71, 72 |  |
 | 37 | Munich | BAV | city |  | HRE | 557 | 920 | 35, 36, 38, 48, 71 |  |
-| 38 | Memmingen | BAV | town |  | HRE | 499 | 978 | 35, 37, 39, 47, 48, 49 |  |
+| 38 | Memmingen | BAV | town |  | HRE | 499 | 978 | 35, 37, 39, 47, 48 |  |
 | 39 | Innsbruck | TYR | town |  | HRE | 525 | 1085 | 34, 38, 40 |  |
 | 40 | Zürich | SWI | town |  | HRE | 349 | 1085 | 39, 41, 47 |  |
 | 41 | Bern | SWI | city |  | HRE | 290 | 1098 | 40, 42, 45, 46, 47 |  |
@@ -140,7 +140,7 @@ Settlements 25 and 27 were deleted from the map.
 | 46 | Basel | LGE | town |  | HRE | 258 | 965 | 41, 45, 47, 49 |  |
 | 47 | Konstanz | LGE | town |  | HRE | 363 | 973 | 38, 40, 41, 46, 49 |  |
 | 48 | Ulm | ULM | town |  | HRE | 446 | 914 | 37, 38, 49, 50, 71 |  |
-| 49 | Stuttgart | STU | city |  | HRE | 338 | 888 | 38, 46, 47, 48, 50, 52 |  |
+| 49 | Stuttgart | STU | city |  | HRE | 338 | 888 | 46, 47, 48, 50, 52 |  |
 | 50 | Frankfurt | FRA | town |  | HRE | 327 | 803 | 48, 49, 51, 70 |  |
 | 51 | Bonn | FRA | town |  | HRE | 292 | 752 | 50, 61, 62, 70 |  |
 | 52 | Trier | TRI | town |  | HRE | 200 | 859 | 44, 45, 49, 53, 60 |  |
@@ -232,7 +232,7 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **On a river (24):** 16, 30, 31, 32, 33, 35, 36, 42, 43, 45, 46, 47, 48, 51, 57, 58, 59, 61, 66, 69, 73, 81, 86, 88 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
 
-**Routes crossing a river (50):** 12-67, 12-69, 15-16, 16-81, 16-88, 20-88, 21-88, 22-87, 22-88, 23-86, 23-87, 28-30, 28-33, 29-30, 30-36, 30-73, 30-85, 32-33, 33-35, 34-35, 35-36, 35-37, 35-38, 36-71, 36-72, 37-71, 38-49, 40-47, 41-46, 41-47, 45-46, 48-49, 48-50, 48-71, 49-52, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 65-66, 66-67, 69-75, 72-73, 73-74, 74-75, 74-76, 74-77, 74-83 — +2 months to march (RULES.md §8).
+**Routes crossing a river (49):** 12-67, 12-69, 15-16, 16-81, 16-88, 20-88, 21-88, 22-87, 22-88, 23-86, 23-87, 28-30, 28-33, 29-30, 30-36, 30-73, 30-85, 32-33, 33-35, 34-35, 35-36, 35-37, 35-38, 36-71, 36-72, 37-71, 40-47, 41-46, 41-47, 45-46, 48-49, 48-50, 48-71, 49-52, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 65-66, 66-67, 69-75, 72-73, 73-74, 74-75, 74-76, 74-77, 74-83 — +2 months to march (RULES.md §8).
 
 **Marching** at 240 map units a year, +2 months per river crossing, +3 per leg to or from a pass: a route takes 0.15–1.41 years (median 0.56); through a pass 0.98–1.41.
 
@@ -389,6 +389,7 @@ propose. Its natural path runs through Poland instead: Warsaw, Poznań, Eastern 
   28-31 (through pass P6), 35-39, 48-70, 50-52, 50-60, 51-59, 59-63. (23-87 was removed too, then
   put back.) 8-11 and 45-49 were removed because they ran right past 10 Flensburg and 46 Basel,
   which connect to both ends anyway.
+- 38-49 (Memmingen–Stuttgart) was removed after the rivers were redrawn.
 - 56 Antwerp is inland, so Belgium has no ships.
 
 ### Notes to check

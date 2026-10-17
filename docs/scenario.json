@@ -2648,28 +2648,6 @@
    "years" : 0.35
   },
   {
-   "crossesRiver" : true,
-   "from" : 38,
-   "id" : "route-38-49",
-   "legs" : null,
-   "length" : 184.45,
-   "pass" : null,
-   "points" : [
-    [
-     499,
-     978
-    ],
-    [
-     338,
-     888
-    ]
-   ],
-   "seaZone" : null,
-   "to" : 49,
-   "type" : "land",
-   "years" : 0.94
-  },
-  {
    "crossesRiver" : false,
    "from" : 39,
    "id" : "route-39-40",
@@ -5972,8 +5950,7 @@
     37,
     39,
     47,
-    48,
-    49
+    48
    ],
    "country" : "BAV",
    "hre" : true,
@@ -6202,7 +6179,6 @@
   },
   {
    "borders" : [
-    38,
     46,
     47,
     48,
