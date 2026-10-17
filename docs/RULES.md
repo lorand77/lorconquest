@@ -46,7 +46,7 @@ bank interest or tribute (§10).
 anyone else in their settlement, count toward growth, and pay upkeep on top. Only death (below)
 takes them out of the population.
 
-**Pop growth:** +1% per year, **+0.5%** if on a river or coast.
+**Pop growth:** +0.5% per year, **+0.25%** more if on a river or coast.
 
 **Casualties cost population.** Every soldier who dies is removed from your population, not
 just from the army — whether killed in battle, by snipers, in a lost storm, or by disease in a
@@ -301,8 +301,8 @@ one.
 | Movement | |
 |---|---|
 | Army | route length ÷ army speed |
-| River crossing | +2 months |
-| Leg to or from a mountain pass | +3 months |
+| River crossing | +1 month |
+| Leg to or from a mountain pass | +2 months |
 | Fleet, to a neighbouring sea zone | 2 months |
 
 **Marching time is proportional to distance.** Every route has a length — the length of its line on
@@ -319,8 +319,8 @@ a node on the map, like a settlement with no people in it, and the route runs se
 settlement.
 
 - **Armies can be sent to a pass** and stay there. The route is split at the pass, and each leg
-  (settlement to pass, pass to settlement) takes time by its own length **plus 3 months** for the
-  climb, so going through a pass costs 6 months on top of the distance. An army that stops at the
+  (settlement to pass, pass to settlement) takes time by its own length **plus 2 months** for the
+  climb, so going through a pass costs 4 months on top of the distance. An army that stops at the
   pass has paid half, and pays the rest when it moves on.
 - **An army defending a pass gets ×2** defence (§5).
 - **Snipers** are bought and stationed only at passes (§5).
@@ -340,8 +340,8 @@ cancelling the rest of its path.
 immediately, as in §5 *After the battle*.
 
 **Straits (dashed lines).** An army may cross if you control **≥10 ships** in that sea zone (see
-[Sea zones](SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing consumes the entire
-year. If an enemy fleet is present, fight a naval battle first — lose and the crossing fails.
+[Sea zones](SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes
+**3 months**. If an enemy fleet is present, fight a naval battle first — lose and the crossing fails.
 
 ---
 

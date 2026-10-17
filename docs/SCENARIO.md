@@ -16,7 +16,7 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 **x = 1** (see the scenario scaling note in RULES.md)
 
-**Army speed:** 240 map units per year — a route takes its length on the map ÷ this (RULES.md §8).
+**Army speed:** 480 map units per year — a route takes its length on the map ÷ this (RULES.md §8).
 
 <!-- generated:summary -->
 87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 187 land routes, 4 straits, 7 mountain passes
@@ -231,11 +231,11 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **Ports (21):** 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 57, 65, 66, 89
 
-**On a river (24):** 16, 30, 31, 32, 33, 35, 36, 42, 43, 45, 46, 47, 48, 51, 57, 58, 59, 61, 66, 69, 73, 81, 86, 88 — within 24px of a river on the map; grow +0.5% (RULES.md §2).
+**On a river (24):** 16, 30, 31, 32, 33, 35, 36, 42, 43, 45, 46, 47, 48, 51, 57, 58, 59, 61, 66, 69, 73, 81, 86, 88 — within 24px of a river on the map; grow +0.25% more (RULES.md §2).
 
 **Routes crossing a river (49):** 12-67, 12-69, 15-16, 16-81, 16-88, 20-88, 21-88, 22-87, 22-88, 23-86, 23-87, 28-30, 28-33, 29-30, 30-36, 30-73, 30-85, 32-33, 33-35, 34-35, 35-36, 35-37, 35-38, 36-71, 36-72, 37-71, 40-47, 41-46, 41-47, 45-46, 48-49, 48-50, 48-71, 49-52, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 65-66, 66-67, 69-75, 72-73, 73-74, 74-75, 74-76, 74-77, 74-83 — +2 months to march (RULES.md §8).
 
-**Marching** at 240 map units a year, +2 months per river crossing, +3 per leg to or from a pass: a route takes 0.15–1.41 years (median 0.56); through a pass 0.98–1.41.
+**Marching** at 480 map units a year, +1 month per river crossing, +2 per leg to or from a pass: a route takes 0.08–0.79 years (median 0.28); through a pass 0.57–0.79.
 
 | Pop | Countries |
 |---|---|

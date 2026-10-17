@@ -1,5 +1,5 @@
 {
- "armySpeed" : 240,
+ "armySpeed" : 480,
  "countries" : [
   {
    "army" : 1200,
@@ -687,7 +687,7 @@
    "seaZone" : null,
    "to" : 2,
    "type" : "land",
-   "years" : 0.98
+   "years" : 0.49
   },
   {
    "crossesRiver" : false,
@@ -757,7 +757,7 @@
    "seaZone" : null,
    "to" : 6,
    "type" : "land",
-   "years" : 0.82
+   "years" : 0.41
   },
   {
    "crossesRiver" : false,
@@ -779,7 +779,7 @@
    "seaZone" : null,
    "to" : 6,
    "type" : "land",
-   "years" : 1.03
+   "years" : 0.51
   },
   {
    "crossesRiver" : false,
@@ -801,7 +801,7 @@
    "seaZone" : null,
    "to" : 5,
    "type" : "land",
-   "years" : 0.49
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -823,7 +823,7 @@
    "seaZone" : null,
    "to" : 8,
    "type" : "land",
-   "years" : 0.3
+   "years" : 0.15
   },
   {
    "crossesRiver" : false,
@@ -845,7 +845,7 @@
    "seaZone" : null,
    "to" : 8,
    "type" : "land",
-   "years" : 0.45
+   "years" : 0.22
   },
   {
    "crossesRiver" : false,
@@ -911,7 +911,7 @@
    "seaZone" : null,
    "to" : 9,
    "type" : "land",
-   "years" : 0.31
+   "years" : 0.15
   },
   {
    "crossesRiver" : false,
@@ -933,7 +933,7 @@
    "seaZone" : null,
    "to" : 10,
    "type" : "land",
-   "years" : 0.32
+   "years" : 0.16
   },
   {
    "crossesRiver" : false,
@@ -955,7 +955,7 @@
    "seaZone" : null,
    "to" : 11,
    "type" : "land",
-   "years" : 0.61
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
@@ -981,7 +981,7 @@
    "seaZone" : null,
    "to" : 66,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.29
   },
   {
    "crossesRiver" : false,
@@ -1003,7 +1003,7 @@
    "seaZone" : null,
    "to" : 11,
    "type" : "land",
-   "years" : 0.3
+   "years" : 0.15
   },
   {
    "crossesRiver" : false,
@@ -1025,7 +1025,7 @@
    "seaZone" : null,
    "to" : 12,
    "type" : "land",
-   "years" : 0.32
+   "years" : 0.16
   },
   {
    "crossesRiver" : false,
@@ -1051,7 +1051,7 @@
    "seaZone" : null,
    "to" : 13,
    "type" : "land",
-   "years" : 0.56
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
@@ -1073,7 +1073,7 @@
    "seaZone" : null,
    "to" : 66,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.29
   },
   {
    "crossesRiver" : false,
@@ -1095,7 +1095,7 @@
    "seaZone" : null,
    "to" : 13,
    "type" : "land",
-   "years" : 0.66
+   "years" : 0.33
   },
   {
    "crossesRiver" : false,
@@ -1117,7 +1117,7 @@
    "seaZone" : null,
    "to" : 66,
    "type" : "land",
-   "years" : 0.4
+   "years" : 0.2
   },
   {
    "crossesRiver" : true,
@@ -1139,7 +1139,7 @@
    "seaZone" : null,
    "to" : 67,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.3
   },
   {
    "crossesRiver" : true,
@@ -1161,7 +1161,7 @@
    "seaZone" : null,
    "to" : 69,
    "type" : "land",
-   "years" : 0.74
+   "years" : 0.37
   },
   {
    "crossesRiver" : false,
@@ -1183,7 +1183,7 @@
    "seaZone" : null,
    "to" : 75,
    "type" : "land",
-   "years" : 0.65
+   "years" : 0.33
   },
   {
    "crossesRiver" : false,
@@ -1205,7 +1205,7 @@
    "seaZone" : null,
    "to" : 14,
    "type" : "land",
-   "years" : 0.41
+   "years" : 0.2
   },
   {
    "crossesRiver" : false,
@@ -1227,7 +1227,7 @@
    "seaZone" : null,
    "to" : 75,
    "type" : "land",
-   "years" : 0.22
+   "years" : 0.11
   },
   {
    "crossesRiver" : false,
@@ -1249,7 +1249,7 @@
    "seaZone" : null,
    "to" : 76,
    "type" : "land",
-   "years" : 0.42
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
@@ -1271,7 +1271,7 @@
    "seaZone" : null,
    "to" : 76,
    "type" : "land",
-   "years" : 0.38
+   "years" : 0.19
   },
   {
    "crossesRiver" : false,
@@ -1293,7 +1293,7 @@
    "seaZone" : null,
    "to" : 78,
    "type" : "land",
-   "years" : 0.41
+   "years" : 0.2
   },
   {
    "crossesRiver" : false,
@@ -1315,7 +1315,7 @@
    "seaZone" : null,
    "to" : 79,
    "type" : "land",
-   "years" : 0.85
+   "years" : 0.43
   },
   {
    "crossesRiver" : true,
@@ -1337,7 +1337,7 @@
    "seaZone" : null,
    "to" : 16,
    "type" : "land",
-   "years" : 0.7
+   "years" : 0.35
   },
   {
    "crossesRiver" : false,
@@ -1359,7 +1359,7 @@
    "seaZone" : null,
    "to" : 79,
    "type" : "land",
-   "years" : 0.31
+   "years" : 0.16
   },
   {
    "crossesRiver" : false,
@@ -1381,7 +1381,7 @@
    "seaZone" : null,
    "to" : 80,
    "type" : "land",
-   "years" : 0.41
+   "years" : 0.2
   },
   {
    "crossesRiver" : false,
@@ -1403,7 +1403,7 @@
    "seaZone" : null,
    "to" : 81,
    "type" : "land",
-   "years" : 0.52
+   "years" : 0.26
   },
   {
    "crossesRiver" : false,
@@ -1425,7 +1425,7 @@
    "seaZone" : null,
    "to" : 17,
    "type" : "land",
-   "years" : 0.28
+   "years" : 0.14
   },
   {
    "crossesRiver" : false,
@@ -1447,7 +1447,7 @@
    "seaZone" : null,
    "to" : 20,
    "type" : "land",
-   "years" : 0.47
+   "years" : 0.24
   },
   {
    "crossesRiver" : true,
@@ -1469,7 +1469,7 @@
    "seaZone" : null,
    "to" : 81,
    "type" : "land",
-   "years" : 0.63
+   "years" : 0.31
   },
   {
    "crossesRiver" : true,
@@ -1491,7 +1491,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 1.03
+   "years" : 0.51
   },
   {
    "crossesRiver" : false,
@@ -1513,7 +1513,7 @@
    "seaZone" : null,
    "to" : 18,
    "type" : "land",
-   "years" : 0.38
+   "years" : 0.19
   },
   {
    "crossesRiver" : false,
@@ -1535,7 +1535,7 @@
    "seaZone" : null,
    "to" : 20,
    "type" : "land",
-   "years" : 0.33
+   "years" : 0.17
   },
   {
    "crossesRiver" : false,
@@ -1557,7 +1557,7 @@
    "seaZone" : null,
    "to" : 19,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.29
   },
   {
    "crossesRiver" : false,
@@ -1579,7 +1579,7 @@
    "seaZone" : null,
    "to" : 89,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -1601,7 +1601,7 @@
    "seaZone" : null,
    "to" : 21,
    "type" : "land",
-   "years" : 0.65
+   "years" : 0.32
   },
   {
    "crossesRiver" : true,
@@ -1623,7 +1623,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.85
+   "years" : 0.42
   },
   {
    "crossesRiver" : false,
@@ -1645,7 +1645,7 @@
    "seaZone" : null,
    "to" : 22,
    "type" : "land",
-   "years" : 0.39
+   "years" : 0.2
   },
   {
    "crossesRiver" : false,
@@ -1667,7 +1667,7 @@
    "seaZone" : null,
    "to" : 24,
    "type" : "land",
-   "years" : 0.95
+   "years" : 0.47
   },
   {
    "crossesRiver" : true,
@@ -1689,7 +1689,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.85
+   "years" : 0.43
   },
   {
    "crossesRiver" : false,
@@ -1711,7 +1711,7 @@
    "seaZone" : null,
    "to" : 23,
    "type" : "land",
-   "years" : 0.41
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
@@ -1737,7 +1737,7 @@
    "seaZone" : null,
    "to" : 24,
    "type" : "land",
-   "years" : 0.75
+   "years" : 0.38
   },
   {
    "crossesRiver" : true,
@@ -1759,7 +1759,7 @@
    "seaZone" : null,
    "to" : 87,
    "type" : "land",
-   "years" : 0.67
+   "years" : 0.33
   },
   {
    "crossesRiver" : true,
@@ -1781,7 +1781,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.69
+   "years" : 0.34
   },
   {
    "crossesRiver" : false,
@@ -1803,7 +1803,7 @@
    "seaZone" : null,
    "to" : 24,
    "type" : "land",
-   "years" : 0.54
+   "years" : 0.27
   },
   {
    "crossesRiver" : true,
@@ -1825,7 +1825,7 @@
    "seaZone" : null,
    "to" : 86,
    "type" : "land",
-   "years" : 1.01
+   "years" : 0.5
   },
   {
    "crossesRiver" : true,
@@ -1851,7 +1851,7 @@
    "seaZone" : null,
    "to" : 87,
    "type" : "land",
-   "years" : 0.7
+   "years" : 0.35
   },
   {
    "crossesRiver" : false,
@@ -1873,7 +1873,7 @@
    "seaZone" : null,
    "to" : 29,
    "type" : "land",
-   "years" : 0.99
+   "years" : 0.5
   },
   {
    "crossesRiver" : false,
@@ -1895,7 +1895,7 @@
    "seaZone" : null,
    "to" : 31,
    "type" : "land",
-   "years" : 0.91
+   "years" : 0.46
   },
   {
    "crossesRiver" : false,
@@ -1917,7 +1917,7 @@
    "seaZone" : null,
    "to" : 29,
    "type" : "land",
-   "years" : 0.33
+   "years" : 0.17
   },
   {
    "crossesRiver" : true,
@@ -1939,7 +1939,7 @@
    "seaZone" : null,
    "to" : 30,
    "type" : "land",
-   "years" : 0.55
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
@@ -1948,11 +1948,11 @@
    "legs" : [
     {
      "length" : 43.57,
-     "years" : 0.43
+     "years" : 0.26
     },
     {
      "length" : 85.09,
-     "years" : 0.6
+     "years" : 0.34
     }
    ],
    "length" : 128.66,
@@ -1974,7 +1974,7 @@
    "seaZone" : null,
    "to" : 32,
    "type" : "land",
-   "years" : 1.04
+   "years" : 0.6
   },
   {
    "crossesRiver" : true,
@@ -1983,11 +1983,11 @@
    "legs" : [
     {
      "length" : 43.57,
-     "years" : 0.43
+     "years" : 0.26
     },
     {
      "length" : 76.49,
-     "years" : 0.74
+     "years" : 0.41
     }
    ],
    "length" : 120.05,
@@ -2009,7 +2009,7 @@
    "seaZone" : null,
    "to" : 33,
    "type" : "land",
-   "years" : 1.17
+   "years" : 0.67
   },
   {
    "crossesRiver" : false,
@@ -2018,11 +2018,11 @@
    "legs" : [
     {
      "length" : 43.57,
-     "years" : 0.43
+     "years" : 0.26
     },
     {
      "length" : 138.01,
-     "years" : 0.83
+     "years" : 0.45
     }
    ],
    "length" : 181.58,
@@ -2044,7 +2044,7 @@
    "seaZone" : null,
    "to" : 35,
    "type" : "land",
-   "years" : 1.26
+   "years" : 0.71
   },
   {
    "crossesRiver" : true,
@@ -2066,7 +2066,7 @@
    "seaZone" : null,
    "to" : 30,
    "type" : "land",
-   "years" : 0.62
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
@@ -2075,11 +2075,11 @@
    "legs" : [
     {
      "length" : 42.8,
-     "years" : 0.43
+     "years" : 0.26
     },
     {
      "length" : 72.62,
-     "years" : 0.55
+     "years" : 0.32
     }
    ],
    "length" : 115.42,
@@ -2101,7 +2101,7 @@
    "seaZone" : null,
    "to" : 86,
    "type" : "land",
-   "years" : 0.98
+   "years" : 0.57
   },
   {
    "crossesRiver" : true,
@@ -2110,11 +2110,11 @@
    "legs" : [
     {
      "length" : 67.74,
-     "years" : 0.53
+     "years" : 0.31
     },
     {
      "length" : 103,
-     "years" : 0.85
+     "years" : 0.46
     }
    ],
    "length" : 170.75,
@@ -2136,7 +2136,7 @@
    "seaZone" : null,
    "to" : 36,
    "type" : "land",
-   "years" : 1.38
+   "years" : 0.77
   },
   {
    "crossesRiver" : false,
@@ -2145,11 +2145,11 @@
    "legs" : [
     {
      "length" : 67.74,
-     "years" : 0.53
+     "years" : 0.31
     },
     {
      "length" : 66.57,
-     "years" : 0.53
+     "years" : 0.31
     }
    ],
    "length" : 134.32,
@@ -2171,7 +2171,7 @@
    "seaZone" : null,
    "to" : 72,
    "type" : "land",
-   "years" : 1.06
+   "years" : 0.61
   },
   {
    "crossesRiver" : true,
@@ -2180,11 +2180,11 @@
    "legs" : [
     {
      "length" : 71.87,
-     "years" : 0.72
+     "years" : 0.4
     },
     {
      "length" : 107.21,
-     "years" : 0.7
+     "years" : 0.39
     }
    ],
    "length" : 179.08,
@@ -2210,7 +2210,7 @@
    "seaZone" : null,
    "to" : 73,
    "type" : "land",
-   "years" : 1.41
+   "years" : 0.79
   },
   {
    "crossesRiver" : true,
@@ -2219,11 +2219,11 @@
    "legs" : [
     {
      "length" : 71.87,
-     "years" : 0.72
+     "years" : 0.4
     },
     {
      "length" : 51.2,
-     "years" : 0.46
+     "years" : 0.27
     }
    ],
    "length" : 123.06,
@@ -2245,7 +2245,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 1.18
+   "years" : 0.67
   },
   {
    "crossesRiver" : false,
@@ -2267,7 +2267,7 @@
    "seaZone" : null,
    "to" : 32,
    "type" : "land",
-   "years" : 0.25
+   "years" : 0.12
   },
   {
    "crossesRiver" : true,
@@ -2289,7 +2289,7 @@
    "seaZone" : null,
    "to" : 33,
    "type" : "land",
-   "years" : 0.42
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
@@ -2311,7 +2311,7 @@
    "seaZone" : null,
    "to" : 34,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.25
   },
   {
    "crossesRiver" : true,
@@ -2333,7 +2333,7 @@
    "seaZone" : null,
    "to" : 35,
    "type" : "land",
-   "years" : 0.6
+   "years" : 0.3
   },
   {
    "crossesRiver" : true,
@@ -2355,7 +2355,7 @@
    "seaZone" : null,
    "to" : 35,
    "type" : "land",
-   "years" : 0.41
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
@@ -2377,7 +2377,7 @@
    "seaZone" : null,
    "to" : 39,
    "type" : "land",
-   "years" : 0.51
+   "years" : 0.26
   },
   {
    "crossesRiver" : true,
@@ -2399,7 +2399,7 @@
    "seaZone" : null,
    "to" : 36,
    "type" : "land",
-   "years" : 0.48
+   "years" : 0.24
   },
   {
    "crossesRiver" : true,
@@ -2421,7 +2421,7 @@
    "seaZone" : null,
    "to" : 37,
    "type" : "land",
-   "years" : 0.69
+   "years" : 0.35
   },
   {
    "crossesRiver" : true,
@@ -2443,7 +2443,7 @@
    "seaZone" : null,
    "to" : 38,
    "type" : "land",
-   "years" : 0.87
+   "years" : 0.43
   },
   {
    "crossesRiver" : false,
@@ -2465,7 +2465,7 @@
    "seaZone" : null,
    "to" : 37,
    "type" : "land",
-   "years" : 0.29
+   "years" : 0.14
   },
   {
    "crossesRiver" : true,
@@ -2487,7 +2487,7 @@
    "seaZone" : null,
    "to" : 71,
    "type" : "land",
-   "years" : 0.81
+   "years" : 0.4
   },
   {
    "crossesRiver" : true,
@@ -2509,7 +2509,7 @@
    "seaZone" : null,
    "to" : 72,
    "type" : "land",
-   "years" : 0.69
+   "years" : 0.35
   },
   {
    "crossesRiver" : false,
@@ -2531,7 +2531,7 @@
    "seaZone" : null,
    "to" : 38,
    "type" : "land",
-   "years" : 0.34
+   "years" : 0.17
   },
   {
    "crossesRiver" : false,
@@ -2553,7 +2553,7 @@
    "seaZone" : null,
    "to" : 48,
    "type" : "land",
-   "years" : 0.46
+   "years" : 0.23
   },
   {
    "crossesRiver" : true,
@@ -2575,7 +2575,7 @@
    "seaZone" : null,
    "to" : 71,
    "type" : "land",
-   "years" : 0.77
+   "years" : 0.39
   },
   {
    "crossesRiver" : false,
@@ -2601,7 +2601,7 @@
    "seaZone" : null,
    "to" : 39,
    "type" : "land",
-   "years" : 0.51
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -2623,7 +2623,7 @@
    "seaZone" : null,
    "to" : 47,
    "type" : "land",
-   "years" : 0.57
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
@@ -2645,7 +2645,7 @@
    "seaZone" : null,
    "to" : 48,
    "type" : "land",
-   "years" : 0.35
+   "years" : 0.17
   },
   {
    "crossesRiver" : false,
@@ -2654,11 +2654,11 @@
    "legs" : [
     {
      "length" : 116,
-     "years" : 0.73
+     "years" : 0.41
     },
     {
      "length" : 60,
-     "years" : 0.5
+     "years" : 0.29
     }
    ],
    "length" : 176,
@@ -2680,7 +2680,7 @@
    "seaZone" : null,
    "to" : 40,
    "type" : "land",
-   "years" : 1.23
+   "years" : 0.7
   },
   {
    "crossesRiver" : false,
@@ -2702,7 +2702,7 @@
    "seaZone" : null,
    "to" : 41,
    "type" : "land",
-   "years" : 0.25
+   "years" : 0.13
   },
   {
    "crossesRiver" : true,
@@ -2711,11 +2711,11 @@
    "legs" : [
     {
      "length" : 39.56,
-     "years" : 0.41
+     "years" : 0.25
     },
     {
      "length" : 80.06,
-     "years" : 0.75
+     "years" : 0.42
     }
    ],
    "length" : 119.62,
@@ -2737,7 +2737,7 @@
    "seaZone" : null,
    "to" : 47,
    "type" : "land",
-   "years" : 1.17
+   "years" : 0.67
   },
   {
    "crossesRiver" : false,
@@ -2746,11 +2746,11 @@
    "legs" : [
     {
      "length" : 41.04,
-     "years" : 0.42
+     "years" : 0.25
     },
     {
      "length" : 103.32,
-     "years" : 0.68
+     "years" : 0.38
     }
    ],
    "length" : 144.35,
@@ -2772,7 +2772,7 @@
    "seaZone" : null,
    "to" : 42,
    "type" : "land",
-   "years" : 1.1
+   "years" : 0.63
   },
   {
    "crossesRiver" : false,
@@ -2781,11 +2781,11 @@
    "legs" : [
     {
      "length" : 41.04,
-     "years" : 0.42
+     "years" : 0.25
     },
     {
      "length" : 120.24,
-     "years" : 0.75
+     "years" : 0.42
     }
    ],
    "length" : 161.28,
@@ -2807,7 +2807,7 @@
    "seaZone" : null,
    "to" : 45,
    "type" : "land",
-   "years" : 1.17
+   "years" : 0.67
   },
   {
    "crossesRiver" : true,
@@ -2816,11 +2816,11 @@
    "legs" : [
     {
      "length" : 41.04,
-     "years" : 0.42
+     "years" : 0.25
     },
     {
      "length" : 103.08,
-     "years" : 0.85
+     "years" : 0.46
     }
    ],
    "length" : 144.11,
@@ -2842,7 +2842,7 @@
    "seaZone" : null,
    "to" : 46,
    "type" : "land",
-   "years" : 1.27
+   "years" : 0.72
   },
   {
    "crossesRiver" : true,
@@ -2851,11 +2851,11 @@
    "legs" : [
     {
      "length" : 67.27,
-     "years" : 0.53
+     "years" : 0.31
     },
     {
      "length" : 80.06,
-     "years" : 0.75
+     "years" : 0.42
     }
    ],
    "length" : 147.32,
@@ -2877,7 +2877,7 @@
    "seaZone" : null,
    "to" : 47,
    "type" : "land",
-   "years" : 1.28
+   "years" : 0.72
   },
   {
    "crossesRiver" : false,
@@ -2899,7 +2899,7 @@
    "seaZone" : null,
    "to" : 43,
    "type" : "land",
-   "years" : 0.23
+   "years" : 0.12
   },
   {
    "crossesRiver" : false,
@@ -2921,7 +2921,7 @@
    "seaZone" : null,
    "to" : 44,
    "type" : "land",
-   "years" : 0.42
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
@@ -2943,7 +2943,7 @@
    "seaZone" : null,
    "to" : 45,
    "type" : "land",
-   "years" : 0.55
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
@@ -2965,7 +2965,7 @@
    "seaZone" : null,
    "to" : 44,
    "type" : "land",
-   "years" : 0.28
+   "years" : 0.14
   },
   {
    "crossesRiver" : false,
@@ -2987,7 +2987,7 @@
    "seaZone" : null,
    "to" : 45,
    "type" : "land",
-   "years" : 0.28
+   "years" : 0.14
   },
   {
    "crossesRiver" : false,
@@ -3013,7 +3013,7 @@
    "seaZone" : null,
    "to" : 52,
    "type" : "land",
-   "years" : 0.8
+   "years" : 0.4
   },
   {
    "crossesRiver" : false,
@@ -3035,7 +3035,7 @@
    "seaZone" : null,
    "to" : 53,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.29
   },
   {
    "crossesRiver" : true,
@@ -3057,7 +3057,7 @@
    "seaZone" : null,
    "to" : 46,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -3079,7 +3079,7 @@
    "seaZone" : null,
    "to" : 52,
    "type" : "land",
-   "years" : 0.52
+   "years" : 0.26
   },
   {
    "crossesRiver" : false,
@@ -3101,7 +3101,7 @@
    "seaZone" : null,
    "to" : 47,
    "type" : "land",
-   "years" : 0.44
+   "years" : 0.22
   },
   {
    "crossesRiver" : false,
@@ -3123,7 +3123,7 @@
    "seaZone" : null,
    "to" : 49,
    "type" : "land",
-   "years" : 0.46
+   "years" : 0.23
   },
   {
    "crossesRiver" : false,
@@ -3145,7 +3145,7 @@
    "seaZone" : null,
    "to" : 49,
    "type" : "land",
-   "years" : 0.37
+   "years" : 0.18
   },
   {
    "crossesRiver" : true,
@@ -3167,7 +3167,7 @@
    "seaZone" : null,
    "to" : 49,
    "type" : "land",
-   "years" : 0.63
+   "years" : 0.31
   },
   {
    "crossesRiver" : true,
@@ -3189,7 +3189,7 @@
    "seaZone" : null,
    "to" : 50,
    "type" : "land",
-   "years" : 0.84
+   "years" : 0.42
   },
   {
    "crossesRiver" : true,
@@ -3211,7 +3211,7 @@
    "seaZone" : null,
    "to" : 71,
    "type" : "land",
-   "years" : 0.94
+   "years" : 0.47
   },
   {
    "crossesRiver" : false,
@@ -3233,7 +3233,7 @@
    "seaZone" : null,
    "to" : 50,
    "type" : "land",
-   "years" : 0.36
+   "years" : 0.18
   },
   {
    "crossesRiver" : true,
@@ -3255,7 +3255,7 @@
    "seaZone" : null,
    "to" : 52,
    "type" : "land",
-   "years" : 0.75
+   "years" : 0.38
   },
   {
    "crossesRiver" : false,
@@ -3277,7 +3277,7 @@
    "seaZone" : null,
    "to" : 51,
    "type" : "land",
-   "years" : 0.26
+   "years" : 0.13
   },
   {
    "crossesRiver" : false,
@@ -3299,7 +3299,7 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.73
+   "years" : 0.37
   },
   {
    "crossesRiver" : false,
@@ -3321,7 +3321,7 @@
    "seaZone" : null,
    "to" : 61,
    "type" : "land",
-   "years" : 0.22
+   "years" : 0.11
   },
   {
    "crossesRiver" : false,
@@ -3343,7 +3343,7 @@
    "seaZone" : null,
    "to" : 62,
    "type" : "land",
-   "years" : 0.48
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -3365,7 +3365,7 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.73
+   "years" : 0.36
   },
   {
    "crossesRiver" : false,
@@ -3387,7 +3387,7 @@
    "seaZone" : null,
    "to" : 53,
    "type" : "land",
-   "years" : 0.42
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
@@ -3409,7 +3409,7 @@
    "seaZone" : null,
    "to" : 60,
    "type" : "land",
-   "years" : 0.3
+   "years" : 0.15
   },
   {
    "crossesRiver" : false,
@@ -3431,7 +3431,7 @@
    "seaZone" : null,
    "to" : 54,
    "type" : "land",
-   "years" : 0.44
+   "years" : 0.22
   },
   {
    "crossesRiver" : false,
@@ -3453,7 +3453,7 @@
    "seaZone" : null,
    "to" : 60,
    "type" : "land",
-   "years" : 0.55
+   "years" : 0.27
   },
   {
    "crossesRiver" : false,
@@ -3475,7 +3475,7 @@
    "seaZone" : null,
    "to" : 55,
    "type" : "land",
-   "years" : 0.47
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -3497,7 +3497,7 @@
    "seaZone" : null,
    "to" : 56,
    "type" : "land",
-   "years" : 0.53
+   "years" : 0.26
   },
   {
    "crossesRiver" : false,
@@ -3519,7 +3519,7 @@
    "seaZone" : null,
    "to" : 60,
    "type" : "land",
-   "years" : 0.65
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
@@ -3541,7 +3541,7 @@
    "seaZone" : null,
    "to" : 56,
    "type" : "land",
-   "years" : 0.41
+   "years" : 0.21
   },
   {
    "crossesRiver" : true,
@@ -3563,7 +3563,7 @@
    "seaZone" : null,
    "to" : 58,
    "type" : "land",
-   "years" : 0.63
+   "years" : 0.31
   },
   {
    "crossesRiver" : true,
@@ -3585,7 +3585,7 @@
    "seaZone" : null,
    "to" : 59,
    "type" : "land",
-   "years" : 0.63
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
@@ -3607,7 +3607,7 @@
    "seaZone" : null,
    "to" : 60,
    "type" : "land",
-   "years" : 0.38
+   "years" : 0.19
   },
   {
    "crossesRiver" : true,
@@ -3633,7 +3633,7 @@
    "seaZone" : null,
    "to" : 61,
    "type" : "land",
-   "years" : 0.73
+   "years" : 0.36
   },
   {
    "crossesRiver" : true,
@@ -3655,7 +3655,7 @@
    "seaZone" : null,
    "to" : 57,
    "type" : "land",
-   "years" : 0.63
+   "years" : 0.32
   },
   {
    "crossesRiver" : true,
@@ -3677,7 +3677,7 @@
    "seaZone" : null,
    "to" : 58,
    "type" : "land",
-   "years" : 0.58
+   "years" : 0.29
   },
   {
    "crossesRiver" : false,
@@ -3699,7 +3699,7 @@
    "seaZone" : null,
    "to" : 58,
    "type" : "land",
-   "years" : 0.37
+   "years" : 0.18
   },
   {
    "crossesRiver" : false,
@@ -3721,7 +3721,7 @@
    "seaZone" : null,
    "to" : 64,
    "type" : "land",
-   "years" : 0.6
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
@@ -3747,7 +3747,7 @@
    "seaZone" : null,
    "to" : 59,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -3769,7 +3769,7 @@
    "seaZone" : null,
    "to" : 63,
    "type" : "land",
-   "years" : 0.64
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
@@ -3791,7 +3791,7 @@
    "seaZone" : null,
    "to" : 64,
    "type" : "land",
-   "years" : 0.47
+   "years" : 0.23
   },
   {
    "crossesRiver" : false,
@@ -3813,7 +3813,7 @@
    "seaZone" : null,
    "to" : 61,
    "type" : "land",
-   "years" : 0.21
+   "years" : 0.1
   },
   {
    "crossesRiver" : false,
@@ -3835,7 +3835,7 @@
    "seaZone" : null,
    "to" : 62,
    "type" : "land",
-   "years" : 0.19
+   "years" : 0.09
   },
   {
    "crossesRiver" : true,
@@ -3857,7 +3857,7 @@
    "seaZone" : null,
    "to" : 61,
    "type" : "land",
-   "years" : 0.55
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
@@ -3879,7 +3879,7 @@
    "seaZone" : null,
    "to" : 63,
    "type" : "land",
-   "years" : 0.15
+   "years" : 0.08
   },
   {
    "crossesRiver" : false,
@@ -3901,7 +3901,7 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.84
+   "years" : 0.42
   },
   {
    "crossesRiver" : false,
@@ -3923,7 +3923,7 @@
    "seaZone" : null,
    "to" : 64,
    "type" : "land",
-   "years" : 0.49
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -3945,7 +3945,7 @@
    "seaZone" : null,
    "to" : 67,
    "type" : "land",
-   "years" : 0.47
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -3967,7 +3967,7 @@
    "seaZone" : null,
    "to" : 68,
    "type" : "land",
-   "years" : 0.6
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
@@ -3989,7 +3989,7 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.79
+   "years" : 0.39
   },
   {
    "crossesRiver" : false,
@@ -4011,7 +4011,7 @@
    "seaZone" : null,
    "to" : 65,
    "type" : "land",
-   "years" : 0.37
+   "years" : 0.19
   },
   {
    "crossesRiver" : false,
@@ -4033,7 +4033,7 @@
    "seaZone" : null,
    "to" : 67,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.3
   },
   {
    "crossesRiver" : true,
@@ -4055,7 +4055,7 @@
    "seaZone" : null,
    "to" : 66,
    "type" : "land",
-   "years" : 0.56
+   "years" : 0.28
   },
   {
    "crossesRiver" : true,
@@ -4077,7 +4077,7 @@
    "seaZone" : null,
    "to" : 67,
    "type" : "land",
-   "years" : 0.52
+   "years" : 0.26
   },
   {
    "crossesRiver" : false,
@@ -4099,7 +4099,7 @@
    "seaZone" : null,
    "to" : 68,
    "type" : "land",
-   "years" : 0.47
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -4121,7 +4121,7 @@
    "seaZone" : null,
    "to" : 69,
    "type" : "land",
-   "years" : 0.73
+   "years" : 0.36
   },
   {
    "crossesRiver" : false,
@@ -4143,7 +4143,7 @@
    "seaZone" : null,
    "to" : 69,
    "type" : "land",
-   "years" : 0.42
+   "years" : 0.21
   },
   {
    "crossesRiver" : false,
@@ -4165,7 +4165,7 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.39
+   "years" : 0.2
   },
   {
    "crossesRiver" : false,
@@ -4187,7 +4187,7 @@
    "seaZone" : null,
    "to" : 70,
    "type" : "land",
-   "years" : 0.61
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
@@ -4209,7 +4209,7 @@
    "seaZone" : null,
    "to" : 74,
    "type" : "land",
-   "years" : 0.58
+   "years" : 0.29
   },
   {
    "crossesRiver" : true,
@@ -4231,7 +4231,7 @@
    "seaZone" : null,
    "to" : 75,
    "type" : "land",
-   "years" : 0.53
+   "years" : 0.27
   },
   {
    "crossesRiver" : false,
@@ -4253,7 +4253,7 @@
    "seaZone" : null,
    "to" : 71,
    "type" : "land",
-   "years" : 0.65
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
@@ -4275,7 +4275,7 @@
    "seaZone" : null,
    "to" : 74,
    "type" : "land",
-   "years" : 0.66
+   "years" : 0.33
   },
   {
    "crossesRiver" : false,
@@ -4297,7 +4297,7 @@
    "seaZone" : null,
    "to" : 72,
    "type" : "land",
-   "years" : 0.44
+   "years" : 0.22
   },
   {
    "crossesRiver" : false,
@@ -4319,7 +4319,7 @@
    "seaZone" : null,
    "to" : 74,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.3
   },
   {
    "crossesRiver" : true,
@@ -4341,7 +4341,7 @@
    "seaZone" : null,
    "to" : 73,
    "type" : "land",
-   "years" : 0.67
+   "years" : 0.33
   },
   {
    "crossesRiver" : false,
@@ -4363,7 +4363,7 @@
    "seaZone" : null,
    "to" : 74,
    "type" : "land",
-   "years" : 0.75
+   "years" : 0.37
   },
   {
    "crossesRiver" : true,
@@ -4385,7 +4385,7 @@
    "seaZone" : null,
    "to" : 74,
    "type" : "land",
-   "years" : 0.85
+   "years" : 0.43
   },
   {
    "crossesRiver" : false,
@@ -4407,7 +4407,7 @@
    "seaZone" : null,
    "to" : 83,
    "type" : "land",
-   "years" : 0.34
+   "years" : 0.17
   },
   {
    "crossesRiver" : false,
@@ -4429,7 +4429,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 0.31
+   "years" : 0.16
   },
   {
    "crossesRiver" : true,
@@ -4451,7 +4451,7 @@
    "seaZone" : null,
    "to" : 75,
    "type" : "land",
-   "years" : 0.88
+   "years" : 0.44
   },
   {
    "crossesRiver" : true,
@@ -4473,7 +4473,7 @@
    "seaZone" : null,
    "to" : 76,
    "type" : "land",
-   "years" : 0.76
+   "years" : 0.38
   },
   {
    "crossesRiver" : true,
@@ -4495,7 +4495,7 @@
    "seaZone" : null,
    "to" : 77,
    "type" : "land",
-   "years" : 0.64
+   "years" : 0.32
   },
   {
    "crossesRiver" : true,
@@ -4517,7 +4517,7 @@
    "seaZone" : null,
    "to" : 83,
    "type" : "land",
-   "years" : 0.95
+   "years" : 0.47
   },
   {
    "crossesRiver" : false,
@@ -4539,7 +4539,7 @@
    "seaZone" : null,
    "to" : 76,
    "type" : "land",
-   "years" : 0.29
+   "years" : 0.15
   },
   {
    "crossesRiver" : false,
@@ -4561,7 +4561,7 @@
    "seaZone" : null,
    "to" : 77,
    "type" : "land",
-   "years" : 0.48
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -4583,7 +4583,7 @@
    "seaZone" : null,
    "to" : 78,
    "type" : "land",
-   "years" : 0.48
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -4605,7 +4605,7 @@
    "seaZone" : null,
    "to" : 78,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -4627,7 +4627,7 @@
    "seaZone" : null,
    "to" : 82,
    "type" : "land",
-   "years" : 0.62
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
@@ -4649,7 +4649,7 @@
    "seaZone" : null,
    "to" : 83,
    "type" : "land",
-   "years" : 0.44
+   "years" : 0.22
   },
   {
    "crossesRiver" : false,
@@ -4671,7 +4671,7 @@
    "seaZone" : null,
    "to" : 79,
    "type" : "land",
-   "years" : 0.53
+   "years" : 0.26
   },
   {
    "crossesRiver" : false,
@@ -4693,7 +4693,7 @@
    "seaZone" : null,
    "to" : 80,
    "type" : "land",
-   "years" : 0.62
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
@@ -4719,7 +4719,7 @@
    "seaZone" : null,
    "to" : 82,
    "type" : "land",
-   "years" : 0.59
+   "years" : 0.29
   },
   {
    "crossesRiver" : false,
@@ -4741,7 +4741,7 @@
    "seaZone" : null,
    "to" : 80,
    "type" : "land",
-   "years" : 0.24
+   "years" : 0.12
   },
   {
    "crossesRiver" : false,
@@ -4763,7 +4763,7 @@
    "seaZone" : null,
    "to" : 81,
    "type" : "land",
-   "years" : 0.5
+   "years" : 0.25
   },
   {
    "crossesRiver" : false,
@@ -4785,7 +4785,7 @@
    "seaZone" : null,
    "to" : 82,
    "type" : "land",
-   "years" : 0.27
+   "years" : 0.14
   },
   {
    "crossesRiver" : false,
@@ -4807,7 +4807,7 @@
    "seaZone" : null,
    "to" : 84,
    "type" : "land",
-   "years" : 0.6
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
@@ -4829,7 +4829,7 @@
    "seaZone" : null,
    "to" : 84,
    "type" : "land",
-   "years" : 0.61
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
@@ -4851,7 +4851,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.53
+   "years" : 0.26
   },
   {
    "crossesRiver" : false,
@@ -4873,7 +4873,7 @@
    "seaZone" : null,
    "to" : 83,
    "type" : "land",
-   "years" : 0.46
+   "years" : 0.23
   },
   {
    "crossesRiver" : false,
@@ -4895,7 +4895,7 @@
    "seaZone" : null,
    "to" : 84,
    "type" : "land",
-   "years" : 0.47
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -4917,7 +4917,7 @@
    "seaZone" : null,
    "to" : 84,
    "type" : "land",
-   "years" : 0.56
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
@@ -4939,7 +4939,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 0.48
+   "years" : 0.24
   },
   {
    "crossesRiver" : false,
@@ -4961,7 +4961,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 0.69
+   "years" : 0.35
   },
   {
    "crossesRiver" : false,
@@ -4983,7 +4983,7 @@
    "seaZone" : null,
    "to" : 86,
    "type" : "land",
-   "years" : 0.73
+   "years" : 0.36
   },
   {
    "crossesRiver" : false,
@@ -5005,7 +5005,7 @@
    "seaZone" : null,
    "to" : 87,
    "type" : "land",
-   "years" : 0.65
+   "years" : 0.32
   },
   {
    "crossesRiver" : false,
@@ -5027,7 +5027,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.6
+   "years" : 0.3
   },
   {
    "crossesRiver" : false,
@@ -5049,7 +5049,7 @@
    "seaZone" : null,
    "to" : 86,
    "type" : "land",
-   "years" : 0.62
+   "years" : 0.31
   },
   {
    "crossesRiver" : false,
@@ -5071,7 +5071,7 @@
    "seaZone" : null,
    "to" : 87,
    "type" : "land",
-   "years" : 0.56
+   "years" : 0.28
   },
   {
    "crossesRiver" : false,
@@ -5093,7 +5093,7 @@
    "seaZone" : null,
    "to" : 88,
    "type" : "land",
-   "years" : 0.4
+   "years" : 0.2
   }
  ],
  "seaZones" : [
