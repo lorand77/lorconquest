@@ -30,11 +30,20 @@ Start **1440 AD**.
 Every **town** (red circle) starts at **10,000 pop**; every **city** (red square) at **20,000**.
 
 ```
-money per year = bank interest
-               + core pop × 2
-               + non-core pop × 1
-               − soldiers × 5        (cannon crew and ship crew count as soldiers)
+settlement money = (core pop × 2 + non-core pop × 1 + Workshops and Markets, §3)
+                   × (1 − your conscription law's income penalty, §9)
+
+money per year   = settlement money
+                 − soldiers × 5      (cannon crew, ship crew at sea and snipers count as soldiers)
+                 + bank interest
 ```
+
+The conscription penalty cuts **settlement money only**, before upkeep is paid — never upkeep,
+bank interest or tribute (§10).
+
+**Soldiers are still people.** A serving soldier stays in your population: they earn money like
+anyone else in their settlement, count toward growth, and pay upkeep on top. Only death (below)
+takes them out of the population.
 
 **Pop growth:** +1% per year, **+0.5%** if on a river or coast.
 
@@ -85,7 +94,7 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
 | **Muskets** (1000) | 0.05M | x1.5MR | ×1.3 |
 | **Rifles** (1000) | 0.1M | x4MR | ×2 |
-| **Cannons** (100) | 0.1M | x1.5MR | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 men |
+| **Cannons** (100) | 0.1M | x1.5MR | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
 | **Snipers** (20) | 0.01M | x1MR | Bought and stationed at a mountain pass you own (§8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 ships** | 0.1M | — | ×1 each |
@@ -95,8 +104,9 @@ The capital trains soldiers twice as fast as other settlements (§8).
 **Every cannon needs 10 crewmen.** Cannon crew do **not** count as men in the power formula.
 **Every ship needs 50 crew at sea.** Ships in port need no crew. **Ships have no upkeep** of
 their own — only their crew at sea do.
-**Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2) and count
-toward your conscription cap (§9). **So do snipers** — each sniper is one soldier.
+**Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2). Cannon crew
+count toward your **army** cap and ship crew at sea toward your **navy** cap (§9). **So do
+snipers** — each sniper is one soldier on the army cap.
 
 ---
 
@@ -113,7 +123,8 @@ Naval (unlocked) ──▶ Gunships ──▶ Steam Ships   [not supposed to get
 at **50%**, and you may move it at any time.
 
 ```
-investable = max(0, money per year − bank interest)        (§2, after any tribute you pay, §10)
+investable = max(0, money per year − bank interest)        (§2, plus tribute you receive and
+                                                             minus tribute you pay, §10)
 R per year = (2 × slider × investable + x10K) × (1 + 0.05 × libraries)
                                                              libraries counts at most 10
 treasury gets money per year + (1 − 2 × slider) × investable
@@ -173,8 +184,14 @@ army that arrived there first. At a mountain pass, the defender is the army that
 first.
 
 **After the battle:** winner may advance or hold. Loser retreats to the nearest settlement
-owned by itself or a **military ally** (§10). If neither it nor any military ally owns a
-settlement, there is nowhere to retreat and **the whole losing army dies**.
+owned by itself or a **military ally** (§10) — nearest by marching time.
+
+**Retreating armies march.** The loser marches there at army speed (§8), by the fastest way
+open to it: only through land it may enter (§10), with river and pass delays as usual. On the
+way it takes no orders and does not stop for zone of control, but other enemy armies it meets
+may attack it — it fights as a normal army, with no defence bonus. When it arrives it can be
+given orders again. If no settlement of its own or a military ally can be reached, there is
+nowhere to retreat and **the whole losing army dies**.
 
 ### Defence
 | Situation | Multiplier |
@@ -269,7 +286,7 @@ your population (§2).
 | Your capital (§2) | 3 months |
 | Any other core settlement | 6 months |
 
-While training, men already count toward your conscription cap (§9) and pay soldier upkeep (§2).
+While training, men already count toward your army cap (§9) and pay soldier upkeep (§2).
 When they are ready they appear in that settlement and join any army of yours there, or form a
 new one; to reach an army elsewhere they march like any other army. If the settlement is
 captured or stops being core before they are ready, the training is cancelled and the men go
@@ -331,16 +348,24 @@ year. If an enemy fleet is present, fight a naval battle first — lose and the 
 
 You cannot change again for **5 years**.
 
-| Government | Max army | Income |
-|---|---|---|
-| Feudal | 6.5% | — |
-| Centralized | 10% | −6% |
-| Militarized | 15% | −10% |
-| Total War | 25% | −30% |
-| Scrap the Barrel | 40% | −80% |
+| Government | Max army | Max navy | Total | Settlement money (§2) |
+|---|---|---|---|---|
+| Feudal | 4% | 2.5% | 6.5% | — |
+| Centralized | 7% | 3% | 10% | −6% |
+| Militarized | 11% | 4% | 15% | −10% |
+| Total War | 20% | 5% | 25% | −30% |
+| Scrap the Barrel | 33% | 7% | 40% | −80% |
 
-The percentage applies to **core manpower + half of non-core**. Cannon crew and ship crew
-at sea count toward this limit.
+The percentages apply to **core manpower + half of non-core**. The two caps are separate — men
+on one cannot be moved to the other.
+
+- **Army cap:** soldiers, men in training (§8), cannon crew and snipers.
+- **Navy cap:** ship crew at sea (50 per ship). Ships in port need no crew, so you may own more
+  ships than you can crew — only the crewed ones can sail.
+
+At Feudal both caps match the starting forces (§2): an army of pop ÷ 25 is 4%, and ships of
+pop ÷ 2000 with 50 crew each are 2.5%. Every country starts at its army cap, and coastal
+countries start at their navy cap too.
 
 ---
 
@@ -456,7 +481,7 @@ the sum of everything below that applies:
 | You are at war with one of its allies or subjects | −30 |
 | You fought a war against it in the last 20 years | −25 |
 | You broke an agreement with anyone in the last 10 years | −40 |
-| It refused your demand to become your subject, or to join your Empire, in the last 10 years | −30 |
+| It refused your demand to become your subject in the last 10 years (not the HRE vote) | −30 |
 | Your warmonger score — in full if you share a border, half if you do not | −score, at most −60 |
 
 **Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:

@@ -327,9 +327,9 @@ at most 75%
 Every German state that joins becomes your **protectorate** (RULES.md §10) and pays you **10%** of
 its yearly money.
 
-**Every state that refuses turns hostile.** Its opinion of you drops by 30 for 10 years
-(RULES.md §10), and all the states that refused form a **defensive alliance** with each other — the
-League. Declare war on one member and the rest join against you.
+**The states that refuse form the League.** All of them make a **defensive alliance** with each
+other — declare war on one member and the rest join against you. Refusing does not change their
+opinion of you (RULES.md §10).
 
 ## Victory
 
