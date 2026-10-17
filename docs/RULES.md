@@ -2,7 +2,8 @@
 ### Real-time grand strategy — current ruleset
 
 > **Scenario scaling.** `x` is a per-scenario cost multiplier. `x0.1M` means `x × 0.1M`.
-> `x` applies to **tech costs, starting treasury and the flat R bonus only** — never to shop prices.
+> `x` applies to **tech costs, starting treasury, the flat R bonus, and the sniper and cannon
+> counts in combat** (§5, §6) — never to shop prices.
 > Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](SCENARIO.md).
 > Town and city populations (10K / 20K) are the same in every scenario; what changes between
 > scenarios is the map, country sizes, costs, coring, and the victory condition.
@@ -203,13 +204,13 @@ nowhere to retreat and **the whole losing army dies**.
 The mountain ×2 applies **only at mountain passes**. A pass has no settlement, so the pass and
 settlement bonuses never stack.
 
-Every 100 cannons the attacker brings lowers the wall multiplier by **0.3**, floored at **1.2**.
+Every **100 × x** cannons the attacker brings lowers the wall multiplier by **0.3**, floored at **1.2**.
 
 ### Snipers
 Snipers are **bought and stationed only at a mountain pass your country owns** (§8). They cannot
 move or attack — they wait for an enemy army to pass through.
 ```
-damage = number of snipers × d6 × 10      max 25 snipers per battle
+damage = number of snipers × d6 × 10      max 25 × x snipers per battle
 Total damage may never exceed 50% of the passing army.
 ```
 **Once per army per crossing.** Snipers fire once at each enemy army when it enters the pass —
@@ -237,7 +238,7 @@ everything.
 **Siege** —
 ```
 n = pop ÷ 20000 years      ×2 if walls
-                           × (1 − 0.2 per full 100 cannons the besieger brings), at least × 0.4
+                           × (1 − 0.2 per full 100 × x cannons the besieger brings), at least × 0.4
 ```
 **The siege length is fixed when the siege begins and cannot change while it runs** — cannons
 that arrive later do not shorten it.
