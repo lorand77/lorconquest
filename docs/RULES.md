@@ -405,16 +405,21 @@ peace is signed, unless the terms move them. Signing peace starts a **truce**.
 Every country has a **warmonger score**, starting at 0 and shown to everyone. It rises when you
 go to war for gain:
 
-| You | Warmonger score |
-|---|---|
-| Declare a war | +5 |
-| End a war holding a settlement you took in it — captured, or given to you in the peace | +1 per 1,000 of its pop (a town ≈ +10, a city ≈ +20) |
-| Make a country your vassal in a peace | +10 |
-| Make a country your protectorate in a peace | +5 |
+| You | On the attacking side | On the defending side |
+|---|---|---|
+| Declare a war | +5 | — |
+| End a war holding a settlement you took in it — captured, or given to you in the peace | +1 per 1,000 of its pop (a town ≈ +10, a city ≈ +20) | **half**: +1 per 2,000 (a town ≈ +5, a city ≈ +10) |
+| Make a country your vassal in a peace | +10 | +5 |
+| Make a country your protectorate in a peace | +5 | +2.5 |
 
-Retaking a settlement that was **your core when the war began** adds nothing, and neither does
-fighting a war someone declared on you. Subjects gained by demand or through the HRE add
-nothing either — they agreed. The score falls by **2 every year**, down to 0.
+**The defending side** is the country that was declared on and everyone who joined the war on its
+side — defensive allies, guarantors and military allies it called in. The world sees it as the
+victim, so it is forgiven half of what it takes from the aggressor. Everyone else is on the
+attacking side: the country that declared and everyone who joined it.
+
+Retaking a settlement that was **your core when the war began** adds nothing, on either side.
+Subjects gained by demand or through the HRE add nothing either — they agreed. The score falls
+by **2 every year**, down to 0.
 
 *Example:* Bavaria declares war on Bohemia and keeps all three of its settlements (40K) at the
 peace: +5 + 40 = **45**, gone in about 22 years.
