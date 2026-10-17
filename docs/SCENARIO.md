@@ -207,7 +207,6 @@ from the lower-numbered settlement; the route's length (and so its marching time
 
 | Route | Through | Why |
 |---|---|---|
-| 83-85 | 794,700 | stays west of the river instead of crossing it twice |
 
 ## Mountains
 

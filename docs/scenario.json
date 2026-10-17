@@ -4946,16 +4946,12 @@
    "from" : 83,
    "id" : "route-83-85",
    "legs" : null,
-   "length" : 116.69,
+   "length" : 115.52,
    "pass" : null,
    "points" : [
     [
      789,
      637
-    ],
-    [
-     794,
-     700
     ],
     [
      813,
@@ -4965,7 +4961,7 @@
    "seaZone" : null,
    "to" : 85,
    "type" : "land",
-   "years" : 0.49
+   "years" : 0.48
   },
   {
    "crossesRiver" : false,
