@@ -2,7 +2,7 @@
 ### Real-time grand strategy — current ruleset
 
 > **Scenario scaling.** `x` is a per-scenario cost multiplier. `x1.5MR` means `x × 1.5M` R.
-> `x` applies to **tech costs, starting treasury, the flat R bonus, and the sniper and cannon
+> `x` applies to **tech costs, starting treasury, the flat R bonus, and the sharpshooter and cannon
 > counts in combat** (§5, §6) — never to shop prices.
 > Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](SCENARIO.md).
 > Town and city populations (10K / 20K) are the same in every scenario; what changes between
@@ -35,7 +35,7 @@ settlement money = (core pop × 2 + non-core pop × 1 + Workshops and Markets, �
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
-                 − soldiers × 5      (cannon crew, ship crew at sea and snipers count as soldiers)
+                 − soldiers × 5      (cannon crew, ship crew at sea and sharpshooters count as soldiers)
                  + bank interest
 ```
 
@@ -49,10 +49,10 @@ takes them out of the population.
 **Pop growth:** +0.5% per year, **+0.25%** more if on a river or coast.
 
 **Casualties cost population.** Every soldier who dies is removed from your population, not
-just from the army — whether killed in battle, by snipers, in a lost storm, or by disease in a
+just from the army — whether killed in battle, by sharpshooters, in a lost storm, or by disease in a
 siege (§6). Each lost cannon also kills its **10 crew**, and each ship sunk at sea kills its
-**50 crew**. Snipers count too — each sniper killed when its post is stormed or its pass is lost
-(§8) is one person lost. The loss is spread across all settlements you own **in proportion to their
+**50 crew**. Sharpshooters count too — each one killed when its post is stormed or its pass is
+lost (§8) is one person lost. The loss is spread across all settlements you own **in proportion to their
 population**, so a 20K city loses twice as many people as a 10K town. Lost people come back
 only through growth or **Buy people**.
 
@@ -73,7 +73,7 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 |---|---|
 | Treasury | **x × pop × 2** — one year of money from its people (a 10K town 20K, a 50K country 100K) |
 | Soldiers | pop ÷ 25, equipped with swords |
-| Ships | pop ÷ 2000 — **coastal countries only** |
+| Ships | pop ÷ 2000 carracks — **coastal countries only** |
 | Cores | **every starting settlement is core** |
 
 **Capital.** Each country starts with the capital its scenario names — a city if it owns one. If
@@ -93,31 +93,34 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
-| **Muskets** (1000) | 0.05M | x1.5MR | ×1.3 |
-| **Rifles** (1000) | 0.1M | x4MR | ×2 |
-| **Cannons** (100) | 0.1M | x1.5MR | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
-| **Snipers** (20) | 0.05M | x1MR | Bought and stationed at a mountain pass you own (§8) |
+| **Matchlocks** (1000) | 0.05M | x1.5MR | ×1.3 |
+| **Arquebuses** (1000) | 0.07M | x2MR | ×1.6 |
+| **Muskets** (1000) | 0.1M | x3.5MR | ×2 |
+| **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
+| **Sharpshooters** (20) | 0.05M | x1MR | Bought and stationed at a mountain pass you own (§8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
-| **10 ships** | 0.1M | — | ×1 each |
-| **10 gunships** | 0.2M | x3MR | ×3 each |
-| **10 steam ships** | 0.5M | x20MR | ×8 each |
+| **10 carracks** | 0.1M | unlocked | ×1 each |
+| **10 galleons** | 0.2M | x3MR | ×3 each |
+| **10 frigates** | 0.33M | x8MR | ×5 each |
+| **10 steam ships** | 0.5M | x12MR | ×8 each |
 
 **Every cannon needs 10 crewmen.** Cannon crew do **not** count as men in the power formula.
 **Every ship needs 50 crew at sea.** Ships in port need no crew. **Ships have no upkeep** of
 their own — only their crew at sea do.
 **Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2). Cannon crew
 count toward your **army** cap and ship crew at sea toward your **navy** cap (§9). **So do
-snipers** — each sniper is one soldier on the army cap.
+sharpshooters** — each sharpshooter is one soldier on the army cap.
 
 ---
 
 ## 4. TECHNOLOGY
 
 ```
-Swords (unlocked) ──▶ Muskets ──▶ Cannons ──┬──▶ Rifles
-                                             └──▶ Snipers
+Swords, Cannons (unlocked)
+Swords ──▶ Matchlocks ──▶ Arquebuses ──┬──▶ Muskets
+                                       └──▶ Sharpshooters
 
-Naval (unlocked) ──▶ Gunships ──▶ Steam Ships   [not supposed to get this]
+Carracks (unlocked) ──▶ Galleons ──▶ Frigates ──▶ Steam ships   [not supposed to get this]
 ```
 
 **Research slider.** You set the slider from **0% to 100%** in steps of 10%. Every country starts
@@ -156,12 +159,12 @@ one Library.
 
 ```
 power = (men + cannons × 13) × (d6 + 6)
-        ×2 for the riflemen · ×1.3 for the musketmen · ×1.2 for the cannons
+        ×2 for musketeers · ×1.6 for arquebusiers · ×1.3 for matchlock men · ×1.2 for the cannons
 ```
 
 - Cannon crew are **not** counted in `men`.
 - **Men without weapons have power 0.**
-- Multipliers apply per weapon group — if 1,000 men have rifles and the rest swords, only those
+- Multipliers apply per weapon group — if 1,000 men have muskets and the rest swords, only those
   1,000 get the ×2. The cannons’ ×1.2 applies only to the `cannons × 13` part.
 
 **Damage** — applied as a percentage of men, cannons and equipment:
@@ -206,23 +209,23 @@ settlement bonuses never stack.
 
 Every **100 × x** cannons the attacker brings lowers the wall multiplier by **0.3**, floored at **1.2**.
 
-### Snipers
-Snipers are **bought and stationed only at a mountain pass your country owns** (§8). They cannot
+### Sharpshooters
+Sharpshooters are **bought and stationed only at a mountain pass your country owns** (§8). They cannot
 move or attack — they wait for an enemy army to pass through.
 ```
-damage = number of snipers × d6 × 10      max 25 × x snipers per battle
+damage = number of sharpshooters × d6 × 10      max 25 × x sharpshooters per battle
 Total damage may never exceed 50% of the passing army.
 ```
-**Once per army per crossing.** Snipers fire once at each enemy army when it enters the pass —
+**Once per army per crossing.** Sharpshooters fire once at each enemy army when it enters the pass —
 not again while it stays there, nor when it leaves. An army that leaves and later comes back is
-fired on again. Snipers take no losses when they fire, and survivors pass through freely.
+fired on again. Sharpshooters take no losses when they fire, and survivors pass through freely.
 
-**Clearing snipers.** An army may `storm` the sniper post. Resolve it as a field battle in which
-each sniper counts as **50 power**:
+**Clearing sharpshooters.** An army may `storm` the sharpshooter post. Resolve it as a field
+battle in which each sharpshooter counts as **50 power**:
 ```
-sniper power = snipers × 50 × (d6 + 6)
+sharpshooter power = sharpshooters × 50 × (d6 + 6)
 ```
-The pass ×2 does **not** apply to snipers. Losses are applied as in a normal battle.
+The pass ×2 does **not** apply to sharpshooters. Losses are applied as in a normal battle.
 
 ---
 
@@ -261,7 +264,7 @@ besieger. The garrison is **disbanded on the spot**: its men go back to its coun
 ## 7. NAVAL
 
 ```
-power = (ships + gunships × 3 + steam ships × 8) × (d6 + 6)
+power = (carracks + galleons × 3 + frigates × 5 + steam ships × 8) × (d6 + 6)
 ```
 Damage as in a land battle, applied to ships (rounded). Crew of sunk ships are lost from
 your population (§2).
@@ -323,12 +326,12 @@ settlement.
   climb, so going through a pass costs 4 months on top of the distance. An army that stops at the
   pass has paid half, and pays the rest when it moves on.
 - **An army defending a pass gets ×2** defence (§5).
-- **Snipers** are bought and stationed only at passes (§5).
+- **Sharpshooters** are bought and stationed only at passes (§5).
 - **Each pass belongs to one country** — whoever's territory it lies in, i.e. whoever owns the
   settlement whose land the pass is in (listed in [SCENARIO.md](SCENARIO.md#mountain-passes)).
-  It changes hands with that settlement. Only the owner can buy snipers there.
-- **Snipers die when the pass changes hands** — if the settlement whose land the pass is in is
-  lost, every sniper stationed at that pass dies.
+  It changes hands with that settlement. Only the owner can buy sharpshooters there.
+- **Sharpshooters die when the pass changes hands** — if the settlement whose land the pass is in is
+  lost, every sharpshooter stationed at that pass dies.
 
 **Zone of control.** An army entering a province with an enemy army stops there and engages,
 cancelling the rest of its path.
@@ -360,7 +363,7 @@ You cannot change again for **5 years**.
 The percentages apply to **core manpower + half of non-core**. The two caps are separate — men
 on one cannot be moved to the other.
 
-- **Army cap:** soldiers, men in training (§8), cannon crew and snipers.
+- **Army cap:** soldiers, men in training (§8), cannon crew and sharpshooters.
 - **Navy cap:** ship crew at sea (50 per ship). Ships in port need no crew, so you may own more
   ships than you can crew — only the crewed ones can sail.
 
