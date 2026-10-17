@@ -350,11 +350,11 @@ You cannot change again for **5 years**.
 
 | Government | Max army | Max navy | Total | Settlement money (§2) |
 |---|---|---|---|---|
-| Feudal | 4% | 2.5% | 6.5% | — |
-| Centralized | 7% | 3% | 10% | −6% |
-| Militarized | 11% | 4% | 15% | −10% |
-| Total War | 20% | 5% | 25% | −30% |
-| Scrap the Barrel | 33% | 7% | 40% | −80% |
+| Feudal | 6.5% | 2.5% | 9% | — |
+| Centralized | 10% | 3% | 13% | −6% |
+| Militarized | 15% | 4% | 19% | −10% |
+| Total War | 25% | 5% | 30% | −30% |
+| Scrap the Barrel | 40% | 7% | 47% | −80% |
 
 The percentages apply to **core manpower + half of non-core**. The two caps are separate — men
 on one cannot be moved to the other.
@@ -363,9 +363,9 @@ on one cannot be moved to the other.
 - **Navy cap:** ship crew at sea (50 per ship). Ships in port need no crew, so you may own more
   ships than you can crew — only the crewed ones can sail.
 
-At Feudal both caps match the starting forces (§2): an army of pop ÷ 25 is 4%, and ships of
-pop ÷ 2000 with 50 crew each are 2.5%. Every country starts at its army cap, and coastal
-countries start at their navy cap too.
+The navy cap comes **on top of** the army cap, so a fleet never takes men from the army. At
+Feudal, ships of pop ÷ 2000 with 50 crew each are 2.5% — coastal countries start exactly at their
+navy cap. The starting army of pop ÷ 25 is 4%, below the 6.5% army cap (§2).
 
 ---
 
