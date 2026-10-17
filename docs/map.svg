@@ -584,6 +584,13 @@
     <polygon class="mtn-outline" points="933,849 918,875 948,875"/>
   </g>
   <g class="mountain">
+    <polygon class="mtn-lit" points="1092,870 1077,896 1093.8,896"/>
+    <polygon class="mtn-shade" points="1092,870 1093.8,896 1107,896"/>
+    <polygon class="mtn-snow" points="1092,870 1086.9,878.84 1089.45,880.34 1092.6,879.04"/>
+    <polygon class="mtn-snow-shade" points="1092,870 1092.6,879.04 1094.81,880.14 1097.1,878.84"/>
+    <polygon class="mtn-outline" points="1092,870 1077,896 1107,896"/>
+  </g>
+  <g class="mountain">
     <polygon class="mtn-lit" points="705,871 690,897 706.8,897"/>
     <polygon class="mtn-shade" points="705,871 706.8,897 720,897"/>
     <polygon class="mtn-snow" points="705,871 699.9,879.84 702.45,881.34 705.6,880.04"/>
@@ -619,11 +626,39 @@
     <polygon class="mtn-outline" points="1138,883 1123,909 1153,909"/>
   </g>
   <g class="mountain">
+    <polygon class="mtn-lit" points="976,885 961,911 977.8,911"/>
+    <polygon class="mtn-shade" points="976,885 977.8,911 991,911"/>
+    <polygon class="mtn-snow" points="976,885 970.9,893.84 973.45,895.34 976.6,894.04"/>
+    <polygon class="mtn-snow-shade" points="976,885 976.6,894.04 978.8,895.14 981.1,893.84"/>
+    <polygon class="mtn-outline" points="976,885 961,911 991,911"/>
+  </g>
+  <g class="mountain">
     <polygon class="mtn-lit" points="1067,894 1052,920 1068.8,920"/>
     <polygon class="mtn-shade" points="1067,894 1068.8,920 1082,920"/>
     <polygon class="mtn-snow" points="1067,894 1061.9,902.84 1064.45,904.34 1067.6,903.04"/>
     <polygon class="mtn-snow-shade" points="1067,894 1067.6,903.04 1069.81,904.14 1072.1,902.84"/>
     <polygon class="mtn-outline" points="1067,894 1052,920 1082,920"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1031,899 1016,925 1032.8,925"/>
+    <polygon class="mtn-shade" points="1031,899 1032.8,925 1046,925"/>
+    <polygon class="mtn-snow" points="1031,899 1025.9,907.84 1028.45,909.34 1031.6,908.04"/>
+    <polygon class="mtn-snow-shade" points="1031,899 1031.6,908.04 1033.81,909.14 1036.1,907.84"/>
+    <polygon class="mtn-outline" points="1031,899 1016,925 1046,925"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1285,899 1270,925 1286.8,925"/>
+    <polygon class="mtn-shade" points="1285,899 1286.8,925 1300,925"/>
+    <polygon class="mtn-snow" points="1285,899 1279.9,907.84 1282.45,909.34 1285.6,908.04"/>
+    <polygon class="mtn-snow-shade" points="1285,899 1285.6,908.04 1287.81,909.14 1290.1,907.84"/>
+    <polygon class="mtn-outline" points="1285,899 1270,925 1300,925"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1110,901 1095,927 1111.8,927"/>
+    <polygon class="mtn-shade" points="1110,901 1111.8,927 1125,927"/>
+    <polygon class="mtn-snow" points="1110,901 1104.9,909.84 1107.45,911.34 1110.6,910.04"/>
+    <polygon class="mtn-snow-shade" points="1110,901 1110.6,910.04 1112.81,911.14 1115.1,909.84"/>
+    <polygon class="mtn-outline" points="1110,901 1095,927 1125,927"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="701,912 686,938 702.8,938"/>
@@ -654,6 +689,27 @@
     <polygon class="mtn-outline" points="1256,917 1241,943 1271,943"/>
   </g>
   <g class="mountain">
+    <polygon class="mtn-lit" points="1056,927 1041,953 1057.8,953"/>
+    <polygon class="mtn-shade" points="1056,927 1057.8,953 1071,953"/>
+    <polygon class="mtn-snow" points="1056,927 1050.9,935.84 1053.45,937.34 1056.6,936.04"/>
+    <polygon class="mtn-snow-shade" points="1056,927 1056.6,936.04 1058.81,937.14 1061.1,935.84"/>
+    <polygon class="mtn-outline" points="1056,927 1041,953 1071,953"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1183,928 1168,954 1184.8,954"/>
+    <polygon class="mtn-shade" points="1183,928 1184.8,954 1198,954"/>
+    <polygon class="mtn-snow" points="1183,928 1177.9,936.84 1180.45,938.34 1183.6,937.04"/>
+    <polygon class="mtn-snow-shade" points="1183,928 1183.6,937.04 1185.81,938.14 1188.1,936.84"/>
+    <polygon class="mtn-outline" points="1183,928 1168,954 1198,954"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1123,934 1108,960 1124.8,960"/>
+    <polygon class="mtn-shade" points="1123,934 1124.8,960 1138,960"/>
+    <polygon class="mtn-snow" points="1123,934 1117.9,942.84 1120.45,944.34 1123.6,943.04"/>
+    <polygon class="mtn-snow-shade" points="1123,934 1123.6,943.04 1125.81,944.14 1128.1,942.84"/>
+    <polygon class="mtn-outline" points="1123,934 1108,960 1138,960"/>
+  </g>
+  <g class="mountain">
     <polygon class="mtn-lit" points="791,935 776,961 792.8,961"/>
     <polygon class="mtn-shade" points="791,935 792.8,961 806,961"/>
     <polygon class="mtn-snow" points="791,935 785.9,943.84 788.45,945.34 791.6,944.04"/>
@@ -668,6 +724,20 @@
     <polygon class="mtn-outline" points="744,943 729,969 759,969"/>
   </g>
   <g class="mountain">
+    <polygon class="mtn-lit" points="1233,944 1218,970 1234.8,970"/>
+    <polygon class="mtn-shade" points="1233,944 1234.8,970 1248,970"/>
+    <polygon class="mtn-snow" points="1233,944 1227.9,952.84 1230.45,954.34 1233.6,953.04"/>
+    <polygon class="mtn-snow-shade" points="1233,944 1233.6,953.04 1235.81,954.14 1238.1,952.84"/>
+    <polygon class="mtn-outline" points="1233,944 1218,970 1248,970"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1152,949 1137,975 1153.8,975"/>
+    <polygon class="mtn-shade" points="1152,949 1153.8,975 1167,975"/>
+    <polygon class="mtn-snow" points="1152,949 1146.9,957.84 1149.45,959.34 1152.6,958.04"/>
+    <polygon class="mtn-snow-shade" points="1152,949 1152.6,958.04 1154.81,959.14 1157.1,957.84"/>
+    <polygon class="mtn-outline" points="1152,949 1137,975 1167,975"/>
+  </g>
+  <g class="mountain">
     <polygon class="mtn-lit" points="1266,955 1251,981 1267.8,981"/>
     <polygon class="mtn-shade" points="1266,955 1267.8,981 1281,981"/>
     <polygon class="mtn-snow" points="1266,955 1260.9,963.84 1263.45,965.34 1266.6,964.04"/>
@@ -680,6 +750,20 @@
     <polygon class="mtn-snow" points="837,970 831.9,978.84 834.45,980.34 837.6,979.04"/>
     <polygon class="mtn-snow-shade" points="837,970 837.6,979.04 839.8,980.14 842.1,978.84"/>
     <polygon class="mtn-outline" points="837,970 822,996 852,996"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1239,977 1224,1003 1240.8,1003"/>
+    <polygon class="mtn-shade" points="1239,977 1240.8,1003 1254,1003"/>
+    <polygon class="mtn-snow" points="1239,977 1233.9,985.84 1236.45,987.34 1239.6,986.04"/>
+    <polygon class="mtn-snow-shade" points="1239,977 1239.6,986.04 1241.81,987.14 1244.1,985.84"/>
+    <polygon class="mtn-outline" points="1239,977 1224,1003 1254,1003"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="1270,988 1255,1014 1271.8,1014"/>
+    <polygon class="mtn-shade" points="1270,988 1271.8,1014 1285,1014"/>
+    <polygon class="mtn-snow" points="1270,988 1264.9,996.84 1267.45,998.34 1270.6,997.04"/>
+    <polygon class="mtn-snow-shade" points="1270,988 1270.6,997.04 1272.81,998.14 1275.1,996.84"/>
+    <polygon class="mtn-outline" points="1270,988 1255,1014 1285,1014"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="877,1002 862,1028 878.8,1028"/>
@@ -889,7 +973,7 @@
   <text id="label-LVI" class="label" x="1232" y="843.4">LVI</text>
   <text id="label-POZ" class="label" x="778" y="591.4">POZ</text>
   <text id="label-SIL" class="label" x="888" y="739.4">SIL</text>
-  <text id="label-HUN" class="label" x="1144" y="997.4">HUN</text>
+  <text id="label-HUN" class="label" x="1144" y="1029.4">HUN</text>
   <text id="label-BOH" class="label" x="826" y="849.4">BOH</text>
   <text id="label-AUS" class="label" x="742" y="1121.4">AUS</text>
   <text id="label-SAL" class="label small" x="668" y="1047.6">SAL</text>
