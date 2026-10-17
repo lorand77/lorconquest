@@ -1,7 +1,7 @@
 # MITTELEUROPA 1440
 ### Real-time grand strategy — current ruleset
 
-> **Scenario scaling.** `x` is a per-scenario cost multiplier. `x0.1M` means `x × 0.1M`.
+> **Scenario scaling.** `x` is a per-scenario cost multiplier. `x1.5MR` means `x × 1.5M` R.
 > `x` applies to **tech costs, starting treasury, the flat R bonus, and the sniper and cannon
 > counts in combat** (§5, §6) — never to shop prices.
 > Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](SCENARIO.md).
@@ -71,7 +71,7 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 ### Starting values
 | | |
 |---|---|
-| Treasury | **x0.1M** |
+| Treasury | **x × pop × 2** — one year of money from its people (a 10K town 20K, a 50K country 100K) |
 | Soldiers | pop ÷ 25, equipped with swords |
 | Ships | pop ÷ 2000 — **coastal countries only** |
 | Cores | **every starting settlement is core** |
@@ -89,14 +89,14 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Walls** | 0.1M | — | ×1.8 defence, doubles siege time |
 | **Library** | 0.075M | — | +5% of total R · max one per settlement · capped at +50% (see §4) |
 | **Workshop** | 0.075M | — | +3500 money from settlement |
-| **Market** | 0.075M | — | +10% money from settlement |
+| **Market** | 0.075M | — | +15% money from settlement |
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
 | **Muskets** (1000) | 0.05M | x1.5MR | ×1.3 |
 | **Rifles** (1000) | 0.1M | x4MR | ×2 |
 | **Cannons** (100) | 0.1M | x1.5MR | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
-| **Snipers** (20) | 0.01M | x1MR | Bought and stationed at a mountain pass you own (§8) |
+| **Snipers** (20) | 0.05M | x1MR | Bought and stationed at a mountain pass you own (§8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 ships** | 0.1M | — | ×1 each |
 | **10 gunships** | 0.2M | x3MR | ×3 each |
