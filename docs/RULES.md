@@ -401,6 +401,27 @@ one side a vassal or protectorate of the other, releasing subjects. If you have 
 your enemy's settlements, you dictate the terms. Settlements stay with whoever holds them when
 peace is signed, unless the terms move them. Signing peace starts a **truce**.
 
+### Warmongers
+Every country has a **warmonger score**, starting at 0 and shown to everyone. It rises when you
+go to war for gain:
+
+| You | Warmonger score |
+|---|---|
+| Declare a war | +5 |
+| End a war holding a settlement you took in it — captured, or given to you in the peace | +1 per 1,000 of its pop (a town ≈ +10, a city ≈ +20) |
+| Make a country your vassal in a peace | +10 |
+| Make a country your protectorate in a peace | +5 |
+
+Retaking a settlement that was **your core when the war began** adds nothing, and neither does
+fighting a war someone declared on you. Subjects gained by demand or through the HRE add
+nothing either — they agreed. The score falls by **2 every year**, down to 0.
+
+*Example:* Bavaria declares war on Bohemia and keeps all three of its settlements (40K) at the
+peace: +5 + 40 = **45**, gone in about 22 years.
+
+A warmonger is punished in two ways: computer countries like it less (*Opinion* below), and its
+neighbours are more willing to ally with each other against it (*Alliances* below).
+
 ### Computer countries
 A computer-run country answers a proposal the moment it is made. You may make each kind of
 proposal to the same country **once every 5 years**. The HRE proposal is not limited by this —
@@ -431,6 +452,7 @@ the sum of everything below that applies:
 | You fought a war against it in the last 20 years | −25 |
 | You broke an agreement with anyone in the last 10 years | −40 |
 | It refused your demand to become your subject, or to join your Empire, in the last 10 years | −30 |
+| Your warmonger score — in full if you share a border, half if you do not | −score, at most −60 |
 
 **Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:
 ```
@@ -447,7 +469,10 @@ war score is 0 or more.
 The computer accepts if `opinion + need ≥ the bar`:
 ```
 need = 10 × (its strongest neighbour's soldiers ÷ its soldiers − 1), between 0 and +40
+     + its neighbours' highest warmonger score ÷ 2, up to +30       not counting you
 ```
+The warmonger part never counts the country making the proposal — a warmonger frightens its
+neighbours into each other's arms, not into its own.
 | Proposal | Bar |
 |---|---|
 | You guarantee it | −20 |
@@ -457,6 +482,11 @@ need = 10 × (its strongest neighbour's soldiers ÷ its soldiers − 1), between
 | Military alliance | +40 |
 
 A neighbour is any country whose settlements share a land route with its settlements.
+
+**Coalitions.** At the start of each year, every computer country that borders a country with a
+warmonger score of **30 or more** proposes a **defensive alliance** to every other computer
+country that borders the same warmonger. Each proposal is answered as above — the warmonger part
+of `need` counts for both, since neither is the warmonger.
 
 **Becoming your subject** — mostly size, a little opinion. The HRE vote is rolled the same way
 ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)):
