@@ -32,7 +32,8 @@ Every **town** (red circle) starts at **10,000 pop**; every **city** (red square
 
 ```
 civilians        = pop − soldiers, spread over your settlements in proportion to their pop
-settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + Workshops and Markets, §3)
+settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + 3500 per Workshop)
+                   × (1 + 15% if it has a Market)           (Workshops and Markets, §3)
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
@@ -114,7 +115,7 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Walls** | 0.1M | — | ×1.8 defence, doubles siege time |
 | **Library** | 0.075M | — | +5% of total R · max one per settlement · capped at +50% (see §4) |
 | **Workshop** | 0.075M | — | +3500 money from settlement |
-| **Market** | 0.075M | — | +15% money from settlement |
+| **Market** | 0.075M | — | +15% money from settlement — its Workshop's 3500 included |
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |

@@ -229,7 +229,7 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **HRE settlements (55):** 10–14, 28–30, 32–42, 44–78, 85 — held by 30 of the 45 countries.
 
-**Ports (21):** 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 57, 65, 66, 89
+**Ports (21):** 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 57, 65, 66, 89 — on the coast; grow +0.5% more (RULES.md §2).
 
 **On a river (24):** 16, 30, 31, 32, 33, 35, 36, 42, 43, 45, 46, 47, 48, 51, 57, 58, 59, 61, 66, 69, 73, 81, 86, 88 — within 24px of a river on the map; grow +0.5% more (RULES.md §2).
 
