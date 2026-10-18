@@ -68,11 +68,12 @@ takes them out of the population.
 **Pop growth:** +1% per year, **+0.5%** more if on a river or coast.
 
 **Casualties cost population.** Every soldier who dies is removed from your population, not
-just from the army — whether killed in battle, by sharpshooters, in a lost storm, or by disease in a
-siege (§6). Each lost cannon also kills its **10 crew**, and each ship sunk at sea kills its
-**50 crew**. Sharpshooters count too — each one killed when its post is stormed or its pass is
-lost (§8) is one person lost. The loss is spread across all settlements you own **in proportion to their
-population**, so a 20K city loses twice as many people as a 10K town. Lost people come back
+just from the army — whether killed in battle, by sharpshooters, in a lost storm, by lack of
+supply (§8) or by disease in a siege (§6). Each lost cannon also kills its **10 crew**, and each
+ship sunk at sea kills its **50 crew**. Sharpshooters count too — each one killed when its post
+is stormed or its pass is lost (§8) is one person lost. The loss is spread across all settlements
+you own **in proportion to their population**, so a 20K city loses twice as many people as a 10K
+town. Lost people come back
 only through growth or **Buy people**.
 
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
@@ -92,7 +93,7 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 |---|---|
 | Treasury | **x × pop × 2** — one year of money from its people (a 10K town 20K, a 50K country 100K) |
 | Soldiers | pop ÷ 25, equipped with swords |
-| Ships | pop ÷ 2000 carracks — **coastal countries only** |
+| Ships | pop ÷ 2000 cogs — **coastal countries only** |
 | Cores | **every starting settlement is core** |
 
 **Capital.** Each country starts with the capital its scenario names — a city if it owns one. If
@@ -112,16 +113,18 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
+| **Pikes** (1000) | 0.03M | unlocked | ×1.2 · makes guns stronger in pike and shot (§5) |
+| **Cavalry** (1000) | 0.06M | unlocked | ×1.4 · horses, armour and lances · field battles only (§5) |
 | **Hand cannons** (1000) | 0.05M | x1.5MR | ×1.3 |
 | **Arquebuses** (1000) | 0.07M | x2MR | ×1.6 |
 | **Muskets** (1000) | 0.1M | x3.5MR | ×2 |
 | **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
 | **Sharpshooters** (5) | 0.0125M | x1MR | Bought and stationed at a mountain pass you own (§8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
-| **10 carracks** | 0.1M | unlocked | ×1 each |
-| **10 galleons** | 0.2M | x3MR | ×3 each |
-| **10 frigates** | 0.33M | x8MR | ×5 each |
-| **10 steam ships** | 0.5M | x12MR | ×8 each |
+| **10 cogs** | 0.1M | unlocked | ×1 each |
+| **10 carracks** | 0.2M | x3MR | ×3 each |
+| **10 galleons** | 0.33M | x8MR | ×5 each |
+| **10 men-of-war** | 0.5M | x12MR | ×8 each |
 
 **Every cannon needs 10 crewmen.** Cannon crew do **not** count as men in the power formula.
 **Every ship needs 50 crew at sea.** Ships in port need no crew. **Ships have no upkeep** of
@@ -135,11 +138,11 @@ sharpshooters** — each sharpshooter is one soldier on the army cap.
 ## 4. TECHNOLOGY
 
 ```
-Swords, Cannons (unlocked)
+Swords, Pikes, Cavalry, Cannons (unlocked)
 Swords ──▶ Hand cannons ──▶ Arquebuses ──┬──▶ Muskets
                                          └──▶ Sharpshooters
 
-Carracks (unlocked) ──▶ Galleons ──▶ Frigates ──▶ Steam ships   [not supposed to get this]
+Cogs (unlocked) ──▶ Carracks ──▶ Galleons ──▶ Men-of-war
 ```
 
 **Research slider.** You set the slider from **0% to 100%** in steps of 10%. Every country starts
@@ -178,13 +181,22 @@ one Library.
 
 ```
 power = (men + cannons × 13) × (2d6 + 4)
-        ×2 for musketeers · ×1.6 for arquebusiers · ×1.3 for hand gunners · ×1.2 for the cannons
+        ×2 for musketeers · ×1.6 for arquebusiers · ×1.4 for cavalry · ×1.3 for hand gunners
+        ×1.2 for pikemen · ×1.2 for the cannons
 ```
 
 - Cannon crew are **not** counted in `men`.
 - **Men without weapons have power 0.**
 - Multipliers apply per weapon group — if 1,000 men have muskets and the rest swords, only those
   1,000 get the ×2. The cannons’ ×1.2 applies only to the `cannons × 13` part.
+- **Pike and shot.** If at least **a third** of an army's armed men carry pikes, its guns — hand
+  gunners, arquebusiers and musketeers — fight at **+20%** (muskets ×2.4, arquebuses ×1.92, hand
+  cannons ×1.56). A third pikes and two thirds arquebuses averages ×1.68, better and cheaper than
+  all arquebuses; with muskets the mix only ties on power (though pikes cost less), as pikes
+  faded once muskets took over.
+- **Cavalry** is a field arm. It fights at **×1** — no bonus — in a storm on either side (§6), at
+  a mountain pass, against a sharpshooter post, and against an army in which at least **a third**
+  of the armed men carry pikes or **half** carry muskets.
 - **`2d6 + 4`** — each side rolls two dice and adds 4, so its factor is 6–16, most often around
   11. Every battle in the game uses it (land, sharpshooter posts, sea). An army 2:1 stronger wins
   about 98% of the time; only at about 2.7:1 is the win certain.
@@ -195,22 +207,24 @@ battles:
 military power = men × their weapon multiplier + cannons × 15.6 + sharpshooters × 50
 ```
 It is the power formula without the dice or any defence bonus, summed over every army, garrison
-and sharpshooter post the country owns. Men without weapons and men still in training count 0;
-ships do not count.
+and sharpshooter post the country owns. Weapons count at their plain multipliers — cavalry ×1.4,
+no pike-and-shot bonus. Men without weapons and men still in training count 0; ships do not
+count.
 
 **Damage** — applied as a percentage of men, cannons and equipment:
 ```
-winner loses  (P_loser  ÷ P_winner) × 30 %
-loser  loses  (P_winner ÷ P_loser ) × 30 %      capped at 100%
+winner loses  (P_loser  ÷ P_winner) × 10 %
+loser  loses  (P_winner ÷ P_loser ) × 25 %      capped at 100%
 ```
 
 | Ratio | Winner loses | Loser loses |
 |---|---|---|
-| 1:1 | 30% | 30% |
-| 2:1 | 15% | 60% |
-| 3:1 | 10% | 90% |
-| 10:3 (≈3.33:1) or more | 9% or less | wiped out |
+| 1:1 | 10% | 25% |
+| 2:1 | 5% | 50% |
+| 3:1 | 3.3% | 75% |
+| 4:1 or more | 2.5% or less | wiped out |
 
+The loser always suffers more: most men in a real battle fell when their side broke and ran.
 Men killed are also lost from your population — see *Casualties cost population* (§2).
 
 **Ties.** If both sides end with exactly equal power, the **defender wins**. The defender is
@@ -296,7 +310,7 @@ besieger. The garrison is **disbanded on the spot**: its men go back to its coun
 ## 7. NAVAL
 
 ```
-power = (carracks + galleons × 3 + frigates × 5 + steam ships × 8) × (2d6 + 4)
+power = (cogs + carracks × 3 + galleons × 5 + men-of-war × 8) × (2d6 + 4)
 ```
 Damage as in a land battle, applied to ships (rounded). Crew of sunk ships are lost from
 your population (§2).
@@ -367,6 +381,17 @@ settlement.
 
 **Zone of control.** An army entering a province with an enemy army stops there and engages,
 cancelling the rest of its path.
+
+**Supply.** Armies live off the land. A settlement's land feeds **half its pop** in soldiers — a
+10K town 5,000, a 20K city 10,000 — and **×1.5 if the settlement is on a river** (listed in the
+scenario). A pass is fed by the land it lies in. An army outside **friendly land** (its own
+country's, its subjects' or overlord's, its allies') that has more soldiers than the land feeds
+loses **1% of its men every month**, lost from your population like any casualty (§2). An army
+counts as in the land of the settlement or pass it is at or besieging, and while marching, of the
+one it is marching to. Every army of the same country in one land counts together, so splitting
+up means spreading out. A besieger over the limit loses 2% a month: 1% to supply, 1% to siege
+disease (§6).
+Peasant rebels (§11) are fed by their own people and never suffer this.
 
 **Orders:** `move` · `besiege` · `storm` · `sortie` (garrison only, §6).
 **Fleet orders:** `move` · `blockade` · `patrol` (§7).
