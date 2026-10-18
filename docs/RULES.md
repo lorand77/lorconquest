@@ -2,8 +2,8 @@
 ### Real-time grand strategy — current ruleset
 
 > **Scenario scaling.** `x` is a per-scenario cost multiplier. `x1.5MR` means `x × 1.5M` R.
-> `x` applies to **tech costs, starting treasury, the flat R bonus, and the sharpshooter and cannon
-> counts in combat** (§5, §6) — never to shop prices.
+> `x` applies to **tech costs, starting treasury, the flat R bonus, the sharpshooter and cannon
+> counts in combat and the ships needed to cross a strait** (§5, §6, §8) — never to shop prices.
 > Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](SCENARIO.md).
 > Town and city populations (10K / 20K) are the same in every scenario; what changes between
 > scenarios is the map, country sizes, costs, coring, and the victory condition.
@@ -158,7 +158,7 @@ one Library.
 ## 5. LAND COMBAT
 
 ```
-power = (men + cannons × 13) × (d6 + 6)
+power = (men + cannons × 13) × (2d6 + 4)
         ×2 for musketeers · ×1.6 for arquebusiers · ×1.3 for matchlock men · ×1.2 for the cannons
 ```
 
@@ -166,6 +166,18 @@ power = (men + cannons × 13) × (d6 + 6)
 - **Men without weapons have power 0.**
 - Multipliers apply per weapon group — if 1,000 men have muskets and the rest swords, only those
   1,000 get the ×2. The cannons’ ×1.2 applies only to the `cannons × 13` part.
+- **`2d6 + 4`** — each side rolls two dice and adds 4, so its factor is 6–16, most often around
+  11. Every battle in the game uses it (land, sharpshooter posts, sea). An army 2:1 stronger wins
+  about 98% of the time; only at about 2.7:1 is the win certain.
+
+**Military power** — a country's whole land force on paper, used by diplomacy (§10) rather than
+battles:
+```
+military power = men × their weapon multiplier + cannons × 15.6 + sharpshooters × 50
+```
+It is the power formula without the dice or any defence bonus, summed over every army, garrison
+and sharpshooter post the country owns. Men without weapons and men still in training count 0;
+ships do not count.
 
 **Damage** — applied as a percentage of men, cannons and equipment:
 ```
@@ -205,7 +217,8 @@ nowhere to retreat and **the whole losing army dies**.
 | Settlement with walls | ×1.8 |
 
 The mountain ×2 applies **only at mountain passes**. A pass has no settlement, so the pass and
-settlement bonuses never stack.
+settlement bonuses never stack. **Walls replace the settlement bonus** — a walled settlement
+defends at ×1.8, not 1.2 × 1.8.
 
 Every **100 × x** cannons the attacker brings lowers the wall multiplier by **0.3**, floored at **1.2**.
 
@@ -223,7 +236,7 @@ fired on again. Sharpshooters take no losses when they fire, and survivors pass 
 **Clearing sharpshooters.** An army may `storm` the sharpshooter post. Resolve it as a field
 battle in which each sharpshooter counts as **50 power**:
 ```
-sharpshooter power = sharpshooters × 50 × (d6 + 6)
+sharpshooter power = sharpshooters × 50 × (2d6 + 4)
 ```
 The pass ×2 does **not** apply to sharpshooters. Losses are applied as in a normal battle.
 
@@ -264,7 +277,7 @@ besieger. The garrison is **disbanded on the spot**: its men go back to its coun
 ## 7. NAVAL
 
 ```
-power = (carracks + galleons × 3 + frigates × 5 + steam ships × 8) × (d6 + 6)
+power = (carracks + galleons × 3 + frigates × 5 + steam ships × 8) × (2d6 + 4)
 ```
 Damage as in a land battle, applied to ships (rounded). Crew of sunk ships are lost from
 your population (§2).
@@ -342,7 +355,7 @@ cancelling the rest of its path.
 **Battle cooldown:** one resolution per pair of armies per 3 months. The loser retreats
 immediately, as in §5 *After the battle*.
 
-**Straits (dashed lines).** An army may cross if you control **≥10 ships** in that sea zone (see
+**Straits (dashed lines).** An army may cross if you control **≥10 × x ships** in that sea zone (see
 [Sea zones](SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes
 **3 months**. If an enemy fleet is present, fight a naval battle first — lose and the crossing fails.
 
@@ -421,8 +434,9 @@ drops by **40 for 10 years** (see *Computer countries*).
 A country becomes your subject through a peace treaty, by agreeing to your demand, or — protectorates
 only — through the Holy Roman Empire ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)).
 
-**Breaking free.** A subject breaks free the moment it has **more soldiers than you**. This is not
-breaking an agreement.
+**Breaking free.** A subject breaks free the moment its **military power** (§5) is greater than
+yours. This is not breaking an agreement. Raising unarmed men never frees a subject — it has to
+arm them, and an overlord with better weapons stays ahead with fewer men.
 
 ### Peace
 Either side may propose peace, with **any terms both sides agree to**: settlements, money, making
@@ -461,10 +475,11 @@ A computer-run country answers a proposal the moment it is made. You may make ea
 proposal to the same country **once every 5 years**. The HRE proposal is not limited by this —
 it has its own once-ever rule ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)).
 
-**Strength** compares soldiers (§2 — cannon and ship crew included):
+**Strength** compares **military power** (§5) — armed men, cannons and sharpshooters, not ships:
 ```
-strength = your soldiers ÷ their soldiers
+strength = your military power ÷ their military power
 ```
+If the other side has none, every part that uses strength is at its cap.
 
 **Size** compares population — every settlement each side owns, core and non-core, not counting
 subjects. Unlike soldiers, population cannot be raised in a hurry, so size is what subject
@@ -502,7 +517,7 @@ war score is 0 or more.
 **Alliances, guarantees and pacts** — opinion, plus how threatened it feels by its neighbours.
 The computer accepts if `opinion + need ≥ the bar`:
 ```
-need = 10 × (its strongest neighbour's soldiers ÷ its soldiers − 1), between 0 and +40
+need = 10 × (its strongest neighbour's military power ÷ its own − 1), between 0 and +40
      + its neighbours' highest warmonger score ÷ 2, up to +30       not counting you
 ```
 The warmonger part never counts the country making the proposal — a warmonger frightens its
@@ -545,7 +560,7 @@ Rolled at the start of each year.
 | Event | Chance | Effect |
 |---|---|---|
 | Good harvest | 10% | +10% money that year |
-| Plague | 5% | −10% pop |
+| Plague | 2.5% | −5% pop |
 | Peasant uprising | 15% *(only if a plague struck in the last year)* | See below |
 
 **Peasant uprising.** A rebel country forms with soldiers equal to **3% of your total population**

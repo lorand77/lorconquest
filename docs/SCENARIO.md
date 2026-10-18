@@ -247,7 +247,7 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, North Sea and Curonian Sea, are 5 hops (10 months).
 
-**Naval powers:** 14 countries, 180 ships. Crossing a strait needs 10 ships in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there.
+**Naval powers:** 14 countries, 180 ships. Crossing a strait needs 10 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
@@ -337,7 +337,10 @@ opinion of you (RULES.md §10).
 > **Control or vassalize 45 settlements.** Protectorates count as half — unless you demand one
 > become a vassal and it agrees.
 
-There is **no end date**. The game ends only when a player reaches 45.
+**End date: 1650.** The game ends when a player reaches 45, or at the start of **1650** —
+210 years, about 2 hours 8 minutes of play. At the end date the player with the most settlements
+wins, counted the same way: controlled and vassalized settlements count 1, protectorates ½. A tie
+goes to the larger total population (own settlements and subjects).
 
 ---
 
