@@ -479,10 +479,11 @@ it has its own once-ever rule ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire))
 ```
 strength = your military power ÷ their military power
 ```
-If the other side has none, every part that uses strength is at its cap.
+**No army.** If the country divided by has no military power, the ratio counts as at its cap wherever
+it is used — here and in `need` below. If neither side has any, it counts as 1.
 
 **Size** compares population — every settlement each side owns, core and non-core, not counting
-subjects. Unlike soldiers, population cannot be raised in a hurry, so size is what subject
+subjects. Unlike armies, population cannot be raised in a hurry, so size is what subject
 demands and the HRE vote are rolled on:
 ```
 size = your pop ÷ their pop

@@ -9,7 +9,7 @@
 #
 # Only core Perl is needed.
 use strict; use warnings; use utf8; use open qw(:std :encoding(UTF-8));
-use File::Basename qw(dirname); use Cwd qw(abs_path); use JSON::PP; use List::Util qw(min max);
+use File::Basename qw(dirname); use Cwd qw(abs_path); use JSON::PP; use List::Util qw(min max); use POSIX qw(ceil);
 
 my $ROOT = dirname(dirname(abs_path(__FILE__)));
 my ($DOC, $BASE, $SVG, $JSON) = map { "$ROOT/docs/$_" } qw(SCENARIO.md map-base.svg map.svg scenario.json);
@@ -116,7 +116,7 @@ my @PEAKS;                               # the ``` block under ## Mountains
   for my $i ($f[0] + 1 .. $f[1] - 1) { push @PEAKS, [ $1, $2 ] while $doc[$i] =~ /(\d+),(\d+)/g } }
 my ($SPEED) = map { /^\*\*Army speed:\*\*\s*(\d+(?:\.\d+)?)/ ? $1 : () } @doc;      # army speed, map units per year
 my ($XS) = map { /^\*\*x = (\d+(?:\.\d+)?)\*\*/ ? $1 : () } @doc;             # scenario scaling x (RULES.md, top)
-err("SCENARIO.md: no '**x = N**' line") unless $XS; my $STRAITN = 10 * ($XS // 1);     # ships needed to cross a strait: 10 × x (RULES.md §8)
+err("SCENARIO.md: no '**x = N**' line") unless $XS; my $STRAITN = ceil(sprintf '%.6f', 10 * ($XS // 1));     # ships needed to cross a strait: at least 10 × x (RULES.md §8), so rounded up
 err("SCENARIO.md: no '**Army speed:** N map units per year' line") unless $SPEED;
 my %DELAY;                               # months from RULES.md §8: crossing a river, each leg to or from a pass, a fleet's hop between zones
 { open my $r, '<', "$ROOT/docs/RULES.md" or die "RULES.md: $!";
@@ -503,7 +503,7 @@ generated('overview',
     sprintf("**HRE settlements (%d):** %s — held by %d of the %d countries.", scalar @hre, ranges(@hre), scalar @hrec, scalar @CORDER), '',
     sprintf("**Ports (%d):** %s", scalar(grep { $S{$_}{port} } @ids), join(', ', grep { $S{$_}{port} } @ids)), '',
     sprintf("**On a river (%d):** %s — within %dpx of a river on the map; grow +0.25%% more (RULES.md §2).", scalar @onriver, join(', ', @onriver), $RIVER_NEAR), '',
-    sprintf("**Routes crossing a river (%d):** %s — +2 months to march (RULES.md §8).", scalar @crossing, join(', ', @crossing)), '',
+    sprintf("**Routes crossing a river (%d):** %s — +%d month%s to march (RULES.md §8).", scalar @crossing, join(', ', @crossing), $DELAY{river}, $DELAY{river} == 1 ? "" : "s"), '',
     do { my @y = sort { $a <=> $b } map { $YEARS{$_} } keys %LAND; my @p = sort { $a <=> $b } map { $YEARS{$_} } grep { $VIA{$_} } keys %LAND;
         sprintf('**Marching** at %s map units a year, +%d month%s per river crossing, +%d per leg to or from a pass: a route takes %.2f–%.2f years (median %.2f); through a pass %.2f–%.2f.',
             $SPEED, $DELAY{river}, $DELAY{river} == 1 ? "" : "s", $DELAY{pass}, $y[0], $y[-1], $y[$#y / 2], $p[0], $p[-1]) }, '',

@@ -233,7 +233,7 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 
 **On a river (24):** 16, 30, 31, 32, 33, 35, 36, 42, 43, 45, 46, 47, 48, 51, 57, 58, 59, 61, 66, 69, 73, 81, 86, 88 — within 24px of a river on the map; grow +0.25% more (RULES.md §2).
 
-**Routes crossing a river (49):** 12-67, 12-69, 15-16, 16-81, 16-88, 20-88, 21-88, 22-87, 22-88, 23-86, 23-87, 28-30, 28-33, 29-30, 30-36, 30-73, 30-85, 32-33, 33-35, 34-35, 35-36, 35-37, 35-38, 36-71, 36-72, 37-71, 40-47, 41-46, 41-47, 45-46, 48-49, 48-50, 48-71, 49-52, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 65-66, 66-67, 69-75, 72-73, 73-74, 74-75, 74-76, 74-77, 74-83 — +2 months to march (RULES.md §8).
+**Routes crossing a river (49):** 12-67, 12-69, 15-16, 16-81, 16-88, 20-88, 21-88, 22-87, 22-88, 23-86, 23-87, 28-30, 28-33, 29-30, 30-36, 30-73, 30-85, 32-33, 33-35, 34-35, 35-36, 35-37, 35-38, 36-71, 36-72, 37-71, 40-47, 41-46, 41-47, 45-46, 48-49, 48-50, 48-71, 49-52, 55-58, 55-59, 55-61, 56-57, 56-58, 60-61, 65-66, 66-67, 69-75, 72-73, 73-74, 74-75, 74-76, 74-77, 74-83 — +1 month to march (RULES.md §8).
 
 **Marching** at 480 map units a year, +1 month per river crossing, +2 per leg to or from a pass: a route takes 0.08–0.79 years (median 0.28); through a pass 0.57–0.79.
 
@@ -297,8 +297,8 @@ is core again on capture.
 ## Sea zones
 
 Six zones, split by the dashed lines in the sea. A fleet operates in one zone at a time (RULES.md §7).
-A port belongs to the zone its coast faces; crossing a strait needs 10 ships in the zone the strait
-lies in (RULES.md §8). *Zone, X and Y are data — X, Y is where the name is drawn, and the zone it
+A port belongs to the zone its coast faces; crossing a strait needs 10 × x ships in the zone the
+strait lies in (RULES.md §8). *Zone, X and Y are data — X, Y is where the name is drawn, and the zone it
 names is the one around that point; the other columns are generated from the map.*
 
 | Zone | X | Y | Ports | Straits | Next to |
@@ -361,8 +361,8 @@ the first year.
   and runs inland to 81 Płock, with Prussia (which holds 16 Danzig itself) to the east, Poland
   to the south and Brandenburg on its western flank. Outside the HRE, so its path runs through
   Poland.
-- **Bavaria** — ringed by small states (Ulm, Stuttgart, Lower Germany, Tyrol, Jena), with
-  Austria, Bohemia and Saxony beyond them. The best expansion position on the map.
+- **Bavaria** — ringed by small states (Ulm, Lower Germany, Tyrol, Jena, with Stuttgart just behind
+  Ulm), and borders Austria, Bohemia and Saxony beyond them. The best expansion position on the map.
 - **Ruhr** — the densest cluster in the west, with five 10K neighbours.
 - **Brandenburg** — open ground, flanked by Saxony (40K), Schleswig (40K), Poznań and
   Gdansk (50K). With Gdansk, one of the only two great powers that border another, and the
@@ -374,7 +374,7 @@ the first year.
 |---|---|---|---|
 | **Bavaria** | 4 | Bohemia, Austria (**2**) | Ulm, Stuttgart, Lower Germany, Tyrol, Jena (**5**) |
 | **Ruhr** | 4 | Netherlands, Frankfurt, Trier (**3**) | the same |
-| **Brandenburg** | 4 | Mecklenburg, Magdeburg, Saxony (**3**) | Mecklenburg, Magdeburg, Hanover, Hamburg (**4**) |
+| **Brandenburg** | 4 | Mecklenburg, Magdeburg, Saxony (**3**) | Mecklenburg, Magdeburg, Hanover, Hamburg, Wolfsburg (**5**) |
 
 All three start with 4 HRE settlements and need 6 more. Bavaria's fastest route runs through
 two 40K neighbours; its safe route is five small conquests. Ruhr's three targets are all
