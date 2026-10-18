@@ -31,7 +31,7 @@ Start **1440 AD**.
 Every **town** (red circle) starts at **10,000 pop**; every **city** (red square) at **20,000**.
 
 ```
-settlement money = (core pop × 2 + non-core pop × 1 + Workshops and Markets, §3)
+settlement money = (core pop × tax + non-core pop × tax ÷ 2 + Workshops and Markets, §3)
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
@@ -41,6 +41,25 @@ money per year   = settlement money
 
 The conscription penalty cuts **settlement money only**, before upkeep is paid — never upkeep,
 bank interest or tribute (§10).
+
+**Tax.** You set the tax from **2 to 3** in steps of 0.1. Every country starts at **2**, the
+normal rate, and you may move it at any time. Each core person pays `tax` a year and each
+non-core person half of it, so tax 3 brings in 50% more than tax 2 (a Workshop's flat 3500 does
+not change). Taxing above 2 risks a **peasant uprising** (§11), rolled each year on your
+**average tax over the past year** — lowering it just before the roll does not help:
+```
+uprising chance per year = (average tax − 2)² × 25%
+```
+
+| Tax | Settlement money | Uprising chance per year |
+|---|---|---|
+| **2** | normal | **0%** |
+| 2.2 | +10% | 1% |
+| 2.4 | +20% | 4% |
+| 2.5 | +25% | 6.25% |
+| 2.6 | +30% | 9% |
+| 2.8 | +40% | 16% |
+| **3** | **+50%** | **25%** — about one every 4 years |
 
 **Soldiers are still people.** A serving soldier stays in your population: they earn money like
 anyone else in their settlement, count toward growth, and pay upkeep on top. Only death (below)
@@ -563,10 +582,10 @@ Rolled at the start of each year.
 |---|---|---|
 | Good harvest | 10% | +10% money that year |
 | Plague | 5% | −10% pop |
-| Peasant uprising | 15% *(only if a plague struck in the last year)* | See below |
+| Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) | See below |
 
-**Peasant uprising.** A rebel country forms with soldiers equal to **3% of your total population**
-(every settlement you own, core and non-core), armed with swords, spawning
-outside your capital. It holds cores on everything and attacks towns and cities, favouring
-undefended ones and your core territory. **There is no peace with peasants.**
+**Peasant uprising.** Overtaxed peasants rise against you. A rebel country forms with soldiers
+equal to **3% of your total population** (every settlement you own, core and non-core), armed
+with swords, spawning outside your capital. It holds cores on everything and attacks towns and
+cities, favouring undefended ones and your core territory. **There is no peace with peasants.**
 
