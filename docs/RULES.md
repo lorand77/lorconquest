@@ -37,11 +37,12 @@ settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + Wor
 
 money per year   = settlement money
                  − soldiers × 5      (cannon crew, ship crew at sea and sharpshooters count as soldiers)
+                 + tribute you receive − tribute you pay (§10)
                  + bank interest
 ```
 
 The conscription penalty cuts **settlement money only**, before upkeep is paid — never upkeep,
-bank interest or tribute (§10).
+bank interest or tribute (§10). A subject pays its overlord a share of its money per year *before* its own tribute is counted.
 
 **Tax.** You set the tax from **2 to 3** in steps of 0.1. Every country starts at **2**, the
 normal rate, and you may move it at any time. Each core civilian pays `tax` a year and each
@@ -309,7 +310,7 @@ defence bonus** (no settlement or wall multiplier). If the garrison wins, the be
 and the siege ends. If it loses, it falls back inside and the siege continues on the same timer.
 
 **Surrender.** When the timer expires the garrison surrenders and the settlement falls to the
-besieger. The garrison is **disbanded on the spot**: its men go back to its country's population
+besieger. The garrison is **disbanded on the spot**: its men come home as civilians
 (no one dies), but its weapons and cannons are lost — they do **not** go to the reserve.
 
 ---
@@ -346,11 +347,11 @@ your population (§2).
 While training, men already count toward your army cap (§9) and pay soldier upkeep (§2).
 When they are ready they appear in that settlement and join any army of yours there, or form a
 new one; to reach an army elsewhere they march like any other army. If the settlement is
-captured or stops being core before they are ready, the training is cancelled and the men go
-back to the population.
+captured or stops being core before they are ready, the training is cancelled and the men come
+home.
 
-You may upgrade weapons in an army instantly. You may also **remove men from an army** — they go
-back to the population and their weapons go to a reserve for later use; men raised again must
+You may upgrade weapons in an army instantly. You may also **remove men from an army** — they
+come home and their weapons go to a reserve for later use; men raised again must
 be trained again. Fleets work the same way — add ships to an existing task force or form a new
 one.
 
@@ -414,7 +415,7 @@ immediately, as in §5 *After the battle*.
 
 ## 9. CONSCRIPTION LAWS
 
-You cannot change again for **5 years**.
+You cannot change again for **5 years**. Every country starts at **Feudal levy**.
 
 | Law | Max army | Max navy | Total | Settlement money (§2) |
 |---|---|---|---|---|
@@ -565,7 +566,7 @@ the sum of everything below that applies:
 **Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:
 ```
 war score = % of its pop you have taken in this war − % of your pop it has taken
-            + 10 × (strength − 1), this part between −30 and +30
+            + 10 × (strength − 1), this part at most +30
 cost      = settlements you ask for, as % of its pop
             + 10 for each year of its money (§2) you ask for
             + 50 to make it your vassal · 25 to make it your protectorate

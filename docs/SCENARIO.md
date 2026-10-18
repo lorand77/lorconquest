@@ -254,11 +254,11 @@ units); `perl tools/map.pl mountains` moves any that touch something else.
 | GDA Gdansk | 15 | Baltic Sea | 25 | no — no strait in its zones |
 | SCH Schleswig | 10, 11 | Kattegat | 20 | yes: 6-7, 7-10 |
 | PRU Prussia | 16, 17 | Baltic Sea | 20 | no — no strait in its zones |
-| NOR Norway | 1, 2 | Skagerrak, Oslofjord | 15 | yes: 1-4, 2-5 |
+| NOR Norway | 1, 2 | Skagerrak, Oslofjord | 15 | yes: 1-4, 2-5 — one zone at a time (10 ships in each) |
 | LIT Lithuania | 18, 19, 89 | Curonian Sea | 15 | no — no strait in its zones |
 | NED Netherlands | 57 | North Sea | 15 | no — no strait in its zones |
 | STO Stockholm | 3 | Baltic Sea | 10 | no — no strait in its zones |
-| UDK Upper Denmark | 4, 5 | Skagerrak, Oslofjord | 10 | **exactly**: 1-4, 2-5 |
+| UDK Upper Denmark | 4, 5 | Skagerrak, Oslofjord | 10 | **exactly**: 1-4, 2-5 — one zone at a time (10 ships in each) |
 | LDK Lower Denmark | 9 | North Sea | 10 | no — no strait in its zones |
 | CPH Copenhagen | 7 | Kattegat | 10 | **exactly**: 6-7, 7-10 |
 | MEC Mecklenburg | 13, 14 | Baltic Sea | 10 | no — no strait in its zones |
@@ -359,7 +359,7 @@ the first year.
 
 - **Gdansk** — 25 ships, the largest navy on the map. Holds the Pomeranian coast at 15 Gdynia
   and runs inland to 81 Płock, with Prussia (which holds 16 Danzig itself) to the east, Poland
-  to the south and Brandenburg on its western flank. Outside the HRE, so its path runs through
+  to the south, and Mecklenburg and Brandenburg on its western flank. Outside the HRE, so its path runs through
   Poland.
 - **Bavaria** — ringed by small states (Ulm, Lower Germany, Tyrol, Jena, with Stuttgart just behind
   Ulm), and borders Austria, Bohemia and Saxony beyond them. The best expansion position on the map.
@@ -374,12 +374,13 @@ the first year.
 |---|---|---|---|
 | **Bavaria** | 4 | Bohemia, Austria (**2**) | Ulm, Stuttgart, Lower Germany, Tyrol, Jena (**5**) |
 | **Ruhr** | 4 | Netherlands, Frankfurt, Trier (**3**) | the same |
-| **Brandenburg** | 4 | Mecklenburg, Magdeburg, Saxony (**3**) | Mecklenburg, Magdeburg, Hanover, Hamburg, Wolfsburg (**5**) |
+| **Brandenburg** | 4 | Schleswig, Saxony (**2**) | Mecklenburg, Magdeburg, Hanover, Hamburg, Wolfsburg (**5**) |
 
 All three start with 4 HRE settlements and need 6 more. Bavaria's fastest route runs through
 two 40K neighbours; its safe route is five small conquests. Ruhr's three targets are all
-20–30K. Brandenburg can only skip Saxony (40K, three settlements) by working north and west
-through Magdeburg — and must watch Gdansk at its back either way. Whoever gets there first and
+20–30K. Brandenburg is the quickest — Schleswig and Saxony (both 40K, three HRE settlements each) are
+enough — and it can only avoid both by working north and west through Magdeburg. It must watch
+Gdansk at its back either way. Whoever gets there first and
 rolls well takes the Empire — and each only gets one attempt.
 
 **Gdansk starts with no HRE settlements**, so it would have to conquer ten before it could

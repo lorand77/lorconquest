@@ -519,9 +519,9 @@ generated('overview',
         . 'so at the start a country can only cross the straits of its own ports\' zones; for any other it must first sail %d ships there.', scalar @naval, $ships, $STRAITN, $STRAITN), '',
     '| Country | Ports held | Home zones | Ships | Can cross straits? |', '|---|---|---|---|---|',
     (map { my $c = $_; my %home = map { $S{$_}{zone}{name} => 1 } @{ $C{$c}{ports} }; my $n = $C{$c}{ships};
-        my @st = sort bykey grep { $home{ $SZ{$_}{name} } } keys %SZ; my $st = join ', ', @st;
+        my @st = sort bykey grep { $home{ $SZ{$_}{name} } } keys %SZ; my $zn = keys %{{ map { $SZ{$_}{name} => 1 } @st }}; my $st = join ', ', @st;
         sprintf '| %s | %s | %s | %d | %s |', cname($c), join(', ', @{ $C{$c}{ports} }), join(', ', map { $_->{name} } grep { $home{ $_->{name} } } @ZONES), $n,
-            !@st ? 'no — no strait in its zones' : $n > $STRAITN ? "yes: $st" : $n == $STRAITN ? "**exactly**: $st" : "no — too few ships for $st" } @naval));
+            !@st ? "no — no strait in its zones" : $n < $STRAITN ? "no — too few ships for $st" : $n < $STRAITN * $zn ? ($n == $STRAITN ? "**exactly**: $st" : "yes: $st") . " — one zone at a time ($STRAITN ships in each)" : $n == $STRAITN ? "**exactly**: $st" : "yes: $st" } @naval));
 open $fh, '>', $DOC or die "$DOC: $!"; print $fh map { "$_\n" } @doc; close $fh;
 
 # ---------- report ----------
