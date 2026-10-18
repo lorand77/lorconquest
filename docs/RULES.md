@@ -31,7 +31,8 @@ Start **1440 AD**.
 Every **town** (red circle) starts at **10,000 pop**; every **city** (red square) at **20,000**.
 
 ```
-settlement money = (core pop × tax + non-core pop × tax ÷ 2 + Workshops and Markets, §3)
+civilians        = pop − soldiers, spread over your settlements in proportion to their pop
+settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + Workshops and Markets, §3)
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
@@ -43,8 +44,8 @@ The conscription penalty cuts **settlement money only**, before upkeep is paid �
 bank interest or tribute (§10).
 
 **Tax.** You set the tax from **2 to 3** in steps of 0.1. Every country starts at **2**, the
-normal rate, and you may move it at any time. Each core person pays `tax` a year and each
-non-core person half of it, so tax 3 brings in 50% more than tax 2 (a Workshop's flat 3500 does
+normal rate, and you may move it at any time. Each core civilian pays `tax` a year and each
+non-core civilian half of it, so tax 3 brings in 50% more than tax 2 (a Workshop's flat 3500 does
 not change). Taxing above 2 risks a **peasant uprising** (§11), rolled each year on your
 **average tax over the past year** — lowering it just before the roll does not help:
 ```
@@ -61,9 +62,12 @@ uprising chance per year = (average tax − 2)² × 25%
 | 2.8 | +40% | 16% |
 | **3** | **+50%** | **25%** — about one every 4 years |
 
-**Soldiers are still people.** A serving soldier stays in your population: they earn money like
-anyone else in their settlement, count toward growth, and pay upkeep on top. Only death (below)
-takes them out of the population.
+**Soldiers are still people, but earn nothing.** A serving soldier stays in your population — they
+count toward growth and come home when disbanded — but while serving they farm and trade nothing:
+they pay no tax, and cost upkeep on top. Every man who counts as a soldier in the upkeep line
+above (men in training, cannon crew, ship crew at sea and sharpshooters too) is left out of
+`civilians`. A soldier therefore costs **7 a year** at tax 2 — 5 upkeep and 2 in lost tax. Only
+death (below) takes them out of the population.
 
 **Pop growth:** +1% per year, **+0.5%** more if on a river or coast.
 
@@ -91,7 +95,7 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 ### Starting values
 | | |
 |---|---|
-| Treasury | **x × pop × 2** — one year of money from its people (a 10K town 20K, a 50K country 100K) |
+| Treasury | **x × pop × 2** — about one year of money from its people (a 10K town 20K, a 50K country 100K) |
 | Soldiers | pop ÷ 25, equipped with swords |
 | Ships | pop ÷ 2000 cogs — **coastal countries only** |
 | Cores | **every starting settlement is core** |
@@ -119,7 +123,7 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Arquebuses** (1000) | 0.07M | x2MR | ×1.6 |
 | **Muskets** (1000) | 0.1M | x3.5MR | ×2 |
 | **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
-| **Sharpshooters** (5) | 0.0125M | x1MR | Bought and stationed at a mountain pass you own (§8) |
+| **Sharpshooters** (100) | 0.015M | x1MR | ×2.5 · rifles · bought and stationed at a mountain pass you own (§5, §8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 cogs** | 0.1M | unlocked | ×1 each |
 | **10 carracks** | 0.2M | x3MR | ×3 each |
@@ -204,7 +208,7 @@ power = (men + cannons × 13) × (2d6 + 4)
 **Military power** — a country's whole land force on paper, used by diplomacy (§10) rather than
 battles:
 ```
-military power = men × their weapon multiplier + cannons × 15.6 + sharpshooters × 50
+military power = men × their weapon multiplier + cannons × 15.6 + sharpshooters × 2.5
 ```
 It is the power formula without the dice or any defence bonus, summed over every army, garrison
 and sharpshooter post the country owns. Weapons count at their plain multipliers — cavalry ×1.4,
@@ -259,19 +263,22 @@ Every **100 × x** cannons the attacker brings lowers the wall multiplier by **0
 Sharpshooters are **bought and stationed only at a mountain pass your country owns** (§8). They cannot
 move or attack — they wait for an enemy army to pass through.
 ```
-damage = number of sharpshooters × d6 × 10      max 25 × x sharpshooters per battle
-Total damage may never exceed 50% of the passing army.
+damage = sharpshooters × d6                      a pass holds at most 500 × x sharpshooters
+Total damage may never exceed 25% of the passing army.
 ```
 **Once per army per crossing.** Sharpshooters fire once at each enemy army when it enters the pass —
 not again while it stays there, nor when it leaves. An army that leaves and later comes back is
 fired on again. Sharpshooters take no losses when they fire, and survivors pass through freely.
 
 **Clearing sharpshooters.** An army may `storm` the sharpshooter post. Resolve it as a field
-battle in which each sharpshooter counts as **50 power**:
+battle in which each sharpshooter counts as **2.5 power** — better than a musketeer — and, dug in
+on the mountainside, gets the pass ×2:
 ```
-sharpshooter power = sharpshooters × 50 × (2d6 + 4)
+sharpshooter power = sharpshooters × 2.5 × 2 × (2d6 + 4)
 ```
-The pass ×2 does **not** apply to sharpshooters. Losses are applied as in a normal battle.
+Losses are applied as in a normal battle. *Example:* a full post of 500 kills about 1,750 men per
+crossing (capped at a quarter of the army), and storming it means facing 2,500 power — as much as
+625 musketeers holding the same pass, or 1,250 in the open.
 
 ---
 
@@ -409,13 +416,19 @@ immediately, as in §5 *After the battle*.
 
 You cannot change again for **5 years**.
 
-| Government | Max army | Max navy | Total | Settlement money (§2) |
+| Law | Max army | Max navy | Total | Settlement money (§2) |
 |---|---|---|---|---|
-| Feudal | 6.5% | 2.5% | 9% | — |
-| Centralized | 10% | 3% | 13% | −6% |
-| Militarized | 15% | 4% | 19% | −10% |
-| Total War | 25% | 5% | 30% | −30% |
-| Scrap the Barrel | 40% | 7% | 47% | −80% |
+| Feudal levy | 5% | 2.5% | 7.5% | — |
+| Standing army | 7.5% | 3% | 10.5% | −3% |
+| Militarized | 10% | 4% | 14% | −6% |
+| Mass levy | 15% | 5% | 20% | −15% |
+| Scrape the barrel | 22% | 7% | 29% | −40% |
+
+Men of fighting age were only about a fifth to a quarter of the people, so **Scrape the barrel**
+takes nearly all of them. The money penalty is the cost of the law itself — the disruption of
+raising and running the army. The tax lost from every soldier (§2) comes on top: at Mass levy with
+a full army a country keeps about 0.7 money per person after upkeep; at Scrape the barrel it runs
+into debt.
 
 The percentages apply to **core manpower + half of non-core**. The two caps are separate — men
 on one cannot be moved to the other.
@@ -425,8 +438,8 @@ on one cannot be moved to the other.
   ships than you can crew — only the crewed ones can sail.
 
 The navy cap comes **on top of** the army cap, so a fleet never takes men from the army. At
-Feudal, ships of pop ÷ 2000 with 50 crew each are 2.5% — coastal countries start exactly at their
-navy cap. The starting army of pop ÷ 25 is 4%, below the 6.5% army cap (§2).
+Feudal levy, ships of pop ÷ 2000 with 50 crew each are 2.5% — coastal countries start exactly at
+their navy cap. The starting army of pop ÷ 25 is 4%, below the 5% army cap (§2).
 
 ---
 
