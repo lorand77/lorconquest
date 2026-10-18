@@ -31,13 +31,15 @@ Start **1440 AD**.
 Every **town** (red circle) starts at **10,000 pop**; every **city** (red square) at **20,000**.
 
 ```
-civilians        = pop − soldiers, spread over your settlements in proportion to their pop
+civilians        = pop − soldiers − rebels (§11), spread over your settlements in proportion to their pop
 settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + 3500 per Workshop)
                    × (1 + 15% if it has a Market)           (Workshops and Markets, §3)
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
                  − soldiers × 5      (cannon crew, ship crew at sea and sharpshooters count as soldiers)
+                 − mercenaries × 15  (§8)
+                 − loan interest     (8% a year of what you owe)
                  + tribute you receive − tribute you pay (§10)
                  + bank interest
 ```
@@ -81,6 +83,7 @@ is stormed or its pass is lost (§8) is one person lost. The loss is spread acro
 you own **in proportion to their population**, so a 20K city loses twice as many people as a 10K
 town. Lost people come back
 only through growth or **Buy people**.
+**Mercenaries** are the exception: they are foreigners, and their dead cost you no people (§8).
 
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
 **Courthouse**. Special coring (see [Special coring](SCENARIO.md#special-coring)) waives both.
@@ -88,8 +91,22 @@ only through growth or **Buy people**.
 **Bank:** deposits earn `0.25% per month` interest (≈3%/year compounded). Withdraw any time.
 Bank interest is **money only** — it never goes to research (§4).
 
+**Loans.** Bankers lend to princes at war. You may borrow in chunks of **0.05M**, as long as your
+total loans stay within **2 years of your settlement money**. The money goes straight to your
+treasury; it is never income, so it never goes to research (§4). You pay **8% a year** on what you
+owe, charged monthly as part of money per year, and may repay any amount in chunks of 0.05M at
+any time. The bank pays only 3%, so borrowing to deposit loses money. If your settlement money
+falls — lost settlements, a blockade — you keep your loans but cannot borrow more until you are
+back under the limit.
+
+**Default.** While you owe anything you may **default**, as Spain did six times: every loan is
+**cancelled** and nothing is sold, but you **cannot borrow again for 20 years** — and your
+mercenaries, paid from those loans, are not: **half of them desert at once**. A default is not
+breaking an agreement (§10).
+
 **Debt.** You may **not buy anything** that would take your treasury below zero. Debt therefore
-only arises when upkeep exceeds income. That is allowed — you repay it later. The **10-year
+only arises when upkeep and loan interest exceed income. That is allowed — you repay it later.
+Owing a banker is not debt: a treasury in the red can be refilled with a loan. The **10-year
 clock starts when your treasury first goes below zero** and resets once the debt is fully
 repaid. If the debt is still unpaid **10 years after it began** and exceeds **pop × 10**, you go
 bankrupt: buildings are sold off to clear it, then soldiers and weapons.
@@ -118,6 +135,7 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Market** | 0.075M | — | +15% money from settlement — its Workshop's 3500 included |
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
+| **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
 | **Pikes** (1000) | 0.03M | unlocked | ×1.2 · makes guns stronger in pike and shot (§5) |
 | **Cavalry** (1000) | 0.06M | unlocked | ×1.4 · horses, armour and lances · field battles only (§5) |
@@ -356,6 +374,22 @@ come home and their weapons go to a reserve for later use; men raised again must
 be trained again. Fleets work the same way — add ships to an existing task force or form a new
 one.
 
+**Mercenaries.** Swiss and Landsknecht companies fight for whoever pays. Hire them by the thousand
+(§3): they arrive **1 month** later, armed with **pikes**, at any core settlement you choose, and
+join or form an army there like trained men. If that settlement is captured first, the hire is
+cancelled and the money lost. They are **foreigners**:
+
+- they are **not** taken from your civilians and do **not** count toward your army cap (§9) — but
+  you may have at most as many mercenaries as your army cap;
+- their upkeep is **15 a year** each, three times a soldier's (§2);
+- their dead cost you **no population** (§2).
+
+Otherwise they are men like any other: they fight, count toward supply and military power, and may
+be re-equipped with your weapons (their pikes go to your reserve). **Dismissing** them is instant —
+they leave, and the weapons they carry go to your reserve. **Unpaid mercenaries desert:** at the
+start of every month your treasury is below zero, **10%** of your mercenaries leave, taking their
+weapons with them.
+
 | Movement | |
 |---|---|
 | Army | route length ÷ army speed |
@@ -394,13 +428,13 @@ cancelling the rest of its path.
 **Supply.** Armies live off the land. A settlement's land feeds **half its pop** in soldiers — a
 10K town 5,000, a 20K city 10,000 — and **×1.5 if the settlement is on a river** (listed in the
 scenario). A pass is fed by the land it lies in. An army outside **friendly land** (its own
-country's, its subjects' or overlord's, its allies') that has more soldiers than the land feeds
-loses **1% of its men every month**, lost from your population like any casualty (§2). An army
-counts as in the land of the settlement or pass it is at or besieging, and while marching, of the
-one it is marching to. Every army of the same country in one land counts together, so splitting
-up means spreading out. A besieger over the limit loses 2% a month: 1% to supply, 1% to siege
-disease (§6).
-Peasant rebels (§11) are fed by their own people and never suffer this.
+country's, its subjects' or overlord's, its allies') that has more men than the land feeds —
+soldiers and mercenaries alike — loses **1% of its men every month**, lost from your
+population like any casualty (§2). An army counts as in the land of the settlement or pass it is
+at or besieging, and while marching, of the one it is marching to. Every army of the same country
+in one land counts together, so splitting up means spreading out. A besieger over the limit loses
+2% a month: 1% to supply, 1% to siege disease (§6). Peasant rebels (§11) are fed by their own
+people and never suffer this.
 
 **Orders:** `move` · `besiege` · `storm` · `sortie` (garrison only, §6).
 **Fleet orders:** `move` · `blockade` · `patrol` (§7).
@@ -435,7 +469,8 @@ into debt.
 The percentages apply to **core manpower + half of non-core**. The two caps are separate — men
 on one cannot be moved to the other.
 
-- **Army cap:** soldiers, men in training (§8), cannon crew and sharpshooters.
+- **Army cap:** soldiers, men in training (§8), cannon crew and sharpshooters. Mercenaries do
+  not count, but you may hire at most as many as your army cap (§8).
 - **Navy cap:** ship crew at sea (50 per ship). Ships in port need no crew, so you may own more
   ships than you can crew — only the crewed ones can sail.
 
@@ -628,4 +663,12 @@ Rolled at the start of each year.
 equal to **3% of your total population** (every settlement you own, core and non-core), armed
 with swords, spawning outside your capital. It holds cores on everything and attacks towns and
 cities, favouring undefended ones and your core territory. **There is no peace with peasants.**
+
+**The rebels are your own people.** They are taken from your civilians (§2), spread over your
+settlements in proportion to their pop, and pay no tax while they are under arms — but they stay
+in your population and still count toward growth. Rebels killed are lost from your population
+like any casualty (§2). A beaten rebel army with no settlement of its own to fall back to does not
+die to the last man (§5): after the battle's losses, its **survivors scatter home** and become
+your civilians again. The uprising is crushed when it has no army left; any settlement it still
+holds is then undefended and yours to walk back into (§6).
 
