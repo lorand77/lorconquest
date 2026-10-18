@@ -17,7 +17,7 @@
 | 1 day | 0.1s |
 | 1 month | ≈3.04s |
 | **1 year** | **36.5s** |
-| 100 years | 60 min |
+| 100 years | ≈61 min |
 
 Start **1440 AD**.
 
@@ -97,7 +97,7 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Arquebuses** (1000) | 0.07M | x2MR | ×1.6 |
 | **Muskets** (1000) | 0.1M | x3.5MR | ×2 |
 | **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
-| **Sharpshooters** (20) | 0.05M | x1MR | Bought and stationed at a mountain pass you own (§8) |
+| **Sharpshooters** (5) | 0.0125M | x1MR | Bought and stationed at a mountain pass you own (§8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 carracks** | 0.1M | unlocked | ×1 each |
 | **10 galleons** | 0.2M | x3MR | ×3 each |
@@ -264,9 +264,9 @@ from your population like any casualty (§2). A two-year siege (a walled city) c
 fifth of the army; a six-month siege of an open town about 6%.
 
 **Sortie.** The garrison may order `sortie` at any time before the timer expires. It marches out
-and fights the besieging army in a normal land battle (§5). If the garrison wins, the besiegers
-retreat and the siege ends. If it loses, it falls back inside and the siege continues on the
-same timer.
+and fights the besieging army in a normal land battle (§5) — out in the open, so **neither side gets a
+defence bonus** (no settlement or wall multiplier). If the garrison wins, the besiegers retreat
+and the siege ends. If it loses, it falls back inside and the siege continues on the same timer.
 
 **Surrender.** When the timer expires the garrison surrenders and the settlement falls to the
 besieger. The garrison is **disbanded on the spot**: its men go back to its country's population
@@ -435,8 +435,9 @@ A country becomes your subject through a peace treaty, by agreeing to your deman
 only — through the Holy Roman Empire ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)).
 
 **Breaking free.** A subject breaks free the moment its **military power** (§5) is greater than
-yours. This is not breaking an agreement. Raising unarmed men never frees a subject — it has to
-arm them, and an overlord with better weapons stays ahead with fewer men.
+your own — the overlord's forces only, not those of its other subjects. This is not breaking an
+agreement. Raising unarmed men never frees a subject — it has to arm them, and an overlord with
+better weapons stays ahead with fewer men.
 
 ### Peace
 Either side may propose peace, with **any terms both sides agree to**: settlements, money, making
