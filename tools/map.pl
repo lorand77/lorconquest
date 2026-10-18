@@ -502,7 +502,7 @@ generated('overview',
     "**Cities (20K):** " . join(', ', @cities) . " — all other settlements are towns (10K).", '',
     sprintf("**HRE settlements (%d):** %s — held by %d of the %d countries.", scalar @hre, ranges(@hre), scalar @hrec, scalar @CORDER), '',
     sprintf("**Ports (%d):** %s", scalar(grep { $S{$_}{port} } @ids), join(', ', grep { $S{$_}{port} } @ids)), '',
-    sprintf("**On a river (%d):** %s — within %dpx of a river on the map; grow +0.25%% more (RULES.md §2).", scalar @onriver, join(', ', @onriver), $RIVER_NEAR), '',
+    sprintf("**On a river (%d):** %s — within %dpx of a river on the map; grow +0.5%% more (RULES.md §2).", scalar @onriver, join(', ', @onriver), $RIVER_NEAR), '',
     sprintf("**Routes crossing a river (%d):** %s — +%d month%s to march (RULES.md §8).", scalar @crossing, join(', ', @crossing), $DELAY{river}, $DELAY{river} == 1 ? "" : "s"), '',
     do { my @y = sort { $a <=> $b } map { $YEARS{$_} } keys %LAND; my @p = sort { $a <=> $b } map { $YEARS{$_} } grep { $VIA{$_} } keys %LAND;
         sprintf('**Marching** at %s map units a year, +%d month%s per river crossing, +%d per leg to or from a pass: a route takes %.2f–%.2f years (median %.2f); through a pass %.2f–%.2f.',

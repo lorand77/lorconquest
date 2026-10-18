@@ -46,7 +46,7 @@ bank interest or tribute (§10).
 anyone else in their settlement, count toward growth, and pay upkeep on top. Only death (below)
 takes them out of the population.
 
-**Pop growth:** +0.5% per year, **+0.25%** more if on a river or coast.
+**Pop growth:** +1% per year, **+0.5%** more if on a river or coast.
 
 **Casualties cost population.** Every soldier who dies is removed from your population, not
 just from the army — whether killed in battle, by sharpshooters, in a lost storm, or by disease in a
@@ -59,7 +59,7 @@ only through growth or **Buy people**.
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
 **Courthouse**. Special coring (see [Special coring](SCENARIO.md#special-coring)) waives both.
 
-**Bank:** deposits earn `0.125% per month` interest (≈1.5%/year compounded). Withdraw any time.
+**Bank:** deposits earn `0.25% per month` interest (≈3%/year compounded). Withdraw any time.
 Bank interest is **money only** — it never goes to research (§4).
 
 **Debt.** You may **not buy anything** that would take your treasury below zero. Debt therefore
@@ -93,7 +93,7 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
-| **Matchlocks** (1000) | 0.05M | x1.5MR | ×1.3 |
+| **Hand cannons** (1000) | 0.05M | x1.5MR | ×1.3 |
 | **Arquebuses** (1000) | 0.07M | x2MR | ×1.6 |
 | **Muskets** (1000) | 0.1M | x3.5MR | ×2 |
 | **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
@@ -117,8 +117,8 @@ sharpshooters** — each sharpshooter is one soldier on the army cap.
 
 ```
 Swords, Cannons (unlocked)
-Swords ──▶ Matchlocks ──▶ Arquebuses ──┬──▶ Muskets
-                                       └──▶ Sharpshooters
+Swords ──▶ Hand cannons ──▶ Arquebuses ──┬──▶ Muskets
+                                         └──▶ Sharpshooters
 
 Carracks (unlocked) ──▶ Galleons ──▶ Frigates ──▶ Steam ships   [not supposed to get this]
 ```
@@ -159,7 +159,7 @@ one Library.
 
 ```
 power = (men + cannons × 13) × (2d6 + 4)
-        ×2 for musketeers · ×1.6 for arquebusiers · ×1.3 for matchlock men · ×1.2 for the cannons
+        ×2 for musketeers · ×1.6 for arquebusiers · ×1.3 for hand gunners · ×1.2 for the cannons
 ```
 
 - Cannon crew are **not** counted in `men`.
@@ -562,7 +562,7 @@ Rolled at the start of each year.
 | Event | Chance | Effect |
 |---|---|---|
 | Good harvest | 10% | +10% money that year |
-| Plague | 2.5% | −5% pop |
+| Plague | 5% | −10% pop |
 | Peasant uprising | 15% *(only if a plague struck in the last year)* | See below |
 
 **Peasant uprising.** A rebel country forms with soldiers equal to **3% of your total population**
