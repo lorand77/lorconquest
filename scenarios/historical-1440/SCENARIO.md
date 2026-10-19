@@ -438,26 +438,151 @@ point; the other columns are generated from the map.*
 | Northern Baltic | 927 | 158 | 5, 15, 16, 19 | — | Baltic Sea, Gulf of Riga |
 | Gulf of Riga | 1112 | 231 | 17, 18 | — | Northern Baltic |
 
+## The situation in 1440
+
+The game opens in the middle of four wars, and with the alliances of 1440 already signed. They count exactly as
+if declared and signed in play (RULES.md §10): the sides below are at war from the first day, the agreements are
+in force, and every warmonger score still starts at 0. War score in these wars counts populations as they were at
+the start. Allies are **not** in these wars unless listed — a military alliance only calls an ally into wars
+declared from now on.
+
+### Wars
+
+| War | Attacking side | Defending side | What happened |
+|---|---|---|---|
+| **Dutch–Hanseatic War** (since 1438) | LUB Lübeck, HAM Hamburg | BUR Burgundy | The Wendish towns of the Hansa fought Holland's ships out of the Baltic trade; peace at Copenhagen in 1441. |
+| **Hungarian civil war** (1440) | HUN Hungary | JIS Upper Hungary | Władysław III against the party of the infant Ladislaus Posthumus; Jan Jiskra held the north for Ladislaus until 1462. |
+| **Old Zürich War** (1440) | SWI Swiss Confederacy | ZUR Zürich | Schwyz and the cantons against Zürich over the Toggenburg inheritance; Zürich turned to the Habsburgs in 1442. Peace in 1450. |
+| **Wars in Lombardy** (since 1438) | MIL Milan | VEN Venice | The Visconti against Venice for the Lombard plain — Anghiari was fought in 1440; peace at Cremona in 1441. |
+
+### Agreements
+
+| Agreement | Between | Why |
+|---|---|---|
+| Military alliance | POL Poland – HUN Hungary | Władysław III is king of both. |
+| Defensive alliance | POL Poland – LIT Lithuania | The Jagiellon brothers: Władysław in Kraków, Casimir in Vilnius. |
+| Defensive alliances | DEN Denmark – SWE Sweden – NOR Norway (each pair) | One king, Christopher of Bavaria — the Kalmar Union. |
+| Military alliance | TEU Teutonic Order – LIV Livonian Order | Two branches of one Order. |
+| Military alliances | STY Inner Austria – AUS Austria – TYR Tyrol (each pair) | Frederick III rules all three Habsburg lands: his own, and two as guardian. |
+| Guarantee | STY Inner Austria → JIS Upper Hungary | Frederick holds the infant Ladislaus — and the Holy Crown of Hungary. |
+| Defensive alliance | BRA Brandenburg – ANS Ansbach-Kulmbach | The Hohenzollern brothers Frederick Irontooth and Albert Achilles. |
+| Defensive alliance | LUB Lübeck – HAM Hamburg | The Wendish towns of the Hansa. |
+| Non-aggression pact, 5 years left | TEU Teutonic Order – POL Poland | The Peace of Brest (1435). |
+
 ## The Holy Roman Empire
 
-The Empire is every settlement marked **HRE** above (listed in the *Overview*).
+The Empire is every settlement marked **HRE** above (listed in the *Overview*). A **German state** is any country
+that holds at least one HRE settlement; an **outsider** is any country that holds none. The Empire is not a
+country: it is a **crown**, worn by one German state and won by election, and a set of **laws** that grow as
+the crown's authority grows. In 1440 the crown was almost powerless — this is about whether anyone can change that.
 
-Demand to become leader of the Empire under your hegemony. You must control **at least 20 settlements inside
-the HRE**, and may propose **only once, ever**.
+### The Emperor
 
-Each German state — every country that holds an HRE settlement — rolls on its own, like a protectorate demand
-(RULES.md §10):
+At the start the Emperor is **STY Inner Austria**: Frederick III, elected King of the Romans on 2 February 1440.
+
+The Emperor must stay a German state. If it no longer holds any HRE settlement, the throne falls vacant and an
+election is held at once.
+
+### Imperial Authority
+
+**Imperial Authority (IA)** runs from 0 to 100 and belongs to the crown, not to a country — a new Emperor takes
+over the old one's. It starts at **20**: Frederick III was mocked as the Empire's "arch-sleepyhead".
+
+| When | IA |
+|---|---|
+| Each year (at its start) in which no two German states are at war with each other | +2 |
+| Each year in which three or more wars between German states are being fought | −2 |
+| The Emperor wins a war as Defender of the Empire (below) | +5 |
+| The Emperor wins a war of execution (below) | +10 |
+| An outsider keeps an HRE settlement in a peace | −5 per settlement |
+| The Emperor refuses a call as Defender of the Empire | −10 |
+| The Emperor declares war on a German state that is not under the ban | −15 |
+| The crown passes to another country | −10 |
+
+**German states' opinion of the Emperor** gains **IA ÷ 5** (+4 at the start, up to +20).
+
+### The electors
+
+Seven votes choose the Emperor. Each belongs to a settlement, and **whoever holds that settlement casts the
+vote** — conquer it and the vote is yours. One country may hold several.
+
+| Vote | Settlement | Holder at start |
+|---|---|---|
+| Archbishop of Mainz | 103 Mainz | MAI Mainz |
+| Archbishop of Trier | 101 Trier | TRI Trier |
+| Archbishop of Cologne | 80 Arnsberg | KOL Electorate of Cologne |
+| King of Bohemia | 112 Prague | BOH Bohemia |
+| Count Palatine of the Rhine | 110 Heidelberg | PAL Palatinate |
+| Duke of Saxony | 88 Wittenberg | SAX Saxony |
+| Margrave of Brandenburg | 53 Brandenburg | BRA Brandenburg |
+
+### Elections
+
+An election is held **every 25 years** — 1465, 1490, 1515, 1540, 1565, 1590, 1615 and 1640 — and whenever the
+throne falls vacant. The reigning Emperor stands again; this is how the Habsburgs had their sons chosen King of
+the Romans in their own lifetime. Each scheduled election is **announced at the start of the year before**, so
+there is a year to court the electors — or to take their settlements.
+
+**Candidates:** the reigning Emperor, every German state of **20K pop or more**, and any outsider of **100K or
+more** (Francis I of France stood in 1519).
+
+An elector held by a player votes as that player chooses. One held by a computer country votes for itself if it
+is a candidate, and otherwise for the candidate it scores highest:
 ```
-chance each German state joins = size × 10 % + opinion ÷ 10 %
+elector's score = its opinion of the candidate (RULES.md §10)
+                + 20 for the reigning Emperor                      the electors liked an Emperor they knew
+                + 1 per 2,000 money the candidate promises it, at most +30
+                − 20 if the candidate has 150K pop or more         and one too weak to rule them
+                − 50 if the candidate is at war with it
+```
+**Promises are paid** from the candidate's treasury when the vote is cast, whether or not the elector votes for
+it — the Fuggers lent Charles V about 850,000 florins to buy the vote of 1519. A candidate may not promise more
+than it holds.
+
+The candidate with the most votes wins. A tie goes to the reigning Emperor if it is tied; otherwise to the larger
+population.
+
+### What the crown gives
+
+- **The imperial cities pay their dues.** Every free city — LUB, HAM, BRE, COL, FFM, NUR, AUG, ULM, REG, MET, STR,
+  KON, BAS, DEC and ERF — pays the Emperor **5%** of its yearly money (RULES.md §2), when positive, while the two
+  are not at war. It counts as tribute (RULES.md §10).
+- **Defender of the Empire.** When an outsider declares war on a German state, the Emperor is called into the war
+  on the German state's side, like a military ally. It may refuse (−10 IA).
+- **The imperial ban.** For **10 IA** the Emperor may put a German state under the ban if it has a warmonger score
+  of 30 or more, or holds an HRE settlement it took from another German state in the last 10 years. The Emperor
+  is then at war with it — a **war of execution**, which costs no IA and counts as the defending side. Every
+  German state whose opinion of the Emperor is 0 or more may join the Emperor; joining is not declaring war (no
+  +5 warmonger), and joiners count as the defending side too. The ban ends at the peace.
+
+### Imperial reform
+
+Reforms are the laws that turned the Empire into something like a state. The Emperor may propose the next one in
+order once IA reaches its level. It passes if **at least four of the seven votes** agree: player electors choose,
+computer electors agree if their opinion of the Emperor is 0 or more. A failed proposal may be made again after
+5 years. Reforms stay in force even if IA falls back, and through any change of Emperor.
+
+| Reform | IA | Effect |
+|---|---|---|
+| **1. Eternal Public Peace** (*Ewiger Landfriede*, 1495) | 40 | A German state that declares war on another German state breaks an agreement (RULES.md §10) — unless the target is under the ban. Wars already being fought are not affected. |
+| **2. Common Penny** (*Gemeiner Pfennig*, 1495) | 55 | Every German state pays the Emperor **2%** of its yearly money, when positive (the imperial cities pay their 5% on top). |
+| **3. Imperial Circles** (*Reichskreise*, 1500–1512) | 70 | Every German state gives the Emperor military access. When an outsider declares war on a German state, every German state whose opinion of the Emperor is 0 or more joins the defence. |
+| **4. Renovatio Imperii** | 85 | The Emperor may demand, **once per country that wears the crown**, that every German state become its protectorate (below). |
+| **5. Hereditary Empire** | 100 | Elections end: the crown stays with the Emperor's country for good. Its protectorates inside the Empire may be asked to become vassals with **+20%** to the chance (RULES.md §10). |
+
+**Renovatio Imperii.** Each German state rolls on its own, like a protectorate demand (RULES.md §10), with the
+crown's authority behind it:
+```
+chance each German state accepts = size × 10 % + opinion ÷ 10 % + 10 %
 at most 75%
-0% if your pop is not larger than theirs, or if their opinion of you is below −50
+0% if the Emperor's pop is not larger than theirs, or if their opinion of the Emperor is below −50
 ```
+Every state that accepts becomes the Emperor's **protectorate** and pays it **10%** of its yearly money. **The
+states that refuse form the League**: all of them make a **defensive alliance** with each other, and IA falls by
+**20**. Refusing does not change their opinion of the Emperor.
 
-Every German state that joins becomes your **protectorate** (RULES.md §10) and pays you **10%** of its yearly
-money.
-
-**The states that refuse form the League.** All of them make a **defensive alliance** with each other — declare
-war on one member and the rest join against you. Refusing does not change their opinion of you (RULES.md §10).
+*The HRE proposal and HRE vote in RULES.md §10 mean Renovatio Imperii here. Subjects it brings add nothing to
+the warmonger score.*
 
 ## Victory
 
@@ -540,8 +665,10 @@ Copenhagen, Warsaw — were small towns in 1440.
 | **Denmark**, **Lithuania** | 6 each | 60K | Denmark holds the Sound; Lithuania looks south and west. |
 
 Inside the Empire nobody is that big: Brunswick-Lüneburg, Brandenburg, Saxony and Austria start at 50K, and the
-Empire is a patchwork of 60 states. Each of the four needs some fifteen more HRE settlements before it may claim
-the Empire.
+Empire is a patchwork of 60 states. The crown sits on one of the weaker of them — Inner Austria, 30K, with
+Imperial Authority at 20 — and four of the seven votes are small: Mainz at 10K, Trier, the Electorate of Cologne
+and the Palatinate at 20K. Courting, buying or conquering four votes is the way to the throne; making the
+throne worth having takes decades of peace and reform.
 
 ### How the map was made
 
@@ -570,8 +697,11 @@ the Empire.
 - **Missing great towns are added**: Lübeck, Nuremberg, Augsburg, Regensburg, Erfurt, Metz, Vilnius, Riga and Reval.
 - **Countries are 1440's**: no Ruhr, Elsass-Lothringen, Belgium or Netherlands; instead Burgundy, the Rhenish
   bishoprics and duchies, the Livonian and Teutonic Orders, and the Bavarian and Habsburg partitions.
-- **Scale**: 168 settlements and 74 countries instead of 87 and 45, so victory needs 85 settlements and the Empire
-  20 HRE settlements. The balance has not been playtested.
+- **Scale**: 168 settlements and 74 countries instead of 87 and 45, so victory needs 85 settlements. The balance has
+  not been playtested.
+- **The Empire is elected**: instead of one vote to make a single power its leader, the crown passes by the votes
+  of the seven electors and grows stronger only through Imperial Authority and reform.
+- **The game opens at war**: four wars of 1440 are already being fought, and the alliances of the year are signed.
 
 ### Known warnings from tools/map.pl
 

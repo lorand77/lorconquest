@@ -297,6 +297,8 @@ put_table('Special coring', '| Formable | What it was | Settlements | Count |', 
 open my $df, '>', $DOCF or die $!; print $df map { "$_\n" } @doc; close $df;
 print "SCENARIO.md: data tables written\n";
 
+# The first SCENARIO.md, used only when none exists. Its hand-written sections (the situation in 1440, the Empire,
+# the design notes) have since been rewritten in SCENARIO.md itself, which make-base.pl keeps.
 sub template { my $cities = scalar grep { $_->{city} } @S[1 .. $#S]; return <<"MD" }
 # SCENARIO: HISTORICAL 1440
 
