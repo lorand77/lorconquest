@@ -197,8 +197,34 @@ worker on the server, where it decides everything, and in the browser, where it 
 what a purchase costs, how long a march takes, whether an order is allowed — before the command
 is sent. It therefore uses no Node-only and no browser-only APIs, reads no clock and keeps its
 random numbers in the game state. It loads `scenario.json` and knows nothing of sockets, the
-database or the screen. How its files are loaded in both places is decided at the start of
-milestone 1 (§2).
+database or the screen. `test/engine/determinism.test.js` checks the files for anything that
+would break that.
+
+- **ES modules** (`src/engine/*.mjs`): the browser loads them as modules with no build step, and
+  the rest of the code, CommonJS as in LorCiv, `require`s them directly (Node 24 can).
+- **One entry point,** `index.mjs`. A game is a `Game` (`game.mjs`): the map built from the
+  scenario, the state, and the log of accepted commands with the day of each. `command(cmd)`
+  applies one through the validator (`commands.mjs`) or refuses it with a reason; `advance()` moves
+  one day (`day.mjs`) and returns its events; `snapshot()` is the state as JSON, `Game.restore` and
+  `replay` rebuild a game from a snapshot or from its seed and log.
+- **The state is plain JSON:** countries, settlements, armies (by id; the starting garrisons are
+  numbered like their settlements), wars, battle cooldowns, the day and the random state
+  (mulberry32, one 32-bit word). `RULES_VERSION` and `FORMAT` in `state.mjs` are stamped on every
+  state and checked on restore.
+- **The map** (`map.mjs`) is the scenario as a graph: settlements and passes are places, keyed
+  `"37"` and `"P3"`; land routes are legs, two either side of a pass, one per pair of places. A
+  leg takes its route's years × 365 days, rounded to a whole day.
+- **Where an army is:** at a place (`at`), or on a leg (`march`: from, to, start day, end day),
+  moving evenly — so its position on any day is arithmetic, and head-on meetings are found from
+  the day two marches cross. Start and end may be fractions of a day.
+- **Whole numbers:** men, cannons and crews are whole. A loss is a share of the army: the total
+  is rounded to the nearest man and spread over its weapons by largest remainder; cannons are
+  rounded separately and each takes 10 crew with it. Population, treasury and money keep their
+  fractions inside the engine and are only rounded for people.
+- **The modules:** `calendar`, `random`, `army` (what an army is worth, losses), `map`, `state`,
+  `movement` (marching, turning back, retreats), `battle` (one battle and the cooldown),
+  `fighting` (arrivals, sieges, storms, sorties, relief, passes, head-on meetings), `supply`
+  (monthly disease and hunger), `day`, `commands`, `game`.
 
 ### The map on screen
 
@@ -225,10 +251,18 @@ client.
 
 ### Testing
 
-- `node --test`, as in LorCiv.
-- **Engine tests** on a fixed seed: commands at given days, then check the state.
+- `node --test`, as in LorCiv (`npm test`).
+- **Engine tests** on a tiny map worked out by hand (`test/helpers/tiny.js`), with the dice loaded
+  where a number matters (`rig`), so every power and loss can be checked against RULES.md's
+  formulas; the starting state on the real map.
+- **Scripted wars** (`test/wars/*.txt`) played by the runner (`tools/run.js`) on the real map,
+  checked for their outcome.
+- **Replays:** the same script gives the same game to the last die, and a snapshot plus the
+  commands after it gives exactly the unbroken game.
 - **Golden games:** a fixed seed and command log must end in a known state. A change that breaks
-  one either is a bug or needs the rules version bumped.
+  one either is a bug or needs the rules version bumped. (From milestone 2, when games are saved.)
+- **Timing:** `tools/bench.js` plays years of every country at war with armies sent about at
+  random and prints the time per game day.
 - **AI-only games**, headless and at full speed (no 100 ms wait), many at once: for crashes,
   balance and timing.
 - **Integration tests** boot the server and connect socket clients, as in LorCiv.
@@ -246,16 +280,13 @@ Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. The
 Settled answers move into §1, or into RULES.md where they are rules. Each is needed by the milestone
 named (see [plan.md](plan.md)).
 
-1. **How the engine's files load in Node and the browser** (milestone 1). Either ES modules,
-   which both load natively with no wrapper (and which the server's CommonJS can `require`), or
-   LorCiv's way: classic scripts that share globals in the browser, with a few lines at the end
-   of each file for Node.
-2. **Whole numbers** (milestone 1). Men, ships and cannons are whole, so percentage losses need
-   a rounding rule — and the same for population and money.
-3. **Where the starting ships lie** (milestone 3). RULES.md §2 gives a coastal country pop ÷ 2000
-   cogs but not in which of its ports.
-4. **The game screen** (before milestone 2): where the map, the panels and the notifications go,
+1. **The game screen** (before milestone 2): where the map, the panels and the notifications go,
    and how an order is given — select an army, then click where it should go?
+2. **Where the starting ships lie** (milestone 3). RULES.md §2 gives a coastal country pop ÷ 2000
+   cogs but not in which of its ports.
+3. **Cores after a capture** (milestone 3). Does a settlement stay core for the country that
+   loses it, so that retaking it makes it core again? The engine keeps each settlement's list of
+   cores untouched by captures until this is settled.
 
 ---
 

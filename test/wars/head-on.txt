@@ -1,0 +1,6 @@
+# Ulm and Bavaria march on each other along the same road and meet on it.
+seed 2
+1440-01-01 ULM declare-war target=BAV
+1440-01-01 ULM move army=48 to=37
+1440-01-01 BAV move army=37 to=48
+until 1440-06-30

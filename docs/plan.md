@@ -4,7 +4,7 @@ The order in which the game gets built. The rules are in [RULES.md](RULES.md), t
 [SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
 says what to build when, and how to tell each step is done.
 
-**Status:** planning; nothing is built yet.
+**Status:** milestone 1 is done (2026-10-19); milestone 2 is next.
 
 ## How we work
 
@@ -67,8 +67,15 @@ The rules for armies, headless: no server, no screen, no AI.
   Vienna with a sortie.
 - A tick with every country's armies on the move is timed, so the budget is known before the AI.
 
-**Decide at the start:** how the engine's files load in Node and the browser, and the rounding
-rule for whole men (design.md §2, questions 1 and 2).
+**Decided at the start:** the engine is ES modules, and men are whole with losses rounded to the
+nearest man (design.md, *The engine*).
+
+**Done.** `npm test` checks the formulas against RULES.md on a tiny map with loaded dice, the
+starting state, replays from snapshots, and four scripted wars on the real map (`test/wars/`:
+Bavaria storming Ulm, a head-on meeting, a pass held at ×2, Vienna relieved and sortieing).
+`tools/bench.js` puts a game day with every country at war at about 0.1 ms on average and 3 ms at
+worst, against the 100 ms it has in play. The rule readings it needed are in RULES.md: turning back
+and stopping, what retreating armies may do, relief forces, the cooldown, arrival ties.
 
 **Not in it:** money, the shop, research, laws, fleets, diplomacy beyond war, the AI.
 
@@ -79,7 +86,7 @@ rule for whole men (design.md §2, questions 1 and 2).
 The engine running in real time on the server, shown in the browser.
 
 **Starts with** a sketch of the game screen — where the map, panels and notifications go, and
-how an order is given (design.md §2, question 4) — recorded in design.md.
+how an order is given (design.md §2, question 1) — recorded in design.md.
 
 **Delivers**
 - **The server:** Express and Socket.IO, with LorCiv's `config.js`, `log.js`, the
@@ -129,7 +136,8 @@ Everything a country does apart from fighting and diplomacy.
 - Tests for every formula, against RULES.md's examples and tables.
 - A country run for 50 game years in the browser: its money, research and army add up by hand.
 
-**Decide first:** where the starting ships lie (design.md §2, question 3).
+**Decide first:** where the starting ships lie, and what a capture does to cores (design.md §2,
+questions 2 and 3).
 
 **Depends on:** 2.
 

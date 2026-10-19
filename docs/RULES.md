@@ -291,9 +291,10 @@ it either way.
 
 **Retreating armies march.** The loser marches there at army speed (§8), by the fastest way
 open to it: only through land it may enter (§10), with river and pass delays as usual. On the
-way it takes no orders and does not stop for zone of control, but other enemy armies it meets
-may attack it — it fights as a normal army, with no defence bonus. When it arrives it can be
-given orders again. If no settlement of its own or a military ally can be reached, there is
+way it takes no orders, takes no settlement and does not stop for zone of control, but enemy
+armies it meets attack it — head-on on a route, at a pass it crosses, or besieging a settlement of
+its own it passes; a garrison stays inside. It fights as a normal army, with no defence bonus.
+When it arrives it can be given orders again. If no settlement of its own or a military ally can be reached, there is
 nowhere to retreat and **the whole losing army dies**.
 
 ### Defence
@@ -463,18 +464,26 @@ whole leg. Enemy armies meet in two ways:
 
 - **At a place.** An army arriving where an enemy army stands stops there, cancelling the rest
   of its path. At an enemy settlement with an army inside it begins a siege (§6); anywhere else
-  — a pass, or a settlement where the enemy is the besieger — the two fight a battle (§5).
+  — a pass, or a settlement where the enemy is the besieger — the two fight a battle (§5). An army
+  that reaches its own besieged settlement fights the besiegers as a relief force; the garrison
+  stays inside, and may sortie (§6). If the relief force wins it goes inside too.
 - **Head-on on a route.** Two enemy armies marching towards each other along the same route
   fight where they meet. No army stays on a route: the loser retreats (§5) and the winner carries
-  on its march, and can be given new orders. Armies marching the same way never meet — every army
-  marches at the same speed.
+  on its march, from where they met, and can be given new orders. Armies marching the same way
+  never meet — every army marches at the same speed.
+
+If two armies reach a place at the same moment, an army falling back to its refuge gets in first.
+
+**New orders** take effect at once. An army on a route turns back or carries on, whichever is the
+faster way to its new destination. `stop` halts it at the next place it reaches — no army stays on
+a route.
 
 **Supply.** Armies live off the land. A settlement's land feeds **half its pop** in soldiers — a
 10K town 5,000, a 20K city 10,000 — and **×1.5 if the settlement is on a river** (listed in the
 scenario). A pass is fed by the land it lies in. An army outside **friendly land** (its own
 country's, its subjects' or overlord's, its allies') that has more men than the land feeds —
-soldiers and mercenaries alike — loses **1% of its men every month**, lost from your
-population like any casualty (§2). An army counts as in the land of the settlement or pass it is
+soldiers and mercenaries alike, not cannon crews — loses **1% of its men every month**, lost
+from your population like any casualty (§2). An army counts as in the land of the settlement or pass it is
 at or besieging, and while marching, of the one it is marching to. Every army of the same country
 in one land counts together, so splitting up means spreading out. A besieger over the limit loses
 2% a month: 1% to supply, 1% to siege disease (§6). Peasant rebels (§11) are fed by their own
@@ -484,7 +493,9 @@ people and never suffer this.
 **Fleet orders:** `move` · `blockade` · `patrol` (§7).
 
 **Battle cooldown:** one resolution per pair of armies per 3 months. The loser retreats
-immediately, as in §5 *After the battle*.
+immediately, as in §5 *After the battle*. Storms and sorties are battles too. Enemy armies that
+meet at a place while on cooldown wait there, and fight when it ends; enemy armies that pass each
+other on a route while on cooldown have passed.
 
 **Straits (dashed lines).** An army may cross if you control **≥10 × x ships** in that sea zone (see
 [Sea zones](SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes

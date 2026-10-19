@@ -1,0 +1,6 @@
+# Bohemia holds the pass P6 with the Brno garrison; Austria's Hainburg garrison tries to cross it to Brno.
+seed 5
+1440-01-01 AUS declare-war target=BOH
+1440-01-01 BOH move army=28 to=P6
+1440-01-01 AUS move army=32 to=28
+until 1440-12-31

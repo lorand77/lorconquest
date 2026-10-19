@@ -1,0 +1,9 @@
+# Bohemia besieges Vienna with the Brno and Prague garrisons. Austria sends the Hainburg garrison to relieve
+# it before the Prague army gets there, then the Vienna garrison sorties.
+seed 3
+1440-01-01 BOH declare-war target=AUS
+1440-01-01 BOH move army=30 to=33
+1440-01-01 BOH move army=28 to=33
+1440-09-10 AUS move army=32 to=33
+1441-02-01 AUS sortie army=33
+until 1441-12-31

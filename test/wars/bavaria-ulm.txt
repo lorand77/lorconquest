@@ -1,0 +1,7 @@
+# Bavaria takes Ulm. The Memmingen garrison gets there first and starts the siege; the Munich garrison
+# follows with orders to storm, and storms with both.
+seed 1
+1440-01-01 BAV declare-war target=ULM
+1440-01-01 BAV move army=38 to=48
+1440-01-01 BAV move army=37 to=48 storm=yes
+until 1440-12-31
