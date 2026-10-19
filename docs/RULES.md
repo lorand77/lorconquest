@@ -22,7 +22,7 @@
 Start **1440 AD**.
 
 **Single player:** free pause.
-**Multiplayer:** 1 minute to set up, then a 30s pause every 10 years.
+**Multiplayer:** 1 minute to set up, then no pauses.
 
 ---
 
