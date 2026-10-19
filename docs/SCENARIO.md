@@ -8,8 +8,8 @@ From the two, a script builds [map.svg](map.svg), the map the game shows, and
 [scenario.json](scenario.json), this scenario as data for the game. After changing either, run:
 
 ```
-perl tools/map.pl              # check everything, rebuild map.svg and scenario.json, refresh this file
-perl tools/map.pl mountains    # the same, but first move any mountain that touches something
+node tools/map.js              # check everything, rebuild map.svg and scenario.json, refresh this file
+node tools/map.js mountains    # the same, but first move any mountain that touches something
 ```
 
 Columns and blocks marked *generated* are rewritten by the script — edit the rest.
@@ -211,7 +211,7 @@ from the lower-numbered settlement; the route's length (and so its marching time
 ## Mountains
 
 Decoration only — mountains have no rules effect outside the passes. Apex positions (x,y in map
-units); `perl tools/map.pl mountains` moves any that touch something else.
+units); `node tools/map.js mountains` moves any that touch something else.
 
 ```
 754,771  725,786  847,796  874,814  743,817  933,849  1092,870  705,871

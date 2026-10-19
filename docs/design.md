@@ -225,8 +225,9 @@ client.
 
 ### Development environment
 
-Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. Perl stays for `tools/map.pl`, which keeps
-producing `scenario.json` and `map.svg` for the game.
+Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. The map tools are Node too:
+`tools/map.js` builds `scenario.json` and `map.svg` from a scenario folder, and
+`scenarios/historical-1440/make-base.js` drew that scenario's first map from real geography. The repo has no Perl.
 
 ---
 

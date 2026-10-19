@@ -2,7 +2,7 @@
 <!-- Map geometry for docs/map.svg (see docs/SCENARIO.md). One shape per settlement's land (id land-N) and the rivers.
      Neighbouring lands must share exactly the same points along their common edge (use snapping in Inkscape).
      Sea zone dividers (group sea-zones) run from coast to coast and split the sea into the zones named in SCENARIO.md.
-     Use straight segments only; tools/map.pl rejects curves and transforms. -->
+     Use straight segments only; tools/map.js rejects curves and transforms. -->
 <rect width="1308" height="1165" fill="#99d9ea"/>
 <g id="lands" fill="#ffffff" stroke="#7f7f7f" stroke-width="1">
   <path id="land-1" d="M230 0 L291 0 L291 51 L338 96 L320 122 L300 136 L275 147 L242 157 L205 156 L188 149 L176 136 L168 122 L164 109 L164 86 L178 61 L210 28 L216 6 Z"/>

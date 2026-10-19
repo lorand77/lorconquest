@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1341 1397" width="1341" height="1397">
-<!-- Map geometry for map.svg (see SCENARIO.md). Made by make-base.pl from real latitudes and longitudes (data.pl);
-     edit it by hand from here on (Inkscape, with snapping) and run tools/map.pl. One shape per settlement's land (id land-N),
+<!-- Map geometry for map.svg (see SCENARIO.md). Made by make-base.js from real latitudes and longitudes (data.js);
+     edit it by hand from here on (Inkscape, with snapping) and run tools/map.js. One shape per settlement's land (id land-N),
      the rivers and the sea zone dividers. Neighbouring lands share exactly the same points; straight segments only. -->
 <rect width="1341" height="1397" fill="#99d9ea"/>
 <g id="lands" fill="#ffffff" stroke="#7f7f7f" stroke-width="1">

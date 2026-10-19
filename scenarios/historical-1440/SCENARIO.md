@@ -12,13 +12,13 @@ plus the rivers and the sea zone dividers — are in [map-base.svg](map-base.svg
 game. After changing either, run:
 
 ```
-perl tools/map.pl scenarios/historical-1440              # check everything, rebuild map.svg and scenario.json, refresh this file
-perl tools/map.pl scenarios/historical-1440 mountains    # the same, but first move any mountain that touches something
+node tools/map.js scenarios/historical-1440              # check everything, rebuild map.svg and scenario.json, refresh this file
+node tools/map.js scenarios/historical-1440 mountains    # the same, but first move any mountain that touches something
 ```
 
 map-base.svg and the data tables here were first made by
-[make-base.pl](make-base.pl) from real latitudes and longitudes ([data.pl](data.pl)); running it again
-**overwrites** map-base.svg and the tables, so once you edit them by hand, use tools/map.pl only.
+[make-base.js](make-base.js) from real latitudes and longitudes ([data.js](data.js)); running it again
+**overwrites** map-base.svg and the tables, so once you edit them by hand, use tools/map.js only.
 
 Columns and blocks marked *generated* are rewritten by the script — edit the rest.
 
@@ -332,7 +332,7 @@ the bend.
 ## Mountains
 
 Decoration only — mountains have no rules effect outside the passes. Apex positions (x,y in map units);
-`perl tools/map.pl scenarios/historical-1440 mountains` moves any that touch something else.
+`node tools/map.js scenarios/historical-1440 mountains` moves any that touch something else.
 
 ```
 295,36  364,57  315,76  277,77  321,118  712,913  798,934  608,937
@@ -676,7 +676,7 @@ throne worth having takes decades of peace and reform.
   parallels 47° and 57° N, centred on 14° E) — the usual projection for maps of Europe. One map unit is about
   1.2 km, so distances and marching times are true to scale.
 - **Lands**: every settlement gets the land nearer to it, over land, than to any other settlement. Extra seeds
-  in data.pl pull borders to where they lay in 1440 — Halland and Blekinge to Denmark, Bohuslän to Norway,
+  in data.js pull borders to where they lay in 1440 — Halland and Blekinge to Denmark, Bohuslän to Norway,
   Pomerelia and the Neumark to the Order, Glatz and the Ore Mountains to Bohemia, Vorarlberg to Tyrol, Trent to
   Bozen, Samogitia to the sea. Inside a country these borders are approximate.
 - **Coasts** are drawn to within a few km. Straits and lagoon mouths (the Little Belt, the Świna, the mouths of
@@ -703,7 +703,7 @@ throne worth having takes decades of peace and reform.
   of the seven electors and grows stronger only through Imperial Authority and reform.
 - **The game opens at war**: four wars of 1440 are already being fought, and the alliances of the year are signed.
 
-### Known warnings from tools/map.pl
+### Known warnings from tools/map.js
 
 - Some routes cross two rivers (Trier–Mainz crosses the Moselle and the Rhine, Hamburg–Bremen the Elbe and the
   Weser) and are charged one crossing, as the rules say; the script points these out each run.
