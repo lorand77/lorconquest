@@ -22,7 +22,15 @@
 Start **1440 AD**.
 
 **Single player:** free pause.
-**Multiplayer:** 1 minute to set up, then no pauses.
+**Multiplayer:** up to **4 human players**; the computer runs every other country. 1 minute to
+set up, then no pauses.
+
+- **A player who disconnects** is replaced at once by a **caretaker**. It defends with the
+  armies the country already has and joins wars its allies call it into, but buys nothing,
+  declares no war, makes no peace and signs no agreement. After **2 minutes** away the full
+  computer player takes over. A player who comes back takes their country back at once.
+- **The game ends when no human player is left** — every one has quit, or been away longer
+  than 2 minutes.
 
 ---
 
