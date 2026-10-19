@@ -9,11 +9,10 @@
 //   node tools/map.js [folder] mountains    the same, but first move any mountain that touches something
 //
 // Node built-ins only. Pixel grids are typed arrays indexed y * W + x.
-"use strict";
-const fs = require("fs");
-const path = require("path");
+import fs from "node:fs";
+import path from "node:path";
 
-const ROOT = path.dirname(__dirname);
+const ROOT = path.dirname(import.meta.dirname);
 function die(msg) { process.stderr.write(msg.endsWith("\n") ? msg : msg + "\n"); process.exit(1); }
 function warn(msg) { process.stderr.write(msg + "\n"); }
 const abs = (p) => (p.startsWith("/") ? p : path.join(ROOT, p));

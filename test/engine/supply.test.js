@@ -1,9 +1,8 @@
 // Supply and retreats (RULES.md §5, §8): hunger outside friendly land, retreats to the nearest refuge, armies
 // with nowhere to go, and what a retreating army may and may not do.
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const { tinyGame, setArmy, runTo, order, rig } = require("../helpers/tiny");
+import test from "node:test";
+import assert from "node:assert/strict";
+import { tinyGame, setArmy, runTo, order, rig } from "../helpers/tiny.js";
 
 const ofType = (events, type) => events.filter((e) => e.type === type);
 // put an army on the road to `to`, arriving long after the next month starts

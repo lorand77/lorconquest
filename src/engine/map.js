@@ -3,7 +3,7 @@
 // or two legs either side of its pass. A leg takes its route's years in whole days. Straits wait for fleets
 // (milestone 3).
 
-import { YEAR_DAYS } from "./calendar.mjs";
+import { YEAR_DAYS } from "./calendar.js";
 
 export const legKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 const byKey = (a, b) => (a < b ? -1 : a > b ? 1 : 0);

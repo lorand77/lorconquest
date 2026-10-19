@@ -1,13 +1,12 @@
 // The scripted wars in test/wars play out as they should on the real map (docs/plan.md, milestone 1).
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const fs = require("fs");
-const path = require("path");
-const { runScript } = require("../tools/run.js");
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { runScript } from "../tools/run.js";
 
 function play(name) {
-    const { game, events, rejected } = runScript(fs.readFileSync(path.join(__dirname, "wars", `${name}.txt`), "utf8"));
+    const { game, events, rejected } = runScript(fs.readFileSync(path.join(import.meta.dirname, "wars", `${name}.txt`), "utf8"));
     assert.deepEqual(rejected, [], "no command was refused");
     return { st: game.state, events, battles: events.filter((e) => e.type === "battle") };
 }

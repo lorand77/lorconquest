@@ -200,18 +200,18 @@ random numbers in the game state. It loads `scenario.json` and knows nothing of 
 database or the screen. `test/engine/determinism.test.js` checks the files for anything that
 would break that.
 
-- **ES modules** (`src/engine/*.mjs`): the browser loads them as modules with no build step, and
-  the rest of the code, CommonJS as in LorCiv, `require`s them directly (Node 24 can).
-- **One entry point,** `index.mjs`. A game is a `Game` (`game.mjs`): the map built from the
+- **ES modules,** like all the code (`"type": "module"` in package.json): the browser loads the
+  engine's files as they are, with no build step, and the server imports the same files.
+- **One entry point,** `index.js`. A game is a `Game` (`game.js`): the map built from the
   scenario, the state, and the log of accepted commands with the day of each. `command(cmd)`
-  applies one through the validator (`commands.mjs`) or refuses it with a reason; `advance()` moves
-  one day (`day.mjs`) and returns its events; `snapshot()` is the state as JSON, `Game.restore` and
+  applies one through the validator (`commands.js`) or refuses it with a reason; `advance()` moves
+  one day (`day.js`) and returns its events; `snapshot()` is the state as JSON, `Game.restore` and
   `replay` rebuild a game from a snapshot or from its seed and log.
 - **The state is plain JSON:** countries, settlements, armies (by id; the starting garrisons are
   numbered like their settlements), wars, battle cooldowns, the day and the random state
-  (mulberry32, one 32-bit word). `RULES_VERSION` and `FORMAT` in `state.mjs` are stamped on every
+  (mulberry32, one 32-bit word). `RULES_VERSION` and `FORMAT` in `state.js` are stamped on every
   state and checked on restore.
-- **The map** (`map.mjs`) is the scenario as a graph: settlements and passes are places, keyed
+- **The map** (`map.js`) is the scenario as a graph: settlements and passes are places, keyed
   `"37"` and `"P3"`; land routes are legs, two either side of a pass, one per pair of places. A
   leg takes its route's years × 365 days, rounded to a whole day.
 - **Where an army is:** at a place (`at`), or on a leg (`march`: from, to, start day, end day),
@@ -245,9 +245,9 @@ Copied when a milestone needs it, not up front:
 - **Not reused:** the whole game — `src/shared/`, the turn logic in `src/game/rooms.js`, the
   canvas renderer, the game page.
 
-LorCiv's conventions carry over too: CommonJS, `"use strict"`, no new dependencies without
-asking, raw SQL prepared statements, a comment at the top of every module, never trusting the
-client.
+LorCiv's conventions carry over too: no new dependencies without asking, raw SQL prepared
+statements, a comment at the top of every module, never trusting the client. One exception: this
+code is ES modules, not CommonJS, so whatever is copied from LorCiv is converted.
 
 ### Testing
 

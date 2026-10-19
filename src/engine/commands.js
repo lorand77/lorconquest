@@ -11,11 +11,11 @@
 //   { type: "split", country, army, men: { swords: 200, ... }, cannons, crew }
 //   { type: "merge", country, army, into }
 
-import { CREW_PER_CANNON, WEAPONS, emptyMen, menOf } from "./army.mjs";
-import { mayFight } from "./battle.mjs";
-import { settle, situation, sortie, storm } from "./fighting.mjs";
-import { follow, routeFor } from "./movement.mjs";
-import { atWar, newArmy, removeArmy, warKey } from "./state.mjs";
+import { CREW_PER_CANNON, WEAPONS, emptyMen, menOf } from "./army.js";
+import { mayFight } from "./battle.js";
+import { settle, situation, sortie, storm } from "./fighting.js";
+import { follow, routeFor } from "./movement.js";
+import { atWar, newArmy, removeArmy, warKey } from "./state.js";
 
 const refuse = (error) => ({ ok: false, error });
 const done = (events = []) => ({ ok: true, events });

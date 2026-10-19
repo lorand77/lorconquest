@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "description": "Real-time grand strategy in Mitteleuropa, 1440-1650.",
-    "type": "commonjs",
+    "type": "module",
     "engines": {
         "node": ">=24"
     },

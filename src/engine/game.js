@@ -2,10 +2,10 @@
 // object the server, the browser, tests and tools hold. A game replays exactly from its seed and its log, and a
 // snapshot carries on exactly where it was taken.
 
-import { applyCommand } from "./commands.mjs";
-import { advanceDay } from "./day.mjs";
-import { buildMap } from "./map.mjs";
-import { FORMAT, RULES_VERSION, initialState } from "./state.mjs";
+import { applyCommand } from "./commands.js";
+import { advanceDay } from "./day.js";
+import { buildMap } from "./map.js";
+import { FORMAT, RULES_VERSION, initialState } from "./state.js";
 
 export class Game {
     constructor(map, state) {

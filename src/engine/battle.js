@@ -2,10 +2,10 @@
 // applied to every army on both sides and to their countries' population. Empty armies are removed. What
 // happens next, retreats or captures, is up to the caller. Also the battle cooldown (§8).
 
-import { applyLosses, combine, isEmpty, lossesFor, menOf, power, stopsCavalry } from "./army.mjs";
-import { MONTH } from "./calendar.mjs";
-import { battleRoll } from "./random.mjs";
-import { killPeople, removeArmy } from "./state.mjs";
+import { applyLosses, combine, isEmpty, lossesFor, menOf, power, stopsCavalry } from "./army.js";
+import { MONTH } from "./calendar.js";
+import { battleRoll } from "./random.js";
+import { killPeople, removeArmy } from "./state.js";
 
 // one resolution per pair of armies per 3 months
 export const COOLDOWN_DAYS = Math.round(3 * MONTH);

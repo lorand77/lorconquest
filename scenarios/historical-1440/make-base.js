@@ -10,19 +10,18 @@
 //
 // Ported from make-base.pl (see git history) with the same sections, algorithm and output. Pixel grids are
 // typed arrays indexed y * W + x; corners of the pixel grid are y * VW + x.
-"use strict";
 
-const fs = require("fs");
-const path = require("path");
-const zlib = require("zlib");
+import fs from "node:fs";
+import path from "node:path";
+import zlib from "node:zlib";
 
-const HERE = __dirname;
+const HERE = import.meta.dirname;
 const MODE = process.argv[2] ?? "build";
 if (!/^(build|preview)$/.test(MODE)) die(`usage: ${process.argv[1]} [preview]\n`);
-const {
+import {
     FORMABLES, COUNTRIES, SETTLEMENTS, SEEDS, ISLAND_OWNER, PIECE_OWNER, COAST, RIVERS, PASSES, MOUNTAINS, DIVIDERS,
     ZONES, STRAITS, NO_ROUTE,
-} = require(path.join(HERE, "data.js"));
+} from "./data.js";
 
 // ---------- helpers for the port ----------
 function die(msg) { process.stderr.write(msg); process.exit(1); }

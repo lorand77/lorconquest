@@ -3,13 +3,11 @@
 // to set against the 100 ms a day has in play.
 //
 //   node tools/bench.js [--years 10] [--seed 1]
-"use strict";
-const path = require("path");
-const { Game, armyList, canEnter, menOf } = require("../src/engine/index.mjs");
+import { Game, armyList, canEnter, menOf } from "../src/engine/index.js";
+import scenario from "../docs/scenario.json" with { type: "json" };
 
 const arg = (name, dflt) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? Number(process.argv[i + 1]) : dflt; };
 const years = arg("years", 10), seed = arg("seed", 1);
-const scenario = require(path.join(__dirname, "..", "docs", "scenario.json"));
 const game = Game.create(scenario, { seed });
 
 // the bench's own dice, apart from the game's

@@ -1,8 +1,7 @@
-// The one validator (src/engine/commands.mjs): what it refuses, and splitting and merging armies.
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const { tinyGame, setArmy, runTo, order } = require("../helpers/tiny");
+// The one validator (src/engine/commands.js): what it refuses, and splitting and merging armies.
+import test from "node:test";
+import assert from "node:assert/strict";
+import { tinyGame, setArmy, runTo, order } from "../helpers/tiny.js";
 
 const refused = (game, cmd) => {
     const r = game.command(cmd);

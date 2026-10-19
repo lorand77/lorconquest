@@ -2,10 +2,10 @@
 // every 100 ms; tests and simulations call it as fast as they like. Commands are applied between days, never
 // inside one. Returns the day's events.
 
-import { isMonthStart } from "./calendar.mjs";
-import { arrive, meetings, placeBattles, settle, surrenders } from "./fighting.mjs";
-import { armyList, isAlive } from "./state.mjs";
-import { attrition } from "./supply.mjs";
+import { isMonthStart } from "./calendar.js";
+import { arrive, meetings, placeBattles, settle, surrenders } from "./fighting.js";
+import { armyList, isAlive } from "./state.js";
+import { attrition } from "./supply.js";
 
 export function advanceDay(game) {
     const st = game.state, events = [];

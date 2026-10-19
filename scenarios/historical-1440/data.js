@@ -1,6 +1,5 @@
 // Geography of the Historical 1440 scenario, in real latitude and longitude (degrees north, east).
 // make-base.js projects it onto the map. Positions are good to a few kilometres; one map unit is about 1.2 km.
-"use strict";
 
 // ---------------------------------------------------------------------------------------------------------
 // Countries in 1440: code, name, capital (a settlement name below)
@@ -496,7 +495,7 @@ const FORMABLES = [
   [ "Polish-Lithuanian Commonwealth", "Poland and Lithuania joined at Lublin (1569)",     ["POL", "MAZ", "LIT", "LIV", "Danzig", "Thorn", "Allenstein", "Königsberg", "Memel"] ],
 ];
 
-module.exports = {
+export {
     COUNTRIES, SETTLEMENTS, SEEDS, ISLAND_OWNER, PIECE_OWNER, COAST, RIVERS, PASSES, MOUNTAINS, DIVIDERS, ZONES,
     STRAITS, NO_ROUTE, FORMABLES,
 };

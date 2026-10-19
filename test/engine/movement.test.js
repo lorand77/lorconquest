@@ -1,10 +1,9 @@
 // Marching (RULES.md §8): timing, passes, passing through, taking undefended settlements, stopping where an
 // enemy stands, turning back and stopping.
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const { progress } = require("../../src/engine/index.mjs");
-const { tinyGame, setArmy, runTo, order } = require("../helpers/tiny");
+import test from "node:test";
+import assert from "node:assert/strict";
+import { progress } from "../../src/engine/index.js";
+import { tinyGame, setArmy, runTo, order } from "../helpers/tiny.js";
 
 test("an army takes its route's days, at an even pace", () => {
     const game = tinyGame();

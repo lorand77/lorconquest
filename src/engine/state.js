@@ -1,9 +1,9 @@
 // The game state and its starting values (RULES.md §2). The state is plain JSON — a snapshot is the state as a
-// string — and holds everything that changes; the map (map.mjs) holds what does not. Also the questions every
+// string — and holds everything that changes; the map (map.js) holds what does not. Also the questions every
 // other module asks of it: who owns a place, who is at war, where an army may go.
 
-import { emptyMen, menOf } from "./army.mjs";
-import { seedRandom } from "./random.mjs";
+import { emptyMen, menOf } from "./army.js";
+import { seedRandom } from "./random.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
 export const RULES_VERSION = 1;

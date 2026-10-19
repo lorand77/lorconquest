@@ -3,8 +3,8 @@
 // An army counts in the land of the place it is at or besieging, and while marching of the place it marches to.
 // Men only: cannons and their crews are spared.
 
-import { applyLosses, isEmpty, lossesFor, menOf } from "./army.mjs";
-import { armyList, atWar, killPeople, removeArmy } from "./state.mjs";
+import { applyLosses, isEmpty, lossesFor, menOf } from "./army.js";
+import { armyList, atWar, killPeople, removeArmy } from "./state.js";
 
 export function attrition(game, events) {
     const st = game.state, map = game.map;

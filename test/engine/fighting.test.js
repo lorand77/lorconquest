@@ -1,9 +1,8 @@
 // Taking settlements and fighting (RULES.md §5, §6, §8): sieges and their surrender, storms, sorties, relief,
 // battles at passes and head-on on routes. rig() loads the dice, so every number can be worked out by hand.
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const { tinyGame, setArmy, runTo, order, rig } = require("../helpers/tiny");
+import test from "node:test";
+import assert from "node:assert/strict";
+import { tinyGame, setArmy, runTo, order, rig } from "../helpers/tiny.js";
 
 const ofType = (events, type) => events.filter((e) => e.type === type);
 const popOf = (game, country) => Object.values(game.state.settlements).filter((s) => s.owner === country).reduce((n, s) => n + s.pop, 0);

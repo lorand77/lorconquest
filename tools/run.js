@@ -10,14 +10,13 @@
 //   1440-01-01 BAV move army=37 to=48 storm=yes
 //   1440-01-01 BAV split army=37 men.swords=300
 //   until 1441-01-01                            play to that date
-// Commands are kebab-case versions of the engine's (src/engine/commands.mjs); "#" starts a comment.
+// Commands are kebab-case versions of the engine's (src/engine/commands.js); "#" starts a comment.
 // --quiet prints only the summary, --json the final state instead of the summary.
-"use strict";
-const fs = require("fs");
-const path = require("path");
-const { Game, formatDate, parseDate, menOf } = require("../src/engine/index.mjs");
+import fs from "node:fs";
+import path from "node:path";
+import { Game, formatDate, parseDate, menOf } from "../src/engine/index.js";
 
-const ROOT = path.dirname(__dirname);
+const ROOT = path.dirname(import.meta.dirname);
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 
 function value(text) {
@@ -127,9 +126,9 @@ function summary(game, scenario) {
     return lines;
 }
 
-module.exports = { runScript, parseScript, describe, summary };
+export { runScript, parseScript, describe, summary };
 
-if (require.main === module) {
+if (import.meta.main) {
     const args = process.argv.slice(2);
     const file = args.find((a) => !a.startsWith("--"));
     if (!file) {

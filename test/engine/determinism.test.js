@@ -1,15 +1,14 @@
 // A game replays exactly (design.md, "Saving, restarting, replays"): the same script gives the same game, a
 // snapshot plus the commands after it gives the same game as one unbroken run, and the engine stays runnable in
 // the browser.
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const fs = require("fs");
-const path = require("path");
-const { Game, replay } = require("../../src/engine/index.mjs");
-const { runScript } = require("../../tools/run.js");
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { Game, replay } from "../../src/engine/index.js";
+import { runScript } from "../../tools/run.js";
 
-const script = fs.readFileSync(path.join(__dirname, "..", "wars", "vienna.txt"), "utf8");
+const script = fs.readFileSync(path.join(import.meta.dirname, "..", "wars", "vienna.txt"), "utf8");
 
 test("the same script plays out the same, to the last die", () => {
     const a = runScript(script), b = runScript(script);
@@ -40,12 +39,12 @@ test("a snapshot from another format or rules version is refused", () => {
 });
 
 test("the engine uses nothing that only Node or only a browser has, no clock and no Math.random", () => {
-    const dir = path.join(__dirname, "..", "..", "src", "engine");
+    const dir = path.join(import.meta.dirname, "..", "..", "src", "engine");
     for (const f of fs.readdirSync(dir)) {
         const src = fs.readFileSync(path.join(dir, f), "utf8").replace(/^\s*\/\/.*$/gm, "");
         for (const bad of [/\brequire\(/, /\bprocess\./, /\bDate\b/, /Math\.random/, /\bset(Timeout|Interval)\b/, /\b(document|window|localStorage)\b/, /from "(node:|fs|path)/]) {
             assert.doesNotMatch(src, bad, `${f} uses ${bad}`);
         }
-        assert.match(f, /\.mjs$/);
+        assert.match(f, /\.js$/);
     }
 });

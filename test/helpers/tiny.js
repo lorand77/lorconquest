@@ -9,9 +9,8 @@
 //
 // Numbers are marching days. Settlement 3 is AAA's, 5 BBB's, 6 CCC's. Every settlement starts with its garrison
 // of pop ÷ 25 swords (400 in a town, 800 in a city), numbered like the settlement.
-"use strict";
-const { Game } = require("../../src/engine/index.mjs");
-const { d6 } = require("../../src/engine/random.mjs");
+import { Game } from "../../src/engine/index.js";
+import { d6 } from "../../src/engine/random.js";
 
 const SETTLEMENTS = [
     [1, "One", "AAA", "city", true], [2, "Two", "AAA", "town", false], [3, "Three", "AAA", "town", false],
@@ -79,4 +78,4 @@ function rig(game, ...faces) {
     throw new Error(`no random state rolls ${faces}`);
 }
 
-module.exports = { tinyScenario, tinyGame, setArmy, runTo, order, rig };
+export { tinyScenario, tinyGame, setArmy, runTo, order, rig };

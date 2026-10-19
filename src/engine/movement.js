@@ -2,9 +2,9 @@
 // start day to its end day — so where it is on any day is simple arithmetic, for the engine and for the screen.
 // Setting an army on its way, turning it back, retreats, and armies destroyed with nowhere to go.
 
-import { menOf } from "./army.mjs";
-import { findNearest, findRoute, legKey } from "./map.mjs";
-import { canEnter, killPeople, removeArmy } from "./state.mjs";
+import { menOf } from "./army.js";
+import { findNearest, findRoute, legKey } from "./map.js";
+import { canEnter, killPeople, removeArmy } from "./state.js";
 
 // how far along its leg a march is on `day`: 0 at the start, 1 on arrival (not clamped)
 export const progress = (march, day) => (day - march.start) / (march.end - march.start);

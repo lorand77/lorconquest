@@ -1,13 +1,12 @@
 // The engine's pure parts: the calendar, the dice, army arithmetic and the battle and siege formulas, checked
 // against RULES.md's own numbers.
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const cal = require("../../src/engine/calendar.mjs");
-const rnd = require("../../src/engine/random.mjs");
-const army = require("../../src/engine/army.mjs");
-const { damage, COOLDOWN_DAYS } = require("../../src/engine/battle.mjs");
-const { wallDefence, siegeDays } = require("../../src/engine/fighting.mjs");
+import test from "node:test";
+import assert from "node:assert/strict";
+import * as cal from "../../src/engine/calendar.js";
+import * as rnd from "../../src/engine/random.js";
+import * as army from "../../src/engine/army.js";
+import { damage, COOLDOWN_DAYS } from "../../src/engine/battle.js";
+import { wallDefence, siegeDays } from "../../src/engine/fighting.js";
 
 const men = (parts) => ({ ...army.emptyMen(), ...parts });
 const anArmy = (parts, cannons = 0, crew = 0) => ({ men: men(parts), cannons, crew });

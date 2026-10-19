@@ -1,10 +1,9 @@
 // The starting state from the real scenario (RULES.md §2) and the map built from it.
-"use strict";
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const scenario = require("../../docs/scenario.json");
-const { Game, menOf, soldiersOf, routeFor } = require("../../src/engine/index.mjs");
-const { tinyGame } = require("../helpers/tiny");
+import test from "node:test";
+import assert from "node:assert/strict";
+import scenario from "../../docs/scenario.json" with { type: "json" };
+import { Game, menOf, soldiersOf, routeFor } from "../../src/engine/index.js";
+import { tinyGame } from "../helpers/tiny.js";
 
 test("every settlement starts with a sword-armed garrison of pop ÷ 25, numbered like it", () => {
     const game = Game.create(scenario);

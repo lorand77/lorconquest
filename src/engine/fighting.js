@@ -5,13 +5,13 @@
 // besieged are a relief force, outside, until they have fought the besiegers; the owner's enemies there are
 // besiegers. A garrison only fights when it sorties or is stormed.
 
-import { YEAR_DAYS } from "./calendar.mjs";
-import { fight, mayFight } from "./battle.mjs";
-import { legKey } from "./map.mjs";
-import { destroy, progress, retreat, routeFor, startLeg } from "./movement.mjs";
-import { d6 } from "./random.mjs";
-import { armiesAt, armyList, atWar, canEnter, isAlive, ownerOf, removeArmy } from "./state.mjs";
-import { menOf } from "./army.mjs";
+import { YEAR_DAYS } from "./calendar.js";
+import { fight, mayFight } from "./battle.js";
+import { legKey } from "./map.js";
+import { destroy, progress, retreat, routeFor, startLeg } from "./movement.js";
+import { d6 } from "./random.js";
+import { armiesAt, armyList, atWar, canEnter, isAlive, ownerOf, removeArmy } from "./state.js";
+import { menOf } from "./army.js";
 
 export function situation(game, key) {
     const st = game.state, node = game.map.nodes.get(key), here = armiesAt(st, key);

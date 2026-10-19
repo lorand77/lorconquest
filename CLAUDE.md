@@ -24,10 +24,10 @@ running 45 countries, one game day every 0.1 s. Node 24, no dependencies.
 
 ## Layout
 
-- `src/engine/` — the rules, as ES modules (`.mjs`) that run unchanged in Node and the browser.
-  `index.mjs` is what everything else imports; `commands.mjs` is the one way player actions get
-  in; `day.mjs` is the one way time moves on. The module list is in design.md, *The engine*.
-- `tools/` — the runner, the bench, the map tools. CommonJS.
+- `src/engine/` — the rules, which run unchanged in Node and the browser. `index.js` is what
+  everything else imports; `commands.js` is the one way player actions get in; `day.js` is the one
+  way time moves on. The module list is in design.md, *The engine*.
+- `tools/` — the runner, the bench, the map tools.
 - `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js`; `test/wars/` — scripted
   wars on the real map.
 
@@ -36,8 +36,10 @@ running 45 countries, one game day every 0.1 s. Node 24, no dependencies.
 - No dependencies. Node built-ins first; if a package seems necessary, ask.
 - The engine: no Node-only or browser-only APIs, no clock (`Date`, timers), no `Math.random` —
   randomness comes from `state.rng`. The state stays plain JSON. A test scans for this.
-- Everything else is CommonJS `.js`. Everywhere: `"use strict"` (implied in `.mjs`), double
-  quotes, semicolons, 4-space indent.
+- ES modules everywhere (`"type": "module"`): `import`/`export`, file endings in import paths,
+  Node built-ins as `node:fs`, `import.meta.dirname` for the file's folder, JSON imported
+  `with { type: "json" }`. Code copied from LorCiv, which is CommonJS, is converted.
+- Double quotes, semicolons, 4-space indent.
 - Every module opens with a comment saying what it does and why. Keep that up.
 - Never trust the client: legality is decided by the engine's validator on the server.
 - Commit subjects are short and imperative.
@@ -45,7 +47,7 @@ running 45 countries, one game day every 0.1 s. Node 24, no dependencies.
 ## Gotchas
 
 - Anything that makes the same commands on the same seed play out differently must bump
-  `RULES_VERSION` in `src/engine/state.mjs`, or saved games and replays break. A change to the
+  `RULES_VERSION` in `src/engine/state.js`, or saved games and replays break. A change to the
   shape of the state bumps `FORMAT`.
 - Iteration order is part of the rules: the state's objects are keyed by whole-number ids, which
   JavaScript keeps in order; anything else that is iterated is sorted first.
