@@ -1,0 +1,220 @@
+# LorConquest — Plan
+
+The order in which the game gets built. The rules are in [RULES.md](RULES.md), the map in
+[SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
+says what to build when, and how to tell each step is done.
+
+**Status:** planning; nothing is built yet.
+
+## How we work
+
+- **Every milestone ends with something you can run and check.** It is done when its *Check*
+  passes and `npm test` is green, not when the code is written.
+- **The rules engine comes first, headless.** The server, the screen and the AI are built on an
+  engine that already works and is tested without any of them.
+- **The risky parts come early.** The real-time loop gets loaded with 44 countries in milestone 2,
+  long before the real AI exists.
+- **Docs move with the code.** A rule question answered while building goes into RULES.md; a
+  design decision goes into design.md, in the same commit.
+- **From milestone 2 on, games are saved and replayed from their command log,** so any change
+  that makes the same commands play out differently bumps the rules version (design.md, *Saving,
+  restarting, replays*).
+
+## Milestones
+
+| # | Milestone | You can… |
+|---|---|---|
+| 1 | The engine | run a scripted war in the terminal and read what happened |
+| 2 | The live game | play armies on the map in the browser, against placeholder countries |
+| 3 | Running a country | run a country's money, research, laws and fleets for decades |
+| 4 | Diplomacy | declare wars with allies, sign agreements, make peace, take subjects |
+| 5 | Computer players | play a whole single-player game against real computer countries |
+| 6 | Multiplayer | play with up to 4 people, signed in, from the lobby |
+| 7 | Finishing | watch replays, see the leaderboard, play it online |
+
+---
+
+### 1. The engine
+
+The rules for armies, headless: no server, no screen, no AI.
+
+**Delivers**
+- **Project setup:** `package.json` with no dependencies, `node --test`, the folder layout, and a
+  repo `CLAUDE.md` with the conventions from design.md.
+- **Loading the scenario** from `scenario.json`, and the starting state from RULES.md §2:
+  treasuries, cores, capitals, a sword-armed garrison in every settlement.
+- **Time:** the day counter, the 365-day calendar, month and year boundaries; the seeded random
+  numbers kept in the game state.
+- **Commands:** the one validator, accept or reject with a reason; the command log.
+- **Movement:** finding routes through land the army may enter; march times with river and pass
+  delays at an even pace; stopping where an enemy stands; head-on meetings on routes; capturing
+  undefended settlements; beginning sieges at defended ones; splitting and merging armies.
+- **Battles:** the power formula with every weapon rule (pike and shot, cavalry, cannons and
+  crews); defence and walls; losses; ties; armies fighting together; marching retreats; the
+  3-month cooldown; the dead taken from population.
+- **Sieges:** length, disease, sortie, storm with the d6 roll, surrender.
+- **Supply attrition.**
+- **War, minimally:** a table of who is at war with whom, set by a `declare war` command. Allies,
+  agreements and peace wait for milestone 4.
+- **Saving:** a snapshot of the whole game, and loading it back.
+- **A runner:** `node tools/run.js <script>` plays a game from a script of commands at given days
+  and prints what happened, as fast as the machine allows.
+
+**Check**
+- Tests for every formula, against the worked examples in RULES.md.
+- A snapshot plus the commands after it gives exactly the state of an unbroken run.
+- The runner plays scripted wars that read right, for example Bavaria taking Ulm, and a siege of
+  Vienna with a sortie.
+- A tick with every country's armies on the move is timed, so the budget is known before the AI.
+
+**Decide at the start:** how the engine's files load in Node and the browser, and the rounding
+rule for whole men (design.md §2, questions 1 and 2).
+
+**Not in it:** money, the shop, research, laws, fleets, diplomacy beyond war, the AI.
+
+---
+
+### 2. The live game
+
+The engine running in real time on the server, shown in the browser.
+
+**Starts with** a sketch of the game screen — where the map, panels and notifications go, and
+how an order is given (design.md §2, question 4) — recorded in design.md.
+
+**Delivers**
+- **The server:** Express and Socket.IO, with LorCiv's `config.js`, `log.js`, the
+  `app.js`/`server.js` split and test helpers.
+- **One worker thread per game:** the 100 ms tick, the catch-up rule, pause; commands in, each
+  tick's changes out.
+- **Saving:** the command log and a snapshot every game year in SQLite. A restarted server
+  resumes every game at the exact day it was on.
+- **The screen:** `map.svg` with lands coloured by owner, armies drawn and moving smoothly from
+  their march data, the date, pause. Orders: select an army, move it, besiege, storm, sortie,
+  split, merge. Previews (march time, whether an order is allowed) from the engine in the browser.
+- **Per-player views:** each player gets the public changes and only their own private ones.
+- **Placeholder countries:** the 44 others give random legal orders on the staggered schedule of
+  the real AI, so the loop carries the real load.
+- **No accounts yet:** a development page starts a game as any country.
+
+**Check**
+- A single-player game played in the browser: march, fight, besiege, take settlements.
+- With 44 placeholder countries the tick stays inside its budget, measured and logged.
+- Restarting the server mid-game resumes it at the same day, with nothing lost.
+
+**Depends on:** 1.
+
+---
+
+### 3. Running a country
+
+Everything a country does apart from fighting and diplomacy.
+
+**Delivers**
+- **Money:** settlement money, tax and its uprising chance, upkeep, paid monthly; the bank, loans
+  and default; debt and bankruptcy.
+- **Research:** the slider, choosing a tech, libraries.
+- **The shop:** buildings, weapons and cannons into the reserve, equipping armies, people,
+  sharpshooters at passes, ships at ports.
+- **Raising forces:** soldiers and cannon crew trained in core settlements (faster in the
+  capital); mercenaries; sending men home.
+- **Conscription laws** and the army and navy caps.
+- **The land:** population growth, coring and courthouses, special coring, losing and naming a
+  capital.
+- **Random events:** harvest, plague, peasant uprisings with their rebel armies.
+- **Fleets:** sailing between zones, ports, crews, blockade, patrol, naval battles, crossing
+  straits.
+- **Panels on screen** for all of it.
+
+**Check**
+- Tests for every formula, against RULES.md's examples and tables.
+- A country run for 50 game years in the browser: its money, research and army add up by hand.
+
+**Decide first:** where the starting ships lie (design.md §2, question 3).
+
+**Depends on:** 2.
+
+---
+
+### 4. Diplomacy
+
+All of RULES.md §10, and the end of the game.
+
+**Delivers**
+- **War:** declaring it; defensive allies and guarantors joining; calls to arms as questions with
+  a deadline (an unanswered human joins after 6 months).
+- **Agreements:** both alliances, guarantees, military access, non-aggression pacts, truces;
+  breaking them; neutral land closed.
+- **Subjects:** vassals and protectorates, tribute, breaking free.
+- **Peace:** terms of settlements, money and subjects. Computer countries answer by the formula;
+  offers between humans wait with a deadline.
+- **The computer countries' side, as rules:** warmonger scores, opinion, accepting proposals,
+  coalitions, subject demands.
+- **The Empire:** the proposal and the League.
+- **Victory:** 45 settlements or the end date.
+- **On screen:** the diplomacy panel, offers, notifications.
+
+**Check**
+- Tests for every formula and every way into and out of a war.
+- A scripted diplomatic run: a war that pulls in allies, a coalition forming against a warmonger,
+  a peace, a vassal breaking free, an Empire proposal.
+
+**Depends on:** 3. It comes before the AI so the AI is built once, on the complete rules — the
+computer countries' *answers* are rules and work here without it.
+
+---
+
+### 5. Computer players
+
+The real AI, replacing the placeholders.
+
+**Delivers**
+- **The computer player:** reads the state and sends commands like a human, inline in the game's
+  worker, on the staggered schedule, within the tick budget.
+- **The three layers:** strategy (yearly), operations (every 10–20 days), reflexes (the tick after
+  an event).
+- **The caretaker,** for a disconnected human's country.
+- **A simulation tool:** many AI-only games, headless, at full speed, with win rates by country —
+  and an `experiments/` folder for what we learn from it, as in LorCiv.
+
+**Check**
+- AI-only games run 1440 to 1650 without errors, inside the tick budget.
+- Computer countries expand, ally against warmongers, make peace and use their money sensibly.
+- A single-player game against them is a game.
+
+**Depends on:** 4.
+
+---
+
+### 6. Multiplayer
+
+Up to 4 people in one game, signed in.
+
+**Delivers**
+- **Accounts and sessions** from LorCiv: the database layer, login, the page shell.
+- **The lobby:** tables, picking free countries first come, the host starting with seats still
+  open for the computer.
+- **The game rules for people:** the setup minute; disconnects (caretaker at once, the full AI
+  after 2 minutes); taking a country back; the game ending when no human is left; single-player
+  games paused and resumed another day.
+- **Chat.**
+
+**Check**
+- Four browsers play one game.
+- One player's connection is cut and restored, before and after the 2 minutes.
+- The server restarts mid-game and everyone reconnects to it.
+
+**Depends on:** 5 (the caretaker and the takeover need the AI).
+
+---
+
+### 7. Finishing
+
+**Delivers**
+- **Replays** of finished games from their command log, checked against the rules version.
+- **The leaderboard,** ranking the humans of each game.
+- **Online:** the deployment, health check and nightly backup from LorCiv's setup; terms and
+  privacy pages.
+
+**Check:** the game is online, and a finished game's replay ends exactly as the game did.
+
+**Depends on:** 6.

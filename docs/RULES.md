@@ -129,7 +129,7 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 | | |
 |---|---|
 | Treasury | **x × pop × 2** — about one year of money from its people (a 10K town 20K, a 50K country 100K) |
-| Soldiers | pop ÷ 25, equipped with swords |
+| Soldiers | pop ÷ 25, equipped with swords — a garrison in every settlement of its own pop ÷ 25: 400 in a town, 800 in a city |
 | Ships | pop ÷ 2000 cogs — **coastal countries only** |
 | Cores | **every starting settlement is core** |
 

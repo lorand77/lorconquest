@@ -190,6 +190,16 @@ the deadline passes, the default applies. Computer players answer on their refle
   each tick's public changes to everyone and each country's private changes to its player only;
   the full state on joining is filtered the same way.
 
+### The engine
+
+The rules live in one set of files, the **engine**, that runs in two places: inside each game's
+worker on the server, where it decides everything, and in the browser, where it only previews —
+what a purchase costs, how long a march takes, whether an order is allowed — before the command
+is sent. It therefore uses no Node-only and no browser-only APIs, reads no clock and keeps its
+random numbers in the game state. It loads `scenario.json` and knows nothing of sockets, the
+database or the screen. How its files are loaded in both places is decided at the start of
+milestone 1 (§2).
+
 ### The map on screen
 
 `map.svg` is shown as it is. Its shapes carry ids — `land-ID` for each settlement's land,
@@ -233,7 +243,19 @@ Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. The
 
 ## 2. Open questions
 
-None at the moment. Settled answers move into §1, or into RULES.md where they are rules.
+Settled answers move into §1, or into RULES.md where they are rules. Each is needed by the milestone
+named (see [plan.md](plan.md)).
+
+1. **How the engine's files load in Node and the browser** (milestone 1). Either ES modules,
+   which both load natively with no wrapper (and which the server's CommonJS can `require`), or
+   LorCiv's way: classic scripts that share globals in the browser, with a few lines at the end
+   of each file for Node.
+2. **Whole numbers** (milestone 1). Men, ships and cannons are whole, so percentage losses need
+   a rounding rule — and the same for population and money.
+3. **Where the starting ships lie** (milestone 3). RULES.md §2 gives a coastal country pop ÷ 2000
+   cogs but not in which of its ports.
+4. **The game screen** (before milestone 2): where the map, the panels and the notifications go,
+   and how an order is given — select an army, then click where it should go?
 
 ---
 
