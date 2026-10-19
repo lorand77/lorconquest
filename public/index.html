@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LorConquest — start a game</title>
+    <link rel="stylesheet" href="/css/game.css">
+    <script type="module" src="/js/dev.js"></script>
+</head>
+<body class="dev">
+    <h1>LorConquest</h1>
+    <p class="hint">Development page: start a single-player game as any country, or go back to one. Accounts and the
+        lobby come in milestone 6.</p>
+    <form id="start" class="start">
+        <label>Scenario <select id="scenario"></select></label>
+        <label>Country <select id="country"></select></label>
+        <label>Seed <input id="seed" type="number" min="0" max="4294967295" placeholder="random"></label>
+        <button class="primary" type="submit">Start</button>
+        <span id="error" class="error"></span>
+    </form>
+    <h2>Games</h2>
+    <ul id="games" class="games"></ul>
+</body>
+</html>

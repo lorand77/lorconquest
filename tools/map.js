@@ -106,8 +106,11 @@ const ids = (s) => (s ?? "").split(/\s*,\s*/).filter((x) => /\S/.test(x));
 const whole = (x, y) => /^\d+ \d+$/.test(`${x} ${y}`);
 
 const CN = new Map(), CAP = new Map(), CORDER = [];   // country code -> name, capital settlement id; codes in table order
+const COLOUR = new Map();                             // country code -> colour from the optional Colour column
+let HAS_COLOUR = false;
 {
-    const [, rows] = table("Countries");
+    const [h, rows] = table("Countries");
+    HAS_COLOUR = h.includes("Colour");
     for (const r of rows) {
         const c = r.Code;
         if (CN.has(c)) err(`Countries line ${r._line}: duplicate code ${c}`);
@@ -117,6 +120,10 @@ const CN = new Map(), CAP = new Map(), CORDER = [];   // country code -> name, c
         const m = /^(\d+)\b/.exec(r.Capital);
         if (m) CAP.set(c, Number(m[1]));
         else err(`country ${c}: Capital must be a settlement ID`);
+        if (r.Colour) {
+            if (/^#[0-9a-fA-F]{6}$/.test(r.Colour)) COLOUR.set(c, r.Colour.toLowerCase());
+            else err(`country ${c}: Colour must be like #3a7bd5`);
+        }
     }
 }
 
@@ -986,6 +993,31 @@ for (const c of C.values()) {
     c.hrestate = c.hre === c.ids.length ? "all" : c.hre ? "part" : "none";
 }
 const cname = (c) => `${c} ${CN.get(c)}`;
+
+// ---------- country colours: neighbours never share one ----------
+// Every country gets a colour for its land on the map. A Colour in SCENARIO.md is kept; the rest are picked,
+// largest country first, from a palette of light colours (the map's markers and labels are dark): never one a
+// neighbour has — countries whose lands touch or are joined by a route or strait — and of the rest the one
+// used least so far.
+const PALETTE = ["#e8b4a0", "#a9c8e8", "#b7d9a8", "#f2d58c", "#d5b3dc", "#9fd6c9", "#f3a9a9", "#cdcda4", "#a7b9f0",
+    "#e9c4e2", "#c6e3a4", "#f1c69d", "#b4abdb", "#dcd2a2", "#acdbea", "#e2abbb", "#bfd8c6", "#e5d3b3"];
+const NEAR = new Map(CORDER.map((c) => [c, new Set()]));
+for (const k of [...PAIR.keys(), ...LAND, ...STRAIT]) {
+    const [a, b] = k.split("-").map((x) => S.get(Number(x)).country);
+    if (a !== b) { NEAR.get(a).add(b); NEAR.get(b).add(a); }
+}
+{
+    const uses = new Map(PALETTE.map((p) => [p, 0]));
+    for (const c of COLOUR.values()) if (uses.has(c)) uses.set(c, uses.get(c) + 1);
+    const ord = new Map(CORDER.map((c, i) => [c, i]));
+    for (const c of [...CORDER].filter((x) => !COLOUR.has(x)).sort((a, b) => C.get(b).pop - C.get(a).pop || ord.get(a) - ord.get(b))) {
+        const taken = new Set([...NEAR.get(c)].map((x) => COLOUR.get(x)));
+        const free = PALETTE.filter((p) => !taken.has(p));
+        const pick = (free.length ? free : PALETTE).reduce((best, p) => (uses.get(p) < uses.get(best) ? p : best));
+        COLOUR.set(c, pick);
+        uses.set(pick, uses.get(pick) + 1);
+    }
+}
 const zonePorts = (z) => SIDS.filter((id) => S.get(id).zone === z);
 const zoneStraits = (z) => [...SZ.keys()].filter((e) => SZ.get(e) === z).sort(byKey);
 const zoneNext = (z) => ZONES.filter((x) => z.next.has(x.name));
@@ -996,7 +1028,7 @@ const json = {
     map: { svg: "map.svg", width: W, height: H },
     countries: CORDER.map((code) => {
         const c = C.get(code);
-        return { code, name: CN.get(code), capital: CAP.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, hre: c.hrestate };
+        return { code, name: CN.get(code), capital: CAP.get(code), colour: COLOUR.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, hre: c.hrestate };
     }),
     settlements: SIDS.map((id) => {
         const s = S.get(id);
@@ -1017,11 +1049,15 @@ const json = {
 fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");
 
 {
-    const [, , i, j] = table("Countries");
-    const t = ["| Code | Country | Capital | Settlements | Pop | Army | Ships | HRE |", "|---|---|---|---|---|---|---|---|"];
+    const [, rows, i, j] = table("Countries");
+    // the Colour column stays only if the table has one; what is written in it is kept as it was
+    const given = new Map(rows.map((r) => [r.Code, r.Colour ?? ""]));
+    const t = HAS_COLOUR
+        ? ["| Code | Country | Capital | Colour | Settlements | Pop | Army | Ships | HRE |", "|---|---|---|---|---|---|---|---|---|"]
+        : ["| Code | Country | Capital | Settlements | Pop | Army | Ships | HRE |", "|---|---|---|---|---|---|---|---|"];
     for (const k of CORDER) {
         const c = C.get(k);
-        t.push(`| ${k} | ${CN.get(k)} | ${CAP.get(k)} ${S.get(CAP.get(k)).name} | ${c.ids.join(", ")} | ${Math.trunc(c.pop / 1000)}K | ${fmt(c.army)} | ${c.ships || "—"} | ${{ all: "✓", part: "part", none: "—" }[c.hrestate]} |`);
+        t.push(`| ${k} | ${CN.get(k)} | ${CAP.get(k)} ${S.get(CAP.get(k)).name} |${HAS_COLOUR ? ` ${given.get(k)} |` : ""} ${c.ids.join(", ")} | ${Math.trunc(c.pop / 1000)}K | ${fmt(c.army)} | ${c.ships || "—"} | ${{ all: "✓", part: "part", none: "—" }[c.hrestate]} |`);
     }
     doc.splice(i, j - i + 1, ...t);
 }

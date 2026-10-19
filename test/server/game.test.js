@@ -1,0 +1,159 @@
+// The live game (docs/plan.md, milestone 2): a game created over REST, played over sockets in its worker, its
+// changes kept in step on the client, saved, and resumed exactly after a restart.
+import test from "node:test";
+import assert from "node:assert/strict";
+import scenario from "../../docs/scenario.json" with { type: "json" };
+import { replay } from "../../src/engine/index.js";
+import { openDb } from "../../src/db.js";
+import { viewFor } from "../../src/game/view.js";
+import { applyChanges, applyPrivate } from "../../public/js/mirror.js";
+import { api, connect, emitAck, newGame, runUntil, startServer, tempDb, waitFor } from "./helpers.js";
+
+test("scenarios, and starting a game", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const scenarios = (await api(server, "GET", "/api/scenarios")).body;
+        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["docs", "Mitteleuropa"], ["historical-1440", "Historical 1440"]]);
+        assert.equal(scenarios[0].countries.length, 45);
+        assert.equal((await api(server, "POST", "/api/games", { scenario: "nowhere", country: "BAV" })).status, 400);
+        assert.equal((await api(server, "POST", "/api/games", { scenario: "docs", country: "XXX" })).status, 400);
+        assert.equal((await api(server, "POST", "/api/games", { scenario: "docs", country: "BAV", seed: -1 })).status, 400);
+        const id = await newGame(server);
+        const games = (await api(server, "GET", "/api/games")).body;
+        assert.deepEqual(games.map((g) => [g.id, g.scenario, g.human, g.day, g.paused, g.live]), [[id, "docs", "BAV", 0, true, true]]);
+    } finally {
+        await server.close();
+    }
+});
+
+test("a player sees the game without its dice and without other countries' treasuries", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        assert.equal((await emitAck(s, "join", { gameId: 999 })).ok, false);
+        const j = await emitAck(s, "join", { gameId: id });
+        assert.deepEqual([j.ok, j.me, j.paused, j.scenario, j.tickMs, j.view.day], [true, "BAV", true, "docs", 2, 0]);
+        assert.deepEqual(Object.keys(j.view).sort(), ["armies", "countries", "day", "settlements", "wars"]);
+        assert.equal(j.view.countries.BAV.treasury, 100000);
+        assert.equal(j.view.countries.ULM.treasury, undefined);
+        assert.equal(Object.keys(j.view.armies).length, 87);
+    } finally {
+        await server.close();
+    }
+});
+
+test("commands are always the player's country's, whatever the client says", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        assert.equal((await emitAck(s, "command", { cmd: { type: "stop", army: 37 } })).error, "join a game first");
+        await emitAck(s, "join", { gameId: id });
+        assert.equal((await emitAck(s, "command", { cmd: "move" })).error, "no command");
+        const theirs = await emitAck(s, "command", { cmd: { type: "move", country: "ULM", army: 48, to: 49 } });
+        assert.deepEqual([theirs.ok, theirs.error], [false, "army 48 is not BAV's"]);
+        const ok = await emitAck(s, "command", { cmd: { type: "move", army: 37, to: 36 } });
+        assert.equal(ok.ok, true);
+    } finally {
+        await server.close();
+    }
+});
+
+test("each day's changes keep the client's copy exactly in step with the game", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        const j = await emitAck(s, "join", { gameId: id });
+        const copy = j.view;
+        s.on("tick", (t) => applyChanges(copy, t.changes));
+        s.on("private", (p) => applyPrivate(copy, j.me, p.changes));
+        await emitAck(s, "command", { cmd: { type: "move", army: 37, to: 36 } });
+        const day = await runUntil(s, 200);
+        await new Promise((r) => setTimeout(r, 50));                       // the last tick's messages
+        const fresh = (await emitAck(s, "join", { gameId: id })).view;
+        assert.equal(copy.day, day);
+        assert.deepEqual(copy, fresh);
+        assert.equal(fresh.armies[37].at, "36");                          // Munich's garrison went to Passau
+    } finally {
+        await server.close();
+    }
+});
+
+test("leaving pauses a single-player game", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        await emitAck(s, "join", { gameId: id });
+        await emitAck(s, "pause", { paused: false });
+        await waitFor(s, "tick", (t) => t.day >= 20);
+        s.close();
+        await new Promise((r) => setTimeout(r, 200));
+        const room = server.app.rooms.get(id);
+        assert.equal(room.paused, true);
+        const day = room.day;
+        await new Promise((r) => setTimeout(r, 100));
+        assert.equal(room.day, day);
+    } finally {
+        await server.close();
+    }
+});
+
+test("a restarted server resumes the game exactly, and its log replays it from the seed", async () => {
+    const dbPath = tempDb();
+    let server = await startServer({ dbPath });
+    let before, id;
+    try {
+        id = await newGame(server);
+        const s = await connect(server);
+        await emitAck(s, "join", { gameId: id });
+        await emitAck(s, "command", { cmd: { type: "move", army: 37, to: 48 } });   // refused: Ulm is neutral
+        await emitAck(s, "command", { cmd: { type: "declareWar", target: "ULM" } });
+        await emitAck(s, "command", { cmd: { type: "move", army: 37, to: 48 } });
+        await runUntil(s, 450);                                            // past the snapshot of day 365
+        before = (await emitAck(s, "join", { gameId: id })).view;
+    } finally {
+        await server.close();
+    }
+
+    // what was saved: the commands, human and computer, and the snapshot of 1 January 1441
+    const db = openDb(dbPath);
+    const rows = db.db.prepare("SELECT day, country, source, cmd FROM commands WHERE game_id = ? ORDER BY seq").all(id);
+    assert.deepEqual(rows.slice(0, 2).map((r) => [r.day, r.country, r.source, JSON.parse(r.cmd).type]), [[0, "BAV", "human", "declareWar"], [0, "BAV", "human", "move"]]);
+    assert.ok(rows.some((r) => r.source === "computer"));
+    assert.equal(db.q.snapshot.get(id).day, 365);
+    const game = db.q.game.get(id);
+    assert.equal(game.day, before.day);
+    // the log alone rebuilds the game from its seed
+    const rebuilt = replay(scenario, game.seed, rows.map((r) => ({ day: r.day, cmd: JSON.parse(r.cmd) })), game.day);
+    assert.deepEqual(JSON.parse(JSON.stringify(viewFor(rebuilt.state, "BAV"))), before);
+    db.close();
+
+    server = await startServer({ dbPath });
+    try {
+        const s = await connect(server);
+        const j = await emitAck(s, "join", { gameId: id });
+        assert.equal(j.paused, true);
+        assert.deepEqual(j.view, before);
+    } finally {
+        await server.close();
+    }
+});
+
+test("each game logs how long its days take", async () => {
+    const lines = [];
+    const server = await startServer({ dbPath: tempDb(), statsEvery: 50, lines });
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        await emitAck(s, "join", { gameId: id });
+        await runUntil(s, 120);
+        const timing = lines.filter((l) => l.includes("game.timing"));
+        assert.ok(timing.length >= 2);
+        assert.match(timing[0], new RegExp(`game=${id} days=50 mean_ms=[\\d.]+ max_ms=[\\d.]+ budget_ms=2`));
+    } finally {
+        await server.close();
+    }
+});

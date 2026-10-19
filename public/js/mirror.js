@@ -1,0 +1,108 @@
+// The browser's copy of the game and the geometry of drawing it: the state kept up to date from each day's
+// changes (src/game/view.js), where an army stands or marches on the map, the roads an order would take.
+// Pure functions, no DOM, so the tests run them in Node.
+
+// one day's public changes into the mirrored state
+export function applyChanges(state, changes) {
+    state.day = changes.day;
+    for (const [id, a] of Object.entries(changes.armies ?? {})) {
+        if (a === null) delete state.armies[id];
+        else state.armies[id] = a;
+    }
+    for (const [id, s] of Object.entries(changes.settlements ?? {})) state.settlements[id] = s;
+    for (const [code, c] of Object.entries(changes.countries ?? {})) state.countries[code] = { ...state.countries[code], ...c };
+    if (changes.wars) state.wars = changes.wars;
+}
+
+// one's own country's private changes (its treasury)
+export function applyPrivate(state, code, changes) {
+    state.countries[code] = { ...state.countries[code], ...changes };
+}
+
+// every leg's line on the map, both ways: "37>48" -> [[x, y], ...]. A route through a pass is split at the pass.
+export function buildLegs(scenario) {
+    const legs = new Map(), passes = new Map(scenario.passes.map((p) => [p.id, p]));
+    const xy = new Map(scenario.settlements.map((s) => [String(s.id), [s.x, s.y]]));
+    for (const p of scenario.passes) xy.set(p.id, [p.x, p.y]);
+    const add = (a, b, pts) => {
+        if (legs.has(`${a}>${b}`)) return;
+        legs.set(`${a}>${b}`, pts);
+        legs.set(`${b}>${a}`, [...pts].reverse());
+    };
+    for (const r of scenario.routes) {
+        if (r.type !== "land") continue;
+        const a = String(r.from), b = String(r.to);
+        if (r.pass) {
+            const p = passes.get(r.pass), i = r.points.findIndex((q) => q[0] === p.x && q[1] === p.y);
+            if (i > 0) {
+                add(a, r.pass, r.points.slice(0, i + 1));
+                add(r.pass, b, r.points.slice(i));
+            } else {
+                add(a, r.pass, [xy.get(a), xy.get(r.pass)]);
+                add(r.pass, b, [xy.get(r.pass), xy.get(b)]);
+            }
+        } else add(a, b, r.points);
+    }
+    return legs;
+}
+
+const clamp01 = (f) => Math.min(1, Math.max(0, f));
+const dist = (p, q) => Math.hypot(q[0] - p[0], q[1] - p[1]);
+
+// the point a fraction `f` of the way along a line, and the line from there on
+export function along(points, f) {
+    const lengths = points.slice(1).map((p, i) => dist(points[i], p));
+    let left = clamp01(f) * lengths.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < lengths.length; i++) {
+        if (left <= lengths[i] || i === lengths.length - 1) {
+            const t = lengths[i] ? Math.min(1, left / lengths[i]) : 0;
+            const at = [points[i][0] + (points[i + 1][0] - points[i][0]) * t, points[i][1] + (points[i + 1][1] - points[i][1]) * t];
+            return { at, rest: [at, ...points.slice(i + 1)] };
+        }
+        left -= lengths[i];
+    }
+    return { at: points[0], rest: points };
+}
+
+export const progress = (march, day) => clamp01((day - march.start) / (march.end - march.start));
+
+// where an army is drawn on `day` (a fraction of a day between ticks): its place, or along its leg
+export function armyPoint(army, day, legs, nodes) {
+    if (army.at) { const n = nodes.get(army.at); return [n.x, n.y]; }
+    const pts = legs.get(`${army.march.from}>${army.march.to}`);
+    return pts ? along(pts, progress(army.march, day)).at : [nodes.get(army.march.to).x, nodes.get(army.march.to).y];
+}
+
+// the line of a route from where an army is now along `path` (the places it will reach, as the engine's route
+// finding gives them): from a place, or from a point on its leg — onwards, or back the way it came
+export function routeLine(army, path, day, legs, nodes) {
+    const pts = [];
+    let from;
+    if (army.at) {
+        from = army.at;
+        pts.push([nodes.get(from).x, nodes.get(from).y]);
+    } else {
+        const m = army.march, f = progress(m, day);
+        const back = path[0] === m.from;
+        const leg = back ? legs.get(`${m.to}>${m.from}`) : legs.get(`${m.from}>${m.to}`);
+        pts.push(...along(leg, back ? 1 - f : f).rest);
+        from = path[0];
+        path = path.slice(1);
+    }
+    for (const k of path) {
+        const leg = legs.get(`${from}>${k}`) ?? [[nodes.get(from).x, nodes.get(from).y], [nodes.get(k).x, nodes.get(k).y]];
+        pts.push(...leg.slice(1));
+        from = k;
+    }
+    return pts;
+}
+
+// "750", "1.2k", "12k"
+export function formatMen(n) {
+    if (n < 1000) return String(n);
+    if (n < 10000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+    return `${Math.round(n / 1000)}k`;
+}
+
+// a whole number with thousands separated: "1,060,000"
+export const formatNumber = (n) => Math.round(n).toLocaleString("en-GB");

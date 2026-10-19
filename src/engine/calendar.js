@@ -39,3 +39,11 @@ export function parseDate(text) {
     if (!m) throw new Error(`not a date: ${text}`);
     return dayOf(Number(m[1]), Number(m[2]), Number(m[3]));
 }
+
+export const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+// "12 March 1442"
+export function longDate(day) {
+    const d = dateOf(day);
+    return `${d.day} ${MONTH_NAMES[d.month - 1]} ${d.year}`;
+}

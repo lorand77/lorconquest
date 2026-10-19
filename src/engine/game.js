@@ -50,9 +50,14 @@ export class Game {
 
 // a game rebuilt from its seed and command log, up to `untilDay`: each day's commands are applied, then the day
 // is advanced, exactly as when it was played
-export function replay(scenario, seed, log, untilDay) {
-    const game = Game.create(scenario, { seed });
-    let i = 0;
+export const replay = (scenario, seed, log, untilDay) => carryOn(Game.create(scenario, { seed }), log, untilDay);
+
+// the same from a snapshot: `log` holds the commands applied on or after the snapshot's day
+export const resume = (scenario, snapshot, log, untilDay) => carryOn(Game.restore(scenario, snapshot), log, untilDay);
+
+function carryOn(game, log, untilDay) {
+    let i = log.findIndex((e) => e.day >= game.day);
+    if (i < 0) i = log.length;
     for (;;) {
         for (; i < log.length && log[i].day === game.day; i++) {
             const r = game.command(log[i].cmd);

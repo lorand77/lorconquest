@@ -22,8 +22,9 @@ and does not matter. This is not a fast RTS: no client-side prediction, no rollb
 
 ### Stack
 
-LorCiv's: **Node 24, Express 5, Socket.IO, better-sqlite3, plain JavaScript in the browser** — no
-bundler, no framework, no build step.
+LorCiv's, nearly: **Node 24, Express 5, Socket.IO, SQLite through Node's built-in `node:sqlite`,
+plain JavaScript in the browser** — no bundler, no framework, no build step. Express and Socket.IO
+are the only dependencies.
 
 - The game is small — 87 settlements, 45 countries, a few hundred armies and fleets — so the
   processor is not the limit; keeping the clock steady is. Node does that well with one thread
@@ -33,6 +34,11 @@ bundler, no framework, no build step.
 - Socket.IO gives rooms, replies to messages and automatic reconnects, which a live game needs.
 - LorCiv's generic parts — accounts, sessions, database layer, logging, page shell, deployment —
   carry over (see *Reuse from LorCiv*).
+- `node:sqlite` rather than LorCiv's `better-sqlite3`: the same synchronous prepared statements,
+  with no dependency and no native module to compile and rebuild (LorCiv's setup notes warn about
+  that twice). It has no transaction helper, so the database layer has its own, and LorCiv's
+  session store, made for `better-sqlite3`, is replaced by a small one of our own (milestone 6).
+  Node's documentation does not call it stable yet; we pin Node 24.
 
 Considered and not chosen: TypeScript (would need a build step for the browser), Colyseus (a
 multiplayer framework that dictates how state is declared and offers nothing for command logs or
@@ -119,9 +125,23 @@ only ordering: no locks, no races.
 If there are ever too many games for one thread each, a fixed pool of workers with several games
 each replaces it without touching the engine.
 
+In the code: `src/game/worker.js` is a game's thread, and lists the messages each way at its top;
+`src/game/rooms.js` starts the workers, saves what they send and passes it to the sockets
+(`src/game/socket.js`). A game always starts paused — a new one waits for its player, a resumed one
+for its player to come back.
+
 ### The computer players
 
 **They run inside the game's loop, in the game's worker**, a few countries per tick.
+
+- **Their dice are their own.** A computer player never draws from the game's random state
+  (`state.rng`): its commands are logged and a replay applies them without running it, so if it
+  drew from the game's dice, a replay's battles would come out differently. It seeds its own from
+  the game's seed, its country and the day — and its schedule is a function of the day alone, so
+  a restarted game picks it up with nothing saved.
+- **Until milestone 5, placeholders** (`src/game/placeholder.js`) stand in: on the real
+  schedule, each sends some of its idle armies one to three places away and now and then declares
+  war on a neighbour, so the loop carries a realistic load.
 
 - **A computer player is a player.** It reads the state and sends commands through the same queue
   as a human; it never changes the state directly. That keeps it honest, gives it the same
@@ -163,7 +183,12 @@ the deadline passes, the default applies. Computer players answer on their refle
 - **The command log** holds every applied command — human, computer, caretaker, and the server's
   own (a country changing hands between a human and the computer) — with the day it was applied
   and its place in that day's order.
-- **A snapshot** of the whole game is saved once a game year.
+- **A snapshot** of the whole game is saved at the start of every game year; only the latest is
+  kept. The log alone rebuilds a game from its seed; the snapshot makes a restart quick.
+- **The database** (`src/db.js`): `games` (scenario, seed, rules version, the human's country, the
+  day reached, paused), `commands` (the log: day, country, human or computer, the command as JSON)
+  and `snapshots`. Commands and snapshots are written in the tick they happen; the day reached at
+  least every 10 days, and whenever the game pauses or the server stops.
 - **The engine is deterministic:** its random numbers come from a seeded generator kept in the
   game state, and nothing in it reads the time or iterates in an undefined order. Since only the
   server runs the rules, only Node has to agree with itself.
@@ -177,9 +202,14 @@ the deadline passes, the default applies. Computer players answer on their refle
 
 ### Messages
 
-- **Client to server:** commands, each with a request id; the reply carries the same id.
-- **Server to client:** the full state on joining (the first load, a reload and a reconnect all
-  use it — no separate catch-up), then one message per tick with the day and its changes.
+- **Client to server:** `join`, `command` and `pause`, each answered (Socket.IO's acknowledgement
+  stands in for a request id). The country of a command is always the player's, set by the
+  server, never the client's.
+- **Server to client:** the full view on joining (the first load, a reload and a reconnect all
+  use it — no separate catch-up), then `tick` every day with its changes and events, `private`
+  when the player's own private part changes, and `paused`. Each list is in
+  `src/game/socket.js`; what changed is worked out in the worker (`src/game/view.js`), entity by
+  entity, so a day sends only what moved.
 - **Army positions are not sent each tick.** An army moves at an even pace along a route
   (RULES.md §8), so a march is known from its route, start day and arrival day; the client
   animates it from that. The server finds head-on meetings the same way: two enemy marches on
@@ -232,13 +262,45 @@ would break that.
 `route-…`, `settlement-…`, `pass-…`, `sea-…` — so the client recolours lands as they change hands
 and draws armies and fleets on a layer above. No canvas renderer.
 
+### The game screen
+
+Desktop first. Phones are not a priority, but the habits that keep them possible cost nothing and
+are kept: pointer events (one path for mouse and touch), orders by click or tap rather than hover or
+right-click, nothing shown only on hover. Small-screen layouts are not built. (`public/game.html`,
+`public/js/game.js`, `public/js/mapview.js`.)
+
+- **Layout:** a top bar (the player's country, the date, pause, the treasury; money and research
+  join it in milestone 3), the map filling the rest, and a column on the right with the selection
+  above the event feed.
+- **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
+  as a marker in its owner's colour with its men on it — a column of them beside a place with
+  several; marching armies glide along the roads between ticks; a ring round each besieged
+  settlement fills as the siege runs. Drag to pan, wheel or +/- to zoom.
+- **Orders:** click an army to select it; with one of your own selected, click a settlement, a
+  pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in
+  the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy
+  settlement, [Cancel] (or Escape) drops it. The selected army's panel has Stop, Storm, Sortie,
+  Split and Merge where they apply.
+- **Looking:** a settlement shows its owner, people, any siege and the armies there; a country's
+  land shows the country, its wars and — until diplomacy in milestone 4 — a [Declare war] button.
+- **Events:** the player's own and their wars', newest first; clicking one shows its place. A war
+  declared on the player, or a siege or loss of one of their settlements, also shows as a notice
+  over the map. Space pauses.
+- **The development page** (`public/index.html`) starts a single-player game on any scenario as any
+  country, or reopens one, until accounts and the lobby (milestone 6).
+
+**Country colours** are picked by `tools/map.js` and written into `scenario.json`: each country gets
+one, chosen so that countries sharing a border never look alike. A Colour column in SCENARIO.md's
+Countries table overrides it for any country.
+
 ### Reuse from LorCiv
 
 Copied when a milestone needs it, not up front:
 
 - **From the start:** `config.js`, `log.js`, the `app.js`/`server.js` split, the test helpers.
-- **With the lobby:** accounts and sessions (`src/auth/`), the database layer (`src/db/`, raw
-  SQL, `addColumnIfMissing` migrations), the page shell, login and theme, the lobby skeleton,
+- **With saving (milestone 2):** the database layer (`src/db/`, raw SQL, `addColumnIfMissing`
+  migrations), moved to `node:sqlite`.
+- **With the lobby:** accounts and sessions (`src/auth/`), the page shell, login and theme, the lobby skeleton,
   chat.
 - **Later:** leaderboard, profiles, friends, achievements, replays page; `health.js`,
   `scripts/backup.sh` and the deployment in `docs/setup.md`.
@@ -280,11 +342,9 @@ Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. The
 Settled answers move into §1, or into RULES.md where they are rules. Each is needed by the milestone
 named (see [plan.md](plan.md)).
 
-1. **The game screen** (before milestone 2): where the map, the panels and the notifications go,
-   and how an order is given — select an army, then click where it should go?
-2. **Where the starting ships lie** (milestone 3). RULES.md §2 gives a coastal country pop ÷ 2000
+1. **Where the starting ships lie** (milestone 3). RULES.md §2 gives a coastal country pop ÷ 2000
    cogs but not in which of its ports.
-3. **Cores after a capture** (milestone 3). Does a settlement stay core for the country that
+2. **Cores after a capture** (milestone 3). Does a settlement stay core for the country that
    loses it, so that retaking it makes it core again? The engine keeps each settlement's list of
    cores untouched by captures until this is settled.
 

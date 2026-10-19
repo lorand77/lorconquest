@@ -14,6 +14,7 @@
    "code": "NOR",
    "name": "Norway",
    "capital": 1,
+   "colour": "#e2abbb",
    "settlements": [
     1,
     2,
@@ -28,6 +29,7 @@
    "code": "SWE",
    "name": "Sweden",
    "capital": 5,
+   "colour": "#cdcda4",
    "settlements": [
     4,
     5,
@@ -44,6 +46,7 @@
    "code": "DEN",
    "name": "Denmark",
    "capital": 13,
+   "colour": "#9fd6c9",
    "settlements": [
     9,
     10,
@@ -61,6 +64,7 @@
    "code": "GOT",
    "name": "Gotland",
    "capital": 15,
+   "colour": "#e2abbb",
    "settlements": [
     15
    ],
@@ -73,6 +77,7 @@
    "code": "LIV",
    "name": "Livonian Order",
    "capital": 18,
+   "colour": "#b4abdb",
    "settlements": [
     16,
     17,
@@ -88,6 +93,7 @@
    "code": "SHO",
    "name": "Schleswig-Holstein",
    "capital": 32,
+   "colour": "#a9c8e8",
    "settlements": [
     32,
     33
@@ -101,6 +107,7 @@
    "code": "LUB",
    "name": "Lübeck",
    "capital": 34,
+   "colour": "#b7d9a8",
    "settlements": [
     34
    ],
@@ -113,6 +120,7 @@
    "code": "HAM",
    "name": "Hamburg",
    "capital": 35,
+   "colour": "#f2d58c",
    "settlements": [
     35
    ],
@@ -125,6 +133,7 @@
    "code": "MEC",
    "name": "Mecklenburg",
    "capital": 36,
+   "colour": "#d5b3dc",
    "settlements": [
     36,
     37
@@ -138,6 +147,7 @@
    "code": "POM",
    "name": "Pomerania",
    "capital": 39,
+   "colour": "#dcd2a2",
    "settlements": [
     38,
     39,
@@ -153,6 +163,7 @@
    "code": "TEU",
    "name": "Teutonic Order",
    "capital": 28,
+   "colour": "#f2d58c",
    "settlements": [
     26,
     27,
@@ -170,6 +181,7 @@
    "code": "LIT",
    "name": "Lithuania",
    "capital": 22,
+   "colour": "#f3a9a9",
    "settlements": [
     20,
     21,
@@ -187,6 +199,7 @@
    "code": "FRI",
    "name": "Frisia",
    "capital": 42,
+   "colour": "#bfd8c6",
    "settlements": [
     42
    ],
@@ -199,6 +212,7 @@
    "code": "EFR",
    "name": "East Frisia",
    "capital": 43,
+   "colour": "#e5d3b3",
    "settlements": [
     43
    ],
@@ -211,6 +225,7 @@
    "code": "OLD",
    "name": "Oldenburg",
    "capital": 44,
+   "colour": "#e8b4a0",
    "settlements": [
     44
    ],
@@ -223,6 +238,7 @@
    "code": "BRE",
    "name": "Bremen",
    "capital": 45,
+   "colour": "#a9c8e8",
    "settlements": [
     45
    ],
@@ -235,6 +251,7 @@
    "code": "BRU",
    "name": "Brunswick-Lüneburg",
    "capital": 48,
+   "colour": "#a7b9f0",
    "settlements": [
     46,
     47,
@@ -250,6 +267,7 @@
    "code": "MAG",
    "name": "Magdeburg",
    "capital": 50,
+   "colour": "#9fd6c9",
    "settlements": [
     50
    ],
@@ -262,6 +280,7 @@
    "code": "BRA",
    "name": "Brandenburg",
    "capital": 54,
+   "colour": "#e9c4e2",
    "settlements": [
     51,
     52,
@@ -278,6 +297,7 @@
    "code": "POL",
    "name": "Poland",
    "capital": 64,
+   "colour": "#e8b4a0",
    "settlements": [
     56,
     57,
@@ -298,6 +318,7 @@
    "code": "MAZ",
    "name": "Masovia",
    "capital": 61,
+   "colour": "#cdcda4",
    "settlements": [
     60,
     61
@@ -311,6 +332,7 @@
    "code": "BUR",
    "name": "Burgundy",
    "capital": 70,
+   "colour": "#a9c8e8",
    "settlements": [
     67,
     68,
@@ -329,6 +351,7 @@
    "code": "UTR",
    "name": "Utrecht",
    "capital": 72,
+   "colour": "#f3a9a9",
    "settlements": [
     72,
     73
@@ -342,6 +365,7 @@
    "code": "GEL",
    "name": "Guelders",
    "capital": 74,
+   "colour": "#a7b9f0",
    "settlements": [
     74,
     75
@@ -355,6 +379,7 @@
    "code": "CLE",
    "name": "Cleves-Mark",
    "capital": 76,
+   "colour": "#e9c4e2",
    "settlements": [
     76,
     77
@@ -368,6 +393,7 @@
    "code": "MUN",
    "name": "Münster",
    "capital": 78,
+   "colour": "#b7d9a8",
    "settlements": [
     78
    ],
@@ -380,6 +406,7 @@
    "code": "KOL",
    "name": "Electorate of Cologne",
    "capital": 80,
+   "colour": "#c6e3a4",
    "settlements": [
     79,
     80
@@ -393,6 +420,7 @@
    "code": "JUL",
    "name": "Jülich-Berg",
    "capital": 82,
+   "colour": "#f1c69d",
    "settlements": [
     81,
     82
@@ -406,6 +434,7 @@
    "code": "COL",
    "name": "Cologne",
    "capital": 83,
+   "colour": "#b4abdb",
    "settlements": [
     83
    ],
@@ -418,6 +447,7 @@
    "code": "LIE",
    "name": "Liège",
    "capital": 84,
+   "colour": "#dcd2a2",
    "settlements": [
     84
    ],
@@ -430,6 +460,7 @@
    "code": "HES",
    "name": "Hesse",
    "capital": 85,
+   "colour": "#acdbea",
    "settlements": [
     85,
     86
@@ -443,6 +474,7 @@
    "code": "SAX",
    "name": "Saxony",
    "capital": 88,
+   "colour": "#c6e3a4",
    "settlements": [
     87,
     88,
@@ -459,6 +491,7 @@
    "code": "ERF",
    "name": "Erfurt",
    "capital": 92,
+   "colour": "#e2abbb",
    "settlements": [
     92
    ],
@@ -471,6 +504,7 @@
    "code": "LUS",
    "name": "Upper Lusatia",
    "capital": 94,
+   "colour": "#bfd8c6",
    "settlements": [
     93,
     94
@@ -484,6 +518,7 @@
    "code": "SIL",
    "name": "Silesia",
    "capital": 97,
+   "colour": "#acdbea",
    "settlements": [
     95,
     96,
@@ -498,6 +533,7 @@
    "code": "OPP",
    "name": "Opole",
    "capital": 98,
+   "colour": "#e5d3b3",
    "settlements": [
     98,
     99
@@ -511,6 +547,7 @@
    "code": "LUX",
    "name": "Luxembourg",
    "capital": 100,
+   "colour": "#f2d58c",
    "settlements": [
     100
    ],
@@ -523,6 +560,7 @@
    "code": "TRI",
    "name": "Trier",
    "capital": 101,
+   "colour": "#e8b4a0",
    "settlements": [
     101,
     102
@@ -536,6 +574,7 @@
    "code": "MAI",
    "name": "Mainz",
    "capital": 103,
+   "colour": "#d5b3dc",
    "settlements": [
     103
    ],
@@ -548,6 +587,7 @@
    "code": "FFM",
    "name": "Frankfurt",
    "capital": 104,
+   "colour": "#9fd6c9",
    "settlements": [
     104
    ],
@@ -560,6 +600,7 @@
    "code": "WBG",
    "name": "Würzburg",
    "capital": 105,
+   "colour": "#f3a9a9",
    "settlements": [
     105
    ],
@@ -572,6 +613,7 @@
    "code": "BAM",
    "name": "Bamberg",
    "capital": 106,
+   "colour": "#cdcda4",
    "settlements": [
     106
    ],
@@ -584,6 +626,7 @@
    "code": "ANS",
    "name": "Ansbach-Kulmbach",
    "capital": 108,
+   "colour": "#a9c8e8",
    "settlements": [
     107,
     108
@@ -597,6 +640,7 @@
    "code": "NUR",
    "name": "Nuremberg",
    "capital": 109,
+   "colour": "#b7d9a8",
    "settlements": [
     109
    ],
@@ -609,6 +653,7 @@
    "code": "PAL",
    "name": "Palatinate",
    "capital": 110,
+   "colour": "#f2d58c",
    "settlements": [
     110,
     111
@@ -622,6 +667,7 @@
    "code": "BOH",
    "name": "Bohemia",
    "capital": 112,
+   "colour": "#d5b3dc",
    "settlements": [
     112,
     113,
@@ -639,6 +685,7 @@
    "code": "TAB",
    "name": "Tábor",
    "capital": 118,
+   "colour": "#a7b9f0",
    "settlements": [
     118
    ],
@@ -651,6 +698,7 @@
    "code": "MET",
    "name": "Metz",
    "capital": 119,
+   "colour": "#d5b3dc",
    "settlements": [
     119
    ],
@@ -663,6 +711,7 @@
    "code": "LOR",
    "name": "Lorraine",
    "capital": 121,
+   "colour": "#9fd6c9",
    "settlements": [
     120,
     121
@@ -676,6 +725,7 @@
    "code": "STR",
    "name": "Strasbourg",
    "capital": 122,
+   "colour": "#f3a9a9",
    "settlements": [
     122
    ],
@@ -688,6 +738,7 @@
    "code": "BAD",
    "name": "Baden",
    "capital": 123,
+   "colour": "#e9c4e2",
    "settlements": [
     123
    ],
@@ -700,6 +751,7 @@
    "code": "WRT",
    "name": "Württemberg",
    "capital": 124,
+   "colour": "#cdcda4",
    "settlements": [
     124,
     125
@@ -713,6 +765,7 @@
    "code": "ULM",
    "name": "Ulm",
    "capital": 126,
+   "colour": "#a7b9f0",
    "settlements": [
     126
    ],
@@ -725,6 +778,7 @@
    "code": "AUG",
    "name": "Augsburg",
    "capital": 127,
+   "colour": "#e9c4e2",
    "settlements": [
     127
    ],
@@ -737,6 +791,7 @@
    "code": "BIN",
    "name": "Bavaria-Ingolstadt",
    "capital": 128,
+   "colour": "#b4abdb",
    "settlements": [
     128
    ],
@@ -749,6 +804,7 @@
    "code": "REG",
    "name": "Regensburg",
    "capital": 129,
+   "colour": "#dcd2a2",
    "settlements": [
     129
    ],
@@ -761,6 +817,7 @@
    "code": "BMU",
    "name": "Bavaria-Munich",
    "capital": 131,
+   "colour": "#c6e3a4",
    "settlements": [
     130,
     131
@@ -774,6 +831,7 @@
    "code": "BLA",
    "name": "Bavaria-Landshut",
    "capital": 132,
+   "colour": "#f1c69d",
    "settlements": [
     132,
     133
@@ -787,6 +845,7 @@
    "code": "PAS",
    "name": "Passau",
    "capital": 134,
+   "colour": "#acdbea",
    "settlements": [
     134
    ],
@@ -799,6 +858,7 @@
    "code": "AUS",
    "name": "Austria",
    "capital": 137,
+   "colour": "#f1c69d",
    "settlements": [
     135,
     136,
@@ -814,6 +874,7 @@
    "code": "HUN",
    "name": "Hungary",
    "capital": 141,
+   "colour": "#b7d9a8",
    "settlements": [
     139,
     140,
@@ -832,6 +893,7 @@
    "code": "JIS",
    "name": "Upper Hungary",
    "capital": 147,
+   "colour": "#b4abdb",
    "settlements": [
     146,
     147
@@ -845,6 +907,7 @@
    "code": "DEC",
    "name": "Decapolis",
    "capital": 148,
+   "colour": "#c6e3a4",
    "settlements": [
     148
    ],
@@ -857,6 +920,7 @@
    "code": "BAS",
    "name": "Basel",
    "capital": 150,
+   "colour": "#f1c69d",
    "settlements": [
     150
    ],
@@ -869,6 +933,7 @@
    "code": "KON",
    "name": "Konstanz",
    "capital": 151,
+   "colour": "#e2abbb",
    "settlements": [
     151
    ],
@@ -881,6 +946,7 @@
    "code": "ZUR",
    "name": "Zürich",
    "capital": 152,
+   "colour": "#e5d3b3",
    "settlements": [
     152
    ],
@@ -893,6 +959,7 @@
    "code": "SWI",
    "name": "Swiss Confederacy",
    "capital": 154,
+   "colour": "#dcd2a2",
    "settlements": [
     153,
     154
@@ -906,6 +973,7 @@
    "code": "TYR",
    "name": "Tyrol",
    "capital": 155,
+   "colour": "#bfd8c6",
    "settlements": [
     149,
     155,
@@ -920,6 +988,7 @@
    "code": "SAL",
    "name": "Salzburg",
    "capital": 157,
+   "colour": "#e8b4a0",
    "settlements": [
     157
    ],
@@ -932,6 +1001,7 @@
    "code": "STY",
    "name": "Inner Austria",
    "capital": 158,
+   "colour": "#e5d3b3",
    "settlements": [
     158,
     159,
@@ -946,6 +1016,7 @@
    "code": "SAV",
    "name": "Savoy",
    "capital": 163,
+   "colour": "#e8b4a0",
    "settlements": [
     161,
     162,
@@ -960,6 +1031,7 @@
    "code": "MIL",
    "name": "Milan",
    "capital": 164,
+   "colour": "#a9c8e8",
    "settlements": [
     164
    ],
@@ -972,6 +1044,7 @@
    "code": "VEN",
    "name": "Venice",
    "capital": 165,
+   "colour": "#b7d9a8",
    "settlements": [
     165
    ],
@@ -984,6 +1057,7 @@
    "code": "FRA",
    "name": "France",
    "capital": 168,
+   "colour": "#acdbea",
    "settlements": [
     168
    ],

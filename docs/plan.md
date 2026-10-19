@@ -4,7 +4,7 @@ The order in which the game gets built. The rules are in [RULES.md](RULES.md), t
 [SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
 says what to build when, and how to tell each step is done.
 
-**Status:** milestone 1 is done (2026-10-19); milestone 2 is next.
+**Status:** milestones 1 and 2 are done (2026-10-19); milestone 3 is next.
 
 ## How we work
 
@@ -85,16 +85,17 @@ and stopping, what retreating armies may do, relief forces, the cooldown, arriva
 
 The engine running in real time on the server, shown in the browser.
 
-**Starts with** a sketch of the game screen — where the map, panels and notifications go, and
-how an order is given (design.md §2, question 1) — recorded in design.md.
+**Started with** a sketch of the game screen, now design.md's *The game screen*.
 
 **Delivers**
 - **The server:** Express and Socket.IO, with LorCiv's `config.js`, `log.js`, the
   `app.js`/`server.js` split and test helpers.
 - **One worker thread per game:** the 100 ms tick, the catch-up rule, pause; commands in, each
   tick's changes out.
-- **Saving:** the command log and a snapshot every game year in SQLite. A restarted server
+- **Saving:** the command log and a snapshot every game year in SQLite (`node:sqlite`). A restarted server
   resumes every game at the exact day it was on.
+- **Country colours:** picked by `tools/map.js` so neighbours differ, with a Colour column in
+  SCENARIO.md to override (design.md, *The map on screen*).
 - **The screen:** `map.svg` with lands coloured by owner, armies drawn and moving smoothly from
   their march data, the date, pause. Orders: select an army, move it, besiege, storm, sortie,
   split, merge. Previews (march time, whether an order is allowed) from the engine in the browser.
@@ -109,6 +110,15 @@ how an order is given (design.md §2, question 1) — recorded in design.md.
 - Restarting the server mid-game resumes it at the same day, with nothing lost.
 
 **Depends on:** 1.
+
+**Done.** `npm test` boots the real server on throwaway databases and plays games over sockets: a
+player's view holds no dice and no other country's treasury; commands are always the player's
+country's; the client's copy, kept from each day's changes, matches the game exactly; leaving
+pauses the game; a restarted server resumes it at the same day with the same state, and the saved
+log alone rebuilds it from the seed. With 44 placeholder countries a day takes about 0.4 ms in its
+worker, logged as `game.timing`, against its 100 ms. Not checked by machine: the screen in a
+browser — there is none in the development container — so the first game played by hand is the
+real check of the page.
 
 ---
 
@@ -137,7 +147,7 @@ Everything a country does apart from fighting and diplomacy.
 - A country run for 50 game years in the browser: its money, research and army add up by hand.
 
 **Decide first:** where the starting ships lie, and what a capture does to cores (design.md §2,
-questions 2 and 3).
+questions 1 and 2).
 
 **Depends on:** 2.
 

@@ -8,6 +8,15 @@
         "node": ">=24"
     },
     "scripts": {
+        "start": "node src/server.js",
+        "dev": "node --watch src/server.js",
         "test": "node --test \"test/**/*.test.js\""
+    },
+    "dependencies": {
+        "express": "5.1.0",
+        "socket.io": "4.8.3"
+    },
+    "devDependencies": {
+        "socket.io-client": "4.8.3"
     }
 }
