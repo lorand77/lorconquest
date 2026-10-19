@@ -225,7 +225,7 @@ client.
 
 ### Development environment
 
-Node 24 is added to `.devcontainer/devcontainer.json`. Perl stays for `tools/map.pl`, which keeps
+Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. Perl stays for `tools/map.pl`, which keeps
 producing `scenario.json` and `map.svg` for the game.
 
 ---
