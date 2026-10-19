@@ -337,10 +337,11 @@ opinion of you (RULES.md §10).
 > **Control or vassalize 45 settlements.** Protectorates count as half — unless you demand one
 > become a vassal and it agrees.
 
-**End date: 1650.** The game ends when a player reaches 45, or at the start of **1650** —
-210 years, about 2 hours 8 minutes of play. At the end date the player with the most settlements
-wins, counted the same way: controlled and vassalized settlements count 1, protectorates ½. A tie
-goes to the larger total population (own settlements and subjects).
+**End date: 1650.** The game ends when any country — human or computer — reaches 45, or at the
+start of **1650** — 210 years, about 2 hours 8 minutes of play. At the end date the country with
+the most settlements wins, counted the same way: controlled and vassalized settlements count 1,
+protectorates ½. A tie goes to the larger total population (own settlements and subjects). If a
+computer country wins, every human player loses.
 
 ---
 

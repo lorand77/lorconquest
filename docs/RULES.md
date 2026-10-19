@@ -19,11 +19,14 @@
 | **1 year** | **36.5s** |
 | 100 years | ≈61 min |
 
-Start **1440 AD**.
+Start **1440 AD**. The calendar has **365 days** with the usual months and no leap years. "The
+start of each month" is its 1st; "the start of each year" is 1 January.
 
-**Single player:** free pause.
-**Multiplayer:** up to **4 human players**; the computer runs every other country. 1 minute to
-set up, then no pauses.
+**Single player:** free pause; the game runs at this one speed. Leaving pauses the game, and it
+can be resumed later.
+**Multiplayer:** up to **4 human players**; the computer runs every other country. For the first
+minute the clock stands still while players look around and give their first orders; after that
+there are no pauses.
 
 - **A player who disconnects** is replaced at once by a **caretaker**. It defends with the
   armies the country already has and joins wars its allies call it into, but buys nothing,
@@ -51,6 +54,9 @@ money per year   = settlement money
                  + tribute you receive − tribute you pay (§10)
                  + bank interest
 ```
+
+**Paid monthly.** Every amount given per year — money, upkeep, interest, tribute, research (§4)
+and population growth — is paid at the start of each month, a twelfth at a time.
 
 The conscription penalty cuts **settlement money only**, before upkeep is paid — never upkeep,
 bank interest or tribute (§10). A subject pays its overlord a share of its money per year *before* its own tribute is counted.
@@ -143,6 +149,7 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **Market** | 0.075M | — | +15% money from settlement — its Workshop's 3500 included |
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
+| **1000 cannon crew** | **free** | — | Raised like soldiers · trained in 3–6 months (§8) · serve only cannons |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
 | **Pikes** (1000) | 0.03M | unlocked | ×1.2 · makes guns stronger in pike and shot (§5) |
@@ -158,7 +165,15 @@ The capital trains soldiers twice as fast as other settlements (§8).
 | **10 galleons** | 0.33M | x8MR | ×5 each |
 | **10 men-of-war** | 0.5M | x12MR | ×8 each |
 
-**Every cannon needs 10 crewmen.** Cannon crew do **not** count as men in the power formula.
+**Where purchases go.** Swords, pikes, cavalry, guns and cannons go to your **reserve**; an army
+is equipped from it instantly, wherever it is (§8) — with cannons only as far as its crew allow.
+New ships appear in a port you own, of your
+choice. People you buy are spread over your settlements in proportion to their pop.
+
+**Every cannon needs 10 crewmen.** Crew are raised separately from soldiers, the same way (free,
+trained in a core settlement, §8), and serve only cannons: an army carries at most one cannon per
+10 crew. Crew without cannons are like men without weapons — power 0, but they take losses.
+Cannon crew do **not** count as men in the power formula.
 **Every ship needs 50 crew at sea.** Ships in port need no crew. **Ships have no upkeep** of
 their own — only their crew at sea do.
 **Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2). Cannon crew
@@ -197,8 +212,9 @@ treasury gets money per year + (1 − 2 × slider) × investable
 At **50%** you get your full money *and* your full research. Each 10% above 50% moves a fifth of
 your investable money from the treasury to research; each 10% below moves it the other way.
 
-Money and R are **separate pools**. R builds up every year; a tech unlocks as soon as you have
-paid its full R cost. **Unspent R banks.** The flat x10K comes whatever the slider says, and bank
+Money and R are **separate pools**. R builds up every year. **You choose which tech to
+research**, one at a time; it unlocks the moment your R covers its full cost, which is taken from
+your R. **Unspent R banks** — with no tech chosen, it simply builds up. The flat x10K comes whatever the slider says, and bank
 interest always goes to the treasury. When your money per year is zero or less there is nothing
 to invest: the slider does nothing — the treasury takes the loss and you research only the flat
 x10K.
@@ -259,13 +275,19 @@ loser  loses  (P_winner ÷ P_loser ) × 25 %      capped at 100%
 The loser always suffers more: most men in a real battle fell when their side broke and ran.
 Men killed are also lost from your population — see *Casualties cost population* (§2).
 
+**Armies fight together.** Every army of one side in the place where a battle happens fights it
+as one, its military allies' armies (§10) included: their power is added up and each army takes
+the same percentage of losses. Each losing army retreats on its own.
+
 **Ties.** If both sides end with exactly equal power, the **defender wins**. The defender is
 the side holding the settlement or province where the battle happens; if neither holds it, the
 army that arrived there first. At a mountain pass, the defender is the army that reached the pass
-first.
+first. In a head-on meeting on a route (§8), it is the side holding the settlement or pass at the
+nearer end of the route; if neither holds it, the army that set out first.
 
 **After the battle:** winner may advance or hold. Loser retreats to the nearest settlement
-owned by itself or a **military ally** (§10) — nearest by marching time.
+owned by itself or a **military ally** (§10) — nearest by marching time; from a route, back along
+it either way.
 
 **Retreating armies march.** The loser marches there at army speed (§8), by the fastest way
 open to it: only through land it may enter (§10), with river and pass delays as usual. On the
@@ -314,6 +336,10 @@ crossing (capped at a quarter of the army), and storming it means facing 2,500 p
 
 **Undefended settlement** — if an enemy's settlement (§10) has no army in it, an army that enters
 captures it immediately. No battle is fought and no one dies.
+
+**Defended settlement** — an army that arrives at an enemy settlement with an army inside
+**begins a siege at once**, unless its orders say storm. It may be ordered to storm at any time
+— as part of its move, or during the siege.
 
 **Storm** — a field battle with the defender's bonus applied. If the attacker wins, the settlement
 falls immediately and the defender rolls d6: **1–3** escapes with normal losses, **4–6** loses
@@ -364,7 +390,8 @@ your population (§2).
 
 *(The army speed and the route lengths are scenario-specific.)*
 
-**Raising forces.** New soldiers are trained in a **core settlement** and take time to appear:
+**Raising forces.** New soldiers and cannon crew are trained in a **core settlement** and take
+time to appear:
 
 | Trained in | Time |
 |---|---|
@@ -377,9 +404,9 @@ new one; to reach an army elsewhere they march like any other army. If the settl
 captured or stops being core before they are ready, the training is cancelled and the men come
 home.
 
-You may upgrade weapons in an army instantly. You may also **remove men from an army** — they
-come home and their weapons go to a reserve for later use; men raised again must
-be trained again. Fleets work the same way — add ships to an existing task force or form a new
+You may upgrade weapons in an army instantly. You may also **remove men or crew from an army** —
+they come home and their weapons and cannons go to a reserve for later use; men and crew raised
+again must be trained again. Fleets work the same way — add ships to an existing task force or form a new
 one.
 
 **Mercenaries.** Swiss and Landsknecht companies fight for whoever pays. Hire them by the thousand
@@ -430,8 +457,17 @@ settlement.
 - **Sharpshooters die when the pass changes hands** — if the settlement whose land the pass is in is
   lost, every sharpshooter stationed at that pass dies.
 
-**Zone of control.** An army entering a province with an enemy army stops there and engages,
-cancelling the rest of its path.
+**Zone of control — where armies meet.** An army is always either at a place (a settlement or a
+pass) or marching along a route, at an even pace — its river and pass delays are spread over the
+whole leg. Enemy armies meet in two ways:
+
+- **At a place.** An army arriving where an enemy army stands stops there, cancelling the rest
+  of its path. At an enemy settlement with an army inside it begins a siege (§6); anywhere else
+  — a pass, or a settlement where the enemy is the besieger — the two fight a battle (§5).
+- **Head-on on a route.** Two enemy armies marching towards each other along the same route
+  fight where they meet. No army stays on a route: the loser retreats (§5) and the winner carries
+  on its march, and can be given new orders. Armies marching the same way never meet — every army
+  marches at the same speed.
 
 **Supply.** Armies live off the land. A settlement's land feeds **half its pop** in soldiers — a
 10K town 5,000, a 20K city 10,000 — and **×1.5 if the settlement is on a river** (listed in the
@@ -506,7 +542,8 @@ its country owns.
 When you declare war:
 - your target's **defensive allies** and **guarantors** join against you automatically;
 - your **military allies** are called to join you, and so are your target's. Each may refuse at a
-  cost: the alliance with the caller ends.
+  cost: the alliance with the caller ends. A human player who has not answered within
+  **6 months** joins.
 
 ### Agreements
 | Agreement | Effect | Lasts |

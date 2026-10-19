@@ -52,13 +52,20 @@ find. With the server alone running the rules, only Node has to agree with itsel
 
 ### Players
 
-- **Single player:** one human, free pause.
-- **Multiplayer:** up to 4 humans. 1 minute to set up, then no pauses (RULES.md §1).
-- **Disconnects:** a **caretaker** takes the country over at once; after **2 minutes** away the
-  full computer player does. A player who comes back takes the country back at the next tick.
-  The 2 minutes is a server setting, tunable without touching the engine.
-- **The game ends when no human is left** — every one has quit, or been away longer than 2
-  minutes.
+- **Single player:** one human, free pause, one speed — no ×2 or ×4. Leaving pauses the game;
+  its snapshot is saved, its worker stops, and it is rebuilt when the player comes back, the
+  same way as after a restart.
+- **Multiplayer:** up to 4 humans, the computer running every other country. Each player picks
+  a free country, first come; the host may start with seats still open, and the computer takes
+  them. For the first minute the clock stands still while players look around and give first
+  orders; after that, no pauses (RULES.md §1). Players can chat, as in LorCiv.
+- **Disconnects** (multiplayer): a **caretaker** takes the country over at once; after
+  **2 minutes** away the full computer player does. A player who comes back takes the country
+  back at the next tick. The 2 minutes is a server setting, tunable without touching the engine.
+- **A multiplayer game ends when no human is left** — every one has quit, or been away longer
+  than 2 minutes.
+- **A computer country can win** (SCENARIO.md, *Victory*); then every human loses. The
+  leaderboard still ranks the humans of a game among themselves.
 
 **The caretaker** defends with the armies the country already has: it moves them within its own
 and friendly land to meet invaders, sorties when the odds favour it, and joins wars its allies
@@ -145,6 +152,12 @@ another, peace terms between humans. Each becomes a **pending question** with a 
 days. Whoever controls the country — human, caretaker or computer — answers with a command; when
 the deadline passes, the default applies. Computer players answer on their reflex layer.
 
+- **Calls to arms:** a human who has not answered within 6 months joins (RULES.md §10).
+- **Offers between humans** — peace terms, agreements, subject demands: one side proposes, the
+  other accepts or refuses; a counter-offer is a new offer, and haggling happens in chat.
+  Unanswered, an offer lapses. Its deadline is a server setting, starting at 6 months like calls
+  to arms.
+
 ### Saving, restarting, replays
 
 - **The command log** holds every applied command — human, computer, caretaker, and the server's
@@ -156,7 +169,8 @@ the deadline passes, the default applies. Computer players answer on their refle
   server runs the rules, only Node has to agree with itself.
 - **Restart:** each running game loads its last snapshot and re-applies the logged commands after
   it, without running the computer players, to the exact tick. The clock resumes when the first
-  human reconnects; if none does within 2 minutes, the game ends.
+  human reconnects; if none does within 2 minutes, a multiplayer game ends. A single-player game
+  stays paused until its player returns.
 - **Replays** of finished games need the rules only — not the AI, because its commands are in the
   log. Changing the AI never breaks an old replay. Changing the rules does: like LorCiv, every
   game records the rules version it was played under.
@@ -166,9 +180,15 @@ the deadline passes, the default applies. Computer players answer on their refle
 - **Client to server:** commands, each with a request id; the reply carries the same id.
 - **Server to client:** the full state on joining (the first load, a reload and a reconnect all
   use it — no separate catch-up), then one message per tick with the day and its changes.
-- **Army positions are not sent each tick.** A march is known from its route, start day and
-  arrival day; the client animates it from that.
-- What each player may see is open (§2).
+- **Army positions are not sent each tick.** An army moves at an even pace along a route
+  (RULES.md §8), so a march is known from its route, start day and arrival day; the client
+  animates it from that. The server finds head-on meetings the same way: two enemy marches on
+  the same route in opposite directions meet on the day their positions cross.
+- **What each player sees:** the map, every army and fleet, and what RULES.md says is shown to
+  everyone (warmonger scores) are public. A country's treasury, research, tax, slider, loans,
+  weapons reserve and the computer countries' opinions are private to it. The worker sends
+  each tick's public changes to everyone and each country's private changes to its player only;
+  the full state on joining is filtered the same way.
 
 ### The map on screen
 
@@ -212,44 +232,7 @@ producing `scenario.json` and `map.svg` for the game.
 
 ## 2. Open questions
 
-To settle before the plan.
-
-### The game
-
-1. **What does each player see?** Everything; or armies and the map public but treasury,
-   research, tax, loans, reserve and opinions private; or fog of war on armies too.
-2. **Speed controls in single player?** RULES.md gives only free pause. A ×2 or ×4 speed would
-   shorten a two-hour game alone.
-3. **Can a computer country win?** If one reaches 45 settlements first, does the game end with
-   every human losing? At 1650, are only humans ranked?
-4. **Choosing countries:** how up to 4 humans pick from 45 — free pick, first come — and whether
-   the host can start with seats still open (filled by the computer).
-5. **Peace between humans:** offers only (one side proposes terms, the other accepts or refuses,
-   a counter-offer is a new offer), with haggling done in chat?
-6. **A human's unanswered call to arms:** join or refuse when the deadline passes?
-7. **Chat** in multiplayer, as in LorCiv?
-8. **The setup minute:** the clock stopped while players look around and give first orders?
-9. **Leaving a single-player game:** under "the game ends when no human is left", closing the
-   tab ends it. Should a single-player game instead pause and wait, to be resumed another day?
-
-### Gaps in the rules
-
-Readings the engine needs; once agreed they go into RULES.md.
-
-10. **Months:** a 365-day calendar with real months (31, 28, 31…) and no leap years; "the start
-   of each month" is day 1 of the month.
-11. **When money moves:** every money flow in RULES.md §2 is a yearly rate, paid monthly as a
-    twelfth. Research too. Growth is applied monthly.
-12. **Where armies meet:** only at settlements and passes. Two enemy armies passing each other
-    on a route do not fight.
-13. **Several armies in one place:** all armies of one side at a settlement or pass fight
-    together as one, allies included.
-14. **Research:** R builds up in a pool; does the player pick which technology to pay for, or
-    does it go to the next one automatically? There are two independent lines (weapons, ships).
-15. **Weapons:** bought into the country's reserve, and an army is equipped from the reserve
-    instantly wherever it is.
-16. **Where new things appear:** ships in a port you own; bought people spread over your
-    settlements by pop.
+None at the moment. Settled answers move into §1, or into RULES.md where they are rules.
 
 ---
 
@@ -259,23 +242,24 @@ Every order and purchase in RULES.md, as commands. Each is checked on the server
 
 | Group | Command | Rules |
 |---|---|---|
-| Army | move (to a settlement or pass, by a route or a strait) | §8 |
+| Army | move (to a settlement or pass, by a route or a strait; on arrival besiege, or storm) | §6, §8 |
 | | stop | §8 |
 | | besiege · storm a settlement · sortie (garrison only) | §6 |
 | | storm a sharpshooter post | §5 |
 | | split · merge | §8 |
 | | equip weapons from the reserve | §8 |
-| | send men home (weapons to the reserve) | §8 |
+| | equip cannons from the reserve (one per 10 crew) | §3 |
+| | send men or crew home (weapons and cannons to the reserve) | §8 |
 | Fleet | move to a neighbouring sea zone · enter or leave a port | §8 |
 | | blockade a port · patrol | §7 |
 | | split · merge | §8 |
-| Country | raise soldiers at a core settlement · hire mercenaries · dismiss mercenaries | §3, §8 |
-| | buy weapons, cannons, people | §3 |
+| Country | raise soldiers or cannon crew at a core settlement · hire mercenaries · dismiss mercenaries | §3, §8 |
+| | buy weapons and cannons (to the reserve), people | §3 |
 | | buy sharpshooters at a pass you own · buy ships at a port | §3, §8 |
 | | buy a building in a settlement (walls, library, workshop, market, courthouse) | §3 |
 | | set tax · set research slider · change conscription law | §2, §4, §9 |
 | | deposit · withdraw · borrow · repay · default | §2 |
-| | research a technology (if it is chosen — question 14) | §4 |
+| | choose the tech to research | §4 |
 | | name a new capital | §2 |
 | | proclaim a region (special coring) | SCENARIO |
 | Diplomacy | declare war · answer a call to arms | §10 |
