@@ -2,9 +2,10 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, eventCountries, longDate, menOf, placeName, routeFor, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, armyPoint, buildLegs, formatMen, formatNumber, routeLine } from "./mirror.js";
+import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, WEAPONS } from "/engine/index.js";
+import { applyChanges, applyPrivate, armyPoint, buildLegs, fleetPoints, formatMen, formatNumber, routeLine } from "./mirror.js";
 import { createMapView } from "./mapview.js";
+import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
@@ -24,7 +25,9 @@ const socket = globalThis.io({ transports: ["websocket"] });
 const ask = (event, payload) => new Promise((resolve) => socket.emit(event, payload, resolve));
 
 let me, state, game, scenario, map, legs, tickMs = 100, paused = true, lastTick = performance.now();
-let sel = null;            // { kind: "army", id } | { kind: "place", key } | { kind: "country", code }
+let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
+let tab = "selection";     // selection | country | shop | research
+let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 let plan = null;           // { army, to, path, days }
 let splitOpen = false;
 let owners = "";             // who owned what when the lands were last coloured
@@ -42,6 +45,7 @@ async function start() {
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("pause").addEventListener("click", togglePause);
+    for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
     document.addEventListener("keydown", onKey);
     socket.on("tick", onTick);
     socket.on("private", (m) => { applyPrivate(state, me, m.changes); renderTop(); });
@@ -59,16 +63,19 @@ function onTick(m) {
     for (const e of m.events) {
         const who = eventCountries(e);
         if (who.includes(me) || who.some((c) => enemies().includes(c))) feed(e);
-        if ((e.type === "war" && e.target === me) || (e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)) toast(describeEvent(game.map, e));
+        const mine = who.includes(me);
+        if ((e.type === "war" && e.target === me) || (e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
+            || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered"].includes(e.type))) toast(describeEvent(game.map, e));
     }
     if (sel?.kind === "army" && !state.armies[sel.id]) { sel = null; plan = null; }
+    if (sel?.kind === "fleet" && !state.fleets[sel.id]) sel = null;
     if (plan && !state.armies[plan.army]) plan = null;
     renderAll();
 }
 
 // ---------- helpers ----------
 const country = (code) => state.countries[code];
-const colourOf = (code) => scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd";
+const colourOf = (code) => (state.countries[code]?.rebel ? "#8c3a3a" : scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd");
 const ownerOfLand = (id) => state.settlements[id]?.owner;
 const atWar = (a, b) => state.wars.includes(a < b ? `${a}|${b}` : `${b}|${a}`);
 const enemies = () => Object.keys(state.countries).filter((c) => atWar(me, c));
@@ -88,6 +95,7 @@ async function send(cmd) {
 function onPick(hit) {
     const mine = sel?.kind === "army" && state.armies[sel.id]?.owner === me && !state.armies[sel.id].retreating ? state.armies[sel.id] : null;
     if (hit.kind === "army") { select({ kind: "army", id: hit.id }); return; }
+    if (hit.kind === "fleet") { select({ kind: "fleet", id: hit.id }); return; }
     if (hit.kind === "sea") { select(null); return; }
     if (mine) { planMove(mine, hit.key); return; }
     if (hit.kind === "place") select({ kind: "place", key: hit.key });
@@ -98,7 +106,13 @@ function select(s) {
     sel = s;
     plan = null;
     splitOpen = false;
-    renderAll();
+    if (tab !== "shop") tab = "selection";            // the shop keeps the selected settlement in view
+    renderAll(true);
+}
+
+function setTab(t) {
+    tab = t;
+    renderAll(true);
 }
 
 function planMove(army, to) {
@@ -128,11 +142,17 @@ function onKey(e) {
     else if (e.key === "Escape") { if (plan) { plan = null; renderAll(); } else select(null); }
 }
 
+// the context the panels in panels.js draw with
+const ctx = {
+    make, swatch, send, redraw: () => renderAll(true), name: (key) => name(key),
+    get state() { return state; }, get game() { return game; }, get me() { return me; }, get sel() { return sel; },
+};
+
 // ---------- drawing ----------
-function renderAll() {
+function renderAll(force = false) {
     renderTop();
     renderMap();
-    renderPanel();
+    renderPanel(force);
 }
 
 function renderTop() {
@@ -140,7 +160,12 @@ function renderTop() {
     $("date").textContent = longDate(state.day);
     $("pause").textContent = paused ? "▶ Play" : "⏸ Pause";
     $("pause").classList.toggle("paused", paused);
-    $("treasury").textContent = country(me).treasury !== undefined ? `Treasury ${formatNumber(country(me).treasury)}` : "";
+    if (country(me).treasury !== undefined) {
+        const e = economyOf(game, me);
+        $("treasury").textContent = `Treasury ${formatNumber(country(me).treasury)} (${e.moneyPerYear >= 0 ? "+" : "−"}${formatNumber(Math.abs(e.moneyPerYear))} a year)`;
+        $("treasury").classList.toggle("bad", country(me).treasury < 0);
+    }
+    for (const b of document.querySelectorAll("#tabs button")) b.classList.toggle("active", b.dataset.tab === tab);
 }
 
 // armies at one place are drawn in a column beside its marker
@@ -158,10 +183,21 @@ function armyMarkers(day) {
     });
 }
 
+function fleetMarkers(day) {
+    const points = fleetPoints(state, game.map.nodes, game.map.zones, day);
+    return Object.values(state.fleets).map((f) => {
+        const [x, y] = points.get(f.id);
+        const ships = Object.values(f.ships).reduce((k, v) => k + v, 0);
+        return { id: f.id, x, y, colour: colourOf(f.owner), label: String(ships), mine: f.owner === me, selected: sel?.kind === "fleet" && sel.id === f.id, sailing: Boolean(f.moving) };
+    });
+}
+
 function renderMap() {
     const now = Object.values(state.settlements).map((s) => s.owner).join();
     if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); }
     map.setArmies(armyMarkers(displayDay()));
+    map.setFleets(fleetMarkers(displayDay()));
+    map.setPosts(Object.entries(state.posts).map(([key, p]) => { const n = game.map.nodes.get(key); return { x: n.x, y: n.y, n: p.n, colour: "#222" }; }));
     map.setSieges(Object.values(state.settlements).filter((s) => s.siege).map((s) => {
         const n = game.map.nodes.get(String(s.id));
         return { x: n.x, y: n.y, frac: Math.min(1, (state.day - s.siege.start) / (s.siege.end - s.siege.start)) };
@@ -172,16 +208,32 @@ function renderMap() {
 
 // marching armies glide between ticks
 function frame() {
-    if (state && !paused) for (const m of armyMarkers(displayDay())) if (state.armies[m.id]?.march) map.moveArmy(m.id, m.x, m.y);
+    if (state && !paused) {
+        for (const m of armyMarkers(displayDay())) if (state.armies[m.id]?.march) map.moveArmy(m.id, m.x, m.y);
+        for (const m of fleetMarkers(displayDay())) if (state.fleets[m.id]?.moving) map.moveFleet(m.id, m.x, m.y);
+    }
     requestAnimationFrame(frame);
 }
 
-function renderPanel() {
+function renderPanel(force = false) {
     const panel = $("panel");
-    if (!sel) { panel.replaceChildren(make("p", { class: "hint" }, "Click an army to select it, then click where it should go. Click a settlement or a country's land to see it. Space pauses.")); return; }
-    if (sel.kind === "army") panel.replaceChildren(...armyPanel(state.armies[sel.id]));
-    else if (sel.kind === "place") panel.replaceChildren(...placePanel(sel.key));
-    else panel.replaceChildren(...countryPanel(sel.code));
+    let nodes;
+    if (tab === "country") nodes = countryTab(ctx);
+    else if (tab === "shop") nodes = shopTab(ctx);
+    else if (tab === "research") nodes = researchTab(ctx);
+    else if (!sel) nodes = [make("p", { class: "hint" }, "Click an army or fleet to select it; with an army selected, click where it should go. Click a settlement or a country's land to see it. Space pauses. The tabs above run your country.")];
+    else if (sel.kind === "army") nodes = armyPanel(state.armies[sel.id]);
+    else if (sel.kind === "fleet") nodes = fleetPanel(ctx, state.fleets[sel.id]);
+    else if (sel.kind === "place") nodes = placePanel(sel.key);
+    else nodes = countryPanel(sel.code);
+    // rebuilt only when it changed, and never under a hand that is typing or dragging in it
+    const box = make("div", {}, ...nodes.filter((x) => x !== "" && x !== undefined));
+    const html = box.innerHTML;
+    if (!force && html === panelHtml) return;
+    const focus = document.activeElement;
+    if (!force && panel.contains(focus) && focus.matches("input, select, textarea")) return;
+    panelHtml = html;
+    panel.replaceChildren(...box.childNodes);
 }
 
 function armyList(armies) {
@@ -194,6 +246,7 @@ function armyPanel(a) {
     const kinds = WEAPONS.filter((w) => a.men[w]).map((w) => `${formatNumber(a.men[w])} ${WEAPON_NAMES[w]}`);
     if (a.cannons) kinds.push(`${a.cannons} cannons`);
     if (a.crew) kinds.push(`${formatNumber(a.crew)} crew`);
+    if (a.mercs) kinds.push(`(${formatNumber(a.mercs)} mercenaries)`);
     out.push(make("p", { class: "men" }, kinds.join(" · ") || "nobody"));
     out.push(make("p", {}, armyStatus(a)));
     if (a.owner !== me) return out;
@@ -216,11 +269,14 @@ function armyPanel(a) {
         if (s && atWar(me, s.owner) && here.some((x) => x.owner === s.owner && !x.relief)) buttons.push(make("button", { onclick: () => send({ type: "storm", army: a.id }) }, "Storm"));
         if (s && s.owner === me && s.siege && !a.relief) buttons.push(make("button", { onclick: () => send({ type: "sortie", army: a.id }) }, "Sortie"));
         if (menOf(a) + a.cannons > 1) buttons.push(make("button", { onclick: () => { splitOpen = !splitOpen; renderPanel(); } }, "Split…"));
+        const post = state.posts[a.at];
+        if (post && atWar(me, post.owner)) buttons.push(make("button", { onclick: () => send({ type: "stormPost", army: a.id }) }, `Storm the post (${formatNumber(post.n)} sharpshooters)`));
         const others = here.filter((x) => x.owner === me && x.id !== a.id && x.relief === a.relief && !x.retreating);
         for (const o of others) buttons.push(make("button", { onclick: () => send({ type: "merge", army: a.id, into: o.id }) }, `Merge into army ${o.id}`));
     }
     out.push(make("div", { class: "buttons" }, ...buttons));
     if (splitOpen && a.at) out.push(splitForm(a));
+    out.push(...armyEquipment(ctx, a));
     return out;
 }
 
@@ -279,6 +335,7 @@ function countryPanel(code) {
     const towns = Object.values(state.settlements).filter((s) => s.owner === code);
     const armies = Object.values(state.armies).filter((a) => a.owner === code);
     const wars = Object.keys(state.countries).filter((x) => atWar(code, x));
+    if (c.rebel) return [make("h2", {}, swatch(code), ` ${c.name}`), make("p", {}, "Peasants in arms. There is no peace with them."), make("p", {}, `${formatNumber(armies.reduce((n, a) => n + menOf(a), 0))} men, ${towns.length} settlements held.`)];
     const out = [make("h2", {}, swatch(code), ` ${c.name}`),
         make("p", {}, `${towns.length} settlements, ${formatNumber(towns.reduce((n, s) => n + s.pop, 0))} people, ${formatNumber(armies.reduce((n, a) => n + menOf(a), 0))} soldiers.`),
         make("p", {}, wars.length ? `At war with ${wars.map((w) => country(w).name).join(", ")}.` : "At peace.")];

@@ -5,12 +5,16 @@
 // one day's public changes into the mirrored state
 export function applyChanges(state, changes) {
     state.day = changes.day;
-    for (const [id, a] of Object.entries(changes.armies ?? {})) {
-        if (a === null) delete state.armies[id];
-        else state.armies[id] = a;
+    for (const name of ["armies", "fleets", "settlements", "posts"]) {
+        for (const [id, x] of Object.entries(changes[name] ?? {})) {
+            if (x === null) delete state[name][id];
+            else state[name][id] = x;
+        }
     }
-    for (const [id, s] of Object.entries(changes.settlements ?? {})) state.settlements[id] = s;
-    for (const [code, c] of Object.entries(changes.countries ?? {})) state.countries[code] = { ...state.countries[code], ...c };
+    for (const [code, c] of Object.entries(changes.countries ?? {})) {
+        if (c === null) delete state.countries[code];               // an uprising that is over
+        else state.countries[code] = { ...state.countries[code], ...c };
+    }
     if (changes.wars) state.wars = changes.wars;
 }
 
@@ -106,3 +110,21 @@ export function formatMen(n) {
 
 // a whole number with thousands separated: "1,060,000"
 export const formatNumber = (n) => Math.round(n).toLocaleString("en-GB");
+
+// where each fleet is drawn on `day`: in a port, a column below the settlement's marker; at sea, a column below its
+// zone's name; on its way, between the two zones' names — a Map from fleet id to [x, y]
+export function fleetPoints(state, nodes, zones, day) {
+    const out = new Map(), slots = new Map();
+    const slot = (key) => { const i = slots.get(key) ?? 0; slots.set(key, i + 1); return i; };
+    const zoneAt = (id, i) => [zones.get(id).label.x, zones.get(id).label.y + 14 + i * 16];
+    for (const f of Object.values(state.fleets)) {
+        if (f.moving) {
+            const from = zoneAt(f.zone, 0), to = zoneAt(f.moving.to, 0), t = clamp01((day - f.moving.start) / (f.moving.end - f.moving.start));
+            out.set(f.id, [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]);
+        } else if (f.port) {
+            const n = nodes.get(String(f.port));
+            out.set(f.id, [n.x - 8, n.y + 20 + slot(`p${f.port}`) * 16]);
+        } else out.set(f.id, zoneAt(f.zone, slot(`z${f.zone}`)));
+    }
+    return out;
+}

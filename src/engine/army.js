@@ -56,36 +56,59 @@ export function militaryPower(army) {
     return p + army.cannons * 13 * 1.2;
 }
 
+// `dead` shared over `keys` in proportion to `counts`, in whole numbers, by largest remainder
+export function shareOut(counts, keys, dead) {
+    const total = keys.reduce((n, k) => n + counts[k], 0), out = {};
+    let given = 0;
+    const rest = [];
+    for (const k of keys) {
+        const q = total ? counts[k] * dead / total : 0;
+        out[k] = Math.floor(q);
+        given += out[k];
+        rest.push([q - out[k], k]);
+    }
+    rest.sort((x, y) => y[0] - x[0]);
+    for (let i = 0; given < dead; i++, given++) out[rest[i][1]]++;
+    return out;
+}
+
 // the losses `pct` (0-1) costs an army, in whole men: the total is rounded to the nearest man and shared over the
-// weapon groups by largest remainder; cannons are rounded on their own; each lost cannon kills its 10 crew, and
-// crew without a cannon die like men. With `menOnly` (siege disease, hunger) cannons and crews are spared.
+// weapon groups; cannons are rounded on their own; each lost cannon kills its 10 crew, and crew without a cannon
+// die like men. With `menOnly` (siege disease, hunger) cannons and crews are spared. `mercs` of the dead men
+// were mercenaries, in proportion: their dead cost no population (RULES.md §8).
 export function lossesFor(army, pct, menOnly = false) {
     const total = menOf(army);
     const dead = Math.min(total, Math.round(total * pct));
-    const men = emptyMen();
-    if (dead > 0) {
-        let given = 0;
-        const rest = [];
-        for (const w of WEAPONS) {
-            const q = army.men[w] * dead / total;
-            men[w] = Math.floor(q);
-            given += men[w];
-            rest.push([q - men[w], w]);
-        }
-        rest.sort((x, y) => y[0] - x[0]);
-        for (let i = 0; given < dead; i++, given++) men[rest[i][1]]++;
-    }
+    const men = dead > 0 ? shareOut(army.men, WEAPONS, dead) : emptyMen();
+    const mercs = army.mercs && total ? Math.min(army.mercs, Math.round(dead * army.mercs / total)) : 0;
     let cannons = 0, crew = 0;
     if (!menOnly) {
         cannons = Math.min(army.cannons, Math.round(army.cannons * pct));
         const idle = Math.max(0, army.crew - army.cannons * CREW_PER_CANNON);
         crew = Math.min(army.crew, cannons * CREW_PER_CANNON + Math.round(idle * pct));
     }
-    return { men, dead, cannons, crew };
+    return { men, dead, mercs, cannons, crew };
 }
+
+// the people a loss costs the country: its regular men and crew, not the mercenaries
+export const peopleLost = (loss) => loss.dead - loss.mercs + loss.crew;
 
 export function applyLosses(army, loss) {
     for (const w of WEAPONS) army.men[w] -= loss.men[w];
     army.cannons -= loss.cannons;
     army.crew -= loss.crew;
+    army.mercs = Math.min((army.mercs ?? 0) - (loss.mercs ?? 0), menOf(army));
+}
+
+// take `n` men out of an army (RULES.md §8: dismissing mercenaries, desertion), their weapons in `order` — the
+// first kind with men left, then the next; returns the weapons taken, by kind. Does not touch `mercs`.
+export function takeMen(army, n, order = WEAPONS) {
+    const taken = emptyMen();
+    for (const w of order) {
+        const k = Math.min(n, army.men[w]);
+        army.men[w] -= k;
+        taken[w] += k;
+        n -= k;
+    }
+    return taken;
 }

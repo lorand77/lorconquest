@@ -2,40 +2,30 @@
 // gives goes through applyCommand, which checks it against the state as it is now and applies it, or refuses it
 // with a reason. `country` is the country giving the command, which the server has already checked is theirs.
 //
+// War and armies, here:
 //   { type: "declareWar", country, target }
 //   { type: "move", country, army, to, storm }     to a settlement id or pass id; storm: storm it on arrival
 //   { type: "stop", country, army }                halt at the next place
-//   { type: "besiege", country, army }
-//   { type: "storm", country, army }
-//   { type: "sortie", country, army }
-//   { type: "split", country, army, men: { swords: 200, ... }, cannons, crew }
-//   { type: "merge", country, army, into }
+//   { type: "besiege", country, army }    { type: "storm", country, army }    { type: "sortie", country, army }
+//   { type: "stormPost", country, army }           storm the sharpshooter post at the pass the army is at
+//   { type: "split", country, army, men: { swords: 200, ... }, cannons, crew }    { type: "merge", country, army, into }
+// Running a country is in commands-country.js, fleets in commands-naval.js.
 
 import { CREW_PER_CANNON, WEAPONS, emptyMen, menOf } from "./army.js";
 import { mayFight } from "./battle.js";
-import { settle, situation, sortie, storm } from "./fighting.js";
+import { done, isPlayable, ownArmy, refuse, whole } from "./command-util.js";
+import { countryCommands } from "./commands-country.js";
+import { navalCommands } from "./commands-naval.js";
+import { settle, situation, sortie, storm, stormThePost } from "./fighting.js";
 import { follow, routeFor } from "./movement.js";
-import { atWar, newArmy, removeArmy, warKey } from "./state.js";
-
-const refuse = (error) => ({ ok: false, error });
-const done = (events = []) => ({ ok: true, events });
-const whole = (n) => Number.isInteger(n) && n >= 0;
-
-// the army a command names, if it is the country's and free to take orders
-function ownArmy(game, cmd, { atPlace = false } = {}) {
-    const army = game.state.armies[cmd.army];
-    if (!army) return { error: `no army ${cmd.army}` };
-    if (army.owner !== cmd.country) return { error: `army ${army.id} is not ${cmd.country}'s` };
-    if (army.retreating) return { error: `army ${army.id} is retreating and takes no orders` };
-    if (atPlace && !army.at) return { error: `army ${army.id} is on the march` };
-    return { army };
-}
+import { atWar, isRebel, newArmy, removeArmy, warKey } from "./state.js";
 
 const COMMANDS = {
     declareWar(game, cmd) {
         const st = game.state;
         if (!st.countries[cmd.target]) return refuse(`no country ${cmd.target}`);
         if (cmd.target === cmd.country) return refuse("a country cannot declare war on itself");
+        if (isRebel(st, cmd.target)) return refuse("peasants are always at war with their country");
         if (atWar(st, cmd.country, cmd.target)) return refuse(`${cmd.country} is already at war with ${cmd.target}`);
         st.wars.push(warKey(cmd.country, cmd.target));
         st.wars.sort();
@@ -51,8 +41,12 @@ const COMMANDS = {
         const found = routeFor(game, army, to);
         if (!found) return refuse(`army ${army.id} has no way to ${to} through land it may enter`);
         const left = army.at, events = [];
+        if (!follow(game, army, found.path, events)) {
+            // a strait it may not cross yet: refused if nothing happened, else a naval battle was fought
+            if (events.length === 1 && events[0].type === "crossFailed") return refuse(`army ${army.id} cannot cross the strait: ${events[0].why}`);
+            return done(events);
+        }
         army.relief = false;
-        follow(game, army, found.path);
         army.storm = Boolean(cmd.storm);
         if (left) settle(game, left, events);              // a siege it leaves may be lifted
         return done(events);
@@ -87,6 +81,16 @@ const COMMANDS = {
         return done(events);
     },
 
+    stormPost(game, cmd) {
+        const st = game.state, { army, error } = ownArmy(game, cmd, { atPlace: true });
+        if (error) return refuse(error);
+        const post = st.posts[army.at];
+        if (!post || !atWar(st, army.owner, post.owner)) return refuse(`army ${army.id} is not at a pass held by an enemy post`);
+        const events = [];
+        stormThePost(game, army.owner, army.at, events);
+        return done(events);
+    },
+
     sortie(game, cmd) {
         const { army, error } = ownArmy(game, cmd, { atPlace: true });
         if (error) return refuse(error);
@@ -114,10 +118,15 @@ const COMMANDS = {
         if (!taken) return refuse("nothing to split off");
         if (taken === menOf(army) + army.cannons + army.crew) return refuse("that is the whole army");
         if (cannons * CREW_PER_CANNON > crew || (army.cannons - cannons) * CREW_PER_CANNON > army.crew - crew) return refuse(`every cannon needs ${CREW_PER_CANNON} crew`);
+        // mercenaries go in proportion to the men taken
+        const had = menOf(army), takenMen = menOf({ men });
+        let mercs = army.mercs && had ? Math.round(army.mercs * takenMen / had) : 0;
         for (const w of WEAPONS) army.men[w] -= men[w];
         army.cannons -= cannons;
         army.crew -= crew;
-        const part = newArmy(game.state, army.owner, army.at, men, cannons, crew);
+        mercs = Math.min(mercs, army.mercs, takenMen);
+        army.mercs = Math.min(army.mercs - mercs, menOf(army));
+        const part = newArmy(game.state, army.owner, army.at, men, cannons, crew, mercs);
         part.relief = army.relief;
         part.arrived = army.arrived;
         return done([{ type: "split", day: game.state.day, army: army.id, owner: army.owner, into: part.id }]);
@@ -126,7 +135,7 @@ const COMMANDS = {
     merge(game, cmd) {
         const { army, error } = ownArmy(game, cmd, { atPlace: true });
         if (error) return refuse(error);
-        const into = ownArmy(game, { ...cmd, army: cmd.into }, { atPlace: true });
+        const into = ownArmy(game, cmd, { atPlace: true, id: cmd.into });
         if (into.error) return refuse(into.error);
         if (into.army === army) return refuse("an army cannot merge into itself");
         if (into.army.at !== army.at) return refuse(`armies ${army.id} and ${into.army.id} are not in the same place`);
@@ -134,10 +143,14 @@ const COMMANDS = {
         for (const w of WEAPONS) into.army.men[w] += army.men[w];
         into.army.cannons += army.cannons;
         into.army.crew += army.crew;
+        into.army.mercs += army.mercs;
         into.army.arrived = Math.min(into.army.arrived, army.arrived);
         removeArmy(game.state, army);
         return done([{ type: "merge", day: game.state.day, army: army.id, owner: army.owner, into: into.army.id }]);
     },
+
+    ...countryCommands,
+    ...navalCommands,
 };
 
 export const COMMAND_TYPES = Object.keys(COMMANDS);
@@ -145,5 +158,6 @@ export const COMMAND_TYPES = Object.keys(COMMANDS);
 export function applyCommand(game, cmd) {
     if (!cmd || typeof cmd !== "object" || !Object.hasOwn(COMMANDS, cmd.type)) return refuse(`unknown command ${cmd && cmd.type}`);
     if (!game.state.countries[cmd.country]) return refuse(`no country ${cmd.country}`);
+    if (!isPlayable(game.state, cmd.country)) return refuse("peasant rebels take no orders");
     return COMMANDS[cmd.type](game, cmd);
 }

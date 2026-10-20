@@ -3,8 +3,9 @@
 
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 
-// "48 Ulm", "pass P6", or "the road 37 Munich–48 Ulm" for a leg key
+// "48 Ulm", "pass P6", "the road 37 Munich–48 Ulm" for a leg key, or a sea zone's name
 export function placeName(map, key) {
+    if (map.zones.has(key)) return map.zones.get(key).name;
     if (String(key).includes("|")) return `the road ${String(key).split("|").map((k) => placeName(map, k)).join("–")}`;
     const n = map.nodes.get(String(key));
     return n.kind === "pass" ? `pass ${n.id}` : `${n.id} ${n.name}`;
@@ -12,7 +13,8 @@ export function placeName(map, key) {
 
 export function describeEvent(map, e) {
     const place = (key) => placeName(map, key);
-    const side = (s) => `${s.countries.join("+")} ${fmt(s.men)} men${s.cannons ? ` ${s.cannons} cannons` : ""} (×${s.roll}, power ${fmt(s.power)})`;
+    const side = (s) => `${s.countries.join("+")} ${fmt(s.men)} ${s.unit ?? "men"}${s.cannons ? ` ${s.cannons} cannons` : ""} (×${s.roll}, power ${fmt(s.power)})`;
+    const tech = (t) => t.replace(/([A-Z])/g, " $1").toLowerCase();
     switch (e.type) {
         case "war": return `${e.country} declares war on ${e.target}`;
         case "arrive": return `army ${e.army} (${e.owner}) halts at ${place(e.at)}`;
@@ -31,6 +33,31 @@ export function describeEvent(map, e) {
             const extra = e.kind === "storm" && e.winner === "a" ? ` The garrison rolls ${e.escape}: ${e.escape <= 3 ? "it escapes" : "it is lost"}.` : "";
             return `${e.kind} at ${place(e.place)}: ${side(e.a)} against ${side(e.b)} — ${win.countries.join("+")} wins; dead ${win.countries.join("+")} ${fmt(win.dead)}, ${lose.countries.join("+")} ${fmt(lose.dead)}.${extra}`;
         }
+        case "law": return `${e.country} changes its law to ${e.law}`;
+        case "tech": return `${e.country} unlocks ${tech(e.tech)}`;
+        case "harvest": return `a good harvest in ${e.country}`;
+        case "plague": return `plague in ${e.country}: ${fmt(e.dead)} dead`;
+        case "uprising": return `peasants rise against ${e.country} outside ${place(String(e.at))}: ${e.rebels}, ${fmt(e.men)} men`;
+        case "scattered": return `army ${e.army} (${e.owner}) is beaten and scatters home`;
+        case "default": return `${e.country} defaults on ${fmt(e.owed)} of loans`;
+        case "desertion": return `${fmt(e.men)} mercenaries of ${e.country} desert`;
+        case "bankruptcy": return `${e.country} goes bankrupt: ${e.buildings} buildings and ${fmt(e.weapons)} weapons sold`;
+        case "cored": return `${place(String(e.settlement))} becomes core for ${e.country}`;
+        case "proclaimed": return `${e.country} proclaims ${e.region}: ${e.settlements} settlements become core`;
+        case "capital": return `${e.country} names ${place(String(e.settlement))} its capital`;
+        case "ready": return `${fmt(e.n)} ${e.what} of ${e.country} are ready at ${place(String(e.settlement))} (army ${e.army})`;
+        case "cancelled": return `${e.what === "hire" ? "the hire of" : "the training of"} ${fmt(e.n)} men of ${e.country} at ${place(String(e.settlement))} is cancelled`;
+        case "ships": return `${e.country} buys ${e.n} ${tech(e.kind)} at ${place(String(e.port))} (fleet ${e.fleet})`;
+        case "fleetInPort": return `fleet ${e.fleet} (${e.owner}) enters ${place(String(e.port))}`;
+        case "fleetAtSea": return `fleet ${e.fleet} (${e.owner}) puts to sea in ${place(e.zone)}`;
+        case "fleetSails": return `fleet ${e.fleet} (${e.owner}) sails from ${place(e.from)} to ${place(e.to)}, ${e.days} days`;
+        case "fleetArrives": return `fleet ${e.fleet} (${e.owner}) arrives in ${place(e.zone)}`;
+        case "blockade": return `fleet ${e.fleet} (${e.owner}) blockades ${place(String(e.port))}`;
+        case "splitFleet": return `fleet ${e.fleet} (${e.owner}) splits off fleet ${e.into}`;
+        case "mergeFleet": return `fleet ${e.fleet} (${e.owner}) joins fleet ${e.into}`;
+        case "sharpshooters": return `the post at ${place(e.pass)} shoots ${fmt(e.dead)} men of army ${e.army} (${e.owner})`;
+        case "postLost": return `the sharpshooters at ${place(e.pass)} die: ${fmt(e.dead)} men of ${e.owner}`;
+        case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the strait in ${place(e.zone)}: ${e.why}`;
         default: return JSON.stringify(e);
     }
 }
@@ -41,8 +68,9 @@ export function eventCountries(e) {
         case "war": return [e.country, e.target];
         case "capture": return [e.from, e.to];
         case "siegeStart": case "siegeLifted": return [e.by];
+        case "uprising": return [e.country, e.rebels];
         case "surrender": return [e.owner, e.by];
         case "battle": return [...e.a.countries, ...e.b.countries];
-        default: return e.owner ? [e.owner] : [];
+        default: return e.owner ? [e.owner] : e.country ? [e.country] : [];
     }
 }

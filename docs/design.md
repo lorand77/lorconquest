@@ -251,10 +251,31 @@ would break that.
   is rounded to the nearest man and spread over its weapons by largest remainder; cannons are
   rounded separately and each takes 10 crew with it. Population, treasury and money keep their
   fractions inside the engine and are only rounded for people.
-- **The modules:** `calendar`, `random`, `army` (what an army is worth, losses), `map`, `state`,
-  `movement` (marching, turning back, retreats), `battle` (one battle and the cooldown),
+- **The modules:** `calendar`, `random`, `costs` (prices, techs, laws and durations as data), `army` (what
+  an army is worth, losses, mercenaries), `map` (places, legs, straits, sea zones), `state`,
+  `movement` (marching, turning back, retreats, straits), `battle` (one battle and the cooldown),
   `fighting` (arrivals, sieges, storms, sorties, relief, passes, head-on meetings), `supply`
-  (monthly disease and hunger), `day`, `commands`, `game`.
+  (monthly disease and hunger), `economy` (soldiers, caps, money, the monthly step), `forces`
+  (training and hires), `naval` (fleets, patrols, blockades, straits), `passes` (sharpshooters),
+  `events` (harvest, plague, uprisings and the rebels), `day`, `command-util`, `commands`
+  (war and armies), `commands-country`, `commands-naval`, `text` (events in English), `game`.
+- **A country** in the state holds its `treasury`, `bank`, `loans`, `tax`, research `slider`, `law`,
+  `techs`, the `target` tech and the R in store, its weapon `reserve`, and the queues of men being trained
+  and mercenaries on their way. Its `taxSum` adds the tax in force each day, for the year's average. Of
+  this the public part is only its name and capital; the rest is private (see *Messages*).
+- **A settlement** also holds its buildings, the day it has been held from, and its **cores** — the
+  countries it is core for, which a capture does not change. **A fleet** is in a port or at sea in a zone,
+  with the ships of each kind, an optional order and, while sailing, `moving`. **Sharpshooter posts** are
+  kept by pass: `posts[pass] = { owner, n }`. **Peasant rebels** are a country with `rebel: true` and
+  `of`, the country they rose against; casualties among them are casualties of that country's people.
+- **Money, people and R keep their fractions;** only men, cannons, ships and crews are whole. Every
+  yearly amount is paid at the start of each month, a twelfth at a time, from the state that day. The
+  browser runs the same `economyOf` on its copy of the state to show a player their own figures.
+- **Events that need dice** (the yearly harvest, plague and uprising) draw three numbers from the game's
+  random state per country, always, so that what one country rolls never changes what another does.
+  The rebels' marches need none, so they are not logged.
+- **A replay needs only the commands:** everything else — rebels, training arriving, fleets sailing,
+  the monthly step — follows from the state and the day.
 
 ### The map on screen
 
@@ -281,6 +302,15 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy
   settlement, [Cancel] (or Escape) drops it. The selected army's panel has Stop, Storm, Sortie,
   Split and Merge where they apply.
+- **Running the country:** tabs above the panel — **Map** (the selection), **Country** (money and its
+  parts, tax, the research slider, the law with its caps, the bank and loans, regions to proclaim, a lost
+  capital), **Shop** (buildings for the selected settlement, raising soldiers, hiring mercenaries,
+  weapons, people, sharpshooters, ships, and what is queued) and **Research** (the tree, the tech
+  being researched). Fleets are chips on the map — in a port below its marker, at sea below the zone's
+  name, gliding between zones when sailing — and their panel has the orders. Sharpshooter posts show
+  beside their pass. The panels show the engine's own numbers, worked out in the browser from the
+  state it holds; every control sends a command. **A panel is rebuilt only when what it shows has
+  changed, and never while a hand is typing or dragging in it.**
 - **Looking:** a settlement shows its owner, people, any siege and the armies there; a country's
   land shows the country, its wars and — until diplomacy in milestone 4 — a [Declare war] button.
 - **Events:** the player's own and their wars', newest first; clicking one shows its place. A war
@@ -320,7 +350,15 @@ code is ES modules, not CommonJS, so whatever is copied from LorCiv is converted
 - **Scripted wars** (`test/wars/*.txt`) played by the runner (`tools/run.js`) on the real map,
   checked for their outcome.
 - **Replays:** the same script gives the same game to the last die, and a snapshot plus the
-  commands after it gives exactly the unbroken game.
+  commands after it gives exactly the unbroken game — also for a script that runs a country for three
+  years and sees peasants rise.
+- **Random play** (`test/engine/fuzz.test.js`): 45 countries giving random commands of every kind, in
+  several seeded games, checking every month that nothing is NaN, negative or lost, and that a snapshot
+  restores exactly. `FUZZ_SEEDS=40 FUZZ_YEARS=20 node --test test/engine/fuzz.test.js` is the big sweep
+  (about 80 seconds); it found a ghost army in its first run.
+- **The panels** (`test/client/panels.test.js`) run in Node against a fake element on a real game's
+  view: they draw without error, show the engine's numbers, and their controls send the right commands.
+  There is no browser in the development container, so the page itself is checked by playing.
 - **Golden games:** a fixed seed and command log must end in a known state. A change that breaks
   one either is a bug or needs the rules version bumped. (From milestone 2, when games are saved.)
 - **Timing:** `tools/bench.js` plays years of every country at war with armies sent about at
@@ -342,42 +380,34 @@ Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. The
 Settled answers move into §1, or into RULES.md where they are rules. Each is needed by the milestone
 named (see [plan.md](plan.md)).
 
-1. **Where the starting ships lie** (milestone 3). RULES.md §2 gives a coastal country pop ÷ 2000
-   cogs but not in which of its ports.
-2. **Cores after a capture** (milestone 3). Does a settlement stay core for the country that
-   loses it, so that retaking it makes it core again? The engine keeps each settlement's list of
-   cores untouched by captures until this is settled.
+None at the moment.
 
 ---
 
-## 3. Commands (draft)
+## 3. Commands
 
-Every order and purchase in RULES.md, as commands. Each is checked on the server when applied.
+Every order and purchase in RULES.md, as commands. Each is checked on the server when applied; the
+handlers are in `src/engine/commands*.js`, and each file lists its commands' arguments at its top.
 
 | Group | Command | Rules |
 |---|---|---|
-| Army | move (to a settlement or pass, by a route or a strait; on arrival besiege, or storm) | §6, §8 |
-| | stop | §8 |
-| | besiege · storm a settlement · sortie (garrison only) | §6 |
-| | storm a sharpshooter post | §5 |
-| | split · merge | §8 |
-| | equip weapons from the reserve | §8 |
-| | equip cannons from the reserve (one per 10 crew) | §3 |
-| | send men or crew home (weapons and cannons to the reserve) | §8 |
-| Fleet | move to a neighbouring sea zone · enter or leave a port | §8 |
-| | blockade a port · patrol | §7 |
-| | split · merge | §8 |
-| Country | raise soldiers or cannon crew at a core settlement · hire mercenaries · dismiss mercenaries | §3, §8 |
-| | buy weapons and cannons (to the reserve), people | §3 |
-| | buy sharpshooters at a pass you own · buy ships at a port | §3, §8 |
-| | buy a building in a settlement (walls, library, workshop, market, courthouse) | §3 |
-| | set tax · set research slider · change conscription law | §2, §4, §9 |
-| | deposit · withdraw · borrow · repay · default | §2 |
-| | choose the tech to research | §4 |
-| | name a new capital | §2 |
-| | proclaim a region (special coring) | SCENARIO |
-| Diplomacy | declare war · answer a call to arms | §10 |
-| | propose an agreement · cancel military access · break an agreement | §10 |
-| | demand a subject · propose peace with terms · answer an offer | §10 |
-| | propose the Empire (once ever) | SCENARIO |
-| Game | pause · resume (single player) | §1 |
+| Army | `move` (to a settlement or pass, by a route or a strait; `storm`: on arrival storm) · `stop` | §6, §8 |
+| | `besiege` · `storm` a settlement · `sortie` (garrison only) | §6 |
+| | `stormPost`: storm the sharpshooter post at a pass | §5 |
+| | `split` · `merge` | §8 |
+| | `equip` (change men's weapons from the reserve) · `equipCannons` (one per 10 crew) | §3, §8 |
+| | `disband` (men or crew home, weapons and cannons to the reserve) · `dismissMercenaries` | §8 |
+| Fleet | `sail` (into a port of yours, to sea, or to a neighbouring zone) | §8 |
+| | `blockade` · `patrol` · `hold` | §7 |
+| | `splitFleet` · `mergeFleet` | §8 |
+| Country | `raise` soldiers or cannon crew at a core settlement · `hireMercenaries` | §3, §8 |
+| | `buyWeapons` (and cannons) to the reserve · `buyPeople` | §3 |
+| | `buySharpshooters` at a pass you own · `buyShips` at a port | §3, §8 |
+| | `buyBuilding` (walls, library, workshop, market, courthouse) | §3 |
+| | `setTax` · `setSlider` (research) · `setLaw` | §2, §4, §9 |
+| | `deposit` · `withdraw` · `borrow` · `repay` · `defaultOnLoans` | §2 |
+| | `research` (choose the tech) · `setCapital` · `proclaim` (special coring) | §4, §2, SCENARIO |
+| War | `declareWar` — the one diplomatic command so far | §10 |
+| *Milestone 4* | answer a call to arms · propose an agreement · cancel military access · break an agreement | §10 |
+| | demand a subject · propose peace with terms · answer an offer · propose the Empire (once ever) | §10, SCENARIO |
+| Game | pause · resume (single player; not engine commands) | §1 |

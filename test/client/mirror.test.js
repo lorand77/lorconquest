@@ -55,3 +55,20 @@ test("the line of a planned route, from a place or from the middle of a leg", ()
 test("men on a marker", () => {
     assert.deepEqual([0, 750, 1000, 1234, 9999, 12400].map(formatMen), ["0", "750", "1k", "1.2k", "10k", "12k"]);
 });
+
+test("where fleets are drawn: in a port, at sea in their zone, or between zones", async () => {
+    const { fleetPoints } = await import("../../public/js/mirror.js");
+    const map = buildMap(scenario);
+    const state = { fleets: {
+        1: { id: 1, port: 2, zone: "oslofjord", moving: null },
+        2: { id: 2, port: 2, zone: "oslofjord", moving: null },
+        3: { id: 3, port: null, zone: "skagerrak", moving: null },
+        4: { id: 4, port: null, zone: "oslofjord", moving: { to: "skagerrak", start: 0, end: 61 } },
+    } };
+    const pts = fleetPoints(state, map.nodes, map.zones, 30.5);
+    const oslo = map.nodes.get("2"), sk = map.zones.get("skagerrak").label, of = map.zones.get("oslofjord").label;
+    assert.deepEqual(pts.get(1), [oslo.x - 8, oslo.y + 20]);
+    assert.deepEqual(pts.get(2), [oslo.x - 8, oslo.y + 36]);                  // a second fleet in the same port sits below
+    assert.deepEqual(pts.get(3), [sk.x, sk.y + 14]);
+    assert.deepEqual(pts.get(4), [(of.x + sk.x) / 2, (of.y + sk.y) / 2 + 14]); // halfway between the zones
+});

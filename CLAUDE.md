@@ -24,6 +24,7 @@ dependencies.
 - `node tools/run.js <script>` — play a scripted game in the terminal; the format is at the top of
   `tools/run.js`, examples in `test/wars/`.
 - `node tools/bench.js [--years N]` — time a game day with every country at war.
+- `FUZZ_SEEDS=40 FUZZ_YEARS=20 node --test test/engine/fuzz.test.js` — the big random-play sweep.
 - `node tools/map.js [folder] [mountains]` — rebuild a scenario's map.svg, scenario.json and the
   generated parts of its SCENARIO.md.
 
@@ -38,12 +39,15 @@ dependencies.
   `worker.js` (one game's loop), `socket.js` and `routes.js` (the events and the REST routes),
   `view.js` (what a player may see, what changed), `placeholder.js` (stand-in computer countries).
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
-  `js/mirror.js` (the state copy and map geometry, tested in Node); `index.html` with `js/dev.js`.
+  `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
+  Research tabs, fleets, an army's equipment); `index.html` with `js/dev.js`.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
 - `tools/` — the runner, the bench, the map tools.
-- `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js`; `test/wars/` — scripted
-  wars on the real map; `test/server/` — the real server on a throwaway database with 2 ms days
-  (`helpers.js`); `test/client/` — the browser's pure modules.
+- `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js` (a sea, two ports, a strait,
+  a region), and `fuzz.test.js`, random play (`FUZZ_SEEDS`/`FUZZ_YEARS` make it bigger); `test/wars/` —
+  scripted wars and a country run for years on the real map; `test/server/` — the real server on a throwaway database with 2 ms days
+  (`helpers.js`); `test/client/` — the browser's pure modules and, against a fake element, its panels
+  (`loader.mjs` lets them import `/engine/` as the page does).
 
 ## Conventions
 
@@ -67,6 +71,10 @@ dependencies.
 - Iteration order is part of the rules: the state's objects are keyed by whole-number ids, which
   JavaScript keeps in order; anything else that is iterated is sorted first.
 - Tests that need a battle's numbers load the dice with `rig()` from `test/helpers/tiny.js`.
+- Anything that can empty an army (losses, desertion, disbanding) must remove it, or a ghost army with
+  no men stays on the map; the fuzz test checks this every month.
+- Money, R and people keep fractions in the engine; show them rounded (`formatNumber`), never store them
+  rounded.
 - Computer players (placeholders now, the AI later) never draw from `state.rng`: their commands are
   replayed without running them, so their dice must not touch the game's. Their schedule depends on
   the day alone (design.md, *The computer players*).

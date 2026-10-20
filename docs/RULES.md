@@ -5,6 +5,7 @@
 > `x` applies to **tech costs, starting treasury, the flat R bonus, the sharpshooter and cannon
 > counts in combat and the ships needed to cross a strait** (§5, §6, §8) — never to shop prices.
 > Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](SCENARIO.md).
+> **Money and R** are in the same unit as `M`: 0.1M is 100,000.
 > Town and city populations (10K / 20K) are the same in every scenario; what changes between
 > scenarios is the map, country sizes, costs, coring, and the victory condition.
 
@@ -102,8 +103,15 @@ only through growth or **Buy people**.
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
 **Courthouse**. Special coring (see [Special coring](SCENARIO.md#special-coring)) waives both.
 
+**Conquest.** A captured settlement is held from the day it falls: the 20 years start again, its
+courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It
+keeps its walls, library, workshop and market. It **stays core for every country that had it core**,
+so retaking it makes it core again at once.
+
 **Bank:** deposits earn `0.25% per month` interest (≈3%/year compounded). Withdraw any time.
 Bank interest is **money only** — it never goes to research (§4).
+
+Interest is added to the deposit each month, so it compounds.
 
 **Loans.** Bankers lend to princes at war. You may borrow in chunks of **0.05M**, as long as your
 total loans stay within **2 years of your settlement money**. The money goes straight to your
@@ -125,6 +133,15 @@ clock starts when your treasury first goes below zero** and resets once the debt
 repaid. If the debt is still unpaid **10 years after it began** and exceeds **pop × 10**, you go
 bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 
+**Bankruptcy** sells, at their shop prices and until the treasury is no longer below zero: first the
+buildings (in settlement order), then the weapons and cannons in the reserve, then the weapons the armies
+carry — their men fight on, unarmed. The debt clock then stops.
+
+**Each month**, in this order: people grow; unpaid mercenaries desert; the month's money is paid; the bank
+pays interest; research is added and a tech whose cost is covered unlocks; the debt clock starts or stops;
+a bankrupt country is sold up; settlements held 20 years with a courthouse become core. Every figure is
+worked out from the state on that day.
+
 ### Starting values
 | | |
 |---|---|
@@ -136,6 +153,9 @@ bankrupt: buildings are sold off to clear it, then soldiers and weapons.
 **Capital.** Each country starts with the capital its scenario names — a city if it owns one. If
 the capital is lost, name a new one from any city you own; if you own no city, any settlement.
 The capital trains soldiers twice as fast as other settlements (§8).
+
+**Ships** start as cogs, in one fleet, in the capital's port — or, if the capital is not a port, in the
+country's lowest-numbered port.
 
 ---
 
@@ -170,6 +190,10 @@ is equipped from it instantly, wherever it is (§8) — with cannons only as far
 New ships appear in a port you own, of your
 choice. People you buy are spread over your settlements in proportion to their pop.
 
+A settlement holds **one** of each building. A **Library** beyond the tenth adds nothing, so you
+cannot buy it. **Cannon crew and soldiers over the cap:** if the law changes to a lower one, or
+people are lost, men already raised stay; only raising more is refused (§9).
+
 **Every cannon needs 10 crewmen.** Crew are raised separately from soldiers, the same way (free,
 trained in a core settlement, §8), and serve only cannons: an army carries at most one cannon per
 10 crew. Crew without cannons are like men without weapons — power 0, but they take losses.
@@ -179,6 +203,9 @@ their own — only their crew at sea do.
 **Crew are soldiers.** Cannon crew and ship crew at sea pay soldier upkeep (§2). Cannon crew
 count toward your **army** cap and ship crew at sea toward your **navy** cap (§9). **So do
 sharpshooters** — each sharpshooter is one soldier on the army cap.
+
+**Putting to sea.** A fleet leaves port for the sea only if the crew it needs (50 a ship) fit under the
+navy cap with the crew already at sea.
 
 ---
 
@@ -222,6 +249,9 @@ x10K.
 **Libraries.** Each Library you own adds **+5%** to your R per year. Bonuses **add up** — they
 do not multiply — and the total is **capped at +50%** (10 Libraries). A settlement can hold only
 one Library.
+
+**Naming the tech.** A tech needs its parent unlocked first (the tree above). Choosing another tech
+while one is being researched replaces it; the R already in store stays.
 
 ---
 
@@ -321,6 +351,12 @@ Total damage may never exceed 25% of the passing army.
 not again while it stays there, nor when it leaves. An army that leaves and later comes back is
 fired on again. Sharpshooters take no losses when they fire, and survivors pass through freely.
 
+The post fires when an enemy army **arrives** at the pass — also one retreating through it — whether
+or not any army of the pass's owner is there. The sharpshooters are soldiers on the army cap (§9), and are
+bought only while that cap has room. A post that wins a storm keeps its survivors; one that loses is wiped
+out; the people killed in it are lost from the country it belongs to. The army that loses a storm falls
+back as after any battle.
+
 **Clearing sharpshooters.** An army may `storm` the sharpshooter post. Resolve it as a field
 battle in which each sharpshooter counts as **2.5 power** — better than a musketeer — and, dug in
 on the mountainside, gets the pass ×2:
@@ -380,6 +416,15 @@ your population (§2).
 **Fleet orders.** Sail a fleet into a sea zone (zones are listed in
 [SCENARIO.md](SCENARIO.md#sea-zones)), then give it one of two orders:
 
+**Fleets in battle.** A fleet is in a port, or at sea in one zone; a fleet **sailing** to the next zone
+(2 months) is in neither: it cannot fight, blockade, be fought or count for a strait. A **patrol** attacks
+the enemy fleets at sea in its zone on the day it arrives or is ordered, if the fleets have not fought
+within 3 months; if two patrols meet, the one that came to the zone later attacks. There is no bonus for
+the defender but a tie goes to it. Fleets in port are safe. The beaten side **runs for its nearest port**
+in the zone, if it has one, and waits there; ships sunk take their 50 crew each from the population. A
+blockade holds only while its fleet is at sea in the zone, and ends if it leaves, is sunk or runs. A
+fleet takes on one order at a time: patrol, blockade or none.
+
 - `blockade` — pick an enemy port in that sea zone. While the blockade holds, **all money from
   that settlement is halved** (§2, its Workshop and Market included). Its growth is not affected.
 - `patrol` — the fleet engages **any enemy ship in that sea zone**. Distance inside the zone does
@@ -393,6 +438,10 @@ your population (§2).
 
 **Raising forces.** New soldiers and cannon crew are trained in a **core settlement** and take
 time to appear:
+
+A country may only raise or hire up to its **army cap**, counting men in training, soldiers, crew and
+sharpshooters, and may not raise more men than it has civilians. The men appear in their settlement and
+join an army of the country there that is not retreating and not outside the walls, or form a new one.
 
 | Trained in | Time |
 |---|---|
@@ -414,6 +463,11 @@ one.
 (§3): they arrive **1 month** later, armed with **pikes**, at any core settlement you choose, and
 join or form an army there like trained men. If that settlement is captured first, the hire is
 cancelled and the money lost. They are **foreigners**:
+
+A mercenary stays a mercenary in the army he is in: casualties are shared between regulars and
+mercenaries in proportion, and only the regulars cost population. Splitting an army takes mercenaries
+along in proportion to the men taken; merging joins them. Desertion takes a tenth of each army's mercenaries,
+rounded up, and a default half; an army that loses all its men is gone.
 
 - they are **not** taken from your civilians and do **not** count toward your army cap (§9) — but
   you may have at most as many mercenaries as your army cap;
@@ -500,6 +554,12 @@ other on a route while on cooldown have passed.
 **Straits (dashed lines).** An army may cross if you control **≥10 × x ships** in that sea zone (see
 [Sea zones](SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes
 **3 months**. If an enemy fleet is present, fight a naval battle first — lose and the crossing fails.
+
+**Counting the ships.** All the country's ships in the zone count — in port or at sea, not sailing. An
+army sets out only if they are at least **10 × x**; if enemy fleets are at sea in the zone, the country's
+fleets there fight them first, and a defeat — or too few ships left — means the army does not cross and
+stays where it is. The crossing takes 3 months whatever the length of the dashed line, and armies on a
+strait are at sea: they do not meet one another.
 
 ---
 
@@ -719,6 +779,13 @@ Rolled at the start of each year.
 equal to **3% of your total population** (every settlement you own, core and non-core), armed
 with swords, spawning outside your capital. It holds cores on everything and attacks towns and
 cities, favouring undefended ones and your core territory. **There is no peace with peasants.**
+
+**The rebels' behaviour.** The rebels are a country of their own, `REB1`, `REB2`…, with no money. Every
+10 days each idle rebel army marches on a settlement of the country it rose against: **undefended ones
+first, then core ones, then the nearest**; an army besieging one stays until it falls or the siege is lifted.
+Rebels take no orders and make no peace. They are fed by their own people, but still sicken in a siege. If
+the country has lost its capital, they rise outside its largest settlement. The uprising is over when the
+rebels have no army and hold no settlement.
 
 **The rebels are your own people.** They are taken from your civilians (§2), spread over your
 settlements in proportion to their pop, and pay no tax while they are under arms — but they stay

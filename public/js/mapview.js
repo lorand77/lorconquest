@@ -19,8 +19,8 @@ export async function createMapView(container, svgUrl, onPick) {
     const setView = () => svg.setAttribute("viewBox", `${view.x} ${view.y} ${view.w} ${view.h}`);
 
     const layer = (id) => { const g = el("g", { id }); svg.appendChild(g); return g; };
-    const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), armyLayer = layer("lc-armies");
-    const markers = new Map();                                       // army id -> <g>
+    const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");
+    const markers = new Map(), ships = new Map();                    // army id -> <g>, fleet id -> <g>
 
     // ---------- pan and zoom ----------
     const toMap = (clientX, clientY) => {
@@ -66,6 +66,8 @@ export async function createMapView(container, svgUrl, onPick) {
     function pick(target) {
         const army = target.closest("[data-army]");
         if (army) return { kind: "army", id: Number(army.dataset.army) };
+        const fleet = target.closest("[data-fleet]");
+        if (fleet) return { kind: "fleet", id: Number(fleet.dataset.fleet) };
         const place = target.closest("[id^='settlement-'], [id^='pass-']");
         if (place) return { kind: "place", key: place.id.replace(/^(settlement|pass)-/, "") };
         const land = target.closest("[id^='land-']");
@@ -111,6 +113,47 @@ export async function createMapView(container, svgUrl, onPick) {
                 g.setAttribute("transform", `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`);
             }
             for (const [id, g] of markers) if (!keep.has(id)) { g.remove(); markers.delete(id); }
+        },
+
+        // fleets: [{ id, x, y, colour, label, mine, selected, sailing }], drawn like armies, as ship chips
+        setFleets(fleets) {
+            const keep = new Set();
+            for (const f of fleets) {
+                keep.add(f.id);
+                let g = ships.get(f.id);
+                if (!g) {
+                    g = el("g", { class: "lc-fleet", "data-fleet": f.id });
+                    g.append(el("rect", { y: -7, height: 14, rx: 7 }), el("text", { y: 3.6 }));
+                    fleetLayer.appendChild(g);
+                    ships.set(f.id, g);
+                }
+                const w = 20 + 6 * f.label.length;
+                const [rect, text] = g.children;
+                rect.setAttribute("width", w);
+                rect.setAttribute("fill", f.colour);
+                text.setAttribute("x", w / 2);
+                text.textContent = `⛵${f.label}`;
+                g.classList.toggle("mine", f.mine);
+                g.classList.toggle("selected", f.selected);
+                g.classList.toggle("sailing", f.sailing);
+                g.setAttribute("transform", `translate(${f.x.toFixed(1)} ${f.y.toFixed(1)})`);
+            }
+            for (const [id, g] of ships) if (!keep.has(id)) { g.remove(); ships.delete(id); }
+        },
+
+        moveFleet(id, x, y) {
+            const g = ships.get(id);
+            if (g) g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+        },
+
+        // sharpshooter posts: [{ x, y, n, colour }] beside their pass
+        setPosts(posts) {
+            postLayer.replaceChildren(...posts.flatMap((p) => {
+                const t = el("text", { class: "lc-post", x: p.x + 13, y: p.y + 5 });
+                t.textContent = `◎${p.n}`;
+                t.style.fill = p.colour;
+                return [t];
+            }));
         },
 
         // move one marker without redrawing it (between ticks)

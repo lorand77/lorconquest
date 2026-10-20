@@ -1,0 +1,21 @@
+# Bavaria runs itself for three years under heavy tax: a loan pays for a library, swords, mercenaries and
+# 2,000 soldiers; it researches hand cannons, changes the law, and the peasants rise. Holland builds a fleet.
+seed 1
+1440-01-01 BAV borrow chunks=2
+1440-01-01 BAV set-tax tax=3
+1440-01-01 BAV set-law law=mass
+1440-01-01 BAV buy-building building=library settlement=37
+1440-01-01 BAV buy-weapons weapon=swords lots=2
+1440-01-01 BAV raise settlement=37 kind=soldiers lots=2
+1440-01-01 BAV hire-mercenaries settlement=36 lots=1
+1440-01-01 BAV research tech=handCannons
+1440-01-01 BAV set-slider slider=100
+1440-01-01 NED set-slider slider=0
+1440-01-01 NED buy-weapons weapon=pikes lots=1
+1440-01-01 NED borrow chunks=2
+1440-01-01 NED sail fleet=101 zone=north-sea
+1440-01-01 NED patrol fleet=101
+1440-01-02 NED buy-ships kind=cogs port=57 lots=1
+1440-06-01 BAV equip army=37 from=unarmed to=swords n=1000
+1443-01-02 BAV sortie army=37
+until 1444-01-01

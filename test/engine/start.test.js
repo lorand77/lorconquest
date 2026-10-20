@@ -19,7 +19,7 @@ test("every settlement starts with a sword-armed garrison of pop ÷ 25, numbered
         assert.equal(menOf(a), s.pop / 25);
         assert.deepEqual(st.settlements[s.id].cores, [s.country]);
     }
-    assert.equal(st.nextId, 90);
+    assert.equal(st.nextId, 90 + 14);                                      // the 14 naval powers' fleets come next
     assert.equal(Object.values(st.armies).reduce((n, a) => n + menOf(a), 0), 1060000 / 25);
     assert.equal(soldiersOf(st, "BAV"), 2000);
     assert.equal(st.countries.BAV.treasury, 100000);                       // x × pop × 2
@@ -49,4 +49,20 @@ test("routes: the fastest way, through land the army may enter", () => {
     const fromOne = routeFor(game, game.state.armies[1], "5");
     assert.deepEqual(fromOne.path, ["3", "P1", "5"]);                      // 37 + 91 + 91 beats 73 + 110 + 73
     assert.equal(routeFor(game, game.state.armies[1], "6"), null);         // CCC is still neutral
+});
+
+test("coastal countries start with their ships as cogs in one fleet, in the capital's port or else their first port", () => {
+    const game = Game.create(scenario);
+    const fleets = Object.values(game.state.fleets);
+    assert.equal(fleets.length, 14);                                       // the 14 naval powers of SCENARIO.md
+    assert.equal(fleets.reduce((n, f) => n + f.ships.cogs, 0), 180);
+    const of = (code) => fleets.find((f) => f.owner === code);
+    assert.deepEqual([of("NOR").port, of("NOR").ships.cogs, of("NOR").zone], [2, 15, "oslofjord"]);   // Oslo is its capital and a port
+    assert.deepEqual([of("GDA").port, of("GDA").ships.cogs], [15, 25]);
+    assert.deepEqual([of("BRE").port, of("HAM").port, of("NED").port], [65, 66, 57]);
+    for (const f of fleets) {
+        assert.equal(game.state.settlements[f.port].owner, f.owner);
+        assert.deepEqual([f.moving, f.order], [null, null]);
+    }
+    assert.equal(Object.values(game.state.countries).every((c) => c.tax === 2 && c.slider === 50 && c.law === "feudal" && c.bank === 0 && c.loans === 0), true);
 });

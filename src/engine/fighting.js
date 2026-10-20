@@ -8,7 +8,9 @@
 import { YEAR_DAYS } from "./calendar.js";
 import { fight, mayFight } from "./battle.js";
 import { legKey } from "./map.js";
-import { destroy, progress, retreat, routeFor, startLeg } from "./movement.js";
+import { cancelAt } from "./forces.js";
+import { destroy, mayDepart, progress, retreat, routeFor, startLeg } from "./movement.js";
+import { fireSharpshooters, postsLost, stormPost } from "./passes.js";
 import { d6 } from "./random.js";
 import { armiesAt, armyList, atWar, canEnter, isAlive, ownerOf, removeArmy } from "./state.js";
 import { menOf } from "./army.js";
@@ -35,11 +37,18 @@ export function siegeDays(game, s, cannons) {
 // the attacker brings, never below 1.2
 export const wallDefence = (walls, cannons, x) => (walls ? Math.max(1.2, 1.8 - 0.3 * Math.floor(cannons / (100 * x))) : 1.2);
 
+// a settlement falls (RULES.md §6, §8): it is held from today, loses its courthouse, the training and hires queued in
+// it are cancelled, and sharpshooters of a pass in its land die. It keeps its walls, library, workshop and market,
+// and stays core for every country that had it core, so retaking it makes it core again.
 function capture(game, s, country, events, how) {
     const from = s.owner;
     s.owner = country;
     s.siege = null;
+    s.heldSince = game.state.day;
+    s.courthouse = false;
+    cancelAt(game.state, s.id);
     events.push({ type: "capture", day: game.state.day, settlement: s.id, from, to: country, how });
+    postsLost(game, s.id, events);
     for (const a of armiesAt(game.state, String(s.id))) if (a.owner !== country) a.relief = false;
 }
 
@@ -109,6 +118,13 @@ export function sortie(game, key, events) {
     settle(game, key, events);
 }
 
+// an army storms the sharpshooter post at its pass; the beaten army falls back (RULES.md §5)
+export function stormThePost(game, country, key, events) {
+    const ev = stormPost(game, country, key, events);
+    if (ev.winner === "b") for (const id of ev.a.armies) if (game.state.armies[id]) retreat(game, game.state.armies[id], events, key);
+    return ev;
+}
+
 // battles where enemies stand at the same place: at a pass, the army that got there first defends at ×2; at a
 // besieged settlement, a relief force fights the besiegers in the open. Armies on cooldown wait.
 export function placeBattles(game, events) {
@@ -154,11 +170,12 @@ export function placeBattles(game, events) {
 // cross. The defender is whoever holds the nearer end, else whoever set out first; the loser retreats, the
 // winner carries on. Armies that crossed while on cooldown have passed each other.
 export function meetings(game, events) {
-    const st = game.state, day = st.day;
+    const st = game.state, day = st.day, straits = game.map.straits;
     const legs = new Map();
     for (const a of armyList(st)) {
         if (!a.march) continue;
         const k = legKey(a.march.from, a.march.to);
+        if (straits.has(k)) continue;                    // armies on a strait are at sea: they pass each other
         if (!legs.has(k)) legs.set(k, []);
         legs.get(k).push(a);
     }
@@ -195,6 +212,10 @@ export function meetings(game, events) {
 // an army has just reached army.at. Take, besiege, stop or fight there as RULES.md §6 and §8 say, then carry on
 // along its path if nothing stopped it.
 export function arrive(game, army, events) {
+    if (game.map.nodes.get(army.at).kind === "pass") {
+        fireSharpshooters(game, army, events);
+        if (!isAlive(game.state, army)) return;
+    }
     if (army.retreating) return arriveRetreating(game, army, events);
     const st = game.state, key = army.at, node = game.map.nodes.get(key);
     const last = army.path.length === 0;
@@ -235,6 +256,11 @@ function carryOn(game, army, events) {
             return;
         }
         army.path = found.path;
+    }
+    if (!mayDepart(game, army, army.at, army.path[0], events)) {
+        army.path = [];
+        if (army.retreating) retreat(game, army, events);
+        return;
     }
     startLeg(game, army, army.at, army.path.shift(), army.arrived);
 }

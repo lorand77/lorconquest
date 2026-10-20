@@ -26,6 +26,7 @@ body.game { height: 100vh; display: flex; flex-direction: column; overflow: hidd
 .topbar .pause { min-width: 6.5em; }
 .topbar .pause.paused { background: #f2d58c; border-color: #f2d58c; }
 .topbar .treasury { margin-left: auto; color: #ccc; }
+.topbar .treasury.bad { color: #ff9b9b; }
 .board { flex: 1; display: flex; min-height: 0; }
 .mapbox { flex: 1; position: relative; min-width: 0; background: #99d9ea; }
 .map, .map svg { width: 100%; height: 100%; display: block; }
@@ -38,7 +39,10 @@ body.game { height: 100vh; display: flex; flex-direction: column; overflow: hidd
 .toasts { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
 .toast { background: rgba(40, 40, 40, 0.9); color: #fff; padding: 6px 12px; border-radius: 4px; max-width: 520px; }
 .side { width: 340px; display: flex; flex-direction: column; border-left: 1px solid #bbb; background: #fbfaf6; min-height: 0; }
-.panel { padding: 10px 12px; border-bottom: 1px solid #ddd; min-height: 9em; }
+.tabs { display: flex; border-bottom: 1px solid #ccc; }
+.tabs button { flex: 1; border: none; border-radius: 0; background: #ece8dd; padding: 6px 4px; border-right: 1px solid #ccc; }
+.tabs button.active { background: #fbfaf6; font-weight: 600; box-shadow: inset 0 -2px #2f5d8a; }
+.panel { padding: 10px 12px; border-bottom: 1px solid #ddd; min-height: 9em; max-height: 58vh; overflow-y: auto; }
 .panel h2 { font-size: 16px; margin: 0 0 6px; }
 .panel p { margin: 4px 0; }
 .panel .men { font-weight: 600; }
@@ -63,3 +67,37 @@ body.game { height: 100vh; display: flex; flex-direction: column; overflow: hidd
 .lc-siege-track { fill: none; stroke: rgba(0, 0, 0, 0.15); stroke-width: 3; pointer-events: none; }
 .lc-siege { fill: none; stroke: #c9161f; stroke-width: 3; pointer-events: none; }
 .lc-route { fill: none; stroke: #222; stroke-width: 2; stroke-dasharray: 6 4; pointer-events: none; }
+
+/* ---------- the country panels ---------- */
+.panel .block { margin: 0 0 12px; }
+.panel .block h3 { margin: 0 0 4px; font-size: 13px; text-transform: uppercase; color: #666; }
+.panel .kv { display: flex; justify-content: space-between; gap: 8px; padding: 1px 0; }
+.panel .kv.good b { color: #276b2c; }
+.panel .kv.bad b, .panel .bad { color: #b22; }
+.panel .row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0; }
+.panel .row label { min-width: 5.5em; }
+.panel .row input[type=range] { flex: 1; min-width: 8em; }
+.panel input[type=number] { width: 6.5em; }
+.panel select { max-width: 100%; }
+.panel .w { flex: 1; min-width: 9em; }
+.panel .owned { color: #276b2c; padding: 2px 6px; }
+.panel button.danger { border-color: #b22; color: #b22; }
+.panel .buttons.vertical { flex-direction: column; align-items: flex-start; }
+.panel details { margin-top: 8px; }
+.panel details summary { cursor: pointer; color: #244a6f; }
+.panel .queue { margin: 0; padding-left: 18px; }
+.panel .tech { border: 1px solid #ddd; border-radius: 4px; padding: 5px 8px; margin: 5px 0; background: #fff; }
+.panel .tech.done { background: #eef5ee; }
+.panel .tech.target { border-color: #2f5d8a; }
+.panel .tech .row { justify-content: space-between; }
+.panel .bar { height: 6px; background: #ddd; border-radius: 3px; margin: 4px 0; }
+.panel .bar i { display: block; height: 100%; background: #2f5d8a; border-radius: 3px; }
+
+/* ---------- fleets and posts on the map ---------- */
+.lc-fleet rect { stroke: #234; stroke-width: 1; }
+.lc-fleet text { font: bold 9px system-ui, sans-serif; text-anchor: middle; fill: #111; pointer-events: none; }
+.lc-fleet.mine rect { stroke: #000; stroke-width: 1.8; }
+.lc-fleet.selected rect { stroke: #ffd400; stroke-width: 3; }
+.lc-fleet.sailing { opacity: 0.7; }
+.map .lc-fleet { cursor: pointer; }
+.lc-post { font: bold 9px system-ui, sans-serif; pointer-events: none; paint-order: stroke; stroke: #fff; stroke-width: 2px; }

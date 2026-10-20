@@ -2,7 +2,7 @@
 // applied to every army on both sides and to their countries' population. Empty armies are removed. What
 // happens next, retreats or captures, is up to the caller. Also the battle cooldown (§8).
 
-import { applyLosses, combine, isEmpty, lossesFor, menOf, power, stopsCavalry } from "./army.js";
+import { applyLosses, combine, isEmpty, lossesFor, menOf, peopleLost, power, stopsCavalry } from "./army.js";
 import { MONTH } from "./calendar.js";
 import { battleRoll } from "./random.js";
 import { killPeople, removeArmy } from "./state.js";
@@ -47,7 +47,7 @@ export function fight(game, { kind, place, a, b, defenceB = 1, plainCavalry = fa
         for (const army of armies) {
             const loss = lossesFor(army, pct);
             applyLosses(army, loss);
-            killPeople(st, army.owner, loss.dead + loss.crew);
+            killPeople(st, army.owner, peopleLost(loss));
             s.dead += loss.dead + loss.crew;
             s.cannonsLost += loss.cannons;
             if (isEmpty(army)) { removeArmy(st, army); ev.destroyed.push(army.id); }

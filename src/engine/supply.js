@@ -3,8 +3,8 @@
 // An army counts in the land of the place it is at or besieging, and while marching of the place it marches to.
 // Men only: cannons and their crews are spared.
 
-import { applyLosses, isEmpty, lossesFor, menOf } from "./army.js";
-import { armyList, atWar, killPeople, removeArmy } from "./state.js";
+import { applyLosses, isEmpty, lossesFor, menOf, peopleLost } from "./army.js";
+import { armyList, atWar, isRebel, killPeople, removeArmy } from "./state.js";
 
 export function attrition(game, events) {
     const st = game.state, map = game.map;
@@ -19,13 +19,14 @@ export function attrition(game, events) {
         // a settlement's land feeds half its pop, ×1.5 on a river; friendly land feeds everyone (milestone 4 adds
         // subjects and allies to "friendly")
         const feeds = s.pop / 2 * (map.nodes.get(String(land)).river ? 1.5 : 1);
-        const hungry = s.owner !== a.owner && men.get(`${a.owner}|${land}`) > feeds;
+        // peasant rebels are fed by their own people and never go hungry (RULES.md §8)
+        const hungry = s.owner !== a.owner && !isRebel(st, a.owner) && men.get(`${a.owner}|${land}`) > feeds;
         const sick = a.at === String(land) && s.siege !== null && atWar(st, a.owner, s.owner);
         const pct = (sick ? 0.01 : 0) + (hungry ? 0.01 : 0);
         if (!pct) continue;
         const loss = lossesFor(a, pct, true);
         applyLosses(a, loss);
-        killPeople(st, a.owner, loss.dead);
+        killPeople(st, a.owner, peopleLost(loss));
         if (loss.dead) events.push({ type: "attrition", day: st.day, army: a.id, owner: a.owner, dead: loss.dead, sick, hungry });
         if (isEmpty(a)) {
             removeArmy(st, a);

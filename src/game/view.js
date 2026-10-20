@@ -1,25 +1,27 @@
 // What a player may see of a game (design.md, "Messages"), and what changed since the last day. The map, every
-// army and the wars are public; a country's treasury is private to it. Never the random state or the seed: with
-// them the dice could be foreseen. Runs in the game's worker.
+// army and fleet, the sharpshooter posts and the wars are public, and so is a settlement with its buildings; a
+// country's money, bank, loans, tax, slider, law, research, reserve and queues are private to it. Never the random
+// state or the seed: with them the dice could be foreseen. Runs in the game's worker.
 
 // the public part of a country
-const publicCountry = (c) => ({ code: c.code, name: c.name, capital: c.capital });
+const publicCountry = (c) => ({ code: c.code, name: c.name, capital: c.capital, rebel: c.rebel, of: c.of });
 // the private part, for its own player
-const privateCountry = (c) => ({ treasury: c.treasury });
+const PRIVATE = ["treasury", "bank", "loans", "noBorrowUntil", "debtSince", "tax", "taxSum", "harvest", "slider", "law", "lawDay", "techs", "target", "r", "reserve", "training", "hires"];
+const privateCountry = (c) => Object.fromEntries(PRIVATE.filter((k) => c[k] !== undefined).map((k) => [k, c[k]]));
 
 // everything `country` may see: the state without the dice, with its own country's private part
 export function viewFor(state, country) {
     const countries = {};
     for (const c of Object.values(state.countries)) countries[c.code] = c.code === country ? { ...publicCountry(c), ...privateCountry(c) } : publicCountry(c);
-    return { day: state.day, countries, settlements: state.settlements, armies: state.armies, wars: state.wars };
+    return { day: state.day, countries, settlements: state.settlements, armies: state.armies, fleets: state.fleets, posts: state.posts, wars: state.wars };
 }
 
-// Each day, only what changed: { pub, priv }. pub — { day, armies: { id: army | null }, settlements: { id: s },
-// countries: { code: public part }, wars }, with only the parts that changed; priv — { code: private part } for
-// countries whose private part changed. An army removed is null.
+// Each day, only what changed: { pub, priv }. pub — { day, armies, fleets, settlements, countries, posts: { id: value |
+// null }, wars }, with only the parts that changed; priv — { code: private part } for countries whose private part
+// changed. Something removed is null.
 export class Changes {
     constructor(state) {
-        this.seen = { armies: new Map(), settlements: new Map(), countries: new Map(), priv: new Map(), wars: "" };
+        this.seen = { armies: new Map(), fleets: new Map(), settlements: new Map(), countries: new Map(), posts: new Map(), priv: new Map(), wars: "" };
         this.next(state);
     }
 
@@ -35,11 +37,10 @@ export class Changes {
             for (const id of [...seen.keys()]) if (!(id in items)) { seen.delete(id); out[id] = null; any = true; }
             return any ? out : null;
         };
-        const armies = diff("armies", state.armies), settlements = diff("settlements", state.settlements);
-        const countries = diff("countries", state.countries, publicCountry);
-        if (armies) pub.armies = armies;
-        if (settlements) pub.settlements = settlements;
-        if (countries) pub.countries = countries;
+        for (const [name, items, part] of [["armies", state.armies], ["fleets", state.fleets], ["settlements", state.settlements], ["countries", state.countries, publicCountry], ["posts", state.posts]]) {
+            const d = diff(name, items, part);
+            if (d) pub[name] = d;
+        }
         const wars = JSON.stringify(state.wars);
         if (wars !== this.seen.wars) { this.seen.wars = wars; pub.wars = [...state.wars]; }
         for (const c of Object.values(state.countries)) {

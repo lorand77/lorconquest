@@ -230,6 +230,32 @@ const ZONES = [];                                     // sea zones: name, and a 
         ZONES.push({ name: r.Zone, id: r.Zone.toLowerCase().replace(/[^a-z0-9]+/g, "-"), x: Number(r.X), y: Number(r.Y), next: new Set() });
     }
 }
+
+// special coring: regions a country may proclaim (SCENARIO.md, Special coring). A region's settlements are listed
+// as numbers and ranges (32, 33, 79–88), and may start from another region by name (Modern Poland + 17, 18).
+const FORMABLES = [];
+{
+    const [, rows] = table("Special coring");
+    const slug = (n) => n.toLowerCase().replace(/\(.*?\)/g, "").trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const plain = (n) => n.replace(/\s*\(.*\)\s*$/, "").trim();
+    for (const r of rows) {
+        const name = r.Formable, ids = new Set();
+        for (const raw of (r.Settlements ?? "").split(/[,+]/).map((t) => t.trim()).filter(Boolean)) {
+            let m;
+            if (/^\d+$/.test(raw)) ids.add(Number(raw));
+            else if ((m = /^(\d+)\s*[–-]\s*(\d+)$/.exec(raw))) for (let i = Number(m[1]); i <= Number(m[2]); i++) ids.add(i);
+            else {
+                const base = FORMABLES.find((f) => f.name === raw || plain(f.name) === raw);
+                if (base) base.settlements.forEach((i) => ids.add(i));
+                else err(`Special coring line ${r._line}: '${raw}' is neither a settlement number nor a region listed above it`);
+            }
+        }
+        for (const i of ids) if (!S.has(i)) err(`Special coring line ${r._line}: no settlement ${i}`);
+        if (r.Count && Number(r.Count) !== ids.size) err(`Special coring line ${r._line}: ${name} lists ${ids.size} settlements, but Count says ${r.Count}`);
+        FORMABLES.push({ id: slug(name), name, settlements: [...ids].sort(num) });
+    }
+    if (new Set(FORMABLES.map((f) => f.id)).size !== FORMABLES.length) err("Special coring: two regions have the same name");
+}
 check("SCENARIO.md");
 
 // =====================================================================================
@@ -1044,6 +1070,7 @@ const json = {
             points: RPATH.get(e).map((p) => p.map((v) => Number(n(v)))) };
     }),
     passes: PASSES.map((p) => ({ id: p.id, x: p.x, y: p.y, land: p.owner, routes: p.routes })),
+    formables: FORMABLES,
     seaZones: ZONES.map((z) => ({ id: z.id, name: z.name, label: { x: z.x, y: z.y }, ports: zonePorts(z), straits: zoneStraits(z), next: zoneNext(z).map((x) => x.id) })),
 };
 fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");

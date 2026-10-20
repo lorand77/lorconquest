@@ -34,7 +34,7 @@ test("a player sees the game without its dice and without other countries' treas
         assert.equal((await emitAck(s, "join", { gameId: 999 })).ok, false);
         const j = await emitAck(s, "join", { gameId: id });
         assert.deepEqual([j.ok, j.me, j.paused, j.scenario, j.tickMs, j.view.day], [true, "BAV", true, "docs", 2, 0]);
-        assert.deepEqual(Object.keys(j.view).sort(), ["armies", "countries", "day", "settlements", "wars"]);
+        assert.deepEqual(Object.keys(j.view).sort(), ["armies", "countries", "day", "fleets", "posts", "settlements", "wars"]);
         assert.equal(j.view.countries.BAV.treasury, 100000);
         assert.equal(j.view.countries.ULM.treasury, undefined);
         assert.equal(Object.keys(j.view.armies).length, 87);
@@ -153,6 +153,39 @@ test("each game logs how long its days take", async () => {
         const timing = lines.filter((l) => l.includes("game.timing"));
         assert.ok(timing.length >= 2);
         assert.match(timing[0], new RegExp(`game=${id} days=50 mean_ms=[\\d.]+ max_ms=[\\d.]+ budget_ms=2`));
+    } finally {
+        await server.close();
+    }
+});
+
+test("money orders go through the worker; a country's private part reaches only its player", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        const j = await emitAck(s, "join", { gameId: id });
+        assert.deepEqual([j.view.countries.BAV.tax, j.view.countries.BAV.law, j.view.countries.BAV.techs.length, j.view.countries.BAV.slider], [2, "feudal", 5, 50]);
+        assert.equal(j.view.countries.ULM.tax, undefined);
+        assert.equal(j.view.countries.ULM.reserve, undefined);
+        const seen = [];
+        s.on("tick", (t) => seen.push(t.changes));
+        const mine = waitFor(s, "private", (p) => p.changes.tax === 2.5);
+        const ok = await emitAck(s, "command", { cmd: { type: "setTax", tax: 2.5 } });
+        assert.equal(ok.ok, true);
+        const got = await mine;
+        assert.equal(got.changes.tax, 2.5);
+        const refused = await emitAck(s, "command", { cmd: { type: "setTax", tax: 9 } });
+        assert.deepEqual([refused.ok, refused.error], [false, "the tax is from 2 to 3 in steps of 0.1"]);
+        const bought = await emitAck(s, "command", { cmd: { type: "buyBuilding", building: "workshop", settlement: 37 } });
+        assert.equal(bought.ok, true);
+        await runUntil(s, 70);
+        for (const c of seen) for (const country of Object.values(c.countries ?? {})) {
+            for (const secret of ["treasury", "tax", "law", "bank", "loans", "reserve", "techs"]) assert.equal(secret in country, false, `${secret} was sent to everyone`);
+        }
+        const fresh = (await emitAck(s, "join", { gameId: id })).view;
+        assert.equal(fresh.settlements[37].workshop, true);
+        assert.equal(fresh.countries.BAV.tax, 2.5);
+        assert.ok(Object.keys(fresh.fleets).length >= 14);
     } finally {
         await server.close();
     }
