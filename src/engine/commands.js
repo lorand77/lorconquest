@@ -3,35 +3,25 @@
 // with a reason. `country` is the country giving the command, which the server has already checked is theirs.
 //
 // War and armies, here:
-//   { type: "declareWar", country, target }
 //   { type: "move", country, army, to, storm }     to a settlement id or pass id; storm: storm it on arrival
 //   { type: "stop", country, army }                halt at the next place
 //   { type: "besiege", country, army }    { type: "storm", country, army }    { type: "sortie", country, army }
 //   { type: "stormPost", country, army }           storm the sharpshooter post at the pass the army is at
 //   { type: "split", country, army, men: { swords: 200, ... }, cannons, crew }    { type: "merge", country, army, into }
-// Running a country is in commands-country.js, fleets in commands-naval.js.
+// Running a country is in commands-country.js, fleets in commands-naval.js, diplomacy in commands-diplomacy.js.
 
 import { CREW_PER_CANNON, WEAPONS, emptyMen, menOf } from "./army.js";
 import { mayFight } from "./battle.js";
 import { done, isPlayable, ownArmy, refuse, whole } from "./command-util.js";
 import { countryCommands } from "./commands-country.js";
+import { diplomacyCommands } from "./commands-diplomacy.js";
 import { navalCommands } from "./commands-naval.js";
 import { settle, situation, sortie, storm, stormThePost } from "./fighting.js";
 import { follow, routeFor } from "./movement.js";
-import { atWar, isRebel, newArmy, removeArmy, warKey } from "./state.js";
+import { atWar, newArmy, removeArmy } from "./state.js";
+import { isVassal } from "./relations.js";
 
 const COMMANDS = {
-    declareWar(game, cmd) {
-        const st = game.state;
-        if (!st.countries[cmd.target]) return refuse(`no country ${cmd.target}`);
-        if (cmd.target === cmd.country) return refuse("a country cannot declare war on itself");
-        if (isRebel(st, cmd.target)) return refuse("peasants are always at war with their country");
-        if (atWar(st, cmd.country, cmd.target)) return refuse(`${cmd.country} is already at war with ${cmd.target}`);
-        st.wars.push(warKey(cmd.country, cmd.target));
-        st.wars.sort();
-        return done([{ type: "war", day: st.day, country: cmd.country, target: cmd.target }]);
-    },
-
     move(game, cmd) {
         const { army, error } = ownArmy(game, cmd);
         if (error) return refuse(error);
@@ -151,7 +141,11 @@ const COMMANDS = {
 
     ...countryCommands,
     ...navalCommands,
+    ...diplomacyCommands,
 };
+
+// a vassal has no diplomacy of its own: it cannot declare war, make agreements or sign peace (RULES.md §10)
+const DIPLOMACY = ["declareWar", "proposePeace", "proposeAgreement", "breakAgreement", "cancelAccess", "demandSubject", "proposeEmpire"];
 
 export const COMMAND_TYPES = Object.keys(COMMANDS);
 
@@ -159,5 +153,7 @@ export function applyCommand(game, cmd) {
     if (!cmd || typeof cmd !== "object" || !Object.hasOwn(COMMANDS, cmd.type)) return refuse(`unknown command ${cmd && cmd.type}`);
     if (!game.state.countries[cmd.country]) return refuse(`no country ${cmd.country}`);
     if (!isPlayable(game.state, cmd.country)) return refuse("peasant rebels take no orders");
+    if (game.state.winner) return refuse("the game is over");
+    if (DIPLOMACY.includes(cmd.type) && isVassal(game.state, cmd.country)) return refuse("a vassal has no diplomacy of its own: its overlord speaks for it");
     return COMMANDS[cmd.type](game, cmd);
 }

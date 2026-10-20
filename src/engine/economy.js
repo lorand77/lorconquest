@@ -9,6 +9,7 @@ import { WEAPONS, isEmpty, menOf, takeMen } from "./army.js";
 import { BANK_RATE_MONTHLY, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, CORING_DAYS, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE,
     MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
+import { subjectKind, subjectsOf } from "./relations.js";
 import { armyList, isCore, isRebel, killPeople, removeArmy } from "./state.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
@@ -18,7 +19,7 @@ export const ownedBy = (state, code) => Object.values(state.settlements).filter(
 export const popOf = (state, code) => sum(ownedBy(state, code), (s) => s.pop);
 // core manpower plus half of non-core (RULES.md §9): what the law's percentages apply to
 export const manpowerOf = (state, code) => sum(ownedBy(state, code), (s) => (isCore(state, s, code) ? s.pop : s.pop / 2));
-export const lawOf = (state, code) => LAWS[state.countries[code].law];
+export const lawOf = (state, code) => LAWS[state.countries[code].law ?? "feudal"];
 export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(state, code);
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code);
 export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
@@ -29,7 +30,7 @@ export function armySoldiersOf(state, code) {
     const own = armyList(state).filter((a) => a.owner === code);
     return sum(own, (a) => menOf(a) - (a.mercs ?? 0) + a.crew)
         + sum(Object.values(state.posts).filter((p) => p.owner === code), (p) => p.n)
-        + sum(state.countries[code].training, (t) => t.n);
+        + sum(state.countries[code].training ?? [], (t) => t.n);
 }
 // everyone who is a soldier for upkeep and is not a civilian: the army cap's, and ship crew at sea
 export const soldiersOf = (state, code) => armySoldiersOf(state, code) + crewAtSea(state, code);
@@ -40,9 +41,25 @@ export function rebelsOf(state, code) {
     return sum(armyList(state).filter((a) => rebels.has(a.owner)), menOf);
 }
 
-// what a country has and earns, as of today (RULES.md §2, §4, §9). All yearly figures are per year.
+// the share of its money a subject pays its overlord (RULES.md §10)
+export const TRIBUTE = { vassal: 0.4, protectorate: 0.1 };
+
+// what a country has and earns, as of today (RULES.md §2, §4, §9, §10). All yearly figures are per year. A subject
+// pays its overlord a share of its money, when positive, *before* its own tribute is counted; money per year is
+// then what it earns less upkeep and interest, plus the tribute it receives, less the tribute it pays.
 export function economyOf(game, code) {
-    const st = game.state, c = st.countries[code], law = LAWS[c.law];
+    const e = economyBase(game, code), st = game.state;
+    const share = (c) => (st.countries[c].overlord ? TRIBUTE[subjectKind(st, c)] * Math.max(0, economyBase(game, c).moneyPerYear) : 0);
+    const paid = share(code), received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0);
+    const moneyPerYear = e.moneyPerYear + received - paid;
+    const investable = Math.max(0, moneyPerYear);
+    const slider = (st.countries[code].slider ?? 50) / 100;
+    return { ...e, tributePaid: paid, tributeReceived: received, moneyPerYear, investable, rPerYear: (2 * slider * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * e.libraries) };
+}
+
+function economyBase(game, code) {
+    // another country's private settings are not known to a player's copy of the game: its starting ones stand in
+    const st = game.state, c = { tax: 2, slider: 50, law: "feudal", loans: 0, harvest: false, ...st.countries[code] }, law = LAWS[c.law];
     const owned = ownedBy(st, code), pop = sum(owned, (s) => s.pop);
     const soldiers = soldiersOf(st, code), mercenaries = mercenariesOf(st, code), rebels = rebelsOf(st, code);
     const civilians = Math.max(0, pop - soldiers - rebels);

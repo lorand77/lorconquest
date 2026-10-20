@@ -18,7 +18,7 @@ test("commands that are refused, and why", () => {
     assert.match(refused(game, { type: "move", country: "AAA", army: 1, to: 1 }), /already at/);
     assert.match(refused(game, { type: "move", country: "AAA", army: 1, to: 77 }), /no place/);
     assert.match(refused(game, { type: "move", country: "AAA", army: 1, to: 4 }), /no way/);            // BBB is neutral
-    assert.match(refused(game, { type: "declareWar", country: "AAA", target: "AAA" }), /itself/);
+    assert.match(refused(game, { type: "declareWar", country: "AAA", target: "AAA" }), /own country/);
     assert.match(refused(game, { type: "declareWar", country: "AAA", target: "XYZ" }), /no country/);
     order(game, { type: "declareWar", country: "AAA", target: "BBB" });
     assert.match(refused(game, { type: "declareWar", country: "BBB", target: "AAA" }), /already at war/);
@@ -54,12 +54,12 @@ test("split and merge", () => {
     assert.match(refused(game, { type: "split", country: "AAA", army: 1, cannons: 1, crew: 5 }), /10 crew/);
     const [ev] = order(game, { type: "split", country: "AAA", army: 1, men: { pikes: 100 }, cannons: 1, crew: 10 });
     const part = game.state.armies[ev.into];
-    assert.equal(part.id, 7);                                              // the next id after the six garrisons
+    assert.equal(part.id, 9);                                              // the next id after the eight garrisons
     assert.deepEqual([part.at, part.men.pikes, part.cannons, part.crew], ["1", 100, 1, 10]);
     assert.deepEqual([game.state.armies[1].men.pikes, game.state.armies[1].cannons], [200, 1]);
-    assert.match(refused(game, { type: "merge", country: "AAA", army: 7, into: 2 }), /not in the same place/);
-    assert.match(refused(game, { type: "merge", country: "AAA", army: 7, into: 7 }), /itself/);
-    order(game, { type: "merge", country: "AAA", army: 7, into: 1 });
-    assert.equal(game.state.armies[7], undefined);
+    assert.match(refused(game, { type: "merge", country: "AAA", army: 9, into: 2 }), /not in the same place/);
+    assert.match(refused(game, { type: "merge", country: "AAA", army: 9, into: 9 }), /itself/);
+    order(game, { type: "merge", country: "AAA", army: 9, into: 1 });
+    assert.equal(game.state.armies[9], undefined);
     assert.deepEqual([game.state.armies[1].men.pikes, game.state.armies[1].cannons, game.state.armies[1].crew], [300, 2, 20]);
 });

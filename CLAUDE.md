@@ -35,12 +35,14 @@ dependencies.
   way time moves on. The module list is in design.md, *The engine*.
 - `src/app.js` builds the server (Express, Socket.IO, the database, every game) without listening;
   `src/server.js` listens. `src/db.js` is the database (node:sqlite): schema and every query.
+- `src/engine/` also holds diplomacy: `relations.js` (who is allied, subject or friend), `opinion.js` (the computer's
+  formulas, pure), `diplomacy.js` (wars, peace, subjects, the Empire), `diplomacy-day.js`, `victory.js`.
 - `src/game/` — live games: `rooms.js` (a worker per game, saving, passing changes to sockets),
   `worker.js` (one game's loop), `socket.js` and `routes.js` (the events and the REST routes),
   `view.js` (what a player may see, what changed), `placeholder.js` (stand-in computer countries).
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
   `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
-  Research tabs, fleets, an army's equipment); `index.html` with `js/dev.js`.
+  Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` with `js/dev.js`.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
 - `tools/` — the runner, the bench, the map tools.
 - `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js` (a sea, two ports, a strait,
@@ -68,6 +70,10 @@ dependencies.
 - Anything that makes the same commands on the same seed play out differently must bump
   `RULES_VERSION` in `src/engine/state.js`, or saved games and replays break. A change to the
   shape of the state bumps `FORMAT`.
+- A game's `humans` are part of its state (`Game.create(scenario, { seed, humans })`), because a proposal to a human waits
+  for its answer and to anyone else is answered at once: a replay must be given the same humans.
+- Diplomacy that can leave a country "friendly" with one it is at war with (an alliance it kept after joining the
+  other side) breaks sieges, retreats and supply: `joinWar` ends such an alliance. The fuzz checks the invariants.
 - Iteration order is part of the rules: the state's objects are keyed by whole-number ids, which
   JavaScript keeps in order; anything else that is iterated is sorted first.
 - Tests that need a battle's numbers load the dice with `rig()` from `test/helpers/tiny.js`.

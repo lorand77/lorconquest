@@ -4,7 +4,7 @@
 // Men only: cannons and their crews are spared.
 
 import { applyLosses, isEmpty, lossesFor, menOf, peopleLost } from "./army.js";
-import { armyList, atWar, isRebel, killPeople, removeArmy } from "./state.js";
+import { armyList, atWar, isFriend, isRebel, killPeople, removeArmy } from "./state.js";
 
 export function attrition(game, events) {
     const st = game.state, map = game.map;
@@ -20,7 +20,7 @@ export function attrition(game, events) {
         // subjects and allies to "friendly")
         const feeds = s.pop / 2 * (map.nodes.get(String(land)).river ? 1.5 : 1);
         // peasant rebels are fed by their own people and never go hungry (RULES.md §8)
-        const hungry = s.owner !== a.owner && !isRebel(st, a.owner) && men.get(`${a.owner}|${land}`) > feeds;
+        const hungry = !isFriend(st, a.owner, s.owner) && !isRebel(st, a.owner) && men.get(`${a.owner}|${land}`) > feeds;
         const sick = a.at === String(land) && s.siege !== null && atWar(st, a.owner, s.owner);
         const pct = (sick ? 0.01 : 0) + (hungry ? 0.01 : 0);
         if (!pct) continue;

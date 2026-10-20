@@ -6,23 +6,26 @@
 //       37                                 73
 //        |                                  \
 //        3 ---91--- P1 (pass, land of 3) ---91--- 5
-//        3 - - - - - - strait (zone "north", 91 days) - - - - - - 6
+//        3 - - - - - - strait (zone "north", 91 days) - - - - - - 6 ---37--- 7 ---37--- 8
 //
 // Numbers are marching days. Settlement 3 is AAA's, 5 BBB's, 6 CCC's. Every settlement starts with its garrison
 // of pop ÷ 25 swords (400 in a town, 800 in a city), numbered like the settlement. 1 is a port in the sea zone
 // "north", 4 a port in "south"; the zones are next to each other; the strait 3-6 lies in "north". No country has
-// ships at the start. AAA's capital is 1, BBB's 4, CCC's 6. The region "AAA lands" is 1, 2 and 3.
+// ships at the start. AAA's capital is 1, BBB's 4, CCC's 6, DDD's 7 (a town) and EEE's 8 (a town). Neighbours by land
+// route: AAA-BBB, BBB-CCC, CCC-DDD, DDD-EEE. The region "AAA lands" is 1, 2 and 3. No settlement is in the Empire, the
+// scenario opens at peace; nobody can win by settlements (99 are needed), only by the end of 1500.
 import { Game } from "../../src/engine/index.js";
-import { d6 } from "../../src/engine/random.js";
+import { d6, random } from "../../src/engine/random.js";
 import { newFleet } from "../../src/engine/state.js";
 
 // [id, name, country, type, on a river, sea zone if a port]
 const SETTLEMENTS = [
     [1, "One", "AAA", "city", true, "north"], [2, "Two", "AAA", "town", false], [3, "Three", "AAA", "town", false],
     [4, "Four", "BBB", "city", false, "south"], [5, "Five", "BBB", "town", false], [6, "Six", "CCC", "town", false],
+    [7, "Seven", "DDD", "town", false], [8, "Eight", "EEE", "town", false],
 ];
 // [from, to, days, pass, days of the second leg]
-const ROUTES = [[1, 2, 73], [1, 3, 37], [2, 4, 110], [3, 5, 91, "P1", 91], [4, 5, 73], [4, 6, 37]];
+const ROUTES = [[1, 2, 73], [1, 3, 37], [2, 4, 110], [3, 5, 91, "P1", 91], [4, 5, 73], [4, 6, 37], [6, 7, 37], [7, 8, 37]];
 
 function tinyScenario() {
     const settlements = SETTLEMENTS.map(([id, name, country, type, river, zone]) => ({
@@ -32,7 +35,7 @@ function tinyScenario() {
     const countries = [...new Set(settlements.map((s) => s.country))].map((code) => {
         const own = settlements.filter((s) => s.country === code);
         const pop = own.reduce((n, s) => n + s.pop, 0);
-        const capital = { AAA: 1, BBB: 4, CCC: 6 }[code];
+        const capital = { AAA: 1, BBB: 4, CCC: 6, DDD: 7, EEE: 8 }[code];
         return { code, name: code, capital, settlements: own.map((s) => s.id), pop, army: pop / 25, ships: 0, hre: "none" };
     });
     const routes = ROUTES.map(([from, to, days, pass, days2]) => ({
@@ -50,10 +53,16 @@ function tinyScenario() {
     return {
         scaleX: 1, armySpeed: 480, fleetHopMonths: 2, straitShips: 10, map: { svg: "map.svg", width: 800, height: 300 },
         countries, settlements, routes, passes: [{ id: "P1", x: 350, y: 200, land: 3, routes: ["3-5"] }], seaZones, formables,
+        victory: { settlements: 99, endYear: 1500 }, empire: {}, start: { wars: [], agreements: [] },
     };
 }
 
-const tinyGame = (seed = 1) => Game.create(tinyScenario(), { seed });
+// `change(scenario)` may alter the scenario first (make settlements part of the Empire, give it a starting war...)
+const tinyGame = (seed = 1, change = () => {}, humans = []) => {
+    const scenario = tinyScenario();
+    change(scenario);
+    return Game.create(scenario, { seed, humans });
+};
 
 // set what an army is made of: { swords: 1000, pikes: 500, cannons: 10, crew: 100 }
 function setArmy(game, id, parts) {
@@ -69,7 +78,7 @@ function setArmy(game, id, parts) {
 // advance until `day`, collecting every event
 function runTo(game, day) {
     const events = [];
-    while (game.day < day) events.push(...game.advance());
+    while (game.day < day && !game.state.winner) events.push(...game.advance());
     return events;
 }
 
@@ -102,4 +111,13 @@ function refused(game, cmd) {
     return r.error;
 }
 
-export { tinyScenario, tinyGame, setArmy, runTo, order, rig, giveFleet, refused };
+// load the random state so that the next `random()` of the game, in percent, is below `pct` (below: true) or not
+function rigRoll(game, pct, below = true) {
+    for (let s = 0; s < 1e6; s++) {
+        const st = { rng: s };
+        if ((random(st) * 100 < pct) === below) { game.state.rng = s; return; }
+    }
+    throw new Error("no random state rolls that");
+}
+
+export { tinyScenario, tinyGame, setArmy, runTo, order, rig, rigRoll, giveFleet, refused };

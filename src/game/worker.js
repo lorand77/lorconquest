@@ -11,7 +11,8 @@
 //      { type: "stop" }
 // Out: { type: "ready", day }  { type: "tick", day, events, pub, priv, commands, snapshot }
 //      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
-//      { type: "stats", days, mean, max }  { type: "stopped", day, commands }
+//      { type: "stats", days, mean, max }  { type: "over", day, winner }  { type: "stopped", day, commands }
+// A game that has a winner (the engine says so) is saved one last time and its loop stops.
 import { parentPort, workerData } from "node:worker_threads";
 import { replay, resume } from "../engine/index.js";
 import { placeholderOrders } from "./placeholder.js";
@@ -21,7 +22,7 @@ const CATCH_UP = 5;
 const { scenario, seed, snapshot, log, day, humans, tickMs, statsEvery } = workerData;
 let paused = workerData.paused;
 
-const game = snapshot ? resume(scenario, snapshot, log, day) : replay(scenario, seed, log, day);
+const game = snapshot ? resume(scenario, snapshot, log, day) : replay(scenario, seed, log, day, humans);
 const changes = new Changes(game.state);
 const queue = [];
 let toSave = [], snap = null, times = [], next = 0, timer = null, stopping = false;
@@ -51,9 +52,10 @@ function tick() {
     const t0 = performance.now(), events = [];
     applyQueue(events);
     events.push(...game.advance());
-    for (const cmd of placeholderOrders(game, humans)) queue.push({ country: cmd.country, source: "computer", cmd });
-    if (game.day % 365 === 0) snap = { day: game.day, state: game.snapshot() };
+    if (!game.state.winner) for (const cmd of placeholderOrders(game, humans)) queue.push({ country: cmd.country, source: "computer", cmd });
+    if (game.day % 365 === 0 || game.state.winner) snap = { day: game.day, state: game.snapshot() };
     publish(events);
+    if (game.state.winner) { post({ type: "over", day: game.day, winner: game.state.winner }); stopping = true; }
     times.push(performance.now() - t0);
     if (times.length >= statsEvery) {
         post({ type: "stats", days: times.length, mean: times.reduce((a, b) => a + b, 0) / times.length, max: Math.max(...times) });
@@ -79,6 +81,7 @@ parentPort.on("message", (m) => {
     switch (m.type) {
         case "command":
             queue.push({ reqId: m.reqId, country: m.country, source: m.source, cmd: m.cmd });
+            if (game.state.winner) applyQueue([]);              // a finished game has no loop: it answers at once, "the game is over"
             break;
         case "pause":
             if (paused !== m.paused) {

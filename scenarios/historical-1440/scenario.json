@@ -14610,6 +14610,120 @@
    ]
   }
  ],
+ "victory": {
+  "settlements": 85,
+  "endYear": 1650
+ },
+ "empire": {},
+ "start": {
+  "wars": [
+   {
+    "name": "Dutch–Hanseatic War",
+    "attackers": [
+     "LUB",
+     "HAM"
+    ],
+    "defenders": [
+     "BUR"
+    ]
+   },
+   {
+    "name": "Hungarian civil war",
+    "attackers": [
+     "HUN"
+    ],
+    "defenders": [
+     "JIS"
+    ]
+   },
+   {
+    "name": "Old Zürich War",
+    "attackers": [
+     "SWI"
+    ],
+    "defenders": [
+     "ZUR"
+    ]
+   },
+   {
+    "name": "Wars in Lombardy",
+    "attackers": [
+     "MIL"
+    ],
+    "defenders": [
+     "VEN"
+    ]
+   }
+  ],
+  "agreements": [
+   {
+    "kind": "military",
+    "a": "POL",
+    "b": "HUN"
+   },
+   {
+    "kind": "defensive",
+    "a": "POL",
+    "b": "LIT"
+   },
+   {
+    "kind": "defensive",
+    "a": "DEN",
+    "b": "SWE"
+   },
+   {
+    "kind": "defensive",
+    "a": "DEN",
+    "b": "NOR"
+   },
+   {
+    "kind": "defensive",
+    "a": "SWE",
+    "b": "NOR"
+   },
+   {
+    "kind": "military",
+    "a": "TEU",
+    "b": "LIV"
+   },
+   {
+    "kind": "military",
+    "a": "STY",
+    "b": "AUS"
+   },
+   {
+    "kind": "military",
+    "a": "STY",
+    "b": "TYR"
+   },
+   {
+    "kind": "military",
+    "a": "AUS",
+    "b": "TYR"
+   },
+   {
+    "kind": "guarantee",
+    "a": "STY",
+    "b": "JIS"
+   },
+   {
+    "kind": "defensive",
+    "a": "BRA",
+    "b": "ANS"
+   },
+   {
+    "kind": "defensive",
+    "a": "LUB",
+    "b": "HAM"
+   },
+   {
+    "kind": "pact",
+    "a": "TEU",
+    "b": "POL",
+    "yearsLeft": 5
+   }
+  ]
+ },
  "seaZones": [
   {
    "id": "north-sea",

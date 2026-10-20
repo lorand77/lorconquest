@@ -7357,6 +7357,17 @@
    ]
   }
  ],
+ "victory": {
+  "settlements": 45,
+  "endYear": 1650
+ },
+ "empire": {
+  "needed": 10
+ },
+ "start": {
+  "wars": [],
+  "agreements": []
+ },
  "seaZones": [
   {
    "id": "north-sea",

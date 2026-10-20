@@ -16,6 +16,8 @@ export function applyChanges(state, changes) {
         else state.countries[code] = { ...state.countries[code], ...c };
     }
     if (changes.wars) state.wars = changes.wars;
+    for (const name of ["agreements", "warInfo", "memory"]) if (changes[name]) state[name] = changes[name];
+    if ("winner" in changes) state.winner = changes.winner;
 }
 
 // one's own country's private changes (its treasury)

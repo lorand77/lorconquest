@@ -4,7 +4,7 @@ The order in which the game gets built. The rules are in [RULES.md](RULES.md), t
 [SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
 says what to build when, and how to tell each step is done.
 
-**Status:** milestones 1, 2 and 3 are done (2026-10-20); milestone 4, diplomacy, is next.
+**Status:** milestones 1 to 4 are done (2026-10-20); milestone 5, the computer players, is next.
 
 ## How we work
 
@@ -187,6 +187,16 @@ All of RULES.md §10, and the end of the game.
 
 **Depends on:** 3. It comes before the AI so the AI is built once, on the complete rules — the
 computer countries' *answers* are rules and work here without it.
+
+**Done.** All of §10 is in the engine except the historical scenario's Emperor machinery (design.md §2): wars between
+pairs with their records, calls to arms, peace with terms and the war score, agreements and breaking them, subjects and
+tribute, demands, the Empire proposal and the League, opinion, coalitions, the warmonger score, victory and the end of a
+game, and the starting wars and agreements of a scenario (the historical one opens with 5 wars and 13 agreements). A
+human is asked and has 6 months; a computer answers at once. The Diplomacy tab shows the engine's own formulas as
+previews. A random-play fuzz now includes diplomacy on both scenarios (two big sweeps clean); it found four real bugs on
+the way — a ghost army left by deserting mercenaries (milestone 3), an army "friendly" with an enemy it joined a war
+against, rings of overlords, and a command that hung a finished game — all fixed and tested. As before, the page itself
+has not been opened in a browser.
 
 ---
 

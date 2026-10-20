@@ -6,6 +6,7 @@ import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, men
 import { applyChanges, applyPrivate, armyPoint, buildLegs, fleetPoints, formatMen, formatNumber, routeLine } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
+import { diplomacyTab } from "./diplomacy.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
@@ -26,7 +27,8 @@ const ask = (event, payload) => new Promise((resolve) => socket.emit(event, payl
 
 let me, state, game, scenario, map, legs, tickMs = 100, paused = true, lastTick = performance.now();
 let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
-let tab = "selection";     // selection | country | shop | research
+let tab = "selection";     // selection | country | shop | research | diplomacy
+const ui = { target: null };   // the country the Diplomacy tab deals with
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 let plan = null;           // { army, to, path, days }
 let splitOpen = false;
@@ -50,6 +52,7 @@ async function start() {
     socket.on("tick", onTick);
     socket.on("private", (m) => { applyPrivate(state, me, m.changes); renderTop(); });
     socket.on("paused", (m) => { paused = m.paused; renderTop(); });
+    socket.on("over", (m) => { state.winner = m.winner; paused = true; toast(m.youWon ? "You have won!" : `${state.countries[m.winner].name} has won the game.`, 600000); renderAll(true); });
     socket.on("failed", (m) => toast(`The game stopped: ${m.error}`));
     socket.on("disconnect", () => toast("Lost the connection to the server; trying again…"));
     socket.on("connect", () => { if (state) ask("join", { gameId }).then((j) => { if (j.ok) { state = Object.assign(state, j.view); paused = j.paused; renderAll(); } }); });
@@ -65,7 +68,8 @@ function onTick(m) {
         if (who.includes(me) || who.some((c) => enemies().includes(c))) feed(e);
         const mine = who.includes(me);
         if ((e.type === "war" && e.target === me) || (e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
-            || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered"].includes(e.type))) toast(describeEvent(game.map, e));
+            || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
+                "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "broke"].includes(e.type))) toast(describeEvent(game.map, e));
     }
     if (sel?.kind === "army" && !state.armies[sel.id]) { sel = null; plan = null; }
     if (sel?.kind === "fleet" && !state.fleets[sel.id]) sel = null;
@@ -106,7 +110,8 @@ function select(s) {
     sel = s;
     plan = null;
     splitOpen = false;
-    if (tab !== "shop") tab = "selection";            // the shop keeps the selected settlement in view
+    if (tab === "diplomacy" && s?.kind === "country") ui.target = s.code;       // a click on a country's land picks it to deal with
+    else if (tab !== "shop") tab = "selection";       // the shop keeps the selected settlement in view
     renderAll(true);
 }
 
@@ -144,7 +149,7 @@ function onKey(e) {
 
 // the context the panels in panels.js draw with
 const ctx = {
-    make, swatch, send, redraw: () => renderAll(true), name: (key) => name(key),
+    make, swatch, send, redraw: () => renderAll(true), name: (key) => name(key), ui,
     get state() { return state; }, get game() { return game; }, get me() { return me; }, get sel() { return sel; },
 };
 
@@ -158,7 +163,8 @@ function renderAll(force = false) {
 function renderTop() {
     $("me").replaceChildren(swatch(me), ` ${country(me).name}`);
     $("date").textContent = longDate(state.day);
-    $("pause").textContent = paused ? "▶ Play" : "⏸ Pause";
+    $("pause").textContent = state.winner ? "Game over" : paused ? "▶ Play" : "⏸ Pause";
+    $("pause").disabled = Boolean(state.winner);
     $("pause").classList.toggle("paused", paused);
     if (country(me).treasury !== undefined) {
         const e = economyOf(game, me);
@@ -221,6 +227,7 @@ function renderPanel(force = false) {
     if (tab === "country") nodes = countryTab(ctx);
     else if (tab === "shop") nodes = shopTab(ctx);
     else if (tab === "research") nodes = researchTab(ctx);
+    else if (tab === "diplomacy") nodes = diplomacyTab(ctx);
     else if (!sel) nodes = [make("p", { class: "hint" }, "Click an army or fleet to select it; with an army selected, click where it should go. Click a settlement or a country's land to see it. Space pauses. The tabs above run your country.")];
     else if (sel.kind === "army") nodes = armyPanel(state.armies[sel.id]);
     else if (sel.kind === "fleet") nodes = fleetPanel(ctx, state.fleets[sel.id]);
@@ -339,10 +346,7 @@ function countryPanel(code) {
     const out = [make("h2", {}, swatch(code), ` ${c.name}`),
         make("p", {}, `${towns.length} settlements, ${formatNumber(towns.reduce((n, s) => n + s.pop, 0))} people, ${formatNumber(armies.reduce((n, a) => n + menOf(a), 0))} soldiers.`),
         make("p", {}, wars.length ? `At war with ${wars.map((w) => country(w).name).join(", ")}.` : "At peace.")];
-    if (code !== me && !atWar(me, code)) {
-        // until diplomacy (milestone 4), the one way into a war
-        out.push(make("button", { onclick: async () => { if (confirm(`Declare war on ${c.name}?`)) { await send({ type: "declareWar", target: code }); renderAll(); } } }, "Declare war"));
-    }
+    if (code !== me) out.push(make("button", { onclick: () => { ui.target = code; setTab("diplomacy"); } }, "Diplomacy…"));
     return out;
 }
 
@@ -356,10 +360,10 @@ function feed(e) {
     while (list.children.length > 200) list.lastChild.remove();
 }
 
-function toast(text) {
+function toast(text, ms = 6000) {
     const t = make("div", { class: "toast" }, text);
     $("toasts").append(t);
-    setTimeout(() => t.remove(), 6000);
+    setTimeout(() => t.remove(), ms);
 }
 
 start();

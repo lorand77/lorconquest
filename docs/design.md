@@ -257,8 +257,22 @@ would break that.
   `fighting` (arrivals, sieges, storms, sorties, relief, passes, head-on meetings), `supply`
   (monthly disease and hunger), `economy` (soldiers, caps, money, the monthly step), `forces`
   (training and hires), `naval` (fleets, patrols, blockades, straits), `passes` (sharpshooters),
-  `events` (harvest, plague, uprisings and the rebels), `day`, `command-util`, `commands`
-  (war and armies), `commands-country`, `commands-naval`, `text` (events in English), `game`.
+  `events` (harvest, plague, uprisings and the rebels), `relations` (who is allied, guaranteed, subject or
+  friend — pure questions over the state), `opinion` (military power, neighbours, opinion, and the formulas by which a
+  computer answers), `diplomacy` (wars, joining, peace, subjects, the Empire, coalitions), `diplomacy-day`
+  (expiries, unanswered questions, subjects breaking free, the yearly step), `victory`, `day`, `command-util`,
+  `commands` (war and armies), `commands-country`, `commands-naval`, `commands-diplomacy`, `text` (events in
+  English), `game`.
+- **Diplomacy in the state:** `agreements` (kind, the two countries, since, until); each country's `warmonger`,
+  `overlord` and `subjectKind`; `wars` (pairs, as before) with `warInfo` — each pair's attacking side, the people
+  each had at the start and has taken since; `memory` (when each pair last fought, who broke an agreement, who
+  refused whom, which proposal was made when, who has demanded the Empire); `offers`, the questions waiting for a
+  human; `humans`, the countries people play — a proposal to one waits for its answer, to every other the computer
+  answers at once; and `winner`. All but the offers are public: they are what the world can see.
+- **The computer's side is rules, not AI:** `opinion.js` is pure, so a replay agrees with the game, and the browser
+  runs the very same functions to tell a player what to expect (the war score and price of a peace, the bar an alliance
+  must reach, the chance of a demand). A country's private settings that the browser does not have stand in as the
+  starting ones. What a computer *chooses to propose* is the AI of milestone 5.
 - **A country** in the state holds its `treasury`, `bank`, `loans`, `tax`, research `slider`, `law`,
   `techs`, the `target` tech and the R in store, its weapon `reserve`, and the queues of men being trained
   and mercenaries on their way. Its `taxSum` adds the tax in force each day, for the year's average. Of
@@ -311,9 +325,15 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   beside their pass. The panels show the engine's own numbers, worked out in the browser from the
   state it holds; every control sends a command. **A panel is rebuilt only when what it shows has
   changed, and never while a hand is typing or dragging in it.**
+- **Diplomacy:** a fifth tab — questions waiting for the player (Accept, Refuse; Join a call to arms), wars with their
+  war scores, the agreements held (with Break and Cancel), the player's subjects and overlord, and a country to deal
+  with, picked from a list or by clicking its land. For it the tab shows its opinion of the player, who would join each
+  side of a war and what a declaration breaks, each agreement with whether the computer is likely to accept and why,
+  the chance of a demand, the Empire, and a **peace form**: tick the settlements to take or give, money, a subject —
+  and the computer's own answer shown as you edit. A game that is won shows who won and stops.
 - **Looking:** a settlement shows its owner, people, any siege and the armies there; a country's
   land shows the country, its wars and — until diplomacy in milestone 4 — a [Declare war] button.
-- **Events:** the player's own and their wars', newest first; clicking one shows its place. A war
+- **Events:** the player's own and their wars', newest first (and every diplomatic event that concerns them); clicking one shows its place. A war
   declared on the player, or a siege or loss of one of their settlements, also shows as a notice
   over the map. Space pauses.
 - **The development page** (`public/index.html`) starts a single-player game on any scenario as any
@@ -380,7 +400,12 @@ Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. The
 Settled answers move into §1, or into RULES.md where they are rules. Each is needed by the milestone
 named (see [plan.md](plan.md)).
 
-None at the moment.
+1. **The historical scenario's Empire** (not scheduled). Its SCENARIO.md describes an Emperor, Imperial Authority,
+   electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal both
+   scenarios share (RULES.md §10) and the scenario's starting wars and agreements, not this. It is a subsystem of its own
+   — worth its own milestone if that scenario is to be played in earnest.
+2. **What a computer proposes** (milestone 5). The computer countries answer proposals by formula, but nothing makes them
+   propose: no declaring war, no seeking peace or allies, no demanding subjects, no calls for help. That is the AI.
 
 ---
 
@@ -407,7 +432,8 @@ handlers are in `src/engine/commands*.js`, and each file lists its commands' arg
 | | `setTax` · `setSlider` (research) · `setLaw` | §2, §4, §9 |
 | | `deposit` · `withdraw` · `borrow` · `repay` · `defaultOnLoans` | §2 |
 | | `research` (choose the tech) · `setCapital` · `proclaim` (special coring) | §4, §2, SCENARIO |
-| War | `declareWar` — the one diplomatic command so far | §10 |
-| *Milestone 4* | answer a call to arms · propose an agreement · cancel military access · break an agreement | §10 |
-| | demand a subject · propose peace with terms · answer an offer · propose the Empire (once ever) | §10, SCENARIO |
+| Diplomacy | `declareWar` · `proposePeace` (with terms: take, give, money, a subject) | §10 |
+| | `proposeAgreement` (defensive, military, guarantee, pact, access) · `breakAgreement` · `cancelAccess` | §10 |
+| | `demandSubject` (vassal or protectorate) · `proposeEmpire` (once ever) | §10, SCENARIO |
+| | `answerOffer` — a human's answer to a call to arms, a proposal, a demand or the Empire | §10 |
 | Game | pause · resume (single player; not engine commands) | §1 |

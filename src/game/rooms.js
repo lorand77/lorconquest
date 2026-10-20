@@ -71,6 +71,14 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery }) {
                 save(room, { day: m.day }, true);
                 io.to(`game:${room.id}`).emit("paused", { paused: m.paused, day: m.day });
                 break;
+            case "over":
+                // the game is won (SCENARIO.md, Victory): saved as finished, and never resumed
+                db.q.finishGame.run(m.day, m.winner, room.id);
+                room.paused = true;
+                room.over = m.winner;
+                io.to(`game:${room.id}`).emit("over", { day: m.day, winner: m.winner, youWon: m.winner === room.human });
+                log.info("game.over", { game: room.id, winner: m.winner, human: room.human, day: m.day });
+                break;
             case "stats":
                 log.info("game.timing", { game: room.id, days: m.days, mean_ms: Number(m.mean.toFixed(3)), max_ms: Number(m.max.toFixed(3)), budget_ms: tickMs });
                 break;

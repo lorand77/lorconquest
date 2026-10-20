@@ -5,21 +5,26 @@
 import { emptyMen } from "./army.js";
 import { START_TECHS } from "./costs.js";
 import { seedRandom } from "./random.js";
+import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 2;
+export const RULES_VERSION = 3;
 // bump when the shape of the state changes
-export const FORMAT = 2;
+export const FORMAT = 3;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
 }
 
-export function initialState(map, seed) {
+export function initialState(map, seed, humans = []) {
     const sc = map.scenario;
     const state = {
         format: FORMAT, rulesVersion: RULES_VERSION, seed, rng: seedRandom(seed), day: 0, nextId: 1,
         countries: {}, settlements: {}, armies: {}, fleets: {}, posts: {}, wars: [], cooldowns: {}, rebels: 0,
+        // diplomacy (src/engine/diplomacy.js): who the humans are, agreements, a record of each war, what the world
+        // remembers, questions waiting for a human's answer, and the winner once there is one
+        humans: [...humans], agreements: [], warInfo: {}, memory: { lastWar: {}, broke: {}, refused: {}, proposed: {}, empire: {} },
+        offers: [], offerSeq: 0, winner: null,
     };
     for (const c of sc.countries) {
         state.countries[c.code] = {
@@ -28,6 +33,7 @@ export function initialState(map, seed) {
             treasury: sc.scaleX * c.pop * 2, bank: 0, loans: 0, noBorrowUntil: 0, debtSince: null,
             tax: 2, taxSum: 0, harvest: false, slider: 50, law: "feudal", lawDay: null,
             techs: [...START_TECHS], target: null, r: 0, reserve: emptyReserve(), training: [], hires: [],
+            warmonger: 0, overlord: null, subjectKind: null,
         };
     }
     for (const s of sc.settlements) {
@@ -101,12 +107,15 @@ export const ownerOf = (game, key) => game.state.settlements[game.map.nodes.get(
 // is the settlement core for the country? Peasant rebels hold cores on everything (RULES.md §11).
 export const isCore = (state, s, code) => s.cores.includes(code) || isRebel(state, code);
 
-// neutral land is closed (RULES.md §10): an army may enter its own country's land or an enemy's. Subjects,
-// allies and military access come with diplomacy (milestone 4).
+// neutral land is closed (RULES.md §10): an army may enter land that is its own country's, its subjects' or
+// overlord's, its allies' (either kind), a country's that gives it military access, or an enemy's
 export function canEnter(game, country, key) {
     const owner = ownerOf(game, key);
-    return owner === country || atWar(game.state, country, owner);
+    return owner === country || atWar(game.state, country, owner) || friendly(game.state, country, owner) || grantsAccess(game.state, owner, country);
 }
+
+// is `b` a friend of `a`: the same country, an ally, a subject or an overlord
+export const isFriend = (state, a, b) => friendly(state, a, b);
 
 // casualties cost population, spread over the country's settlements by their pop (RULES.md §2). Rebels are people
 // of the country they rose against.

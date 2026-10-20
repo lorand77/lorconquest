@@ -765,6 +765,74 @@ terms instead.
 
 ---
 
+### How the engine reads these rules
+
+Where §10 is silent, these are the readings the game uses.
+
+**Wars are between two countries.** Each pair at war has its own record: which of the two is on the
+attacking side, the people each had when the war began (or when it joined it), and the people each has taken.
+A country that joins a war fights the **principal** on the other side — the one who declared, or the one
+declared on — and nobody else; those it joins do not draw in their own allies. So a peace is between two
+countries, and **their allies make their own peace**. A vassal's wars end with its overlord's.
+- *Who joins:* the target's defensive allies, guarantors and vassals join it at once; the declarer's vassals join the
+  declarer; each side's military allies are **called**. A computer ally always joins; a human has 6 months and joins
+  if it does not answer; refusing ends the alliance. A defensive ally of the attacker is not called: it was not
+  attacked. A protectorate is never obliged.
+- *A country that would fight an ally* — called by both sides, or allied with both — joins one side only, and the
+  alliance with the other ends. That is no break of faith.
+- *Declaring war* on a country you have a pact, a truce or an alliance with, or guarantee, breaks it (see below). You
+  cannot declare war on your overlord or your subject: a subject breaks free instead. Only the one who declares gets the
+  +5 warmonger score.
+
+**Peace terms.** The proposer may take settlements of the other, give settlements of its own, ask or pay money, make the
+other its vassal or protectorate, become the other's, and free subjects of the other. A computer accepts if its war
+score is at least the price. The price is what is asked, in the units of §10 — and **what the proposer gives counts the
+same way against it**: a country losing a war can buy peace with a city. A settlement's people are those at the start of
+the war. A country with no settlement left takes what is dictated, with no answer asked. A vassal does not sign peace: its
+overlord does. A peace starts a **truce** of 5 years between the two, and sends every army left in land now closed to it
+home. Offered to a human, terms wait 6 months for an answer and lapse after.
+
+**The warmonger score at a peace** counts each settlement held that was taken in the war or given in the peace, unless it
+is the holder's own core, at +1 per 1,000 people (half for the defending side of that pair); and +10 / +5 for a vassal made,
++5 / +2.5 for a protectorate. Each pair at war is scored on its own sides: a country that joined a war is scored for its war with the principal it fought.
+
+**Proposals.** The same proposal to the same country once in 5 years — peace, each kind of agreement, and each kind of
+demand — whether it was accepted or not. An agreement cannot be proposed while at war, nor to a vassal. A guarantee is
+given by the proposer; access is given by the one asked. A pact lasts 10 years, a truce 5; neither can be re-signed
+while it stands.
+
+**Breaking an agreement** ends the agreement, **all the breaker's alliances**, and costs its name for 10 years (−40 in
+every computer country's opinion). Cancelling military access you give is not a break. Declaring war through a pact,
+truce or alliance is. When an agreement ends or a peace is signed, armies in land now closed go home.
+
+**Subjects.** A subject has one overlord, and overlords never form a ring. A vassal gives up its agreements and joins its
+overlord's wars; a war between the two ends. It cannot declare war, propose peace or make agreements: its overlord speaks
+for it. The tribute is a share of the subject's money *before* its own tribute — received or paid — is counted, when that
+is positive; it counts in the overlord's money per year and so in its research. A subject breaks free the moment its
+military power is greater than its overlord's own: raising men without weapons never frees one, and the overlord's other
+subjects do not count for it. Each day this is checked.
+
+**Friends.** A country's friends are itself, its allies of either kind, its subjects and its overlord. Their land feeds
+its armies, is open to them, and a friend's army inside a besieged settlement defends it — once it is at war with the
+besieger — with the owner's. A friend's army falls back, not disbands, when the garrison surrenders. Land opened by military
+access is open but does not feed an army, and its holder may not capture anything there.
+
+**Opinion** counts a country's friends as its allies, subjects and overlord. "A war fought against it in the last 20
+years" includes one going on. "Years since you were last at war" run from the start of the game if there has been none.
+
+**The Empire.** One proposal ever per country, with at least the scenario's number of settlements inside it. Every other
+country that holds an Empire settlement and is not already someone's subject rolls once, in the order of their codes; a
+human is asked. The refusers form the League: a defensive alliance between each pair. A scenario with no such number has no
+proposal. (The historical scenario's Emperor, Imperial Authority, elections, ban and reforms are not built.)
+
+**Winning** is checked every day: a country with the scenario's number of settlements — its own and its vassals' count 1, its
+protectorates' ½ — wins at once; otherwise at the start of the end year the most settlements win, then the most people (its
+own and its subjects'), then the lower code. When the game is won it stops: nothing more happens and nothing is accepted. A
+computer country may win, and then every human has lost.
+
+**Starting wars and agreements** of a scenario count as if declared and signed in play: the wars are on from the first day,
+the agreements are in force, a pact has the years it has left, and every warmonger score is 0.
+
 ## 11. RANDOM EVENTS
 
 Rolled at the start of each year.

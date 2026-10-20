@@ -58,6 +58,24 @@ export function describeEvent(map, e) {
         case "sharpshooters": return `the post at ${place(e.pass)} shoots ${fmt(e.dead)} men of army ${e.army} (${e.owner})`;
         case "postLost": return `the sharpshooters at ${place(e.pass)} die: ${fmt(e.dead)} men of ${e.owner}`;
         case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the strait in ${place(e.zone)}: ${e.why}`;
+        case "joins": return `${e.country} joins the war against ${e.enemy}, on the ${e.side === "att" ? "attacking" : "defending"} side`;
+        case "offer": return `${e.from} asks ${e.country}: ${e.what}`;
+        case "lapsed": return `${e.from}'s ${e.kind === "call" ? "call to arms" : e.kind} to ${e.country} lapses${e.kind === "call" ? ": it joins" : ""}`;
+        case "answer": {
+            const why = e.what === "peace" ? ` (war score ${e.score}, price ${e.cost})` : e.bar !== undefined ? ` (opinion ${e.opinion} + need ${Math.round(e.need)} against ${e.bar})` : "";
+            return `${e.country} ${e.accepted ? "accepts" : "refuses"} ${e.from}'s proposal: ${e.what}${why}`;
+        }
+        case "agreement": return `${e.a} and ${e.b} sign a ${e.kind === "guarantee" ? `guarantee (${e.a} guarantees ${e.b})` : e.kind === "access" ? `military access (${e.a} gives it to ${e.b})` : e.kind === "pact" ? "non-aggression pact" : `${e.kind} alliance`}${e.why ? ` ${e.why}` : ""}`;
+        case "ended": return `${e.country} ends its ${e.kind} with ${e.with}`;
+        case "expired": return `the ${e.kind === "pact" ? "non-aggression pact" : e.kind} between ${e.a} and ${e.b} runs out`;
+        case "broke": return `${e.country} breaks an agreement: its alliances end, and the world remembers`;
+        case "peace": return `${e.country} and ${e.with} make peace${[e.terms?.take?.length && `, ${e.country} takes ${e.terms.take.join(", ")}`, e.terms?.give?.length && `, ${e.country} gives ${e.terms.give.join(", ")}`, e.terms?.money && `, ${fmt(Math.abs(e.terms.money))} paid`, e.terms?.makeSubject && `, ${e.with} becomes its ${e.terms.makeSubject}`, e.terms?.becomeSubject && `, ${e.country} becomes its ${e.terms.becomeSubject}`].filter(Boolean).join("")}`;
+        case "subject": return `${e.country} becomes a ${e.kind} of ${e.overlord}`;
+        case "freedom": return `${e.country} breaks free of ${e.overlord}`;
+        case "refused": return `${e.country} refuses ${e.from}'s demand ${e.what}`;
+        case "empire": return `${e.country} demands the Empire: ${e.joined} join as protectorates, ${e.refused} refuse${e.asked ? `, ${e.asked} asked` : ""}`;
+        case "league": return `${e.members.join(", ")} form the League`;
+        case "victory": return `${e.country} wins with ${e.settlements} settlements${e.why === "end" ? " at the end date" : ""}`;
         default: return JSON.stringify(e);
     }
 }
@@ -69,6 +87,11 @@ export function eventCountries(e) {
         case "capture": return [e.from, e.to];
         case "siegeStart": case "siegeLifted": return [e.by];
         case "uprising": return [e.country, e.rebels];
+        case "joins": case "offer": case "lapsed": case "answer": case "refused": return [e.country, e.enemy ?? e.from];
+        case "peace": case "ended": return [e.country, e.with];
+        case "agreement": case "expired": return [e.a, e.b];
+        case "subject": case "freedom": return [e.country, e.overlord];
+        case "league": return e.members;
         case "surrender": return [e.owner, e.by];
         case "battle": return [...e.a.countries, ...e.b.countries];
         default: return e.owner ? [e.owner] : e.country ? [e.country] : [];

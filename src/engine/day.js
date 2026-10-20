@@ -3,6 +3,7 @@
 // inside one. Returns the day's events.
 
 import { YEAR_DAYS, isMonthStart } from "./calendar.js";
+import { diplomacyDay } from "./diplomacy-day.js";
 import { monthly } from "./economy.js";
 import { endUprisings, rebelOrders, yearly } from "./events.js";
 import { arrive, meetings, placeBattles, settle, surrenders } from "./fighting.js";
@@ -10,9 +11,11 @@ import { forcesDay } from "./forces.js";
 import { navalDay } from "./naval.js";
 import { armyList, isAlive, isRebel } from "./state.js";
 import { attrition } from "./supply.js";
+import { checkVictory } from "./victory.js";
 
 export function advanceDay(game) {
     const st = game.state, events = [];
+    if (st.winner) return events;                         // the game is over
     st.day += 1;
     for (const k of Object.keys(st.cooldowns)) if (st.cooldowns[k] <= st.day) delete st.cooldowns[k];
     // the tax in force today, for the year's average (RULES.md §2)
@@ -40,6 +43,8 @@ export function advanceDay(game) {
         monthly(game, events);
         endUprisings(game);
     }
+    diplomacyDay(game, events);
+    checkVictory(game, events);
     const occupied = new Set(armyList(st).map((a) => a.at));
     for (const s of Object.values(st.settlements)) if (s.siege || occupied.has(String(s.id))) settle(game, String(s.id), events);
     return events;

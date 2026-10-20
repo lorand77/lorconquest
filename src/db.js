@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS games (
     rules_version INTEGER NOT NULL,
     human TEXT NOT NULL,                        -- the human's country (one player until milestone 6)
     status TEXT NOT NULL DEFAULT 'active',      -- active | finished
+    winner TEXT,                                -- the country that won, once finished
     day INTEGER NOT NULL DEFAULT 0,             -- the last day saved
     paused INTEGER NOT NULL DEFAULT 1,
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -58,19 +59,23 @@ export function openDb(file) {
         }
     };
 
-    // schema.sql-style CREATEs cannot add a column to an existing table: migrations do it here, so an older
-    // database picks the column up on the next boot (LorCiv's pattern). None yet.
+    // CREATEs cannot add a column to an existing table: migrations do it here, so an older database picks the
+    // column up on the next boot (LorCiv's pattern).
     const addColumnIfMissing = (table, column, definition) => {
         if (db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === column)) return false;
         db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
         return true;
     };
 
+    // a column added since the first databases
+    addColumnIfMissing("games", "winner", "TEXT");
+
     const q = {
         insertGame: db.prepare("INSERT INTO games (scenario, seed, rules_version, human) VALUES (?, ?, ?, ?)"),
         game: db.prepare("SELECT * FROM games WHERE id = ?"),
         games: db.prepare("SELECT id, scenario, human, day, status, paused, created_at, updated_at FROM games ORDER BY updated_at DESC, id DESC"),
         activeGames: db.prepare("SELECT * FROM games WHERE status = 'active' ORDER BY id"),
+        finishGame: db.prepare("UPDATE games SET status = 'finished', day = ?, paused = 1, winner = ?, updated_at = datetime('now') WHERE id = ?"),
         saveProgress: db.prepare("UPDATE games SET day = ?, paused = ?, updated_at = datetime('now') WHERE id = ?"),
         insertCommand: db.prepare("INSERT INTO commands (game_id, seq, day, country, source, cmd) VALUES (?, ?, ?, ?, ?, ?)"),
         lastSeq: db.prepare("SELECT COALESCE(MAX(seq), 0) AS seq FROM commands WHERE game_id = ?"),

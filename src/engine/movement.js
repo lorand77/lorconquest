@@ -5,7 +5,7 @@
 import { menOf, peopleLost } from "./army.js";
 import { findNearest, findRoute, legKey } from "./map.js";
 import { crossStrait, crossable } from "./naval.js";
-import { canEnter, isRebel, killPeople, removeArmy } from "./state.js";
+import { canEnter, isFriend, isRebel, killPeople, removeArmy } from "./state.js";
 
 // how far along its leg a march is on `day`: 0 at the start, 1 on arrival (not clamped)
 export const progress = (march, day) => (day - march.start) / (march.end - march.start);
@@ -60,7 +60,7 @@ export function follow(game, army, path, events) {
 // (RULES.md §5); never to `exclude`, the place it lost at. With nowhere to go the whole army dies.
 export function retreat(game, army, events, exclude = null) {
     const st = game.state;
-    const isRefuge = (k) => k !== exclude && game.map.nodes.get(k).kind === "settlement" && st.settlements[game.map.nodes.get(k).id].owner === army.owner;
+    const isRefuge = (k) => k !== exclude && game.map.nodes.get(k).kind === "settlement" && isFriend(st, army.owner, st.settlements[game.map.nodes.get(k).id].owner);
     const found = findNearest(game.map, positionOf(army, st.day), (k) => canEnter(game, army.owner, k), isRefuge, straitOpen(game, army.owner));
     army.relief = false;
     army.storm = false;

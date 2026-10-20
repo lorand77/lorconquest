@@ -11,7 +11,8 @@ import { runScript } from "../../tools/run.js";
 const read = (name) => fs.readFileSync(path.join(import.meta.dirname, "..", "wars", `${name}.txt`), "utf8");
 // the scripts, and the days to cut each at: the economy script has training, mercenaries, a fleet at sea, a loan,
 // research and, in the third year, an uprising
-const SCRIPTS = [["vienna", read("vienna"), "seed 3", [100, 300, 395, 450]], ["economy", read("economy"), "seed 1", [31, 100, 400, 800, 1096, 1100]]];
+const SCRIPTS = [["vienna", read("vienna"), "seed 3", [100, 300, 395, 450]], ["economy", read("economy"), "seed 1", [31, 100, 400, 800, 1096, 1100]],
+    ["diplomacy", read("diplomacy"), "seed 3", [1, 60, 152, 365, 1000, 2000]]];
 
 test("the same script plays out the same, to the last die", () => {
     for (const [, text, seed] of SCRIPTS) {

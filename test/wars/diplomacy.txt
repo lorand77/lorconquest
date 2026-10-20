@@ -1,0 +1,12 @@
+# The historical scenario: Poland attacks the Livonian Order. Livonia's military ally, the Teutonic Order, is called
+# (and joins), Poland's, Hungary, is called too; Lithuania, Poland's defensive ally, is not — it was not attacked.
+# Then peace, a guarantee, a demand, and the Hungarian civil war that was already going on.
+seed 3
+scenario scenarios/historical-1440/scenario.json
+1440-01-01 POL declare-war target=LIV
+1440-03-01 POL propose-peace with=LIV
+1440-03-01 TEU propose-peace with=POL
+1440-04-01 DEN propose-agreement with=FRA kind=pact
+1440-06-01 SWE demand-subject target=GOT kind=vassal
+1441-06-01 BOH propose-agreement with=SAX kind=defensive
+until 1446-01-01

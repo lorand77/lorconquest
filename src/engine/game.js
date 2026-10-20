@@ -4,6 +4,7 @@
 
 import { applyCommand } from "./commands.js";
 import { advanceDay } from "./day.js";
+import { applyStart } from "./diplomacy.js";
 import { buildMap } from "./map.js";
 import { FORMAT, RULES_VERSION, initialState } from "./state.js";
 
@@ -14,9 +15,12 @@ export class Game {
         this.log = [];
     }
 
-    static create(scenario, { seed = 1 } = {}) {
+    // `humans`: the countries people play; a proposal to one waits for its player, to the others the computer answers
+    static create(scenario, { seed = 1, humans = [] } = {}) {
         const map = buildMap(scenario);
-        return new Game(map, initialState(map, seed));
+        const game = new Game(map, initialState(map, seed, humans));
+        applyStart(game);                                  // the wars and agreements the scenario opens with
+        return game;
     }
 
     // from a snapshot (a string or a parsed object) of a game on the same scenario
@@ -50,7 +54,7 @@ export class Game {
 
 // a game rebuilt from its seed and command log, up to `untilDay`: each day's commands are applied, then the day
 // is advanced, exactly as when it was played
-export const replay = (scenario, seed, log, untilDay) => carryOn(Game.create(scenario, { seed }), log, untilDay);
+export const replay = (scenario, seed, log, untilDay, humans = []) => carryOn(Game.create(scenario, { seed, humans }), log, untilDay);
 
 // the same from a snapshot: `log` holds the commands applied on or after the snapshot's day
 export const resume = (scenario, snapshot, log, untilDay) => carryOn(Game.restore(scenario, snapshot), log, untilDay);

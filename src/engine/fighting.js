@@ -8,22 +8,26 @@
 import { YEAR_DAYS } from "./calendar.js";
 import { fight, mayFight } from "./battle.js";
 import { legKey } from "./map.js";
+import { recordCapture } from "./diplomacy.js";
 import { cancelAt } from "./forces.js";
 import { destroy, mayDepart, progress, retreat, routeFor, startLeg } from "./movement.js";
 import { fireSharpshooters, postsLost, stormPost } from "./passes.js";
 import { d6 } from "./random.js";
-import { armiesAt, armyList, atWar, canEnter, isAlive, ownerOf, removeArmy } from "./state.js";
+import { armiesAt, armyList, atWar, canEnter, isAlive, isFriend, ownerOf, removeArmy } from "./state.js";
 import { menOf } from "./army.js";
 
 export function situation(game, key) {
     const st = game.state, node = game.map.nodes.get(key), here = armiesAt(st, key);
     if (node.kind !== "settlement") return { node, here };
     const s = st.settlements[node.id];
+    // the settlement's defenders are its owner's armies and its friends' (allies, subjects, an overlord) that are at war
+    // with someone besieging it; its enemies there are the armies at war with its owner
+    const hostile = here.filter((a) => atWar(st, a.owner, s.owner));
+    const defends = (a) => a.owner === s.owner || (isFriend(st, a.owner, s.owner) && hostile.some((h) => atWar(st, a.owner, h.owner)));
     return {
-        node, here, s,
-        garrison: here.filter((a) => a.owner === s.owner && !a.relief),
-        relief: here.filter((a) => a.owner === s.owner && a.relief),
-        hostile: here.filter((a) => atWar(st, a.owner, s.owner)),
+        node, here, s, hostile,
+        garrison: here.filter((a) => defends(a) && !a.relief),
+        relief: here.filter((a) => defends(a) && a.relief),
     };
 }
 
@@ -40,8 +44,9 @@ export const wallDefence = (walls, cannons, x) => (walls ? Math.max(1.2, 1.8 - 0
 // a settlement falls (RULES.md §6, §8): it is held from today, loses its courthouse, the training and hires queued in
 // it are cancelled, and sharpshooters of a pass in its land die. It keeps its walls, library, workshop and market,
 // and stays core for every country that had it core, so retaking it makes it core again.
-function capture(game, s, country, events, how) {
+export function capture(game, s, country, events, how) {
     const from = s.owner;
+    if (how !== "peace") recordCapture(game, s, from, country);
     s.owner = country;
     s.siege = null;
     s.heldSince = game.state.day;
@@ -49,7 +54,7 @@ function capture(game, s, country, events, how) {
     cancelAt(game.state, s.id);
     events.push({ type: "capture", day: game.state.day, settlement: s.id, from, to: country, how });
     postsLost(game, s.id, events);
-    for (const a of armiesAt(game.state, String(s.id))) if (a.owner !== country) a.relief = false;
+    for (const a of armiesAt(game.state, String(s.id))) if (!isFriend(game.state, a.owner, country)) a.relief = false;
 }
 
 // bring a settlement in line with who is there: enemies with nobody inside to stop them take it, enemies facing a
@@ -90,7 +95,7 @@ export function settle(game, key, events) {
 // losses, 4-6 it is lost.
 export function storm(game, country, key, events) {
     const st = game.state, { s, garrison, hostile } = situation(game, key);
-    const attackers = hostile.filter((a) => a.owner === country);
+    const attackers = hostile.filter((a) => isFriend(st, a.owner, country));
     const defence = wallDefence(s.walls, attackers.reduce((n, a) => n + a.cannons, 0), game.map.x);
     const ev = fight(game, { kind: "storm", place: key, a: attackers, b: garrison, defenceB: defence, plainCavalry: true, tie: "b" });
     events.push(ev);
@@ -139,7 +144,9 @@ export function placeBattles(game, events) {
                 pairs: for (let i = 0; i < owners.length; i++) {
                     for (let j = i + 1; j < owners.length; j++) {
                         if (!atWar(st, owners[i], owners[j])) continue;
-                        const A = here.filter((a) => a.owner === owners[i]), B = here.filter((a) => a.owner === owners[j]);
+                        // each side is that country's armies and its friends' that are at war with the other
+                        const side = (o, foe) => here.filter((a) => a.owner === o || (isFriend(st, a.owner, o) && atWar(st, a.owner, foe)));
+                        const A = side(owners[i], owners[j]), B = side(owners[j], owners[i]);
                         if (!mayFight(st, A, B)) continue;
                         const first = (side) => Math.min(...side.map((a) => a.arrived));
                         const aHolds = first(A) < first(B) || (first(A) === first(B) && A[0].id < B[0].id);
@@ -222,7 +229,7 @@ export function arrive(game, army, events) {
     let stop = last;
     if (node.kind === "settlement") {
         const s = st.settlements[node.id];
-        if (s.owner === army.owner) {
+        if (isFriend(st, army.owner, s.owner)) {
             if (situation(game, key).hostile.length) { stop = true; army.relief = true; }
         } else if (atWar(st, army.owner, s.owner)) {
             const { garrison, relief } = situation(game, key);
@@ -230,7 +237,7 @@ export function arrive(game, army, events) {
                 stop = true;
                 settle(game, key, events);
                 const { garrison: inside, hostile } = situation(game, key);
-                const ours = hostile.filter((a) => a.owner === army.owner);
+                const ours = hostile.filter((a) => isFriend(st, a.owner, army.owner));
                 if (last && army.storm && inside.length && mayFight(st, ours, inside)) storm(game, army.owner, key, events);
             } else settle(game, key, events);
         }
@@ -270,9 +277,9 @@ function carryOn(game, army, events) {
 function arriveRetreating(game, army, events) {
     const st = game.state, key = army.at;
     const sit = situation(game, key);
-    const foes = !sit.s ? sit.here.filter((a) => atWar(st, a.owner, army.owner))
-        : sit.s.owner === army.owner ? sit.hostile
-            : sit.relief.filter((a) => atWar(st, a.owner, army.owner));
+    const foes = (!sit.s ? sit.here.filter((a) => atWar(st, a.owner, army.owner))
+        : isFriend(st, sit.s.owner, army.owner) ? sit.hostile
+            : sit.relief.filter((a) => atWar(st, a.owner, army.owner))).filter((a) => a !== army && atWar(st, a.owner, army.owner));
     if (foes.length && mayFight(st, foes, [army])) {
         const ev = fight(game, { kind: "pursuit", place: key, a: foes, b: [army], plainCavalry: !sit.s, tie: "a" });
         events.push(ev);
@@ -300,7 +307,11 @@ export function surrenders(game, events) {
         if (hostile.length) {
             const by = hostile.some((a) => a.owner === s.siege.by) ? s.siege.by : hostile[0].owner;
             events.push({ type: "surrender", day: st.day, settlement: s.id, owner: s.owner, by, disbanded: garrison.reduce((n, g) => n + menOf(g), 0) });
-            for (const g of garrison) removeArmy(st, g);
+            // the owner's own armies are disbanded; a friend's inside the walls falls back instead
+            for (const g of garrison) {
+                if (g.owner === s.owner) removeArmy(st, g);
+                else retreat(game, g, events, key);
+            }
             capture(game, s, by, events, "siege");
         }
         settle(game, key, events);

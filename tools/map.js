@@ -256,6 +256,49 @@ const FORMABLES = [];
     }
     if (new Set(FORMABLES.map((f) => f.id)).size !== FORMABLES.length) err("Special coring: two regions have the same name");
 }
+
+// the rules of winning and of the Empire, from the prose: how many settlements win, the end year, and how many
+// settlements in the Holy Roman Empire its proposal needs, if the scenario has that plain proposal (RULES.md §10;
+// SCENARIO.md, Victory and The Holy Roman Empire)
+const PROSE = doc.join(" ").replace(/\*\*/g, "").replace(/\s+/g, " ");
+const VICTORY = {}, EMPIRE = {};
+{
+    const w = /Control or vassalize (\d+) settlements/.exec(PROSE), y = /End date: (\d{4})/.exec(PROSE), h = /at least (\d+) settlements inside the HRE/.exec(PROSE);
+    if (w) VICTORY.settlements = Number(w[1]); else err("SCENARIO.md: no 'Control or vassalize N settlements' line under Victory");
+    if (y) VICTORY.endYear = Number(y[1]); else err("SCENARIO.md: no 'End date: YEAR' under Victory");
+    if (h) EMPIRE.needed = Number(h[1]);                  // a scenario without it has no plain Empire proposal
+}
+
+// how the game opens (RULES.md §10), if the scenario says: "### Wars" and "### Agreements" tables under "## The
+// situation in …". Wars list the countries of each side; an agreement between several countries is one between each pair.
+const START = { wars: [], agreements: [] };
+{
+    const codesIn = (text) => [...new Set([...text.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]).filter((c) => CN.has(c)))];
+    const sub = (heading) => {
+        const at = doc.findIndex((l) => l.trim() === `### ${heading}`);
+        if (at < 0) return [];
+        let i = at + 1;
+        while (i < doc.length && !doc[i].startsWith("|")) i++;
+        const h = cells(doc[i]);
+        const rows = [];
+        for (let j = i + 2; j < doc.length && doc[j].startsWith("|"); j++) { const c = cells(doc[j]), r = { _line: j + 1 }; h.forEach((k, n) => { r[k] = c[n] ?? ""; }); rows.push(r); }
+        return rows;
+    };
+    for (const r of sub("Wars")) {
+        const attackers = codesIn(r["Attacking side"] ?? ""), defenders = codesIn(r["Defending side"] ?? "");
+        if (!attackers.length || !defenders.length) { err(`Wars line ${r._line}: both sides need countries`); continue; }
+        START.wars.push({ name: r.War.replace(/\s*\(.*\)\s*$/, ""), attackers, defenders });
+    }
+    for (const r of sub("Agreements")) {
+        const kind = /military alliance/i.test(r.Agreement) ? "military" : /defensive alliance/i.test(r.Agreement) ? "defensive" : /guarantee/i.test(r.Agreement) ? "guarantee" : /non-aggression/i.test(r.Agreement) ? "pact" : null;
+        const codes = codesIn(r.Between ?? "");
+        if (!kind) { err(`Agreements line ${r._line}: don't know '${r.Agreement}'`); continue; }
+        if (codes.length < 2) { err(`Agreements line ${r._line}: needs two countries`); continue; }
+        const yearsLeft = /(\d+) years? left/.exec(r.Agreement)?.[1];
+        if (kind === "guarantee") START.agreements.push({ kind, a: codes[0], b: codes[1] });          // the guarantor, then the guaranteed
+        else for (let i = 0; i < codes.length; i++) for (let j = i + 1; j < codes.length; j++) START.agreements.push({ kind, a: codes[i], b: codes[j], ...(yearsLeft ? { yearsLeft: Number(yearsLeft) } : {}) });
+    }
+}
 check("SCENARIO.md");
 
 // =====================================================================================
@@ -1071,6 +1114,7 @@ const json = {
     }),
     passes: PASSES.map((p) => ({ id: p.id, x: p.x, y: p.y, land: p.owner, routes: p.routes })),
     formables: FORMABLES,
+    victory: VICTORY, empire: EMPIRE, start: START,
     seaZones: ZONES.map((z) => ({ id: z.id, name: z.name, label: { x: z.x, y: z.y }, ports: zonePorts(z), straits: zoneStraits(z), next: zoneNext(z).map((x) => x.id) })),
 };
 fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");
