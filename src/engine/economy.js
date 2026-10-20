@@ -162,6 +162,7 @@ export function monthly(game, events) {
     }
     for (const code of realCountries(st)) {
         const c = st.countries[code];
+        if (!ownedBy(st, code).length) continue;                    // a country with no land left is out of the game: no money, no debt
         if (c.treasury < 0) desert(game, code, 0.1, events);        // unpaid mercenaries
         const e = economyOf(game, code), m = e.moneyPerYear / 12, invest = Math.max(0, m);
         // what goes to research and what stays: slider 50% leaves the full money, each 10% above moves a fifth of it

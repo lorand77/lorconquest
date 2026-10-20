@@ -139,9 +139,6 @@ for its player to come back.
   drew from the game's dice, a replay's battles would come out differently. It seeds its own from
   the game's seed, its country and the day — and its schedule is a function of the day alone, so
   a restarted game picks it up with nothing saved.
-- **Until milestone 5, placeholders** (`src/game/placeholder.js`) stand in: on the real
-  schedule, each sends some of its idle armies one to three places away and now and then declares
-  war on a neighbour, so the loop carries a realistic load.
 
 - **A computer player is a player.** It reads the state and sends commands through the same queue
   as a human; it never changes the state directly. That keeps it honest, gives it the same
@@ -161,9 +158,58 @@ for its player to come back.
   same tick. The AI decides only what to propose, declare and do.
 - **It can rebuild its plans from the game state.** A restart or a takeover from a human
   mid-game then needs nothing extra.
-- **Budget:** a tick, rules and computer players together, should take a small fraction of its
-  100 ms. To be measured, not assumed.
+- **Budget:** a tick, rules and computer players together takes about 1 ms on the Mitteleuropa map and
+  about 2 ms on the historical one (the slowest day about 15–30 ms), against 100 ms — measured by
+  `tools/simulate.js`, which every AI-only game reports.
 - Difficulty, and whether it means a slower reaction, is decided later.
+
+**What was built** (`src/ai/`; `index.js` is the entry, `createAI({ seed, humans })`, whose `orders(game, events)`
+the worker calls after each day and whose `setCaretaker(country, mode)` it passes on from the server):
+
+- **A character** (`util.js`, `flavorOf`): each country gets, from the seed and its code, an aggression, a
+  friendliness and a taste for building — fixed for the game, so countries differ without any state saved.
+- **A think** (`index.js`) is, in order: answer the questions put to it (`caretaker.js`), then the forces
+  (`forces.js`), the economy with what is left of the budget (`economy.js`), diplomacy (`diplomacy.js`) and
+  war (`war.js`). The forces and the economy share one budget (the treasury less a reserve of a third of a year's
+  money, or a tenth at war), so a think never orders what it cannot pay.
+- **Economy:** tax 2, a little more at war and 2.5 when in the red; the research slider by what the treasury
+  allows; the research order (guns, sharpshooters, then ships for a country that has them); the law by
+  threat, at most once in 5 years; loans only in war, repaid when fat; courthouses, then libraries, workshops,
+  markets and walls from the surplus.
+- **Forces:** soldiers up to the law (most of it in peace, all of it at war or under threat); the unarmed armed
+  with pikes (a third of the armed) and the best shot researched; old swords replaced when rich; mercenaries — which
+  stand on top of the army cap — hired in a war as money allows and sent home in peace; sharpshooters at the
+  passes facing others; and what is left of a hoard buys people, so money is used and not piled up.
+- **War:** every settlement keeps a garrison (4% of its people where an enemy could come from, 1.5% inland); the
+  armed men over that split off, gather at a staging settlement beside the front and merge into one host. The
+  host marches on the settlement with the best value for its days — by storm if it outmatches the garrison
+  ×1.2 (×1.8 behind walls) by a margin, else by siege — or on an enemy army it is much stronger than, or to the
+  relief of a besieged settlement of its own. Garrisons sortie when they outmatch the besiegers. All of it is
+  read from the state and nothing is remembered: a split gives an army its id only when applied, so the think
+  that splits is followed by one on the next tick (the reflex layer) that moves what was made.
+- **Diplomacy:** peace is asked for when a war has run its course — dictating terms (settlements next to its land,
+  its own cores first) when far ahead and the war gains something, a white peace after two years of stalemate,
+  money and then settlements to buy it when losing; the computer asks only what the other side's formula (the
+  engine's pure `peaceAnswer`, `agreementAnswer`, `demandChance`) would accept, since the same proposal may be
+  made once in 5 years. Wars are *planned*: a neighbour it outmatches, with nothing binding them, gets a 40-day
+  muster before the declaration, dropped if it stops being a good idea; a warlike country seeks no pacts. Also
+  defensive alliances and pacts with neighbours, military alliances against a common enemy, subjects demanded of
+  much weaker neighbours, and the Empire proposed once when it holds enough. To a human it asks once a year, and
+  not while a question stands.
+- **Reflexes:** the country looks at its war again on the tick after a siege begins or a war is declared or joined
+  or a battle is fought involving it.
+- **The caretaker** (`caretaker.js`) is exactly what the *Players* section says: it joins the wars its allies call
+  it into, sorties, and moves the armies it has against enemy armies in its own and friendly land; it buys, borrows,
+  changes, declares, proposes and signs nothing, and lets the other questions expire. `setCaretaker(country, "full")`
+  hands the country to the full AI, which also answers peace and agreement offers by formula. Commands from either
+  are logged as source `caretaker`; who gives them when is milestone 6's business (a worker message
+  `{ type: "caretaker", country, mode }`, and `rooms.setCaretaker`).
+- **What it leaves out:** fleets and naval war (it only keeps the starting ships), cannons and crews, the
+  historical scenario's Emperor (which the engine does not have either), and any memory of grudges beyond what
+  the engine's opinion already keeps.
+- **The simulation tool** (`tools/simulate.js`) plays AI-only games headless, in parallel on worker threads,
+  and reports wins by country, wars, peaces, captures, the commands the engine refused and the time a day took.
+  What it showed goes in `experiments/`.
 
 ### Questions with a deadline
 
@@ -383,8 +429,12 @@ code is ES modules, not CommonJS, so whatever is copied from LorCiv is converted
   one either is a bug or needs the rules version bumped. (From milestone 2, when games are saved.)
 - **Timing:** `tools/bench.js` plays years of every country at war with armies sent about at
   random and prints the time per game day.
-- **AI-only games**, headless and at full speed (no 100 ms wait), many at once: for crashes,
-  balance and timing.
+- **AI-only games**, headless and at full speed (no 100 ms wait), many at once, by `tools/simulate.js`:
+  for crashes, balance and timing. `test/ai/ai.test.js` plays a few years of them every run, checking the fuzz's
+  invariants every month, that the commands alone replay the game exactly (the computers' dice never touch the
+  game's), that almost nothing is refused, and that a day costs a small part of its budget; `AI_SEEDS`,
+  `AI_YEARS` and `AI_SCENARIO` make it bigger. It also tests each layer on the tiny map: the economy, the forces,
+  a war that takes land, peace dictated and bought, asking a human, and the caretaker.
 - **Integration tests** boot the server and connect socket clients, as in LorCiv.
 
 ### Development environment
@@ -404,8 +454,8 @@ named (see [plan.md](plan.md)).
    electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal both
    scenarios share (RULES.md §10) and the scenario's starting wars and agreements, not this. It is a subsystem of its own
    — worth its own milestone if that scenario is to be played in earnest.
-2. **What a computer proposes** (milestone 5). The computer countries answer proposals by formula, but nothing makes them
-   propose: no declaring war, no seeking peace or allies, no demanding subjects, no calls for help. That is the AI.
+2. **Computer fleets** (not scheduled). The computer countries keep their starting ships and never build, sail or
+   fight with them; a strait it cannot cross without ships stays shut to it. Naval war would be the next thing to teach it.
 
 ---
 

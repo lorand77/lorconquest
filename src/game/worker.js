@@ -1,21 +1,21 @@
 // One running game, in a worker thread of its own (design.md, "Threads" and "One game, one loop"): the engine,
-// the loop that advances a day every tick, and the placeholder countries. A slow game slows only itself.
+// the loop that advances a day every tick, and the computer players (src/ai). A slow game slows only itself.
 //
 // Each tick: the commands queued since the last one are applied — humans' and computer countries' alike — the
-// day is advanced, the placeholder countries give their orders for the next tick, and the day goes out to the
+// day is advanced, the computer players give their orders for the next tick, and the day goes out to the
 // main thread: what changed, its events, the commands to save, and at the start of each game year a snapshot.
 // A late tick is caught up, up to 5 days at once; further behind, game time slips rather than skips. Paused,
 // the loop still applies commands, so orders and their previews show at once, but the day stands still.
 //
 // In:  { type: "command", reqId, country, source, cmd }  { type: "pause", paused }  { type: "view", reqId, country }
-//      { type: "stop" }
+//      { type: "caretaker", country, mode }  (mode "caretaker", "full" or null: who plays a human's country while away)  { type: "stop" }
 // Out: { type: "ready", day }  { type: "tick", day, events, pub, priv, commands, snapshot }
 //      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
 //      { type: "stats", days, mean, max }  { type: "over", day, winner }  { type: "stopped", day, commands }
 // A game that has a winner (the engine says so) is saved one last time and its loop stops.
 import { parentPort, workerData } from "node:worker_threads";
 import { replay, resume } from "../engine/index.js";
-import { placeholderOrders } from "./placeholder.js";
+import { createAI } from "../ai/index.js";
 import { Changes, viewFor } from "./view.js";
 
 const CATCH_UP = 5;
@@ -24,6 +24,7 @@ let paused = workerData.paused;
 
 const game = snapshot ? resume(scenario, snapshot, log, day) : replay(scenario, seed, log, day, humans);
 const changes = new Changes(game.state);
+const ai = createAI({ seed: game.state.seed, humans });
 const queue = [];
 let toSave = [], snap = null, times = [], next = 0, timer = null, stopping = false;
 const post = (m) => parentPort.postMessage(m);
@@ -52,7 +53,7 @@ function tick() {
     const t0 = performance.now(), events = [];
     applyQueue(events);
     events.push(...game.advance());
-    if (!game.state.winner) for (const cmd of placeholderOrders(game, humans)) queue.push({ country: cmd.country, source: "computer", cmd });
+    if (!game.state.winner) for (const o of ai.orders(game, events)) queue.push({ country: o.country, source: o.source, cmd: o.cmd });
     if (game.day % 365 === 0 || game.state.winner) snap = { day: game.day, state: game.snapshot() };
     publish(events);
     if (game.state.winner) { post({ type: "over", day: game.day, winner: game.state.winner }); stopping = true; }
@@ -82,6 +83,9 @@ parentPort.on("message", (m) => {
         case "command":
             queue.push({ reqId: m.reqId, country: m.country, source: m.source, cmd: m.cmd });
             if (game.state.winner) applyQueue([]);              // a finished game has no loop: it answers at once, "the game is over"
+            break;
+        case "caretaker":
+            ai.setCaretaker(m.country, m.mode);
             break;
         case "pause":
             if (paused !== m.paused) {

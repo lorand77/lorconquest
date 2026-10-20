@@ -1,0 +1,222 @@
+// The computer players (docs/plan.md, milestone 5): what each layer decides on the tiny map, the caretaker's answers, and,
+// on the real map, that a game played by computers alone replays from its commands without them, stays sane and
+// keeps inside the tick's budget.
+import test from "node:test";
+import assert from "node:assert/strict";
+import docsScenario from "../../docs/scenario.json" with { type: "json" };
+import { Game, armyList, atWar, replay, scores } from "../../src/engine/index.js";
+import { warKey } from "../../src/engine/state.js";
+import { createAI } from "../../src/ai/index.js";
+import { answerOffers, callAnswers } from "../../src/ai/caretaker.js";
+import { addAgreement } from "../../src/engine/diplomacy.js";
+import { diplomacyOrders } from "../../src/ai/diplomacy.js";
+import { economyOrders } from "../../src/ai/economy.js";
+import { forceOrders } from "../../src/ai/forces.js";
+import { dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
+import { isMonthStart } from "../../src/engine/calendar.js";
+import { check } from "../helpers/invariants.js";
+import { setArmy, tinyGame } from "../helpers/tiny.js";
+import fs from "node:fs";
+import path from "node:path";
+
+const fl = { aggression: 0.5, friendliness: 0.5, builder: 0.5 };
+
+// play `days` days as the worker does: the orders of the last day, then the day, then new orders; returns the refusals
+function play(game, ai, days, { onDay } = {}) {
+    const refused = [], end = game.day + days;
+    let pending = [];
+    while (game.day < end && !game.state.winner) {
+        const events = [];
+        for (const o of pending) {
+            const r = game.command({ ...o.cmd, country: o.country });
+            if (r.ok) events.push(...r.events);
+            else refused.push({ day: game.day, country: o.country, cmd: o.cmd, error: r.error });
+        }
+        events.push(...game.advance());
+        pending = game.state.winner ? [] : ai.orders(game, events);
+        onDay?.(game, events);
+    }
+    return refused;
+}
+
+// apply commands in order, as the worker would; all must be accepted
+function applyAll(game, orders) {
+    for (const o of orders) {
+        const r = game.command({ ...(o.cmd ?? o), country: o.country ?? o.cmd.country });
+        assert.equal(r.ok, true, `${JSON.stringify(o)}: ${r.error}`);
+    }
+}
+
+test("the AI's dice and characters depend on the seed and the country alone", () => {
+    const a = dice(hash("x")), b = dice(hash("x"));
+    assert.deepEqual([a(), a(), a()], [b(), b(), b()]);
+    assert.deepEqual(flavorOf(1, "BAV"), flavorOf(1, "BAV"));
+    assert.notDeepEqual(flavorOf(1, "BAV"), flavorOf(2, "BAV"));
+    for (const code of ["BAV", "AUS", "NOR"]) {
+        const f = flavorOf(7, code);
+        assert.ok(f.aggression >= 0.25 && f.aggression <= 1 && f.friendliness >= 0.3 && f.builder >= 0.3, code);
+    }
+});
+
+test("every country thinks every 10 to 20 days, each on days of its own", () => {
+    for (const code of ["BAV", "AUS", "NOR", "AAA"]) {
+        const days = [];
+        for (let d = 0; d < 400; d++) if (thinksOn(code, d)) days.push(d);
+        const gaps = days.slice(1).map((d, i) => d - days[i]);
+        assert.ok(gaps.length > 15 && gaps.every((g) => g === gaps[0]) && gaps[0] >= 10 && gaps[0] <= 20, `${code}: ${gaps}`);
+    }
+    const first = ["BAV", "AUS", "NOR", "SCH", "PRU"].map((c) => [...Array(30).keys()].find((d) => thinksOn(c, d)));
+    assert.ok(new Set(first).size > 2, "they do not all think on the same day");
+});
+
+test("economy: light tax in peace, heavier in war, loans only when poor at war, buildings bought from the surplus", () => {
+    const game = tinyGame(1);
+    const c = game.state.countries.AAA;
+    c.treasury = 2e6;
+    const ctx = { budget: 2e6 };
+    let orders = economyOrders(game, "AAA", fl, ctx);
+    assert.ok(!orders.some((o) => o.type === "setTax"), "peace: the tax stays at 2");
+    assert.ok(!orders.some((o) => o.type === "borrow"));
+    assert.ok(orders.some((o) => o.type === "buyBuilding"), "a rich country builds");
+    assert.ok(ctx.budget < 2e6, "and what it buys comes off the budget");
+    applyAll(game, orders);
+    // at war and poor: a higher tax and a loan
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    c.treasury = 1000;
+    orders = economyOrders(game, "AAA", fl, { budget: 0 });
+    assert.ok(orders.some((o) => o.type === "setTax" && o.tax > 2), "war: taxes rise");
+    assert.ok(orders.some((o) => o.type === "borrow"), "a poor country at war borrows");
+    assert.ok(!orders.some((o) => o.type === "buyBuilding"), "and builds nothing");
+    applyAll(game, orders);
+});
+
+test("forces: soldiers raised up to the law, the unarmed armed with pikes, mercenaries dismissed in peace", () => {
+    const game = tinyGame(1);
+    const c = game.state.countries.AAA;
+    c.treasury = 1e6;
+    c.law = "mass";                                    // 15% of its people may be soldiers: far more than it has
+    const ctx = { budget: 1e6 };
+    const orders = forceOrders(game, "AAA", fl, ctx);
+    assert.ok(orders.some((o) => o.type === "raise" && o.lots >= 1), "AAA's army is below what its law allows");
+    applyAll(game, orders);
+    // unarmed men in an army are armed from the shop: a third pikes, the rest the best shot researched (none yet: pikes)
+    setArmy(game, 1, { swords: 100, unarmed: 600 });
+    const arm = forceOrders(game, "AAA", fl, { budget: 1e6 });
+    assert.ok(arm.some((o) => o.type === "buyWeapons" && o.weapon === "pikes"));
+    const eq = arm.find((o) => o.type === "equip");
+    assert.deepEqual([eq.army, eq.from, eq.to, eq.n], [1, "unarmed", "pikes", 600]);
+    applyAll(game, arm);
+    assert.equal(game.state.armies[1].men.pikes, 600);
+    // mercenaries go home in peace
+    game.state.armies[1].mercs = 100;
+    const home = forceOrders(game, "AAA", fl, { budget: 0 });
+    assert.ok(home.some((o) => o.type === "dismissMercenaries" && o.army === 1 && o.n === 100));
+});
+
+test("war: an overwhelming country takes what it is next to, with no command refused", () => {
+    const game = tinyGame(3, (s) => { s.victory.settlements = 99; });
+    const ai = createAI({ seed: 3, humans: [] });
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    // AAA has the men, and the weapons for them
+    setArmy(game, 1, { pikes: 3200 });
+    game.state.countries.AAA.treasury = 1e6;
+    const refused = play(game, ai, 3 * 365);
+    const mine = Object.values(game.state.settlements).filter((s) => s.owner === "AAA").length;
+    assert.ok(mine > 3, `AAA holds ${mine} settlements`);
+    assert.deepEqual(refused.filter((r) => ["move", "merge", "split", "storm", "besiege", "sortie"].includes(r.cmd.type)), []);
+});
+
+test("peace: a country far ahead dictates terms the other will accept; one losing buys peace", () => {
+    const game = tinyGame(1);
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    const key = warKey("AAA", "BBB");
+    game.state.day = 400;
+    game.state.warInfo[key].start = 0;
+    const memory = () => ({ plans: new Map(), asked: new Map() });
+    // AAA has taken a third of BBB's people: it asks for more, and BBB accepts
+    game.state.warInfo[key].taken.AAA = 10000;
+    const winning = diplomacyOrders(game, "AAA", fl, memory()).orders.find((o) => o.type === "proposePeace");
+    assert.ok(winning, "AAA asks for peace");
+    assert.ok(winning.terms.take.length > 0 || winning.terms.money > 0, "on terms of its own");
+    applyAll(game, [winning]);
+    assert.equal(atWar(game.state, "AAA", "BBB"), false);
+    // the other way round: BBB has taken AAA's people and AAA's army is weaker
+    const game2 = tinyGame(1);
+    game2.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    game2.state.day = 1300;
+    game2.state.warInfo[key].start = 0;
+    game2.state.warInfo[key].taken.BBB = 8000;
+    setArmy(game2, 1, { swords: 100 });
+    game2.state.countries.AAA.treasury = 100000;
+    const losing = diplomacyOrders(game2, "AAA", fl, memory()).orders.find((o) => o.type === "proposePeace");
+    assert.ok(losing, "AAA buys its peace");
+    assert.ok(losing.terms.money < 0 || losing.terms.give.length > 0);
+    applyAll(game2, [losing]);
+    assert.equal(atWar(game2.state, "AAA", "BBB"), false);
+});
+
+test("diplomacy: it asks once a year of a human, and never something the other side would refuse", () => {
+    const game = tinyGame(1, () => {}, ["BBB"]);
+    game.state.day = 7300;                             // twenty years of peace: BBB thinks well enough of AAA for a pact
+    const mem = { plans: new Map(), asked: new Map() };
+    let asked = 0;
+    for (let d = 0; d < 400; d++) {
+        game.advance();
+        const { orders } = diplomacyOrders(game, "AAA", { ...fl, friendliness: 1 }, mem);
+        for (const o of orders.filter((x) => x.type === "proposeAgreement" && x.with === "BBB")) { asked++; applyAll(game, [o]); }
+    }
+    assert.ok(asked >= 1 && asked <= 2, `asked a human ${asked} times in a year and a bit`);
+    assert.ok(game.state.offers.every((o) => o.kind === "agreement" && o.to === "BBB"), "as questions, not as agreements made");
+});
+
+test("the caretaker joins the wars its allies call it into and lets everything else wait; the full AI answers it all", () => {
+    const game = tinyGame(1, () => {}, ["AAA"]);
+    const ai = createAI({ seed: 1, humans: ["AAA"] });
+    addAgreement(game, "military", "AAA", "BBB", null);
+    game.command({ type: "proposeAgreement", country: "CCC", with: "AAA", kind: "pact" });
+    game.command({ type: "declareWar", country: "BBB", target: "CCC" });
+    const kinds = game.state.offers.map((o) => o.kind).sort();
+    assert.deepEqual(kinds, ["agreement", "call"], "a human is asked both");
+    const call = game.state.offers.find((o) => o.kind === "call"), pact = game.state.offers.find((o) => o.kind === "agreement");
+    assert.deepEqual(callAnswers(game, "AAA"), [{ type: "answerOffer", country: "AAA", id: call.id, accept: true }]);
+    assert.deepEqual(answerOffers(game, "AAA").map((a) => [a.id, typeof a.accept]).sort(), [[call.id, "boolean"], [pact.id, "boolean"]].sort());
+    const mine = (orders) => orders.filter((o) => o.country === "AAA");
+    // while its player is there the AI does not touch the country; with a caretaker it answers the call on its think day
+    const theirs = [];
+    for (let d = 0; d < 25; d++) { game.advance(); theirs.push(...mine(ai.orders(game, []))); }
+    assert.deepEqual(theirs, []);
+    ai.setCaretaker("AAA", "caretaker");
+    for (let d = 0; d < 25; d++) { game.advance(); theirs.push(...mine(ai.orders(game, []))); }
+    assert.ok(theirs.length > 0 && theirs.every((o) => o.source === "caretaker"));
+    assert.deepEqual([...new Set(theirs.filter((o) => o.cmd.type === "answerOffer").map((o) => `${o.cmd.id}:${o.cmd.accept}`))], [`${call.id}:true`], "the pact is left to expire");
+    assert.ok(theirs.every((o) => ["answerOffer", "sortie", "move"].includes(o.cmd.type)), "and it buys, declares and proposes nothing");
+    ai.setCaretaker("AAA", "full");
+    const full = [];
+    for (let d = 0; d < 25; d++) { game.advance(); full.push(...mine(ai.orders(game, []))); }
+    assert.ok(full.some((o) => o.cmd.type === "answerOffer" && o.cmd.id === pact.id), "the full AI answers the pact too");
+    ai.setCaretaker("AAA", null);
+    for (let d = 0; d < 25; d++) { game.advance(); assert.deepEqual(mine(ai.orders(game, [])), []); }
+});
+
+// AI_SEEDS and AI_YEARS make it bigger, AI_SCENARIO (a folder of scenarios/) plays another map
+const SEEDS = Number(process.env.AI_SEEDS ?? 2), YEARS = Number(process.env.AI_YEARS ?? 6);
+const scenario = process.env.AI_SCENARIO ? JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", process.env.AI_SCENARIO, "scenario.json"), "utf8")) : docsScenario;
+
+test("games of computers alone on the real map: legal, sane every month, and replayed exactly from their commands", { timeout: 3600000 }, () => {
+    for (let seed = 5; seed < 5 + SEEDS; seed++) {
+        const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] });
+        const t0 = performance.now();
+        const refused = play(game, ai, YEARS * 365, { onDay: (g) => { if (isMonthStart(g.day)) check(g, `seed ${seed}, day ${g.day}`); } });
+        const st = game.state;
+        // refusals are the odd race between two countries, not a habit
+        assert.ok(refused.length < 20 * YEARS, `seed ${seed}: ${refused.length} refused: ${JSON.stringify(refused.slice(0, 3))}`);
+        assert.equal(JSON.stringify(st).includes("NaN"), false);
+        for (const row of Object.values(scores(st))) assert.ok(Number.isFinite(row.pop));
+        // the computers' own dice never touch the game's: the commands alone replay it
+        assert.ok(game.log.length > 50 * YEARS / 2, "the computers gave plenty of commands");
+        assert.equal(replay(scenario, seed, game.log, game.day, []).snapshot(), game.snapshot(), `seed ${seed}`);
+        // the tick's budget is 100 ms: a day of 45 computers takes a small part of it
+        assert.ok((performance.now() - t0) / game.day < 20, "a day takes far less than its budget");
+        assert.ok(st.wars.length >= 0 && armyList(st).length > 0);
+    }
+});

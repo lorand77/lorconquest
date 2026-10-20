@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS commands (
     seq INTEGER NOT NULL,                       -- its place in the game's log, from 1
     day INTEGER NOT NULL,                       -- the day it was applied on
     country TEXT NOT NULL,
-    source TEXT NOT NULL,                       -- human | computer
+    source TEXT NOT NULL,                       -- human | computer | caretaker (a computer playing a human's country)
     cmd TEXT NOT NULL,                          -- the command, as JSON
     PRIMARY KEY (game_id, seq)
 );

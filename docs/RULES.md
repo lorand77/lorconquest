@@ -142,6 +142,10 @@ pays interest; research is added and a tech whose cost is covered unlocks; the d
 a bankrupt country is sold up; settlements held 20 years with a courthouse become core. Every figure is
 worked out from the state on that day.
 
+A country with **no settlement left** is out of the game: it has no monthly step at all — no money, interest,
+research or debt — whatever its treasury or loans stood at when its last settlement fell. (Without this its
+negative treasury would go bankrupt every month for ever, with nothing left to sell.)
+
 ### Starting values
 | | |
 |---|---|

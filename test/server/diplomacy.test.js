@@ -66,7 +66,7 @@ test("over a socket a player proposes, is answered at once, and everyone sees th
         await runUntil(s, 30);
         await new Promise((r) => setTimeout(r, 80));                                        // the last tick's messages
         const fresh = (await emitAck(s, "join", { gameId: id })).view;
-        assert.ok(copy.wars.includes("BAV|ULM"));                                           // the placeholder countries declare wars too
+        assert.ok(copy.wars.includes("BAV|ULM"));                                           // the computer countries declare wars too
         assert.deepEqual(copy, fresh);
         // +5 for the war, less 2 at each New Year the game has run through (with 2 ms days a loaded machine may run several)
         assert.equal(fresh.countries.BAV.warmonger, Math.max(0, 5 - 2 * Math.floor(fresh.day / 365)));
@@ -76,7 +76,7 @@ test("over a socket a player proposes, is answered at once, and everyone sees th
 });
 
 test("a game with a winner is saved as finished, tells its players, and is not resumed", async () => {
-    // a scenario where 6 settlements win: the placeholder countries' wars decide who gets there first
+    // a scenario where 6 settlements win: the computer countries' wars decide who gets there first
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "lc-root-"));
     fs.mkdirSync(path.join(root, "docs"));
     fs.writeFileSync(path.join(root, "docs", "scenario.json"), JSON.stringify({ ...scenario, victory: { settlements: 6, endYear: 1700 } }));

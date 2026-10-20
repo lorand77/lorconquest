@@ -190,3 +190,27 @@ test("money orders go through the worker; a country's private part reaches only 
         await server.close();
     }
 });
+
+test("a player's country is played by the computer while it is handed over, and by nobody once it is handed back", async () => {
+    const dbPath = tempDb();
+    const server = await startServer({ dbPath });
+    let id;
+    try {
+        id = await newGame(server);
+        const s = await connect(server);
+        await emitAck(s, "join", { gameId: id });
+        const room = server.app.rooms.get(id);
+        await runUntil(s, 100);                                            // the player's country does nothing by itself
+        server.app.rooms.setCaretaker(room, "BAV", "full");
+        await runUntil(s, 400);
+        server.app.rooms.setCaretaker(room, "BAV", null);
+        await runUntil(s, 700);
+    } finally {
+        await server.close();
+    }
+    const db = openDb(dbPath);
+    const rows = db.db.prepare("SELECT day, source, cmd FROM commands WHERE game_id = ? AND country = 'BAV' ORDER BY seq").all(id);
+    db.close();
+    assert.ok(rows.length > 0 && rows.every((r) => r.source === "caretaker"), "BAV's only commands are the computer's");
+    assert.ok(rows.every((r) => r.day > 100 && r.day <= 401), `from the day it was handed over to the day it was handed back (${rows.map((r) => r.day).slice(-3)})`);
+});

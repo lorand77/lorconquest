@@ -131,6 +131,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery }) {
         command: (room, cmd) => ask(room, { type: "command", country: room.human, source: "human", cmd }),
         view: (room, country) => ask(room, { type: "view", country }).then((m) => m.view),
         setPaused: (room, paused) => room.worker.postMessage({ type: "pause", paused }),
+        // who plays a human's country while its player is away: "caretaker", "full", or null for the player (milestone 6)
+        setCaretaker: (room, country, mode) => room.worker.postMessage({ type: "caretaker", country, mode }),
 
         // stop every game, saving where each got to
         async close() {

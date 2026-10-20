@@ -21,6 +21,9 @@ dependencies.
 - `npm run dev` — the server at http://localhost:3002/ (the development page starts a game), restarting
   on changes; `npm start` without. Settings are environment variables, all in `src/config.js`; the
   database is `data/lorconquest.sqlite`.
+- `node tools/simulate.js [--games N --years N --seed N --scenario docs --jobs N]` — AI-only games, headless, in parallel: wins by
+  country, wars, peaces, refused commands, timing. `SIM_DEBUG=1` prints every refused command. What it showed: `experiments/`.
+- `AI_SEEDS=6 AI_YEARS=60 AI_SCENARIO=historical-1440 node --test test/ai/ai.test.js` — the AI games of the suite, bigger.
 - `node tools/run.js <script>` — play a scripted game in the terminal; the format is at the top of
   `tools/run.js`, examples in `test/wars/`.
 - `node tools/bench.js [--years N]` — time a game day with every country at war.
@@ -39,12 +42,16 @@ dependencies.
   formulas, pure), `diplomacy.js` (wars, peace, subjects, the Empire), `diplomacy-day.js`, `victory.js`.
 - `src/game/` — live games: `rooms.js` (a worker per game, saving, passing changes to sockets),
   `worker.js` (one game's loop), `socket.js` and `routes.js` (the events and the REST routes),
-  `view.js` (what a player may see, what changed), `placeholder.js` (stand-in computer countries).
+  `view.js` (what a player may see, what changed).
+- `src/ai/` — the computer players: `index.js` (`createAI`: who thinks when, reflexes, the caretaker switch), `economy.js`,
+  `forces.js`, `war.js`, `diplomacy.js`, `caretaker.js`, `util.js` (their own dice, characters, distances).
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
   `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
   Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` with `js/dev.js`.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
 - `tools/` — the runner, the bench, the map tools.
+- `test/ai/` — each AI layer on the tiny map, the caretaker, and computer-only games on the real map (invariants every month,
+  exact replay from the commands alone, the tick's budget); `test/helpers/invariants.js` is the check it shares with the fuzz.
 - `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js` (a sea, two ports, a strait,
   a region), and `fuzz.test.js`, random play (`FUZZ_SEEDS`/`FUZZ_YEARS` make it bigger); `test/wars/` —
   scripted wars and a country run for years on the real map; `test/server/` — the real server on a throwaway database with 2 ms days
@@ -81,7 +88,7 @@ dependencies.
   no men stays on the map; the fuzz test checks this every month.
 - Money, R and people keep fractions in the engine; show them rounded (`formatNumber`), never store them
   rounded.
-- Computer players (placeholders now, the AI later) never draw from `state.rng`: their commands are
+- Computer players (`src/ai/`) never draw from `state.rng`: their commands are
   replayed without running them, so their dice must not touch the game's. Their schedule depends on
   the day alone (design.md, *The computer players*).
 - No browser in the development container: the screen's pure logic goes in `public/js/mirror.js` and

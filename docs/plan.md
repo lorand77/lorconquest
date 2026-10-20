@@ -4,7 +4,7 @@ The order in which the game gets built. The rules are in [RULES.md](RULES.md), t
 [SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
 says what to build when, and how to tell each step is done.
 
-**Status:** milestones 1 to 4 are done (2026-10-20); milestone 5, the computer players, is next.
+**Status:** milestones 1 to 5 are done (2026-10-20); milestone 6, multiplayer, is next.
 
 ## How we work
 
@@ -219,6 +219,20 @@ The real AI, replacing the placeholders.
 - A single-player game against them is a game.
 
 **Depends on:** 4.
+
+**Done.** `src/ai/` is the computer player: a character per country, and on its own 10–20 day schedule a think that
+raises and arms soldiers, hires mercenaries in war, runs the economy from a shared budget, asks for peace on terms the
+other side's formula will accept, plans and declares wars it should win, proposes alliances and pacts, and musters,
+marches, besieges, storms and sorties; the tick after a siege or a war it looks at its war again. The caretaker defends
+and answers calls to arms only; the full AI can be handed a human's country (`rooms.setCaretaker`; who does that when is
+milestone 6). `tools/simulate.js` plays AI-only games headless on worker threads and reports wins, wars, peaces, captures,
+refused commands and timing; what it showed, and what was changed because of it, is in `experiments/`. The check as run:
+games from 1440 to 1650 on both scenarios without an error or a broken invariant (`test/ai/ai.test.js`, and sweeps of
+24 and 8 games), about 1 ms a day for 45 computers on the Mitteleuropa map and 2 ms on the historical one against the
+100 ms; about 25 wars, 35 peaces and 30 conquests a game, a different winner from game to game, and the commands alone
+replay each game exactly. Found on the way, and fixed in the engine: a country with no land left went bankrupt every
+month for ever (rules version 4, RULES.md §2). Not checked by machine: whether a game against them is *fun* — that is the
+first game played by hand. **Not in it:** fleets and naval war, cannons, and the historical scenario's Emperor.
 
 ---
 
