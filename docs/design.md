@@ -159,7 +159,7 @@ for its player to come back.
 - **It can rebuild its plans from the game state.** A restart or a takeover from a human
   mid-game then needs nothing extra.
 - **Budget:** a tick, rules and computer players together takes about 1 ms on the Mitteleuropa map and
-  about 2 ms on the historical one (the slowest day about 15–30 ms), against 100 ms — measured by
+  about 3 ms on the historical one (the slowest day about 15–30 ms), against 100 ms — measured by
   `tools/simulate.js`, which every AI-only game reports.
 - Difficulty, and whether it means a slower reaction, is decided later.
 
