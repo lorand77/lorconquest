@@ -13,15 +13,20 @@
 //   * one who quits gives it to the full computer player for good;
 //   * when every player has quit or been away over AWAY_MS the game is over: abandoned.
 // Nothing about who is away is saved: a game resumed after a restart begins with every player away, from that moment.
+//
+// A single-player game is not kept in memory for nothing: when its player has been gone for IDLE_MS its worker stops, the
+// game saved where it stood, and it is brought back from its snapshot and log when they open it again — as after a restart,
+// which is why a restart brings back only the games with several people.
 import { Worker } from "node:worker_threads";
 import { RULES_VERSION } from "../engine/index.js";
+import { rankHumans } from "./results.js";
 
 const WORKER = new URL("./worker.js", import.meta.url);
 // progress (the day reached) is saved at least this often, in days, and whenever there is something else to save
 const PROGRESS_EVERY = 10;
 const CHAT_MAX = 300;
 
-export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans }) {
+export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs }) {
     const live = new Map();
     let closing = false;
 
@@ -43,8 +48,9 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             id: row.id, host: row.host_id, scenario: row.scenario, worker, paused: true, day: row.day, multi,
             seq: db.q.lastSeq.get(row.id).seq, savedDay: row.day, pending: new Map(), nextReq: 1,
             seats: new Map(seatRows.map((s) => [s.country, { country: s.country, userId: s.user_id, username: s.username, sockets: new Set(), state: multi ? "away" : "idle", timer: null }])),
-            setupUntil: 0, timers: new Set(),
+            setupUntil: 0, timers: new Set(), lastTick: performance.now(),
         };
+        room.gone = new Promise((resolve) => { room.onGone = resolve; });
         room.ready = new Promise((resolve, reject) => { room.onReady = resolve; room.onFail = reject; });
         room.ready.catch(() => {});
         worker.on("message", (m) => onMessage(room, m));
@@ -57,8 +63,13 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             io.to(`game:${room.id}`).emit("failed", { error: "the game stopped" });
         });
         live.set(row.id, room);
-        // the players of a multiplayer game are away until they join; the two minutes run from when the game is running
-        if (multi) room.ready.then(() => { for (const seat of room.seats.values()) if (seat.state === "away" && !seat.timer) seat.timer = later(room, awayMs, () => becomeFull(room, seat)); }, () => {});
+        // the players of a multiplayer game are away until they join; the two minutes run from when the game is running.
+        // A single-player game nobody opens is let go after a while.
+        room.ready.then(() => {
+            room.lastTick = performance.now();
+            if (multi) { for (const seat of room.seats.values()) if (seat.state === "away" && !seat.timer) seat.timer = later(room, awayMs, () => becomeFull(room, seat)); }
+            else room.idleTimer = later(room, idleMs, () => unload(room));
+        }, () => {});
         return room;
     }
 
@@ -94,6 +105,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 room.onReady();
                 break;
             case "tick":
+                room.lastTick = performance.now();
                 save(room, m);
                 io.to(`game:${room.id}`).emit("tick", { day: m.day, events: m.events, changes: m.pub });
                 for (const [code, changes] of Object.entries(m.priv)) io.to(`game:${room.id}:${code}`).emit("private", { day: m.day, changes });
@@ -107,12 +119,14 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             }
             case "paused":
                 room.paused = m.paused;
+                room.lastTick = performance.now();
                 save(room, { day: m.day }, true);
                 io.to(`game:${room.id}`).emit("paused", { paused: m.paused, day: m.day });
                 break;
             case "over":
                 // the game is won (SCENARIO.md, Victory): saved as finished, and never resumed
-                db.q.finishGame.run(m.day, m.winner, room.id);
+                db.q.finishGame.run(m.day, m.winner, m.hash ?? null, room.id);
+                recordResult(room, m.scores);
                 room.paused = true;
                 room.over = m.winner;
                 clearTimers(room);
@@ -166,10 +180,26 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         retire(room);
     }
 
+    // each person's standing in a game that is over, among the people (results.js), kept for the leaderboard
+    function recordResult(room, table) {
+        if (!table) return;
+        const quits = new Map(db.q.seatQuits.all(room.id).map((r) => [r.country, r.quit_day]));
+        const seats = [...room.seats.keys()].map((country) => ({ country, quitDay: quits.get(country) ?? null }));
+        db.tx(() => { for (const r of rankHumans(seats, table)) db.q.setResult.run(r.place, r.settlements, r.pop, room.id, r.country); });
+    }
+
+    // let a single-player game go from memory: saved where it stands, and brought back when its player opens it again
+    function unload(room) {
+        if (room.over || room.ending || room.unloading || closing) return;
+        room.unloading = true;
+        log.info("game.unloaded", { game: room.id, day: room.day });
+        retire(room);
+    }
+
     // stop a game's worker for good, saving where it got to
     function retire(room) {
         clearTimers(room);
-        const done = () => { room.worker.terminate().catch(() => {}); live.delete(room.id); };
+        const done = () => { room.worker.terminate().catch(() => {}); live.delete(room.id); room.onGone(); };
         const timer = setTimeout(done, 3000);
         timer.unref();
         room.onStopped = () => { clearTimeout(timer); done(); };
@@ -183,6 +213,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         if (seat.state === "quit") return { error: "you left this game" };
         if (room.ending) return { error: "this game is over: nobody was left" };
         seat.sockets.add(socketId);
+        if (room.idleTimer) { clearTimeout(room.idleTimer); room.timers.delete(room.idleTimer); room.idleTimer = null; }
         if (seat.state !== "present") {
             if (seat.timer) { clearTimeout(seat.timer); room.timers.delete(seat.timer); seat.timer = null; }
             if (room.multi) caretaker(room, seat.country, null);
@@ -202,6 +233,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             // leaving a single-player game pauses it; it waits for the player to come back
             seat.state = "idle";
             setPaused(room, true);
+            if (!room.over) room.idleTimer = later(room, idleMs, () => unload(room));
             return;
         }
         if (room.over || room.ending) return;                       // nothing is left to look after
@@ -218,6 +250,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         if (!seat) return { ok: false, error: "you have no seat in this game" };
         if (!room.multi) return { ok: false, error: "a single-player game just waits for you: close the page" };
         if (seat.state === "quit") return { ok: true };
+        db.q.markQuit.run(room.day, room.id, userId);
         if (seat.timer) { clearTimeout(seat.timer); room.timers.delete(seat.timer); seat.timer = null; }
         seat.state = "quit";
         seat.sockets.clear();
@@ -226,6 +259,25 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         log.info("game.seat_quit", { game: room.id, country: seat.country });
         checkEnd(room);
         return { ok: true };
+    }
+
+    // an active game from its latest snapshot and the commands after it
+    function resume(row) {
+        try {
+            if (row.rules_version !== RULES_VERSION) throw new Error("played under rules version " + row.rules_version + ", this server plays " + RULES_VERSION);
+            const snap = db.q.snapshot.get(row.id);
+            const commands = db.q.commandsFrom.all(row.id, snap ? snap.day : 0).map((c) => ({ day: c.day, cmd: JSON.parse(c.cmd) }));
+            const room = launch(row, { snapshot: snap ? snap.state : null, commands });
+            // a multiplayer game does not pause: it runs on at once, and its players are away until they are back
+            room.ready.then(() => {
+                log.info("game.resumed", { game: row.id, day: row.day, from: snap ? snap.day : 0, commands: commands.length });
+                if (room.multi) setPaused(room, false);
+            }, () => {});
+            return room;
+        } catch (err) {
+            log.error("game.resume_failed", { game: row.id, err });
+            return null;
+        }
     }
 
     // ---------- tables ----------
@@ -324,23 +376,64 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             return { ok: true, id: row.id };
         },
 
-        // every active game back into memory, each from its latest snapshot and the commands after it
+        // a game in memory, or brought back from its snapshot and the commands after it — for someone with a seat in it, so
+        // that nobody can make the server load other people's games: null if there is no such game going
+        async open(id, userId) {
+            id = Number(id);
+            let room = live.get(id);
+            while (room?.unloading) { await room.gone; room = live.get(id); }     // one being let go is let go first
+            if (room) return room;
+            const row = db.q.game.get(id);
+            return row?.status === "active" && db.q.seatOfUser.get(id, userId) ? resume(row) : null;
+        },
+
+        // after a restart, the games with several people are brought back at once — they run on without waiting for anyone;
+        // a single-player game waits to be opened (open)
         resumeAll() {
             for (const row of db.q.activeGames.all()) {
-                try {
-                    if (row.rules_version !== RULES_VERSION) throw new Error(`played under rules version ${row.rules_version}, this server plays ${RULES_VERSION}`);
-                    const snap = db.q.snapshot.get(row.id);
-                    const commands = db.q.commandsFrom.all(row.id, snap ? snap.day : 0).map((c) => ({ day: c.day, cmd: JSON.parse(c.cmd) }));
-                    const room = launch(row, { snapshot: snap ? snap.state : null, commands });
-                    // a multiplayer game does not pause: it runs on at once, and its players are away until they are back
-                    room.ready.then(() => {
-                        log.info("game.resumed", { game: row.id, day: row.day, from: snap ? snap.day : 0, commands: commands.length });
-                        if (room.multi) setPaused(room, false);
-                    });
-                } catch (err) {
-                    log.error("game.resume_failed", { game: row.id, err });
-                }
+                if (db.q.seats.all(row.id).length > 1) resume(row);
             }
+        },
+
+        // a replay: everything a browser needs to play a finished game over with the engine it already has
+        replayOf(id) {
+            const g = db.q.replayGame.get(Number(id));
+            if (!g) return { status: 404, error: "no such game" };
+            if (g.status !== "finished" && g.status !== "abandoned") return { status: 409, error: "that game is still being played" };
+            if (g.rules_version !== RULES_VERSION) return { status: 409, error: "that game was played under rules version " + g.rules_version + ", and this server plays " + RULES_VERSION + ", so it cannot be replayed exactly" };
+            const seats = db.q.seats.all(g.id);
+            return {
+                status: 200, replay: {
+                    id: g.id, scenario: g.scenario, seed: g.seed, rulesVersion: g.rules_version, endDay: g.day, winner: g.winner, resultHash: g.result_hash,
+                    humans: seats.map((x) => ({ country: x.country, username: x.username.startsWith("deleted-") ? "deleted" : x.username })),
+                    log: db.q.allCommands.all(g.id).map((c) => ({ day: c.day, country: c.country, source: c.source, cmd: JSON.parse(c.cmd) })),
+                },
+            };
+        },
+
+        // the people ranked over the games they finished: most firsts among people, then the best average place
+        leaderboard: () => db.q.leaderboard.all().map((r) => ({
+            username: r.username, games: r.games, shared: r.shared, firsts: r.firsts, victories: r.victories,
+            averagePlace: r.shared ? Math.round(r.place_sum / r.shared * 100) / 100 : null,
+        })).sort((x, y) => y.firsts - x.firsts || y.victories - x.victories || (x.averagePlace ?? 99) - (y.averagePlace ?? 99) || y.games - x.games || (x.username < y.username ? -1 : 1)),
+
+        // games that should be ticking and have not for this long (in ms): the loop is stuck (src/health.js)
+        stalled: (ms) => [...live.values()].filter((r) => !r.paused && !r.over && !r.ending && !r.unloading && performance.now() - r.lastTick > ms).map((r) => r.id),
+
+        // housekeeping, run daily by the server (src/retention.js)
+        sweepTables(hours) {
+            const stale = db.q.staleTables.all("-" + hours + " hours");
+            for (const t of stale) {
+                db.q.setStatus.run("aborted", t.id);
+                for (const x of seatsOf(t.id)) io.to("user:" + x.userId).emit("table:cancelled", { id: t.id });
+            }
+            if (stale.length) { log.info("table.expired", { tables: stale.length, hours }); tellLobby(); }
+            return stale.length;
+        },
+        sweepChat(days) {
+            const removed = days < 0 ? 0 : db.q.deleteOldChat.run("-" + days + " days").changes;
+            if (removed) log.info("chat.retention", { removed, days });
+            return removed;
         },
 
         // the games a person has a seat in

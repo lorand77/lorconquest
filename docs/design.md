@@ -278,7 +278,55 @@ the deadline passes, the default applies. Computer players answer on their refle
   stays paused until its player returns.
 - **Replays** of finished games need the rules only — not the AI, because its commands are in the
   log. Changing the AI never breaks an old replay. Changing the rules does: like LorCiv, every
-  game records the rules version it was played under.
+  game records the rules version it was played under. What was built is in *Replays and results*, below.
+- **A single-player game is not kept in memory for nothing** (milestone 7): when its player has been away for `IDLE_MS` (10
+  minutes) its worker stops, the game saved where it stood, and the next time they open it it is brought back from its
+  snapshot and log — as after a restart. So a restart brings back only the games with several people, which run on at once.
+  Only someone with a seat in a game can make the server load it.
+
+### Replays and results
+
+A game that ends — won, or the end date — tells the server three things in its last message: who won, how every country
+stands (`scores`: settlements, a subject counting for its overlord, then people), and a **fingerprint** of the final state
+(FNV-1a over the snapshot's text, `src/engine/hash.js`). The server stores the fingerprint with the game and ranks the people
+in it (`src/game/results.js`): by how their country stood, with anyone who quit placed after everyone who stayed, the later
+quitter first. (An abandoned game has no result.)
+
+- **The leaderboard** (`GET /api/leaderboard`, `public/leaderboard.html`) counts, per person and over finished games: the games,
+  those with other people in them, how often they came first among those people, their average place there, and their
+  *victories* — their country winning the whole game, a game alone included. It is ordered by firsts, then victories, then
+  the average place. A deleted account is left off.
+- **A replay** (`GET /api/games/:id/replay`, `public/replay.html`) is, for anyone signed in, a finished or abandoned game's seed,
+  humans (a deleted player shows as "deleted"), every command with its day, its last day and its fingerprint — 2 MB of JSON for
+  a game of 210 years, a tenth of that compressed. The browser makes the game from the seed with the engine it already has
+  and plays the log back (`public/js/replayer.js`): each day its commands, then the day, exactly as the server did. It keeps a
+  snapshot every two years to go back to a day quickly, goes forward in chunks so the page stays alive, and at the last day
+  compares its own fingerprint with the server's: "This replay ends exactly as the game did", or a warning that it did not. The
+  warning matters because the design leans on one engine agreeing with itself: a browser whose arithmetic differs from Node's
+  would play the log out differently. The server answers 409 for a game still going, and for one played under another rules
+  version, which cannot be replayed exactly.
+- **The map** is drawn by the same code on the game page and the replay page (`public/js/mapdraw.js`, pure functions of a state
+  and a day, tested in Node).
+
+### Operations
+
+How it is run is in [setup.md](setup.md); the program's parts for it are:
+
+- **`/health`** (`src/health.js`): 200 `{ ok: true }`, or 503 and the reason in the log, when the database does not read, the
+  disk holding it is under 10% free, or a game that should be ticking (not paused, not over) has not ticked for
+  `HEALTH_STALL_MS` (15 s) — a stuck loop is the failure pm2 cannot see. No sign-in and no log line: it is polled.
+- **Housekeeping** (`src/retention.js`, started by `server.js` only): hourly, tables nobody started are taken down after
+  `TABLE_HOURS` (24), and the chat of games that ended is deleted `CHAT_RETENTION_DAYS` (30) after they did — the privacy page
+  says so. Expired sessions are swept hourly too.
+- **The owner's tools:** `tools/backup.js` (a consistent copy of the database with `VACUUM INTO`, taken while the server runs;
+  `scripts/backup.sh` sends it to Backblaze B2 and prunes), and `tools/user.js` (set a password; delete an account — which
+  empties and renames it `deleted-<id>`, deletes its chat and sessions, puts away its single-player games and tables, and
+  refuses while a game with other people is going). The logic is `src/accounts.js`, tested.
+- **Behind the proxy** the client's address is the one Caddy forwards (`TRUST_PROXY=1` in production), which the login throttle
+  counts; port 3002 must therefore stay closed to the world, or anyone could forge it.
+- **The terms and privacy pages** (`public/terms.html`, `public/privacy.html`) state what the code does, and a test holds the
+  checkable parts true: no password or chat text in a log, an address only in the line for a throttled request, chat kept 30
+  days. A change to what is stored, shown or kept changes the page in the same commit.
 
 ### Messages
 

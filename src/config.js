@@ -36,6 +36,17 @@ export default {
     // a player away this long has their country played by the full computer player (a caretaker until then)
     SETUP_MS: intEnv("SETUP_MS", 60 * 1000),
     AWAY_MS: intEnv("AWAY_MS", 2 * 60 * 1000),
+    // a single-player game whose player has gone is let go from memory after this long, and brought back when they return
+    IDLE_MS: intEnv("IDLE_MS", 10 * 60 * 1000),
+    // the proxy in front of the server (Caddy): how many hops to trust for the client's address, which the login throttle
+    // and the logs use. 0 when the server is reached directly; in production 1, and port 3002 must then stay closed.
+    TRUST_PROXY: intEnv("TRUST_PROXY", PRODUCTION ? 1 : 0),
+    // housekeeping (src/retention.js): tables nobody started are taken down after this many hours; a game's chat is
+    // deleted this many days after it ends (-1 keeps it for ever)
+    TABLE_HOURS: intEnv("TABLE_HOURS", 24),
+    CHAT_RETENTION_DAYS: intEnv("CHAT_RETENTION_DAYS", 30),
+    // /health reports a game unhealthy when it should be running and has not ticked for this long
+    HEALTH_STALL_MS: intEnv("HEALTH_STALL_MS", 15 * 1000),
     // the most people in one game
     MAX_HUMANS: intEnv("MAX_HUMANS", 4),
     // silent, error, warn, info or debug (src/log.js)

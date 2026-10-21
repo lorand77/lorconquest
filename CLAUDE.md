@@ -11,6 +11,7 @@ dependencies.
 - [docs/design.md](docs/design.md) — how the software works and why. Read it before changing
   `src/engine/`; when a decision changes, change it there in the same commit.
 - [docs/plan.md](docs/plan.md) — the milestones and where we are.
+- [docs/setup.md](docs/setup.md) — running it, putting it online (EC2, pm2, Caddy), backups, accounts by hand, monitoring.
 - `scenarios/` — other scenarios (`node tools/map.js scenarios/<name>`); `lorciv-temporary-import/`
   is an earlier game kept for reference, not part of this one.
 
@@ -24,6 +25,8 @@ dependencies.
 - `node tools/simulate.js [--games N --years N --seed N --scenario docs --jobs N]` — AI-only games, headless, in parallel: wins by
   country, wars, peaces, refused commands, timing. `SIM_DEBUG=1` prints every refused command. What it showed: `experiments/`.
 - `AI_SEEDS=6 AI_YEARS=60 AI_SCENARIO=historical-1440 node --test test/ai/ai.test.js` — the AI games of the suite, bigger.
+- `node tools/user.js password|delete <name>` — set a password, or delete an account for good; `node tools/backup.js [folder]` — a
+  consistent copy of the database while the server runs (`scripts/backup.sh` is the nightly job). See docs/setup.md.
 - `node tools/run.js <script>` — play a scripted game in the terminal; the format is at the top of
   `tools/run.js`, examples in `test/wars/`.
 - `node tools/bench.js [--years N]` — time a game day with every country at war.
@@ -38,6 +41,8 @@ dependencies.
   way time moves on. The module list is in design.md, *The engine*.
 - `src/app.js` builds the server (Express, Socket.IO, the database, every game) without listening;
   `src/server.js` listens. `src/db.js` is the database (node:sqlite): schema and every query.
+- `src/health.js` (`/health`), `src/retention.js` (tables and chat tidied hourly; started by `server.js` only), `src/accounts.js` (what
+  `tools/user.js` does), `src/game/results.js` (how a finished game ranks its people).
 - `src/auth/` — accounts: `routes.js` (register, login, logout, me), `session.js` (the cookie and the sessions table, shared by REST
   and the socket handshake), `password.js` (scrypt), `origin.js` (the same-origin check), `throttle.js`, `usernamePolicy.js`.
 - `src/engine/` also holds diplomacy: `relations.js` (who is allied, subject or friend), `opinion.js` (the computer's
@@ -51,7 +56,9 @@ dependencies.
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
   `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
   Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node) and
-  `login.html` the sign-in page (`js/login.js`, `js/auth.js`).
+  `login.html` the sign-in page (`js/login.js`, `js/auth.js`); `replay.html` plays a finished game over (`js/replay.js`, with
+  `js/replayer.js` — the pure part, tested against real games — and `js/mapdraw.js`, which the game page shares); `leaderboard.html`;
+  `terms.html` and `privacy.html`, which must stay true of what the code does.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
 - `tools/` — the runner, the bench, the map tools.
 - `test/ai/` — each AI layer on the tiny map, the caretaker, and computer-only games on the real map (invariants every month,
@@ -76,6 +83,8 @@ dependencies.
 - Every module opens with a comment saying what it does and why. Keep that up.
 - Never trust the client: legality is decided by the engine's validator on the server.
 - Commit subjects are short and imperative.
+- `public/privacy.html` states what is stored, who sees it and how long it is kept, and what the logs hold. Change what the code
+  does and the page in the same commit; `test/server/finishing.test.js` holds the checkable parts true.
 
 ## Gotchas
 
@@ -86,6 +95,8 @@ dependencies.
   for its answer and to anyone else is answered at once: a replay must be given the same humans.
 - Who is away or back is not saved (`rooms.js`): a resumed game with several people starts with every player away, from that
   moment. The two minutes and the setup minute are settings (`AWAY_MS`, `SETUP_MS`), which the tests shorten to milliseconds.
+- A replay is only exact under the rules version the game was played under: `RULES_VERSION` is stored with each game, and the replay
+  route refuses the others. The replay page compares a fingerprint of the final state (`src/engine/hash.js`) with the server's.
 - No dependency may be added for accounts: passwords use `node:crypto` scrypt and sessions are our own (`src/auth/`).
 - Diplomacy that can leave a country "friendly" with one it is at war with (an alliance it kept after joining the
   other side) breaks sieges, retreats and supply: `joinWar` ends such an alliance. The fuzz checks the invariants.

@@ -18,10 +18,10 @@ export function tempDb() {
 }
 
 // { baseUrl, app, close }; `lines`, if given, collects every log line at info and up
-export async function startServer({ dbPath, tickMs = 2, statsEvery = 365, lines, root, setupMs = 0, awayMs = 60000, limits = { loginMax: 1000, registerMax: 1000 } } = {}) {
+export async function startServer({ dbPath, tickMs = 2, statsEvery = 365, lines, root, setupMs = 0, awayMs = 60000, idleMs = 600000, stallMs, trustProxy, limits = { loginMax: 1000, registerMax: 1000 } } = {}) {
     const level = lines ? "info" : process.env.TEST_LOG ? "debug" : "silent";
     const logger = log.createLogger({ level, write: lines ? (t) => lines.push(t) : (t) => process.stdout.write(t) });
-    const app = createApp({ dbPath, tickMs, statsEvery, log: logger, setupMs, awayMs, limits, ...(root ? { root } : {}) });
+    const app = createApp({ dbPath, tickMs, statsEvery, log: logger, setupMs, awayMs, idleMs, limits, ...(stallMs !== undefined ? { stallMs } : {}), ...(trustProxy !== undefined ? { trustProxy } : {}), ...(root ? { root } : {}) });
     await new Promise((resolve) => app.server.listen(0, "127.0.0.1", resolve));
     const baseUrl = `http://127.0.0.1:${app.server.address().port}`;
     const sockets = new Set();

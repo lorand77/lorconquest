@@ -49,7 +49,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
         on("lobby:enter", (msg, ack) => { socket.join("lobby"); reply(ack, { ok: true }); });
 
         on("join", async (msg, ack) => {
-            const r = rooms.get(msg?.gameId);
+            const r = await rooms.open(msg?.gameId, user.id);
             if (!r) return reply(ack, { ok: false, error: "no such game" });
             try {
                 await r.ready;

@@ -44,7 +44,9 @@ export function tableActions(table, me, scenario, maxHumans = 4) {
 export function gameLine(game, scenarioName, countryName, dateText) {
     const people = game.people > 1 ? `, ${game.people} people` : "";
     const where = `${scenarioName}, ${countryName}${people}, ${dateText}`;
-    if (game.status === "finished") return { text: `${where} — won by ${game.winner ?? "nobody"}`, open: false };
-    if (game.status === "abandoned") return { text: `${where} — abandoned: nobody was left`, open: false };
-    return { text: where, open: game.live };
+    // a finished or abandoned game is not opened but watched, as a replay
+    if (game.status === "finished") return { text: `${where} — won by ${game.winner ?? "nobody"}`, open: false, replay: true };
+    if (game.status === "abandoned") return { text: `${where} — abandoned: nobody was left`, open: false, replay: true };
+    // a game that is going can always be opened: one let go from memory is brought back
+    return { text: where, open: true, replay: false };
 }

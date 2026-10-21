@@ -4,7 +4,7 @@ The order in which the game gets built. The rules are in [RULES.md](RULES.md), t
 [SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
 says what to build when, and how to tell each step is done.
 
-**Status:** milestones 1 to 6 are done (2026-10-21); milestone 7, finishing, is next.
+**Status:** all seven milestones are built (2026-10-21). What is left is putting it online and playing it: see milestone 7's *Done*.
 
 ## How we work
 
@@ -282,3 +282,18 @@ the privacy and terms pages (milestone 7).
 **Check:** the game is online, and a finished game's replay ends exactly as the game did.
 
 **Depends on:** 6.
+
+**Done**, but for the first half of its check. **Replays:** a game that ends stores the fingerprint of its final state and each
+person's standing; the server gives a finished game's seed, humans and command log to anyone signed in (409 while it is going,
+and under other rules than it was played under), and the replay page plays it over in the browser with the engine it has —
+speed, a slider to any day, who is ahead, the events that mattered — and, at the end, says whether it came out exactly as the
+game did. `npm test` checks that on real games: the server's rebuild from the log has the stored fingerprint, and the
+browser's module reaches the same state from the start, from a seek back to a keyframe and in chunks. **The leaderboard** ranks
+people over the games they finished (firsts among the people in a game, average place, victories; someone who quit is placed
+last). **Online:** `/health` (database, disk, and a game whose loop has stopped), a daily sweep of old chat and unstarted tables,
+`tools/backup.js` and `scripts/backup.sh` for the nightly B2 backup, `tools/user.js` for passwords and account deletion,
+`trust proxy` behind Caddy, `.env` support, the terms and privacy pages (with a test that holds what they say about logs and
+chat true), and `docs/setup.md`, the whole deployment on the shared EC2 machine. Single-player games are now let go from memory
+when their player has been gone ten minutes, and brought back when they return, as the design always said. **Not checked by
+machine, and not done:** that the game is *online* — nothing here can deploy it; the domain and the contact address
+(`lorconquest@lorand77.dev`) on the legal pages are guesses to confirm — and that four browsers, or any browser, play it.

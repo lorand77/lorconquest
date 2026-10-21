@@ -9,6 +9,10 @@
 //   POST /api/tables/:id/cancel  -> { ok }                 the host takes the table down
 //   POST /api/tables/:id/start   -> { ok, id }             the host starts the game; seats left open are the computer's
 //   GET  /api/games              the games you have a seat in: [{ id, scenario, status, winner, day, country, people, live }]
+//   GET  /api/games/:id/replay   a finished or abandoned game, to play over in the browser: its seed, humans and every command,
+//                                with the fingerprint its final state must have; 409 while it is going on or if it was played
+//                                under other rules (src/game/rooms.js, replayOf)
+//   GET  /api/leaderboard        the people ranked over the games they finished (rooms.js, leaderboard)
 import crypto from "node:crypto";
 import express from "express";
 import { requireAuth } from "../auth/session.js";
@@ -66,6 +70,14 @@ export function gameRoutes(rooms, scenarios) {
     });
 
     router.get("/games", (req, res) => res.json(rooms.gamesOf(req.user.id)));
+
+    router.get("/games/:id/replay", (req, res) => {
+        const r = rooms.replayOf(req.params.id);
+        if (r.error) return res.status(r.status).json({ error: r.error });
+        res.json(r.replay);
+    });
+
+    router.get("/leaderboard", (req, res) => res.json(rooms.leaderboard()));
 
     return router;
 }

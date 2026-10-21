@@ -3,8 +3,9 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, armyPoint, buildLegs, fleetPoints, formatMen, formatNumber, routeLine } from "./mirror.js";
+import { applyChanges, applyPrivate, buildLegs, formatNumber, routeLine } from "./mirror.js";
 import { createMapView } from "./mapview.js";
+import { armyMarkers as drawArmies, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { formatCountdown, presenceText } from "./lobbylogic.js";
@@ -254,40 +255,13 @@ function renderSetup() {
     if (!$("setup").hidden) $("setup").textContent = "The clock starts in " + formatCountdown(left) + ": look around and give your first orders";
 }
 
-// armies at one place are drawn in a column beside its marker
-function armyMarkers(day) {
-    const at = new Map();
-    return Object.values(state.armies).map((a) => {
-        let [x, y] = armyPoint(a, day, legs, game.map.nodes);
-        if (a.at) {
-            const i = at.get(a.at) ?? 0;
-            at.set(a.at, i + 1);
-            x += 13;
-            y += -7 + i * 16;
-        } else y -= 12;
-        return { id: a.id, x, y, colour: colourOf(a.owner), label: formatMen(menOf(a)), mine: a.owner === me, selected: sel?.kind === "army" && sel.id === a.id, retreating: a.retreating };
-    });
-}
-
-function fleetMarkers(day) {
-    const points = fleetPoints(state, game.map.nodes, game.map.zones, day);
-    return Object.values(state.fleets).map((f) => {
-        const [x, y] = points.get(f.id);
-        const ships = Object.values(f.ships).reduce((k, v) => k + v, 0);
-        return { id: f.id, x, y, colour: colourOf(f.owner), label: String(ships), mine: f.owner === me, selected: sel?.kind === "fleet" && sel.id === f.id, sailing: Boolean(f.moving) };
-    });
-}
+const markerOptions = () => ({ me, selected: sel });
+const armyMarkers = (day) => drawArmies(state, game.map.nodes, legs, day, colourOf, markerOptions());
 
 function renderMap() {
-    const now = Object.values(state.settlements).map((s) => s.owner).join();
+    const now = ownersKey(state);
     if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); }
-    map.setArmies(armyMarkers(displayDay()));
-    map.setFleets(fleetMarkers(displayDay()));
-    map.setPosts(Object.entries(state.posts).map(([key, p]) => { const n = game.map.nodes.get(key); return { x: n.x, y: n.y, n: p.n, colour: "#222" }; }));
-    map.setSieges(Object.values(state.settlements).filter((s) => s.siege).map((s) => {
-        const n = game.map.nodes.get(String(s.id));
-        return { x: n.x, y: n.y, frac: Math.min(1, (state.day - s.siege.start) / (s.siege.end - s.siege.start)) };
-    }));
+    paintMap(map, state, game.map.nodes, game.map.zones, legs, displayDay(), colourOf, markerOptions());
     const a = plan && state.armies[plan.army];
     map.setRoute(a ? routeLine(a, plan.path, displayDay(), legs, game.map.nodes) : null);
 }
@@ -296,7 +270,7 @@ function renderMap() {
 function frame() {
     if (state && !paused) {
         for (const m of armyMarkers(displayDay())) if (state.armies[m.id]?.march) map.moveArmy(m.id, m.x, m.y);
-        for (const m of fleetMarkers(displayDay())) if (state.fleets[m.id]?.moving) map.moveFleet(m.id, m.x, m.y);
+        for (const m of drawFleets(state, game.map.nodes, game.map.zones, displayDay(), colourOf, markerOptions())) if (state.fleets[m.id]?.moving) map.moveFleet(m.id, m.x, m.y);
     }
     requestAnimationFrame(frame);
 }

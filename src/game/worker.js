@@ -11,10 +11,10 @@
 //      { type: "caretaker", country, mode }  (mode "caretaker", "full" or null: who plays a human's country while away)  { type: "stop" }
 // Out: { type: "ready", day }  { type: "tick", day, events, pub, priv, commands, snapshot }
 //      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
-//      { type: "stats", days, mean, max }  { type: "over", day, winner }  { type: "stopped", day, commands }
+//      { type: "stats", days, mean, max }  { type: "over", day, winner, scores, hash }  { type: "stopped", day, commands }
 // A game that has a winner (the engine says so) is saved one last time and its loop stops.
 import { parentPort, workerData } from "node:worker_threads";
-import { replay, resume } from "../engine/index.js";
+import { fingerprint, replay, resume, scores } from "../engine/index.js";
 import { createAI } from "../ai/index.js";
 import { Changes, viewFor } from "./view.js";
 
@@ -56,8 +56,10 @@ function tick() {
     events.push(...game.advance());
     if (!game.state.winner) for (const o of ai.orders(game, events)) queue.push({ country: o.country, source: o.source, cmd: o.cmd });
     if (game.day % 365 === 0 || game.state.winner) snap = { day: game.day, state: game.snapshot() };
+    const hash = game.state.winner ? fingerprint(snap.state) : null;
     publish(events);
-    if (game.state.winner) { post({ type: "over", day: game.day, winner: game.state.winner }); stopping = true; }
+    // the end: who won, how every country stands, and the fingerprint of the final state a replay must come to (design.md, "Replays")
+    if (game.state.winner) { post({ type: "over", day: game.day, winner: game.state.winner, scores: scores(game.state), hash }); stopping = true; }
     times.push(performance.now() - t0);
     if (times.length >= statsEvery) {
         post({ type: "stats", days: times.length, mean: times.reduce((a, b) => a + b, 0) / times.length, max: Math.max(...times) });

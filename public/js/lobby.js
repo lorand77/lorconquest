@@ -76,7 +76,7 @@ async function refresh() {
     if (!tables.length) $("tables").textContent = "None. Open one above.";
     $("games").replaceChildren(...games.map((g) => {
         const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day));
-        return make("li", {}, line.open ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text);
+        return make("li", {}, line.open ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text, line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
     }));
     if (!games.length) $("games").textContent = "None yet.";
 }

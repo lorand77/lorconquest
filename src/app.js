@@ -12,6 +12,7 @@ import { authRoutes } from "./auth/routes.js";
 import { createSessions } from "./auth/session.js";
 import { createThrottles } from "./auth/throttle.js";
 import { openDb } from "./db.js";
+import { health } from "./health.js";
 import { createRooms } from "./game/rooms.js";
 import { gameRoutes } from "./game/routes.js";
 import { loadScenarios } from "./game/scenarios.js";
@@ -39,7 +40,8 @@ function securityHeaders(req, res, next) {
 // `setupMs` and `awayMs` are the multiplayer minute and the two minutes (RULES.md §1); `limits` the login throttles (config.js)
 export function createApp({
     dbPath = config.DB_PATH, tickMs = config.TICK_MS, statsEvery = config.STATS_EVERY_DAYS, root = config.ROOT, log = defaultLog,
-    setupMs = config.SETUP_MS, awayMs = config.AWAY_MS, maxHumans = config.MAX_HUMANS, production = config.PRODUCTION, limits = {},
+    setupMs = config.SETUP_MS, awayMs = config.AWAY_MS, maxHumans = config.MAX_HUMANS, idleMs = config.IDLE_MS, production = config.PRODUCTION, limits = {},
+    trustProxy = config.TRUST_PROXY, stallMs = config.HEALTH_STALL_MS,
 } = {}) {
     const db = openDb(dbPath);
     const sessions = createSessions({ db, name: config.SESSION_COOKIE, days: config.SESSION_DAYS, production });
@@ -52,7 +54,12 @@ export function createApp({
     const scenarios = loadScenarios(root);
     const app = express();
     app.disable("x-powered-by");
+    // behind Caddy the client's address is the one it forwards (and https is known from X-Forwarded-Proto)
+    if (trustProxy) app.set("trust proxy", trustProxy);
     app.use(securityHeaders);
+
+    // ahead of the log and the session: an uptime check every few minutes needs neither
+    app.get("/health", (req, res) => healthCheck(req, res));
 
     // one line per /api request, with the route's pattern, never the URL
     app.use("/api", (req, res, next) => {
@@ -72,7 +79,8 @@ export function createApp({
 
     const server = http.createServer(app);
     const io = new Server(server, { allowRequest: allowSocketRequest(log) });
-    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans });
+    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs });
+    const healthCheck = health({ db, rooms, log, dbPath, stallMs });
     app.use("/api", authRoutes({ db, sessions, throttles, io }));
     app.use("/api", gameRoutes(rooms, scenarios));
 

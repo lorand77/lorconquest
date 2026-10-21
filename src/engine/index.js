@@ -2,6 +2,7 @@
 // Node and the browser (design.md, "The engine"): no Node-only or browser-only APIs, no clock, no Math.random.
 
 export { Game, replay, resume } from "./game.js";
+export { fingerprint } from "./hash.js";
 export { COMMAND_TYPES, applyCommand } from "./commands.js";
 export { RULES_VERSION, FORMAT, atWar, armiesAt, armyList, canEnter, fleetList, isCore, isFriend, isRebel, ownerOf } from "./state.js";
 export { agreementsBetween, allied, alliesOf, friendly, grantsAccess, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectKind, subjectsOf, wouldCycle } from "./relations.js";

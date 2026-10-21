@@ -3,6 +3,7 @@
 import config from "./config.js";
 import log from "./log.js";
 import { createApp } from "./app.js";
+import { startRetention } from "./retention.js";
 
 // an uncaught error leaves the process in an unknown state: log it, with its stack, and exit
 function crash(kind, err) {
@@ -12,7 +13,8 @@ function crash(kind, err) {
 process.on("uncaughtException", (err) => crash("uncaught_exception", err));
 process.on("unhandledRejection", (err) => crash("unhandled_rejection", err));
 
-const { server, close } = createApp();
+const { server, close, rooms } = createApp();
+startRetention(rooms, log);
 
 // on a stop signal every game saves the day it reached, so a restart resumes it exactly there
 for (const signal of ["SIGINT", "SIGTERM"]) {

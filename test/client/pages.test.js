@@ -36,16 +36,20 @@ test("a table offers the free countries by name, and the buttons that suit who i
     assert.equal(tableActions(full, { id: 9, username: "carol" }, scenario).canJoin, false);
 });
 
-test("a game's line says where it stands, and only a running one can be opened", () => {
+test("a game's line says where it stands: one going can be opened (even if the server let it go from memory), one over is watched", () => {
     const g = { id: 1, status: "active", live: true, people: 1 };
-    assert.deepEqual(gameLine(g, "Mitteleuropa", "Bavaria", "1 January 1441"), { text: "Mitteleuropa, Bavaria, 1 January 1441", open: true });
-    assert.deepEqual(gameLine({ ...g, people: 3, live: false }, "Mitteleuropa", "Bavaria", "d"), { text: "Mitteleuropa, Bavaria, 3 people, d", open: false });
-    assert.match(gameLine({ ...g, status: "finished", winner: "AUS" }, "M", "B", "d").text, /won by AUS/);
-    assert.match(gameLine({ ...g, status: "abandoned" }, "M", "B", "d").text, /abandoned/);
+    assert.deepEqual(gameLine(g, "Mitteleuropa", "Bavaria", "1 January 1441"), { text: "Mitteleuropa, Bavaria, 1 January 1441", open: true, replay: false });
+    assert.deepEqual(gameLine({ ...g, people: 3, live: false }, "Mitteleuropa", "Bavaria", "d"), { text: "Mitteleuropa, Bavaria, 3 people, d", open: true, replay: false });
+    const won = gameLine({ ...g, status: "finished", winner: "AUS" }, "M", "B", "d");
+    assert.match(won.text, /won by AUS/);
+    assert.deepEqual([won.open, won.replay], [false, true]);
+    const gone = gameLine({ ...g, status: "abandoned" }, "M", "B", "d");
+    assert.match(gone.text, /abandoned/);
+    assert.deepEqual([gone.open, gone.replay], [false, true]);
 });
 
 // each page with the script that drives it
-const PAGES = [["login.html", "login.js"], ["index.html", "lobby.js"], ["game.html", "game.js"]];
+const PAGES = [["login.html", "login.js"], ["index.html", "lobby.js"], ["game.html", "game.js"], ["replay.html", "replay.js"], ["leaderboard.html", "leaderboard.js"]];
 
 test("every element a page's script looks for is in the page", () => {
     for (const [html, script] of PAGES) {
