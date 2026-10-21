@@ -1,8 +1,11 @@
 // The map on screen (design.md, "The map on screen"): map.svg shown as it is, with lands recoloured by owner,
 // borders redrawn where owners change, and an overlay of armies, siege rings and a planned route. Drag to pan,
 // wheel or the +/- buttons to zoom; a click (no drag) is reported as what it hit: an army, a place (a settlement
-// or pass marker), a land, or the sea. Pointer events, so mouse and touch take one path.
+// or pass marker), a land, or the sea. Pointer events, so mouse and touch take one path. Zoomed out, a settlement shows only the
+// short form in its marker; zoomed in to twice the whole map or more, its name too (the svg gets the class "zoomed").
 const NS = "http://www.w3.org/2000/svg";
+// names show from this zoom on: the whole map's width over the width in view
+const NAMES_FROM = 2;
 const el = (name, attrs = {}) => {
     const e = document.createElementNS(NS, name);
     for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
@@ -16,7 +19,10 @@ export async function createMapView(container, svgUrl, onPick) {
     svg.removeAttribute("height");
     const [, , W, H] = svg.getAttribute("viewBox").split(" ").map(Number);
     let view = { x: 0, y: 0, w: W, h: H };
-    const setView = () => svg.setAttribute("viewBox", `${view.x} ${view.y} ${view.w} ${view.h}`);
+    const setView = () => {
+        svg.setAttribute("viewBox", `${view.x} ${view.y} ${view.w} ${view.h}`);
+        svg.classList.toggle("zoomed", W / view.w >= NAMES_FROM);
+    };
 
     const layer = (id) => { const g = el("g", { id }); svg.appendChild(g); return g; };
     const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");

@@ -19,7 +19,8 @@
 .mtn-outline{fill:none;stroke:#5f4128;stroke-width:1.4;stroke-linejoin:round}
 .pass{fill:#ffe600;stroke:#282828;stroke-width:1.5;stroke-linejoin:round}
 .marker{fill:#c9161f}
-.number{fill:#fff;font-size:10px;font-weight:bold;text-anchor:middle}
+.abbr{fill:#fff;font-size:8px;font-weight:bold;text-anchor:middle}
+.name{display:none;fill:#1e1e1e;font-size:9px;font-weight:600;paint-order:stroke;stroke:#fff;stroke-width:2.5px;stroke-linejoin:round}
 .label{fill:#464646;font-size:15px;text-anchor:middle}
 .label.small{font-size:10px}
 .sea-divider{fill:none;stroke:#3d7f9c;stroke-width:1.5;stroke-dasharray:6 4}
@@ -1452,174 +1453,174 @@
   <polygon id="pass-P13" class="pass" points="230,1051.45 220,1068.77 240,1068.77"/>
 </g>
 <g id="settlements">
-  <g id="settlement-1" class="settlement town NOR"><circle class="marker" cx="484" cy="45" r="9"/><text class="number" x="484" y="48.5">1</text></g>
-  <g id="settlement-2" class="settlement town NOR"><circle class="marker" cx="427" cy="107" r="9"/><text class="number" x="427" y="110.5">2</text></g>
-  <g id="settlement-3" class="settlement town NOR"><circle class="marker" cx="241" cy="113" r="9"/><text class="number" x="241" y="116.5">3</text></g>
-  <g id="settlement-4" class="settlement town SWE"><circle class="marker" cx="807" cy="48" r="9"/><text class="number" x="807" y="51.5">4</text></g>
-  <g id="settlement-5" class="settlement town SWE"><circle class="marker" cx="829" cy="97" r="9"/><text class="number" x="829" y="100.5">5</text></g>
-  <g id="settlement-6" class="settlement town SWE"><circle class="marker" cx="715" cy="187" r="9"/><text class="number" x="715" y="190.5">6</text></g>
-  <g id="settlement-7" class="settlement town SWE"><circle class="marker" cx="535" cy="253" r="9"/><text class="number" x="535" y="256.5">7</text></g>
-  <g id="settlement-8" class="settlement town SWE"><circle class="marker" cx="754" cy="348" r="9"/><text class="number" x="754" y="351.5">8</text></g>
-  <g id="settlement-9" class="settlement town DEN"><circle class="marker" cx="431" cy="308" r="9"/><text class="number" x="431" y="311.5">9</text></g>
-  <g id="settlement-10" class="settlement town DEN"><circle class="marker" cx="440" cy="390" r="9"/><text class="number" x="440" y="393.5">10</text></g>
-  <g id="settlement-11" class="settlement town DEN"><circle class="marker" cx="361" cy="463" r="9"/><text class="number" x="361" y="466.5">11</text></g>
-  <g id="settlement-12" class="settlement town DEN"><circle class="marker" cx="447" cy="462" r="9"/><text class="number" x="447" y="465.5">12</text></g>
-  <g id="settlement-13" class="settlement town DEN"><circle class="marker" cx="560" cy="440" r="9"/><text class="number" x="560" y="443.5">13</text></g>
-  <g id="settlement-14" class="settlement town DEN"><circle class="marker" cx="594" cy="438" r="9"/><text class="number" x="594" y="441.5">14</text></g>
-  <g id="settlement-15" class="settlement town GOT"><circle class="marker" cx="854" cy="255" r="9"/><text class="number" x="854" y="258.5">15</text></g>
-  <g id="settlement-16" class="settlement town LIV"><circle class="marker" cx="1145" cy="57" r="9"/><text class="number" x="1145" y="60.5">16</text></g>
-  <g id="settlement-17" class="settlement town LIV"><circle class="marker" cx="1146" cy="153" r="9"/><text class="number" x="1146" y="156.5">17</text></g>
-  <g id="settlement-18" class="settlement town LIV"><circle class="marker" cx="1146" cy="287" r="9"/><text class="number" x="1146" y="290.5">18</text></g>
-  <g id="settlement-19" class="settlement town LIV"><circle class="marker" cx="1016" cy="264" r="9"/><text class="number" x="1016" y="267.5">19</text></g>
-  <g id="settlement-20" class="settlement town LIT"><circle class="marker" cx="1071" cy="409" r="9"/><text class="number" x="1071" y="412.5">20</text></g>
-  <g id="settlement-21" class="settlement town LIT"><circle class="marker" cx="1160" cy="477" r="9"/><text class="number" x="1160" y="480.5">21</text></g>
-  <g id="settlement-22" class="settlement town LIT"><circle class="marker" cx="1236" cy="485" r="9"/><text class="number" x="1236" y="488.5">22</text></g>
-  <g id="settlement-23" class="settlement town LIT"><circle class="marker" cx="1172" cy="589" r="9"/><text class="number" x="1172" y="592.5">23</text></g>
-  <g id="settlement-24" class="settlement town LIT"><circle class="marker" cx="1184" cy="735" r="9"/><text class="number" x="1184" y="738.5">24</text></g>
-  <g id="settlement-25" class="settlement town LIT"><circle class="marker" cx="1296" cy="844" r="9"/><text class="number" x="1296" y="847.5">25</text></g>
-  <g id="settlement-26" class="settlement town TEU"><circle class="marker" cx="1012" cy="419" r="9"/><text class="number" x="1012" y="422.5">26</text></g>
-  <g id="settlement-27" class="settlement town TEU"><circle class="marker" cx="983" cy="515" r="9"/><text class="number" x="983" y="518.5">27</text></g>
-  <g id="settlement-28" class="settlement city TEU"><rect class="marker" x="876" y="544" width="22" height="22"/><text class="number" x="887" y="558.5">28</text></g>
-  <g id="settlement-29" class="settlement town TEU"><circle class="marker" cx="990" cy="600" r="9"/><text class="number" x="990" y="603.5">29</text></g>
-  <g id="settlement-30" class="settlement town TEU"><circle class="marker" cx="892" cy="679" r="9"/><text class="number" x="892" y="682.5">30</text></g>
-  <g id="settlement-31" class="settlement town TEU"><circle class="marker" cx="706" cy="712" r="9"/><text class="number" x="706" y="715.5">31</text></g>
-  <g id="settlement-32" class="settlement town SHO"><circle class="marker" cx="398" cy="540" r="9"/><text class="number" x="398" y="543.5">32</text></g>
-  <g id="settlement-33" class="settlement town SHO"><circle class="marker" cx="427" cy="562" r="9"/><text class="number" x="427" y="565.5">33</text></g>
-  <g id="settlement-34" class="settlement city LUB"><rect class="marker" x="445" y="593" width="22" height="22"/><text class="number" x="456" y="607.5">34</text></g>
-  <g id="settlement-35" class="settlement city HAM"><rect class="marker" x="405" y="620" width="22" height="22"/><text class="number" x="416" y="634.5">35</text></g>
-  <g id="settlement-36" class="settlement town MEC"><circle class="marker" cx="495" cy="627" r="9"/><text class="number" x="495" y="630.5">36</text></g>
-  <g id="settlement-37" class="settlement town MEC"><circle class="marker" cx="535" cy="586" r="9"/><text class="number" x="535" y="589.5">37</text></g>
-  <g id="settlement-38" class="settlement town POM"><circle class="marker" cx="584" cy="569" r="9"/><text class="number" x="584" y="572.5">38</text></g>
-  <g id="settlement-39" class="settlement town POM"><circle class="marker" cx="667" cy="648" r="9"/><text class="number" x="667" y="651.5">39</text></g>
-  <g id="settlement-40" class="settlement town POM"><circle class="marker" cx="728" cy="579" r="9"/><text class="number" x="728" y="582.5">40</text></g>
-  <g id="settlement-41" class="settlement town POM"><circle class="marker" cx="799" cy="550" r="9"/><text class="number" x="799" y="553.5">41</text></g>
-  <g id="settlement-42" class="settlement town FRI"><circle class="marker" cx="226" cy="647" r="9"/><text class="number" x="226" y="650.5">42</text></g>
-  <g id="settlement-43" class="settlement town EFR"><circle class="marker" cx="264" cy="635" r="9"/><text class="number" x="264" y="638.5">43</text></g>
-  <g id="settlement-44" class="settlement town OLD"><circle class="marker" cx="316" cy="662" r="9"/><text class="number" x="316" y="665.5">44</text></g>
-  <g id="settlement-45" class="settlement town BRE"><circle class="marker" cx="348" cy="670" r="9"/><text class="number" x="348" y="673.5">45</text></g>
-  <g id="settlement-46" class="settlement town BRU"><circle class="marker" cx="438" cy="660" r="9"/><text class="number" x="438" y="663.5">46</text></g>
-  <g id="settlement-47" class="settlement town BRU"><circle class="marker" cx="396" cy="739" r="9"/><text class="number" x="396" y="742.5">47</text></g>
-  <g id="settlement-48" class="settlement city BRU"><rect class="marker" x="429" y="740" width="22" height="22"/><text class="number" x="440" y="754.5">48</text></g>
-  <g id="settlement-49" class="settlement town BRU"><circle class="marker" cx="403" cy="817" r="9"/><text class="number" x="403" y="820.5">49</text></g>
-  <g id="settlement-50" class="settlement city MAG"><rect class="marker" x="491" y="755" width="22" height="22"/><text class="number" x="502" y="769.5">50</text></g>
-  <g id="settlement-51" class="settlement town BRA"><circle class="marker" cx="516" cy="723" r="9"/><text class="number" x="516" y="726.5">51</text></g>
-  <g id="settlement-52" class="settlement town BRA"><circle class="marker" cx="629" cy="659" r="9"/><text class="number" x="629" y="662.5">52</text></g>
-  <g id="settlement-53" class="settlement town BRA"><circle class="marker" cx="555" cy="742" r="9"/><text class="number" x="555" y="745.5">53</text></g>
-  <g id="settlement-54" class="settlement town BRA"><circle class="marker" cx="603" cy="732" r="9"/><text class="number" x="603" y="735.5">54</text></g>
-  <g id="settlement-55" class="settlement town BRA"><circle class="marker" cx="667" cy="749" r="9"/><text class="number" x="667" y="752.5">55</text></g>
-  <g id="settlement-56" class="settlement town POL"><circle class="marker" cx="874" cy="700" r="9"/><text class="number" x="874" y="703.5">56</text></g>
-  <g id="settlement-57" class="settlement town POL"><circle class="marker" cx="801" cy="739" r="9"/><text class="number" x="801" y="742.5">57</text></g>
-  <g id="settlement-58" class="settlement town POL"><circle class="marker" cx="870" cy="796" r="9"/><text class="number" x="870" y="799.5">58</text></g>
-  <g id="settlement-59" class="settlement town POL"><circle class="marker" cx="931" cy="764" r="9"/><text class="number" x="931" y="767.5">59</text></g>
-  <g id="settlement-60" class="settlement town MAZ"><circle class="marker" cx="956" cy="717" r="9"/><text class="number" x="956" y="720.5">60</text></g>
-  <g id="settlement-61" class="settlement town MAZ"><circle class="marker" cx="1032" cy="740" r="9"/><text class="number" x="1032" y="743.5">61</text></g>
-  <g id="settlement-62" class="settlement town POL"><circle class="marker" cx="1130" cy="820" r="9"/><text class="number" x="1130" y="823.5">62</text></g>
-  <g id="settlement-63" class="settlement town POL"><circle class="marker" cx="1089" cy="878" r="9"/><text class="number" x="1089" y="881.5">63</text></g>
-  <g id="settlement-64" class="settlement city POL"><rect class="marker" x="977" y="934" width="22" height="22"/><text class="number" x="988" y="948.5">64</text></g>
-  <g id="settlement-65" class="settlement town POL"><circle class="marker" cx="1158" cy="954" r="9"/><text class="number" x="1158" y="957.5">65</text></g>
-  <g id="settlement-66" class="settlement town POL"><circle class="marker" cx="1232" cy="939" r="9"/><text class="number" x="1232" y="942.5">66</text></g>
-  <g id="settlement-67" class="settlement town BUR"><circle class="marker" cx="125" cy="714" r="9"/><text class="number" x="125" y="717.5">67</text></g>
-  <g id="settlement-68" class="settlement town BUR"><circle class="marker" cx="105" cy="764" r="9"/><text class="number" x="105" y="767.5">68</text></g>
-  <g id="settlement-69" class="settlement city BUR"><rect class="marker" x="72" y="805" width="22" height="22"/><text class="number" x="83" y="819.5">69</text></g>
-  <g id="settlement-70" class="settlement city BUR"><rect class="marker" x="64" y="838" width="22" height="22"/><text class="number" x="75" y="852.5">70</text></g>
-  <g id="settlement-71" class="settlement town BUR"><circle class="marker" cx="101" cy="888" r="9"/><text class="number" x="101" y="891.5">71</text></g>
-  <g id="settlement-72" class="settlement town UTR"><circle class="marker" cx="134" cy="741" r="9"/><text class="number" x="134" y="744.5">72</text></g>
-  <g id="settlement-73" class="settlement town UTR"><circle class="marker" cx="194" cy="733" r="9"/><text class="number" x="194" y="736.5">73</text></g>
-  <g id="settlement-74" class="settlement town GEL"><circle class="marker" cx="173" cy="769" r="9"/><text class="number" x="173" y="772.5">74</text></g>
-  <g id="settlement-75" class="settlement town GEL"><circle class="marker" cx="174" cy="830" r="9"/><text class="number" x="174" y="833.5">75</text></g>
-  <g id="settlement-76" class="settlement town CLE"><circle class="marker" cx="214" cy="790" r="9"/><text class="number" x="214" y="793.5">76</text></g>
-  <g id="settlement-77" class="settlement town CLE"><circle class="marker" cx="283" cy="795" r="9"/><text class="number" x="283" y="798.5">77</text></g>
-  <g id="settlement-78" class="settlement town MUN"><circle class="marker" cx="274" cy="768" r="9"/><text class="number" x="274" y="771.5">78</text></g>
-  <g id="settlement-79" class="settlement town KOL"><circle class="marker" cx="247" cy="798" r="9"/><text class="number" x="247" y="801.5">79</text></g>
-  <g id="settlement-80" class="settlement town KOL"><circle class="marker" cx="295" cy="822" r="9"/><text class="number" x="295" y="825.5">80</text></g>
-  <g id="settlement-81" class="settlement town JUL"><circle class="marker" cx="220" cy="831" r="9"/><text class="number" x="220" y="834.5">81</text></g>
-  <g id="settlement-82" class="settlement town JUL"><circle class="marker" cx="192" cy="857" r="9"/><text class="number" x="192" y="860.5">82</text></g>
-  <g id="settlement-83" class="settlement city COL"><rect class="marker" x="216" y="847" width="22" height="22"/><text class="number" x="227" y="861.5">83</text></g>
-  <g id="settlement-84" class="settlement city LIE"><rect class="marker" x="133" y="867" width="22" height="22"/><text class="number" x="144" y="881.5">84</text></g>
-  <g id="settlement-85" class="settlement town HES"><circle class="marker" cx="376" cy="836" r="9"/><text class="number" x="376" y="839.5">85</text></g>
-  <g id="settlement-86" class="settlement town HES"><circle class="marker" cx="331" cy="879" r="9"/><text class="number" x="331" y="882.5">86</text></g>
-  <g id="settlement-87" class="settlement town SAX"><circle class="marker" cx="422" cy="869" r="9"/><text class="number" x="422" y="872.5">87</text></g>
-  <g id="settlement-88" class="settlement town SAX"><circle class="marker" cx="559" cy="792" r="9"/><text class="number" x="559" y="795.5">88</text></g>
-  <g id="settlement-89" class="settlement town SAX"><circle class="marker" cx="542" cy="840" r="9"/><text class="number" x="542" y="843.5">89</text></g>
-  <g id="settlement-90" class="settlement town SAX"><circle class="marker" cx="621" cy="868" r="9"/><text class="number" x="621" y="871.5">90</text></g>
-  <g id="settlement-91" class="settlement town SAX"><circle class="marker" cx="548" cy="898" r="9"/><text class="number" x="548" y="901.5">91</text></g>
-  <g id="settlement-92" class="settlement city ERF"><rect class="marker" x="453" y="860" width="22" height="22"/><text class="number" x="464" y="874.5">92</text></g>
-  <g id="settlement-93" class="settlement town LUS"><circle class="marker" cx="661" cy="856" r="9"/><text class="number" x="661" y="859.5">93</text></g>
-  <g id="settlement-94" class="settlement town LUS"><circle class="marker" cx="694" cy="859" r="9"/><text class="number" x="694" y="862.5">94</text></g>
-  <g id="settlement-95" class="settlement town SIL"><circle class="marker" cx="755" cy="810" r="9"/><text class="number" x="755" y="813.5">95</text></g>
-  <g id="settlement-96" class="settlement town SIL"><circle class="marker" cx="761" cy="851" r="9"/><text class="number" x="761" y="854.5">96</text></g>
-  <g id="settlement-97" class="settlement city SIL"><rect class="marker" x="801" y="848" width="22" height="22"/><text class="number" x="812" y="862.5">97</text></g>
-  <g id="settlement-98" class="settlement town OPP"><circle class="marker" cx="866" cy="897" r="9"/><text class="number" x="866" y="900.5">98</text></g>
-  <g id="settlement-99" class="settlement town OPP"><circle class="marker" cx="886" cy="950" r="9"/><text class="number" x="886" y="953.5">99</text></g>
-  <g id="settlement-100" class="settlement town LUX"><circle class="marker" cx="166" cy="976" r="9"/><text class="number" x="166" y="979.5">100</text></g>
-  <g id="settlement-101" class="settlement town TRI"><circle class="marker" cx="198" cy="966" r="9"/><text class="number" x="198" y="969.5">101</text></g>
-  <g id="settlement-102" class="settlement town TRI"><circle class="marker" cx="259" cy="915" r="9"/><text class="number" x="259" y="918.5">102</text></g>
-  <g id="settlement-103" class="settlement town MAI"><circle class="marker" cx="296" cy="952" r="9"/><text class="number" x="296" y="955.5">103</text></g>
-  <g id="settlement-104" class="settlement town FFM"><circle class="marker" cx="321" cy="943" r="9"/><text class="number" x="321" y="946.5">104</text></g>
-  <g id="settlement-105" class="settlement town WBG"><circle class="marker" cx="394" cy="978" r="9"/><text class="number" x="394" y="981.5">105</text></g>
-  <g id="settlement-106" class="settlement town BAM"><circle class="marker" cx="451" cy="971" r="9"/><text class="number" x="451" y="974.5">106</text></g>
-  <g id="settlement-107" class="settlement town ANS"><circle class="marker" cx="485" cy="953" r="9"/><text class="number" x="485" y="956.5">107</text></g>
-  <g id="settlement-108" class="settlement town ANS"><circle class="marker" cx="430" cy="1025" r="9"/><text class="number" x="430" y="1028.5">108</text></g>
-  <g id="settlement-109" class="settlement city NUR"><rect class="marker" x="450" y="1001" width="22" height="22"/><text class="number" x="461" y="1015.5">109</text></g>
-  <g id="settlement-110" class="settlement town PAL"><circle class="marker" cx="317" cy="1008" r="9"/><text class="number" x="317" y="1011.5">110</text></g>
-  <g id="settlement-111" class="settlement town PAL"><circle class="marker" cx="508" cy="1015" r="9"/><text class="number" x="508" y="1018.5">111</text></g>
-  <g id="settlement-112" class="settlement city BOH"><rect class="marker" x="650" y="946" width="22" height="22"/><text class="number" x="661" y="960.5">112</text></g>
-  <g id="settlement-113" class="settlement town BOH"><circle class="marker" cx="599" cy="988" r="9"/><text class="number" x="599" y="991.5">113</text></g>
-  <g id="settlement-114" class="settlement town BOH"><circle class="marker" cx="712" cy="969" r="9"/><text class="number" x="712" y="972.5">114</text></g>
-  <g id="settlement-115" class="settlement town BOH"><circle class="marker" cx="744" cy="944" r="9"/><text class="number" x="744" y="947.5">115</text></g>
-  <g id="settlement-116" class="settlement town BOH"><circle class="marker" cx="794" cy="1036" r="9"/><text class="number" x="794" y="1039.5">116</text></g>
-  <g id="settlement-117" class="settlement town BOH"><circle class="marker" cx="831" cy="999" r="9"/><text class="number" x="831" y="1002.5">117</text></g>
-  <g id="settlement-118" class="settlement town TAB"><circle class="marker" cx="676" cy="1019" r="9"/><text class="number" x="676" y="1022.5">118</text></g>
-  <g id="settlement-119" class="settlement city MET"><rect class="marker" x="153" y="1010" width="22" height="22"/><text class="number" x="164" y="1024.5">119</text></g>
-  <g id="settlement-120" class="settlement town LOR"><circle class="marker" cx="99" cy="1046" r="9"/><text class="number" x="99" y="1049.5">120</text></g>
-  <g id="settlement-121" class="settlement town LOR"><circle class="marker" cx="160" cy="1060" r="9"/><text class="number" x="160" y="1063.5">121</text></g>
-  <g id="settlement-122" class="settlement city STR"><rect class="marker" x="243" y="1069" width="22" height="22"/><text class="number" x="254" y="1083.5">122</text></g>
-  <g id="settlement-123" class="settlement town BAD"><circle class="marker" cx="286" cy="1066" r="9"/><text class="number" x="286" y="1069.5">123</text></g>
-  <g id="settlement-124" class="settlement town WRT"><circle class="marker" cx="343" cy="1068" r="9"/><text class="number" x="343" y="1071.5">124</text></g>
-  <g id="settlement-125" class="settlement town WRT"><circle class="marker" cx="187" cy="1173" r="9"/><text class="number" x="187" y="1176.5">125</text></g>
-  <g id="settlement-126" class="settlement city ULM"><rect class="marker" x="379" y="1095" width="22" height="22"/><text class="number" x="390" y="1109.5">126</text></g>
-  <g id="settlement-127" class="settlement city AUG"><rect class="marker" x="435" y="1101" width="22" height="22"/><text class="number" x="446" y="1115.5">127</text></g>
-  <g id="settlement-128" class="settlement town BIN"><circle class="marker" cx="479" cy="1077" r="9"/><text class="number" x="479" y="1080.5">128</text></g>
-  <g id="settlement-129" class="settlement town REG"><circle class="marker" cx="521" cy="1054" r="9"/><text class="number" x="521" y="1057.5">129</text></g>
-  <g id="settlement-130" class="settlement town BMU"><circle class="marker" cx="549" cy="1068" r="9"/><text class="number" x="549" y="1071.5">130</text></g>
-  <g id="settlement-131" class="settlement town BMU"><circle class="marker" cx="487" cy="1135" r="9"/><text class="number" x="487" y="1138.5">131</text></g>
-  <g id="settlement-132" class="settlement town BLA"><circle class="marker" cx="523" cy="1099" r="9"/><text class="number" x="523" y="1102.5">132</text></g>
-  <g id="settlement-133" class="settlement town BLA"><circle class="marker" cx="564" cy="1134" r="9"/><text class="number" x="564" y="1137.5">133</text></g>
-  <g id="settlement-134" class="settlement town PAS"><circle class="marker" cx="601" cy="1097" r="9"/><text class="number" x="601" y="1100.5">134</text></g>
-  <g id="settlement-135" class="settlement town AUS"><circle class="marker" cx="654" cy="1121" r="9"/><text class="number" x="654" y="1124.5">135</text></g>
-  <g id="settlement-136" class="settlement town AUS"><circle class="marker" cx="736" cy="1130" r="9"/><text class="number" x="736" y="1133.5">136</text></g>
-  <g id="settlement-137" class="settlement city AUS"><rect class="marker" x="771" y="1117" width="22" height="22"/><text class="number" x="782" y="1131.5">137</text></g>
-  <g id="settlement-138" class="settlement town AUS"><circle class="marker" cx="776" cy="1165" r="9"/><text class="number" x="776" y="1168.5">138</text></g>
-  <g id="settlement-139" class="settlement town HUN"><circle class="marker" cx="828" cy="1133" r="9"/><text class="number" x="828" y="1136.5">139</text></g>
-  <g id="settlement-140" class="settlement town HUN"><circle class="marker" cx="862" cy="1173" r="9"/><text class="number" x="862" y="1176.5">140</text></g>
-  <g id="settlement-141" class="settlement city HUN"><rect class="marker" x="940" y="1174" width="22" height="22"/><text class="number" x="951" y="1188.5">141</text></g>
-  <g id="settlement-142" class="settlement town HUN"><circle class="marker" cx="908" cy="1321" r="9"/><text class="number" x="908" y="1324.5">142</text></g>
-  <g id="settlement-143" class="settlement town HUN"><circle class="marker" cx="764" cy="1351" r="9"/><text class="number" x="764" y="1354.5">143</text></g>
-  <g id="settlement-144" class="settlement town HUN"><circle class="marker" cx="1112" cy="1168" r="9"/><text class="number" x="1112" y="1171.5">144</text></g>
-  <g id="settlement-145" class="settlement town HUN"><circle class="marker" cx="1243" cy="1224" r="9"/><text class="number" x="1243" y="1227.5">145</text></g>
-  <g id="settlement-146" class="settlement town JIS"><circle class="marker" cx="950" cy="1070" r="9"/><text class="number" x="950" y="1073.5">146</text></g>
-  <g id="settlement-147" class="settlement town JIS"><circle class="marker" cx="1078" cy="1061" r="9"/><text class="number" x="1078" y="1064.5">147</text></g>
-  <g id="settlement-148" class="settlement town DEC"><circle class="marker" cx="226" cy="1124" r="9"/><text class="number" x="226" y="1127.5">148</text></g>
-  <g id="settlement-149" class="settlement town TYR"><circle class="marker" cx="256" cy="1135" r="9"/><text class="number" x="256" y="1138.5">149</text></g>
-  <g id="settlement-150" class="settlement town BAS"><circle class="marker" cx="236" cy="1173" r="9"/><text class="number" x="236" y="1176.5">150</text></g>
-  <g id="settlement-151" class="settlement town KON"><circle class="marker" cx="336" cy="1171" r="9"/><text class="number" x="336" y="1174.5">151</text></g>
-  <g id="settlement-152" class="settlement town ZUR"><circle class="marker" cx="294" cy="1195" r="9"/><text class="number" x="294" y="1198.5">152</text></g>
-  <g id="settlement-153" class="settlement town SWI"><circle class="marker" cx="277" cy="1224" r="9"/><text class="number" x="277" y="1227.5">153</text></g>
-  <g id="settlement-154" class="settlement town SWI"><circle class="marker" cx="223" cy="1229" r="9"/><text class="number" x="223" y="1232.5">154</text></g>
-  <g id="settlement-155" class="settlement town TYR"><circle class="marker" cx="472" cy="1215" r="9"/><text class="number" x="472" y="1218.5">155</text></g>
-  <g id="settlement-156" class="settlement town TYR"><circle class="marker" cx="467" cy="1286" r="9"/><text class="number" x="467" y="1289.5">156</text></g>
-  <g id="settlement-157" class="settlement town SAL"><circle class="marker" cx="577" cy="1168" r="9"/><text class="number" x="577" y="1171.5">157</text></g>
-  <g id="settlement-158" class="settlement town STY"><circle class="marker" cx="727" cy="1235" r="9"/><text class="number" x="727" y="1238.5">158</text></g>
-  <g id="settlement-159" class="settlement town STY"><circle class="marker" cx="659" cy="1264" r="9"/><text class="number" x="659" y="1267.5">159</text></g>
-  <g id="settlement-160" class="settlement town STY"><circle class="marker" cx="669" cy="1331" r="9"/><text class="number" x="669" y="1334.5">160</text></g>
-  <g id="settlement-161" class="settlement town SAV"><circle class="marker" cx="167" cy="1263" r="9"/><text class="number" x="167" y="1266.5">161</text></g>
-  <g id="settlement-162" class="settlement town SAV"><circle class="marker" cx="133" cy="1289" r="9"/><text class="number" x="133" y="1292.5">162</text></g>
-  <g id="settlement-163" class="settlement town SAV"><circle class="marker" cx="112" cy="1346" r="9"/><text class="number" x="112" y="1349.5">163</text></g>
-  <g id="settlement-164" class="settlement town MIL"><circle class="marker" cx="318" cy="1342" r="9"/><text class="number" x="318" y="1345.5">164</text></g>
-  <g id="settlement-165" class="settlement town VEN"><circle class="marker" cx="587" cy="1329" r="9"/><text class="number" x="587" y="1332.5">165</text></g>
-  <g id="settlement-166" class="settlement town BUR"><circle class="marker" cx="75" cy="1178" r="9"/><text class="number" x="75" y="1181.5">166</text></g>
-  <g id="settlement-167" class="settlement town BUR"><circle class="marker" cx="135" cy="1193" r="9"/><text class="number" x="135" y="1196.5">167</text></g>
-  <g id="settlement-168" class="settlement city FRA"><rect class="marker" x="34" y="1309" width="22" height="22"/><text class="number" x="45" y="1323.5">168</text></g>
+  <g id="settlement-1" class="settlement town NOR"><rect class="marker" x="473.5" y="38" width="21" height="14" rx="7"/><text class="abbr" x="484" y="48">Osl</text><text class="name" x="484" y="61" text-anchor="middle">Oslo</text></g>
+  <g id="settlement-2" class="settlement town NOR"><rect class="marker" x="416.5" y="100" width="21" height="14" rx="7"/><text class="abbr" x="427" y="110">Ski</text><text class="name" x="427" y="123" text-anchor="middle">Skien</text></g>
+  <g id="settlement-3" class="settlement town NOR"><rect class="marker" x="230.5" y="106" width="21" height="14" rx="7"/><text class="abbr" x="241" y="116">Sta</text><text class="name" x="241" y="129" text-anchor="middle">Stavanger</text></g>
+  <g id="settlement-4" class="settlement town SWE"><rect class="marker" x="796.5" y="41" width="21" height="14" rx="7"/><text class="abbr" x="807" y="51">Upp</text><text class="name" x="807" y="64" text-anchor="middle">Uppsala</text></g>
+  <g id="settlement-5" class="settlement town SWE"><rect class="marker" x="818.5" y="90" width="21" height="14" rx="7"/><text class="abbr" x="829" y="100">Sto</text><text class="name" x="829" y="113" text-anchor="middle">Stockholm</text></g>
+  <g id="settlement-6" class="settlement town SWE"><rect class="marker" x="704.5" y="180" width="21" height="14" rx="7"/><text class="abbr" x="715" y="190">Lin</text><text class="name" x="715" y="203" text-anchor="middle">Linköping</text></g>
+  <g id="settlement-7" class="settlement town SWE"><rect class="marker" x="524.5" y="246" width="21" height="14" rx="7"/><text class="abbr" x="535" y="256">Älv</text><text class="name" x="535" y="269" text-anchor="middle">Älvsborg</text></g>
+  <g id="settlement-8" class="settlement town SWE"><rect class="marker" x="743.5" y="341" width="21" height="14" rx="7"/><text class="abbr" x="754" y="351">Kal</text><text class="name" x="754" y="364" text-anchor="middle">Kalmar</text></g>
+  <g id="settlement-9" class="settlement town DEN"><rect class="marker" x="420.5" y="301" width="21" height="14" rx="7"/><text class="abbr" x="431" y="311">Aal</text><text class="name" x="431" y="324" text-anchor="middle">Aalborg</text></g>
+  <g id="settlement-10" class="settlement town DEN"><rect class="marker" x="429.5" y="383" width="21" height="14" rx="7"/><text class="abbr" x="440" y="393">Aar</text><text class="name" x="440" y="406" text-anchor="middle">Aarhus</text></g>
+  <g id="settlement-11" class="settlement town DEN"><rect class="marker" x="350.5" y="456" width="21" height="14" rx="7"/><text class="abbr" x="361" y="466">Rib</text><text class="name" x="361" y="479" text-anchor="middle">Ribe</text></g>
+  <g id="settlement-12" class="settlement town DEN"><rect class="marker" x="436.5" y="455" width="21" height="14" rx="7"/><text class="abbr" x="447" y="465">Ode</text><text class="name" x="447" y="478" text-anchor="middle">Odense</text></g>
+  <g id="settlement-13" class="settlement town DEN"><rect class="marker" x="549.5" y="433" width="21" height="14" rx="7"/><text class="abbr" x="560" y="443">Cop</text><text class="name" x="560" y="456" text-anchor="middle">Copenhagen</text></g>
+  <g id="settlement-14" class="settlement town DEN"><rect class="marker" x="583.5" y="431" width="21" height="14" rx="7"/><text class="abbr" x="594" y="441">Lun</text><text class="name" x="594" y="429" text-anchor="middle">Lund</text></g>
+  <g id="settlement-15" class="settlement town GOT"><rect class="marker" x="843.5" y="248" width="21" height="14" rx="7"/><text class="abbr" x="854" y="258">Vis</text><text class="name" x="854" y="271" text-anchor="middle">Visby</text></g>
+  <g id="settlement-16" class="settlement town LIV"><rect class="marker" x="1134.5" y="50" width="21" height="14" rx="7"/><text class="abbr" x="1145" y="60">Rev</text><text class="name" x="1145" y="73" text-anchor="middle">Reval</text></g>
+  <g id="settlement-17" class="settlement town LIV"><rect class="marker" x="1135.5" y="146" width="21" height="14" rx="7"/><text class="abbr" x="1146" y="156">Per</text><text class="name" x="1146" y="169" text-anchor="middle">Pernau</text></g>
+  <g id="settlement-18" class="settlement town LIV"><rect class="marker" x="1135.5" y="280" width="21" height="14" rx="7"/><text class="abbr" x="1146" y="290">Rig</text><text class="name" x="1146" y="303" text-anchor="middle">Riga</text></g>
+  <g id="settlement-19" class="settlement town LIV"><rect class="marker" x="1005.5" y="257" width="21" height="14" rx="7"/><text class="abbr" x="1016" y="267">Win</text><text class="name" x="1016" y="280" text-anchor="middle">Windau</text></g>
+  <g id="settlement-20" class="settlement town LIT"><rect class="marker" x="1060.5" y="402" width="21" height="14" rx="7"/><text class="abbr" x="1071" y="412">Med</text><text class="name" x="1071" y="425" text-anchor="middle">Medininkai</text></g>
+  <g id="settlement-21" class="settlement town LIT"><rect class="marker" x="1149.5" y="470" width="21" height="14" rx="7"/><text class="abbr" x="1160" y="480">Kau</text><text class="name" x="1160" y="493" text-anchor="middle">Kaunas</text></g>
+  <g id="settlement-22" class="settlement town LIT"><rect class="marker" x="1225.5" y="478" width="21" height="14" rx="7"/><text class="abbr" x="1236" y="488">Vil</text><text class="name" x="1236" y="501" text-anchor="middle">Vilnius</text></g>
+  <g id="settlement-23" class="settlement town LIT"><rect class="marker" x="1161.5" y="582" width="21" height="14" rx="7"/><text class="abbr" x="1172" y="592">Gro</text><text class="name" x="1172" y="605" text-anchor="middle">Grodno</text></g>
+  <g id="settlement-24" class="settlement town LIT"><rect class="marker" x="1173.5" y="728" width="21" height="14" rx="7"/><text class="abbr" x="1184" y="738">Brt</text><text class="name" x="1184" y="751" text-anchor="middle">Brest</text></g>
+  <g id="settlement-25" class="settlement town LIT"><rect class="marker" x="1285.5" y="837" width="21" height="14" rx="7"/><text class="abbr" x="1296" y="847">Lut</text><text class="name" x="1296" y="860" text-anchor="middle">Lutsk</text></g>
+  <g id="settlement-26" class="settlement town TEU"><rect class="marker" x="1001.5" y="412" width="21" height="14" rx="7"/><text class="abbr" x="1012" y="422">Mem</text><text class="name" x="1012" y="435" text-anchor="middle">Memel</text></g>
+  <g id="settlement-27" class="settlement town TEU"><rect class="marker" x="972.5" y="508" width="21" height="14" rx="7"/><text class="abbr" x="983" y="518">Kön</text><text class="name" x="983" y="531" text-anchor="middle">Königsberg</text></g>
+  <g id="settlement-28" class="settlement city TEU"><rect class="marker" x="876.5" y="547" width="21" height="16" rx="2"/><text class="abbr" x="887" y="558">Dan</text><text class="name" x="887" y="572" text-anchor="middle">Danzig</text></g>
+  <g id="settlement-29" class="settlement town TEU"><rect class="marker" x="979.5" y="593" width="21" height="14" rx="7"/><text class="abbr" x="990" y="603">All</text><text class="name" x="990" y="616" text-anchor="middle">Allenstein</text></g>
+  <g id="settlement-30" class="settlement town TEU"><rect class="marker" x="881.5" y="672" width="21" height="14" rx="7"/><text class="abbr" x="892" y="682">Tho</text><text class="name" x="892" y="670" text-anchor="middle">Thorn</text></g>
+  <g id="settlement-31" class="settlement town TEU"><rect class="marker" x="695.5" y="705" width="21" height="14" rx="7"/><text class="abbr" x="706" y="715">Lan</text><text class="name" x="706" y="728" text-anchor="middle">Landsberg</text></g>
+  <g id="settlement-32" class="settlement town SHO"><rect class="marker" x="387.5" y="533" width="21" height="14" rx="7"/><text class="abbr" x="398" y="543">Sch</text><text class="name" x="398" y="531" text-anchor="middle">Schleswig</text></g>
+  <g id="settlement-33" class="settlement town SHO"><rect class="marker" x="416.5" y="555" width="21" height="14" rx="7"/><text class="abbr" x="427" y="565">Kie</text><text class="name" x="427" y="578" text-anchor="middle">Kiel</text></g>
+  <g id="settlement-34" class="settlement city LUB"><rect class="marker" x="445.5" y="596" width="21" height="16" rx="2"/><text class="abbr" x="456" y="607">Lüb</text><text class="name" x="456" y="621" text-anchor="middle">Lübeck</text></g>
+  <g id="settlement-35" class="settlement city HAM"><rect class="marker" x="405.5" y="623" width="21" height="16" rx="2"/><text class="abbr" x="416" y="634">Ham</text><text class="name" x="416" y="648" text-anchor="middle">Hamburg</text></g>
+  <g id="settlement-36" class="settlement town MEC"><rect class="marker" x="484.5" y="620" width="21" height="14" rx="7"/><text class="abbr" x="495" y="630">Scw</text><text class="name" x="495" y="618" text-anchor="middle">Schwerin</text></g>
+  <g id="settlement-37" class="settlement town MEC"><rect class="marker" x="524.5" y="579" width="21" height="14" rx="7"/><text class="abbr" x="535" y="589">Ros</text><text class="name" x="535" y="602" text-anchor="middle">Rostock</text></g>
+  <g id="settlement-38" class="settlement town POM"><rect class="marker" x="573.5" y="562" width="21" height="14" rx="7"/><text class="abbr" x="584" y="572">Stl</text><text class="name" x="584" y="585" text-anchor="middle">Stralsund</text></g>
+  <g id="settlement-39" class="settlement town POM"><rect class="marker" x="656.5" y="641" width="21" height="14" rx="7"/><text class="abbr" x="667" y="651">Ste</text><text class="name" x="667" y="664" text-anchor="middle">Stettin</text></g>
+  <g id="settlement-40" class="settlement town POM"><rect class="marker" x="717.5" y="572" width="21" height="14" rx="7"/><text class="abbr" x="728" y="582">Kol</text><text class="name" x="728" y="595" text-anchor="middle">Kolberg</text></g>
+  <g id="settlement-41" class="settlement town POM"><rect class="marker" x="788.5" y="543" width="21" height="14" rx="7"/><text class="abbr" x="799" y="553">Stp</text><text class="name" x="799" y="566" text-anchor="middle">Stolp</text></g>
+  <g id="settlement-42" class="settlement town FRI"><rect class="marker" x="215.5" y="640" width="21" height="14" rx="7"/><text class="abbr" x="226" y="650">Grn</text><text class="name" x="226" y="638" text-anchor="middle">Groningen</text></g>
+  <g id="settlement-43" class="settlement town EFR"><rect class="marker" x="253.5" y="628" width="21" height="14" rx="7"/><text class="abbr" x="264" y="638">Emd</text><text class="name" x="264" y="651" text-anchor="middle">Emden</text></g>
+  <g id="settlement-44" class="settlement town OLD"><rect class="marker" x="305.5" y="655" width="21" height="14" rx="7"/><text class="abbr" x="316" y="665">Old</text><text class="name" x="316" y="653" text-anchor="middle">Oldenburg</text></g>
+  <g id="settlement-45" class="settlement town BRE"><rect class="marker" x="337.5" y="663" width="21" height="14" rx="7"/><text class="abbr" x="348" y="673">Brm</text><text class="name" x="348" y="686" text-anchor="middle">Bremen</text></g>
+  <g id="settlement-46" class="settlement town BRU"><rect class="marker" x="427.5" y="653" width="21" height="14" rx="7"/><text class="abbr" x="438" y="663">Lün</text><text class="name" x="438" y="676" text-anchor="middle">Lüneburg</text></g>
+  <g id="settlement-47" class="settlement town BRU"><rect class="marker" x="385.5" y="732" width="21" height="14" rx="7"/><text class="abbr" x="396" y="742">Han</text><text class="name" x="396" y="755" text-anchor="middle">Hanover</text></g>
+  <g id="settlement-48" class="settlement city BRU"><rect class="marker" x="429.5" y="743" width="21" height="16" rx="2"/><text class="abbr" x="440" y="754">Bru</text><text class="name" x="440" y="768" text-anchor="middle">Brunswick</text></g>
+  <g id="settlement-49" class="settlement town BRU"><rect class="marker" x="392.5" y="810" width="21" height="14" rx="7"/><text class="abbr" x="403" y="820">Göt</text><text class="name" x="403" y="808" text-anchor="middle">Göttingen</text></g>
+  <g id="settlement-50" class="settlement city MAG"><rect class="marker" x="491.5" y="758" width="21" height="16" rx="2"/><text class="abbr" x="502" y="769">Mag</text><text class="name" x="502" y="783" text-anchor="middle">Magdeburg</text></g>
+  <g id="settlement-51" class="settlement town BRA"><rect class="marker" x="505.5" y="716" width="21" height="14" rx="7"/><text class="abbr" x="516" y="726">Stn</text><text class="name" x="516" y="739" text-anchor="middle">Stendal</text></g>
+  <g id="settlement-52" class="settlement town BRA"><rect class="marker" x="618.5" y="652" width="21" height="14" rx="7"/><text class="abbr" x="629" y="662">Pre</text><text class="name" x="629" y="675" text-anchor="middle">Prenzlau</text></g>
+  <g id="settlement-53" class="settlement town BRA"><rect class="marker" x="544.5" y="735" width="21" height="14" rx="7"/><text class="abbr" x="555" y="745">Bra</text><text class="name" x="555" y="758" text-anchor="middle">Brandenburg</text></g>
+  <g id="settlement-54" class="settlement town BRA"><rect class="marker" x="592.5" y="725" width="21" height="14" rx="7"/><text class="abbr" x="603" y="735">Ber</text><text class="name" x="603" y="748" text-anchor="middle">Berlin</text></g>
+  <g id="settlement-55" class="settlement town BRA"><rect class="marker" x="656.5" y="742" width="21" height="14" rx="7"/><text class="abbr" x="667" y="752">Fra</text><text class="name" x="667" y="765" text-anchor="middle">Frankfurt (Oder)</text></g>
+  <g id="settlement-56" class="settlement town POL"><rect class="marker" x="863.5" y="693" width="21" height="14" rx="7"/><text class="abbr" x="874" y="703">Ino</text><text class="name" x="874" y="716" text-anchor="middle">Inowrocław</text></g>
+  <g id="settlement-57" class="settlement town POL"><rect class="marker" x="790.5" y="732" width="21" height="14" rx="7"/><text class="abbr" x="801" y="742">Poz</text><text class="name" x="801" y="755" text-anchor="middle">Poznań</text></g>
+  <g id="settlement-58" class="settlement town POL"><rect class="marker" x="859.5" y="789" width="21" height="14" rx="7"/><text class="abbr" x="870" y="799">Kas</text><text class="name" x="870" y="812" text-anchor="middle">Kalisz</text></g>
+  <g id="settlement-59" class="settlement town POL"><rect class="marker" x="920.5" y="757" width="21" height="14" rx="7"/><text class="abbr" x="931" y="767">Łęc</text><text class="name" x="931" y="780" text-anchor="middle">Łęczyca</text></g>
+  <g id="settlement-60" class="settlement town MAZ"><rect class="marker" x="945.5" y="710" width="21" height="14" rx="7"/><text class="abbr" x="956" y="720">Pło</text><text class="name" x="956" y="733" text-anchor="middle">Płock</text></g>
+  <g id="settlement-61" class="settlement town MAZ"><rect class="marker" x="1021.5" y="733" width="21" height="14" rx="7"/><text class="abbr" x="1032" y="743">War</text><text class="name" x="1032" y="756" text-anchor="middle">Warsaw</text></g>
+  <g id="settlement-62" class="settlement town POL"><rect class="marker" x="1119.5" y="813" width="21" height="14" rx="7"/><text class="abbr" x="1130" y="823">Lub</text><text class="name" x="1130" y="836" text-anchor="middle">Lublin</text></g>
+  <g id="settlement-63" class="settlement town POL"><rect class="marker" x="1078.5" y="871" width="21" height="14" rx="7"/><text class="abbr" x="1089" y="881">San</text><text class="name" x="1089" y="894" text-anchor="middle">Sandomierz</text></g>
+  <g id="settlement-64" class="settlement city POL"><rect class="marker" x="977.5" y="937" width="21" height="16" rx="2"/><text class="abbr" x="988" y="948">Kra</text><text class="name" x="988" y="962" text-anchor="middle">Kraków</text></g>
+  <g id="settlement-65" class="settlement town POL"><rect class="marker" x="1147.5" y="947" width="21" height="14" rx="7"/><text class="abbr" x="1158" y="957">Prz</text><text class="name" x="1158" y="970" text-anchor="middle">Przemyśl</text></g>
+  <g id="settlement-66" class="settlement town POL"><rect class="marker" x="1221.5" y="932" width="21" height="14" rx="7"/><text class="abbr" x="1232" y="942">Lwó</text><text class="name" x="1232" y="955" text-anchor="middle">Lwów</text></g>
+  <g id="settlement-67" class="settlement town BUR"><rect class="marker" x="114.5" y="707" width="21" height="14" rx="7"/><text class="abbr" x="125" y="717">Ams</text><text class="name" x="125" y="730" text-anchor="middle">Amsterdam</text></g>
+  <g id="settlement-68" class="settlement town BUR"><rect class="marker" x="94.5" y="757" width="21" height="14" rx="7"/><text class="abbr" x="105" y="767">Dor</text><text class="name" x="105" y="780" text-anchor="middle">Dordrecht</text></g>
+  <g id="settlement-69" class="settlement city BUR"><rect class="marker" x="72.5" y="808" width="21" height="16" rx="2"/><text class="abbr" x="83" y="819">Ant</text><text class="name" x="83" y="833" text-anchor="middle">Antwerp</text></g>
+  <g id="settlement-70" class="settlement city BUR"><rect class="marker" x="64.5" y="841" width="21" height="16" rx="2"/><text class="abbr" x="75" y="852">Brs</text><text class="name" x="75" y="866" text-anchor="middle">Brussels</text></g>
+  <g id="settlement-71" class="settlement town BUR"><rect class="marker" x="90.5" y="881" width="21" height="14" rx="7"/><text class="abbr" x="101" y="891">Nam</text><text class="name" x="101" y="904" text-anchor="middle">Namur</text></g>
+  <g id="settlement-72" class="settlement town UTR"><rect class="marker" x="123.5" y="734" width="21" height="14" rx="7"/><text class="abbr" x="134" y="744">Utr</text><text class="name" x="134" y="757" text-anchor="middle">Utrecht</text></g>
+  <g id="settlement-73" class="settlement town UTR"><rect class="marker" x="183.5" y="726" width="21" height="14" rx="7"/><text class="abbr" x="194" y="736">Dev</text><text class="name" x="194" y="749" text-anchor="middle">Deventer</text></g>
+  <g id="settlement-74" class="settlement town GEL"><rect class="marker" x="162.5" y="762" width="21" height="14" rx="7"/><text class="abbr" x="173" y="772">Nij</text><text class="name" x="173" y="760" text-anchor="middle">Nijmegen</text></g>
+  <g id="settlement-75" class="settlement town GEL"><rect class="marker" x="163.5" y="823" width="21" height="14" rx="7"/><text class="abbr" x="174" y="833">Roe</text><text class="name" x="174" y="846" text-anchor="middle">Roermond</text></g>
+  <g id="settlement-76" class="settlement town CLE"><rect class="marker" x="203.5" y="783" width="21" height="14" rx="7"/><text class="abbr" x="214" y="793">Wes</text><text class="name" x="214" y="806" text-anchor="middle">Wesel</text></g>
+  <g id="settlement-77" class="settlement town CLE"><rect class="marker" x="272.5" y="788" width="21" height="14" rx="7"/><text class="abbr" x="283" y="798">Hmm</text><text class="name" x="283" y="811" text-anchor="middle">Hamm</text></g>
+  <g id="settlement-78" class="settlement town MUN"><rect class="marker" x="263.5" y="761" width="21" height="14" rx="7"/><text class="abbr" x="274" y="771">Mün</text><text class="name" x="274" y="784" text-anchor="middle">Münster</text></g>
+  <g id="settlement-79" class="settlement town KOL"><rect class="marker" x="236.5" y="791" width="21" height="14" rx="7"/><text class="abbr" x="247" y="801">Rec</text><text class="name" x="247" y="814" text-anchor="middle">Recklinghausen</text></g>
+  <g id="settlement-80" class="settlement town KOL"><rect class="marker" x="284.5" y="815" width="21" height="14" rx="7"/><text class="abbr" x="295" y="825">Arn</text><text class="name" x="295" y="838" text-anchor="middle">Arnsberg</text></g>
+  <g id="settlement-81" class="settlement town JUL"><rect class="marker" x="209.5" y="824" width="21" height="14" rx="7"/><text class="abbr" x="220" y="834">Düs</text><text class="name" x="220" y="847" text-anchor="middle">Düsseldorf</text></g>
+  <g id="settlement-82" class="settlement town JUL"><rect class="marker" x="181.5" y="850" width="21" height="14" rx="7"/><text class="abbr" x="192" y="860">Jül</text><text class="name" x="192" y="873" text-anchor="middle">Jülich</text></g>
+  <g id="settlement-83" class="settlement city COL"><rect class="marker" x="216.5" y="850" width="21" height="16" rx="2"/><text class="abbr" x="227" y="861">Col</text><text class="name" x="227" y="875" text-anchor="middle">Cologne</text></g>
+  <g id="settlement-84" class="settlement city LIE"><rect class="marker" x="133.5" y="870" width="21" height="16" rx="2"/><text class="abbr" x="144" y="881">Liè</text><text class="name" x="144" y="895" text-anchor="middle">Liège</text></g>
+  <g id="settlement-85" class="settlement town HES"><rect class="marker" x="365.5" y="829" width="21" height="14" rx="7"/><text class="abbr" x="376" y="839">Kae</text><text class="name" x="376" y="852" text-anchor="middle">Kassel</text></g>
+  <g id="settlement-86" class="settlement town HES"><rect class="marker" x="320.5" y="872" width="21" height="14" rx="7"/><text class="abbr" x="331" y="882">Mar</text><text class="name" x="331" y="895" text-anchor="middle">Marburg</text></g>
+  <g id="settlement-87" class="settlement town SAX"><rect class="marker" x="411.5" y="862" width="21" height="14" rx="7"/><text class="abbr" x="422" y="872">Eis</text><text class="name" x="422" y="885" text-anchor="middle">Eisenach</text></g>
+  <g id="settlement-88" class="settlement town SAX"><rect class="marker" x="548.5" y="785" width="21" height="14" rx="7"/><text class="abbr" x="559" y="795">Wit</text><text class="name" x="559" y="783" text-anchor="middle">Wittenberg</text></g>
+  <g id="settlement-89" class="settlement town SAX"><rect class="marker" x="531.5" y="833" width="21" height="14" rx="7"/><text class="abbr" x="542" y="843">Lei</text><text class="name" x="542" y="856" text-anchor="middle">Leipzig</text></g>
+  <g id="settlement-90" class="settlement town SAX"><rect class="marker" x="610.5" y="861" width="21" height="14" rx="7"/><text class="abbr" x="621" y="871">Dre</text><text class="name" x="621" y="884" text-anchor="middle">Dresden</text></g>
+  <g id="settlement-91" class="settlement town SAX"><rect class="marker" x="537.5" y="891" width="21" height="14" rx="7"/><text class="abbr" x="548" y="901">Zwi</text><text class="name" x="548" y="914" text-anchor="middle">Zwickau</text></g>
+  <g id="settlement-92" class="settlement city ERF"><rect class="marker" x="453.5" y="863" width="21" height="16" rx="2"/><text class="abbr" x="464" y="874">Erf</text><text class="name" x="464" y="861" text-anchor="middle">Erfurt</text></g>
+  <g id="settlement-93" class="settlement town LUS"><rect class="marker" x="650.5" y="849" width="21" height="14" rx="7"/><text class="abbr" x="661" y="859">Bau</text><text class="name" x="661" y="872" text-anchor="middle">Bautzen</text></g>
+  <g id="settlement-94" class="settlement town LUS"><rect class="marker" x="683.5" y="852" width="21" height="14" rx="7"/><text class="abbr" x="694" y="862">Gör</text><text class="name" x="694" y="850" text-anchor="middle">Görlitz</text></g>
+  <g id="settlement-95" class="settlement town SIL"><rect class="marker" x="744.5" y="803" width="21" height="14" rx="7"/><text class="abbr" x="755" y="813">Glo</text><text class="name" x="755" y="826" text-anchor="middle">Glogau</text></g>
+  <g id="settlement-96" class="settlement town SIL"><rect class="marker" x="750.5" y="844" width="21" height="14" rx="7"/><text class="abbr" x="761" y="854">Lie</text><text class="name" x="761" y="867" text-anchor="middle">Liegnitz</text></g>
+  <g id="settlement-97" class="settlement city SIL"><rect class="marker" x="801.5" y="851" width="21" height="16" rx="2"/><text class="abbr" x="812" y="862">Bre</text><text class="name" x="812" y="876" text-anchor="middle">Breslau</text></g>
+  <g id="settlement-98" class="settlement town OPP"><rect class="marker" x="855.5" y="890" width="21" height="14" rx="7"/><text class="abbr" x="866" y="900">Opp</text><text class="name" x="866" y="913" text-anchor="middle">Oppeln</text></g>
+  <g id="settlement-99" class="settlement town OPP"><rect class="marker" x="875.5" y="943" width="21" height="14" rx="7"/><text class="abbr" x="886" y="953">Rat</text><text class="name" x="886" y="966" text-anchor="middle">Ratibor</text></g>
+  <g id="settlement-100" class="settlement town LUX"><rect class="marker" x="155.5" y="969" width="21" height="14" rx="7"/><text class="abbr" x="166" y="979">Lux</text><text class="name" x="166" y="992" text-anchor="middle">Luxembourg</text></g>
+  <g id="settlement-101" class="settlement town TRI"><rect class="marker" x="187.5" y="959" width="21" height="14" rx="7"/><text class="abbr" x="198" y="969">Tri</text><text class="name" x="198" y="982" text-anchor="middle">Trier</text></g>
+  <g id="settlement-102" class="settlement town TRI"><rect class="marker" x="248.5" y="908" width="21" height="14" rx="7"/><text class="abbr" x="259" y="918">Kob</text><text class="name" x="259" y="931" text-anchor="middle">Koblenz</text></g>
+  <g id="settlement-103" class="settlement town MAI"><rect class="marker" x="285.5" y="945" width="21" height="14" rx="7"/><text class="abbr" x="296" y="955">Mai</text><text class="name" x="296" y="968" text-anchor="middle">Mainz</text></g>
+  <g id="settlement-104" class="settlement town FFM"><rect class="marker" x="310.5" y="936" width="21" height="14" rx="7"/><text class="abbr" x="321" y="946">Frn</text><text class="name" x="333.5" y="946" text-anchor="start">Frankfurt</text></g>
+  <g id="settlement-105" class="settlement town WBG"><rect class="marker" x="383.5" y="971" width="21" height="14" rx="7"/><text class="abbr" x="394" y="981">Wür</text><text class="name" x="394" y="994" text-anchor="middle">Würzburg</text></g>
+  <g id="settlement-106" class="settlement town BAM"><rect class="marker" x="440.5" y="964" width="21" height="14" rx="7"/><text class="abbr" x="451" y="974">Bam</text><text class="name" x="451" y="987" text-anchor="middle">Bamberg</text></g>
+  <g id="settlement-107" class="settlement town ANS"><rect class="marker" x="474.5" y="946" width="21" height="14" rx="7"/><text class="abbr" x="485" y="956">Kul</text><text class="name" x="485" y="969" text-anchor="middle">Kulmbach</text></g>
+  <g id="settlement-108" class="settlement town ANS"><rect class="marker" x="419.5" y="1018" width="21" height="14" rx="7"/><text class="abbr" x="430" y="1028">Ans</text><text class="name" x="430" y="1041" text-anchor="middle">Ansbach</text></g>
+  <g id="settlement-109" class="settlement city NUR"><rect class="marker" x="450.5" y="1004" width="21" height="16" rx="2"/><text class="abbr" x="461" y="1015">Nur</text><text class="name" x="461" y="1002" text-anchor="middle">Nuremberg</text></g>
+  <g id="settlement-110" class="settlement town PAL"><rect class="marker" x="306.5" y="1001" width="21" height="14" rx="7"/><text class="abbr" x="317" y="1011">Hei</text><text class="name" x="317" y="1024" text-anchor="middle">Heidelberg</text></g>
+  <g id="settlement-111" class="settlement town PAL"><rect class="marker" x="497.5" y="1008" width="21" height="14" rx="7"/><text class="abbr" x="508" y="1018">Amb</text><text class="name" x="508" y="1031" text-anchor="middle">Amberg</text></g>
+  <g id="settlement-112" class="settlement city BOH"><rect class="marker" x="650.5" y="949" width="21" height="16" rx="2"/><text class="abbr" x="661" y="960">Pra</text><text class="name" x="661" y="974" text-anchor="middle">Prague</text></g>
+  <g id="settlement-113" class="settlement town BOH"><rect class="marker" x="588.5" y="981" width="21" height="14" rx="7"/><text class="abbr" x="599" y="991">Plz</text><text class="name" x="599" y="1004" text-anchor="middle">Plzeň</text></g>
+  <g id="settlement-114" class="settlement town BOH"><rect class="marker" x="701.5" y="962" width="21" height="14" rx="7"/><text class="abbr" x="712" y="972">Kut</text><text class="name" x="712" y="985" text-anchor="middle">Kutná Hora</text></g>
+  <g id="settlement-115" class="settlement town BOH"><rect class="marker" x="733.5" y="937" width="21" height="14" rx="7"/><text class="abbr" x="744" y="947">Hra</text><text class="name" x="744" y="960" text-anchor="middle">Hradec Králové</text></g>
+  <g id="settlement-116" class="settlement town BOH"><rect class="marker" x="783.5" y="1029" width="21" height="14" rx="7"/><text class="abbr" x="794" y="1039">Brn</text><text class="name" x="794" y="1052" text-anchor="middle">Brno</text></g>
+  <g id="settlement-117" class="settlement town BOH"><rect class="marker" x="820.5" y="992" width="21" height="14" rx="7"/><text class="abbr" x="831" y="1002">Olo</text><text class="name" x="831" y="1015" text-anchor="middle">Olomouc</text></g>
+  <g id="settlement-118" class="settlement town TAB"><rect class="marker" x="665.5" y="1012" width="21" height="14" rx="7"/><text class="abbr" x="676" y="1022">Táb</text><text class="name" x="676" y="1035" text-anchor="middle">Tábor</text></g>
+  <g id="settlement-119" class="settlement city MET"><rect class="marker" x="153.5" y="1013" width="21" height="16" rx="2"/><text class="abbr" x="164" y="1024">Met</text><text class="name" x="164" y="1038" text-anchor="middle">Metz</text></g>
+  <g id="settlement-120" class="settlement town LOR"><rect class="marker" x="88.5" y="1039" width="21" height="14" rx="7"/><text class="abbr" x="99" y="1049">Bar</text><text class="name" x="99" y="1062" text-anchor="middle">Bar</text></g>
+  <g id="settlement-121" class="settlement town LOR"><rect class="marker" x="149.5" y="1053" width="21" height="14" rx="7"/><text class="abbr" x="160" y="1063">Nan</text><text class="name" x="160" y="1076" text-anchor="middle">Nancy</text></g>
+  <g id="settlement-122" class="settlement city STR"><rect class="marker" x="243.5" y="1072" width="21" height="16" rx="2"/><text class="abbr" x="254" y="1083">Str</text><text class="name" x="254" y="1097" text-anchor="middle">Strasbourg</text></g>
+  <g id="settlement-123" class="settlement town BAD"><rect class="marker" x="275.5" y="1059" width="21" height="14" rx="7"/><text class="abbr" x="286" y="1069">Bad</text><text class="name" x="286" y="1082" text-anchor="middle">Baden</text></g>
+  <g id="settlement-124" class="settlement town WRT"><rect class="marker" x="332.5" y="1061" width="21" height="14" rx="7"/><text class="abbr" x="343" y="1071">Stu</text><text class="name" x="343" y="1084" text-anchor="middle">Stuttgart</text></g>
+  <g id="settlement-125" class="settlement town WRT"><rect class="marker" x="176.5" y="1166" width="21" height="14" rx="7"/><text class="abbr" x="187" y="1176">Mon</text><text class="name" x="187" y="1164" text-anchor="middle">Montbéliard</text></g>
+  <g id="settlement-126" class="settlement city ULM"><rect class="marker" x="379.5" y="1098" width="21" height="16" rx="2"/><text class="abbr" x="390" y="1109">Ulm</text><text class="name" x="390" y="1123" text-anchor="middle">Ulm</text></g>
+  <g id="settlement-127" class="settlement city AUG"><rect class="marker" x="435.5" y="1104" width="21" height="16" rx="2"/><text class="abbr" x="446" y="1115">Aug</text><text class="name" x="446" y="1129" text-anchor="middle">Augsburg</text></g>
+  <g id="settlement-128" class="settlement town BIN"><rect class="marker" x="468.5" y="1070" width="21" height="14" rx="7"/><text class="abbr" x="479" y="1080">Ing</text><text class="name" x="479" y="1093" text-anchor="middle">Ingolstadt</text></g>
+  <g id="settlement-129" class="settlement town REG"><rect class="marker" x="510.5" y="1047" width="21" height="14" rx="7"/><text class="abbr" x="521" y="1057">Reg</text><text class="name" x="521" y="1045" text-anchor="middle">Regensburg</text></g>
+  <g id="settlement-130" class="settlement town BMU"><rect class="marker" x="538.5" y="1061" width="21" height="14" rx="7"/><text class="abbr" x="549" y="1071">Stb</text><text class="name" x="549" y="1084" text-anchor="middle">Straubing</text></g>
+  <g id="settlement-131" class="settlement town BMU"><rect class="marker" x="476.5" y="1128" width="21" height="14" rx="7"/><text class="abbr" x="487" y="1138">Mun</text><text class="name" x="487" y="1151" text-anchor="middle">Munich</text></g>
+  <g id="settlement-132" class="settlement town BLA"><rect class="marker" x="512.5" y="1092" width="21" height="14" rx="7"/><text class="abbr" x="523" y="1102">Lad</text><text class="name" x="523" y="1115" text-anchor="middle">Landshut</text></g>
+  <g id="settlement-133" class="settlement town BLA"><rect class="marker" x="553.5" y="1127" width="21" height="14" rx="7"/><text class="abbr" x="564" y="1137">Bur</text><text class="name" x="564" y="1150" text-anchor="middle">Burghausen</text></g>
+  <g id="settlement-134" class="settlement town PAS"><rect class="marker" x="590.5" y="1090" width="21" height="14" rx="7"/><text class="abbr" x="601" y="1100">Pas</text><text class="name" x="601" y="1113" text-anchor="middle">Passau</text></g>
+  <g id="settlement-135" class="settlement town AUS"><rect class="marker" x="643.5" y="1114" width="21" height="14" rx="7"/><text class="abbr" x="654" y="1124">Liz</text><text class="name" x="654" y="1137" text-anchor="middle">Linz</text></g>
+  <g id="settlement-136" class="settlement town AUS"><rect class="marker" x="725.5" y="1123" width="21" height="14" rx="7"/><text class="abbr" x="736" y="1133">SPö</text><text class="name" x="736" y="1146" text-anchor="middle">St. Pölten</text></g>
+  <g id="settlement-137" class="settlement city AUS"><rect class="marker" x="771.5" y="1120" width="21" height="16" rx="2"/><text class="abbr" x="782" y="1131">Vie</text><text class="name" x="782" y="1145" text-anchor="middle">Vienna</text></g>
+  <g id="settlement-138" class="settlement town AUS"><rect class="marker" x="765.5" y="1158" width="21" height="14" rx="7"/><text class="abbr" x="776" y="1168">Wie</text><text class="name" x="776" y="1156" text-anchor="middle">Wiener Neustadt</text></g>
+  <g id="settlement-139" class="settlement town HUN"><rect class="marker" x="817.5" y="1126" width="21" height="14" rx="7"/><text class="abbr" x="828" y="1136">Pos</text><text class="name" x="828" y="1124" text-anchor="middle">Pozsony</text></g>
+  <g id="settlement-140" class="settlement town HUN"><rect class="marker" x="851.5" y="1166" width="21" height="14" rx="7"/><text class="abbr" x="862" y="1176">Győ</text><text class="name" x="862" y="1189" text-anchor="middle">Győr</text></g>
+  <g id="settlement-141" class="settlement city HUN"><rect class="marker" x="940.5" y="1177" width="21" height="16" rx="2"/><text class="abbr" x="951" y="1188">Bud</text><text class="name" x="951" y="1202" text-anchor="middle">Buda</text></g>
+  <g id="settlement-142" class="settlement town HUN"><rect class="marker" x="897.5" y="1314" width="21" height="14" rx="7"/><text class="abbr" x="908" y="1324">Péc</text><text class="name" x="908" y="1337" text-anchor="middle">Pécs</text></g>
+  <g id="settlement-143" class="settlement town HUN"><rect class="marker" x="753.5" y="1344" width="21" height="14" rx="7"/><text class="abbr" x="764" y="1354">Zag</text><text class="name" x="764" y="1367" text-anchor="middle">Zagreb</text></g>
+  <g id="settlement-144" class="settlement town HUN"><rect class="marker" x="1101.5" y="1161" width="21" height="14" rx="7"/><text class="abbr" x="1112" y="1171">Deb</text><text class="name" x="1112" y="1184" text-anchor="middle">Debrecen</text></g>
+  <g id="settlement-145" class="settlement town HUN"><rect class="marker" x="1232.5" y="1217" width="21" height="14" rx="7"/><text class="abbr" x="1243" y="1227">Koz</text><text class="name" x="1243" y="1240" text-anchor="middle">Kolozsvár</text></g>
+  <g id="settlement-146" class="settlement town JIS"><rect class="marker" x="939.5" y="1063" width="21" height="14" rx="7"/><text class="abbr" x="950" y="1073">Bes</text><text class="name" x="950" y="1086" text-anchor="middle">Besztercebánya</text></g>
+  <g id="settlement-147" class="settlement town JIS"><rect class="marker" x="1067.5" y="1054" width="21" height="14" rx="7"/><text class="abbr" x="1078" y="1064">Kaa</text><text class="name" x="1078" y="1077" text-anchor="middle">Kassa</text></g>
+  <g id="settlement-148" class="settlement town DEC"><rect class="marker" x="215.5" y="1117" width="21" height="14" rx="7"/><text class="abbr" x="226" y="1127">Com</text><text class="name" x="226" y="1140" text-anchor="middle">Colmar</text></g>
+  <g id="settlement-149" class="settlement town TYR"><rect class="marker" x="245.5" y="1128" width="21" height="14" rx="7"/><text class="abbr" x="256" y="1138">Fre</text><text class="name" x="256" y="1151" text-anchor="middle">Freiburg</text></g>
+  <g id="settlement-150" class="settlement town BAS"><rect class="marker" x="225.5" y="1166" width="21" height="14" rx="7"/><text class="abbr" x="236" y="1176">Bas</text><text class="name" x="236" y="1189" text-anchor="middle">Basel</text></g>
+  <g id="settlement-151" class="settlement town KON"><rect class="marker" x="325.5" y="1164" width="21" height="14" rx="7"/><text class="abbr" x="336" y="1174">Kon</text><text class="name" x="336" y="1187" text-anchor="middle">Konstanz</text></g>
+  <g id="settlement-152" class="settlement town ZUR"><rect class="marker" x="283.5" y="1188" width="21" height="14" rx="7"/><text class="abbr" x="294" y="1198">Zür</text><text class="name" x="294" y="1211" text-anchor="middle">Zürich</text></g>
+  <g id="settlement-153" class="settlement town SWI"><rect class="marker" x="266.5" y="1217" width="21" height="14" rx="7"/><text class="abbr" x="277" y="1227">Luc</text><text class="name" x="289.5" y="1227" text-anchor="start">Lucerne</text></g>
+  <g id="settlement-154" class="settlement town SWI"><rect class="marker" x="212.5" y="1222" width="21" height="14" rx="7"/><text class="abbr" x="223" y="1232">Ben</text><text class="name" x="223" y="1245" text-anchor="middle">Bern</text></g>
+  <g id="settlement-155" class="settlement town TYR"><rect class="marker" x="461.5" y="1208" width="21" height="14" rx="7"/><text class="abbr" x="472" y="1218">Inn</text><text class="name" x="472" y="1231" text-anchor="middle">Innsbruck</text></g>
+  <g id="settlement-156" class="settlement town TYR"><rect class="marker" x="456.5" y="1279" width="21" height="14" rx="7"/><text class="abbr" x="467" y="1289">Boz</text><text class="name" x="467" y="1302" text-anchor="middle">Bozen</text></g>
+  <g id="settlement-157" class="settlement town SAL"><rect class="marker" x="566.5" y="1161" width="21" height="14" rx="7"/><text class="abbr" x="577" y="1171">Sal</text><text class="name" x="577" y="1184" text-anchor="middle">Salzburg</text></g>
+  <g id="settlement-158" class="settlement town STY"><rect class="marker" x="716.5" y="1228" width="21" height="14" rx="7"/><text class="abbr" x="727" y="1238">Gra</text><text class="name" x="727" y="1251" text-anchor="middle">Graz</text></g>
+  <g id="settlement-159" class="settlement town STY"><rect class="marker" x="648.5" y="1257" width="21" height="14" rx="7"/><text class="abbr" x="659" y="1267">StV</text><text class="name" x="659" y="1280" text-anchor="middle">St. Veit</text></g>
+  <g id="settlement-160" class="settlement town STY"><rect class="marker" x="658.5" y="1324" width="21" height="14" rx="7"/><text class="abbr" x="669" y="1334">Lju</text><text class="name" x="669" y="1347" text-anchor="middle">Ljubljana</text></g>
+  <g id="settlement-161" class="settlement town SAV"><rect class="marker" x="156.5" y="1256" width="21" height="14" rx="7"/><text class="abbr" x="167" y="1266">Lau</text><text class="name" x="167" y="1279" text-anchor="middle">Lausanne</text></g>
+  <g id="settlement-162" class="settlement town SAV"><rect class="marker" x="122.5" y="1282" width="21" height="14" rx="7"/><text class="abbr" x="133" y="1292">Gen</text><text class="name" x="133" y="1305" text-anchor="middle">Geneva</text></g>
+  <g id="settlement-163" class="settlement town SAV"><rect class="marker" x="101.5" y="1339" width="21" height="14" rx="7"/><text class="abbr" x="112" y="1349">Cha</text><text class="name" x="112" y="1362" text-anchor="middle">Chambéry</text></g>
+  <g id="settlement-164" class="settlement town MIL"><rect class="marker" x="307.5" y="1335" width="21" height="14" rx="7"/><text class="abbr" x="318" y="1345">Coo</text><text class="name" x="318" y="1358" text-anchor="middle">Como</text></g>
+  <g id="settlement-165" class="settlement town VEN"><rect class="marker" x="576.5" y="1322" width="21" height="14" rx="7"/><text class="abbr" x="587" y="1332">Udi</text><text class="name" x="587" y="1345" text-anchor="middle">Udine</text></g>
+  <g id="settlement-166" class="settlement town BUR"><rect class="marker" x="64.5" y="1171" width="21" height="14" rx="7"/><text class="abbr" x="75" y="1181">Dij</text><text class="name" x="75" y="1194" text-anchor="middle">Dijon</text></g>
+  <g id="settlement-167" class="settlement town BUR"><rect class="marker" x="124.5" y="1186" width="21" height="14" rx="7"/><text class="abbr" x="135" y="1196">Beç</text><text class="name" x="135" y="1209" text-anchor="middle">Besançon</text></g>
+  <g id="settlement-168" class="settlement city FRA"><rect class="marker" x="34.5" y="1312" width="21" height="16" rx="2"/><text class="abbr" x="45" y="1323">Lyo</text><text class="name" x="45" y="1337" text-anchor="middle">Lyon</text></g>
 </g>
 <g id="labels">
   <text id="label-NOR" class="label" x="412" y="39.4">NOR</text>

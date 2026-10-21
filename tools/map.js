@@ -11,6 +11,7 @@
 // Node built-ins only. Pixel grids are typed arrays indexed y * W + x.
 import fs from "node:fs";
 import { CHARACTERS, WARLIKE } from "../src/ai/characters.js";
+import { abbreviate } from "./abbreviations.js";
 import path from "node:path";
 
 const ROOT = path.dirname(import.meta.dirname);
@@ -51,13 +52,18 @@ const STYLE = `.sea{fill:#99d9ea}
 .mtn-outline{fill:none;stroke:#5f4128;stroke-width:1.4;stroke-linejoin:round}
 .pass{fill:#ffe600;stroke:#282828;stroke-width:1.5;stroke-linejoin:round}
 .marker{fill:#c9161f}
-.number{fill:#fff;font-size:10px;font-weight:bold;text-anchor:middle}
+.abbr{fill:#fff;font-size:8px;font-weight:bold;text-anchor:middle}
+.name{display:none;fill:#1e1e1e;font-size:9px;font-weight:600;paint-order:stroke;stroke:#fff;stroke-width:2.5px;stroke-linejoin:round}
 .label{fill:#464646;font-size:15px;text-anchor:middle}
 .label.small{font-size:10px}
 .sea-divider{fill:none;stroke:#3d7f9c;stroke-width:1.5;stroke-dasharray:6 4}
 .sea-label{fill:#3d7f9c;font-size:11px;font-style:italic;text-anchor:middle}
 `;
-const [PASS_SIDE, TOWN_R, CITY_SIDE] = [20, 9, 22];
+const PASS_SIDE = 20;
+// a settlement's marker is a red pill with its short form in it (tools/abbreviations.js): rounded for a town, square-cornered
+// and taller for a city; its name, shown on the game page only when zoomed in, goes beside it where nothing else is
+const [TOWN_H, CITY_H, ABBR_CHAR, NAME_SIZE, NAME_CHAR] = [14, 16, 5, 9, 0.56];
+const markerW = (abbr) => 6 + ABBR_CHAR * [...abbr].length;
 const [MTN_W, MTN_H] = [30, 26];
 const [MTN_GAP, MTN_REACH] = [5, 40];     // clear space around a mountain; how far `mountains` may move one
 const RIVER_NEAR = 24;                    // a settlement this close to a river is "on a river" (RULES.md §2)
@@ -948,6 +954,10 @@ for (const peak of [...PEAKS].sort((a, b) => a[1] - b[1] || a[0] - b[0])) {
 placed.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
 
 // ---------- country codes, each in the clearest spot of its land (or the sea next to it) ----------
+// each settlement's short form (tools/abbreviations.js): cities first, then the larger, then by number
+const PLACE_ORDER = [...SIDS].sort((a, b) => S.get(b).city - S.get(a).city || S.get(b).pop - S.get(a).pop || a - b);
+let ABBR;
+try { ABBR = abbreviate(PLACE_ORDER.map((id) => ({ id, name: S.get(id).name }))); } catch (e) { die(`SCENARIO.md: ${e.message}`); }
 const LABELS = [];                                    // [x0, y0, x1, y1, size, room, x, y, height, code]
 {
     const W1 = W + 1;
@@ -1062,11 +1072,33 @@ for (const p of PASSES) {
     o.push(`  <polygon id="pass-${p.id}" class="pass" points="${n(x)},${n(y - 2 * h / 3)} ${n(x - PASS_SIDE / 2)},${n(y + h / 3)} ${n(x + PASS_SIDE / 2)},${n(y + h / 3)}"/>`);
 }
 o.push("</g>", '<g id="settlements">');
-for (const id of SIDS) {
-    const s = S.get(id), { x, y } = s;
-    const marker = s.city ? `<rect class="marker" x="${x - CITY_SIDE / 2}" y="${y - CITY_SIDE / 2}" width="${CITY_SIDE}" height="${CITY_SIDE}"/>`
-        : `<circle class="marker" cx="${x}" cy="${y}" r="${TOWN_R}"/>`;
-    o.push(`  <g id="settlement-${id}" class="settlement ${s.city ? "city" : "town"} ${s.country}">${marker}<text class="number" x="${x}" y="${n(y + 3.5)}">${id}</text></g>`);
+const CROWDED = [];                                   // names that found no free spot beside their marker
+{
+    // every marker's box first, then each name placed — cities first — below, above, left or right of its marker, wherever
+    // it overlaps no marker, no name placed before it and no country label (below, if nowhere is free)
+    const boxes = SIDS.map((id) => { const s = S.get(id), w = markerW(ABBR.get(id)), h = s.city ? CITY_H : TOWN_H; return [s.x - w / 2, s.y - h / 2, s.x + w / 2, s.y + h / 2]; });
+    for (const l of LABELS) boxes.push([l[0], l[1], l[2], l[3]]);
+    const free = (b) => !boxes.some((c) => b[0] < c[2] && b[2] > c[0] && b[1] < c[3] && b[3] > c[1]);
+    const NAMEPOS = new Map();
+    for (const id of PLACE_ORDER) {
+        const s = S.get(id), w = markerW(ABBR.get(id)) / 2, h = (s.city ? CITY_H : TOWN_H) / 2;
+        const tw = [...s.name].length * NAME_SIZE * NAME_CHAR, th = NAME_SIZE;
+        const spots = [
+            { x: s.x, y: s.y + h + th, anchor: "middle", box: [s.x - tw / 2, s.y + h + 1, s.x + tw / 2, s.y + h + 1 + th] },
+            { x: s.x, y: s.y - h - 2, anchor: "middle", box: [s.x - tw / 2, s.y - h - 2 - th, s.x + tw / 2, s.y - h - 2] },
+            { x: s.x - w - 2, y: s.y + 3, anchor: "end", box: [s.x - w - 2 - tw, s.y - th / 2, s.x - w - 2, s.y + th / 2] },
+            { x: s.x + w + 2, y: s.y + 3, anchor: "start", box: [s.x + w + 2, s.y - th / 2, s.x + w + 2 + tw, s.y + th / 2] },
+        ];
+        const at = spots.find((p) => free(p.box)) ?? (CROWDED.push(s.name), spots[0]);
+        boxes.push(at.box);
+        NAMEPOS.set(id, at);
+    }
+    for (const id of SIDS) {
+        const s = S.get(id), { x, y } = s, ab = ABBR.get(id), w = markerW(ab), h = s.city ? CITY_H : TOWN_H, nm = NAMEPOS.get(id);
+        const marker = `<rect class="marker" x="${n(x - w / 2)}" y="${n(y - h / 2)}" width="${w}" height="${h}" rx="${s.city ? 2 : h / 2}"/>`;
+        o.push(`  <g id="settlement-${id}" class="settlement ${s.city ? "city" : "town"} ${s.country}">${marker}<text class="abbr" x="${x}" y="${n(y + 3)}">${ab}</text>`
+            + `<text class="name" x="${n(nm.x)}" y="${n(nm.y)}" text-anchor="${nm.anchor}">${s.name}</text></g>`);
+    }
 }
 o.push("</g>", '<g id="labels">');
 for (const l of LABELS) o.push(`  <text id="label-${l[9]}" class="label${l[4] < 15 ? " small" : ""}" x="${n(l[6])}" y="${n(l[7] + l[8] / 2)}">${l[9]}</text>`);
@@ -1144,7 +1176,7 @@ const json = {
     }),
     settlements: SIDS.map((id) => {
         const s = S.get(id);
-        return { id, name: s.name, country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre,
+        return { id, name: s.name, abbr: ABBR.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre,
             x: s.x, y: s.y, land: `land-${id}`, seaZone: s.zone ? s.zone.id : null, borders: s.nb.map(Number).sort(num), straits: s.st.map(Number).sort(num) };
     }),
     routes: [...LAND, ...STRAIT].sort(byKey).map((e) => {
@@ -1269,6 +1301,7 @@ fs.writeFileSync(DOC, doc.map((l) => l + "\n").join(""));
 // ---------- report ----------
 console.log(`${SIDS.length} settlements, ${CORDER.length} countries, ${LAND.size} land routes (${crossing.length} cross a river), ${STRAIT.size} straits, ${PASSES.length} passes, ${placed.length} mountains, ${RIVERS.length} rivers -> ${DIR}/map.svg, ${DIR}/scenario.json`);
 for (const p of PASSES) console.log(`${p.id} at ${p.x},${p.y}: land of ${p.owner} ${S.get(p.owner).name} (${cname(LC[p.owner])})`);
+console.log(`names: ${SIDS.length - CROWDED.length} placed clear of everything${CROWDED.length ? `, ${CROWDED.length} touching something (${CROWDED.join(", ")})` : ""}`);
 if (BENT.sea.size) console.log(`bent around the sea: ${[...BENT.sea].sort(byKey).join(", ")}`);
 if (BENT.country.size) console.log(`bent around other countries: ${[...BENT.country].sort(byKey).join(", ")}`);
 if (BENT.tight.size) console.log(`squeezed through a point where the lands barely touch: ${[...BENT.tight].sort(byKey).join(", ")}`);

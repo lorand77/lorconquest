@@ -1145,6 +1145,7 @@
   {
    "id": 1,
    "name": "Oslo",
+   "abbr": "Osl",
    "country": "NOR",
    "type": "town",
    "pop": 10000,
@@ -1166,6 +1167,7 @@
   {
    "id": 2,
    "name": "Skien",
+   "abbr": "Ski",
    "country": "NOR",
    "type": "town",
    "pop": 10000,
@@ -1185,6 +1187,7 @@
   {
    "id": 3,
    "name": "Stavanger",
+   "abbr": "Sta",
    "country": "NOR",
    "type": "town",
    "pop": 10000,
@@ -1203,6 +1206,7 @@
   {
    "id": 4,
    "name": "Uppsala",
+   "abbr": "Upp",
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1223,6 +1227,7 @@
   {
    "id": 5,
    "name": "Stockholm",
+   "abbr": "Sto",
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1242,6 +1247,7 @@
   {
    "id": 6,
    "name": "Linköping",
+   "abbr": "Lin",
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1264,6 +1270,7 @@
   {
    "id": 7,
    "name": "Älvsborg",
+   "abbr": "Älv",
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1284,6 +1291,7 @@
   {
    "id": 8,
    "name": "Kalmar",
+   "abbr": "Kal",
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1305,6 +1313,7 @@
   {
    "id": 9,
    "name": "Aalborg",
+   "abbr": "Aal",
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1324,6 +1333,7 @@
   {
    "id": 10,
    "name": "Aarhus",
+   "abbr": "Aar",
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1343,6 +1353,7 @@
   {
    "id": 11,
    "name": "Ribe",
+   "abbr": "Rib",
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1365,6 +1376,7 @@
   {
    "id": 12,
    "name": "Odense",
+   "abbr": "Ode",
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1384,6 +1396,7 @@
   {
    "id": 13,
    "name": "Copenhagen",
+   "abbr": "Cop",
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1403,6 +1416,7 @@
   {
    "id": 14,
    "name": "Lund",
+   "abbr": "Lun",
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1424,6 +1438,7 @@
   {
    "id": 15,
    "name": "Visby",
+   "abbr": "Vis",
    "country": "GOT",
    "type": "town",
    "pop": 10000,
@@ -1442,6 +1457,7 @@
   {
    "id": 16,
    "name": "Reval",
+   "abbr": "Rev",
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1460,6 +1476,7 @@
   {
    "id": 17,
    "name": "Pernau",
+   "abbr": "Per",
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1479,6 +1496,7 @@
   {
    "id": 18,
    "name": "Riga",
+   "abbr": "Rig",
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1501,6 +1519,7 @@
   {
    "id": 19,
    "name": "Windau",
+   "abbr": "Win",
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1520,6 +1539,7 @@
   {
    "id": 20,
    "name": "Medininkai",
+   "abbr": "Med",
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1542,6 +1562,7 @@
   {
    "id": 21,
    "name": "Kaunas",
+   "abbr": "Kau",
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1564,6 +1585,7 @@
   {
    "id": 22,
    "name": "Vilnius",
+   "abbr": "Vil",
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1584,6 +1606,7 @@
   {
    "id": 23,
    "name": "Grodno",
+   "abbr": "Gro",
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1606,6 +1629,7 @@
   {
    "id": 24,
    "name": "Brest",
+   "abbr": "Brt",
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1627,6 +1651,7 @@
   {
    "id": 25,
    "name": "Lutsk",
+   "abbr": "Lut",
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1647,6 +1672,7 @@
   {
    "id": 26,
    "name": "Memel",
+   "abbr": "Mem",
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1666,6 +1692,7 @@
   {
    "id": 27,
    "name": "Königsberg",
+   "abbr": "Kön",
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1688,6 +1715,7 @@
   {
    "id": 28,
    "name": "Danzig",
+   "abbr": "Dan",
    "country": "TEU",
    "type": "city",
    "pop": 20000,
@@ -1713,6 +1741,7 @@
   {
    "id": 29,
    "name": "Allenstein",
+   "abbr": "All",
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1736,6 +1765,7 @@
   {
    "id": 30,
    "name": "Thorn",
+   "abbr": "Tho",
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1757,6 +1787,7 @@
   {
    "id": 31,
    "name": "Landsberg",
+   "abbr": "Lan",
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1781,6 +1812,7 @@
   {
    "id": 32,
    "name": "Schleswig",
+   "abbr": "Sch",
    "country": "SHO",
    "type": "town",
    "pop": 10000,
@@ -1801,6 +1833,7 @@
   {
    "id": 33,
    "name": "Kiel",
+   "abbr": "Kie",
    "country": "SHO",
    "type": "town",
    "pop": 10000,
@@ -1821,6 +1854,7 @@
   {
    "id": 34,
    "name": "Lübeck",
+   "abbr": "Lüb",
    "country": "LUB",
    "type": "city",
    "pop": 20000,
@@ -1842,6 +1876,7 @@
   {
    "id": 35,
    "name": "Hamburg",
+   "abbr": "Ham",
    "country": "HAM",
    "type": "city",
    "pop": 20000,
@@ -1864,6 +1899,7 @@
   {
    "id": 36,
    "name": "Schwerin",
+   "abbr": "Scw",
    "country": "MEC",
    "type": "town",
    "pop": 10000,
@@ -1886,6 +1922,7 @@
   {
    "id": 37,
    "name": "Rostock",
+   "abbr": "Ros",
    "country": "MEC",
    "type": "town",
    "pop": 10000,
@@ -1906,6 +1943,7 @@
   {
    "id": 38,
    "name": "Stralsund",
+   "abbr": "Stl",
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -1925,6 +1963,7 @@
   {
    "id": 39,
    "name": "Stettin",
+   "abbr": "Ste",
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -1945,6 +1984,7 @@
   {
    "id": 40,
    "name": "Kolberg",
+   "abbr": "Kol",
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -1966,6 +2006,7 @@
   {
    "id": 41,
    "name": "Stolp",
+   "abbr": "Stp",
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -1985,6 +2026,7 @@
   {
    "id": 42,
    "name": "Groningen",
+   "abbr": "Grn",
    "country": "FRI",
    "type": "town",
    "pop": 10000,
@@ -2005,6 +2047,7 @@
   {
    "id": 43,
    "name": "Emden",
+   "abbr": "Emd",
    "country": "EFR",
    "type": "town",
    "pop": 10000,
@@ -2024,6 +2067,7 @@
   {
    "id": 44,
    "name": "Oldenburg",
+   "abbr": "Old",
    "country": "OLD",
    "type": "town",
    "pop": 10000,
@@ -2044,6 +2088,7 @@
   {
    "id": 45,
    "name": "Bremen",
+   "abbr": "Brm",
    "country": "BRE",
    "type": "town",
    "pop": 10000,
@@ -2066,6 +2111,7 @@
   {
    "id": 46,
    "name": "Lüneburg",
+   "abbr": "Lün",
    "country": "BRU",
    "type": "town",
    "pop": 10000,
@@ -2090,6 +2136,7 @@
   {
    "id": 47,
    "name": "Hanover",
+   "abbr": "Han",
    "country": "BRU",
    "type": "town",
    "pop": 10000,
@@ -2114,6 +2161,7 @@
   {
    "id": 48,
    "name": "Brunswick",
+   "abbr": "Bru",
    "country": "BRU",
    "type": "city",
    "pop": 20000,
@@ -2136,6 +2184,7 @@
   {
    "id": 49,
    "name": "Göttingen",
+   "abbr": "Göt",
    "country": "BRU",
    "type": "town",
    "pop": 10000,
@@ -2159,6 +2208,7 @@
   {
    "id": 50,
    "name": "Magdeburg",
+   "abbr": "Mag",
    "country": "MAG",
    "type": "city",
    "pop": 20000,
@@ -2183,6 +2233,7 @@
   {
    "id": 51,
    "name": "Stendal",
+   "abbr": "Stn",
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2206,6 +2257,7 @@
   {
    "id": 52,
    "name": "Prenzlau",
+   "abbr": "Pre",
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2231,6 +2283,7 @@
   {
    "id": 53,
    "name": "Brandenburg",
+   "abbr": "Bra",
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2252,6 +2305,7 @@
   {
    "id": 54,
    "name": "Berlin",
+   "abbr": "Ber",
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2273,6 +2327,7 @@
   {
    "id": 55,
    "name": "Frankfurt (Oder)",
+   "abbr": "Fra",
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2297,6 +2352,7 @@
   {
    "id": 56,
    "name": "Inowrocław",
+   "abbr": "Ino",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2320,6 +2376,7 @@
   {
    "id": 57,
    "name": "Poznań",
+   "abbr": "Poz",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2342,6 +2399,7 @@
   {
    "id": 58,
    "name": "Kalisz",
+   "abbr": "Kas",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2364,6 +2422,7 @@
   {
    "id": 59,
    "name": "Łęczyca",
+   "abbr": "Łęc",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2388,6 +2447,7 @@
   {
    "id": 60,
    "name": "Płock",
+   "abbr": "Pło",
    "country": "MAZ",
    "type": "town",
    "pop": 10000,
@@ -2410,6 +2470,7 @@
   {
    "id": 61,
    "name": "Warsaw",
+   "abbr": "War",
    "country": "MAZ",
    "type": "town",
    "pop": 10000,
@@ -2434,6 +2495,7 @@
   {
    "id": 62,
    "name": "Lublin",
+   "abbr": "Lub",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2457,6 +2519,7 @@
   {
    "id": 63,
    "name": "Sandomierz",
+   "abbr": "San",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2479,6 +2542,7 @@
   {
    "id": 64,
    "name": "Kraków",
+   "abbr": "Kra",
    "country": "POL",
    "type": "city",
    "pop": 20000,
@@ -2503,6 +2567,7 @@
   {
    "id": 65,
    "name": "Przemyśl",
+   "abbr": "Prz",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2526,6 +2591,7 @@
   {
    "id": 66,
    "name": "Lwów",
+   "abbr": "Lwó",
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2547,6 +2613,7 @@
   {
    "id": 67,
    "name": "Amsterdam",
+   "abbr": "Ams",
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -2566,6 +2633,7 @@
   {
    "id": 68,
    "name": "Dordrecht",
+   "abbr": "Dor",
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -2588,6 +2656,7 @@
   {
    "id": 69,
    "name": "Antwerp",
+   "abbr": "Ant",
    "country": "BUR",
    "type": "city",
    "pop": 20000,
@@ -2609,6 +2678,7 @@
   {
    "id": 70,
    "name": "Brussels",
+   "abbr": "Brs",
    "country": "BUR",
    "type": "city",
    "pop": 20000,
@@ -2629,6 +2699,7 @@
   {
    "id": 71,
    "name": "Namur",
+   "abbr": "Nam",
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -2650,6 +2721,7 @@
   {
    "id": 72,
    "name": "Utrecht",
+   "abbr": "Utr",
    "country": "UTR",
    "type": "town",
    "pop": 10000,
@@ -2671,6 +2743,7 @@
   {
    "id": 73,
    "name": "Deventer",
+   "abbr": "Dev",
    "country": "UTR",
    "type": "town",
    "pop": 10000,
@@ -2693,6 +2766,7 @@
   {
    "id": 74,
    "name": "Nijmegen",
+   "abbr": "Nij",
    "country": "GEL",
    "type": "town",
    "pop": 10000,
@@ -2715,6 +2789,7 @@
   {
    "id": 75,
    "name": "Roermond",
+   "abbr": "Roe",
    "country": "GEL",
    "type": "town",
    "pop": 10000,
@@ -2739,6 +2814,7 @@
   {
    "id": 76,
    "name": "Wesel",
+   "abbr": "Wes",
    "country": "CLE",
    "type": "town",
    "pop": 10000,
@@ -2762,6 +2838,7 @@
   {
    "id": 77,
    "name": "Hamm",
+   "abbr": "Hmm",
    "country": "CLE",
    "type": "town",
    "pop": 10000,
@@ -2782,6 +2859,7 @@
   {
    "id": 78,
    "name": "Münster",
+   "abbr": "Mün",
    "country": "MUN",
    "type": "town",
    "pop": 10000,
@@ -2807,6 +2885,7 @@
   {
    "id": 79,
    "name": "Recklinghausen",
+   "abbr": "Rec",
    "country": "KOL",
    "type": "town",
    "pop": 10000,
@@ -2829,6 +2908,7 @@
   {
    "id": 80,
    "name": "Arnsberg",
+   "abbr": "Arn",
    "country": "KOL",
    "type": "town",
    "pop": 10000,
@@ -2853,6 +2933,7 @@
   {
    "id": 81,
    "name": "Düsseldorf",
+   "abbr": "Düs",
    "country": "JUL",
    "type": "town",
    "pop": 10000,
@@ -2875,6 +2956,7 @@
   {
    "id": 82,
    "name": "Jülich",
+   "abbr": "Jül",
    "country": "JUL",
    "type": "town",
    "pop": 10000,
@@ -2898,6 +2980,7 @@
   {
    "id": 83,
    "name": "Cologne",
+   "abbr": "Col",
    "country": "COL",
    "type": "city",
    "pop": 20000,
@@ -2919,6 +3002,7 @@
   {
    "id": 84,
    "name": "Liège",
+   "abbr": "Liè",
    "country": "LIE",
    "type": "city",
    "pop": 20000,
@@ -2943,6 +3027,7 @@
   {
    "id": 85,
    "name": "Kassel",
+   "abbr": "Kae",
    "country": "HES",
    "type": "town",
    "pop": 10000,
@@ -2965,6 +3050,7 @@
   {
    "id": 86,
    "name": "Marburg",
+   "abbr": "Mar",
    "country": "HES",
    "type": "town",
    "pop": 10000,
@@ -2988,6 +3074,7 @@
   {
    "id": 87,
    "name": "Eisenach",
+   "abbr": "Eis",
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3011,6 +3098,7 @@
   {
    "id": 88,
    "name": "Wittenberg",
+   "abbr": "Wit",
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3034,6 +3122,7 @@
   {
    "id": 89,
    "name": "Leipzig",
+   "abbr": "Lei",
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3056,6 +3145,7 @@
   {
    "id": 90,
    "name": "Dresden",
+   "abbr": "Dre",
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3078,6 +3168,7 @@
   {
    "id": 91,
    "name": "Zwickau",
+   "abbr": "Zwi",
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3101,6 +3192,7 @@
   {
    "id": 92,
    "name": "Erfurt",
+   "abbr": "Erf",
    "country": "ERF",
    "type": "city",
    "pop": 20000,
@@ -3124,6 +3216,7 @@
   {
    "id": 93,
    "name": "Bautzen",
+   "abbr": "Bau",
    "country": "LUS",
    "type": "town",
    "pop": 10000,
@@ -3145,6 +3238,7 @@
   {
    "id": 94,
    "name": "Görlitz",
+   "abbr": "Gör",
    "country": "LUS",
    "type": "town",
    "pop": 10000,
@@ -3168,6 +3262,7 @@
   {
    "id": 95,
    "name": "Glogau",
+   "abbr": "Glo",
    "country": "SIL",
    "type": "town",
    "pop": 10000,
@@ -3191,6 +3286,7 @@
   {
    "id": 96,
    "name": "Liegnitz",
+   "abbr": "Lie",
    "country": "SIL",
    "type": "town",
    "pop": 10000,
@@ -3212,6 +3308,7 @@
   {
    "id": 97,
    "name": "Breslau",
+   "abbr": "Bre",
    "country": "SIL",
    "type": "city",
    "pop": 20000,
@@ -3234,6 +3331,7 @@
   {
    "id": 98,
    "name": "Oppeln",
+   "abbr": "Opp",
    "country": "OPP",
    "type": "town",
    "pop": 10000,
@@ -3257,6 +3355,7 @@
   {
    "id": 99,
    "name": "Ratibor",
+   "abbr": "Rat",
    "country": "OPP",
    "type": "town",
    "pop": 10000,
@@ -3278,6 +3377,7 @@
   {
    "id": 100,
    "name": "Luxembourg",
+   "abbr": "Lux",
    "country": "LUX",
    "type": "town",
    "pop": 10000,
@@ -3300,6 +3400,7 @@
   {
    "id": 101,
    "name": "Trier",
+   "abbr": "Tri",
    "country": "TRI",
    "type": "town",
    "pop": 10000,
@@ -3323,6 +3424,7 @@
   {
    "id": 102,
    "name": "Koblenz",
+   "abbr": "Kob",
    "country": "TRI",
    "type": "town",
    "pop": 10000,
@@ -3348,6 +3450,7 @@
   {
    "id": 103,
    "name": "Mainz",
+   "abbr": "Mai",
    "country": "MAI",
    "type": "town",
    "pop": 10000,
@@ -3368,6 +3471,7 @@
   {
    "id": 104,
    "name": "Frankfurt",
+   "abbr": "Frn",
    "country": "FFM",
    "type": "town",
    "pop": 10000,
@@ -3390,6 +3494,7 @@
   {
    "id": 105,
    "name": "Würzburg",
+   "abbr": "Wür",
    "country": "WBG",
    "type": "town",
    "pop": 10000,
@@ -3414,6 +3519,7 @@
   {
    "id": 106,
    "name": "Bamberg",
+   "abbr": "Bam",
    "country": "BAM",
    "type": "town",
    "pop": 10000,
@@ -3436,6 +3542,7 @@
   {
    "id": 107,
    "name": "Kulmbach",
+   "abbr": "Kul",
    "country": "ANS",
    "type": "town",
    "pop": 10000,
@@ -3459,6 +3566,7 @@
   {
    "id": 108,
    "name": "Ansbach",
+   "abbr": "Ans",
    "country": "ANS",
    "type": "town",
    "pop": 10000,
@@ -3483,6 +3591,7 @@
   {
    "id": 109,
    "name": "Nuremberg",
+   "abbr": "Nur",
    "country": "NUR",
    "type": "city",
    "pop": 20000,
@@ -3505,6 +3614,7 @@
   {
    "id": 110,
    "name": "Heidelberg",
+   "abbr": "Hei",
    "country": "PAL",
    "type": "town",
    "pop": 10000,
@@ -3531,6 +3641,7 @@
   {
    "id": 111,
    "name": "Amberg",
+   "abbr": "Amb",
    "country": "PAL",
    "type": "town",
    "pop": 10000,
@@ -3553,6 +3664,7 @@
   {
    "id": 112,
    "name": "Prague",
+   "abbr": "Pra",
    "country": "BOH",
    "type": "city",
    "pop": 20000,
@@ -3578,6 +3690,7 @@
   {
    "id": 113,
    "name": "Plzeň",
+   "abbr": "Plz",
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3602,6 +3715,7 @@
   {
    "id": 114,
    "name": "Kutná Hora",
+   "abbr": "Kut",
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3623,6 +3737,7 @@
   {
    "id": 115,
    "name": "Hradec Králové",
+   "abbr": "Hra",
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3648,6 +3763,7 @@
   {
    "id": 116,
    "name": "Brno",
+   "abbr": "Brn",
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3672,6 +3788,7 @@
   {
    "id": 117,
    "name": "Olomouc",
+   "abbr": "Olo",
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3694,6 +3811,7 @@
   {
    "id": 118,
    "name": "Tábor",
+   "abbr": "Táb",
    "country": "TAB",
    "type": "town",
    "pop": 10000,
@@ -3718,6 +3836,7 @@
   {
    "id": 119,
    "name": "Metz",
+   "abbr": "Met",
    "country": "MET",
    "type": "city",
    "pop": 20000,
@@ -3741,6 +3860,7 @@
   {
    "id": 120,
    "name": "Bar",
+   "abbr": "Bar",
    "country": "LOR",
    "type": "town",
    "pop": 10000,
@@ -3763,6 +3883,7 @@
   {
    "id": 121,
    "name": "Nancy",
+   "abbr": "Nan",
    "country": "LOR",
    "type": "town",
    "pop": 10000,
@@ -3787,6 +3908,7 @@
   {
    "id": 122,
    "name": "Strasbourg",
+   "abbr": "Str",
    "country": "STR",
    "type": "city",
    "pop": 20000,
@@ -3810,6 +3932,7 @@
   {
    "id": 123,
    "name": "Baden",
+   "abbr": "Bad",
    "country": "BAD",
    "type": "town",
    "pop": 10000,
@@ -3831,6 +3954,7 @@
   {
    "id": 124,
    "name": "Stuttgart",
+   "abbr": "Stu",
    "country": "WRT",
    "type": "town",
    "pop": 10000,
@@ -3854,6 +3978,7 @@
   {
    "id": 125,
    "name": "Montbéliard",
+   "abbr": "Mon",
    "country": "WRT",
    "type": "town",
    "pop": 10000,
@@ -3876,6 +4001,7 @@
   {
    "id": 126,
    "name": "Ulm",
+   "abbr": "Ulm",
    "country": "ULM",
    "type": "city",
    "pop": 20000,
@@ -3898,6 +4024,7 @@
   {
    "id": 127,
    "name": "Augsburg",
+   "abbr": "Aug",
    "country": "AUG",
    "type": "city",
    "pop": 20000,
@@ -3920,6 +4047,7 @@
   {
    "id": 128,
    "name": "Ingolstadt",
+   "abbr": "Ing",
    "country": "BIN",
    "type": "town",
    "pop": 10000,
@@ -3944,6 +4072,7 @@
   {
    "id": 129,
    "name": "Regensburg",
+   "abbr": "Reg",
    "country": "REG",
    "type": "town",
    "pop": 10000,
@@ -3965,6 +4094,7 @@
   {
    "id": 130,
    "name": "Straubing",
+   "abbr": "Stb",
    "country": "BMU",
    "type": "town",
    "pop": 10000,
@@ -3987,6 +4117,7 @@
   {
    "id": 131,
    "name": "Munich",
+   "abbr": "Mun",
    "country": "BMU",
    "type": "town",
    "pop": 10000,
@@ -4010,6 +4141,7 @@
   {
    "id": 132,
    "name": "Landshut",
+   "abbr": "Lad",
    "country": "BLA",
    "type": "town",
    "pop": 10000,
@@ -4032,6 +4164,7 @@
   {
    "id": 133,
    "name": "Burghausen",
+   "abbr": "Bur",
    "country": "BLA",
    "type": "town",
    "pop": 10000,
@@ -4054,6 +4187,7 @@
   {
    "id": 134,
    "name": "Passau",
+   "abbr": "Pas",
    "country": "PAS",
    "type": "town",
    "pop": 10000,
@@ -4077,6 +4211,7 @@
   {
    "id": 135,
    "name": "Linz",
+   "abbr": "Liz",
    "country": "AUS",
    "type": "town",
    "pop": 10000,
@@ -4100,6 +4235,7 @@
   {
    "id": 136,
    "name": "St. Pölten",
+   "abbr": "SPö",
    "country": "AUS",
    "type": "town",
    "pop": 10000,
@@ -4123,6 +4259,7 @@
   {
    "id": 137,
    "name": "Vienna",
+   "abbr": "Vie",
    "country": "AUS",
    "type": "city",
    "pop": 20000,
@@ -4144,6 +4281,7 @@
   {
    "id": 138,
    "name": "Wiener Neustadt",
+   "abbr": "Wie",
    "country": "AUS",
    "type": "town",
    "pop": 10000,
@@ -4166,6 +4304,7 @@
   {
    "id": 139,
    "name": "Pozsony",
+   "abbr": "Pos",
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4189,6 +4328,7 @@
   {
    "id": 140,
    "name": "Győr",
+   "abbr": "Győ",
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4212,6 +4352,7 @@
   {
    "id": 141,
    "name": "Buda",
+   "abbr": "Bud",
    "country": "HUN",
    "type": "city",
    "pop": 20000,
@@ -4234,6 +4375,7 @@
   {
    "id": 142,
    "name": "Pécs",
+   "abbr": "Péc",
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4256,6 +4398,7 @@
   {
    "id": 143,
    "name": "Zagreb",
+   "abbr": "Zag",
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4276,6 +4419,7 @@
   {
    "id": 144,
    "name": "Debrecen",
+   "abbr": "Deb",
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4297,6 +4441,7 @@
   {
    "id": 145,
    "name": "Kolozsvár",
+   "abbr": "Koz",
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4319,6 +4464,7 @@
   {
    "id": 146,
    "name": "Besztercebánya",
+   "abbr": "Bes",
    "country": "JIS",
    "type": "town",
    "pop": 10000,
@@ -4343,6 +4489,7 @@
   {
    "id": 147,
    "name": "Kassa",
+   "abbr": "Kaa",
    "country": "JIS",
    "type": "town",
    "pop": 10000,
@@ -4366,6 +4513,7 @@
   {
    "id": 148,
    "name": "Colmar",
+   "abbr": "Com",
    "country": "DEC",
    "type": "town",
    "pop": 10000,
@@ -4388,6 +4536,7 @@
   {
    "id": 149,
    "name": "Freiburg",
+   "abbr": "Fre",
    "country": "TYR",
    "type": "town",
    "pop": 10000,
@@ -4411,6 +4560,7 @@
   {
    "id": 150,
    "name": "Basel",
+   "abbr": "Bas",
    "country": "BAS",
    "type": "town",
    "pop": 10000,
@@ -4434,6 +4584,7 @@
   {
    "id": 151,
    "name": "Konstanz",
+   "abbr": "Kon",
    "country": "KON",
    "type": "town",
    "pop": 10000,
@@ -4456,6 +4607,7 @@
   {
    "id": 152,
    "name": "Zürich",
+   "abbr": "Zür",
    "country": "ZUR",
    "type": "town",
    "pop": 10000,
@@ -4478,6 +4630,7 @@
   {
    "id": 153,
    "name": "Lucerne",
+   "abbr": "Luc",
    "country": "SWI",
    "type": "town",
    "pop": 10000,
@@ -4500,6 +4653,7 @@
   {
    "id": 154,
    "name": "Bern",
+   "abbr": "Ben",
    "country": "SWI",
    "type": "town",
    "pop": 10000,
@@ -4521,6 +4675,7 @@
   {
    "id": 155,
    "name": "Innsbruck",
+   "abbr": "Inn",
    "country": "TYR",
    "type": "town",
    "pop": 10000,
@@ -4547,6 +4702,7 @@
   {
    "id": 156,
    "name": "Bozen",
+   "abbr": "Boz",
    "country": "TYR",
    "type": "town",
    "pop": 10000,
@@ -4565,6 +4721,7 @@
   {
    "id": 157,
    "name": "Salzburg",
+   "abbr": "Sal",
    "country": "SAL",
    "type": "town",
    "pop": 10000,
@@ -4589,6 +4746,7 @@
   {
    "id": 158,
    "name": "Graz",
+   "abbr": "Gra",
    "country": "STY",
    "type": "town",
    "pop": 10000,
@@ -4613,6 +4771,7 @@
   {
    "id": 159,
    "name": "St. Veit",
+   "abbr": "StV",
    "country": "STY",
    "type": "town",
    "pop": 10000,
@@ -4635,6 +4794,7 @@
   {
    "id": 160,
    "name": "Ljubljana",
+   "abbr": "Lju",
    "country": "STY",
    "type": "town",
    "pop": 10000,
@@ -4656,6 +4816,7 @@
   {
    "id": 161,
    "name": "Lausanne",
+   "abbr": "Lau",
    "country": "SAV",
    "type": "town",
    "pop": 10000,
@@ -4677,6 +4838,7 @@
   {
    "id": 162,
    "name": "Geneva",
+   "abbr": "Gen",
    "country": "SAV",
    "type": "town",
    "pop": 10000,
@@ -4699,6 +4861,7 @@
   {
    "id": 163,
    "name": "Chambéry",
+   "abbr": "Cha",
    "country": "SAV",
    "type": "town",
    "pop": 10000,
@@ -4719,6 +4882,7 @@
   {
    "id": 164,
    "name": "Como",
+   "abbr": "Coo",
    "country": "MIL",
    "type": "town",
    "pop": 10000,
@@ -4737,6 +4901,7 @@
   {
    "id": 165,
    "name": "Udine",
+   "abbr": "Udi",
    "country": "VEN",
    "type": "town",
    "pop": 10000,
@@ -4758,6 +4923,7 @@
   {
    "id": 166,
    "name": "Dijon",
+   "abbr": "Dij",
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -4780,6 +4946,7 @@
   {
    "id": 167,
    "name": "Besançon",
+   "abbr": "Beç",
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -4802,6 +4969,7 @@
   {
    "id": 168,
    "name": "Lyon",
+   "abbr": "Lyo",
    "country": "FRA",
    "type": "city",
    "pop": 20000,

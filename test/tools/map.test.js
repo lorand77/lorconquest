@@ -67,3 +67,16 @@ test("characters and rivalries: every country has one of the characters, the spr
     refuses((d) => d.replace("| CPH Copenhagen – STO Stockholm |", "| CPH Copenhagen – XXX Nowhere |"), /Rivalries line \d+: needs two countries/);
     refuses((d) => d.replace("| NED Netherlands – HAM Hamburg |", "| CPH Copenhagen – STO Stockholm |"), /CPH and STO are listed twice/);
 });
+
+test("the map shows no settlement numbers: each marker holds its short form, and its name is beside it, for the game to show zoomed in", () => {
+    const svg = fs.readFileSync(path.join(ROOT, "scenarios", "mitteleuropa", "map.svg"), "utf8");
+    assert.doesNotMatch(svg, /class="number"/);
+    for (const s of scenario.settlements) {
+        const g = new RegExp(`<g id="settlement-${s.id}" [^>]*>(.*?)</g>`).exec(svg);
+        assert.ok(g, `settlement ${s.id} is drawn`);
+        assert.match(g[1], new RegExp(`<text class="abbr"[^>]*>${s.abbr}</text>`));
+        assert.match(g[1], new RegExp(`<text class="name"[^>]*>${s.name}</text>`));
+        assert.doesNotMatch(g[1], new RegExp(`>${s.id}<`), "no number");
+    }
+    assert.match(svg, /\.name\{display:none;/, "names are hidden unless the game shows them");
+});

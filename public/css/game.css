@@ -32,7 +32,9 @@ body.game { height: 100vh; display: flex; flex-direction: column; overflow: hidd
 .map, .map svg { width: 100%; height: 100%; display: block; }
 .map svg { touch-action: none; user-select: none; cursor: default; }
 .map svg.dragging { cursor: grabbing; }
-.map #labels, .map #mountains, .map #rivers, .map #routes, .map #sea-zones, .map #edges, .map #landmass, .map .number { pointer-events: none; }
+.map #labels, .map #mountains, .map #rivers, .map #routes, .map #sea-zones, .map #edges, .map #landmass, .map .abbr { pointer-events: none; }
+/* a settlement's name, zoomed in only (mapview.js); a click on it picks the settlement */
+.map svg.zoomed .name { display: inline; }
 .map [id^="settlement-"], .map [id^="pass-"], .map .lc-army { cursor: pointer; }
 .zoom { position: absolute; left: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
 .zoom button { width: 32px; height: 32px; padding: 0; font-size: 18px; }

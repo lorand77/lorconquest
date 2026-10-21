@@ -62,7 +62,7 @@ dependencies.
   `js/replayer.js` — the pure part, tested against real games — and `js/mapdraw.js`, which the game page shares); `leaderboard.html`;
   `terms.html` and `privacy.html`, which must stay true of what the code does.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
-- `tools/` — the runner, the bench, the map tools.
+- `tools/` — the runner, the bench, the map tools (`map.js`, and `abbreviations.js`: the short names in the map's markers).
 - `test/ai/` — each AI layer on the tiny map, the caretaker, and computer-only games on the real map (invariants every month,
   exact replay from the commands alone, the tick's budget); `test/helpers/invariants.js` is the check it shares with the fuzz.
 - `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js` (a sea, two ports, a strait,
