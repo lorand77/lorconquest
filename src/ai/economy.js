@@ -1,7 +1,10 @@
 // The computer player's yearly economy (docs/design.md, "The computer players", strategy layer): tax, the research
 // slider and what to research, the law, loans and which buildings to buy. It keeps a reserve of a third of a year's money,
-// taxes lightly in peace and harder in war, and spends what is above the reserve on the buildings that pay.
-import { BUILDING_PRICE, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, economyOf, militaryPowerOf, neighboursOf } from "../engine/index.js";
+// taxes lightly in peace and harder in war, and spends what is above the reserve on the buildings that pay. A country in
+// distress — in the red and losing money, as one that borrowed in a war and then lost its land is — taxes as much as it may,
+// sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
+// rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it.
+import { BUILDING_PRICE, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, militaryPowerOf, neighboursOf } from "../engine/index.js";
 import { enemiesOf, exposed, nextToEnemy, ownSettlements, reserveOf } from "./util.js";
 
 // how much stronger than the country its strongest neighbour is (0 with no neighbour)
@@ -25,7 +28,8 @@ export function economyOrders(game, code, fl, ctx) {
 
     // tax: none above 2 in peace, a little in war, more if the treasury needs it
     let tax = atWarNow ? 2.2 : 2.0;
-    if (e.moneyPerYear < 0 || c.treasury < 0) tax = 2.5;
+    if (c.treasury < 0 && e.moneyPerYear < 0) tax = 3.0;
+    else if (e.moneyPerYear < 0 || c.treasury < 0) tax = 2.5;
     else if (atWarNow && c.treasury < 0.5 * reserve) tax = 2.4;
     if (tax !== c.tax) cmd("setTax", { tax });
 
@@ -46,7 +50,9 @@ export function economyOrders(game, code, fl, ctx) {
 
     // loans: borrow in war when the treasury is thin; repay when it is fat
     const spare = c.treasury - reserve;
-    if (atWarNow && c.treasury < 0.5 * reserve && c.loans < 0.7 * e.loanLimit && e.moneyPerYear > 0) {
+    if (c.loans > 0 && c.treasury < 0 && e.moneyPerYear < 0 && c.debtSince !== null && st.day - c.debtSince >= YEAR_DAYS) {
+        cmd("defaultOnLoans");
+    } else if (atWarNow && c.treasury < 0.5 * reserve && c.loans < 0.7 * e.loanLimit && e.moneyPerYear > 0 && st.day >= c.noBorrowUntil) {
         cmd("borrow", { chunks: Math.min(4, Math.max(1, Math.ceil((reserve - c.treasury) / LOAN_CHUNK))) });
     } else if (c.loans > 0 && spare > c.loans + reserve) {
         const chunks = Math.min(Math.floor(c.loans / LOAN_CHUNK), Math.floor(spare / LOAN_CHUNK / 2) || 1);

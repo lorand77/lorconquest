@@ -207,7 +207,7 @@ The real AI, replacing the placeholders.
 **Delivers**
 - **The computer player:** reads the state and sends commands like a human, inline in the game's
   worker, on the staggered schedule, within the tick budget.
-- **The three layers:** strategy (yearly), operations (every 10–20 days), reflexes (the tick after
+- **The three layers:** strategy (yearly), operations (every 15 days), reflexes (the tick after
   an event).
 - **The caretaker,** for a disconnected human's country.
 - **A simulation tool:** many AI-only games, headless, at full speed, with win rates by country —
@@ -220,7 +220,7 @@ The real AI, replacing the placeholders.
 
 **Depends on:** 4.
 
-**Done.** `src/ai/` is the computer player: a character per country, and on its own 10–20 day schedule a think that
+**Done.** `src/ai/` is the computer player: a character per country, and thinking every 15 days on a day of its own, a think that
 raises and arms soldiers, hires mercenaries in war, runs the economy from a shared budget, asks for peace on terms the
 other side's formula will accept, plans and declares wars it should win, proposes alliances and pacts, and musters,
 marches, besieges, storms and sorties; the tick after a siege or a war it looks at its war again. The caretaker defends

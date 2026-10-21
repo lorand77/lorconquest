@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import docsScenario from "../../docs/scenario.json" with { type: "json" };
-import { Game, armyList, atWar, replay, scores } from "../../src/engine/index.js";
+import { Game, armyCapOf, armyList, armySoldiersOf, atWar, economyOf, replay, scores } from "../../src/engine/index.js";
 import { warKey } from "../../src/engine/state.js";
 import { createAI } from "../../src/ai/index.js";
 import { answerOffers, callAnswers } from "../../src/ai/caretaker.js";
@@ -12,7 +12,7 @@ import { addAgreement } from "../../src/engine/diplomacy.js";
 import { diplomacyOrders } from "../../src/ai/diplomacy.js";
 import { economyOrders } from "../../src/ai/economy.js";
 import { forceOrders } from "../../src/ai/forces.js";
-import { dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
+import { THINK_DAYS, dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 import { check } from "../helpers/invariants.js";
 import { setArmy, tinyGame } from "../helpers/tiny.js";
@@ -58,15 +58,20 @@ test("the AI's dice and characters depend on the seed and the country alone", ()
     }
 });
 
-test("every country thinks every 10 to 20 days, each on days of its own", () => {
+test("every country thinks every 15 days, the same for all, each on days of its own", () => {
     for (const code of ["BAV", "AUS", "NOR", "AAA"]) {
         const days = [];
-        for (let d = 0; d < 400; d++) if (thinksOn(code, d)) days.push(d);
+        for (let d = 0; d < 600; d++) if (thinksOn(code, d)) days.push(d);
         const gaps = days.slice(1).map((d, i) => d - days[i]);
-        assert.ok(gaps.length > 15 && gaps.every((g) => g === gaps[0]) && gaps[0] >= 10 && gaps[0] <= 20, `${code}: ${gaps}`);
+        assert.ok(gaps.length >= 39 && gaps.every((g) => g === THINK_DAYS), `${code}: ${gaps}`);
     }
-    const first = ["BAV", "AUS", "NOR", "SCH", "PRU"].map((c) => [...Array(30).keys()].find((d) => thinksOn(c, d)));
-    assert.ok(new Set(first).size > 2, "they do not all think on the same day");
+    // nobody thinks more often than anybody else, and the countries are spread over the days of the cycle, not all at once
+    const codes = docsScenario.countries.map((c) => c.code);
+    const count = (code) => [...Array(3650).keys()].filter((d) => thinksOn(code, d)).length;
+    assert.ok(Math.max(...codes.map(count)) - Math.min(...codes.map(count)) <= 1, "equal, to within the day the span ends on");
+    const perDay = [...Array(THINK_DAYS).keys()].map((d) => codes.filter((c) => thinksOn(c, d)).length);
+    assert.equal(perDay.reduce((n, k) => n + k, 0), codes.length);
+    assert.ok(Math.max(...perDay) <= 8, `the busiest day has ${Math.max(...perDay)} countries thinking: ${perDay}`);
 });
 
 test("economy: light tax in peace, heavier in war, loans only when poor at war, buildings bought from the surplus", () => {
@@ -88,6 +93,36 @@ test("economy: light tax in peace, heavier in war, loans only when poor at war, 
     assert.ok(orders.some((o) => o.type === "borrow"), "a poor country at war borrows");
     assert.ok(!orders.some((o) => o.type === "buyBuilding"), "and builds nothing");
     applyAll(game, orders);
+});
+
+test("distress: in the red and losing money, a country taxes to the limit, sends home the soldiers over its cap, and defaults on loans it cannot carry", () => {
+    const game = tinyGame(1);
+    const c = game.state.countries.AAA;
+    game.state.day = 800;
+    c.loans = 1000000;                                 // 80,000 a year of interest: more than the country earns
+    c.treasury = -100000;
+    c.debtSince = 300;                                 // in debt for 500 days
+    setArmy(game, 1, { swords: 1500, unarmed: 1500, pikes: 1000 });
+    const e = economyOf(game, "AAA");
+    assert.ok(e.moneyPerYear < 0 && armySoldiersOf(game.state, "AAA") > armyCapOf(game.state, "AAA"), "it is in distress");
+    const orders = [...economyOrders(game, "AAA", fl, { budget: 0 }), ...forceOrders(game, "AAA", fl, { budget: 0 })];
+    assert.ok(orders.some((o) => o.type === "setTax" && o.tax === 3), "the tax goes to its limit");
+    assert.ok(orders.some((o) => o.type === "defaultOnLoans"), "the loans are defaulted on");
+    assert.ok(!orders.some((o) => o.type === "borrow" || o.type === "raise" || o.type === "buyBuilding"), "and nothing is borrowed, raised or built");
+    const sent = orders.filter((o) => o.type === "disband");
+    assert.ok(sent.length > 0, "soldiers go home");
+    const over = Math.floor(armySoldiersOf(game.state, "AAA") - armyCapOf(game.state, "AAA"));
+    assert.equal(sent.reduce((n, o) => n + Object.values(o.men).reduce((x, y) => x + y, 0), 0), over, "exactly the soldiers over the cap");
+    assert.ok(sent[0].men.unarmed > 0, "the unarmed go first");
+    applyAll(game, orders);
+    assert.deepEqual([c.loans, c.tax], [0, 3]);
+    assert.ok(c.noBorrowUntil > game.state.day, "and no banker lends for a long time");
+    assert.ok(armySoldiersOf(game.state, "AAA") <= armyCapOf(game.state, "AAA") + 1);
+    // not in distress — in the red but earning — none of this happens
+    const calm = tinyGame(1);
+    calm.state.countries.AAA.treasury = -5000;
+    const quiet = [...economyOrders(calm, "AAA", fl, { budget: 0 }), ...forceOrders(calm, "AAA", fl, { budget: 0 })];
+    assert.ok(!quiet.some((o) => ["defaultOnLoans", "disband"].includes(o.type)) && !quiet.some((o) => o.type === "setTax" && o.tax === 3));
 });
 
 test("forces: soldiers raised up to the law, the unarmed armed with pikes, mercenaries dismissed in peace", () => {

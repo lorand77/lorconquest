@@ -15,8 +15,28 @@ export function forceOrders(game, code, fl, ctx) {
     const foes = enemiesOf(st, code), atWarNow = foes.length > 0;
     const cmd = (type, rest) => out.push({ type, country: code, ...rest });
 
-    // soldiers
+    // distress: in the red and losing money, the soldiers above what the law allows go home (their weapons to the reserve),
+    // biggest armies first and the least useful men first, never the mercenaries (they are dismissed, not disbanded)
     const cap = armyCapOf(st, code), have = armySoldiersOf(st, code);
+    if (c.treasury < 0 && e.moneyPerYear < 0 && have > cap) {
+        let over = Math.floor(have - cap);
+        for (const a of ownArmies(st, code).sort((x, y) => menOf(y) - menOf(x) || x.id - y.id)) {
+            if (over < 1) break;
+            if (a.retreating) continue;                    // a retreating army takes no orders
+            let free = menOf(a) - a.mercs;
+            const men = {};
+            for (const w of ["unarmed", "swords", "pikes", "cavalry", "handCannons", "arquebuses", "muskets"]) {
+                const n = Math.min(over, free, w === "pikes" ? Math.max(0, a.men.pikes - a.mercs) : a.men[w]);
+                if (n < 1) continue;
+                men[w] = n;
+                over -= n;
+                free -= n;
+            }
+            if (Object.keys(men).length) cmd("disband", { army: a.id, men });
+        }
+    }
+
+    // soldiers
     const wantShare = atWarNow || threatRatio(game, code) > 1 ? 1 : 0.6 + 0.2 * fl.aggression;
     let lots = Math.floor((wantShare * cap - have) / 1000);
     lots = Math.max(0, Math.min(lots, 3, Math.floor(e.civilians / 1000)));

@@ -118,8 +118,13 @@ export function reachFrom(game, country, from) {
     }
 }
 
-// does `country` think on `day`? every 10-20 days, its own period and offset, so 45 countries never all think at once
+// every country thinks this often, in game days (1.5 s)
+export const THINK_DAYS = 15;
+
+// does `country` think on `day`? Every THINK_DAYS days, on a day of its own, so 45 countries never all think at once. The
+// period is the same for all: a country that thought twice as often would get twice the chances to plan a war, ask for
+// peace or answer a threat, and the stagger needs only different days, not different periods.
 export function thinksOn(country, day) {
-    const period = 10 + (hash(country) % 11), offset = hash(`${country}*`) % period;
-    return (day + offset) % period === 0;
+    const offset = hash(`${country}*`) % THINK_DAYS;
+    return (day + offset) % THINK_DAYS === 0;
 }

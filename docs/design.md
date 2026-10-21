@@ -177,14 +177,15 @@ for its player to come back.
 - **A computer player is a player.** It reads the state and sends commands through the same queue
   as a human; it never changes the state directly. That keeps it honest, gives it the same
   checks, and lets it move to a thread of its own later if it grows heavy.
-- **Staggered:** each computer country has its own next-think day, spread so that about 3 of the
-  44 think in any tick, each every 10–20 days (1–2 s).
+- **Staggered:** every computer country thinks every 15 days (1.5 s), on a day of its own, so that about 3 of the
+  45 think in any tick. The period is the same for all, deliberately: with different periods a country would get more chances to
+  plan a war or ask for peace than another (it began as 10–20 days, a side effect of the stagger, and was made equal).
 - **Three layers**, so the expensive thinking is rare and the reactions are fast:
 
 | Layer | How often | Decides |
 |---|---|---|
 | Strategy | about once a game year (~36 s), staggered | war targets, alliances, conscription law, tax, research, building plans, loans |
-| Operations | every 10–20 days (1–2 s) | where armies go, sieges, buying men and weapons, peace offers |
+| Operations | every 15 days (1.5 s) | where armies go, sieges, buying men and weapons, peace offers |
 | Reflex | the tick after an event | war declared on it, an enemy army entering its land, a lost battle, a chance to sortie, a call to arms |
 
 - **Answering proposals is rules, not AI.** RULES.md §10 gives the formulas by which a computer
@@ -206,9 +207,11 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   (`forces.js`), the economy with what is left of the budget (`economy.js`), diplomacy (`diplomacy.js`) and
   war (`war.js`). The forces and the economy share one budget (the treasury less a reserve of a third of a year's
   money, or a tenth at war), so a think never orders what it cannot pay.
-- **Economy:** tax 2, a little more at war and 2.5 when in the red; the research slider by what the treasury
+- **Economy:** tax 2, a little more at war and 2.5 when in the red (3 when it is also losing money); the research slider by what the treasury
   allows; the research order (guns, sharpshooters, then ships for a country that has them); the law by
-  threat, at most once in 5 years; loans only in war, repaid when fat; courthouses, then libraries, workshops,
+  threat, at most once in 5 years; loans only in war, repaid when fat. **In distress** — in the red *and* losing money, as a
+  country is that borrowed in a war and then lost its land — it sends home the soldiers above its law's cap and, after a
+  year in debt, defaults on its loans (the rule that allows it once in 20 years), rather than sit in debt until interest eats it; courthouses, then libraries, workshops,
   markets and walls from the surplus.
 - **Forces:** soldiers up to the law (most of it in peace, all of it at war or under threat); the unarmed armed
   with pikes (a third of the armed) and the best shot researched; old swords replaced when rich; mercenaries — which

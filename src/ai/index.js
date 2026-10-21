@@ -1,6 +1,6 @@
 // The computer players (docs/design.md, "The computer players"): one AI for every country that has no person, run inline in
 // the game's worker. It reads the state and gives commands like a human would, three ways at three speeds:
-//   strategy    every 10-20 days, on the country's own schedule (util.js, thinksOn): the economy, forces, diplomacy and war;
+//   strategy    every 15 days, on a day of the country's own (util.js, thinksOn): the economy, forces, diplomacy and war;
 //   operations  the same think moves armies — musters, marches, sieges;
 //   reflexes    the tick after an event that touches a country (a siege begun, a war declared) it looks at its war again,
 //               and the tick after a think that split or equipped anything, so what needed an army's new id can follow.

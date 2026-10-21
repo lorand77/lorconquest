@@ -56,3 +56,20 @@ WAR, GDA. Countries boxed in by stronger neighbours rarely declare anything, whi
   150 years. Watch whether it makes late-game countries too hard to conquer.
 - **Navies.** The AI never sails; the straits stay shut to it. Not measured, since it changes nothing it does.
 - **Cannons.** Never bought; sieges are long (pop ÷ 20,000 years). A siege-heavy AI would take cities faster.
+
+## 4. Every country thinks every 15 days (2026-10-22)
+
+The first schedule gave each country its own period, 10 to 20 days, from a hash of its code: a side effect of staggering, not a
+choice. But the war-planning roll, the peace and alliance proposals and the re-targeting of armies all happen once per think, so
+a country with a 10-day period had twice the chances of one with 20. Now every country thinks every 15 days, on a day of its own
+(`THINK_DAYS` in `src/ai/util.js`); the load is spread the same, about 3 countries a tick.
+
+Checked with the same 24 games on the Mitteleuropa map: 18.4 wars declared (17.4 before), 25.7 peaces (23.5), 35.0 captures
+(34.1), AI time 0.9 ms a day (0.9 before); eleven different winners (ten before), RUH again the most (5), the rest spread. Nothing
+that is not within the noise of two samples of 24. I did not first measure how much the old unequal periods skewed the results.
+
+That sweep also found a defect the earlier ones had not met: 15 bankruptcies a game. One country (NED, in seed 3) had borrowed in a
+war, lost most of its land, and was left with 10,000 a year of income against 16,000 of interest and 916 soldiers on a cap of
+350 — in debt for 30 years, "sold up" by the engine every month with nothing left to sell, until it was conquered. A country in
+distress now taxes at 3, sends home the soldiers above its cap (unarmed first) and, after a year in debt, defaults on its loans;
+it no longer tries to borrow while the bankers refuse it. Sweeps since: 0 bankruptcies in 24 games.
