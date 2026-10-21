@@ -4,7 +4,7 @@ The order in which the game gets built. The rules are in [RULES.md](RULES.md), t
 [SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
 says what to build when, and how to tell each step is done.
 
-**Status:** milestones 1 to 5 are done (2026-10-20); milestone 6, multiplayer, is next.
+**Status:** milestones 1 to 6 are done (2026-10-21); milestone 7, finishing, is next.
 
 ## How we work
 
@@ -255,6 +255,19 @@ Up to 4 people in one game, signed in.
 - The server restarts mid-game and everyone reconnects to it.
 
 **Depends on:** 5 (the caretaker and the takeover need the AI).
+
+**Done.** Accounts (name and password, scrypt, a session cookie the database knows only by its hash, the same-origin check and
+throttles), the lobby (open a table, take a free country, start with the computer in the rest, or play alone), and the rules
+for people as RULES.md §1 has them: the setup minute, no pauses, a caretaker the moment a player is away and the full computer
+player after two minutes (shortened to a few hundred milliseconds in the tests), the country back at once when they return,
+quitting, the game ending when nobody is left, and a restart that leaves every player away until they reconnect. Chat per
+game. `npm test` plays these over real sockets with several users: tables and seats, each player seeing only their own
+country's private part and commanding only it, the minute, presence in every order, the computer's commands marked as such,
+abandonment three ways, and a restart mid-game. The pages (`login.html`, `index.html` as the lobby, `game.html` with the
+people, the countdown, chat and a leave button) are tested only for what can be without a browser — their logic, that every
+element and import they use exists, and that they obey the content security policy. **Not checked by machine:** four
+browsers actually playing; the pages have still never been opened in one. **Not in it:** friends, profiles, spectators, and
+the privacy and terms pages (milestone 7).
 
 ---
 

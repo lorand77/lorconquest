@@ -7,6 +7,7 @@ import { applyChanges, applyPrivate, armyPoint, buildLegs, fleetPoints, formatMe
 import { createMapView } from "./mapview.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
+import { formatCountdown, presenceText } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
@@ -23,9 +24,15 @@ const make = (tag, props = {}, ...children) => {
 const WEAPON_NAMES = { unarmed: "unarmed", swords: "swords", pikes: "pikes", cavalry: "cavalry", handCannons: "hand cannons", arquebuses: "arquebuses", muskets: "muskets" };
 const gameId = Number(new URLSearchParams(location.search).get("id"));
 const socket = globalThis.io({ transports: ["websocket"] });
+socket.on("connect_error", (e) => { if (e.message === "sign in first") location.href = `/login.html?next=${encodeURIComponent(location.pathname + location.search)}`; });
 const ask = (event, payload) => new Promise((resolve) => socket.emit(event, payload, resolve));
 
 let me, state, game, scenario, map, legs, tickMs = 100, paused = true, lastTick = performance.now();
+let myUserId = null;       // the signed-in user, to tell their chat lines from the others'
+let multi = false;         // a game with other people: no pause, a setup minute, chat
+let seats = [];            // the people in it: [{ country, username, state }]
+let setupEnds = 0;         // when the setup minute ends, by performance.now(); 0 once it has
+let unread = 0;            // chat lines not yet seen
 let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
 let tab = "selection";     // selection | country | shop | research | diplomacy
 const ui = { target: null };   // the country the Diplomacy tab deals with
@@ -38,7 +45,9 @@ let owners = "";             // who owned what when the lands were last coloured
 async function start() {
     const joined = await ask("join", { gameId });
     if (!joined.ok) { $("panel").textContent = `Cannot open this game: ${joined.error}`; return; }
-    ({ me, paused, tickMs } = joined);
+    ({ me, paused, tickMs, multi, seats } = joined);
+    myUserId = (await (await fetch("/api/me")).json()).id;
+    setupEnds = joined.setup ? performance.now() + joined.setup : 0;
     state = joined.view;
     scenario = await (await fetch(`/scenario/${joined.scenario}/scenario.json`)).json();
     game = new Game(buildMap(scenario), state);
@@ -47,15 +56,33 @@ async function start() {
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("pause").addEventListener("click", togglePause);
+    $("pause").hidden = multi;
+    if (multi) startPeople(joined);
     for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
     document.addEventListener("keydown", onKey);
     socket.on("tick", onTick);
     socket.on("private", (m) => { applyPrivate(state, me, m.changes); renderTop(); });
-    socket.on("paused", (m) => { paused = m.paused; renderTop(); });
-    socket.on("over", (m) => { state.winner = m.winner; paused = true; toast(m.youWon ? "You have won!" : `${state.countries[m.winner].name} has won the game.`, 600000); renderAll(true); });
+    socket.on("paused", (m) => { paused = m.paused; if (!paused) setupEnds = 0; renderTop(); });
+    socket.on("over", (m) => {
+        state.winner = m.winner;
+        paused = true;
+        toast(m.abandoned ? "Everyone has left: the game is over." : m.winner === me ? "You have won!" : `${state.countries[m.winner].name} has won the game.`, 600000);
+        renderAll(true);
+    });
     socket.on("failed", (m) => toast(`The game stopped: ${m.error}`));
     socket.on("disconnect", () => toast("Lost the connection to the server; trying again…"));
-    socket.on("connect", () => { if (state) ask("join", { gameId }).then((j) => { if (j.ok) { state = Object.assign(state, j.view); paused = j.paused; renderAll(); } }); });
+    // a reconnect joins again: in a game with others the country is ours at once; the page catches up from the view
+    socket.on("connect", () => {
+        if (!state) return;
+        ask("join", { gameId }).then((j) => {
+            if (!j.ok) { toast(j.error, 600000); return; }
+            state = Object.assign(state, j.view);
+            paused = j.paused;
+            seats = j.seats;
+            setupEnds = j.setup ? performance.now() + j.setup : 0;
+            renderAll();
+        });
+    });
     renderAll();
     requestAnimationFrame(frame);
 }
@@ -137,6 +164,7 @@ async function march(storm) {
 }
 
 function togglePause() {
+    if (multi) return;                                // with other people in the game the clock never stops
     ask("pause", { paused: !paused });
 }
 
@@ -172,6 +200,58 @@ function renderTop() {
         $("treasury").classList.toggle("bad", country(me).treasury < 0);
     }
     for (const b of document.querySelectorAll("#tabs button")) b.classList.toggle("active", b.dataset.tab === tab);
+}
+
+// ---------- other people: who is here, the setup minute, chat, leaving ----------
+function startPeople(joined) {
+    $("quit").hidden = false;
+    $("chat-toggle").hidden = false;
+    $("quit").addEventListener("click", async () => {
+        if (!confirm("Leave this game? The computer will play your country for good and you cannot come back.")) return;
+        const r = await ask("quit", {});
+        if (r.ok) location.href = "/"; else toast(r.error);
+    });
+    socket.on("presence", (p) => {
+        seats = seats.filter((s) => s.country !== p.country).concat(p);
+        renderPeople();
+    });
+    $("chat-toggle").addEventListener("click", () => {
+        $("chat").hidden = !$("chat").hidden;
+        unread = 0;
+        renderChatToggle();
+        if (!$("chat").hidden) $("chat-text").focus();
+    });
+    for (const m of joined.chat ?? []) chatLine(m, false);
+    socket.on("chat", (m) => chatLine(m, true));
+    $("chat-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const text = $("chat-text").value;
+        if (!text.trim()) return;
+        const r = await ask("chat", { text });
+        if (r.ok) $("chat-text").value = ""; else toast(r.error);
+    });
+    setInterval(renderSetup, 250);
+    renderPeople();
+}
+
+function chatLine(m, live) {
+    const from = seats.find((s) => s.username === m.username)?.country;
+    $("chat-log").append(make("li", {}, make("b", {}, from ? swatch(from) : "", " " + m.username + ": "), m.text));
+    while ($("chat-log").children.length > 200) $("chat-log").firstChild.remove();
+    $("chat-log").scrollTop = $("chat-log").scrollHeight;
+    if (live && $("chat").hidden && m.userId !== myUserId) { unread++; renderChatToggle(); }
+}
+
+const renderChatToggle = () => { $("chat-toggle").textContent = unread ? "Chat (" + unread + ")" : "Chat"; };
+
+function renderPeople() {
+    $("people").replaceChildren(...seats.filter((s) => s.country !== me).map((s) => make("span", { class: "person " + s.state, title: presenceText(s.state) }, swatch(s.country), " " + s.username)));
+}
+
+function renderSetup() {
+    const left = setupEnds - performance.now();
+    $("setup").hidden = !(multi && setupEnds && left > 0);
+    if (!$("setup").hidden) $("setup").textContent = "The clock starts in " + formatCountdown(left) + ": look around and give your first orders";
 }
 
 // armies at one place are drawn in a column beside its marker

@@ -1,12 +1,16 @@
 // Builds the Express app and the HTTP server with Socket.IO attached, opens the database and brings every active
 // game back, but does not listen: src/server.js listens, and the tests boot this very thing on a random port with
-// their own database. Taken from LorCiv's app.js, without what waits for accounts (milestone 6).
+// their own database. Taken from LorCiv's app.js.
 import crypto from "node:crypto";
 import http from "node:http";
 import path from "node:path";
 import express from "express";
 import { Server } from "socket.io";
 import config from "./config.js";
+import { allowSocketRequest, requireSameOrigin } from "./auth/origin.js";
+import { authRoutes } from "./auth/routes.js";
+import { createSessions } from "./auth/session.js";
+import { createThrottles } from "./auth/throttle.js";
 import { openDb } from "./db.js";
 import { createRooms } from "./game/rooms.js";
 import { gameRoutes } from "./game/routes.js";
@@ -32,8 +36,19 @@ function securityHeaders(req, res, next) {
     next();
 }
 
-export function createApp({ dbPath = config.DB_PATH, tickMs = config.TICK_MS, statsEvery = config.STATS_EVERY_DAYS, root = config.ROOT, log = defaultLog } = {}) {
+// `setupMs` and `awayMs` are the multiplayer minute and the two minutes (RULES.md §1); `limits` the login throttles (config.js)
+export function createApp({
+    dbPath = config.DB_PATH, tickMs = config.TICK_MS, statsEvery = config.STATS_EVERY_DAYS, root = config.ROOT, log = defaultLog,
+    setupMs = config.SETUP_MS, awayMs = config.AWAY_MS, maxHumans = config.MAX_HUMANS, production = config.PRODUCTION, limits = {},
+} = {}) {
     const db = openDb(dbPath);
+    const sessions = createSessions({ db, name: config.SESSION_COOKIE, days: config.SESSION_DAYS, production });
+    const throttles = createThrottles({
+        windowMs: config.AUTH_WINDOW_MS, loginMax: config.LOGIN_MAX_FAILURES, registerMax: config.REGISTER_MAX, hashMax: config.HASH_MAX_CONCURRENT, ...limits,
+    });
+    sessions.sweep();
+    const sweeper = setInterval(() => sessions.sweep(), 60 * 60 * 1000);
+    sweeper.unref();
     const scenarios = loadScenarios(root);
     const app = express();
     app.disable("x-powered-by");
@@ -52,10 +67,13 @@ export function createApp({ dbPath = config.DB_PATH, tickMs = config.TICK_MS, st
         next();
     });
     app.use(express.json());
+    // a page on another site must not act with the user's cookie, and who is asking is known from here on
+    app.use("/api", requireSameOrigin(log), (req, res, next) => sessions.middleware(req, res, next));
 
     const server = http.createServer(app);
-    const io = new Server(server);
-    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery });
+    const io = new Server(server, { allowRequest: allowSocketRequest(log) });
+    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans });
+    app.use("/api", authRoutes({ db, sessions, throttles, io }));
     app.use("/api", gameRoutes(rooms, scenarios));
 
     // the engine, for the browser's previews: the very files the server runs
@@ -76,15 +94,17 @@ export function createApp({ dbPath = config.DB_PATH, tickMs = config.TICK_MS, st
         res.status(status).json({ error: status === 500 ? "Server error." : "Bad request." });
     });
 
-    attachSockets(io, rooms, log, tickMs);
+    attachSockets({ io, rooms, sessions, log, tickMs });
     rooms.resumeAll();
 
     async function close() {
+        clearInterval(sweeper);
+        throttles.stop();
         await rooms.close();
         server.closeAllConnections();
         await new Promise((resolve) => io.close(() => resolve()));
         db.close();
     }
 
-    return { app, server, io, rooms, db, scenarios, close };
+    return { app, server, io, rooms, db, scenarios, sessions, close };
 }

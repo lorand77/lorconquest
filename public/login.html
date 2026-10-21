@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LorConquest — sign in</title>
+    <link rel="stylesheet" href="/css/game.css">
+    <script type="module" src="/js/login.js"></script>
+</head>
+<body class="dev">
+    <h1>LorConquest</h1>
+    <p class="hint">Real-time grand strategy on a map of Mitteleuropa, 1440–1650. Sign in to play.</p>
+    <form id="login" class="start">
+        <label>Name <input id="username" autocomplete="username" required maxlength="20"></label>
+        <label>Password <input id="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+        <button class="primary" type="submit" data-action="login">Sign in</button>
+        <button type="submit" data-action="register">Create an account</button>
+        <span id="error" class="error"></span>
+    </form>
+    <p class="hint">A name is 3–20 letters, digits or underscores; a password 6 or more characters.</p>
+</body>
+</html>

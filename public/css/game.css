@@ -1,4 +1,4 @@
-/* The game page and the development page. Desktop first (design.md, "The game screen"). */
+/* The game page, the lobby and the sign-in page. Desktop first (design.md, "The game screen"). */
 * { box-sizing: border-box; }
 body { margin: 0; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: #222; background: #f4f1ea; }
 button { font: inherit; padding: 4px 10px; border: 1px solid #888; border-radius: 4px; background: #fff; cursor: pointer; }
@@ -111,3 +111,26 @@ body.game { height: 100vh; display: flex; flex-direction: column; overflow: hidd
 .panel .checks { display: flex; flex-direction: column; gap: 2px; max-height: 12em; overflow-y: auto; padding: 4px 0; }
 .panel label.check { display: block; }
 .tabs button { padding: 6px 2px; font-size: 13px; }
+
+/* ---------- the lobby and the sign-in page ---------- */
+.lobbybar { display: flex; align-items: baseline; justify-content: space-between; }
+.lobbybar .who { color: #666; }
+body.lobby section { margin: 1.4em 0; }
+.tables, .games { list-style: none; padding: 0; }
+.tables .table { border: 1px solid #ccc; border-radius: 4px; padding: 8px 10px; margin: 8px 0; background: #fbfaf6; }
+.tables .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
+button.danger { border-color: #b22; color: #b22; }
+
+/* ---------- people in a game ---------- */
+.topbar .setup { background: #f2d58c; color: #222; padding: 2px 8px; border-radius: 4px; }
+.topbar .people { display: flex; gap: 0.9em; color: #ccc; }
+.topbar .person.present { color: #cfe8cf; }
+.topbar .person.away, .topbar .person.full { color: #f2d58c; }
+.topbar .person.quit { color: #999; text-decoration: line-through; }
+.topbar .chat-toggle, .topbar .quit { padding: 2px 8px; }
+.chat { position: absolute; left: 10px; bottom: 56px; width: 320px; max-width: 60%; background: rgba(251, 250, 246, 0.96); border: 1px solid #999; border-radius: 4px; display: flex; flex-direction: column; }
+.chat-log { list-style: none; margin: 0; padding: 6px 8px; max-height: 14em; overflow-y: auto; font-size: 13px; }
+.chat-log li { padding: 1px 0; overflow-wrap: anywhere; }
+.chat-form { display: flex; gap: 4px; padding: 4px; border-top: 1px solid #ccc; }
+.chat-form input { flex: 1; min-width: 0; font: inherit; padding: 3px; }
+[hidden] { display: none !important; }

@@ -25,6 +25,7 @@ let paused = workerData.paused;
 const game = snapshot ? resume(scenario, snapshot, log, day) : replay(scenario, seed, log, day, humans);
 const changes = new Changes(game.state);
 const ai = createAI({ seed: game.state.seed, humans });
+for (const [country, mode] of workerData.caretakers ?? []) ai.setCaretaker(country, mode);       // players away from the start
 const queue = [];
 let toSave = [], snap = null, times = [], next = 0, timer = null, stopping = false;
 const post = (m) => parentPort.postMessage(m);

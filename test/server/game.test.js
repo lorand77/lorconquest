@@ -15,12 +15,12 @@ test("scenarios, and starting a game", async () => {
         const scenarios = (await api(server, "GET", "/api/scenarios")).body;
         assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["docs", "Mitteleuropa"], ["historical-1440", "Historical 1440"]]);
         assert.equal(scenarios[0].countries.length, 45);
-        assert.equal((await api(server, "POST", "/api/games", { scenario: "nowhere", country: "BAV" })).status, 400);
-        assert.equal((await api(server, "POST", "/api/games", { scenario: "docs", country: "XXX" })).status, 400);
-        assert.equal((await api(server, "POST", "/api/games", { scenario: "docs", country: "BAV", seed: -1 })).status, 400);
+        assert.equal((await api(server, "POST", "/api/tables", { scenario: "nowhere", country: "BAV" })).status, 400);
+        assert.equal((await api(server, "POST", "/api/tables", { scenario: "docs", country: "XXX" })).status, 400);
+        assert.equal((await api(server, "POST", "/api/tables", { scenario: "docs", country: "BAV", seed: -1 })).status, 400);
         const id = await newGame(server);
         const games = (await api(server, "GET", "/api/games")).body;
-        assert.deepEqual(games.map((g) => [g.id, g.scenario, g.human, g.day, g.paused, g.live]), [[id, "docs", "BAV", 0, true, true]]);
+        assert.deepEqual(games.map((g) => [g.id, g.scenario, g.country, g.day, g.paused, g.live]), [[id, "docs", "BAV", 0, true, true]]);
     } finally {
         await server.close();
     }
@@ -127,7 +127,7 @@ test("a restarted server resumes the game exactly, and its log replays it from t
     const game = db.q.game.get(id);
     assert.equal(game.day, before.day);
     // the log alone rebuilds the game from its seed
-    const rebuilt = replay(scenario, game.seed, rows.map((r) => ({ day: r.day, cmd: JSON.parse(r.cmd) })), game.day, [game.human]);
+    const rebuilt = replay(scenario, game.seed, rows.map((r) => ({ day: r.day, cmd: JSON.parse(r.cmd) })), game.day, ["BAV"]);
     assert.deepEqual(JSON.parse(JSON.stringify(viewFor(rebuilt.state, "BAV"))), before);
     db.close();
 

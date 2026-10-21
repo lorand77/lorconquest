@@ -18,7 +18,7 @@ dependencies.
 
 - `npm test` — the whole suite. Run it before calling anything done. `TEST_LOG=1` shows the server's
   logs, which the tests silence.
-- `npm run dev` — the server at http://localhost:3002/ (the development page starts a game), restarting
+- `npm run dev` — the server at http://localhost:3002/ (sign in or register, then the lobby), restarting
   on changes; `npm start` without. Settings are environment variables, all in `src/config.js`; the
   database is `data/lorconquest.sqlite`.
 - `node tools/simulate.js [--games N --years N --seed N --scenario docs --jobs N]` — AI-only games, headless, in parallel: wins by
@@ -38,16 +38,20 @@ dependencies.
   way time moves on. The module list is in design.md, *The engine*.
 - `src/app.js` builds the server (Express, Socket.IO, the database, every game) without listening;
   `src/server.js` listens. `src/db.js` is the database (node:sqlite): schema and every query.
+- `src/auth/` — accounts: `routes.js` (register, login, logout, me), `session.js` (the cookie and the sessions table, shared by REST
+  and the socket handshake), `password.js` (scrypt), `origin.js` (the same-origin check), `throttle.js`, `usernamePolicy.js`.
 - `src/engine/` also holds diplomacy: `relations.js` (who is allied, subject or friend), `opinion.js` (the computer's
   formulas, pure), `diplomacy.js` (wars, peace, subjects, the Empire), `diplomacy-day.js`, `victory.js`.
-- `src/game/` — live games: `rooms.js` (a worker per game, saving, passing changes to sockets),
+- `src/game/` — live games: `rooms.js` (tables and seats, a worker per game, saving, passing changes to sockets, who is
+  away or back, the setup minute, abandoned games),
   `worker.js` (one game's loop), `socket.js` and `routes.js` (the events and the REST routes),
   `view.js` (what a player may see, what changed).
 - `src/ai/` — the computer players: `index.js` (`createAI`: who thinks when, reflexes, the caretaker switch), `economy.js`,
   `forces.js`, `war.js`, `diplomacy.js`, `caretaker.js`, `util.js` (their own dice, characters, distances).
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
   `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
-  Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` with `js/dev.js`.
+  Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node) and
+  `login.html` the sign-in page (`js/login.js`, `js/auth.js`).
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
 - `tools/` — the runner, the bench, the map tools.
 - `test/ai/` — each AI layer on the tiny map, the caretaker, and computer-only games on the real map (invariants every month,
@@ -55,7 +59,8 @@ dependencies.
 - `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js` (a sea, two ports, a strait,
   a region), and `fuzz.test.js`, random play (`FUZZ_SEEDS`/`FUZZ_YEARS` make it bigger); `test/wars/` —
   scripted wars and a country run for years on the real map; `test/server/` — the real server on a throwaway database with 2 ms days
-  (`helpers.js`); `test/client/` — the browser's pure modules and, against a fake element, its panels
+  (`helpers.js` signs in a default user, "tester", or any name a test gives; the multiplayer tests shorten the setup minute and
+  the two minutes to milliseconds); `test/client/` — the browser's pure modules and, against a fake element, its panels
   (`loader.mjs` lets them import `/engine/` as the page does).
 
 ## Conventions
@@ -77,8 +82,11 @@ dependencies.
 - Anything that makes the same commands on the same seed play out differently must bump
   `RULES_VERSION` in `src/engine/state.js`, or saved games and replays break. A change to the
   shape of the state bumps `FORMAT`.
-- A game's `humans` are part of its state (`Game.create(scenario, { seed, humans })`), because a proposal to a human waits
+- A game's humans are its seats (`game_seats`), fixed when the host starts the table; `humans` are part of its state (`Game.create(scenario, { seed, humans })`), because a proposal to a human waits
   for its answer and to anyone else is answered at once: a replay must be given the same humans.
+- Who is away or back is not saved (`rooms.js`): a resumed game with several people starts with every player away, from that
+  moment. The two minutes and the setup minute are settings (`AWAY_MS`, `SETUP_MS`), which the tests shorten to milliseconds.
+- No dependency may be added for accounts: passwords use `node:crypto` scrypt and sessions are our own (`src/auth/`).
 - Diplomacy that can leave a country "friendly" with one it is at war with (an alliance it kept after joining the
   other side) breaks sieges, retreats and supply: `joinWar` ends such an alliance. The fuzz checks the invariants.
 - Iteration order is part of the rules: the state's objects are keyed by whole-number ids, which

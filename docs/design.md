@@ -4,9 +4,9 @@ How the software will work and why. The game's rules are in [RULES.md](RULES.md)
 [SCENARIO.md](SCENARIO.md) and its data file [scenario.json](scenario.json); this file is about
 the program that runs them. When a decision changes, change it here.
 
-**Status: planning.** Nothing is built yet. The order is strategy, then stack, then a plan, and
-only then code. LorCiv (`lorciv-temporary-import/`, a turn-based game on the same stack) is here
-only as a reference for the approach.
+**Status: built through milestone 6** (see [plan.md](plan.md)); what each part does is in its section
+below, written when it was built. LorCiv (`lorciv-temporary-import/`, a turn-based game on the same stack) was
+the reference for the approach and the source of what was reused.
 
 ---
 
@@ -72,6 +72,40 @@ find. With the server alone running the rules, only Node has to agree with itsel
   than 2 minutes.
 - **A computer country can win** (SCENARIO.md, *Victory*); then every human loses. The
   leaderboard still ranks the humans of a game among themselves.
+
+**What was built** (milestone 6; `src/auth/`, `src/game/rooms.js`, `socket.js`, `routes.js`, `public/index.html` and `login.html`):
+
+- **Tables.** A game starts as a table: a person opens one on a scenario in the seat of a country; up to three more take a
+  free country each, first come; the host starts it whenever they like, and the computer plays every country nobody took.
+  A table is a row of `games` with status `lobby`, its seats rows of `game_seats`; starting it makes the seats the
+  game's humans for good (the same list a replay is given). One person, one seat per game; a seat can be given up
+  until the start (the host cancels instead). "Play alone" opens a table and starts it at once.
+- **Single player** (one seat): free pause; the last socket leaving pauses the game and it waits, resumed whenever the
+  player opens it again, after a restart too.
+- **Several people:** the clock stands still for `SETUP_MS` (a minute) from the start while orders are accepted, then runs
+  and no one can pause it. Everyone begins *away*, with a caretaker, until their page joins.
+- **Away and back.** A player is "present" while any socket of theirs is in the game. The last one leaving makes them
+  *away*: a caretaker defends at once and, after `AWAY_MS` (two minutes), the full computer player takes the country
+  (*full*). Opening the game again, at either stage, gives the country back at once. `presence` tells the others. The
+  worker is told by the message of milestone 5 (`{ type: "caretaker", country, mode }`).
+- **Quitting** (`quit`) gives the country to the full computer player for good: that seat cannot be joined again.
+- **The game is abandoned** — status `abandoned`, its worker stopped — when every seat has quit or been away longer than
+  `AWAY_MS`. A game won by a country is finished as before (a computer can win, and then every human has lost).
+- **Restarts.** Nothing about who is away is saved. A resumed multiplayer game runs on at once, every player away from
+  that moment, so players have `AWAY_MS` to reconnect before the computer has their countries and, if none does, the
+  game is abandoned. A resumed single-player game waits, paused, as before.
+- **Chat** is per game: any seated player, 300 characters, five a few seconds, kept in `chat_messages`, the last 50 sent
+  on joining.
+
+**Accounts.** A person registers with a name (3–20 letters, digits, underscore; LorCiv's policy of reserved and offensive
+names, converted) and a password (6–128 characters) and is signed in. Passwords are hashed with `scrypt` from
+`node:crypto` (parameters stored with each hash). A session is a random 32-byte token in an `HttpOnly`, `SameSite=Lax`
+cookie (`Secure` and a `__Host-` name in production); the database holds only its SHA-256, with an expiry of 7 days. REST
+reads it from the `Cookie` header, so does the socket handshake. Logging out, or signing in again, ends the old session
+and drops its sockets. Every request that changes something, and every socket, must come from the page's own origin;
+login failures and sign-ups are throttled per address, and only two passwords hash at once. Games from before accounts
+(the development page's) had no owner and are put away (status `aborted`) when the database is first opened by this
+version.
 
 **The caretaker** defends with the armies the country already has: it moves them within its own
 and friendly land to meet invaders, sorties when the odds favour it, and joins wars its allies
@@ -248,12 +282,15 @@ the deadline passes, the default applies. Computer players answer on their refle
 
 ### Messages
 
-- **Client to server:** `join`, `command` and `pause`, each answered (Socket.IO's acknowledgement
-  stands in for a request id). The country of a command is always the player's, set by the
-  server, never the client's.
+- **Client to server:** `join`, `command`, `pause` (single-player only), `chat`, `quit` and `lobby:enter`, each
+  answered (Socket.IO's acknowledgement stands in for a request id). The country of a command is always that of
+  the user's seat, set by the server, never the client's. A socket belongs to a signed-in user: the handshake
+  carries the session cookie and is refused without one.
 - **Server to client:** the full view on joining (the first load, a reload and a reconnect all
-  use it — no separate catch-up), then `tick` every day with its changes and events, `private`
-  when the player's own private part changes, and `paused`. Each list is in
+  use it — no separate catch-up; it also carries the seats, the seconds left of the setup minute and the
+  recent chat), then `tick` every day with its changes and events, `private`
+  when the player's own private part changes, `paused`, `presence` (a player here, away, or gone), `chat`, and
+  `over`; in the lobby `lobby:changed`, `table:started` and `table:cancelled`. Each list is in
   `src/game/socket.js`; what changed is worked out in the worker (`src/game/view.js`), entity by
   entity, so a day sends only what moved.
 - **Army positions are not sent each tick.** An army moves at an even pace along a route
@@ -396,8 +433,9 @@ Copied when a milestone needs it, not up front:
 - **From the start:** `config.js`, `log.js`, the `app.js`/`server.js` split, the test helpers.
 - **With saving (milestone 2):** the database layer (`src/db/`, raw SQL, `addColumnIfMissing`
   migrations), moved to `node:sqlite`.
-- **With the lobby:** accounts and sessions (`src/auth/`), the page shell, login and theme, the lobby skeleton,
-  chat.
+- **With the lobby (milestone 6, done):** accounts and sessions (`src/auth/`), the sign-in page, the lobby, chat — converted,
+  and without the three packages LorCiv used there (argon2, express-session and its store): see *Accounts*. Not taken: the
+  page shell and theme (this game has one page style), friends, achievements.
 - **Later:** leaderboard, profiles, friends, achievements, replays page; `health.js`,
   `scripts/backup.sh` and the deployment in `docs/setup.md`.
 - **Not reused:** the whole game — `src/shared/`, the turn logic in `src/game/rooms.js`, the

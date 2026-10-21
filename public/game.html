@@ -14,7 +14,11 @@
         <span id="me" class="me"></span>
         <span id="date" class="date"></span>
         <button id="pause" class="pause">▶ Play</button>
+        <span id="setup" class="setup" hidden></span>
+        <span id="people" class="people"></span>
         <span id="treasury" class="treasury"></span>
+        <button id="chat-toggle" class="chat-toggle" hidden>Chat</button>
+        <button id="quit" class="quit" hidden title="Give your country to the computer for good">Leave the game</button>
     </header>
     <main class="board">
         <section class="mapbox">
@@ -24,6 +28,13 @@
                 <button id="zoom-out" title="Zoom out">−</button>
             </div>
             <div id="toasts" class="toasts"></div>
+            <section id="chat" class="chat" hidden>
+                <ul id="chat-log" class="chat-log"></ul>
+                <form id="chat-form" class="chat-form">
+                    <input id="chat-text" maxlength="300" autocomplete="off" placeholder="Say something to the others">
+                    <button class="primary" type="submit">Send</button>
+                </form>
+            </section>
         </section>
         <aside class="side">
             <nav id="tabs" class="tabs">
