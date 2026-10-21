@@ -25,6 +25,8 @@ export async function createMapView(container, svgUrl, onPick) {
     };
 
     const layer = (id) => { const g = el("g", { id }); svg.appendChild(g); return g; };
+    const labelLayer = layer("lc-labels");               // countries' codes where their land is now (mapdraw.js); the map's own are hidden
+    svg.querySelector("#labels")?.setAttribute("display", "none");
     const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");
     const markers = new Map(), ships = new Map();                    // army id -> <g>, fleet id -> <g>
 
@@ -176,6 +178,15 @@ export async function createMapView(container, svgUrl, onPick) {
                     el("circle", { class: "lc-siege-track", cx: s.x, cy: s.y, r }),
                     el("circle", { class: "lc-siege", cx: s.x, cy: s.y, r, "stroke-dasharray": `${(c * s.frac).toFixed(1)} ${c.toFixed(1)}`, transform: `rotate(-90 ${s.x} ${s.y})` }),
                 ];
+            }));
+        },
+
+        // the countries' codes: [{ code, x, y, size }]
+        setLabels(labels) {
+            labelLayer.replaceChildren(...labels.map((l) => {
+                const t = el("text", { class: `label${l.size < 15 ? " small" : ""}`, x: l.x, y: l.y });
+                t.textContent = l.code;
+                return t;
             }));
         },
 

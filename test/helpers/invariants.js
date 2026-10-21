@@ -60,4 +60,17 @@ export function check(game, where) {
     }
     for (const o of st.offers) assert.ok(st.countries[o.from] && st.countries[o.to] && o.deadline > st.day && st.humans.includes(o.to), `${where}: offer ${JSON.stringify(o)}`);
     for (const [k, p] of Object.entries(st.posts)) assert.ok(p.n > 0 && nodes.get(k).kind === "pass", `${where}: post ${k}`);
+    // a country with no settlement is out of the game, and one that is out has nothing left (RULES.md §10, Elimination)
+    const landed = new Set(Object.values(st.settlements).map((s) => s.owner));
+    for (const c of Object.values(st.countries)) {
+        if (c.rebel) continue;
+        if (!landed.has(c.code)) assert.ok(c.out !== null, `${where}: ${c.code} has no settlement and is still in the game`);
+        if (c.out === null) continue;
+        assert.ok(!landed.has(c.code), `${where}: ${c.code} is out and holds a settlement`);
+        assert.ok(!Object.values(st.armies).some((a) => a.owner === c.code) && !Object.values(st.fleets).some((x) => x.owner === c.code), `${where}: ${c.code} is out and has forces`);
+        assert.ok(!st.wars.some((w) => w.split("|").includes(c.code)), `${where}: ${c.code} is out and at war`);
+        assert.ok(!st.agreements.some((x) => x.a === c.code || x.b === c.code), `${where}: ${c.code} is out and bound by an agreement`);
+        assert.ok(!c.overlord && !Object.values(st.countries).some((x) => x.overlord === c.code), `${where}: ${c.code} is out and has an overlord or subjects`);
+        assert.ok(!st.offers.some((o) => o.from === c.code || o.to === c.code), `${where}: a question to or from ${c.code}, which is out`);
+    }
 }

@@ -95,6 +95,8 @@ test("a player who quit is placed after those who stayed, whatever their country
     assert.deepEqual(rankHumans([{ country: "A", quitDay: 100 }, { country: "B", quitDay: 900 }], table).map((r) => r.country), ["B", "A"]);
     assert.deepEqual(rankHumans([{ country: "X", quitDay: null }, { country: "Y", quitDay: null }], { X: { settlements: 4, pop: 10 }, Y: { settlements: 4, pop: 20 } }).map((r) => r.country), ["Y", "X"]);
     assert.deepEqual(rankHumans([{ country: "Z", quitDay: null }], {}).map((r) => [r.place, r.settlements]), [[1, 0]]);
+    // a player whose country fell comes after those still in and before those who quit, the later to fall first
+    assert.deepEqual(rankHumans([{ country: "A", quitDay: 50, outDay: null }, { country: "B", quitDay: null, outDay: 300 }, { country: "C", quitDay: null, outDay: null }, { country: "D", quitDay: null, outDay: 900 }], table).map((r) => r.country), ["C", "D", "B", "A"]);
 });
 
 test("a replay is given for a finished game only, to anyone signed in, and only if the rules are the ones it was played under", async () => {

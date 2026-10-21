@@ -1105,6 +1105,74 @@ for (const l of LABELS) o.push(`  <text id="label-${l[9]}" class="label${l[4] < 
 o.push("</g>", "</svg>");
 fs.writeFileSync(SVG, o.map((l) => l + "\n").join(""));
 
+// ---------- where a country's code may go in each land, for the game to label countries as their borders change ----------
+// Each land gets its area, and the clearest spot inside it — clear of everything drawn and of other land — for a three-letter
+// code at the large size (15) and at the small (10), or null where it does not fit; and, for a land too small for either, the
+// clearest spot near its settlement (within 40), over whatever is there but clear of everything drawn, as the map's own labels
+// may. The game puts a country's code on the spot of the most central land it holds (public/js/mapdraw.js, countryLabels).
+const LANDLABEL = new Map();                          // land id -> { area, big: [x, y] | null, small: [x, y] | null, near: [x, y] | null }
+{
+    const W1 = W + 1, drawn = new Int32Array(W1 * (H + 1));
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) drawn[(y + 1) * W1 + x + 1] = OCC[y * W + x] + drawn[y * W1 + x + 1] + drawn[(y + 1) * W1 + x] - drawn[y * W1 + x];
+    const drawnIn = (x0, y0, x1, y1) => {
+        [x0, y0, x1, y1] = [x0, y0, x1, y1].map(Math.trunc);
+        if (x0 < 0 || y0 < 0 || x1 >= W || y1 >= H) return 1;
+        return drawn[(y1 + 1) * W1 + x1 + 1] - drawn[y0 * W1 + x1 + 1] - drawn[(y1 + 1) * W1 + x0] + drawn[y0 * W1 + x0];
+    };
+    const nearSpot = (s) => {
+        const size = 10, tw = CHAR_W * size * 3, th = CHAR_W * size, m = size / 5;
+        let best = null;
+        for (let y = s.y - 40; y <= s.y + 40; y += 2) for (let x = s.x - 40; x <= s.x + 40; x += 2) {
+            const x0 = x - tw / 2 - m, y0 = y - th / 2 - m, x1 = x + tw / 2 + m, y1 = y + th / 2 + m;
+            if (drawnIn(x0, y0, x1, y1)) continue;
+            let room = 0;
+            while (room < 8 && !drawnIn(x0 - room, y0 - room, x1 + room, y1 + room)) room++;
+            const d = (x - s.x) ** 2 + (y - s.y) ** 2;
+            if (!best || room > best.room || (room === best.room && d < best.d)) best = { x, y, room, d };
+        }
+        return best ? [best.x, best.y] : null;
+    };
+    const bbox = new Map();
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const id = REG[y * W + x];
+        if (!id) continue;
+        const b = bbox.get(id) ?? { x0: x, y0: y, x1: x, y1: y, n: 0, sx: 0, sy: 0 };
+        if (x < b.x0) b.x0 = x; if (x > b.x1) b.x1 = x; if (y < b.y0) b.y0 = y; if (y > b.y1) b.y1 = y;
+        b.n++; b.sx += x; b.sy += y;
+        bbox.set(id, b);
+    }
+    for (const id of SIDS) {
+        const b = bbox.get(id);
+        if (!b) { LANDLABEL.set(id, { area: 0, big: null, small: null, near: nearSpot(S.get(id)) }); continue; }
+        const bw = b.x1 - b.x0 + 1, bh = b.y1 - b.y0 + 1, B1 = bw + 1;
+        const t = new Int32Array(B1 * (bh + 1));             // summed-area table of what is in the way, inside the land's box
+        for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+            const i = (b.y0 + y) * W + b.x0 + x, blocked = OCC[i] || REG[i] !== id ? 1 : 0;
+            t[(y + 1) * B1 + x + 1] = blocked + t[y * B1 + x + 1] + t[(y + 1) * B1 + x] - t[y * B1 + x];
+        }
+        const busy = (x0, y0, x1, y1) => {
+            [x0, y0, x1, y1] = [x0 - b.x0, y0 - b.y0, x1 - b.x0, y1 - b.y0].map(Math.trunc);
+            if (x0 < 0 || y0 < 0 || x1 >= bw || y1 >= bh) return 1;
+            return t[(y1 + 1) * B1 + x1 + 1] - t[y0 * B1 + x1 + 1] - t[(y1 + 1) * B1 + x0] + t[y0 * B1 + x0];
+        };
+        const cx = b.sx / b.n, cy = b.sy / b.n, spot = {};
+        for (const [name, size] of [["big", 15], ["small", 10]]) {
+            const tw = CHAR_W * size * 3, th = CHAR_W * size, m = size / 5;
+            let best = null;
+            for (let y = b.y0; y <= b.y1; y += 2) for (let x = b.x0; x <= b.x1; x += 2) {
+                const x0 = x - tw / 2 - m, y0 = y - th / 2 - m, x1 = x + tw / 2 + m, y1 = y + th / 2 + m;
+                if (busy(x0, y0, x1, y1)) continue;
+                let room = 0;
+                while (room < 12 && !busy(x0 - room, y0 - room, x1 + room, y1 + room)) room++;
+                const d = (x - cx) ** 2 + (y - cy) ** 2;
+                if (!best || room > best.room || (room === best.room && d < best.d)) best = { x, y, room, d };
+            }
+            spot[name] = best ? [best.x, best.y] : null;
+        }
+        LANDLABEL.set(id, { area: b.n, ...spot, near: spot.small ? null : nearSpot(S.get(id)) });
+    }
+}
+
 // =====================================================================================
 // derived numbers, scenario.json, SCENARIO.md
 // =====================================================================================
@@ -1176,7 +1244,7 @@ const json = {
     }),
     settlements: SIDS.map((id) => {
         const s = S.get(id);
-        return { id, name: s.name, abbr: ABBR.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre,
+        return { id, name: s.name, abbr: ABBR.get(id), label: LANDLABEL.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre,
             x: s.x, y: s.y, land: `land-${id}`, seaZone: s.zone ? s.zone.id : null, borders: s.nb.map(Number).sort(num), straits: s.st.map(Number).sort(num) };
     }),
     routes: [...LAND, ...STRAIT].sort(byKey).map((e) => {

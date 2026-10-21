@@ -108,6 +108,7 @@ export function openDb(file) {
     addColumnIfMissing("game_seats", "settlements", "REAL");
     addColumnIfMissing("game_seats", "pop", "REAL");
     addColumnIfMissing("game_seats", "quit_day", "INTEGER");
+    addColumnIfMissing("game_seats", "out_day", "INTEGER");                          // the day its country was eliminated
     // the default scenario lived in docs/ and had the id "docs" until it moved to scenarios/mitteleuropa
     db.exec("UPDATE games SET scenario = 'mitteleuropa' WHERE scenario = 'docs'");
     // games from before accounts (the development page's) have no host and no seats: nobody can open them now
@@ -151,7 +152,8 @@ export function openDb(file) {
         finishGame: db.prepare("UPDATE games SET status = 'finished', day = ?, paused = 1, winner = ?, result_hash = ?, updated_at = datetime('now') WHERE id = ?"),
         setResult: db.prepare("UPDATE game_seats SET place = ?, settlements = ?, pop = ? WHERE game_id = ? AND country = ?"),
         markQuit: db.prepare("UPDATE game_seats SET quit_day = ? WHERE game_id = ? AND user_id = ?"),
-        seatQuits: db.prepare("SELECT country, quit_day FROM game_seats WHERE game_id = ?"),
+        seatQuits: db.prepare("SELECT country, quit_day, out_day FROM game_seats WHERE game_id = ?"),
+        markOut: db.prepare("UPDATE game_seats SET out_day = ? WHERE game_id = ? AND country = ?"),
         // the leaderboard: per person, over the finished games they played. A game counts for "firsts" and the average
         // place only with two or more people in it; a "victory" is their country winning the whole game.
         leaderboard: db.prepare(`SELECT u.username,

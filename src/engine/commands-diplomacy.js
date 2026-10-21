@@ -26,6 +26,7 @@ function other(game, cmd, code) {
     if (!st.countries[code]) return { error: `no country ${code}` };
     if (code === cmd.country) return { error: "that is your own country" };
     if (isRebel(st, code)) return { error: "peasants are always at war with their country, and nothing else" };
+    if (st.countries[code].out !== null) return { error: `${code} is no more` };
     return { c: code };
 }
 const ask = (game, kind, from, to, extra) => {
@@ -72,8 +73,6 @@ export const diplomacyCommands = {
         const bad = validateTerms(game, cmd.country, c, terms);
         if (bad) return refuse(bad);
         const events = [];
-        // an enemy with no settlement left takes what is dictated
-        if (!Object.values(st.settlements).some((s) => s.owner === c)) { makePeace(game, cmd.country, c, terms, events); return done(events); }
         if (isHuman(st, c)) return done([ask(game, "peace", cmd.country, c, { terms })]);
         if (!mayPropose(game, cmd.country, c, "peace")) return refuse(`you asked ${c} for peace less than 5 years ago`);
         notePropose(game, cmd.country, c, "peace");

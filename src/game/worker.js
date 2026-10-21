@@ -11,8 +11,10 @@
 //      { type: "caretaker", country, mode }  (mode "caretaker", "full" or null: who plays a human's country while away)  { type: "stop" }
 // Out: { type: "ready", day }  { type: "tick", day, events, pub, priv, commands, snapshot }
 //      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
-//      { type: "stats", days, mean, max }  { type: "over", day, winner, scores, hash }  { type: "stopped", day, commands }
-// A game that has a winner (the engine says so) is saved one last time and its loop stops.
+//      { type: "stats", days, mean, max }  { type: "over", day, winner, defeated, scores, hash }  { type: "stopped", day, commands }
+// A game is over when a country has won (the engine says so), or when every person's country is out of the game (RULES.md
+// §10, Elimination: a single-player game ends as a defeat when the player's does). It is saved one last time, at exactly the
+// state a replay must reach, and its loop stops; a command after that is answered "the game is over".
 import { parentPort, workerData } from "node:worker_threads";
 import { fingerprint, replay, resume, scores } from "../engine/index.js";
 import { createAI } from "../ai/index.js";
@@ -27,7 +29,8 @@ const changes = new Changes(game.state);
 const ai = createAI({ seed: game.state.seed, humans });
 for (const [country, mode] of workerData.caretakers ?? []) ai.setCaretaker(country, mode);       // players away from the start
 const queue = [];
-let toSave = [], snap = null, times = [], next = 0, timer = null, stopping = false;
+let toSave = [], snap = null, times = [], next = 0, timer = null, stopping = false, finished = false;
+const isOver = () => Boolean(game.state.winner) || (humans.length > 0 && humans.every((h) => game.state.countries[h].out !== null));
 const post = (m) => parentPort.postMessage(m);
 
 function applyQueue(events) {
@@ -50,16 +53,26 @@ function publish(events) {
     snap = null;
 }
 
+// the end: who won (or that every person lost), how every country stands, and the fingerprint of the final state a replay
+// must come to (design.md, "Replays")
+function finish(events) {
+    snap = { day: game.day, state: game.snapshot() };
+    const hash = fingerprint(snap.state);
+    publish(events);
+    post({ type: "over", day: game.day, winner: game.state.winner ?? null, defeated: !game.state.winner, scores: scores(game.state), hash });
+    stopping = finished = true;
+}
+
 function tick() {
+    if (stopping) return;                                   // over (a defeat does not stop the engine's days by itself)
     const t0 = performance.now(), events = [];
     applyQueue(events);
+    if (isOver()) { finish(events); return; }               // a command put the last person's country out
     events.push(...game.advance());
-    if (!game.state.winner) for (const o of ai.orders(game, events)) queue.push({ country: o.country, source: o.source, cmd: o.cmd });
-    if (game.day % 365 === 0 || game.state.winner) snap = { day: game.day, state: game.snapshot() };
-    const hash = game.state.winner ? fingerprint(snap.state) : null;
+    if (isOver()) { finish(events); return; }
+    for (const o of ai.orders(game, events)) queue.push({ country: o.country, source: o.source, cmd: o.cmd });
+    if (game.day % 365 === 0) snap = { day: game.day, state: game.snapshot() };
     publish(events);
-    // the end: who won, how every country stands, and the fingerprint of the final state a replay must come to (design.md, "Replays")
-    if (game.state.winner) { post({ type: "over", day: game.day, winner: game.state.winner, scores: scores(game.state), hash }); stopping = true; }
     times.push(performance.now() - t0);
     if (times.length >= statsEvery) {
         post({ type: "stats", days: times.length, mean: times.reduce((a, b) => a + b, 0) / times.length, max: Math.max(...times) });
@@ -71,7 +84,7 @@ function loop() {
     timer = null;
     if (stopping) return;
     if (paused) {
-        if (queue.length) { const events = []; applyQueue(events); publish(events); }
+        if (queue.length) { const events = []; applyQueue(events); if (isOver()) finish(events); else publish(events); }
         timer = setTimeout(loop, tickMs);
         return;
     }
@@ -85,7 +98,8 @@ parentPort.on("message", (m) => {
     switch (m.type) {
         case "command":
             queue.push({ reqId: m.reqId, country: m.country, source: m.source, cmd: m.cmd });
-            if (game.state.winner) applyQueue([]);              // a finished game has no loop: it answers at once, "the game is over"
+            // a finished game has no loop: it answers at once, "the game is over"
+            if (finished) while (queue.length) { const q = queue.shift(); if (q.reqId !== undefined) post({ type: "reply", reqId: q.reqId, ok: false, error: "the game is over" }); }
             break;
         case "caretaker":
             ai.setCaretaker(m.country, m.mode);

@@ -14,6 +14,7 @@ export const PRESENCE = {
     away: { text: "away — a caretaker defends", good: false },
     full: { text: "away — the computer plays", good: false },
     quit: { text: "has left", good: false },
+    out: { text: "out of the game — watching", good: false },
     idle: { text: "not here", good: false },
 };
 export const presenceText = (state) => (PRESENCE[state] ?? PRESENCE.idle).text;
@@ -45,7 +46,7 @@ export function gameLine(game, scenarioName, countryName, dateText) {
     const people = game.people > 1 ? `, ${game.people} people` : "";
     const where = `${scenarioName}, ${countryName}${people}, ${dateText}`;
     // a finished or abandoned game is not opened but watched, as a replay
-    if (game.status === "finished") return { text: `${where} — won by ${game.winner ?? "nobody"}`, open: false, replay: true };
+    if (game.status === "finished") return { text: game.winner ? `${where} — won by ${game.winner}` : `${where} — lost: every player's country fell`, open: false, replay: true };
     if (game.status === "abandoned") return { text: `${where} — abandoned: nobody was left`, open: false, replay: true };
     // a game that is going can always be opened: one let go from memory is brought back
     return { text: where, open: true, replay: false };

@@ -20,6 +20,7 @@ import { settle, situation, sortie, storm, stormThePost } from "./fighting.js";
 import { follow, routeFor } from "./movement.js";
 import { atWar, newArmy, removeArmy } from "./state.js";
 import { isVassal } from "./relations.js";
+import { eliminations } from "./elimination.js";
 
 const COMMANDS = {
     move(game, cmd) {
@@ -154,6 +155,9 @@ export function applyCommand(game, cmd) {
     if (!game.state.countries[cmd.country]) return refuse(`no country ${cmd.country}`);
     if (!isPlayable(game.state, cmd.country)) return refuse("peasant rebels take no orders");
     if (game.state.winner) return refuse("the game is over");
+    if (game.state.countries[cmd.country].out !== null) return refuse("your country is no more");
     if (DIPLOMACY.includes(cmd.type) && isVassal(game.state, cmd.country)) return refuse("a vassal has no diplomacy of its own: its overlord speaks for it");
-    return COMMANDS[cmd.type](game, cmd);
+    const result = COMMANDS[cmd.type](game, cmd);
+    if (result.ok) eliminations(game, result.events);            // a capture or a peace may have taken a country's last settlement
+    return result;
 }

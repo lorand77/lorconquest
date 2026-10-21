@@ -142,9 +142,8 @@ pays interest; research is added and a tech whose cost is covered unlocks; the d
 a bankrupt country is sold up; settlements held 20 years with a courthouse become core. Every figure is
 worked out from the state on that day.
 
-A country with **no settlement left** is out of the game: it has no monthly step at all — no money, interest,
-research or debt — whatever its treasury or loans stood at when its last settlement fell. (Without this its
-negative treasury would go bankrupt every month for ever, with nothing left to sell.)
+A country with **no settlement left** is out of the game (§10, *Elimination*): it has no monthly step at all — no money,
+interest, research or debt — whatever its treasury or loans stood at when its last settlement fell.
 
 ### Starting values
 | | |
@@ -685,6 +684,22 @@ peace: +5 + 40 = **45**, gone in about 22 years.
 A warmonger is punished in two ways: computer countries like it less (*Opinion* below), and its
 neighbours are more willing to ally with each other against it (*Alliances* below).
 
+### Elimination
+A country that has **no settlement left** — its last one taken by storm or siege, or given up in a peace — is **out of the
+game**, at the end of that day or that order (a peace taking several settlements is signed whole first):
+
+- its armies, wherever they stand, and its fleets **vanish** with every man in them, and its training and hires with them;
+- its **wars end**, with no truce, and every **agreement** with it lapses, as do questions put to it or by it;
+- its **subjects are free**, and if it was a subject, it is nobody's now;
+- it gives **no more orders**, and nobody may declare war on it, make peace with it or propose anything to it.
+
+It is never back: there is nothing left to come back with. Its name stays in the history of the game. Peasant rebels hold no
+land of their own and are not eliminated.
+
+**A person whose country is eliminated has lost.** A single-player game ends there, as a defeat. With other people in the
+game, the player is out: they may watch it to the end, but give no orders, and are placed after everyone whose country was
+still in it (the later to fall first). When every player's country has fallen, the game ends as a defeat for all.
+
 ### Computer countries
 A computer-run country answers a proposal the moment it is made. You may make each kind of
 proposal to the same country **once every 5 years**. The HRE proposal is not limited by this —
@@ -792,7 +807,7 @@ countries, and **their allies make their own peace**. A vassal's wars end with i
 other its vassal or protectorate, become the other's, and free subjects of the other. A computer accepts if its war
 score is at least the price. The price is what is asked, in the units of §10 — and **what the proposer gives counts the
 same way against it**: a country losing a war can buy peace with a city. A settlement's people are those at the start of
-the war. A country with no settlement left takes what is dictated, with no answer asked. A vassal does not sign peace: its
+the war. A peace may take a country's last settlement, and then it is out of the game (*Elimination*). A vassal does not sign peace: its
 overlord does. A peace starts a **truce** of 5 years between the two, and sends every army left in land now closed to it
 home. Offered to a human, terms wait 6 months for an answer and lapse after.
 

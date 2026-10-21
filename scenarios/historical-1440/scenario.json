@@ -1146,6 +1146,18 @@
    "id": 1,
    "name": "Oslo",
    "abbr": "Osl",
+   "label": {
+    "area": 32297,
+    "big": [
+     540,
+     120
+    ],
+    "small": [
+     530,
+     106
+    ],
+    "near": null
+   },
    "country": "NOR",
    "type": "town",
    "pop": 10000,
@@ -1168,6 +1180,18 @@
    "id": 2,
    "name": "Skien",
    "abbr": "Ski",
+   "label": {
+    "area": 16883,
+    "big": [
+     369,
+     132
+    ],
+    "small": [
+     405,
+     78
+    ],
+    "near": null
+   },
    "country": "NOR",
    "type": "town",
    "pop": 10000,
@@ -1188,6 +1212,18 @@
    "id": 3,
    "name": "Stavanger",
    "abbr": "Sta",
+   "label": {
+    "area": 20231,
+    "big": [
+     297,
+     166
+    ],
+    "small": [
+     279,
+     132
+    ],
+    "near": null
+   },
    "country": "NOR",
    "type": "town",
    "pop": 10000,
@@ -1207,6 +1243,18 @@
    "id": 4,
    "name": "Uppsala",
    "abbr": "Upp",
+   "label": {
+    "area": 16752,
+    "big": [
+     753,
+     26
+    ],
+    "small": [
+     753,
+     28
+    ],
+    "near": null
+   },
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1228,6 +1276,15 @@
    "id": 5,
    "name": "Stockholm",
    "abbr": "Sto",
+   "label": {
+    "area": 8215,
+    "big": null,
+    "small": [
+     798,
+     98
+    ],
+    "near": null
+   },
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1248,6 +1305,18 @@
    "id": 6,
    "name": "Linköping",
    "abbr": "Lin",
+   "label": {
+    "area": 24226,
+    "big": [
+     701,
+     138
+    ],
+    "small": [
+     699,
+     144
+    ],
+    "near": null
+   },
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1271,6 +1340,18 @@
    "id": 7,
    "name": "Älvsborg",
    "abbr": "Älv",
+   "label": {
+    "area": 9007,
+    "big": [
+     582,
+     259
+    ],
+    "small": [
+     574,
+     263
+    ],
+    "near": null
+   },
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1292,6 +1373,18 @@
    "id": 8,
    "name": "Kalmar",
    "abbr": "Kal",
+   "label": {
+    "area": 12578,
+    "big": [
+     705,
+     299
+    ],
+    "small": [
+     713,
+     299
+    ],
+    "near": null
+   },
    "country": "SWE",
    "type": "town",
    "pop": 10000,
@@ -1314,6 +1407,18 @@
    "id": 9,
    "name": "Aalborg",
    "abbr": "Aal",
+   "label": {
+    "area": 8316,
+    "big": [
+     385,
+     328
+    ],
+    "small": [
+     395,
+     314
+    ],
+    "near": null
+   },
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1334,6 +1439,15 @@
    "id": 10,
    "name": "Aarhus",
    "abbr": "Aar",
+   "label": {
+    "area": 5945,
+    "big": null,
+    "small": [
+     381,
+     372
+    ],
+    "near": null
+   },
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1354,6 +1468,18 @@
    "id": 11,
    "name": "Ribe",
    "abbr": "Rib",
+   "label": {
+    "area": 6928,
+    "big": [
+     356,
+     417
+    ],
+    "small": [
+     356,
+     413
+    ],
+    "near": null
+   },
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1377,6 +1503,15 @@
    "id": 12,
    "name": "Odense",
    "abbr": "Ode",
+   "label": {
+    "area": 1853,
+    "big": null,
+    "small": [
+     449,
+     479
+    ],
+    "near": null
+   },
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1397,6 +1532,18 @@
    "id": 13,
    "name": "Copenhagen",
    "abbr": "Cop",
+   "label": {
+    "area": 6617,
+    "big": [
+     517,
+     467
+    ],
+    "small": [
+     521,
+     467
+    ],
+    "near": null
+   },
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1417,6 +1564,18 @@
    "id": 14,
    "name": "Lund",
    "abbr": "Lun",
+   "label": {
+    "area": 20825,
+    "big": [
+     631,
+     369
+    ],
+    "small": [
+     631,
+     369
+    ],
+    "near": null
+   },
    "country": "DEN",
    "type": "town",
    "pop": 10000,
@@ -1439,6 +1598,15 @@
    "id": 15,
    "name": "Visby",
    "abbr": "Vis",
+   "label": {
+    "area": 2174,
+    "big": null,
+    "small": null,
+    "near": [
+     836,
+     231
+    ]
+   },
    "country": "GOT",
    "type": "town",
    "pop": 10000,
@@ -1458,6 +1626,18 @@
    "id": 16,
    "name": "Reval",
    "abbr": "Rev",
+   "label": {
+    "area": 16756,
+    "big": [
+     1228,
+     68
+    ],
+    "small": [
+     1228,
+     68
+    ],
+    "near": null
+   },
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1477,6 +1657,18 @@
    "id": 17,
    "name": "Pernau",
    "abbr": "Per",
+   "label": {
+    "area": 28167,
+    "big": [
+     1216,
+     158
+    ],
+    "small": [
+     1216,
+     158
+    ],
+    "near": null
+   },
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1497,6 +1689,18 @@
    "id": 18,
    "name": "Riga",
    "abbr": "Rig",
+   "label": {
+    "area": 31750,
+    "big": [
+     1215,
+     295
+    ],
+    "small": [
+     1215,
+     295
+    ],
+    "near": null
+   },
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1520,6 +1724,18 @@
    "id": 19,
    "name": "Windau",
    "abbr": "Win",
+   "label": {
+    "area": 6902,
+    "big": [
+     1051,
+     255
+    ],
+    "small": [
+     1055,
+     255
+    ],
+    "near": null
+   },
    "country": "LIV",
    "type": "town",
    "pop": 10000,
@@ -1540,6 +1756,18 @@
    "id": 20,
    "name": "Medininkai",
    "abbr": "Med",
+   "label": {
+    "area": 15775,
+    "big": [
+     1118,
+     395
+    ],
+    "small": [
+     1032,
+     389
+    ],
+    "near": null
+   },
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1563,6 +1791,18 @@
    "id": 21,
    "name": "Kaunas",
    "abbr": "Kau",
+   "label": {
+    "area": 14579,
+    "big": [
+     1129,
+     512
+    ],
+    "small": [
+     1135,
+     506
+    ],
+    "near": null
+   },
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1586,6 +1826,18 @@
    "id": 22,
    "name": "Vilnius",
    "abbr": "Vil",
+   "label": {
+    "area": 31528,
+    "big": [
+     1278,
+     466
+    ],
+    "small": [
+     1278,
+     466
+    ],
+    "near": null
+   },
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1607,6 +1859,18 @@
    "id": 23,
    "name": "Grodno",
    "abbr": "Gro",
+   "label": {
+    "area": 25555,
+    "big": [
+     1215,
+     603
+    ],
+    "small": [
+     1201,
+     617
+    ],
+    "near": null
+   },
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1630,6 +1894,18 @@
    "id": 24,
    "name": "Brest",
    "abbr": "Brt",
+   "label": {
+    "area": 25045,
+    "big": [
+     1226,
+     715
+    ],
+    "small": [
+     1220,
+     715
+    ],
+    "near": null
+   },
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1652,6 +1928,18 @@
    "id": 25,
    "name": "Lutsk",
    "abbr": "Lut",
+   "label": {
+    "area": 18884,
+    "big": [
+     1307,
+     802
+    ],
+    "small": [
+     1305,
+     810
+    ],
+    "near": null
+   },
    "country": "LIT",
    "type": "town",
    "pop": 10000,
@@ -1673,6 +1961,15 @@
    "id": 26,
    "name": "Memel",
    "abbr": "Mem",
+   "label": {
+    "area": 2383,
+    "big": null,
+    "small": null,
+    "near": [
+     1026,
+     393
+    ]
+   },
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1693,6 +1990,18 @@
    "id": 27,
    "name": "Königsberg",
    "abbr": "Kön",
+   "label": {
+    "area": 8324,
+    "big": [
+     1037,
+     530
+    ],
+    "small": [
+     1021,
+     530
+    ],
+    "near": null
+   },
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1716,6 +2025,15 @@
    "id": 28,
    "name": "Danzig",
    "abbr": "Dan",
+   "label": {
+    "area": 12387,
+    "big": null,
+    "small": [
+     858,
+     541
+    ],
+    "near": null
+   },
    "country": "TEU",
    "type": "city",
    "pop": 20000,
@@ -1742,6 +2060,18 @@
    "id": 29,
    "name": "Allenstein",
    "abbr": "All",
+   "label": {
+    "area": 15301,
+    "big": [
+     1036,
+     621
+    ],
+    "small": [
+     1026,
+     619
+    ],
+    "near": null
+   },
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1766,6 +2096,15 @@
    "id": 30,
    "name": "Thorn",
    "abbr": "Tho",
+   "label": {
+    "area": 6462,
+    "big": null,
+    "small": [
+     915,
+     637
+    ],
+    "near": null
+   },
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1788,6 +2127,18 @@
    "id": 31,
    "name": "Landsberg",
    "abbr": "Lan",
+   "label": {
+    "area": 10516,
+    "big": [
+     743,
+     646
+    ],
+    "small": [
+     741,
+     648
+    ],
+    "near": null
+   },
    "country": "TEU",
    "type": "town",
    "pop": 10000,
@@ -1813,6 +2164,18 @@
    "id": 32,
    "name": "Schleswig",
    "abbr": "Sch",
+   "label": {
+    "area": 4604,
+    "big": [
+     379,
+     560
+    ],
+    "small": [
+     379,
+     564
+    ],
+    "near": null
+   },
    "country": "SHO",
    "type": "town",
    "pop": 10000,
@@ -1834,6 +2197,15 @@
    "id": 33,
    "name": "Kiel",
    "abbr": "Kie",
+   "label": {
+    "area": 2387,
+    "big": null,
+    "small": null,
+    "near": [
+     445,
+     538
+    ]
+   },
    "country": "SHO",
    "type": "town",
    "pop": 10000,
@@ -1855,6 +2227,15 @@
    "id": 34,
    "name": "Lübeck",
    "abbr": "Lüb",
+   "label": {
+    "area": 2404,
+    "big": null,
+    "small": null,
+    "near": [
+     496,
+     576
+    ]
+   },
    "country": "LUB",
    "type": "city",
    "pop": 20000,
@@ -1877,6 +2258,12 @@
    "id": 35,
    "name": "Hamburg",
    "abbr": "Ham",
+   "label": {
+    "area": 3906,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "HAM",
    "type": "city",
    "pop": 20000,
@@ -1900,6 +2287,18 @@
    "id": 36,
    "name": "Schwerin",
    "abbr": "Scw",
+   "label": {
+    "area": 4896,
+    "big": [
+     526,
+     652
+    ],
+    "small": [
+     526,
+     654
+    ],
+    "near": null
+   },
    "country": "MEC",
    "type": "town",
    "pop": 10000,
@@ -1923,6 +2322,15 @@
    "id": 37,
    "name": "Rostock",
    "abbr": "Ros",
+   "label": {
+    "area": 3389,
+    "big": null,
+    "small": [
+     538,
+     610
+    ],
+    "near": null
+   },
    "country": "MEC",
    "type": "town",
    "pop": 10000,
@@ -1944,6 +2352,15 @@
    "id": 38,
    "name": "Stralsund",
    "abbr": "Stl",
+   "label": {
+    "area": 3526,
+    "big": null,
+    "small": null,
+    "near": [
+     568,
+     535
+    ]
+   },
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -1964,6 +2381,15 @@
    "id": 39,
    "name": "Stettin",
    "abbr": "Ste",
+   "label": {
+    "area": 3980,
+    "big": null,
+    "small": null,
+    "near": [
+     681,
+     608
+    ]
+   },
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -1985,6 +2411,18 @@
    "id": 40,
    "name": "Kolberg",
    "abbr": "Kol",
+   "label": {
+    "area": 4745,
+    "big": [
+     751,
+     612
+    ],
+    "small": [
+     751,
+     612
+    ],
+    "near": null
+   },
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -2007,6 +2445,15 @@
    "id": 41,
    "name": "Stolp",
    "abbr": "Stp",
+   "label": {
+    "area": 3358,
+    "big": null,
+    "small": [
+     785,
+     582
+    ],
+    "near": null
+   },
    "country": "POM",
    "type": "town",
    "pop": 10000,
@@ -2027,6 +2474,18 @@
    "id": 42,
    "name": "Groningen",
    "abbr": "Grn",
+   "label": {
+    "area": 5530,
+    "big": [
+     190,
+     658
+    ],
+    "small": [
+     192,
+     658
+    ],
+    "near": null
+   },
    "country": "FRI",
    "type": "town",
    "pop": 10000,
@@ -2048,6 +2507,15 @@
    "id": 43,
    "name": "Emden",
    "abbr": "Emd",
+   "label": {
+    "area": 2605,
+    "big": null,
+    "small": null,
+    "near": [
+     238,
+     611
+    ]
+   },
    "country": "EFR",
    "type": "town",
    "pop": 10000,
@@ -2068,6 +2536,15 @@
    "id": 44,
    "name": "Oldenburg",
    "abbr": "Old",
+   "label": {
+    "area": 4501,
+    "big": null,
+    "small": [
+     287,
+     692
+    ],
+    "near": null
+   },
    "country": "OLD",
    "type": "town",
    "pop": 10000,
@@ -2089,6 +2566,15 @@
    "id": 45,
    "name": "Bremen",
    "abbr": "Brm",
+   "label": {
+    "area": 5413,
+    "big": null,
+    "small": [
+     358,
+     646
+    ],
+    "near": null
+   },
    "country": "BRE",
    "type": "town",
    "pop": 10000,
@@ -2112,6 +2598,15 @@
    "id": 46,
    "name": "Lüneburg",
    "abbr": "Lün",
+   "label": {
+    "area": 4614,
+    "big": null,
+    "small": [
+     455,
+     695
+    ],
+    "near": null
+   },
    "country": "BRU",
    "type": "town",
    "pop": 10000,
@@ -2137,6 +2632,15 @@
    "id": 47,
    "name": "Hanover",
    "abbr": "Han",
+   "label": {
+    "area": 6230,
+    "big": null,
+    "small": null,
+    "near": [
+     422,
+     731
+    ]
+   },
    "country": "BRU",
    "type": "town",
    "pop": 10000,
@@ -2162,6 +2666,15 @@
    "id": 48,
    "name": "Brunswick",
    "abbr": "Bru",
+   "label": {
+    "area": 4587,
+    "big": null,
+    "small": [
+     451,
+     772
+    ],
+    "near": null
+   },
    "country": "BRU",
    "type": "city",
    "pop": 20000,
@@ -2185,6 +2698,15 @@
    "id": 49,
    "name": "Göttingen",
    "abbr": "Göt",
+   "label": {
+    "area": 4099,
+    "big": null,
+    "small": [
+     441,
+     813
+    ],
+    "near": null
+   },
    "country": "BRU",
    "type": "town",
    "pop": 10000,
@@ -2209,6 +2731,12 @@
    "id": 50,
    "name": "Magdeburg",
    "abbr": "Mag",
+   "label": {
+    "area": 4390,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "MAG",
    "type": "city",
    "pop": 20000,
@@ -2234,6 +2762,15 @@
    "id": 51,
    "name": "Stendal",
    "abbr": "Stn",
+   "label": {
+    "area": 5115,
+    "big": null,
+    "small": [
+     537,
+     684
+    ],
+    "near": null
+   },
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2258,6 +2795,15 @@
    "id": 52,
    "name": "Prenzlau",
    "abbr": "Pre",
+   "label": {
+    "area": 6317,
+    "big": null,
+    "small": [
+     586,
+     664
+    ],
+    "near": null
+   },
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2284,6 +2830,15 @@
    "id": 53,
    "name": "Brandenburg",
    "abbr": "Bra",
+   "label": {
+    "area": 2954,
+    "big": null,
+    "small": [
+     559,
+     724
+    ],
+    "near": null
+   },
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2306,6 +2861,15 @@
    "id": 54,
    "name": "Berlin",
    "abbr": "Ber",
+   "label": {
+    "area": 5051,
+    "big": null,
+    "small": [
+     591,
+     702
+    ],
+    "near": null
+   },
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2328,6 +2892,15 @@
    "id": 55,
    "name": "Frankfurt (Oder)",
    "abbr": "Fra",
+   "label": {
+    "area": 6389,
+    "big": null,
+    "small": [
+     644,
+     787
+    ],
+    "near": null
+   },
    "country": "BRA",
    "type": "town",
    "pop": 10000,
@@ -2353,6 +2926,15 @@
    "id": 56,
    "name": "Inowrocław",
    "abbr": "Ino",
+   "label": {
+    "area": 5651,
+    "big": null,
+    "small": [
+     846,
+     693
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2377,6 +2959,18 @@
    "id": 57,
    "name": "Poznań",
    "abbr": "Poz",
+   "label": {
+    "area": 8506,
+    "big": [
+     785,
+     712
+    ],
+    "small": [
+     785,
+     714
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2400,6 +2994,15 @@
    "id": 58,
    "name": "Kalisz",
    "abbr": "Kas",
+   "label": {
+    "area": 7586,
+    "big": null,
+    "small": [
+     840,
+     798
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2423,6 +3026,15 @@
    "id": 59,
    "name": "Łęczyca",
    "abbr": "Łęc",
+   "label": {
+    "area": 9235,
+    "big": null,
+    "small": [
+     967,
+     773
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2448,6 +3060,15 @@
    "id": 60,
    "name": "Płock",
    "abbr": "Pło",
+   "label": {
+    "area": 6505,
+    "big": null,
+    "small": [
+     986,
+     688
+    ],
+    "near": null
+   },
    "country": "MAZ",
    "type": "town",
    "pop": 10000,
@@ -2471,6 +3092,18 @@
    "id": 61,
    "name": "Warsaw",
    "abbr": "War",
+   "label": {
+    "area": 15855,
+    "big": [
+     1014,
+     775
+    ],
+    "small": [
+     1012,
+     769
+    ],
+    "near": null
+   },
    "country": "MAZ",
    "type": "town",
    "pop": 10000,
@@ -2496,6 +3129,18 @@
    "id": 62,
    "name": "Lublin",
    "abbr": "Lub",
+   "label": {
+    "area": 12101,
+    "big": [
+     1183,
+     843
+    ],
+    "small": [
+     1185,
+     845
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2520,6 +3165,18 @@
    "id": 63,
    "name": "Sandomierz",
    "abbr": "San",
+   "label": {
+    "area": 12253,
+    "big": [
+     1086,
+     917
+    ],
+    "small": [
+     1084,
+     919
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2543,6 +3200,18 @@
    "id": 64,
    "name": "Kraków",
    "abbr": "Kra",
+   "label": {
+    "area": 16249,
+    "big": [
+     996,
+     984
+    ],
+    "small": [
+     996,
+     978
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "city",
    "pop": 20000,
@@ -2568,6 +3237,18 @@
    "id": 65,
    "name": "Przemyśl",
    "abbr": "Prz",
+   "label": {
+    "area": 14153,
+    "big": [
+     1106,
+     964
+    ],
+    "small": [
+     1174,
+     928
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2592,6 +3273,18 @@
    "id": 66,
    "name": "Lwów",
    "abbr": "Lwó",
+   "label": {
+    "area": 21476,
+    "big": [
+     1261,
+     971
+    ],
+    "small": [
+     1261,
+     967
+    ],
+    "near": null
+   },
    "country": "POL",
    "type": "town",
    "pop": 10000,
@@ -2614,6 +3307,15 @@
    "id": 67,
    "name": "Amsterdam",
    "abbr": "Ams",
+   "label": {
+    "area": 2177,
+    "big": null,
+    "small": null,
+    "near": [
+     85,
+     694
+    ]
+   },
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -2634,6 +3336,15 @@
    "id": 68,
    "name": "Dordrecht",
    "abbr": "Dor",
+   "label": {
+    "area": 3537,
+    "big": null,
+    "small": [
+     79,
+     770
+    ],
+    "near": null
+   },
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -2657,6 +3368,18 @@
    "id": 69,
    "name": "Antwerp",
    "abbr": "Ant",
+   "label": {
+    "area": 4999,
+    "big": [
+     30,
+     813
+    ],
+    "small": [
+     34,
+     813
+    ],
+    "near": null
+   },
    "country": "BUR",
    "type": "city",
    "pop": 20000,
@@ -2679,6 +3402,18 @@
    "id": 70,
    "name": "Brussels",
    "abbr": "Brs",
+   "label": {
+    "area": 7259,
+    "big": [
+     34,
+     865
+    ],
+    "small": [
+     40,
+     865
+    ],
+    "near": null
+   },
    "country": "BUR",
    "type": "city",
    "pop": 20000,
@@ -2700,6 +3435,18 @@
    "id": 71,
    "name": "Namur",
    "abbr": "Nam",
+   "label": {
+    "area": 9298,
+    "big": [
+     50,
+     942
+    ],
+    "small": [
+     62,
+     922
+    ],
+    "near": null
+   },
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -2722,6 +3469,15 @@
    "id": 72,
    "name": "Utrecht",
    "abbr": "Utr",
+   "label": {
+    "area": 1768,
+    "big": null,
+    "small": null,
+    "near": [
+     154,
+     707
+    ]
+   },
    "country": "UTR",
    "type": "town",
    "pop": 10000,
@@ -2744,6 +3500,15 @@
    "id": 73,
    "name": "Deventer",
    "abbr": "Dev",
+   "label": {
+    "area": 4781,
+    "big": null,
+    "small": [
+     223,
+     722
+    ],
+    "near": null
+   },
    "country": "UTR",
    "type": "town",
    "pop": 10000,
@@ -2767,6 +3532,15 @@
    "id": 74,
    "name": "Nijmegen",
    "abbr": "Nij",
+   "label": {
+    "area": 2600,
+    "big": null,
+    "small": [
+     155,
+     789
+    ],
+    "near": null
+   },
    "country": "GEL",
    "type": "town",
    "pop": 10000,
@@ -2790,6 +3564,15 @@
    "id": 75,
    "name": "Roermond",
    "abbr": "Roe",
+   "label": {
+    "area": 2992,
+    "big": null,
+    "small": null,
+    "near": [
+     156,
+     792
+    ]
+   },
    "country": "GEL",
    "type": "town",
    "pop": 10000,
@@ -2815,6 +3598,12 @@
    "id": 76,
    "name": "Wesel",
    "abbr": "Wes",
+   "label": {
+    "area": 2173,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "CLE",
    "type": "town",
    "pop": 10000,
@@ -2839,6 +3628,15 @@
    "id": 77,
    "name": "Hamm",
    "abbr": "Hmm",
+   "label": {
+    "area": 1955,
+    "big": null,
+    "small": [
+     307,
+     787
+    ],
+    "near": null
+   },
    "country": "CLE",
    "type": "town",
    "pop": 10000,
@@ -2860,6 +3658,15 @@
    "id": 78,
    "name": "Münster",
    "abbr": "Mün",
+   "label": {
+    "area": 5695,
+    "big": null,
+    "small": null,
+    "near": [
+     308,
+     784
+    ]
+   },
    "country": "MUN",
    "type": "town",
    "pop": 10000,
@@ -2886,6 +3693,12 @@
    "id": 79,
    "name": "Recklinghausen",
    "abbr": "Rec",
+   "label": {
+    "area": 1687,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "KOL",
    "type": "town",
    "pop": 10000,
@@ -2909,6 +3722,15 @@
    "id": 80,
    "name": "Arnsberg",
    "abbr": "Arn",
+   "label": {
+    "area": 4035,
+    "big": null,
+    "small": [
+     324,
+     816
+    ],
+    "near": null
+   },
    "country": "KOL",
    "type": "town",
    "pop": 10000,
@@ -2934,6 +3756,15 @@
    "id": 81,
    "name": "Düsseldorf",
    "abbr": "Düs",
+   "label": {
+    "area": 1521,
+    "big": null,
+    "small": null,
+    "near": [
+     252,
+     861
+    ]
+   },
    "country": "JUL",
    "type": "town",
    "pop": 10000,
@@ -2957,6 +3788,12 @@
    "id": 82,
    "name": "Jülich",
    "abbr": "Jül",
+   "label": {
+    "area": 2402,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "JUL",
    "type": "town",
    "pop": 10000,
@@ -2981,6 +3818,15 @@
    "id": 83,
    "name": "Cologne",
    "abbr": "Col",
+   "label": {
+    "area": 2863,
+    "big": null,
+    "small": [
+     253,
+     864
+    ],
+    "near": null
+   },
    "country": "COL",
    "type": "city",
    "pop": 20000,
@@ -3003,6 +3849,12 @@
    "id": 84,
    "name": "Liège",
    "abbr": "Liè",
+   "label": {
+    "area": 4189,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "LIE",
    "type": "city",
    "pop": 20000,
@@ -3028,6 +3880,15 @@
    "id": 85,
    "name": "Kassel",
    "abbr": "Kae",
+   "label": {
+    "area": 3816,
+    "big": null,
+    "small": [
+     359,
+     816
+    ],
+    "near": null
+   },
    "country": "HES",
    "type": "town",
    "pop": 10000,
@@ -3051,6 +3912,15 @@
    "id": 86,
    "name": "Marburg",
    "abbr": "Mar",
+   "label": {
+    "area": 5038,
+    "big": null,
+    "small": [
+     306,
+     876
+    ],
+    "near": null
+   },
    "country": "HES",
    "type": "town",
    "pop": 10000,
@@ -3075,6 +3945,15 @@
    "id": 87,
    "name": "Eisenach",
    "abbr": "Eis",
+   "label": {
+    "area": 4648,
+    "big": null,
+    "small": [
+     397,
+     891
+    ],
+    "near": null
+   },
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3099,6 +3978,18 @@
    "id": 88,
    "name": "Wittenberg",
    "abbr": "Wit",
+   "label": {
+    "area": 4498,
+    "big": [
+     594,
+     796
+    ],
+    "small": [
+     594,
+     798
+    ],
+    "near": null
+   },
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3123,6 +4014,15 @@
    "id": 89,
    "name": "Leipzig",
    "abbr": "Lei",
+   "label": {
+    "area": 4613,
+    "big": null,
+    "small": [
+     514,
+     829
+    ],
+    "near": null
+   },
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3146,6 +4046,15 @@
    "id": 90,
    "name": "Dresden",
    "abbr": "Dre",
+   "label": {
+    "area": 4274,
+    "big": null,
+    "small": [
+     604,
+     889
+    ],
+    "near": null
+   },
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3169,6 +4078,15 @@
    "id": 91,
    "name": "Zwickau",
    "abbr": "Zwi",
+   "label": {
+    "area": 6071,
+    "big": null,
+    "small": [
+     543,
+     927
+    ],
+    "near": null
+   },
    "country": "SAX",
    "type": "town",
    "pop": 10000,
@@ -3193,6 +4111,15 @@
    "id": 92,
    "name": "Erfurt",
    "abbr": "Erf",
+   "label": {
+    "area": 5471,
+    "big": null,
+    "small": [
+     485,
+     889
+    ],
+    "near": null
+   },
    "country": "ERF",
    "type": "city",
    "pop": 20000,
@@ -3217,6 +4144,15 @@
    "id": 93,
    "name": "Bautzen",
    "abbr": "Bau",
+   "label": {
+    "area": 3706,
+    "big": null,
+    "small": [
+     644,
+     814
+    ],
+    "near": null
+   },
    "country": "LUS",
    "type": "town",
    "pop": 10000,
@@ -3239,6 +4175,15 @@
    "id": 94,
    "name": "Görlitz",
    "abbr": "Gör",
+   "label": {
+    "area": 4652,
+    "big": null,
+    "small": [
+     704,
+     833
+    ],
+    "near": null
+   },
    "country": "LUS",
    "type": "town",
    "pop": 10000,
@@ -3263,6 +4208,15 @@
    "id": 95,
    "name": "Glogau",
    "abbr": "Glo",
+   "label": {
+    "area": 5854,
+    "big": null,
+    "small": [
+     784,
+     805
+    ],
+    "near": null
+   },
    "country": "SIL",
    "type": "town",
    "pop": 10000,
@@ -3287,6 +4241,15 @@
    "id": 96,
    "name": "Liegnitz",
    "abbr": "Lie",
+   "label": {
+    "area": 3387,
+    "big": null,
+    "small": [
+     746,
+     869
+    ],
+    "near": null
+   },
    "country": "SIL",
    "type": "town",
    "pop": 10000,
@@ -3309,6 +4272,15 @@
    "id": 97,
    "name": "Breslau",
    "abbr": "Bre",
+   "label": {
+    "area": 4714,
+    "big": null,
+    "small": [
+     810,
+     832
+    ],
+    "near": null
+   },
    "country": "SIL",
    "type": "city",
    "pop": 20000,
@@ -3332,6 +4304,18 @@
    "id": 98,
    "name": "Oppeln",
    "abbr": "Opp",
+   "label": {
+    "area": 7599,
+    "big": [
+     907,
+     886
+    ],
+    "small": [
+     907,
+     884
+    ],
+    "near": null
+   },
    "country": "OPP",
    "type": "town",
    "pop": 10000,
@@ -3356,6 +4340,15 @@
    "id": 99,
    "name": "Ratibor",
    "abbr": "Rat",
+   "label": {
+    "area": 7595,
+    "big": null,
+    "small": [
+     914,
+     936
+    ],
+    "near": null
+   },
    "country": "OPP",
    "type": "town",
    "pop": 10000,
@@ -3378,6 +4371,18 @@
    "id": 100,
    "name": "Luxembourg",
    "abbr": "Lux",
+   "label": {
+    "area": 4959,
+    "big": [
+     130,
+     969
+    ],
+    "small": [
+     130,
+     967
+    ],
+    "near": null
+   },
    "country": "LUX",
    "type": "town",
    "pop": 10000,
@@ -3401,6 +4406,15 @@
    "id": 101,
    "name": "Trier",
    "abbr": "Tri",
+   "label": {
+    "area": 4498,
+    "big": null,
+    "small": null,
+    "near": [
+     214,
+     928
+    ]
+   },
    "country": "TRI",
    "type": "town",
    "pop": 10000,
@@ -3425,6 +4439,15 @@
    "id": 102,
    "name": "Koblenz",
    "abbr": "Kob",
+   "label": {
+    "area": 4837,
+    "big": null,
+    "small": [
+     230,
+     921
+    ],
+    "near": null
+   },
    "country": "TRI",
    "type": "town",
    "pop": 10000,
@@ -3451,6 +4474,12 @@
    "id": 103,
    "name": "Mainz",
    "abbr": "Mai",
+   "label": {
+    "area": 2303,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "MAI",
    "type": "town",
    "pop": 10000,
@@ -3472,6 +4501,15 @@
    "id": 104,
    "name": "Frankfurt",
    "abbr": "Frn",
+   "label": {
+    "area": 3614,
+    "big": null,
+    "small": [
+     348,
+     935
+    ],
+    "near": null
+   },
    "country": "FFM",
    "type": "town",
    "pop": 10000,
@@ -3495,6 +4533,12 @@
    "id": 105,
    "name": "Würzburg",
    "abbr": "Wür",
+   "label": {
+    "area": 5577,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "WBG",
    "type": "town",
    "pop": 10000,
@@ -3520,6 +4564,12 @@
    "id": 106,
    "name": "Bamberg",
    "abbr": "Bam",
+   "label": {
+    "area": 3160,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "BAM",
    "type": "town",
    "pop": 10000,
@@ -3543,6 +4593,15 @@
    "id": 107,
    "name": "Kulmbach",
    "abbr": "Kul",
+   "label": {
+    "area": 4740,
+    "big": null,
+    "small": [
+     514,
+     948
+    ],
+    "near": null
+   },
    "country": "ANS",
    "type": "town",
    "pop": 10000,
@@ -3567,6 +4626,12 @@
    "id": 108,
    "name": "Ansbach",
    "abbr": "Ans",
+   "label": {
+    "area": 3913,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "ANS",
    "type": "town",
    "pop": 10000,
@@ -3592,6 +4657,12 @@
    "id": 109,
    "name": "Nuremberg",
    "abbr": "Nur",
+   "label": {
+    "area": 2126,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "NUR",
    "type": "city",
    "pop": 20000,
@@ -3615,6 +4686,15 @@
    "id": 110,
    "name": "Heidelberg",
    "abbr": "Hei",
+   "label": {
+    "area": 8571,
+    "big": null,
+    "small": [
+     248,
+     1001
+    ],
+    "near": null
+   },
    "country": "PAL",
    "type": "town",
    "pop": 10000,
@@ -3642,6 +4722,18 @@
    "id": 111,
    "name": "Amberg",
    "abbr": "Amb",
+   "label": {
+    "area": 3807,
+    "big": [
+     526,
+     994
+    ],
+    "small": [
+     522,
+     994
+    ],
+    "near": null
+   },
    "country": "PAL",
    "type": "town",
    "pop": 10000,
@@ -3665,6 +4757,15 @@
    "id": 112,
    "name": "Prague",
    "abbr": "Pra",
+   "label": {
+    "area": 7630,
+    "big": null,
+    "small": [
+     620,
+     918
+    ],
+    "near": null
+   },
    "country": "BOH",
    "type": "city",
    "pop": 20000,
@@ -3691,6 +4792,15 @@
    "id": 113,
    "name": "Plzeň",
    "abbr": "Plz",
+   "label": {
+    "area": 7210,
+    "big": null,
+    "small": [
+     571,
+     990
+    ],
+    "near": null
+   },
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3716,6 +4826,15 @@
    "id": 114,
    "name": "Kutná Hora",
    "abbr": "Kut",
+   "label": {
+    "area": 3836,
+    "big": null,
+    "small": [
+     717,
+     992
+    ],
+    "near": null
+   },
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3738,6 +4857,15 @@
    "id": 115,
    "name": "Hradec Králové",
    "abbr": "Hra",
+   "label": {
+    "area": 8959,
+    "big": null,
+    "small": [
+     797,
+     909
+    ],
+    "near": null
+   },
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3764,6 +4892,18 @@
    "id": 116,
    "name": "Brno",
    "abbr": "Brn",
+   "label": {
+    "area": 7757,
+    "big": [
+     758,
+     1046
+    ],
+    "small": [
+     758,
+     1048
+    ],
+    "near": null
+   },
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3789,6 +4929,18 @@
    "id": 117,
    "name": "Olomouc",
    "abbr": "Olo",
+   "label": {
+    "area": 7203,
+    "big": [
+     863,
+     1040
+    ],
+    "small": [
+     857,
+     1036
+    ],
+    "near": null
+   },
    "country": "BOH",
    "type": "town",
    "pop": 10000,
@@ -3812,6 +4964,15 @@
    "id": 118,
    "name": "Tábor",
    "abbr": "Táb",
+   "label": {
+    "area": 7373,
+    "big": null,
+    "small": [
+     711,
+     1038
+    ],
+    "near": null
+   },
    "country": "TAB",
    "type": "town",
    "pop": 10000,
@@ -3837,6 +4998,15 @@
    "id": 119,
    "name": "Metz",
    "abbr": "Met",
+   "label": {
+    "area": 3698,
+    "big": null,
+    "small": null,
+    "near": [
+     140,
+     1007
+    ]
+   },
    "country": "MET",
    "type": "city",
    "pop": 20000,
@@ -3861,6 +5031,18 @@
    "id": 120,
    "name": "Bar",
    "abbr": "Bar",
+   "label": {
+    "area": 16899,
+    "big": [
+     56,
+     1039
+    ],
+    "small": [
+     62,
+     1039
+    ],
+    "near": null
+   },
    "country": "LOR",
    "type": "town",
    "pop": 10000,
@@ -3884,6 +5066,15 @@
    "id": 121,
    "name": "Nancy",
    "abbr": "Nan",
+   "label": {
+    "area": 5911,
+    "big": null,
+    "small": [
+     196,
+     1054
+    ],
+    "near": null
+   },
    "country": "LOR",
    "type": "town",
    "pop": 10000,
@@ -3909,6 +5100,15 @@
    "id": 122,
    "name": "Strasbourg",
    "abbr": "Str",
+   "label": {
+    "area": 3708,
+    "big": null,
+    "small": [
+     230,
+     1080
+    ],
+    "near": null
+   },
    "country": "STR",
    "type": "city",
    "pop": 20000,
@@ -3933,6 +5133,12 @@
    "id": 123,
    "name": "Baden",
    "abbr": "Bad",
+   "label": {
+    "area": 3339,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "BAD",
    "type": "town",
    "pop": 10000,
@@ -3955,6 +5161,12 @@
    "id": 124,
    "name": "Stuttgart",
    "abbr": "Stu",
+   "label": {
+    "area": 5032,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "WRT",
    "type": "town",
    "pop": 10000,
@@ -3979,6 +5191,15 @@
    "id": 125,
    "name": "Montbéliard",
    "abbr": "Mon",
+   "label": {
+    "area": 4431,
+    "big": null,
+    "small": [
+     180,
+     1190
+    ],
+    "near": null
+   },
    "country": "WRT",
    "type": "town",
    "pop": 10000,
@@ -4002,6 +5223,12 @@
    "id": 126,
    "name": "Ulm",
    "abbr": "Ulm",
+   "label": {
+    "area": 5216,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "ULM",
    "type": "city",
    "pop": 20000,
@@ -4025,6 +5252,12 @@
    "id": 127,
    "name": "Augsburg",
    "abbr": "Aug",
+   "label": {
+    "area": 4016,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "AUG",
    "type": "city",
    "pop": 20000,
@@ -4048,6 +5281,12 @@
    "id": 128,
    "name": "Ingolstadt",
    "abbr": "Ing",
+   "label": {
+    "area": 2848,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "BIN",
    "type": "town",
    "pop": 10000,
@@ -4073,6 +5312,12 @@
    "id": 129,
    "name": "Regensburg",
    "abbr": "Reg",
+   "label": {
+    "area": 1936,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "REG",
    "type": "town",
    "pop": 10000,
@@ -4095,6 +5340,15 @@
    "id": 130,
    "name": "Straubing",
    "abbr": "Stb",
+   "label": {
+    "area": 3117,
+    "big": null,
+    "small": [
+     574,
+     1054
+    ],
+    "near": null
+   },
    "country": "BMU",
    "type": "town",
    "pop": 10000,
@@ -4118,6 +5372,15 @@
    "id": 131,
    "name": "Munich",
    "abbr": "Mun",
+   "label": {
+    "area": 4212,
+    "big": null,
+    "small": [
+     497,
+     1167
+    ],
+    "near": null
+   },
    "country": "BMU",
    "type": "town",
    "pop": 10000,
@@ -4142,6 +5405,12 @@
    "id": 132,
    "name": "Landshut",
    "abbr": "Lad",
+   "label": {
+    "area": 2258,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "BLA",
    "type": "town",
    "pop": 10000,
@@ -4165,6 +5434,12 @@
    "id": 133,
    "name": "Burghausen",
    "abbr": "Bur",
+   "label": {
+    "area": 2887,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "BLA",
    "type": "town",
    "pop": 10000,
@@ -4188,6 +5463,15 @@
    "id": 134,
    "name": "Passau",
    "abbr": "Pas",
+   "label": {
+    "area": 4647,
+    "big": null,
+    "small": [
+     616,
+     1059
+    ],
+    "near": null
+   },
    "country": "PAS",
    "type": "town",
    "pop": 10000,
@@ -4212,6 +5496,15 @@
    "id": 135,
    "name": "Linz",
    "abbr": "Liz",
+   "label": {
+    "area": 7717,
+    "big": null,
+    "small": [
+     680,
+     1100
+    ],
+    "near": null
+   },
    "country": "AUS",
    "type": "town",
    "pop": 10000,
@@ -4236,6 +5529,15 @@
    "id": 136,
    "name": "St. Pölten",
    "abbr": "SPö",
+   "label": {
+    "area": 6468,
+    "big": null,
+    "small": [
+     713,
+     1153
+    ],
+    "near": null
+   },
    "country": "AUS",
    "type": "town",
    "pop": 10000,
@@ -4260,6 +5562,15 @@
    "id": 137,
    "name": "Vienna",
    "abbr": "Vie",
+   "label": {
+    "area": 3209,
+    "big": null,
+    "small": null,
+    "near": [
+     742,
+     1088
+    ]
+   },
    "country": "AUS",
    "type": "city",
    "pop": 20000,
@@ -4282,6 +5593,18 @@
    "id": 138,
    "name": "Wiener Neustadt",
    "abbr": "Wie",
+   "label": {
+    "area": 5079,
+    "big": [
+     789,
+     1190
+    ],
+    "small": [
+     791,
+     1192
+    ],
+    "near": null
+   },
    "country": "AUS",
    "type": "town",
    "pop": 10000,
@@ -4305,6 +5628,18 @@
    "id": 139,
    "name": "Pozsony",
    "abbr": "Pos",
+   "label": {
+    "area": 5946,
+    "big": [
+     854,
+     1093
+    ],
+    "small": [
+     852,
+     1095
+    ],
+    "near": null
+   },
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4329,6 +5664,18 @@
    "id": 140,
    "name": "Győr",
    "abbr": "Győ",
+   "label": {
+    "area": 10145,
+    "big": [
+     851,
+     1237
+    ],
+    "small": [
+     851,
+     1237
+    ],
+    "near": null
+   },
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4353,6 +5700,18 @@
    "id": 141,
    "name": "Buda",
    "abbr": "Bud",
+   "label": {
+    "area": 18131,
+    "big": [
+     994,
+     1205
+    ],
+    "small": [
+     986,
+     1203
+    ],
+    "near": null
+   },
    "country": "HUN",
    "type": "city",
    "pop": 20000,
@@ -4376,6 +5735,18 @@
    "id": 142,
    "name": "Pécs",
    "abbr": "Péc",
+   "label": {
+    "area": 32073,
+    "big": [
+     983,
+     1333
+    ],
+    "small": [
+     975,
+     1331
+    ],
+    "near": null
+   },
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4399,6 +5770,18 @@
    "id": 143,
    "name": "Zagreb",
    "abbr": "Zag",
+   "label": {
+    "area": 13553,
+    "big": [
+     792,
+     1317
+    ],
+    "small": [
+     786,
+     1323
+    ],
+    "near": null
+   },
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4420,6 +5803,18 @@
    "id": 144,
    "name": "Debrecen",
    "abbr": "Deb",
+   "label": {
+    "area": 28530,
+    "big": [
+     1113,
+     1212
+    ],
+    "small": [
+     1111,
+     1206
+    ],
+    "near": null
+   },
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4442,6 +5837,18 @@
    "id": 145,
    "name": "Kolozsvár",
    "abbr": "Koz",
+   "label": {
+    "area": 63224,
+    "big": [
+     1257,
+     1255
+    ],
+    "small": [
+     1247,
+     1253
+    ],
+    "near": null
+   },
    "country": "HUN",
    "type": "town",
    "pop": 10000,
@@ -4465,6 +5872,18 @@
    "id": 146,
    "name": "Besztercebánya",
    "abbr": "Bes",
+   "label": {
+    "area": 14885,
+    "big": [
+     975,
+     1114
+    ],
+    "small": [
+     971,
+     1114
+    ],
+    "near": null
+   },
    "country": "JIS",
    "type": "town",
    "pop": 10000,
@@ -4490,6 +5909,18 @@
    "id": 147,
    "name": "Kassa",
    "abbr": "Kaa",
+   "label": {
+    "area": 17975,
+    "big": [
+     1133,
+     1065
+    ],
+    "small": [
+     1117,
+     1057
+    ],
+    "near": null
+   },
    "country": "JIS",
    "type": "town",
    "pop": 10000,
@@ -4514,6 +5945,15 @@
    "id": 148,
    "name": "Colmar",
    "abbr": "Com",
+   "label": {
+    "area": 3422,
+    "big": null,
+    "small": [
+     201,
+     1120
+    ],
+    "near": null
+   },
    "country": "DEC",
    "type": "town",
    "pop": 10000,
@@ -4537,6 +5977,15 @@
    "id": 149,
    "name": "Freiburg",
    "abbr": "Fre",
+   "label": {
+    "area": 3148,
+    "big": null,
+    "small": [
+     287,
+     1130
+    ],
+    "near": null
+   },
    "country": "TYR",
    "type": "town",
    "pop": 10000,
@@ -4561,6 +6010,15 @@
    "id": 150,
    "name": "Basel",
    "abbr": "Bas",
+   "label": {
+    "area": 2550,
+    "big": null,
+    "small": null,
+    "near": [
+     248,
+     1213
+    ]
+   },
    "country": "BAS",
    "type": "town",
    "pop": 10000,
@@ -4585,6 +6043,15 @@
    "id": 151,
    "name": "Konstanz",
    "abbr": "Kon",
+   "label": {
+    "area": 4896,
+    "big": null,
+    "small": [
+     360,
+     1167
+    ],
+    "near": null
+   },
    "country": "KON",
    "type": "town",
    "pop": 10000,
@@ -4608,6 +6075,12 @@
    "id": 152,
    "name": "Zürich",
    "abbr": "Zür",
+   "label": {
+    "area": 2999,
+    "big": null,
+    "small": null,
+    "near": null
+   },
    "country": "ZUR",
    "type": "town",
    "pop": 10000,
@@ -4631,6 +6104,15 @@
    "id": 153,
    "name": "Lucerne",
    "abbr": "Luc",
+   "label": {
+    "area": 5483,
+    "big": null,
+    "small": [
+     302,
+     1249
+    ],
+    "near": null
+   },
    "country": "SWI",
    "type": "town",
    "pop": 10000,
@@ -4654,6 +6136,18 @@
    "id": 154,
    "name": "Bern",
    "abbr": "Ben",
+   "label": {
+    "area": 5425,
+    "big": [
+     227,
+     1249
+    ],
+    "small": [
+     225,
+     1249
+    ],
+    "near": null
+   },
    "country": "SWI",
    "type": "town",
    "pop": 10000,
@@ -4676,6 +6170,18 @@
    "id": 155,
    "name": "Innsbruck",
    "abbr": "Inn",
+   "label": {
+    "area": 17734,
+    "big": [
+     409,
+     1199
+    ],
+    "small": [
+     407,
+     1197
+    ],
+    "near": null
+   },
    "country": "TYR",
    "type": "town",
    "pop": 10000,
@@ -4703,6 +6209,18 @@
    "id": 156,
    "name": "Bozen",
    "abbr": "Boz",
+   "label": {
+    "area": 19654,
+    "big": [
+     447,
+     1355
+    ],
+    "small": [
+     453,
+     1351
+    ],
+    "near": null
+   },
    "country": "TYR",
    "type": "town",
    "pop": 10000,
@@ -4722,6 +6240,15 @@
    "id": 157,
    "name": "Salzburg",
    "abbr": "Sal",
+   "label": {
+    "area": 8742,
+    "big": null,
+    "small": [
+     562,
+     1222
+    ],
+    "near": null
+   },
    "country": "SAL",
    "type": "town",
    "pop": 10000,
@@ -4747,6 +6274,18 @@
    "id": 158,
    "name": "Graz",
    "abbr": "Gra",
+   "label": {
+    "area": 10824,
+    "big": [
+     769,
+     1259
+    ],
+    "small": [
+     765,
+     1259
+    ],
+    "near": null
+   },
    "country": "STY",
    "type": "town",
    "pop": 10000,
@@ -4772,6 +6311,15 @@
    "id": 159,
    "name": "St. Veit",
    "abbr": "StV",
+   "label": {
+    "area": 8631,
+    "big": null,
+    "small": [
+     642,
+     1286
+    ],
+    "near": null
+   },
    "country": "STY",
    "type": "town",
    "pop": 10000,
@@ -4795,6 +6343,18 @@
    "id": 160,
    "name": "Ljubljana",
    "abbr": "Lju",
+   "label": {
+    "area": 8818,
+    "big": [
+     672,
+     1380
+    ],
+    "small": [
+     690,
+     1356
+    ],
+    "near": null
+   },
    "country": "STY",
    "type": "town",
    "pop": 10000,
@@ -4817,6 +6377,15 @@
    "id": 161,
    "name": "Lausanne",
    "abbr": "Lau",
+   "label": {
+    "area": 6487,
+    "big": null,
+    "small": [
+     215,
+     1320
+    ],
+    "near": null
+   },
    "country": "SAV",
    "type": "town",
    "pop": 10000,
@@ -4839,6 +6408,15 @@
    "id": 162,
    "name": "Geneva",
    "abbr": "Gen",
+   "label": {
+    "area": 6104,
+    "big": null,
+    "small": [
+     104,
+     1281
+    ],
+    "near": null
+   },
    "country": "SAV",
    "type": "town",
    "pop": 10000,
@@ -4862,6 +6440,18 @@
    "id": 163,
    "name": "Chambéry",
    "abbr": "Cha",
+   "label": {
+    "area": 10238,
+    "big": [
+     111,
+     1376
+    ],
+    "small": [
+     117,
+     1374
+    ],
+    "near": null
+   },
    "country": "SAV",
    "type": "town",
    "pop": 10000,
@@ -4883,6 +6473,18 @@
    "id": 164,
    "name": "Como",
    "abbr": "Coo",
+   "label": {
+    "area": 17699,
+    "big": [
+     306,
+     1373
+    ],
+    "small": [
+     282,
+     1351
+    ],
+    "near": null
+   },
    "country": "MIL",
    "type": "town",
    "pop": 10000,
@@ -4902,6 +6504,18 @@
    "id": 165,
    "name": "Udine",
    "abbr": "Udi",
+   "label": {
+    "area": 13660,
+    "big": [
+     573,
+     1361
+    ],
+    "small": [
+     551,
+     1341
+    ],
+    "near": null
+   },
    "country": "VEN",
    "type": "town",
    "pop": 10000,
@@ -4924,6 +6538,18 @@
    "id": 166,
    "name": "Dijon",
    "abbr": "Dij",
+   "label": {
+    "area": 12631,
+    "big": [
+     44,
+     1147
+    ],
+    "small": [
+     52,
+     1149
+    ],
+    "near": null
+   },
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -4947,6 +6573,15 @@
    "id": 167,
    "name": "Besançon",
    "abbr": "Beç",
+   "label": {
+    "area": 5691,
+    "big": null,
+    "small": [
+     117,
+     1216
+    ],
+    "near": null
+   },
    "country": "BUR",
    "type": "town",
    "pop": 10000,
@@ -4970,6 +6605,18 @@
    "id": 168,
    "name": "Lyon",
    "abbr": "Lyo",
+   "label": {
+    "area": 13683,
+    "big": [
+     28,
+     1258
+    ],
+    "small": [
+     26,
+     1274
+    ],
+    "near": null
+   },
    "country": "FRA",
    "type": "city",
    "pop": 20000,

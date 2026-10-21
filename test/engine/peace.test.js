@@ -79,14 +79,18 @@ test("peace terms: settlements, money, subjects — checked, applied, and scored
     assert.equal(game.state.countries.AAA.warmonger, 5 + 10 + 5);
 });
 
-test("a country with no settlements left takes what is dictated; a human is asked and may refuse", () => {
+test("a country with no settlements left is out of the game, and nobody makes peace with it; a human is asked and may refuse", () => {
     const game = tinyGame();
     order(game, cmd("AAA", "declareWar", { target: "BBB" }));
     take(game, 4, "AAA");
     take(game, 5, "AAA");
-    const events = order(game, cmd("AAA", "proposePeace", { with: "BBB", terms: { makeSubject: "vassal" } }));
-    assert.equal(ofType(events, "answer").length, 0);                          // no answer was asked for
-    assert.deepEqual([game.state.countries.BBB.overlord, game.state.countries.BBB.subjectKind], ["AAA", "vassal"]);
+    delete game.state.armies[4];                                                // (its garrisons, or they would take them back)
+    delete game.state.armies[5];
+    runTo(game, 1);
+    assert.equal(game.state.countries.BBB.out, 1);
+    assert.equal(game.state.wars.length, 0);
+    assert.equal(refused(game, cmd("AAA", "proposePeace", { with: "BBB" })), "BBB is no more");
+    assert.equal(refused(game, cmd("CCC", "declareWar", { target: "BBB" })), "BBB is no more");
 
     const h = tinyGame(1, () => {}, ["BBB"]);
     order(h, cmd("AAA", "declareWar", { target: "BBB" }));

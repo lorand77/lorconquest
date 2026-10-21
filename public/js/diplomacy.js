@@ -72,7 +72,8 @@ export function diplomacyTab(ctx) {
     })) : mk("p", { class: "hint" }, "None.")));
 
     // a country to deal with
-    const others = Object.values(state.countries).filter((x) => x.code !== me && !x.rebel).sort((a, b) => a.name.localeCompare(b.name));
+    // (a country that is out of the game is no one to deal with)
+    const others = Object.values(state.countries).filter((x) => x.code !== me && !x.rebel && (x.out ?? null) === null).sort((a, b) => a.name.localeCompare(b.name));
     const pick = ctx.ui.target && ctx.state.countries[ctx.ui.target] ? ctx.ui.target : others.find((x) => bordering(game, me, x.code))?.code ?? others[0]?.code;
     const sel = mk("select", {}, ...others.map((x) => mk("option", { value: x.code, ...(x.code === pick ? { selected: "selected" } : {}) }, `${x.name}${bordering(game, me, x.code) ? " ·" : ""}`)));
     sel.addEventListener("change", () => { ctx.ui.target = sel.value; ctx.redraw(); });

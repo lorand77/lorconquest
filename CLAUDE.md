@@ -47,7 +47,8 @@ dependencies.
 - `src/auth/` — accounts: `routes.js` (register, login, logout, me), `session.js` (the cookie and the sessions table, shared by REST
   and the socket handshake), `password.js` (scrypt), `origin.js` (the same-origin check), `throttle.js`, `usernamePolicy.js`.
 - `src/engine/` also holds diplomacy: `relations.js` (who is allied, subject or friend), `opinion.js` (the computer's
-  formulas, pure), `diplomacy.js` (wars, peace, subjects, the Empire), `diplomacy-day.js`, `victory.js`.
+  formulas, pure), `diplomacy.js` (wars, peace, subjects, the Empire), `diplomacy-day.js`, `victory.js`, `elimination.js` (a country with no
+  settlement left is out of the game: its forces vanish, its wars and agreements end).
 - `src/game/` — live games: `rooms.js` (tables and seats, a worker per game, saving, passing changes to sockets, who is
   away or back, the setup minute, abandoned games),
   `worker.js` (one game's loop), `socket.js` and `routes.js` (the events and the REST routes),

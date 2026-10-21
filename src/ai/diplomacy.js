@@ -113,7 +113,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }) {
     const calm = foes.length < limit && c.treasury > 0 && (c.warmonger ?? 0) < 12 + 30 * fl.aggression;
     if (plan) {
         const target = st.countries[plan.target], { ours, theirs } = sideOf(game, code, plan.target);
-        const valid = calm && target && !enemiesOf(st, code).includes(plan.target) && ours >= (1.3 - 0.4 * fl.aggression) * Math.max(theirs, 1);
+        const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && ours >= (1.3 - 0.4 * fl.aggression) * Math.max(theirs, 1);
         if (!valid) plans.delete(code);
         else if (day - plan.since >= 40) { plans.delete(code); cmd("declareWar", { target: plan.target }); }
     } else if (calm && r() < 0.03 + 0.1 * fl.aggression) {

@@ -54,7 +54,9 @@ test("a beaten army with nowhere to go dies to the last man", () => {
     setArmy(game, 4, { swords: 4000 });
     order(game, { type: "move", country: "BBB", army: 4, to: "P1" });     // 4 -> 5 -> P1, there at day 164
     runTo(game, 100);
-    game.state.settlements[4].owner = game.state.settlements[5].owner = "AAA";   // BBB has lost everything meanwhile
+    // BBB has lost everything meanwhile but 8, which it cannot reach through neutral land (and so is still in the game)
+    game.state.settlements[4].owner = game.state.settlements[5].owner = "AAA";
+    game.state.settlements[8].owner = "BBB";
     delete game.state.armies[5];
     rig(game, 1, 1, 6, 6);
     const events = runTo(game, 164);

@@ -11,7 +11,10 @@
 //   * a player who is away — no socket in the game — has a caretaker at once, and the full computer player after AWAY_MS;
 //   * one who comes back has their country back at once, whichever of the two had it;
 //   * one who quits gives it to the full computer player for good;
-//   * when every player has quit or been away over AWAY_MS the game is over: abandoned.
+//   * when every player has quit or been away over AWAY_MS the game is over: abandoned;
+//   * a player whose country is eliminated (RULES.md §10) is out: they may watch to the end, but give no orders, and are placed
+//     after everyone still in. When every player's country is out the worker ends the game as a defeat, as it ends a
+//     single-player game when its player's country falls.
 // Nothing about who is away is saved: a game resumed after a restart begins with every player away, from that moment.
 //
 // A single-player game is not kept in memory for nothing: when its player has been gone for IDLE_MS its worker stops, the
@@ -107,6 +110,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             case "tick":
                 room.lastTick = performance.now();
                 save(room, m);
+                for (const e of m.events) if (e.type === "eliminated" && room.seats.has(e.country)) seatOut(room, room.seats.get(e.country), e.day);
                 io.to(`game:${room.id}`).emit("tick", { day: m.day, events: m.events, changes: m.pub });
                 for (const [code, changes] of Object.entries(m.priv)) io.to(`game:${room.id}:${code}`).emit("private", { day: m.day, changes });
                 break;
@@ -125,13 +129,14 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 break;
             case "over":
                 // the game is won (SCENARIO.md, Victory): saved as finished, and never resumed
+                // or every person's country is out: a defeat for all of them, finished with no winner
                 db.q.finishGame.run(m.day, m.winner, m.hash ?? null, room.id);
                 recordResult(room, m.scores);
                 room.paused = true;
-                room.over = m.winner;
+                room.over = m.winner ?? "defeat";
                 clearTimers(room);
-                io.to(`game:${room.id}`).emit("over", { day: m.day, winner: m.winner });
-                log.info("game.over", { game: room.id, winner: m.winner, humans: [...room.seats.keys()], day: m.day });
+                io.to(`game:${room.id}`).emit("over", { day: m.day, winner: m.winner, defeated: Boolean(m.defeated) });
+                log.info("game.over", { game: room.id, winner: m.winner, defeated: Boolean(m.defeated), humans: [...room.seats.keys()], day: m.day });
                 break;
             case "stats":
                 log.info("game.timing", { game: room.id, days: m.days, mean_ms: Number(m.mean.toFixed(3)), max_ms: Number(m.max.toFixed(3)), budget_ms: tickMs });
@@ -169,10 +174,24 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         checkEnd(room);
     }
 
-    // a multiplayer game with nobody left in it ends
+    // a player's country is eliminated: they are out, and may watch to the end. (In a single-player game the worker ends the game.)
+    function seatOut(room, seat, day) {
+        db.q.markOut.run(day, room.id, seat.country);
+        if (!room.multi || seat.state === "out") return;
+        if (seat.timer) { clearTimeout(seat.timer); room.timers.delete(seat.timer); seat.timer = null; }
+        seat.state = "out";
+        tell(room, seat);
+        log.info("game.seat_out", { game: room.id, country: seat.country, day });
+        checkEnd(room);
+    }
+
+    // a multiplayer game with nobody left playing in it ends: abandoned — unless every country is out, when the worker ends
+    // it as a defeat
     function checkEnd(room) {
         if (!room.multi || room.over || room.ending) return;
-        if ([...room.seats.values()].some((s) => s.state === "present" || s.state === "away")) return;
+        const seats = [...room.seats.values()];
+        if (seats.every((s) => s.state === "out")) return;
+        if (seats.some((s) => s.state === "present" || s.state === "away")) return;
         room.ending = true;
         db.q.abandonGame.run(room.day, room.id);
         io.to(`game:${room.id}`).emit("over", { day: room.day, winner: null, abandoned: true });
@@ -183,8 +202,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     // each person's standing in a game that is over, among the people (results.js), kept for the leaderboard
     function recordResult(room, table) {
         if (!table) return;
-        const quits = new Map(db.q.seatQuits.all(room.id).map((r) => [r.country, r.quit_day]));
-        const seats = [...room.seats.keys()].map((country) => ({ country, quitDay: quits.get(country) ?? null }));
+        const rows = new Map(db.q.seatQuits.all(room.id).map((r) => [r.country, r]));
+        const seats = [...room.seats.keys()].map((country) => ({ country, quitDay: rows.get(country)?.quit_day ?? null, outDay: rows.get(country)?.out_day ?? null }));
         db.tx(() => { for (const r of rankHumans(seats, table)) db.q.setResult.run(r.place, r.settlements, r.pop, room.id, r.country); });
     }
 
@@ -213,6 +232,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         if (seat.state === "quit") return { error: "you left this game" };
         if (room.ending) return { error: "this game is over: nobody was left" };
         seat.sockets.add(socketId);
+        if (seat.state === "out") return { seat };              // watching: their country is no more
         if (room.idleTimer) { clearTimeout(room.idleTimer); room.timers.delete(room.idleTimer); room.idleTimer = null; }
         if (seat.state !== "present") {
             if (seat.timer) { clearTimeout(seat.timer); room.timers.delete(seat.timer); seat.timer = null; }
@@ -228,7 +248,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     function detach(room, userId, socketId) {
         if (closing) return;
         const seat = [...room.seats.values()].find((s) => s.userId === userId);
-        if (!seat || !seat.sockets.delete(socketId) || seat.sockets.size || seat.state !== "present") return;
+        if (!seat || !seat.sockets.delete(socketId) || seat.sockets.size || seat.state !== "present") return;          // (one who is out only watched)
         if (!room.multi) {
             // leaving a single-player game pauses it; it waits for the player to come back
             seat.state = "idle";
@@ -249,7 +269,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         const seat = [...room.seats.values()].find((s) => s.userId === userId);
         if (!seat) return { ok: false, error: "you have no seat in this game" };
         if (!room.multi) return { ok: false, error: "a single-player game just waits for you: close the page" };
-        if (seat.state === "quit") return { ok: true };
+        if (seat.state === "quit" || seat.state === "out") return { ok: true };
         db.q.markQuit.run(room.day, room.id, userId);
         if (seat.timer) { clearTimeout(seat.timer); room.timers.delete(seat.timer); seat.timer = null; }
         seat.state = "quit";

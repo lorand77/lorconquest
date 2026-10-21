@@ -52,3 +52,45 @@ export function paintMap(map, state, nodes, zones, legs, day, colourOf, options)
 
 // who owns what, as one string: when it changes, the lands are repainted
 export const ownersKey = (state) => Object.values(state.settlements).map((s) => s.owner).join();
+
+// Countries' codes on the map, where their land is now (the map's own, drawn in 1440, are hidden by the game): each country
+// still in the game gets its code on the clearest spot (tools/map.js worked them out, land by land) of the land it holds that
+// lies nearest the middle of all it holds, large if it fits and small if not — or, if none of its lands has room, beside one
+// of its settlements — never over another code, larger countries first. A country with nowhere free gets none. Peasant rebels
+// and countries out of the game get none.
+const CHAR_W = 0.72;                                      // a capital letter's width, in em, as tools/map.js reckons it
+export function countryLabels(state, scenario) {
+    const lands = new Map();
+    for (const s of scenario.settlements) {
+        const code = state.settlements[s.id]?.owner, c = state.countries[code];
+        if (!c || c.rebel || (c.out ?? null) !== null || !s.label) continue;
+        if (!lands.has(code)) lands.set(code, []);
+        lands.get(code).push(s);
+    }
+    const groups = [...lands].map(([code, list]) => ({ code, list, area: list.reduce((n, s) => n + s.label.area, 0) }))
+        .sort((a, b) => b.area - a.area || (a.code < b.code ? -1 : 1));
+    const placed = [], out = [];
+    const clear = (box) => !placed.some((p) => box[0] < p[2] && box[2] > p[0] && box[1] < p[3] && box[3] > p[1]);
+    for (const g of groups) {
+        const at = (s) => s.label.small ?? s.label.big ?? [s.x, s.y];
+        const weight = g.area || 1;
+        const mx = g.list.reduce((n, s) => n + at(s)[0] * (s.label.area || 1), 0) / weight;
+        const my = g.list.reduce((n, s) => n + at(s)[1] * (s.label.area || 1), 0) / weight;
+        let chosen = null;
+        for (const [size, key] of [[15, "big"], [10, "small"], [10, "near"]]) {
+            const tw = CHAR_W * size * g.code.length, th = CHAR_W * size, m = size / 5;
+            const spots = g.list.map((s) => s.label[key]).filter(Boolean).sort((p, q) => (p[0] - mx) ** 2 + (p[1] - my) ** 2 - ((q[0] - mx) ** 2 + (q[1] - my) ** 2));
+            for (const [x, y] of spots) {
+                const box = [x - tw / 2 - m, y - th / 2 - m, x + tw / 2 + m, y + th / 2 + m];
+                if (!clear(box)) continue;
+                chosen = { code: g.code, x, y: y + th / 2, size, box };
+                break;
+            }
+            if (chosen) break;
+        }
+        if (!chosen) continue;
+        placed.push(chosen.box);
+        out.push({ code: chosen.code, x: chosen.x, y: chosen.y, size: chosen.size });
+    }
+    return out;
+}

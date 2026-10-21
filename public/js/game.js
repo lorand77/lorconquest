@@ -5,7 +5,7 @@
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, WEAPONS } from "/engine/index.js";
 import { applyChanges, applyPrivate, buildLegs, formatNumber, routeLine } from "./mirror.js";
 import { createMapView } from "./mapview.js";
-import { armyMarkers as drawArmies, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
+import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { formatCountdown, presenceText } from "./lobbylogic.js";
@@ -67,7 +67,10 @@ async function start() {
     socket.on("over", (m) => {
         state.winner = m.winner;
         paused = true;
-        toast(m.abandoned ? "Everyone has left: the game is over." : m.winner === me ? "You have won!" : `${state.countries[m.winner].name} has won the game.`, 600000);
+        const text = m.abandoned ? "Everyone has left: the game is over."
+            : m.defeated ? (multi ? "Every player's country has fallen: the game is over." : "Your country is no more: you have lost the game.")
+            : m.winner === me ? "You have won!" : `${state.countries[m.winner].name} has won the game.`;
+        toast(text, 600000);
         renderAll(true);
     });
     socket.on("failed", (m) => toast(`The game stopped: ${m.error}`));
@@ -213,6 +216,7 @@ function startPeople(joined) {
         if (r.ok) location.href = "/"; else toast(r.error);
     });
     socket.on("presence", (p) => {
+        if (p.country === me && p.state === "out") toast("Your country is no more. You can watch the game to its end.", 600000);
         seats = seats.filter((s) => s.country !== p.country).concat(p);
         renderPeople();
     });
@@ -260,7 +264,7 @@ const armyMarkers = (day) => drawArmies(state, game.map.nodes, legs, day, colour
 
 function renderMap() {
     const now = ownersKey(state);
-    if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); }
+    if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); map.setLabels(countryLabels(state, scenario)); }
     paintMap(map, state, game.map.nodes, game.map.zones, legs, displayDay(), colourOf, markerOptions());
     const a = plan && state.armies[plan.army];
     map.setRoute(a ? routeLine(a, plan.path, displayDay(), legs, game.map.nodes) : null);
@@ -397,6 +401,7 @@ function countryPanel(code) {
     const armies = Object.values(state.armies).filter((a) => a.owner === code);
     const wars = Object.keys(state.countries).filter((x) => atWar(code, x));
     if (c.rebel) return [make("h2", {}, swatch(code), ` ${c.name}`), make("p", {}, "Peasants in arms. There is no peace with them."), make("p", {}, `${formatNumber(armies.reduce((n, a) => n + menOf(a), 0))} men, ${towns.length} settlements held.`)];
+    if ((c.out ?? null) !== null) return [make("h2", {}, ` ${c.name}`), make("p", {}, `No more: its last settlement fell on ${longDate(c.out)}.`)];
     const out = [make("h2", {}, swatch(code), ` ${c.name}`),
         make("p", {}, `${towns.length} settlements, ${formatNumber(towns.reduce((n, s) => n + s.pop, 0))} people, ${formatNumber(armies.reduce((n, a) => n + menOf(a), 0))} soldiers.`),
         make("p", {}, wars.length ? `At war with ${wars.map((w) => country(w).name).join(", ")}.` : "At peace.")];

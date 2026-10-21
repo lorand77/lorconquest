@@ -89,6 +89,10 @@ find. With the server alone running the rules, only Node has to agree with itsel
   (*full*). Opening the game again, at either stage, gives the country back at once. `presence` tells the others. The
   worker is told by the message of milestone 5 (`{ type: "caretaker", country, mode }`).
 - **Quitting** (`quit`) gives the country to the full computer player for good: that seat cannot be joined again.
+- **Eliminated** (RULES.md §10): a player whose country loses its last settlement is *out*. They may open the game and watch
+  to the end; the engine refuses their orders ("your country is no more"); they are placed after everyone still in, the later
+  to fall first. When every player's country has fallen — in a single-player game, when the one has — the worker ends the game
+  as a defeat: finished, with no winner, its result and fingerprint kept as for a victory, so it has a replay.
 - **The game is abandoned** — status `abandoned`, its worker stopped — when every seat has quit or been away longer than
   `AWAY_MS`. A game won by a country is finished as before (a computer can win, and then every human has lost).
 - **Restarts.** Nothing about who is away is saved. A resumed multiplayer game runs on at once, every player away from
@@ -428,7 +432,8 @@ would break that.
   `events` (harvest, plague, uprisings and the rebels), `relations` (who is allied, guaranteed, subject or
   friend — pure questions over the state), `opinion` (military power, neighbours, opinion, and the formulas by which a
   computer answers), `diplomacy` (wars, joining, peace, subjects, the Empire, coalitions), `diplomacy-day`
-  (expiries, unanswered questions, subjects breaking free, the yearly step), `victory`, `day`, `command-util`,
+  (expiries, unanswered questions, subjects breaking free, the yearly step), `victory`, `elimination` (a country with no
+  settlement left is out of the game, checked at the end of every day and command), `day`, `command-util`,
   `commands` (war and armies), `commands-country`, `commands-naval`, `commands-diplomacy`, `text` (events in
   English), `game`.
 - **Diplomacy in the state:** `agreements` (kind, the two countries, since, until); each country's `warmonger`,
@@ -472,6 +477,14 @@ hand-written override. The full name is drawn beside the marker too, where it ov
 (`tools/map.js` reports any that cannot avoid one), hidden in the file: the game page shows names only when zoomed in to twice
 the whole map or more (`mapview.js` adds the class `zoomed`). Ids remain what the SCENARIO.md tables and `tools/run.js`
 scripts use.
+
+**Countries' codes follow their borders.** The map drawn for 1440 has each country's code where its land was then; the game
+hides those and draws its own (`public/js/mapdraw.js`, `countryLabels`), redrawn whenever a settlement changes hands: each
+country still in the game gets its code on the clearest spot of the land it holds that lies nearest the middle of all it holds
+— large if it fits, small if not, beside one of its settlements if none of its lands has room — larger countries first, never
+over another code. `tools/map.js` works out each land's spots in advance (`label` in `scenario.json`: its area, and the
+clearest spot for a large code, a small one, and near its settlement). A country that is out of the game has no code. As on
+the map drawn for 1440, a few small countries on a crowded map find no room (58 of the historical scenario's 74).
 
 ### The game screen
 

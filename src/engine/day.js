@@ -12,6 +12,7 @@ import { navalDay } from "./naval.js";
 import { armyList, isAlive, isRebel } from "./state.js";
 import { attrition } from "./supply.js";
 import { checkVictory } from "./victory.js";
+import { eliminations } from "./elimination.js";
 
 export function advanceDay(game) {
     const st = game.state, events = [];
@@ -47,5 +48,6 @@ export function advanceDay(game) {
     checkVictory(game, events);
     const occupied = new Set(armyList(st).map((a) => a.at));
     for (const s of Object.values(st.settlements)) if (s.siege || occupied.has(String(s.id))) settle(game, String(s.id), events);
+    eliminations(game, events);
     return events;
 }
