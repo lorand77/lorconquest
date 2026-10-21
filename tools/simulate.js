@@ -5,7 +5,8 @@
 //
 //   node tools/simulate.js [--games 8] [--years 210] [--seed 1] [--scenario mitteleuropa] [--jobs 4] [--quiet]
 //
-// --scenario is a folder of scenarios/ (or a path to one).
+// --scenario is a folder of scenarios/ (or a path to one). For experiments, --without characters and/or --without rivalries
+// play the scenario as if it gave none (characters are then rolled at random, as for a scenario without them).
 //
 // --years stops a game early (the scenario's own end is 1650); --jobs plays games on worker threads at once.
 import fs from "node:fs";
@@ -60,9 +61,12 @@ export function simulate(scenario, { seed, years }) {
     };
 }
 
-const loadScenario = (name) => {
+const loadScenario = (name, without = []) => {
     const dir = fs.existsSync(path.join(root, name, "scenario.json")) ? path.join(root, name) : path.join(root, "scenarios", name);
-    return JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8"));
+    const sc = JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8"));
+    if (without.includes("characters")) for (const c of sc.countries) delete c.character;
+    if (without.includes("rivalries")) sc.rivalries = [];
+    return sc;
 };
 
 if (isMainThread) {
@@ -70,6 +74,7 @@ if (isMainThread) {
     if (import.meta.filename === process.argv[1]) {
         const games = Number(arg("games", 8)), years = Number(arg("years", 210)), seed0 = Number(arg("seed", 1)), jobs = Number(arg("jobs", 1));
         const scenarioName = arg("scenario", "mitteleuropa"), quiet = process.argv.includes("--quiet");
+        const without = process.argv.flatMap((a, i) => (process.argv[i - 1] === "--without" ? [a] : []));
         const seeds = Array.from({ length: games }, (_, i) => seed0 + i), results = [];
         const t0 = performance.now();
         const run = async () => {
@@ -78,11 +83,11 @@ if (isMainThread) {
                     const seed = seeds.shift();
                     const result = jobs > 1
                         ? await new Promise((resolve, reject) => {
-                            const w = new Worker(import.meta.filename, { workerData: { seed, years, scenarioName } });
+                            const w = new Worker(import.meta.filename, { workerData: { seed, years, scenarioName, without } });
                             w.once("message", resolve);
                             w.once("error", reject);
                         })
-                        : simulate(loadScenario(scenarioName), { seed, years });
+                        : simulate(loadScenario(scenarioName, without), { seed, years });
                     results.push(result);
                     if (!quiet) console.log(`seed ${result.seed}: ${result.over ? `${result.winner} won` : "no winner"} ${result.date} | ${result.count.war} wars, ${result.count.peace} peaces, ${result.count.capture} captures | top ${result.top.slice(0, 3).map((t) => `${t.code} ${t.settlements}`).join(", ")} | ai ${result.aiMean.toFixed(2)} ms/day (max ${result.aiMax.toFixed(0)})`);
                 }
@@ -93,7 +98,7 @@ if (isMainThread) {
         report(results.sort((a, b) => a.seed - b.seed), (performance.now() - t0) / 1000);
     }
 } else {
-    parentPort.postMessage(simulate(loadScenario(workerData.scenarioName), workerData));
+    parentPort.postMessage(simulate(loadScenario(workerData.scenarioName, workerData.without), workerData));
 }
 
 function report(results, seconds) {

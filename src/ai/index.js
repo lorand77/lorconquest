@@ -28,11 +28,15 @@ function touched(game, events) {
 
 export function createAI({ seed, humans = [] }) {
     const memory = { plans: new Map(), asked: new Map() }, caretaken = new Map(), again = new Set(), flavors = new Map();
-    const flavor = (code) => { if (!flavors.has(code)) flavors.set(code, flavorOf(seed, code)); return flavors.get(code); };
+    // a country's character: the scenario's for it, varied by the seed (characters.js)
+    const flavor = (game, code) => {
+        if (!flavors.has(code)) flavors.set(code, flavorOf(seed, code, game.map.scenario.countries.find((c) => c.code === code)?.character ?? null));
+        return flavors.get(code);
+    };
 
     // the country thinks in full: forces first, then the economy with what is left, then diplomacy and the war it leads to
     function think(game, code) {
-        const st = game.state, c = st.countries[code], fl = flavor(code), e = economyOf(game, code);
+        const st = game.state, c = st.countries[code], fl = flavor(game, code), e = economyOf(game, code);
         const atWarNow = enemiesOf(st, code).length > 0;
         const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e) };
         const out = [...answerOffers(game, code), ...forceOrders(game, code, fl, ctx), ...economyOrders(game, code, fl, ctx)];
@@ -60,8 +64,8 @@ export function createAI({ seed, humans = [] }) {
                 if (!mode) continue;
                 const source = human ? "caretaker" : "computer";
                 const give = (cmds) => { for (const cmd of cmds) out.push({ country: code, source, cmd }); };
-                if (thinksOn(code, st.day)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(code)) : think(game, code));
-                else if (wake.has(code) || followUp.has(code)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(code)) : warOrders(game, code, flavor(code), { muster: false, prepare: memory.plans.has(code) }));
+                if (thinksOn(code, st.day)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : think(game, code));
+                else if (wake.has(code) || followUp.has(code)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) }));
             }
             return out;
         },

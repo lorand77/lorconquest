@@ -3,11 +3,16 @@
 // should win, proposes alliances and pacts the other side will accept, demands subjects of weaker neighbours, and
 // proposes the Empire when it holds enough of it. The other side's answers are the engine's pure formulas
 // (opinion.js), so the computer asks only what it knows will be accepted: a proposal may be made once in five years.
+//
+// Rivalries (SCENARIO.md; util.js, rivalsOf) bend this: among the neighbours a country is strong enough to attack, a rival is
+// the target of choice, and it is never proposed anything. They do not make it attack at worse odds or fight longer — tried,
+// that turned every war between rivals into one between alliances (experiments/, 5). They are the AI's preferences, not
+// rules: a rival's proposal is still answered by the engine's formula, like anyone's.
 import { YEAR_DAYS, agreementAnswer, need, demandChance, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
     peaceAnswer, sizeOf, subjectsOf, warJoiners, warScore } from "../engine/index.js";
 import { agreementsBetween } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
-import { dice, enemiesOf, hash, ownSettlements, thinksOn } from "./util.js";
+import { dice, enemiesOf, hash, ownSettlements, rivalsOf, thinksOn } from "./util.js";
 
 const realFoes = (st, code) => enemiesOf(st, code).filter((c) => !st.countries[c].rebel);
 
@@ -65,8 +70,8 @@ function sideOf(game, declarer, target) {
 }
 
 // a neighbour worth attacking: weak enough, with nothing binding us to it, giving the most land next to ours
-function bestTarget(game, code, fl) {
-    const st = game.state, own = new Set(ownSettlements(st, code).map((s) => String(s.id)));
+export function bestTarget(game, code, fl) {
+    const st = game.state, own = new Set(ownSettlements(st, code).map((s) => String(s.id))), rivals = rivalsOf(game, code);
     let best = null;
     for (const t of neighboursOf(game, code)) {
         if (!st.countries[t] || isVassal(st, t) || overlordOf(st, code) === t || overlordOf(st, t) === code) continue;
@@ -74,7 +79,8 @@ function bestTarget(game, code, fl) {
         const { ours, theirs } = sideOf(game, code, t);
         if (ours < (1.5 - 0.4 * fl.aggression) * Math.max(theirs, 1)) continue;
         const gain = ownSettlements(st, t).filter((s) => game.map.adj.get(String(s.id)).some((e) => own.has(e.to))).reduce((n, s) => n + s.pop, 0);
-        const score = gain * (ours / Math.max(theirs, 1));
+        // how much weaker it is counts up to three times: past that, every target is crushed alike, and the land and the grudge decide
+        const score = gain * (ours / Math.max(theirs, 1)) * (rivals.has(t) ? 3 : 1);
         if (gain > 0 && (!best || score > best.score || (score === best.score && t < best.target))) best = { target: t, score };
     }
     return best;
@@ -92,7 +98,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }) {
         : mayPropose(game, code, to, what));
     const ask = (type, to, what, rest) => { asked.set(`${code}>${to}>${what}`, day); cmd(type, rest); };
     if (isVassal(st, code)) return { orders: out, prepare: false };
-    const foes = realFoes(st, code);
+    const foes = realFoes(st, code), rivals = rivalsOf(game, code);
 
     // peace
     for (const foe of foes) {
@@ -125,6 +131,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }) {
     const wary = fl.aggression <= 0.6 || need(game, code) > 15;
     for (const n of neighbours.sort((a, b) => militaryPowerOf(st, b) - militaryPowerOf(st, a) || (a < b ? -1 : 1))) tries.push(["defensive", n], ...(wary ? [["pact", n]] : []));
     for (const [kind, n] of tries) {
+        if (rivals.has(n)) continue;                                                   // never with a rival
         if (r() > 0.3 + 0.5 * fl.friendliness) continue;
         if (hasAgreement(st, kind, code, n) || hasAgreement(st, kind, n, code) || !mayAsk(n, kind)) continue;
         if (n < code && thinksOn(n, day) && kind !== "military") continue;              // it asks us today, and its question is put first

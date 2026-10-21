@@ -201,8 +201,8 @@ for its player to come back.
 **What was built** (`src/ai/`; `index.js` is the entry, `createAI({ seed, humans })`, whose `orders(game, events)`
 the worker calls after each day and whose `setCaretaker(country, mode)` it passes on from the server):
 
-- **A character** (`util.js`, `flavorOf`): each country gets, from the seed and its code, an aggression, a
-  friendliness and a taste for building — fixed for the game, so countries differ without any state saved.
+- **A character** (`characters.js`, `util.js` `flavorOf`): the one its scenario gives it, varied a little each game — see
+  *Characters and rivalries*, below.
 - **A think** (`index.js`) is, in order: answer the questions put to it (`caretaker.js`), then the forces
   (`forces.js`), the economy with what is left of the budget (`economy.js`), diplomacy (`diplomacy.js`) and
   war (`war.js`). The forces and the economy share one budget (the treasury less a reserve of a third of a year's
@@ -247,6 +247,40 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
 - **The simulation tool** (`tools/simulate.js`) plays AI-only games headless, in parallel on worker threads,
   and reports wins by country, wars, peaces, captures, the commands the engine refused and the time a day took.
   What it showed goes in `experiments/`.
+
+### Characters and rivalries
+
+Each computer country plays to a **character** its scenario gives it from history (SCENARIO.md, *Characters*), and holds
+**rivalries** with the countries it fought for generations (SCENARIO.md, *Rivalries*). Both are the AI's, not rules: a person
+playing the country is free of them, and the engine never reads them — so changing them bumps no rules version, and replays
+are untouched (their computer commands are in the log).
+
+- **Six characters** (`src/ai/characters.js`), each three numbers the AI reads: *aggression* (how readily it plans a war, how
+  weak a target must be, whether it runs two wars, whether it seeks pacts), *friendliness* (how often it proposes alliances)
+  and *builder* (libraries and walls).
+
+  | Character | Aggression | Friendliness | Builder | |
+  |---|---|---|---|---|
+  | conqueror | 0.90 | 0.40 | 0.45 | expands by war, two at a time when it can, and seeks no pacts |
+  | zealot | 0.85 | 0.30 | 0.35 | a crusading order or a cause in arms: fights, and trusts few |
+  | opportunist | 0.65 | 0.55 | 0.50 | attacks whoever is weak enough, and keeps its hands free of pacts |
+  | diplomat | 0.45 | 0.95 | 0.55 | allies, and gains by marriage and demand more than by war |
+  | defender | 0.30 | 0.70 | 0.65 | holds what it has: walls, alliances, rarely a war of its own |
+  | merchant | 0.30 | 0.60 | 0.95 | builds and trades, signs pacts, and pays its way |
+
+- **Noise:** each game moves every number by up to 0.12 either way, from the seed — a country keeps its nature without being
+  scripted, and a diplomat never becomes as warlike as a conqueror. A country a scenario gives no character (the tiny test map,
+  a new scenario) gets one rolled at random, as before.
+- **A varied spread, enforced:** `tools/map.js` refuses a scenario where any character has more than 30% of the countries or
+  fewer than two, or where conquerors and zealots together are more than 30% — history is full of warlike powers, and a map of
+  them would be one war. Mitteleuropa has 10 defenders, 11 merchants, 8 diplomats, 7 opportunists, 5 conquerors and 4 zealots;
+  the historical scenario 17, 18, 11, 13, 9 and 6.
+- **Rivalries** bend the AI's diplomacy (`diplomacy.js`): of the neighbours a country is strong enough to attack, a rival
+  scores three times as a target; and it is never proposed anything. A rival's own proposals are still answered by the
+  engine's formula, like anyone's, since answers are rules. Mitteleuropa has 16 rivalries, the historical scenario 23. Rivalries
+  do *not* make a country attack at worse odds, hold out longer for peace or seek its rival's enemies as allies: all three
+  were tried, and turned wars between rivals into wars between alliance blocs that the biggest country won
+  (experiments/README.md, 5).
 
 ### Questions with a deadline
 

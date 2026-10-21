@@ -10,6 +10,7 @@
 //
 // Node built-ins only. Pixel grids are typed arrays indexed y * W + x.
 import fs from "node:fs";
+import { CHARACTERS, WARLIKE } from "../src/ai/characters.js";
 import path from "node:path";
 
 const ROOT = path.dirname(import.meta.dirname);
@@ -298,6 +299,46 @@ const START = { wars: [], agreements: [] };
         const yearsLeft = /(\d+) years? left/.exec(r.Agreement)?.[1];
         if (kind === "guarantee") START.agreements.push({ kind, a: codes[0], b: codes[1] });          // the guarantor, then the guaranteed
         else for (let i = 0; i < codes.length; i++) for (let j = i + 1; j < codes.length; j++) START.agreements.push({ kind, a: codes[i], b: codes[j], ...(yearsLeft ? { yearsLeft: Number(yearsLeft) } : {}) });
+    }
+}
+
+// how the computer plays each country, and whom it holds a grudge against (design.md, Characters and rivalries), if the
+// scenario says: a "## Characters" table (Code, Character, Why) with a "### Rivalries" table (Rivals, Why) under it. Every
+// country needs a character, from the list in src/ai/characters.js, and the spread must stay varied.
+const CHARACTER = new Map(), RIVALRIES = [];
+if (doc.some((l) => /^## Characters\s*$/.test(l))) {
+    const [s, e] = section("Characters");
+    const [, rows] = table("Characters");
+    for (const r of rows) {
+        const code = r.Code, ch = (r.Character ?? "").toLowerCase();
+        if (!CN.has(code)) { err(`Characters line ${r._line}: no country ${code}`); continue; }
+        if (!CHARACTERS[ch]) { err(`Characters line ${r._line}: '${r.Character}' is none of ${Object.keys(CHARACTERS).join(", ")}`); continue; }
+        if (CHARACTER.has(code)) err(`Characters line ${r._line}: ${code} is listed twice`);
+        CHARACTER.set(code, ch);
+    }
+    const missing = CORDER.filter((c) => !CHARACTER.has(c));
+    if (missing.length) err(`Characters: no character for ${missing.join(", ")}`);
+    const n = CORDER.length, count = (ch) => [...CHARACTER.values()].filter((x) => x === ch).length;
+    for (const ch of Object.keys(CHARACTERS)) {
+        if (count(ch) < 2) err(`Characters: ${ch} is given to ${count(ch)} countries; every character to at least 2, so the spread stays varied`);
+        if (count(ch) > 0.3 * n) err(`Characters: ${ch} is given to ${count(ch)} of ${n} countries; no character to more than 30%`);
+    }
+    const warlike = WARLIKE.reduce((t, ch) => t + count(ch), 0);
+    if (warlike > 0.3 * n) err(`Characters: ${warlike} of ${n} countries are ${WARLIKE.join(" or ")}; no more than 30%`);
+    // the rivalries: two countries each, by code, once each pair
+    const at = doc.findIndex((l, i) => i > s && i <= e && l.trim() === "### Rivalries");
+    if (at >= 0) {
+        let i = at + 1;
+        while (i <= e && !doc[i].startsWith("|")) i++;
+        const seen = new Set();
+        for (let j = i + 2; j <= e && doc[j].startsWith("|"); j++) {
+            const codes = [...new Set([...cells(doc[j])[0].matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]).filter((c) => CN.has(c)))];
+            if (codes.length !== 2) { err(`Rivalries line ${j + 1}: needs two countries, by code`); continue; }
+            const key = [...codes].sort().join("|");
+            if (seen.has(key)) err(`Rivalries line ${j + 1}: ${codes.join(" and ")} are listed twice`);
+            seen.add(key);
+            RIVALRIES.push(codes);
+        }
     }
 }
 check("SCENARIO.md");
@@ -1098,7 +1139,8 @@ const json = {
     map: { svg: "map.svg", width: W, height: H },
     countries: CORDER.map((code) => {
         const c = C.get(code);
-        return { code, name: CN.get(code), capital: CAP.get(code), colour: COLOUR.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, hre: c.hrestate };
+        return { code, name: CN.get(code), capital: CAP.get(code), colour: COLOUR.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, hre: c.hrestate,
+            ...(CHARACTER.has(code) ? { character: CHARACTER.get(code) } : {}) };
     }),
     settlements: SIDS.map((id) => {
         const s = S.get(id);
@@ -1115,6 +1157,7 @@ const json = {
     }),
     passes: PASSES.map((p) => ({ id: p.id, x: p.x, y: p.y, land: p.owner, routes: p.routes })),
     formables: FORMABLES,
+    rivalries: RIVALRIES,
     victory: VICTORY, empire: EMPIRE, start: START,
     seaZones: ZONES.map((z) => ({ id: z.id, name: z.name, label: { x: z.x, y: z.y }, ports: zonePorts(z), straits: zoneStraits(z), next: zoneNext(z).map((x) => x.id) })),
 };

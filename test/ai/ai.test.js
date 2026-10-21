@@ -9,7 +9,9 @@ import { warKey } from "../../src/engine/state.js";
 import { createAI } from "../../src/ai/index.js";
 import { answerOffers, callAnswers } from "../../src/ai/caretaker.js";
 import { addAgreement } from "../../src/engine/diplomacy.js";
-import { diplomacyOrders } from "../../src/ai/diplomacy.js";
+import { bestTarget, diplomacyOrders } from "../../src/ai/diplomacy.js";
+import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
+import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
 import { economyOrders } from "../../src/ai/economy.js";
 import { forceOrders } from "../../src/ai/forces.js";
 import { THINK_DAYS, dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
@@ -56,6 +58,49 @@ test("the AI's dice and characters depend on the seed and the country alone", ()
         const f = flavorOf(7, code);
         assert.ok(f.aggression >= 0.25 && f.aggression <= 1 && f.friendliness >= 0.3 && f.builder >= 0.3, code);
     }
+});
+
+test("a country's character is its scenario's, varied a little by the seed; one the scenario does not give is rolled", () => {
+    for (const [seed, code, ch] of [[1, "AUS", "diplomat"], [2, "BUR", "conqueror"], [3, "LUB", "merchant"], [9, "TEU", "zealot"]]) {
+        const f = flavorOf(seed, code, ch), base = CHARACTERS[ch];
+        assert.equal(f.character, ch);
+        for (const k of ["aggression", "friendliness", "builder"]) assert.ok(Math.abs(f[k] - base[k]) <= NOISE + 1e-9 || f[k] === 1 || f[k] === 0.1, `${code} ${k}: ${f[k]} against ${base[k]}`);
+        assert.deepEqual(flavorOf(seed, code, ch), f, "the same seed gives the same");
+    }
+    assert.notDeepEqual(flavorOf(1, "AUS", "diplomat"), flavorOf(2, "AUS", "diplomat"), "another seed varies it");
+    // the noise never turns one character into another: a diplomat stays far less warlike than a conqueror
+    for (let seed = 1; seed < 50; seed++) assert.ok(flavorOf(seed, "AUS", "diplomat").aggression < flavorOf(seed, "BUR", "conqueror").aggression);
+    assert.equal(flavorOf(1, "AAA", null).character, null);
+    // both scenarios give every country one
+    for (const sc of [docsScenario, historical]) assert.ok(sc.countries.every((c) => CHARACTERS[c.character]), "every country has a character");
+});
+
+test("a rival is the target of choice, and is never proposed anything", () => {
+    const strong = { aggression: 0.9, friendliness: 1, builder: 0.5 };
+    // BBB borders AAA and CCC, a town of each next to its land, both as strong (1,600 men): alike to it, the tie goes to AAA
+    const setup = (rivalries) => {
+        const game = tinyGame(1, (sc) => { sc.rivalries = rivalries; });
+        setArmy(game, 4, { pikes: 20000 });                                 // BBB is far the strongest
+        setArmy(game, 6, { swords: 1600 });
+        return game;
+    };
+    assert.equal(bestTarget(setup([]), "BBB", strong).target, "AAA");
+    assert.equal(bestTarget(setup([["BBB", "CCC"]]), "BBB", strong).target, "CCC", "a rival comes first");
+    // but a rival is not attacked at worse odds: one too strong to take on is left alone
+    const tough = setup([["BBB", "CCC"]]);
+    setArmy(tough, 4, { pikes: 1700 });
+    setArmy(tough, 6, { swords: 1600, pikes: 1000 });
+    assert.notEqual(bestTarget(tough, "BBB", strong)?.target, "CCC");
+    // twenty years of peace make AAA and BBB friends enough for a pact, but not if they are rivals
+    const proposals = (rivalries) => {
+        const game = setup(rivalries);
+        game.state.day = 7300;
+        const mem = { plans: new Map(), asked: new Map() }, out = [];
+        for (let d = 0; d < 200; d++) { game.state.day++; out.push(...diplomacyOrders(game, "AAA", { ...strong, aggression: 0.3 }, mem).orders.filter((o) => o.type === "proposeAgreement")); }
+        return out.map((o) => o.with);
+    };
+    assert.ok(proposals([]).includes("BBB"));
+    assert.ok(!proposals([["AAA", "BBB"]]).includes("BBB"));
 });
 
 test("every country thinks every 15 days, the same for all, each on days of its own", () => {

@@ -7,6 +7,7 @@ import { combine } from "../engine/army.js";
 import { findRoute } from "../engine/map.js";
 import { crossable } from "../engine/naval.js";
 import { armyList, atWar, canEnter, isRebel, power } from "../engine/index.js";
+import { CHARACTERS, NOISE } from "./characters.js";
 
 export function hash(text) {
     let h = 2166136261;
@@ -24,10 +25,25 @@ export function dice(seed) {
     };
 }
 
-// a country's character, fixed for the game: how eager it is for war, how much it wants friends, how much it builds
-export function flavorOf(seed, code) {
+// a country's character for the game: how eager it is for war, how much it wants friends, how much it builds. The one the
+// scenario gives it (characters.js), each number moved by up to NOISE either way by the seed; with none, rolled at random.
+export function flavorOf(seed, code, character = null) {
     const r = dice(hash(`flavor:${seed}:${code}`));
-    return { aggression: 0.25 + 0.75 * r(), friendliness: 0.3 + 0.7 * r(), builder: 0.3 + 0.7 * r() };
+    const base = CHARACTERS[character];
+    if (!base) return { aggression: 0.25 + 0.75 * r(), friendliness: 0.3 + 0.7 * r(), builder: 0.3 + 0.7 * r(), character: null };
+    const vary = (x) => Math.min(1, Math.max(0.1, x + (2 * r() - 1) * NOISE));
+    return { aggression: vary(base.aggression), friendliness: vary(base.friendliness), builder: vary(base.builder), character };
+}
+
+// the countries a country holds a grudge against, from the scenario (SCENARIO.md, Rivalries): it attacks them sooner and
+// allies with them never. A rivalry goes both ways.
+export function rivalsOf(game, code) {
+    const out = new Set();
+    for (const [a, b] of game.map.scenario.rivalries ?? []) {
+        if (a === code) out.add(b);
+        else if (b === code) out.add(a);
+    }
+    return out;
 }
 
 // what an army or several together are worth in battle with the dice at their average (RULES.md §5)

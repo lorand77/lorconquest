@@ -53,7 +53,8 @@ dependencies.
   `worker.js` (one game's loop), `socket.js` and `routes.js` (the events and the REST routes),
   `view.js` (what a player may see, what changed).
 - `src/ai/` — the computer players: `index.js` (`createAI`: who thinks when, reflexes, the caretaker switch), `economy.js`,
-  `forces.js`, `war.js`, `diplomacy.js`, `caretaker.js`, `util.js` (their own dice, characters, distances).
+  `forces.js`, `war.js`, `diplomacy.js`, `caretaker.js`, `characters.js` (the six characters a scenario assigns in its SCENARIO.md,
+  with rivalries; `tools/map.js` checks the spread), `util.js` (their own dice, a country's character for the game, distances).
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
   `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
   Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node) and

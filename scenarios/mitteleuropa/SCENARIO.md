@@ -345,6 +345,88 @@ computer country wins, every human player loses.
 
 ---
 
+## Characters
+
+*How the computer plays each country when no person does (docs/design.md, *Characters and rivalries*). Data: every country
+needs one of six characters — conqueror, zealot, opportunist, diplomat, defender, merchant — and `node tools/map.js` refuses a
+lopsided spread: no character for more than 30% of the countries, every one for at least two, conqueror and zealot together
+for no more than 30%. Each game varies a character a little, so a country keeps its nature without being scripted. The
+countries of this map are mostly cities and regions, so a character follows what the place stood for in 1440–1650 more than
+any one state.*
+
+| Code | Character | Why |
+|---|---|---|
+| NOR | Defender | The junior kingdom of the Kalmar Union, keeping to its fjords. |
+| GOT | Merchant | A harbour town on the Kattegat, living by trade. |
+| STO | Opportunist | The Swedish nobility, chafing under the Union, waiting for its moment (and the Vasas). |
+| UDK | Defender | Jutland's north, holding what it has. |
+| LDK | Diplomat | The Danish crown's way of ruling three kingdoms: by marriage, election and union. |
+| CPH | Conqueror | The seat of the Union's kings, at war for Sweden, Schleswig and the Sound for two centuries. |
+| SCH | Opportunist | The Holstein counts, who took Schleswig when the Danish crown was weak. |
+| MEC | Diplomat | Its dukes had sat on the Swedish throne by marriage and election. |
+| GDA | Merchant | Danzig, the richest city of the Hansa in the east. |
+| PRU | Zealot | The Teutonic Order's own land: knights of a crusade with no heathens left to fight. |
+| LIT | Conqueror | The Grand Duchy that had reached the Black Sea. |
+| EPL | Defender | Poland's eastern march, facing the steppe. |
+| WAR | Diplomat | The Masovian dukes, who came into the Polish crown by inheritance, not war. |
+| RZE | Defender | A small Galician town on the road east. |
+| LVI | Merchant | Lviv, the staple on the trade road to the Black Sea. |
+| POZ | Opportunist | Greater Poland's magnates, quick to take sides. |
+| SIL | Defender | A dozen small duchies, passed between Bohemia, Hungary and Poland. |
+| HUN | Conqueror | Hunyadi's and Matthias Corvinus's kingdom, which took Vienna in 1485. |
+| BOH | Zealot | The Hussites: a faith in arms, whose armies rode as far as the Baltic. |
+| AUS | Diplomat | "Let others wage war; you, happy Austria, marry." |
+| SAL | Merchant | The prince-archbishops' salt. |
+| TYR | Merchant | Sigismund "the Rich", Duke of Tyrol, and the silver of Schwaz. |
+| BAV | Opportunist | The Wittelsbach dukes, always ready to round off their land, as in the Landshut War. |
+| ULM | Merchant | A free imperial city, leader of the Swabian League. |
+| STU | Defender | Württemberg under Eberhard the Bearded: built up, rather than out. |
+| LGE | Merchant | Basel, a city of the Rhine trade and of the Council. |
+| SWI | Opportunist | The Confederates: feared pikemen who fought for whoever paid, and took land when it was offered. |
+| ELS | Defender | Alsace's league of towns, the Decapolis, holding together against the lords. |
+| NAN | Defender | Lorraine, which stopped Charles the Bold at Nancy in 1477. |
+| LUX | Diplomat | The house that had given the Empire four emperors. |
+| TRI | Diplomat | An elector-archbishop, whose weapon was his vote. |
+| LIE | Defender | The prince-bishopric that rose again and again against Burgundy. |
+| BEL | Conqueror | The Burgundian Netherlands of Philip the Good and Charles the Bold. |
+| NED | Merchant | Holland's ships and its trade with the Baltic. |
+| MST | Zealot | The prince-bishopric of the Münster feud and, in 1534, the Anabaptists' kingdom. |
+| BRE | Merchant | A city of the Hansa. |
+| HAM | Merchant | A city of the Hansa, the North Sea's gate. |
+| HAN | Diplomat | The Welf dukes, who would come into a kingdom (Britain) by marriage. |
+| WOL | Defender | A small Lower Saxon lordship. |
+| JEN | Diplomat | The Wettins' Ernestine line: electors, and patrons of Luther. |
+| RUH | Opportunist | Cleves, Mark, Jülich and Berg: lords who took Soest from Cologne in the feud of 1444–49. |
+| FRA | Merchant | The fairs of Frankfurt, and the city where emperors were elected. |
+| SAX | Opportunist | The Wettin electors, who fought even each other in the Fratricidal War. |
+| MAG | Zealot | The archbishopric, and later "Our Lord God's chancery", the Lutherans' stronghold. |
+| BRB | Conqueror | The Hohenzollerns, who made the Mark the core of Prussia. |
+
+### Rivalries
+
+*Pairs the computer holds a grudge between: of the neighbours it is strong enough to attack, it goes for a rival first, and it
+never proposes anything to one. A rivalry goes both ways. It is the computer's preference, not a rule: a person playing either
+country is free of it, and a rival's proposals are still answered by the game's formulas, like anyone's.*
+
+| Rivals | Why |
+|---|---|
+| CPH Copenhagen – STO Stockholm | The Union's kings against the Swedish nobility, until Sweden broke free in 1523. |
+| CPH Copenhagen – SCH Schleswig | The Danish crown and the Holstein counts, over Schleswig. |
+| CPH Copenhagen – HAM Hamburg | The Danish kings against the Hansa, for the Sound and the Baltic trade. |
+| NED Netherlands – HAM Hamburg | The Dutch–Hanseatic War (1438–41), over the Baltic trade. |
+| PRU Prussia – WAR Warsaw | The Teutonic Order against Poland: Grunwald, and the Thirteen Years' War. |
+| PRU Prussia – LIT Lithuania | The Order's crusade against Lithuania, to Grunwald in 1410. |
+| PRU Prussia – GDA Gdansk | Danzig rose against the Order in 1454 and went over to Poland. |
+| HUN Hungary – AUS Austria | Matthias Corvinus and Frederick III, until Vienna fell in 1485. |
+| BOH Bohemia – SAX Saxony | Hussites and Wettins, from the battle of Aussig (1426) on. |
+| SWI Switzerland – TYR Tyrol | The Confederates and the Habsburgs of Tyrol, to the Swabian War of 1499. |
+| BEL Belgium – NAN Nancy | Charles the Bold died besieging Nancy in 1477. |
+| BEL Belgium – LIE Liège | Burgundy crushed Liège's risings and burned the city in 1468. |
+| BAV Bavaria – AUS Austria | Wittelsbachs and Habsburgs, neighbours and rivals for the Empire. |
+| BRB Brandenburg – SAX Saxony | Hohenzollerns and Wettins, the two great houses of the German east. |
+| RUH Ruhr – MST Münster | The Münster feud (1450–57), in which Cleves backed its own bishop. |
+| LIT Lithuania – WAR Warsaw | Partners in one crown and rivals within it, over Volhynia and Podolia. |
+
 ## Design notes
 
 *Hand-written analysis of the starting position. Unlike everything above it is not checked by the

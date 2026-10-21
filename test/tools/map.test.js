@@ -40,3 +40,30 @@ test("a Colour column overrides the pick and is kept", () => {
     assert.match(doc, /\| BAV \| Bavaria \| 37 Munich \| #3A7BD5 \| 36, 37, 38, 71 \|/);
     assert.match(doc, /\| NOR \| Norway \| 2 Oslo \|  \| 1, 2 \|/);
 });
+
+// building must fail, with `message` among the errors
+function refuses(edit, message) {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "lc-map-"));
+    fs.writeFileSync(path.join(dir, "SCENARIO.md"), edit(fs.readFileSync(path.join(ROOT, "scenarios", "mitteleuropa", "SCENARIO.md"), "utf8")));
+    fs.copyFileSync(path.join(ROOT, "scenarios", "mitteleuropa", "map-base.svg"), path.join(dir, "map-base.svg"));
+    try {
+        execFileSync("node", [path.join(ROOT, "tools", "map.js"), dir], { stdio: "pipe" });
+        assert.fail("it built");
+    } catch (e) {
+        assert.match(String(e.stderr ?? e.message), message);
+    } finally {
+        fs.rmSync(dir, { recursive: true, force: true });
+    }
+}
+
+test("characters and rivalries: every country has one of the characters, the spread is varied, rivals are two real countries", () => {
+    const { json } = build();
+    assert.ok(json.countries.every((c) => c.character), "every country has a character");
+    assert.ok(json.rivalries.length > 0 && json.rivalries.every(([a, b]) => a !== b && json.countries.some((c) => c.code === a) && json.countries.some((c) => c.code === b)));
+    refuses((d) => d.replace("| NOR | Defender |", "| NOR | Pirate |"), /'Pirate' is none of conqueror/);
+    refuses((d) => d.replace(/^\| NOR \| Defender \|.*\n/m, ""), /no character for NOR/);
+    refuses((d) => d.replace(/^\| (\w+) \| (Defender|Merchant|Diplomat) \|/gm, "| $1 | Conqueror |"), /conqueror is given to \d+ of 45 countries; no character to more than 30%/);
+    refuses((d) => d.replace(/^\| (\w+) \| Zealot \|/gm, "| $1 | Defender |"), /zealot is given to 0 countries/);
+    refuses((d) => d.replace("| CPH Copenhagen – STO Stockholm |", "| CPH Copenhagen – XXX Nowhere |"), /Rivalries line \d+: needs two countries/);
+    refuses((d) => d.replace("| NED Netherlands – HAM Hamburg |", "| CPH Copenhagen – STO Stockholm |"), /CPH and STO are listed twice/);
+});

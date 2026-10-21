@@ -22,7 +22,8 @@
    "pop": 30000,
    "army": 1200,
    "ships": 15,
-   "hre": "none"
+   "hre": "none",
+   "character": "defender"
   },
   {
    "code": "GOT",
@@ -35,7 +36,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 5,
-   "hre": "none"
+   "hre": "none",
+   "character": "merchant"
   },
   {
    "code": "STO",
@@ -48,7 +50,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 10,
-   "hre": "none"
+   "hre": "none",
+   "character": "opportunist"
   },
   {
    "code": "UDK",
@@ -62,7 +65,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 10,
-   "hre": "none"
+   "hre": "none",
+   "character": "defender"
   },
   {
    "code": "LDK",
@@ -76,7 +80,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 10,
-   "hre": "none"
+   "hre": "none",
+   "character": "diplomat"
   },
   {
    "code": "CPH",
@@ -89,7 +94,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 10,
-   "hre": "none"
+   "hre": "none",
+   "character": "conqueror"
   },
   {
    "code": "SCH",
@@ -104,7 +110,8 @@
    "pop": 40000,
    "army": 1600,
    "ships": 20,
-   "hre": "all"
+   "hre": "all",
+   "character": "opportunist"
   },
   {
    "code": "MEC",
@@ -118,7 +125,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 10,
-   "hre": "all"
+   "hre": "all",
+   "character": "diplomat"
   },
   {
    "code": "GDA",
@@ -134,7 +142,8 @@
    "pop": 50000,
    "army": 2000,
    "ships": 25,
-   "hre": "none"
+   "hre": "none",
+   "character": "merchant"
   },
   {
    "code": "PRU",
@@ -149,7 +158,8 @@
    "pop": 40000,
    "army": 1600,
    "ships": 20,
-   "hre": "none"
+   "hre": "none",
+   "character": "zealot"
   },
   {
    "code": "LIT",
@@ -164,7 +174,8 @@
    "pop": 30000,
    "army": 1200,
    "ships": 15,
-   "hre": "none"
+   "hre": "none",
+   "character": "conqueror"
   },
   {
    "code": "EPL",
@@ -178,7 +189,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "none"
+   "hre": "none",
+   "character": "defender"
   },
   {
    "code": "WAR",
@@ -193,7 +205,8 @@
    "pop": 40000,
    "army": 1600,
    "ships": 0,
-   "hre": "none"
+   "hre": "none",
+   "character": "diplomat"
   },
   {
    "code": "RZE",
@@ -206,7 +219,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "none"
+   "hre": "none",
+   "character": "defender"
   },
   {
    "code": "LVI",
@@ -219,7 +233,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "none"
+   "hre": "none",
+   "character": "merchant"
   },
   {
    "code": "POZ",
@@ -233,7 +248,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "none"
+   "hre": "none",
+   "character": "opportunist"
   },
   {
    "code": "SIL",
@@ -247,7 +263,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "part"
+   "hre": "part",
+   "character": "defender"
   },
   {
    "code": "HUN",
@@ -261,7 +278,8 @@
    "pop": 30000,
    "army": 1200,
    "ships": 0,
-   "hre": "none"
+   "hre": "none",
+   "character": "conqueror"
   },
   {
    "code": "BOH",
@@ -276,7 +294,8 @@
    "pop": 40000,
    "army": 1600,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "zealot"
   },
   {
    "code": "AUS",
@@ -291,7 +310,8 @@
    "pop": 40000,
    "army": 1600,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "diplomat"
   },
   {
    "code": "SAL",
@@ -304,7 +324,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "TYR",
@@ -317,7 +338,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "BAV",
@@ -333,7 +355,8 @@
    "pop": 50000,
    "army": 2000,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "opportunist"
   },
   {
    "code": "ULM",
@@ -346,7 +369,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "STU",
@@ -359,7 +383,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "defender"
   },
   {
    "code": "LGE",
@@ -373,7 +398,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "SWI",
@@ -387,7 +413,8 @@
    "pop": 30000,
    "army": 1200,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "opportunist"
   },
   {
    "code": "ELS",
@@ -401,7 +428,8 @@
    "pop": 30000,
    "army": 1200,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "defender"
   },
   {
    "code": "NAN",
@@ -415,7 +443,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "part"
+   "hre": "part",
+   "character": "defender"
   },
   {
    "code": "LUX",
@@ -428,7 +457,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "diplomat"
   },
   {
    "code": "TRI",
@@ -442,7 +472,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "diplomat"
   },
   {
    "code": "LIE",
@@ -455,7 +486,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "defender"
   },
   {
    "code": "BEL",
@@ -469,7 +501,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "conqueror"
   },
   {
    "code": "NED",
@@ -483,7 +516,8 @@
    "pop": 30000,
    "army": 1200,
    "ships": 15,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "MST",
@@ -496,7 +530,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "zealot"
   },
   {
    "code": "BRE",
@@ -509,7 +544,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 5,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "HAM",
@@ -522,7 +558,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 10,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "HAN",
@@ -535,7 +572,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "diplomat"
   },
   {
    "code": "WOL",
@@ -548,7 +586,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "defender"
   },
   {
    "code": "JEN",
@@ -561,7 +600,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "diplomat"
   },
   {
    "code": "RUH",
@@ -577,7 +617,8 @@
    "pop": 50000,
    "army": 2000,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "opportunist"
   },
   {
    "code": "FRA",
@@ -591,7 +632,8 @@
    "pop": 20000,
    "army": 800,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "merchant"
   },
   {
    "code": "SAX",
@@ -606,7 +648,8 @@
    "pop": 40000,
    "army": 1600,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "opportunist"
   },
   {
    "code": "MAG",
@@ -619,7 +662,8 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "zealot"
   },
   {
    "code": "BRB",
@@ -635,7 +679,8 @@
    "pop": 50000,
    "army": 2000,
    "ships": 0,
-   "hre": "all"
+   "hre": "all",
+   "character": "conqueror"
   }
  ],
  "settlements": [
@@ -7356,6 +7401,72 @@
     85
    ]
   }
+ ],
+ "rivalries": [
+  [
+   "CPH",
+   "STO"
+  ],
+  [
+   "CPH",
+   "SCH"
+  ],
+  [
+   "CPH",
+   "HAM"
+  ],
+  [
+   "NED",
+   "HAM"
+  ],
+  [
+   "PRU",
+   "WAR"
+  ],
+  [
+   "PRU",
+   "LIT"
+  ],
+  [
+   "PRU",
+   "GDA"
+  ],
+  [
+   "HUN",
+   "AUS"
+  ],
+  [
+   "BOH",
+   "SAX"
+  ],
+  [
+   "SWI",
+   "TYR"
+  ],
+  [
+   "BEL",
+   "NAN"
+  ],
+  [
+   "BEL",
+   "LIE"
+  ],
+  [
+   "BAV",
+   "AUS"
+  ],
+  [
+   "BRB",
+   "SAX"
+  ],
+  [
+   "RUH",
+   "MST"
+  ],
+  [
+   "LIT",
+   "WAR"
+  ]
  ],
  "victory": {
   "settlements": 45,

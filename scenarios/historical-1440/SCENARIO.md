@@ -596,6 +596,122 @@ and subjects).
 
 ---
 
+## Characters
+
+*How the computer plays each country when no person does (docs/design.md, *Characters and rivalries*). Data: every country
+needs one of six characters — conqueror, zealot, opportunist, diplomat, defender, merchant — and `node tools/map.js` refuses a
+lopsided spread: no character for more than 30% of the countries, every one for at least two, conqueror and zealot together
+for no more than 30%. Each game varies a character a little, so a country keeps its nature without being scripted.*
+
+| Code | Character | Why |
+|---|---|---|
+| NOR | Defender | The junior kingdom of the Kalmar Union, keeping to its fjords. |
+| SWE | Opportunist | Its nobles had risen with Engelbrekt in 1434 and would leave the Union when they could. |
+| DEN | Conqueror | The Union's kings, at war for Sweden, Schleswig and the Sound for two centuries. |
+| GOT | Opportunist | From 1439 the deposed King Eric held Visby and lived by piracy. |
+| LIV | Zealot | The Livonian branch of the Teutonic Order. |
+| SHO | Opportunist | The Holstein counts, who had taken Schleswig while the Danish crown was weak. |
+| LUB | Merchant | The queen of the Hansa. |
+| HAM | Merchant | A city of the Hansa, the North Sea's gate. |
+| MEC | Diplomat | Its dukes had sat on the Swedish throne by marriage and election. |
+| POM | Opportunist | The dukes of Pomerania, fighting Brandenburg over Stettin and the Uckermark. |
+| TEU | Zealot | The Teutonic Order: knights of a crusade with no heathens left to fight. |
+| LIT | Conqueror | The Grand Duchy that had reached the Black Sea. |
+| FRI | Defender | The "Frisian freedom": no lord, and none wanted. |
+| EFR | Defender | The Cirksena chiefs, holding East Frisia together. |
+| OLD | Diplomat | Its count was elected King of Denmark in 1448. |
+| BRE | Merchant | A city of the Hansa. |
+| BRU | Opportunist | The Welf dukes of Brunswick and Lüneburg, in feud with neighbours and with each other. |
+| MAG | Zealot | The archbishopric, and later "Our Lord God's chancery", the Lutherans' stronghold. |
+| BRA | Conqueror | Frederick Irontooth broke Berlin's freedoms and bought the Neumark back from the Order. |
+| POL | Conqueror | The Jagiellon kingdom that would win the Thirteen Years' War. |
+| MAZ | Defender | A small duchy between Poland and the Order. |
+| BUR | Conqueror | Philip the Good, and after him Charles the Bold. |
+| UTR | Defender | A prince-bishopric torn by the Utrecht schism, and later by Burgundy's bishops. |
+| GEL | Opportunist | The dukes of Guelders, who fought Burgundy and the Habsburgs for most of a century. |
+| CLE | Opportunist | Cleves-Mark, which took Soest from Cologne in the feud of 1444–49. |
+| MUN | Zealot | The prince-bishopric of the Münster feud and, in 1534, the Anabaptists' kingdom. |
+| KOL | Diplomat | An elector-archbishop, whose weapon was his vote. |
+| JUL | Diplomat | Jülich and Berg, joined by marriage and later joined to Cleves the same way. |
+| COL | Merchant | The largest city of the Empire, a free city living by trade. |
+| LIE | Defender | The prince-bishopric that rose again and again against Burgundy. |
+| HES | Opportunist | The landgraves, who took Katzenelnbogen and Ziegenhain when chances came. |
+| SAX | Opportunist | The Wettin electors, who fought even each other in the Fratricidal War (1446–51). |
+| ERF | Merchant | A great trading town, rich on woad. |
+| LUS | Defender | The Six Towns of Upper Lusatia, a league against the robber knights. |
+| SIL | Merchant | Breslau, a staple of the trade between east and west. |
+| OPP | Defender | A small Piast duchy. |
+| LUX | Diplomat | The house that had given the Empire four emperors. |
+| TRI | Diplomat | An elector-archbishop, whose weapon was his vote. |
+| MAI | Diplomat | The archbishop-elector of Mainz, Arch-Chancellor of the Empire. |
+| FFM | Merchant | The fairs of Frankfurt, and the city where emperors were elected. |
+| WBG | Defender | A prince-bishopric. |
+| BAM | Defender | A prince-bishopric. |
+| ANS | Conqueror | Albert Achilles, "the German Achilles", who made war on Nuremberg in 1449. |
+| NUR | Merchant | The richest free city of the south, and the Empire's workshop. |
+| PAL | Opportunist | Frederick the Victorious, who beat Baden and Württemberg at Seckenheim in 1462. |
+| BOH | Zealot | The Utraquists of George of Poděbrady: a faith in arms. |
+| TAB | Zealot | The Taborites, the Hussites' radicals. |
+| MET | Merchant | A free city of merchants and bankers. |
+| LOR | Defender | Lorraine, which stopped Charles the Bold at Nancy in 1477. |
+| STR | Merchant | A free city of the Rhine trade. |
+| BAD | Diplomat | The margraves, who rose by marriage and service to the Habsburgs. |
+| WRT | Defender | Württemberg under Eberhard the Bearded: built up, rather than out. |
+| ULM | Merchant | A free imperial city, leader of the Swabian League. |
+| AUG | Merchant | The city of the Fuggers. |
+| BIN | Opportunist | Louis the Bearded, who feuded with every neighbour he had. |
+| REG | Merchant | An old trading town on the Danube. |
+| BMU | Defender | The dukes of Munich, the quiet branch of the Wittelsbachs. |
+| BLA | Opportunist | The "rich dukes" of Landshut, who took Ingolstadt in 1447. |
+| PAS | Defender | A prince-bishopric. |
+| AUS | Diplomat | "Let others wage war; you, happy Austria, marry." |
+| HUN | Conqueror | Hunyadi's and Matthias Corvinus's kingdom, which took Vienna in 1485. |
+| JIS | Defender | Jan Jiskra, holding the north of Hungary for the infant Ladislaus. |
+| DEC | Defender | The league of Alsatian free towns, holding together against the lords. |
+| BAS | Merchant | A city of the Rhine trade, host of the Council. |
+| KON | Merchant | A lake town of trade and linen. |
+| ZUR | Diplomat | It turned to the Habsburgs in 1442 to win its war. |
+| SWI | Conqueror | The Confederates, who took the Aargau and the Thurgau and broke Burgundy. |
+| TYR | Merchant | Sigismund "the Rich" and the silver of Schwaz. |
+| SAL | Merchant | The prince-archbishops' salt. |
+| STY | Defender | Inner Austria, on the frontier of the Turkish raids. |
+| SAV | Diplomat | Its duke was elected pope, as Felix V, in 1439. |
+| MIL | Conqueror | The Visconti, and the Sforza after them. |
+| VEN | Merchant | The Republic of merchants. |
+| FRA | Opportunist | A crown recovering from the Hundred Years' War, ready to take what Burgundy dropped. |
+
+### Rivalries
+
+*Pairs the computer holds a grudge between: of the neighbours it is strong enough to attack, it goes for a rival first, and it
+never proposes anything to one. A rivalry goes both ways. It is the computer's preference, not a rule: a person playing either
+country is free of it, and a rival's proposals are still answered by the game's formulas, like anyone's.*
+
+| Rivals | Why |
+|---|---|
+| POL Poland – TEU Teutonic Order | Grunwald (1410), and the Thirteen Years' War (1454–66). |
+| LIT Lithuania – TEU Teutonic Order | The Order's crusade against Lithuania. |
+| LIT Lithuania – LIV Livonian Order | The Livonian Order's long border war with Lithuania. |
+| DEN Denmark – SWE Sweden | The Kalmar Union's kings against the Swedish nobility, until 1523. |
+| DEN Denmark – LUB Lübeck | The Danish kings against the Hansa, for the Sound and the Baltic trade. |
+| DEN Denmark – SHO Schleswig-Holstein | The crown and the Holstein counts, over Schleswig. |
+| BUR Burgundy – LUB Lübeck | The Dutch–Hanseatic War, still going in 1440. |
+| BUR Burgundy – LOR Lorraine | Charles the Bold died besieging Nancy in 1477. |
+| BUR Burgundy – LIE Liège | Burgundy crushed Liège's risings and burned the city in 1468. |
+| BUR Burgundy – SWI Swiss Confederacy | The Burgundian Wars: Grandson, Murten, Nancy. |
+| BUR Burgundy – GEL Guelders | Guelders fought to stay out of Burgundy's hands for a century. |
+| SWI Swiss Confederacy – TYR Tyrol | The Confederates and the Habsburgs, to the Swabian War of 1499. |
+| SWI Swiss Confederacy – ZUR Zürich | The Old Zürich War, being fought in 1440. |
+| HUN Hungary – AUS Austria | Matthias Corvinus and Frederick III, until Vienna fell in 1485. |
+| HUN Hungary – JIS Upper Hungary | The civil war of 1440 over the crown. |
+| MIL Milan – VEN Venice | The wars for Lombardy, being fought in 1440. |
+| BRA Brandenburg – POM Pomerania | Stettin and the Uckermark, fought over for a century. |
+| ANS Ansbach-Kulmbach – NUR Nuremberg | The Margrave War of 1449. |
+| CLE Cleves-Mark – KOL Electorate of Cologne | The Soest Feud (1444–49). |
+| BIN Bavaria-Ingolstadt – BLA Bavaria-Landshut | The Wittelsbach cousins; Landshut took Ingolstadt in 1447. |
+| PAL Palatinate – BAD Baden | Seckenheim (1462), where the Palatine took the margrave prisoner. |
+| BOH Bohemia – SAX Saxony | Hussites and Wettins, from the battle of Aussig (1426) on. |
+| BOH Bohemia – TAB Tábor | The moderates crushed the Taborites at Lipany (1434). |
+
 ## Design notes
 
 *Hand-written. Unlike everything above it is not checked by the script, so re-read it after changing countries
