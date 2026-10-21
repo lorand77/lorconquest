@@ -2,7 +2,7 @@
 // changes kept in step on the client, saved, and resumed exactly after a restart.
 import test from "node:test";
 import assert from "node:assert/strict";
-import scenario from "../../docs/scenario.json" with { type: "json" };
+import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { replay } from "../../src/engine/index.js";
 import { openDb } from "../../src/db.js";
 import { viewFor } from "../../src/game/view.js";
@@ -13,14 +13,14 @@ test("scenarios, and starting a game", async () => {
     const server = await startServer({ dbPath: tempDb() });
     try {
         const scenarios = (await api(server, "GET", "/api/scenarios")).body;
-        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["docs", "Mitteleuropa"], ["historical-1440", "Historical 1440"]]);
+        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Mitteleuropa"], ["historical-1440", "Historical 1440"]]);
         assert.equal(scenarios[0].countries.length, 45);
         assert.equal((await api(server, "POST", "/api/tables", { scenario: "nowhere", country: "BAV" })).status, 400);
-        assert.equal((await api(server, "POST", "/api/tables", { scenario: "docs", country: "XXX" })).status, 400);
-        assert.equal((await api(server, "POST", "/api/tables", { scenario: "docs", country: "BAV", seed: -1 })).status, 400);
+        assert.equal((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "XXX" })).status, 400);
+        assert.equal((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV", seed: -1 })).status, 400);
         const id = await newGame(server);
         const games = (await api(server, "GET", "/api/games")).body;
-        assert.deepEqual(games.map((g) => [g.id, g.scenario, g.country, g.day, g.paused, g.live]), [[id, "docs", "BAV", 0, true, true]]);
+        assert.deepEqual(games.map((g) => [g.id, g.scenario, g.country, g.day, g.paused, g.live]), [[id, "mitteleuropa", "BAV", 0, true, true]]);
     } finally {
         await server.close();
     }
@@ -33,7 +33,7 @@ test("a player sees the game without its dice and without other countries' treas
         const s = await connect(server);
         assert.equal((await emitAck(s, "join", { gameId: 999 })).ok, false);
         const j = await emitAck(s, "join", { gameId: id });
-        assert.deepEqual([j.ok, j.me, j.paused, j.scenario, j.tickMs, j.view.day], [true, "BAV", true, "docs", 2, 0]);
+        assert.deepEqual([j.ok, j.me, j.paused, j.scenario, j.tickMs, j.view.day], [true, "BAV", true, "mitteleuropa", 2, 0]);
         assert.deepEqual(Object.keys(j.view).sort(), ["agreements", "armies", "countries", "day", "fleets", "humans", "memory", "posts", "settlements", "warInfo", "wars", "winner"]);
         assert.equal(j.view.countries.BAV.treasury, 100000);
         assert.equal(j.view.countries.ULM.treasury, undefined);

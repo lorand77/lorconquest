@@ -1,7 +1,7 @@
 # LorConquest — Design
 
 How the software will work and why. The game's rules are in [RULES.md](RULES.md), the map in
-[SCENARIO.md](SCENARIO.md) and its data file [scenario.json](scenario.json); this file is about
+[SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md) and its data file [scenario.json](../scenarios/mitteleuropa/scenario.json); this file is about
 the program that runs them. When a decision changes, change it here.
 
 **Status: built through milestone 6** (see [plan.md](plan.md)); what each part does is in its section

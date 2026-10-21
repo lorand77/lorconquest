@@ -8,7 +8,7 @@ import os from "node:os";
 import path from "node:path";
 import { backup } from "../../tools/backup.js";
 import { changePassword, deleteAccount, planDeletion } from "../../src/accounts.js";
-import scenario from "../../docs/scenario.json" with { type: "json" };
+import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import config from "../../src/config.js";
 import { fingerprint, replay, scores } from "../../src/engine/index.js";
 import { rankHumans } from "../../src/game/results.js";
@@ -24,15 +24,15 @@ async function until(check, what, timeoutMs = 8000) {
 // a scenario where 6 settlements win, so a game ends quickly: the computer countries' wars decide who gets there first
 function quickRoot() {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "lc-root-"));
-    fs.mkdirSync(path.join(root, "docs"));
-    fs.writeFileSync(path.join(root, "docs", "scenario.json"), JSON.stringify({ ...scenario, victory: { settlements: 6, endYear: 1700 } }));
-    fs.writeFileSync(path.join(root, "docs", "SCENARIO.md"), "# SCENARIO: TEST\n");
+    fs.mkdirSync(path.join(root, "scenarios", "mitteleuropa"), { recursive: true });
+    fs.writeFileSync(path.join(root, "scenarios", "mitteleuropa", "scenario.json"), JSON.stringify({ ...scenario, victory: { settlements: 6, endYear: 1700 } }));
+    fs.writeFileSync(path.join(root, "scenarios", "mitteleuropa", "SCENARIO.md"), "# SCENARIO: TEST\n");
     return root;
 }
 
 // two people play a game to its end in the quick scenario; resolves to the server, its game id and what was seen
 async function finishedGame(server, [[a, ca], [b, cb]] = [["alice", "BAV"], ["bobby", "ULM"]], seed = 5) {
-    const made = await api(server, "POST", "/api/tables", { scenario: "docs", country: ca, seed }, a);
+    const made = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: ca, seed }, a);
     await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: cb }, b);
     assert.equal((await api(server, "POST", `/api/tables/${made.body.id}/start`, {}, a)).status, 200);
     const sa = await connect(server, a), sb = await connect(server, b);
@@ -52,7 +52,7 @@ test("a finished game keeps its standings, ranked among its people, and the fing
         assert.match(game.result_hash, /^[0-9a-f]{8}$/);
         // the replay, rebuilt from the log alone, ends exactly as the game did: the same fingerprint, the same standings
         const log = server.app.db.q.allCommands.all(id).map((c) => ({ day: c.day, cmd: JSON.parse(c.cmd) }));
-        const rebuilt = replay(JSON.parse(fs.readFileSync(path.join(root, "docs", "scenario.json"), "utf8")), game.seed, log, game.day, ["BAV", "ULM"]);
+        const rebuilt = replay(JSON.parse(fs.readFileSync(path.join(root, "scenarios", "mitteleuropa", "scenario.json"), "utf8")), game.seed, log, game.day, ["BAV", "ULM"]);
         assert.equal(rebuilt.day, game.day);
         assert.equal(fingerprint(rebuilt.snapshot()), game.result_hash);
         const seats = server.app.db.db.prepare("SELECT country, place, settlements, pop FROM game_seats WHERE game_id = ? ORDER BY place").all(id);
@@ -109,7 +109,7 @@ test("a replay is given for a finished game only, to anyone signed in, and only 
         // anyone signed in may watch, not only those who played
         const r = (await api(server, "GET", `/api/games/${id}/replay`, null, "carol")).body;
         const game = server.app.db.q.game.get(id);
-        assert.deepEqual([r.id, r.scenario, r.seed, r.endDay, r.winner, r.resultHash, r.rulesVersion], [id, "docs", game.seed, game.day, game.winner, game.result_hash, game.rules_version]);
+        assert.deepEqual([r.id, r.scenario, r.seed, r.endDay, r.winner, r.resultHash, r.rulesVersion], [id, "mitteleuropa", game.seed, game.day, game.winner, game.result_hash, game.rules_version]);
         assert.deepEqual(r.humans, [{ country: "BAV", username: "alice" }, { country: "ULM", username: "bobby" }]);
         assert.ok(r.log.length > 0 && r.log.every((c) => Number.isInteger(c.day) && c.cmd.type && c.country));
         assert.equal(JSON.stringify(r).includes("password"), false);
@@ -215,7 +215,7 @@ test("housekeeping: old chat goes (of games that ended), tables nobody started a
         const rooms = server.app.rooms, db = server.app.db;
         // chat in a game still going, and in one that ended long ago
         const mk = async (a, b, ca, cb) => {
-            const made = await api(server, "POST", "/api/tables", { scenario: "docs", country: ca }, a);
+            const made = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: ca }, a);
             await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: cb }, b);
             await api(server, "POST", `/api/tables/${made.body.id}/start`, {}, a);
             const s = await connect(server, a);
@@ -231,8 +231,8 @@ test("housekeeping: old chat goes (of games that ended), tables nobody started a
         assert.deepEqual([chat(live), chat(old)], [1, 0]);
         assert.equal(rooms.sweepChat(30), 0);
         // tables
-        const t1 = (await api(server, "POST", "/api/tables", { scenario: "docs", country: "AUS" }, "erin_e")).body.id;
-        const t2 = (await api(server, "POST", "/api/tables", { scenario: "docs", country: "HUN" }, "fred_f")).body.id;
+        const t1 = (await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "AUS" }, "erin_e")).body.id;
+        const t2 = (await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "HUN" }, "fred_f")).body.id;
         db.db.prepare("UPDATE games SET created_at = datetime('now', '-30 hours') WHERE id = ?").run(t1);
         const told = connect(server, "erin_e").then((s) => waitFor(s, "table:cancelled"));
         await wait(50);
@@ -275,13 +275,13 @@ test("the owner's tools: a password can be set, an account deleted for good, a b
         fs.rmSync(dir, { recursive: true, force: true });
 
         // deleting: refused while a game with other people goes on; otherwise the account is emptied and its name freed
-        const made = await api(server, "POST", "/api/tables", { scenario: "docs", country: "BAV" }, "alice");
+        const made = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV" }, "alice");
         await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: "ULM" }, "bobby");
         await api(server, "POST", `/api/tables/${made.body.id}/start`, {}, "alice");
         assert.match(planDeletion(db, "alice").error, /with other people, which are still going/);
         assert.match(planDeletion(db, "nobody").error, /no such user/);
         const solo = await newGame(server, undefined, "carol");
-        const hosted = (await api(server, "POST", "/api/tables", { scenario: "docs", country: "SAX" }, "carol")).body.id;
+        const hosted = (await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "SAX" }, "carol")).body.id;
         const sock = await connect(server, "carol");
         await emitAck(sock, "join", { gameId: solo });
         await emitAck(sock, "chat", { text: "bye" });                      // (a solo game has chat too)
@@ -330,7 +330,7 @@ test("what the privacy page says is what the server does: no password or chat te
         await post("/api/login", { username: "alice", password: "wrong-secret-1" });
         await post("/api/login", { username: "hunter2-secret", password: "wrong-secret-2" });       // a password typed into the name box
         await post("/api/login", { username: "alice", password: "wrong-secret-3" });                  // throttled
-        const made = await api(server, "POST", "/api/tables", { scenario: "docs", country: "BAV" }, "alice");
+        const made = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV" }, "alice");
         await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: "ULM" }, "bobby");
         await api(server, "POST", `/api/tables/${made.body.id}/start`, {}, "alice");
         const s = await connect(server, "alice");

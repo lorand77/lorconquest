@@ -4,7 +4,7 @@
 > **Scenario scaling.** `x` is a per-scenario cost multiplier. `x1.5MR` means `x × 1.5M` R.
 > `x` applies to **tech costs, starting treasury, the flat R bonus, the sharpshooter and cannon
 > counts in combat and the ships needed to cross a strait** (§5, §6, §8) — never to shop prices.
-> Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](SCENARIO.md).
+> Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md).
 > **Money and R** are in the same unit as `M`: 0.1M is 100,000.
 > Town and city populations (10K / 20K) are the same in every scenario; what changes between
 > scenarios is the map, country sizes, costs, coring, and the victory condition.
@@ -101,7 +101,7 @@ only through growth or **Buy people**.
 **Mercenaries** are the exception: they are foreigners, and their dead cost you no people (§8).
 
 **Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
-**Courthouse**. Special coring (see [Special coring](SCENARIO.md#special-coring)) waives both.
+**Courthouse**. Special coring (see [Special coring](../scenarios/mitteleuropa/SCENARIO.md#special-coring)) waives both.
 
 **Conquest.** A captured settlement is held from the day it falls: the 20 years start again, its
 courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It
@@ -418,7 +418,7 @@ Damage as in a land battle, applied to ships (rounded). Crew of sunk ships are l
 your population (§2).
 
 **Fleet orders.** Sail a fleet into a sea zone (zones are listed in
-[SCENARIO.md](SCENARIO.md#sea-zones)), then give it one of two orders:
+[SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#sea-zones)), then give it one of two orders:
 
 **Fleets in battle.** A fleet is in a port, or at sea in one zone; a fleet **sailing** to the next zone
 (2 months) is in neither: it cannot fight, blockade, be fought or count for a strait. A **patrol** attacks
@@ -498,7 +498,7 @@ twice as long. River crossings and mountain passes add their delays on top.
 **Fleets move zone to zone.** A fleet is always in exactly one sea zone — at sea, or in one of that
 zone's ports. Sailing to a neighbouring zone takes 2 months; entering or leaving a port in its own
 zone is instant. Which zones neighbour each other is listed in
-[SCENARIO.md](SCENARIO.md#sea-zones).
+[SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#sea-zones).
 
 **Mountain passes (yellow triangles).** Some routes cross the mountains through a pass. A pass is
 a node on the map, like a settlement with no people in it, and the route runs settlement → pass →
@@ -511,7 +511,7 @@ settlement.
 - **An army defending a pass gets ×2** defence (§5).
 - **Sharpshooters** are bought and stationed only at passes (§5).
 - **Each pass belongs to one country** — whoever's territory it lies in, i.e. whoever owns the
-  settlement whose land the pass is in (listed in [SCENARIO.md](SCENARIO.md#mountain-passes)).
+  settlement whose land the pass is in (listed in [SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#mountain-passes)).
   It changes hands with that settlement. Only the owner can buy sharpshooters there.
 - **Sharpshooters die when the pass changes hands** — if the settlement whose land the pass is in is
   lost, every sharpshooter stationed at that pass dies.
@@ -556,7 +556,7 @@ meet at a place while on cooldown wait there, and fight when it ends; enemy armi
 other on a route while on cooldown have passed.
 
 **Straits (dashed lines).** An army may cross if you control **≥10 × x ships** in that sea zone (see
-[Sea zones](SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes
+[Sea zones](../scenarios/mitteleuropa/SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes
 **3 months**. If an enemy fleet is present, fight a naval battle first — lose and the crossing fails.
 
 **Counting the ships.** All the country's ships in the zone count — in port or at sea, not sailing. An
@@ -646,7 +646,7 @@ drops by **40 for 10 years** (see *Computer countries*).
 | Counts as your military ally (§5) | yes | only if it chooses to join the war |
 
 A country becomes your subject through a peace treaty, by agreeing to your demand, or — protectorates
-only — through the Holy Roman Empire ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)).
+only — through the Holy Roman Empire ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)).
 
 **Breaking free.** A subject breaks free the moment its **military power** (§5) is greater than
 your own — the overlord's forces only, not those of its other subjects. This is not breaking an
@@ -688,7 +688,7 @@ neighbours are more willing to ally with each other against it (*Alliances* belo
 ### Computer countries
 A computer-run country answers a proposal the moment it is made. You may make each kind of
 proposal to the same country **once every 5 years**. The HRE proposal is not limited by this —
-it has its own once-ever rule ([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)).
+it has its own once-ever rule ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)).
 
 **Strength** compares **military power** (§5) — armed men, cannons and sharpshooters, not ships:
 ```
@@ -754,7 +754,7 @@ country that borders the same warmonger. Each proposal is answered as above — 
 of `need` counts for both, since neither is the warmonger.
 
 **Becoming your subject** — mostly size, a little opinion. The HRE vote is rolled the same way
-([SCENARIO.md](SCENARIO.md#the-holy-roman-empire)):
+([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)):
 ```
 protectorate chance = size × 10 % + opinion ÷ 10 %
 vassal chance       = size × 5 %  + opinion ÷ 10 %      also to turn your protectorate into a vassal

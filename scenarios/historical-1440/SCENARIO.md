@@ -2,7 +2,7 @@
 
 *Everything here is specific to this map; the general rules are in [RULES.md](../../docs/RULES.md).*
 
-A more accurate take on the Mitteleuropa map ([docs/SCENARIO.md](../../docs/SCENARIO.md)): the same corner of Europe
+A more accurate take on the Mitteleuropa map ([scenarios/mitteleuropa](../mitteleuropa/SCENARIO.md)): the same corner of Europe
 in the year 1440, with every town where it really is, the realms that really existed, and towns made cities by
 how big they really were.
 

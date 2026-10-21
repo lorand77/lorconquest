@@ -1,8 +1,10 @@
-// The scenarios a game can be played on: docs/ (Mitteleuropa) and every folder under scenarios/ with a
-// scenario.json. Read once when the server starts; each has an id ("docs", "historical-1440"), a name from the
-// first line of its SCENARIO.md, its folder, and its data.
+// The scenarios a game can be played on: every folder under scenarios/ with a scenario.json. Read once when the server
+// starts; each has an id (its folder: "mitteleuropa", "historical-1440"), a name from the first line of its SCENARIO.md,
+// its folder, and its data. The default scenario comes first in the list, so the lobby offers it first.
 import fs from "node:fs";
 import path from "node:path";
+
+export const DEFAULT_SCENARIO = "mitteleuropa";
 
 function nameOf(dir, id) {
     const first = fs.existsSync(path.join(dir, "SCENARIO.md")) ? fs.readFileSync(path.join(dir, "SCENARIO.md"), "utf8").split("\n")[0] : "";
@@ -12,17 +14,13 @@ function nameOf(dir, id) {
 }
 
 export function loadScenarios(root) {
-    const dirs = [["docs", path.join(root, "docs")]];
-    const extra = path.join(root, "scenarios");
-    if (fs.existsSync(extra)) {
-        for (const d of fs.readdirSync(extra).sort()) {
-            if (fs.existsSync(path.join(extra, d, "scenario.json"))) dirs.push([d, path.join(extra, d)]);
-        }
-    }
+    const folder = path.join(root, "scenarios");
+    const ids = fs.existsSync(folder) ? fs.readdirSync(folder).filter((d) => fs.existsSync(path.join(folder, d, "scenario.json"))) : [];
+    const ordered = [...ids.filter((id) => id === DEFAULT_SCENARIO), ...ids.filter((id) => id !== DEFAULT_SCENARIO).sort()];
     const scenarios = new Map();
-    for (const [id, dir] of dirs) {
-        const data = JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8"));
-        scenarios.set(id, { id, name: nameOf(dir, id), dir, data });
+    for (const id of ordered) {
+        const dir = path.join(folder, id);
+        scenarios.set(id, { id, name: nameOf(dir, id), dir, data: JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8")) });
     }
     return scenarios;
 }

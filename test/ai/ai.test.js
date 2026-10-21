@@ -3,7 +3,7 @@
 // keeps inside the tick's budget.
 import test from "node:test";
 import assert from "node:assert/strict";
-import docsScenario from "../../docs/scenario.json" with { type: "json" };
+import docsScenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { Game, armyCapOf, armyList, armySoldiersOf, atWar, economyOf, replay, scores } from "../../src/engine/index.js";
 import { warKey } from "../../src/engine/state.js";
 import { createAI } from "../../src/ai/index.js";

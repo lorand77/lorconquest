@@ -6,13 +6,14 @@ dependencies.
 
 - [docs/RULES.md](docs/RULES.md) — the rules. The engine implements them; where they are silent,
   decide, and write the reading into RULES.md in the same commit.
-- [docs/SCENARIO.md](docs/SCENARIO.md) and `docs/scenario.json` — the map. scenario.json and
-  map.svg are generated: edit SCENARIO.md or map-base.svg and run `node tools/map.js`.
+- [scenarios/mitteleuropa/SCENARIO.md](scenarios/mitteleuropa/SCENARIO.md) and its `scenario.json` — the default scenario, the map.
+  scenario.json and map.svg are generated: edit SCENARIO.md or map-base.svg and run `node tools/map.js`.
 - [docs/design.md](docs/design.md) — how the software works and why. Read it before changing
   `src/engine/`; when a decision changes, change it there in the same commit.
 - [docs/plan.md](docs/plan.md) — the milestones and where we are.
 - [docs/setup.md](docs/setup.md) — running it, putting it online (EC2, pm2, Caddy), backups, accounts by hand, monitoring.
-- `scenarios/` — other scenarios (`node tools/map.js scenarios/<name>`); `lorciv-temporary-import/`
+- `scenarios/` — every scenario, a folder each, its id the folder's name (`node tools/map.js scenarios/<name>`, which may leave out the
+  folder of the default, `mitteleuropa`); `lorciv-temporary-import/`
   is an earlier game kept for reference, not part of this one.
 
 ## Commands
@@ -22,7 +23,7 @@ dependencies.
 - `npm run dev` — the server at http://localhost:3002/ (sign in or register, then the lobby), restarting
   on changes; `npm start` without. Settings are environment variables, all in `src/config.js`; the
   database is `data/lorconquest.sqlite`.
-- `node tools/simulate.js [--games N --years N --seed N --scenario docs --jobs N]` — AI-only games, headless, in parallel: wins by
+- `node tools/simulate.js [--games N --years N --seed N --scenario mitteleuropa --jobs N]` — AI-only games, headless, in parallel: wins by
   country, wars, peaces, refused commands, timing. `SIM_DEBUG=1` prints every refused command. What it showed: `experiments/`.
 - `AI_SEEDS=6 AI_YEARS=60 AI_SCENARIO=historical-1440 node --test test/ai/ai.test.js` — the AI games of the suite, bigger.
 - `node tools/user.js password|delete <name>` — set a password, or delete an account for good; `node tools/backup.js [folder]` — a

@@ -1,7 +1,7 @@
 # LorConquest — Plan
 
 The order in which the game gets built. The rules are in [RULES.md](RULES.md), the map in
-[SCENARIO.md](SCENARIO.md), and how the software works in [design.md](design.md). This file
+[SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md), and how the software works in [design.md](design.md). This file
 says what to build when, and how to tell each step is done.
 
 **Status:** all seven milestones are built (2026-10-21). What is left is putting it online and playing it: see milestone 7's *Done*.

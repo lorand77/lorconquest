@@ -1,7 +1,7 @@
 // The browser's state copy and map geometry (public/js/mirror.js), run in Node.
 import test from "node:test";
 import assert from "node:assert/strict";
-import scenario from "../../docs/scenario.json" with { type: "json" };
+import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
 import { applyChanges, applyPrivate, along, armyPoint, buildLegs, formatMen, routeLine } from "../../public/js/mirror.js";
 

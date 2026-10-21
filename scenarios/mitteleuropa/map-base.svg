@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1308 1165" width="1308" height="1165">
-<!-- Map geometry for docs/map.svg (see docs/SCENARIO.md). One shape per settlement's land (id land-N) and the rivers.
+<!-- Map geometry for map.svg (see SCENARIO.md). One shape per settlement's land (id land-N) and the rivers.
      Neighbouring lands must share exactly the same points along their common edge (use snapping in Inkscape).
      Sea zone dividers (group sea-zones) run from coast to coast and split the sea into the zones named in SCENARIO.md.
      Use straight segments only; tools/map.js rejects curves and transforms. -->

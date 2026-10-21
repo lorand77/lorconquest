@@ -8,7 +8,7 @@ import path from "node:path";
 import { Game } from "../../src/engine/index.js";
 import { Changes, viewFor } from "../../src/game/view.js";
 import { applyChanges, applyPrivate } from "../../public/js/mirror.js";
-import scenario from "../../docs/scenario.json" with { type: "json" };
+import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { connect, emitAck, newGame, api, runUntil, startServer, tempDb, waitFor } from "./helpers.js";
 
 test("diplomacy is public, except the questions put to a human, which only the two countries see", () => {
@@ -78,14 +78,14 @@ test("over a socket a player proposes, is answered at once, and everyone sees th
 test("a game with a winner is saved as finished, tells its players, and is not resumed", async () => {
     // a scenario where 6 settlements win: the computer countries' wars decide who gets there first
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "lc-root-"));
-    fs.mkdirSync(path.join(root, "docs"));
-    fs.writeFileSync(path.join(root, "docs", "scenario.json"), JSON.stringify({ ...scenario, victory: { settlements: 6, endYear: 1700 } }));
-    fs.writeFileSync(path.join(root, "docs", "SCENARIO.md"), "# SCENARIO: TEST\n");
+    fs.mkdirSync(path.join(root, "scenarios", "mitteleuropa"), { recursive: true });
+    fs.writeFileSync(path.join(root, "scenarios", "mitteleuropa", "scenario.json"), JSON.stringify({ ...scenario, victory: { settlements: 6, endYear: 1700 } }));
+    fs.writeFileSync(path.join(root, "scenarios", "mitteleuropa", "SCENARIO.md"), "# SCENARIO: TEST\n");
     const dbPath = tempDb();
     let server = await startServer({ dbPath, root });
     let id;
     try {
-        id = await newGame(server, { scenario: "docs", country: "BAV", seed: 5 });
+        id = await newGame(server, { scenario: "mitteleuropa", country: "BAV", seed: 5 });
         const s = await connect(server);
         await emitAck(s, "join", { gameId: id });
         const over = waitFor(s, "over");

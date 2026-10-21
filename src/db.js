@@ -17,7 +17,7 @@ import { DatabaseSync } from "node:sqlite";
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS games (
     id INTEGER PRIMARY KEY,
-    scenario TEXT NOT NULL,                     -- the scenario's id: "docs", or a folder under scenarios/
+    scenario TEXT NOT NULL,                     -- the scenario's id: its folder under scenarios/ ("mitteleuropa", ...)
     seed INTEGER NOT NULL,
     rules_version INTEGER NOT NULL,
     human TEXT NOT NULL,                        -- the host's country; the seats (game_seats) say who plays what
@@ -108,6 +108,8 @@ export function openDb(file) {
     addColumnIfMissing("game_seats", "settlements", "REAL");
     addColumnIfMissing("game_seats", "pop", "REAL");
     addColumnIfMissing("game_seats", "quit_day", "INTEGER");
+    // the default scenario lived in docs/ and had the id "docs" until it moved to scenarios/mitteleuropa
+    db.exec("UPDATE games SET scenario = 'mitteleuropa' WHERE scenario = 'docs'");
     // games from before accounts (the development page's) have no host and no seats: nobody can open them now
     db.exec("UPDATE games SET status = 'aborted' WHERE host_id IS NULL AND status IN ('active', 'lobby')");
 

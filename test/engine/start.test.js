@@ -1,7 +1,7 @@
 // The starting state from the real scenario (RULES.md §2) and the map built from it.
 import test from "node:test";
 import assert from "node:assert/strict";
-import scenario from "../../docs/scenario.json" with { type: "json" };
+import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { Game, menOf, soldiersOf, routeFor } from "../../src/engine/index.js";
 import { tinyGame } from "../helpers/tiny.js";
 

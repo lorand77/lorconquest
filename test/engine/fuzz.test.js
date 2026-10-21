@@ -4,7 +4,7 @@
 // none throws and none leaves the state broken.
 import test from "node:test";
 import assert from "node:assert/strict";
-import docsScenario from "../../docs/scenario.json" with { type: "json" };
+import docsScenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import fs from "node:fs";
 import path from "node:path";
 import { COMMAND_TYPES, Game, WEAPONS, menOf } from "../../src/engine/index.js";

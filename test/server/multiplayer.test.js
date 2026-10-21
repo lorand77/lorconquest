@@ -16,7 +16,7 @@ async function until(check, what, timeoutMs = 8000) {
 // a table with `players` ([[name, country], ...], the first the host), not started
 async function makeTable(server, players, seed = 5) {
     const [[host, country], ...rest] = players;
-    const made = await api(server, "POST", "/api/tables", { scenario: "docs", country, seed }, host);
+    const made = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country, seed }, host);
     assert.equal(made.status, 201, JSON.stringify(made.body));
     for (const [name, c] of rest) assert.equal((await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: c }, name)).status, 200);
     return made.body.id;
@@ -46,7 +46,7 @@ test("a table: seats first come first served, at most four people, a host who st
         const id = await makeTable(server, [["alice", "BAV"]]);
         await ch;
         const tables = (await api(server, "GET", "/api/tables", null, "carol")).body;
-        assert.deepEqual(tables.map((t) => [t.id, t.scenario, t.host, t.seats]), [[id, "docs", "alice", [{ country: "BAV", username: "alice" }]]]);
+        assert.deepEqual(tables.map((t) => [t.id, t.scenario, t.host, t.seats]), [[id, "mitteleuropa", "alice", [{ country: "BAV", username: "alice" }]]]);
 
         const join = (name, country) => api(server, "POST", `/api/tables/${id}/join`, { country }, name);
         assert.equal((await join("bobby", "BAV")).body.error, "BAV is taken");

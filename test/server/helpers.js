@@ -54,7 +54,7 @@ export async function api(server, method, url, body, who = "tester") {
 }
 
 // a solo game (started at once) as `who`; resolves to its id
-export async function newGame(server, body = { scenario: "docs", country: "BAV", seed: 5 }, who = "tester") {
+export async function newGame(server, body = { scenario: "mitteleuropa", country: "BAV", seed: 5 }, who = "tester") {
     const res = await api(server, "POST", "/api/tables", { ...body, solo: true }, who);
     if (res.status !== 201) throw new Error(`new game: ${res.status} ${JSON.stringify(res.body)}`);
     return res.body.id;

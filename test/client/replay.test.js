@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { register } from "node:module";
-import scenario from "../../docs/scenario.json" with { type: "json" };
+import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 
 register("./loader.mjs", import.meta.url);
 const { Game, buildMap, fingerprint } = await import("../../src/engine/index.js");

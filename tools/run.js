@@ -5,7 +5,7 @@
 //
 // A script is lines of:
 //   seed 7                                      the random seed (default 1)
-//   scenario docs/scenario.json                 the scenario (default docs/scenario.json)
+//   scenario scenarios/historical-1440/scenario.json   the scenario (default scenarios/mitteleuropa/scenario.json)
 //   1440-01-01 BAV declare-war target=ULM       a command on that date: country, command, key=value...
 //   1440-01-01 BAV move army=37 to=48 storm=yes
 //   1440-01-01 BAV split army=37 men.swords=300
@@ -41,7 +41,7 @@ function parseCommand(country, name, args) {
 }
 
 function parseScript(text) {
-    const script = { seed: 1, scenario: "docs/scenario.json", steps: [] };
+    const script = { seed: 1, scenario: "scenarios/mitteleuropa/scenario.json", steps: [] };
     text.split("\n").forEach((raw, i) => {
         const line = raw.replace(/#.*/, "").trim();
         if (!line) return;

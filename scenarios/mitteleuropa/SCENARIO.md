@@ -1,6 +1,6 @@
 # SCENARIO: MITTELEUROPA
 
-*Everything here is specific to this map; the general rules are in [RULES.md](RULES.md).*
+*Everything here is specific to this map; the general rules are in [RULES.md](../../docs/RULES.md).*
 
 This file is the **only** place the map's facts are written down. The map's shapes — one per
 settlement's land, plus the rivers — are in [map-base.svg](map-base.svg) (edit it in Inkscape).

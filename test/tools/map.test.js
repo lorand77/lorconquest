@@ -6,14 +6,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
-import scenario from "../../docs/scenario.json" with { type: "json" };
+import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 
 const ROOT = path.join(import.meta.dirname, "..", "..");
 
 function build(edit = (doc) => doc) {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "lc-map-"));
-    fs.writeFileSync(path.join(dir, "SCENARIO.md"), edit(fs.readFileSync(path.join(ROOT, "docs", "SCENARIO.md"), "utf8")));
-    fs.copyFileSync(path.join(ROOT, "docs", "map-base.svg"), path.join(dir, "map-base.svg"));
+    fs.writeFileSync(path.join(dir, "SCENARIO.md"), edit(fs.readFileSync(path.join(ROOT, "scenarios", "mitteleuropa", "SCENARIO.md"), "utf8")));
+    fs.copyFileSync(path.join(ROOT, "scenarios", "mitteleuropa", "map-base.svg"), path.join(dir, "map-base.svg"));
     execFileSync("node", [path.join(ROOT, "tools", "map.js"), dir], { stdio: "pipe" });
     const out = { json: JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8")), doc: fs.readFileSync(path.join(dir, "SCENARIO.md"), "utf8") };
     fs.rmSync(dir, { recursive: true, force: true });

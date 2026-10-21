@@ -133,10 +133,10 @@ test("a page on another site cannot act with the cookie, by REST or by socket", 
     try {
         const cookie = await signIn(server, "alice");
         const host = new URL(server.baseUrl).host;
-        const evil = await post(server, "/api/tables", { scenario: "docs", country: "BAV" }, { Cookie: cookie, Origin: "https://evil.example" });
+        const evil = await post(server, "/api/tables", { scenario: "mitteleuropa", country: "BAV" }, { Cookie: cookie, Origin: "https://evil.example" });
         assert.equal(evil.status, 403);
-        assert.equal((await post(server, "/api/tables", { scenario: "docs", country: "BAV" }, { Cookie: cookie, Origin: "null" })).status, 403);
-        assert.equal((await post(server, "/api/tables", { scenario: "docs", country: "BAV" }, { Cookie: cookie, Origin: `http://${host}` })).status, 201);
+        assert.equal((await post(server, "/api/tables", { scenario: "mitteleuropa", country: "BAV" }, { Cookie: cookie, Origin: "null" })).status, 403);
+        assert.equal((await post(server, "/api/tables", { scenario: "mitteleuropa", country: "BAV" }, { Cookie: cookie, Origin: `http://${host}` })).status, 201);
         assert.equal((await fetch(server.baseUrl + "/api/me", { headers: { Cookie: cookie, Origin: "https://evil.example" } })).status, 200, "reads stay open: the other site cannot see the answer");
         const refused = await new Promise((resolve) => {
             const s = ioClient(server.baseUrl, { transports: ["websocket"], reconnection: false, forceNew: true, extraHeaders: { cookie, origin: "https://evil.example" } });
@@ -176,6 +176,8 @@ test("games from before accounts have no host and no seats: they are put away at
     const db = openDb(file);
     assert.deepEqual(db.db.prepare("SELECT id, status FROM games ORDER BY id").all().map((g) => [g.id, g.status]), [[1, "aborted"], [2, "finished"]]);
     assert.deepEqual(db.q.activeGames.all(), []);
+    // the default scenario's old id, from when it lived in docs/, is its folder's name now
+    assert.deepEqual(db.db.prepare("SELECT DISTINCT scenario FROM games").all().map((r) => r.scenario), ["mitteleuropa"]);
     db.close();
 });
 

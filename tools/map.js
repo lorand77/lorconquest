@@ -2,8 +2,8 @@
 // Build the map and game data from a scenario folder's SCENARIO.md (map facts) and map-base.svg (map geometry):
 //   map.svg         the map, every part addressable by id/class for the web game
 //   scenario.json   the scenario as data for the game
-// and refresh the generated parts of SCENARIO.md. The folder is docs unless another is given; the rules are
-// always docs/RULES.md.
+// and refresh the generated parts of SCENARIO.md. The folder is scenarios/mitteleuropa, the default scenario, unless another
+// is given; the rules are always docs/RULES.md.
 //
 //   node tools/map.js [folder]              check the data, rebuild map.svg and scenario.json, refresh SCENARIO.md
 //   node tools/map.js [folder] mountains    the same, but first move any mountain that touches something
@@ -22,7 +22,8 @@ const num = (a, b) => a - b;
 const byKey = (x, y) => { const a = x.split("-").map(Number), b = y.split("-").map(Number); return a[0] - b[0] || a[1] - b[1]; };
 
 let MODE = "draw";
-let DIR = "docs";
+const DEFAULT_DIR = "scenarios/mitteleuropa";
+let DIR = DEFAULT_DIR;
 for (const a of process.argv.slice(2)) {
     if (/^(draw|mountains)$/.test(a)) MODE = a;
     else if (isDir(abs(a))) DIR = a.replace(/\/+$/, "");
@@ -1228,7 +1229,7 @@ for (const p of PASSES) console.log(`${p.id} at ${p.x},${p.y}: land of ${p.owner
 if (BENT.sea.size) console.log(`bent around the sea: ${[...BENT.sea].sort(byKey).join(", ")}`);
 if (BENT.country.size) console.log(`bent around other countries: ${[...BENT.country].sort(byKey).join(", ")}`);
 if (BENT.tight.size) console.log(`squeezed through a point where the lands barely touch: ${[...BENT.tight].sort(byKey).join(", ")}`);
-if (touching.length) warn(`${touching.length} mountain(s) touch something: ${touching.map((p) => `${p[0]},${p[1]}`).join(" ")} -- run \`node tools/map.js ${DIR === "docs" ? "" : DIR + " "}mountains\``);
+if (touching.length) warn(`${touching.length} mountain(s) touch something: ${touching.map((p) => `${p[0]},${p[1]}`).join(" ")} -- run \`node tools/map.js ${DIR === DEFAULT_DIR ? "" : DIR + " "}mountains\``);
 if (MODE === "mountains") {
     const moved = placed.filter((q) => !PEAKS.some((p) => p[0] === q[0] && p[1] === q[1])).length;
     console.log(`mountains: ${placed.length - moved} kept, ${moved} moved, ${dropped.length} dropped${dropped.length ? " (no clear spot near " + dropped.map((p) => `${p[0]},${p[1]}`).join(" ") + ")" : ""}`);

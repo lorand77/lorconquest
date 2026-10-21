@@ -4,7 +4,7 @@
 //
 //   node tools/bench.js [--years 10] [--seed 1]
 import { Game, armyList, canEnter, menOf } from "../src/engine/index.js";
-import scenario from "../docs/scenario.json" with { type: "json" };
+import scenario from "../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 
 const arg = (name, dflt) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? Number(process.argv[i + 1]) : dflt; };
 const years = arg("years", 10), seed = arg("seed", 1);
