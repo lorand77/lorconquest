@@ -80,7 +80,7 @@ export function bestTarget(game, code, fl) {
         if (ours < (1.5 - 0.4 * fl.aggression) * Math.max(theirs, 1)) continue;
         const gain = ownSettlements(st, t).filter((s) => game.map.adj.get(String(s.id)).some((e) => own.has(e.to))).reduce((n, s) => n + s.pop, 0);
         // how much weaker it is counts up to three times: past that, every target is crushed alike, and the land and the grudge decide
-        const score = gain * (ours / Math.max(theirs, 1)) * (rivals.has(t) ? 3 : 1);
+        const score = gain * (ours / Math.max(theirs, 1)) * (rivals.has(t) ? 1.5 : 1);
         if (gain > 0 && (!best || score > best.score || (score === best.score && t < best.target))) best = { target: t, score };
     }
     return best;

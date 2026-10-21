@@ -73,3 +73,37 @@ war, lost most of its land, and was left with 10,000 a year of income against 16
 350 — in debt for 30 years, "sold up" by the engine every month with nothing left to sell, until it was conquered. A country in
 distress now taxes at 3, sends home the soldiers above its cap (unarmed first) and, after a year in debt, defaults on its loans;
 it no longer tries to borrow while the bankers refuse it. Sweeps since: 0 bankruptcies in 24 games.
+
+## 5. Characters and rivalries (2026-10-22)
+
+Each country now plays to a character its scenario gives it (six of them; `src/ai/characters.js`), varied by up to 0.12 per
+game, and holds rivalries the scenario lists (design.md, *Characters and rivalries*). Sweeps of 24 games on Mitteleuropa and 8 on
+the historical scenario, 210 years each; `tools/simulate.js --without characters|rivalries` plays one or the other off.
+
+| Historical, 8 games | Winners | Wars joined per game |
+|---|---|---|
+| neither (before) | TEU 3, HUN 2, BOH, BUR, POL | 11.6 |
+| characters only | TEU 3, HUN 2, POL, AUS, BOH | 16.3 |
+| rivalries only (first version) | TEU 3, BUR 2, BOH 2, POL | 34.0 |
+| both, first version | BUR 6–7, TEU 1–2 | 37–48 |
+| both, rival only preferred ×3 | BUR 6, TEU 2 | 34.4 |
+| both, rival only preferred ×1.5 (kept) | BUR 3, TEU 2, STY, BRA, HUN | 31.5 |
+
+The characters alone change little. The first rivalries — attack a rival at a margin 0.2 smaller, hold out a year longer for
+peace, ally first with a rival's other enemies — turned wars between rivals into wars between alliance blocs: Burgundy, a
+conqueror ringed by five small rivals, ate them while the eastern powers, each other's rivals, bled each other. Dropping the
+alliance push and the strength cap changed little; dropping the margin and the longer peace, and making the preference ×1.5
+instead of ×3, brought the historical winners back to five different countries. Wars still pull in about three times as many
+allies as before.
+
+| Mitteleuropa, 24 games | Winners |
+|---|---|
+| neither (before) | RUH 5, SAX 4, GDA 3, WAR 3, BAV 2, BRB 2, and 5 others once |
+| both, first version | BRB 9 / 7, PRU 5, RUH 3–5 … |
+| both, rival only preferred ×3 | RUH 11, HUN 2, WAR 2, BRB 2, … |
+| both, rival only preferred ×1.5 (kept) | **RUH 12**, HUN 2, LIT 2, WAR 2, and 6 others once |
+
+On Mitteleuropa the Ruhr, an opportunist of 50K people among small merchants, diplomats and defenders on the Rhine, won half
+the games. Made a defender instead — truer to Cleves, Jülich and Berg, which grew by marriage and inheritance — the same 24 games
+had thirteen different winners: BRB 4, PRU 4, LIT 3, SCH 2, GDA 2, SAX 2, and seven others once (RUH among them); 17.6 wars
+declared and 10.3 joined a game (18.4 and 7.8 before characters), 39 captures (35). AI time a day: mean 1.2 ms, p95 3.2 ms.

@@ -396,7 +396,7 @@ any one state.*
 | HAN | Diplomat | The Welf dukes, who would come into a kingdom (Britain) by marriage. |
 | WOL | Defender | A small Lower Saxon lordship. |
 | JEN | Diplomat | The Wettins' Ernestine line: electors, and patrons of Luther. |
-| RUH | Opportunist | Cleves, Mark, Jülich and Berg: lords who took Soest from Cologne in the feud of 1444–49. |
+| RUH | Defender | Cleves, Mark, Jülich and Berg: lords who gathered their lands by marriage and inheritance, and held them. |
 | FRA | Merchant | The fairs of Frankfurt, and the city where emperors were elected. |
 | SAX | Opportunist | The Wettin electors, who fought even each other in the Fratricidal War. |
 | MAG | Zealot | The archbishopric, and later "Our Lord God's chancery", the Lutherans' stronghold. |

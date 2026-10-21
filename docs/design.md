@@ -273,10 +273,10 @@ are untouched (their computer commands are in the log).
   a new scenario) gets one rolled at random, as before.
 - **A varied spread, enforced:** `tools/map.js` refuses a scenario where any character has more than 30% of the countries or
   fewer than two, or where conquerors and zealots together are more than 30% — history is full of warlike powers, and a map of
-  them would be one war. Mitteleuropa has 10 defenders, 11 merchants, 8 diplomats, 7 opportunists, 5 conquerors and 4 zealots;
+  them would be one war. Mitteleuropa has 11 defenders, 11 merchants, 8 diplomats, 6 opportunists, 5 conquerors and 4 zealots;
   the historical scenario 17, 18, 11, 13, 9 and 6.
 - **Rivalries** bend the AI's diplomacy (`diplomacy.js`): of the neighbours a country is strong enough to attack, a rival
-  scores three times as a target; and it is never proposed anything. A rival's own proposals are still answered by the
+  scores half as much again as a target; and it is never proposed anything. A rival's own proposals are still answered by the
   engine's formula, like anyone's, since answers are rules. Mitteleuropa has 16 rivalries, the historical scenario 23. Rivalries
   do *not* make a country attack at worse odds, hold out longer for peace or seek its rival's enemies as allies: all three
   were tried, and turned wars between rivals into wars between alliance blocs that the biggest country won
