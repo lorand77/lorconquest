@@ -510,7 +510,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy
   settlement, [Cancel] (or Escape) drops it. The selected army's panel has Stop, Storm, Sortie,
-  Split and Merge where they apply.
+  Split and Merge where they apply, and, when it has unarmed men, one button that arms them all with the best weapon
+  the treasury can buy the missing lots of (`mirror.js`, `bestArming`: a `buyWeapons` and an `equip`, sent one after the
+  other); its equipment form starts with every man of the kind chosen.
 - **A click opens the tab that deals with it** (`mirror.js`, `tabForSelection`): an army or a fleet its panel on the Map
   tab; one of your own settlements the Shop, to build there; anyone else's settlement or a pass the Map tab; your own land
   the Country tab; another country's land the Diplomacy tab, with that country picked; a click on the sea leaves the tab
@@ -519,8 +521,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   click on one brings its place to the middle of the map, leaving the list open.
 - **Running the country:** tabs above the panel — **Map** (the selection), **Country** (money and its
   parts, tax, the research slider, the law with its caps, the bank and loans, regions to proclaim, a lost
-  capital), **Shop** (buildings for the selected settlement, raising soldiers, hiring mercenaries,
-  weapons, people, sharpshooters, ships, and what is queued) and **Research** (the tree, the tech
+  capital), **Shop** (buildings for the selected settlement, raising soldiers — armed in the same click, with the best
+  weapon the treasury pays for unless another is chosen — hiring mercenaries, weapons by as many lots as asked, people,
+  sharpshooters, ships, and what is queued) and **Research** (the tree, the tech
   being researched). Fleets are chips on the map — in a port below its marker, at sea below the zone's
   name, gliding between zones when sailing — and their panel has the orders. Sharpshooter posts show
   beside their pass. The panels show the engine's own numbers, worked out in the browser from the
@@ -631,7 +634,7 @@ handlers are in `src/engine/commands*.js`, and each file lists its commands' arg
 | Fleet | `sail` (into a port of yours, to sea, or to a neighbouring zone) | §8 |
 | | `blockade` · `patrol` · `hold` | §7 |
 | | `splitFleet` · `mergeFleet` | §8 |
-| Country | `raise` soldiers at a core settlement · `hireMercenaries` | §3, §8 |
+| Country | `raise` soldiers at a core settlement, unarmed or with a `weapon` (from the reserve, the missing lots bought) · `hireMercenaries` | §3, §8 |
 | | `buyWeapons` (and cannons) to the reserve · `buyPeople` | §3 |
 | | `buySharpshooters` at a pass you own · `buyShips` at a port | §3, §8 |
 | | `buyBuilding` (walls, library, workshop, market, courthouse) | §3 |

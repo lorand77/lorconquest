@@ -464,6 +464,11 @@ new one; to reach an army elsewhere they march like any other army. If the settl
 captured or stops being core before they are ready, the training is cancelled and the men come
 home.
 
+**Raised armed.** Men are raised unarmed, or with a weapon you have unlocked: its weapons are set
+aside for them when you raise them — taken from the reserve, and the lots of 1000 the reserve lacks
+bought then and there at the shop price (§3), the rest of a lot going to the reserve — and the men
+appear carrying them. If the training is cancelled, those weapons go back to the reserve.
+
 You may upgrade weapons in an army instantly. You may also **remove men or crew from an army** —
 they come home and their weapons and cannons go to a reserve for later use; men and crew raised
 again must be trained again. Fleets work the same way — add ships to an existing task force or form a new

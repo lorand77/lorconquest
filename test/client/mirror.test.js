@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armyPoint, buildLegs, fitView, formatMen, routeLine, tabForSelection } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, fitView, formatMen, routeLine, tabForSelection } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -97,4 +97,18 @@ test("the view stays on the map: shaped like its box, no larger than the map, ne
     assert.deepEqual(v, { x: W - 300, y: H - 200, w: 300, h: 200 });
     // zoomed in too far: a twelfth of the map's width at most
     assert.equal(fitView({ x: 100, y: 100, w: 1 }, W, H, 1.5).w, W / 12);
+});
+
+test("arming men costs the lots of 1000 the reserve lacks; one click picks the best weapon the treasury pays for", () => {
+    assert.deepEqual(armingCost({ pikes: 300 }, "pikes", 1000, 30000), { lots: 1, cost: 30000 });
+    assert.deepEqual(armingCost({ pikes: 300 }, "pikes", 2500, 30000), { lots: 3, cost: 90000 });
+    assert.deepEqual(armingCost({ pikes: 3000 }, "pikes", 2500, 30000), { lots: 0, cost: 0 });
+    assert.deepEqual(armingCost({}, "unarmed", 1000, undefined), { lots: 0, cost: 0 });
+    const prices = { swords: 25000, pikes: 30000, cavalry: 60000, muskets: 100000 };
+    const country = { techs: ["swords", "pikes", "cavalry"], reserve: { swords: 0, pikes: 0, cavalry: 0 }, treasury: 100000 };
+    assert.deepEqual(bestArming(country, 1000, prices), { weapon: "cavalry", n: 1000, lots: 1, cost: 60000 });
+    assert.deepEqual(bestArming(country, 2000, prices), { weapon: "pikes", n: 2000, lots: 2, cost: 60000 });
+    assert.deepEqual(bestArming({ ...country, treasury: 0, reserve: { swords: 2000 } }, 2000, prices), { weapon: "swords", n: 2000, lots: 0, cost: 0 });
+    assert.equal(bestArming({ ...country, treasury: 0 }, 1000, prices), null);
+    assert.equal(bestArming(country, 0, prices), null);
 });

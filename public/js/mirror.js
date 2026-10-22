@@ -152,3 +152,24 @@ export function fitView(view, W, H, aspect) {
     const x = Math.min(W - w, Math.max(0, view.x)), y = Math.min(H - h, Math.max(0, view.y));
     return { x, y, w, h };
 }
+
+// the weapons the screen offers first, the best first
+export const BEST_FIRST = ["muskets", "arquebuses", "cavalry", "handCannons", "pikes", "swords"];
+
+// what arming `n` men with `weapon` costs (RULES.md §8, Raising forces): the reserve first, then whole lots of 1000 at `price` a lot
+export function armingCost(reserve, weapon, n, price) {
+    if (weapon === "unarmed" || n <= 0) return { lots: 0, cost: 0 };
+    const lots = Math.ceil(Math.max(0, n - (reserve[weapon] ?? 0)) / 1000);
+    return { lots, cost: lots * price };
+}
+
+// the one-click arming of `n` men: the best weapon `country` has unlocked whose missing lots its treasury can pay, or null
+export function bestArming(country, n, prices) {
+    if (n <= 0) return null;
+    for (const weapon of BEST_FIRST) {
+        if (!country.techs.includes(weapon)) continue;
+        const { lots, cost } = armingCost(country.reserve, weapon, n, prices[weapon]);
+        if (cost <= country.treasury) return { weapon, n, lots, cost };
+    }
+    return null;
+}

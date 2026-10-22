@@ -147,7 +147,7 @@ function randomCommand(game, r) {
         case "buyPeople": return { ...a, lots: int(1, 2) };
         case "buySharpshooters": return { ...a, pass: pick(passes).id, lots: int(1, 3) };
         case "buyShips": return { ...a, kind: pick(["cogs", "carracks", "galleons", "menOfWar"]), port: place?.id, lots: int(1, 2) };
-        case "raise": return { ...a, settlement: place?.id, kind: pick(["soldiers", "crew"]), lots: int(1, 2) };
+        case "raise": return { ...a, settlement: place?.id, kind: pick(["soldiers", "crew"]), lots: int(1, 2), weapon: pick([...WEAPONS, "cannons"]) };
         case "hireMercenaries": return { ...a, settlement: place?.id, lots: 1 };
         case "equip": return { ...a, army: army?.id, from: pick(WEAPONS), to: pick(WEAPONS), n: int(1, 500) };
         case "equipCannons": return { ...a, army: army?.id, n: int(-3, 6) };

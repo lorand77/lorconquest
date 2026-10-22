@@ -5,7 +5,7 @@
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, LAW_DAYS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, longDate, techCost } from "/engine/index.js";
-import { formatNumber } from "./mirror.js";
+import { BEST_FIRST, armingCost, bestArming, formatNumber } from "./mirror.js";
 
 const n = formatNumber;
 const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
@@ -123,12 +123,23 @@ export function shopTab(ctx) {
                 : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
     } else out.push(make("p", { class: "hint" }, "Select one of your settlements on the map to build walls, a library, workshop, market or courthouse there."));
 
-    // raising soldiers (who also man cannons: an army's own soldiers become their crew)
+    // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: by default with the
+    // best weapon the treasury can pay for, the reserve's first
     const rs = select(ctx, settlementOptions(core), capital ?? core[0]?.id), rl = numberInput(ctx, 1, 1, 50);
+    const armable = WEAPONS.filter((w) => w === "unarmed" || c.techs.includes(w));
+    const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed" : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
+    const raiseLabel = () => {
+        const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * 1000, WEAPON_PRICE[rw.value]);
+        return cost ? `Raise · ${money(cost)} for weapons` : "Raise";
+    };
+    const raise = make("button", { class: "primary", onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", lots: Number(rl.value), weapon: rw.value })) }, raiseLabel());
+    const relabel = () => { raise.textContent = raiseLabel(); };
+    rw.addEventListener("change", relabel);
+    rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
-        row(ctx, rs, rl, make("span", {}, "× 1000")),
-        make("p", { class: "hint" }, `Trained in a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere. Soldiers now ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
-        make("button", { onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", lots: Number(rl.value) })) }, "Raise")));
+        row(ctx, rs, rl, make("span", {}, "× 1000"), rw),
+        make("p", { class: "hint" }, `Trained in a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere; they arrive carrying their weapons, taken from the reserve now and what is missing bought. Soldiers now ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
+        raise));
 
     // mercenaries
     const ms = select(ctx, settlementOptions(core), capital ?? core[0]?.id), ml = numberInput(ctx, 1, 1, 50);
@@ -136,14 +147,16 @@ export function shopTab(ctx) {
         row(ctx, ms, ml, make("span", {}, `× 1000, ${money(MERCENARY_PRICE)} each; they arrive in a month with pikes; 15 upkeep a man`)),
         make("button", { onclick: act(ctx, () => ({ type: "hireMercenaries", settlement: Number(ms.value), lots: Number(ml.value) })) }, "Hire")));
 
-    // weapons into the reserve
+    // weapons into the reserve, as many lots at once as asked
+    const wl = numberInput(ctx, 1, 1, 50);
     const weaponRows = Object.keys(WEAPON_PRICE).map((w) => {
         const have = c.techs.includes(w);
         return row(ctx, make("span", { class: "w" }, `${WEAPON_NAMES[w]}: ${n(c.reserve[w])} in reserve`),
-            have ? make("button", { onclick: act(ctx, () => ({ type: "buyWeapons", weapon: w, lots: 1 })) }, `+1000 · ${money(WEAPON_PRICE[w])}`) : make("span", { class: "hint" }, "not unlocked"));
+            have ? make("button", { onclick: act(ctx, () => ({ type: "buyWeapons", weapon: w, lots: Number(wl.value) })) }, `Buy · ${money(WEAPON_PRICE[w])} a lot`) : make("span", { class: "hint" }, "not unlocked"));
     });
-    weaponRows.push(row(ctx, make("span", { class: "w" }, `cannons: ${n(c.reserve.cannons)} in reserve`), make("button", { onclick: act(ctx, () => ({ type: "buyWeapons", weapon: "cannons", lots: 1 })) }, `+100 · ${money(CANNON_PRICE)}`)));
-    out.push(section(ctx, "Weapons", ...weaponRows, make("p", { class: "hint" }, "Equip an army from the reserve in its own panel. Each cannon needs 10 crew.")));
+    weaponRows.push(row(ctx, make("span", { class: "w" }, `cannons: ${n(c.reserve.cannons)} in reserve`), make("button", { onclick: act(ctx, () => ({ type: "buyWeapons", weapon: "cannons", lots: Number(wl.value) })) }, `Buy · ${money(CANNON_PRICE)} a lot`)));
+    out.push(section(ctx, "Weapons", row(ctx, make("span", {}, "Lots to buy"), wl, make("span", { class: "hint" }, "a lot is 1000 weapons, or 100 cannons")),
+        ...weaponRows, make("p", { class: "hint" }, "Equip an army from the reserve in its own panel. Each cannon is manned by 10 of the army's soldiers.")));
 
     out.push(section(ctx, "People", row(ctx, make("button", { onclick: act(ctx, () => ({ type: "buyPeople", lots: 1 })) }, `Buy 1000 people · ${money(PEOPLE_PRICE)}`))));
 
@@ -168,7 +181,7 @@ export function shopTab(ctx) {
     }
 
     // what is on its way
-    const queue = [...c.training.map((t) => `${n(t.n)} ${t.kind === "crew" ? "cannon crew" : "soldiers"} at ${ctx.name(String(t.settlement))}, ready ${longDate(t.ready)}`),
+    const queue = [...c.training.map((t) => `${n(t.n)} soldiers${t.weapon && t.weapon !== "unarmed" ? ` with ${WEAPON_NAMES[t.weapon]}` : ""} at ${ctx.name(String(t.settlement))}, ready ${longDate(t.ready)}`),
         ...c.hires.map((h) => `${n(h.n)} mercenaries at ${ctx.name(String(h.settlement))}, arriving ${longDate(h.ready)}`)];
     if (queue.length) out.push(section(ctx, "On their way", make("ul", { class: "queue" }, ...queue.map((q) => make("li", {}, q)))));
     return out;
@@ -249,11 +262,22 @@ export function armyEquipment(ctx, a) {
     // by default the unarmed are armed with the best weapon the country has that the men do not carry already
     const start = have.includes("unarmed") ? "unarmed" : have[0];
     const choices = WEAPONS.filter((w) => w === "unarmed" || c.techs.includes(w));
-    const best = ["muskets", "arquebuses", "cavalry", "handCannons", "pikes", "swords"].find((w) => w !== start && choices.includes(w));
+    const best = BEST_FIRST.find((w) => w !== start && choices.includes(w));
     const from = select(ctx, have.map((w) => [w, `${n(a.men[w])} ${WEAPON_NAMES[w]}`]), start);
     const to = select(ctx, choices.map((w) => [w, WEAPON_NAMES[w]]), best);
-    const count = numberInput(ctx, 100, 1, 1000000, 10);
+    // by default every man of the kind chosen
+    const count = numberInput(ctx, a.men[start] || 100, 1, 1000000, 10);
+    from.addEventListener("change", () => { count.value = String(a.men[from.value]); });
     const cannons = numberInput(ctx, 1, 1, 1000);
+    // the unarmed armed at one click: the weapons missing from the reserve are bought first
+    const arming = bestArming(c, a.men.unarmed, WEAPON_PRICE);
+    if (arming) {
+        out.push(make("button", { class: "primary", onclick: async () => {
+            const bought = arming.lots ? await ctx.send({ type: "buyWeapons", weapon: arming.weapon, lots: arming.lots }) : { ok: true };
+            if (bought?.ok) await ctx.send({ type: "equip", army: a.id, from: "unarmed", to: arming.weapon, n: arming.n });
+            ctx.redraw();
+        } }, `Arm ${n(arming.n)} unarmed with ${WEAPON_NAMES[arming.weapon]}${arming.cost ? ` · ${money(arming.cost)}` : ""}`));
+    }
     out.push(make("details", { class: "equip" }, make("summary", {}, "Equip, disband, dismiss…"),
         make("p", { class: "hint" }, `Reserve: ${reserve.join(", ") || "empty"}.`),
         row(ctx, make("span", {}, "Change"), count, from, make("span", {}, "to"), to,

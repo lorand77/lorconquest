@@ -200,6 +200,28 @@ test("training in a settlement that falls is cancelled", () => {
     assert.equal(AAA(game).training.length, 0);
 });
 
+test("soldiers raised with a weapon take it from the reserve, buy the lots missing, and arrive carrying it", () => {
+    const game = tinyGame(), c = AAA(game);
+    order(game, cmd("setLaw", { law: "mass" }));
+    rich(game);
+    c.reserve.pikes = 300;
+    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "muskets" })), /not unlocked/);
+    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "cannons" })), /no weapon/);
+    order(game, cmd("raise", { settlement: 1, lots: 1, weapon: "pikes" }));      // 700 missing: one lot of 1000 bought
+    assert.deepEqual([c.treasury, c.reserve.pikes], [5000000 - 30000, 300]);
+    order(game, cmd("raise", { settlement: 2, lots: 2, weapon: "swords" }));     // none in reserve: two lots
+    assert.deepEqual([c.treasury, c.reserve.swords], [5000000 - 30000 - 50000, 0]);
+    c.treasury = 1000;
+    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "cavalry" })), /that costs/);
+    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "pikes" })), /that costs/);   // 300 in reserve, 700 to buy
+    assert.equal(c.reserve.pikes, 300);
+    runTo(game, 91);
+    assert.deepEqual([game.state.armies[1].men.pikes, game.state.armies[1].men.unarmed], [1000, 0]);
+    game.state.settlements[2].owner = "BBB";                                    // the swords' settlement falls: they go back
+    runTo(game, 183);
+    assert.equal(c.reserve.swords, 2000);
+});
+
 test("mercenaries arrive in a month with pikes, up to the army cap, and add no soldiers", () => {
     const game = tinyGame(), c = AAA(game);
     rich(game);

@@ -93,17 +93,24 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     assert.match(text, /Raise soldiers/);
     assert.match(text, /muskets: 0 in reserve\s+not unlocked/);
     await button(nodes, "walls").handlers.click();
+    assert.equal(button(nodes, "Raise").text, "Raise · 60,000 for weapons");     // the best weapon its 100,000 pays for: cavalry
     await button(nodes, "Raise").handlers.click();
     await button(nodes, "Hire").handlers.click();
-    await button(nodes, "+1000 · 25,000").handlers.click();                    // swords
+    const [lots] = find(nodes, (e) => e.attrs.type === "number" && e.attrs.max === 50 && e.attrs.value === 1).slice(-1);
+    lots.value = "3";
+    await button(nodes, "Buy · 25,000 a lot").handlers.click();                // swords
     await button(nodes, "Buy 1000 people").handlers.click();
     assert.deepEqual(sent, [
         { type: "buyBuilding", building: "walls", settlement: 37 },
-        { type: "raise", settlement: 37, kind: "soldiers", lots: 1 },
+        { type: "raise", settlement: 37, kind: "soldiers", lots: 1, weapon: "cavalry" },
         { type: "hireMercenaries", settlement: 37, lots: 1 },
-        { type: "buyWeapons", weapon: "swords", lots: 1 },
+        { type: "buyWeapons", weapon: "swords", lots: 3 },
         { type: "buyPeople", lots: 1 },
     ]);
+    const weapon = find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "cavalry"))[0];
+    weapon.value = "unarmed";
+    weapon.handlers.change();
+    assert.equal(button(nodes, "Raise").text, "Raise");
     assert.equal(button(nodes, "Build"), undefined);                           // Bavaria has no port
     assert.equal(button(nodes, "Station"), undefined);                         // and no pass, nor the tech
     const noSel = shopTab({ ...ctx, sel: null }).map((n) => n.text).join(" | ");
@@ -123,13 +130,13 @@ test("the Shop tab stations sharpshooters at a pass of yours", async () => {
 
 test("the Shop tab builds ships for a coastal country and lists what is queued", async () => {
     const { ctx, sent } = setup((game) => {
-        game.state.countries.NED.training.push({ settlement: 57, kind: "soldiers", n: 1000, ready: 50 });
+        game.state.countries.NED.training.push({ settlement: 57, kind: "soldiers", weapon: "pikes", n: 1000, ready: 50 });
         game.state.countries.NED.hires.push({ settlement: 58, n: 1000, ready: 20 });
     }, "NED");
     const nodes = shopTab(ctx);
     await button(nodes, "Build").handlers.click();
     assert.deepEqual(sent[0], { type: "buyShips", port: 57, kind: "cogs", lots: 1 });
-    assert.match(nodes.map((n) => n.text).join(" | "), /1,000 soldiers at place 57, ready 20 February 1440[\s\S]*1,000 mercenaries at place 58, arriving 21 January 1440/);
+    assert.match(nodes.map((n) => n.text).join(" | "), /1,000 soldiers with pikes at place 57, ready 20 February 1440[\s\S]*1,000 mercenaries at place 58, arriving 21 January 1440/);
 });
 
 test("the Research tab lists the tree and researches an open tech", async () => {
@@ -171,8 +178,19 @@ test("an army's equipment: equip, add cannons, disband, dismiss", async () => {
     await button(nodes, "Add cannons").handlers.click();
     await button(nodes, "Dismiss mercenaries (100)").handlers.click();
     assert.deepEqual(sent, [
-        { type: "equip", army: 37, from: "swords", to: "cavalry", n: 100 },     // the best it has but does not carry
+        { type: "equip", army: 37, from: "swords", to: "cavalry", n: a.men.swords },   // all of them, to the best it has but does not carry
         { type: "equipCannons", army: 37, n: 1 },
         { type: "dismissMercenaries", army: 37, n: 100 },
     ]);
+});
+
+test("an army's unarmed are armed at one click, with the best weapon the treasury can buy what is missing of", async () => {
+    const { ctx, sent } = setup((game) => { game.state.armies[37].men.unarmed = 1500; game.state.countries.BAV.reserve.cavalry = 200; });
+    const a = ctx.state.armies[37];
+    const nodes = armyEquipment(ctx, a);
+    // cavalry would need 2 lots, 120,000, over the 100,000 in the treasury: pikes, 2 lots for 60,000
+    await button(nodes, "Arm 1,500 unarmed with pikes · 60,000").handlers.click();
+    assert.deepEqual(sent, [{ type: "buyWeapons", weapon: "pikes", lots: 2 }, { type: "equip", army: 37, from: "unarmed", to: "pikes", n: 1500 }]);
+    a.men.unarmed = 0;
+    assert.equal(button(armyEquipment(ctx, a), "Arm "), undefined);           // nobody to arm
 });
