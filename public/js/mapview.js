@@ -1,7 +1,7 @@
 // The map on screen (design.md, "The map on screen"): map.svg shown as it is, with lands recoloured by owner,
 // borders redrawn where owners change, and an overlay of armies, siege rings and a planned route. Drag to pan,
 // wheel or the +/- buttons to zoom, never out past the map's edges (mirror.js, fitView); a click (no drag) is reported as what it hit: an army, a place (a settlement
-// or pass marker), a land, or the sea. Pointer events, so mouse and touch take one path. Zoomed out, a settlement shows only the
+// or pass marker), a land, or the sea; a right-click as onCancel (to deselect). Pointer events, so mouse and touch take one path. Zoomed out, a settlement shows only the
 // short form in its marker; zoomed in to twice the whole map or more, its name too (the svg gets the class "zoomed").
 import { fitView } from "./mirror.js";
 
@@ -14,7 +14,7 @@ const el = (name, attrs = {}) => {
     return e;
 };
 
-export async function createMapView(container, svgUrl, onPick) {
+export async function createMapView(container, svgUrl, onPick, onCancel = () => {}) {
     container.innerHTML = await (await fetch(svgUrl)).text();
     const svg = container.querySelector("svg");
     svg.removeAttribute("width");
@@ -59,6 +59,7 @@ export async function createMapView(container, svgUrl, onPick) {
 
     let drag = null;
     svg.addEventListener("pointerdown", (e) => {
+        if (e.button === 2) return;                         // the right button picks nothing: it cancels (contextmenu)
         drag = { id: e.pointerId, x: e.clientX, y: e.clientY, start: toMap(e.clientX, e.clientY), view: { ...view }, moved: false, target: e.target };
     });
     svg.addEventListener("pointermove", (e) => {
@@ -77,6 +78,13 @@ export async function createMapView(container, svgUrl, onPick) {
         if (!d.moved) onPick(pick(d.target));
     });
     svg.addEventListener("pointercancel", () => { drag = null; svg.classList.remove("dragging"); });
+    // a right-click (or a long press) anywhere on the map: no browser menu, the selection is dropped
+    svg.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        drag = null;
+        svg.classList.remove("dragging");
+        onCancel();
+    });
 
     // what a click hit
     function pick(target) {

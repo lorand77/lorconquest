@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, formatNumber, routeLine, tabForSelection } from "./mirror.js";
+import { applyChanges, applyPrivate, buildLegs, formatNumber, isSelected, routeLine, tabForSelection } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
@@ -54,7 +54,7 @@ async function start() {
     scenario = await (await fetch(`/scenario/${joined.scenario}/scenario.json`)).json();
     game = new Game(buildMap(scenario), state);
     legs = buildLegs(scenario);
-    map = await createMapView($("map"), `/scenario/${joined.scenario}/map.svg`, onPick);
+    map = await createMapView($("map"), `/scenario/${joined.scenario}/map.svg`, onPick, () => select(null));
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("pause").addEventListener("click", togglePause);
@@ -130,6 +130,7 @@ async function send(cmd) {
 // ---------- clicks and keys ----------
 function onPick(hit) {
     const mine = sel?.kind === "army" && state.armies[sel.id]?.owner === me && !state.armies[sel.id].retreating ? state.armies[sel.id] : null;
+    if (isSelected(sel, hit)) { select(null); return; }                  // a second click on it lets go
     if (hit.kind === "army") { select({ kind: "army", id: hit.id }); return; }
     if (hit.kind === "fleet") { select({ kind: "fleet", id: hit.id }); return; }
     if (hit.kind === "sea") { select(null); return; }
@@ -296,11 +297,13 @@ function renderPanel(force = false) {
     else if (tab === "shop") nodes = shopTab(ctx);
     else if (tab === "research") nodes = researchTab(ctx);
     else if (tab === "diplomacy") nodes = diplomacyTab(ctx);
-    else if (!sel) nodes = [make("p", { class: "hint" }, "Click an army or fleet to select it; with an army selected, click where it should go. Click a settlement or a country's land to see it. Space pauses. The tabs above run your country.")];
+    else if (!sel) nodes = [make("p", { class: "hint" }, "Click an army or fleet to select it; with an army selected, click where it should go. Click it again, right-click the map, press Escape or × to let go. Click a settlement or a country's land to see it. Space pauses. The tabs above run your country.")];
     else if (sel.kind === "army") nodes = armyPanel(state.armies[sel.id]);
     else if (sel.kind === "fleet") nodes = fleetPanel(ctx, state.fleets[sel.id]);
     else if (sel.kind === "place") nodes = placePanel(sel.key);
     else nodes = countryPanel(sel.code);
+    // what is selected can be let go here too (as by Escape, a right-click on the map, or a second click on it)
+    if (tab === "selection" && sel) nodes.unshift(make("button", { class: "close", title: "Deselect (Escape, or right-click the map)", "aria-label": "Deselect", onclick: () => select(null) }, "×"));
     // rebuilt only when it changed, and never under a hand that is typing or dragging in it
     const box = make("div", {}, ...nodes.filter((x) => x !== "" && x !== undefined));
     const html = box.innerHTML;

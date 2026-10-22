@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, fitView, formatMen, routeLine, tabForSelection } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, fitView, formatMen, isSelected, routeLine, tabForSelection } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -111,4 +111,13 @@ test("arming men costs the lots of 1000 the reserve lacks; one click picks the b
     assert.deepEqual(bestArming({ ...country, treasury: 0, reserve: { swords: 2000 } }, 2000, prices), { weapon: "swords", n: 2000, lots: 0, cost: 0 });
     assert.equal(bestArming({ ...country, treasury: 0 }, 1000, prices), null);
     assert.equal(bestArming(country, 0, prices), null);
+});
+
+test("a second click on the selected army or fleet lets it go; anything else is a new pick", () => {
+    assert.equal(isSelected({ kind: "army", id: 3 }, { kind: "army", id: 3 }), true);
+    assert.equal(isSelected({ kind: "fleet", id: 2 }, { kind: "fleet", id: 2 }), true);
+    assert.equal(isSelected({ kind: "army", id: 3 }, { kind: "army", id: 4 }), false);
+    assert.equal(isSelected({ kind: "army", id: 3 }, { kind: "fleet", id: 3 }), false);       // a fleet with the same number
+    assert.equal(isSelected({ kind: "place", key: "37" }, { kind: "place", key: "37" }), false); // a place: clicking it again keeps it
+    assert.equal(isSelected(null, { kind: "army", id: 3 }), false);
 });

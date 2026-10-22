@@ -173,3 +173,6 @@ export function bestArming(country, n, prices) {
     }
     return null;
 }
+
+// is the click on the army or fleet that is selected already? Then it deselects it (design.md, "The game screen")
+export const isSelected = (sel, hit) => Boolean(sel) && (hit.kind === "army" || hit.kind === "fleet") && sel.kind === hit.kind && sel.id === hit.id;

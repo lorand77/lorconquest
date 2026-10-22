@@ -513,6 +513,10 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   Split and Merge where they apply, and, when it has unarmed men, one button that arms them all with the best weapon
   the treasury can buy the missing lots of (`mirror.js`, `bestArming`: a `buyWeapons` and an `equip`, sent one after the
   other); its equipment form starts with every man of the kind chosen.
+- **Letting go of a selection:** a second click on the selected army or fleet (`mirror.js`, `isSelected`), a right-click
+  anywhere on the map (no browser menu there; a long press on a touch screen), the × at the top of the Map tab's panel,
+  a click on the sea, or Escape (the first Escape drops a drawn route, the next the selection). A click on land never
+  deselects an army of yours: it plans a march there.
 - **A click opens the tab that deals with it** (`mirror.js`, `tabForSelection`): an army or a fleet its panel on the Map
   tab; one of your own settlements the Shop, to build there; anyone else's settlement or a pass the Map tab; your own land
   the Country tab; another country's land the Diplomacy tab, with that country picked; a click on the sea leaves the tab
