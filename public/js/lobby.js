@@ -28,6 +28,8 @@ $("signout").addEventListener("click", signOut);
 const scenarios = await (await fetch("/api/scenarios")).json();
 const scenarioOf = (id) => scenarios.find((s) => s.id === id);
 const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === code)?.name ?? code;
+// a country's people at the start, as the lists show them: "50K"
+const popOf = (id, code) => `${(scenarioOf(id)?.countries.find((c) => c.code === code)?.pop ?? 0) / 1000}K`;
 
 // ---------- a new game ----------
 $("scenario").replaceChildren(...scenarios.map((s) => new Option(s.name, s.id)));
@@ -54,12 +56,12 @@ $("start").addEventListener("submit", async (e) => {
 function tableItem(t) {
     const scenario = scenarioOf(t.scenario), a = tableActions(t, me, scenario);
     const li = make("li", { class: "table" });
-    li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
+    li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} ${popOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
     const row = make("div", { class: "row" });
     const err = make("span", { class: "error" });
     const act = async (url, body) => { const r = await post(url, body); if (!r.ok) err.textContent = r.error; else if (r.id !== undefined && url.endsWith("/start")) location.href = `/game.html?id=${r.id}`; else refresh(); };
     if (a.canJoin) {
-        const pick = make("select", {}, ...a.free.map((c) => new Option(`${c.name} (${c.code})`, c.code)));
+        const pick = make("select", {}, ...a.free.map((c) => new Option(`${c.name} (${c.code}, ${c.pop / 1000}K)`, c.code)));
         row.append(pick, make("button", { class: "primary", onclick: () => act(`/api/tables/${t.id}/join`, { country: pick.value }) }, "Take this country"));
     }
     if (a.canLeave) row.append(make("button", { onclick: () => act(`/api/tables/${t.id}/leave`) }, "Give up my seat"));
