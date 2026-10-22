@@ -7,17 +7,28 @@
     <link rel="stylesheet" href="/css/game.css">
     <script type="module" src="/js/login.js"></script>
 </head>
-<body class="dev">
-    <h1>LorConquest</h1>
-    <p class="hint">Real-time grand strategy on a map of Mitteleuropa, 1440–1650. Sign in to play.</p>
-    <form id="login" class="start">
-        <label>Name <input id="username" autocomplete="username" required maxlength="20"></label>
-        <label>Password <input id="password" type="password" autocomplete="current-password" required maxlength="128"></label>
-        <button class="primary" type="submit" data-action="login">Sign in</button>
-        <button type="submit" data-action="register">Create an account</button>
-        <span id="error" class="error"></span>
-    </form>
-    <p class="hint">A name is 3–20 letters, digits or underscores; a password 6 or more characters. By creating an account you agree to
-        the <a href="/terms.html">Terms of Service</a> and the <a href="/privacy.html">Privacy Policy</a>.</p>
+<body class="auth">
+    <div class="auth-card">
+        <h1>LorConquest</h1>
+        <p class="tagline">Real-time grand strategy on a map of Mitteleuropa, 1440–1650. Sign in to play.</p>
+
+        <form id="login" autocomplete="on">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" autocomplete="username" minlength="3" maxlength="20" required>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" minlength="6" maxlength="128" required>
+
+            <div class="auth-actions">
+                <button type="submit" class="primary" data-action="login">Log in</button>
+                <button type="submit" data-action="register">Register</button>
+            </div>
+        </form>
+
+        <div class="auth-error error" id="error"></div>
+
+        <p class="auth-legal">A name is 3–20 letters, digits or underscores; a password 6 or more characters. By registering you
+            agree to the <a href="/terms.html">Terms of Service</a> and the <a href="/privacy.html">Privacy Policy</a>.</p>
+    </div>
 </body>
 </html>

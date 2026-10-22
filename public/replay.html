@@ -8,20 +8,6 @@
     <script type="module" src="/js/replay.js"></script>
 </head>
 <body class="game replay">
-    <header class="topbar">
-        <a class="home" href="/">LorConquest</a>
-        <span id="title" class="me"></span>
-        <span id="date" class="date"></span>
-        <button id="play" class="pause">▶ Play</button>
-        <label>Speed <select id="speed">
-            <option value="10">10 days a second</option>
-            <option value="50">50</option>
-            <option value="250" selected>250</option>
-            <option value="1000">1000</option>
-        </select></label>
-        <input id="seek" class="seek" type="range" min="0" max="1" value="0" step="1" aria-label="Day">
-        <span id="verdict" class="verdict"></span>
-    </header>
     <main class="board">
         <section class="mapbox">
             <div id="map" class="map"></div>
@@ -32,6 +18,25 @@
             <div id="toasts" class="toasts"></div>
         </section>
         <aside class="side">
+            <div class="head">
+                <a class="brand" href="/">⬡ LorConquest</a>
+                <a class="lobby-link" href="/">← Lobby</a>
+            </div>
+            <div class="status">
+                <span id="title" class="me"></span>
+                <span id="date" class="date"></span>
+                <input id="seek" class="seek" type="range" min="0" max="1" value="0" step="1" aria-label="Day">
+                <div class="row">
+                    <button id="play" class="pause">▶ Play</button>
+                    <label>Speed <select id="speed">
+                        <option value="10">10 days a second</option>
+                        <option value="50">50</option>
+                        <option value="250" selected>250</option>
+                        <option value="1000">1000</option>
+                    </select></label>
+                </div>
+                <span id="verdict" class="verdict"></span>
+            </div>
             <h3>Standing</h3>
             <ol id="standing" class="standing"></ol>
             <h3>Events</h3>

@@ -9,17 +9,6 @@
     <script type="module" src="/js/game.js"></script>
 </head>
 <body class="game">
-    <header class="topbar">
-        <a class="home" href="/">LorConquest</a>
-        <span id="me" class="me"></span>
-        <span id="date" class="date"></span>
-        <button id="pause" class="pause">▶ Play</button>
-        <span id="setup" class="setup" hidden></span>
-        <span id="people" class="people"></span>
-        <span id="treasury" class="treasury"></span>
-        <button id="chat-toggle" class="chat-toggle" hidden>Chat</button>
-        <button id="quit" class="quit" hidden title="Give your country to the computer for good">Leave the game</button>
-    </header>
     <main class="board">
         <section class="mapbox">
             <div id="map" class="map"></div>
@@ -37,6 +26,20 @@
             </section>
         </section>
         <aside class="side">
+            <div class="head">
+                <a class="brand" href="/">⬡ LorConquest</a>
+                <a class="lobby-link" href="/">← Lobby</a>
+            </div>
+            <div class="status">
+                <span id="me" class="me"></span>
+                <span id="date" class="date"></span>
+                <div class="row">
+                    <button id="pause" class="pause">▶ Play</button>
+                    <span id="treasury" class="treasury"></span>
+                </div>
+                <span id="setup" class="setup" hidden></span>
+                <div id="people" class="people"></div>
+            </div>
             <nav id="tabs" class="tabs">
                 <button data-tab="selection" class="active">Map</button>
                 <button data-tab="country">Country</button>
@@ -47,6 +50,10 @@
             </nav>
             <div id="panel" class="panel"></div>
             <ul id="events" class="events" hidden></ul>
+            <div class="foot">
+                <button id="chat-toggle" hidden>Chat</button>
+                <button id="quit" class="danger" hidden title="Give your country to the computer for good">Leave the game</button>
+            </div>
         </aside>
     </main>
 </body>

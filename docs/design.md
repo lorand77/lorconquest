@@ -499,9 +499,11 @@ are kept: pointer events (one path for mouse and touch), orders by click or tap 
 right-click, nothing shown only on hover. Small-screen layouts are not built. (`public/game.html`,
 `public/js/game.js`, `public/js/mapview.js`.)
 
-- **Layout:** a top bar (the player's country, the date, pause, the treasury; money and research
-  join it in milestone 3), the map filling the rest, and a column on the right with the tabs and
-  their panel.
+- **Layout:** as in LorCiv, the map fills the screen but for a sidebar on its right: at its top the name (back to the
+  lobby), then the player's country, the date, pause, the treasury and the other people, then the tabs (two rows of
+  three) and their panel, and at the bottom Chat and Leave the game when there are other people. The replay page has
+  the same sidebar with its controls, the standing and the events. Every page is dark, in LorCiv's colours, which are
+  CSS variables at the top of `public/css/game.css`; the sign-in page is LorCiv's card.
 - **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
   as a marker in its owner's colour with its men on it — a column of them beside a place with
   several; marching armies glide along the roads between ticks; a ring round each besieged
