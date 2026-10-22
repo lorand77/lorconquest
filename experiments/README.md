@@ -136,3 +136,29 @@ it is out of the game (RULES.md §10; rules version 7). Same probe, joiners agai
 
 Better in the long run (Mitteleuropa 39 defensive alliances at year 50 against 86; historical 49 against 218), little better in
 years 5 to 25: a computer conqueror's score stays over 30 for years (it falls by only 2 a year), and its coalition with it.
+
+## 7. Who wins, and how (2026-10-22)
+
+Computer-only games to the end, both scenarios at rules version 14: `node tools/simulate.js --games 36 --jobs 5` and
+`--games 18 --jobs 6 --scenario historical-1440`, run side by side (26 and 31 minutes). The simulator now says how each game
+was won: by reaching the scenario's number of settlements (its own and its vassals' count 1, its protectorates' ½), or on time,
+with the most at the start of 1650.
+
+| | Mitteleuropa: Balanced, 36 games | Mitteleuropa: Historical 1440, 18 games |
+|---|---|---|
+| Winners | SAX 8, BAV 6, BRB 5, GDA 5, WAR 3, LIT 2, POZ 2, SCH 2, RUH 1, AUS 1, BOH 1 | **BUR 7**, SAX 3, BOH 3, TEU 2, POL 2, LUS 1 |
+| By reaching the target | 0 (target 45 of 87) | 0 (target 85 of 168) |
+| On time, in 1650 | 36 | 18 |
+| The winner's settlements in 1650: mean (least–most) | 21.6 (11–30) | 33.3 (21–43) |
+| The runner-up's, mean | 14.5 | 24.9 |
+| A game: wars declared (+ joined), captures, countries eliminated | 47.1 (+27.3), 115, 18.9 of 45 | 63.8 (+90.1), 271, 36.1 of 74 |
+| AI a day: mean, p95, slowest; engine a day | 1.3, 3.2, 50 ms; 1.3 ms | 3.6, 8.9, 61 ms; 4.2 ms |
+
+**No game ends early.** The best any computer did was two-thirds of the target (SAX and BRB 30 of 45 on Balanced, BUR 43 of 85
+on the historical map). The computers fight a lot, but a winner holds about a quarter of the map at the end (a fifth on the
+historical one), with a runner-up not far behind: alliances, coalitions against a warmonger and peaces of at most six settlements
+keep anyone from running away with it. Against people this is not necessarily so, but among computers the end year decides.
+
+**Balanced is spread out; the historical map is not.** On Balanced eleven countries won, none more than 8 of 36 games (Saxony,
+then Bavaria); on the historical map Burgundy, second only to Poland in people at the start (90K to 100K), won 7 of 18 and declared the most wars (204,
+against Bohemia's 144).

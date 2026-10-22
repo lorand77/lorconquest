@@ -1,6 +1,7 @@
 // AI-only games, headless, as fast as the machine allows (docs/plan.md, milestone 5): every country is played by the
 // computer players of src/ai, as in the live game (orders given at the end of a day are applied at the start of the next).
-// Prints for each game who won, when, and what happened, then the win rates by country, the commands the game refused, and
+// Prints for each game who won, when and how (reaching the scenario's number of settlements, or on time: the most at the end
+// year), and what happened, then the win rates by country, the commands the game refused, and
 // the time a game day took. What it shows goes into experiments/.
 //
 //   node tools/simulate.js [--games 8] [--years 210] [--seed 1] [--scenario mitteleuropa] [--jobs 4] [--quiet]
@@ -22,7 +23,7 @@ export function simulate(scenario, { seed, years }) {
     const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] });
     const count = { war: 0, joins: 0, peace: 0, capture: 0, battle: 0, uprising: 0, agreement: 0, subject: 0, empire: 0, bankruptcy: 0, eliminated: 0 };
     const refused = {}, starts = {}, aiMs = [], dayMs = [];
-    let lastWar = 0;
+    let lastWar = 0, how = null;
     const end = Math.min(years * 365, 1e9);
     let pending = [];
     while (game.day < end && !game.state.winner) {
@@ -43,6 +44,7 @@ export function simulate(scenario, { seed, years }) {
         for (const e of events) {
             if (e.type in count) count[e.type]++;
             if (e.type === "war") { starts[e.country] = (starts[e.country] ?? 0) + 1; lastWar = game.day; }
+            if (e.type === "victory") how = e.why === "end" ? "time" : "reached";
         }
         pending = game.state.winner ? [] : ai.orders(game, events);
         const t2 = performance.now();
@@ -53,7 +55,7 @@ export function simulate(scenario, { seed, years }) {
     const owned = Object.entries(table).map(([code, s]) => ({ code, ...s })).sort((a, b) => b.settlements - a.settlements || b.pop - a.pop);
     const armies = armyList(st);
     return {
-        seed, day: game.day, date: formatDate(game.day), winner: st.winner?.country ?? st.winner ?? null, over: Boolean(st.winner),
+        seed, day: game.day, date: formatDate(game.day), winner: st.winner?.country ?? st.winner ?? null, over: Boolean(st.winner), how,
         count, starts, refused, top: owned.slice(0, 5), alive: owned.filter((o) => o.settlements > 0).length,
         wars: st.wars.length, warsAtEnd: st.wars.filter((w) => !w.split("|").some((c) => isRebel(st, c))).length, armies: armies.length, lastWar,
         aiMean: aiMs.reduce((a, b) => a + b, 0) / aiMs.length, aiMax: Math.max(...aiMs), dayMean: dayMs.reduce((a, b) => a + b, 0) / dayMs.length,
@@ -89,7 +91,7 @@ if (isMainThread) {
                         })
                         : simulate(loadScenario(scenarioName, without), { seed, years });
                     results.push(result);
-                    if (!quiet) console.log(`seed ${result.seed}: ${result.over ? `${result.winner} won` : "no winner"} ${result.date} | ${result.count.war} wars, ${result.count.peace} peaces, ${result.count.capture} captures | top ${result.top.slice(0, 3).map((t) => `${t.code} ${t.settlements}`).join(", ")} | ai ${result.aiMean.toFixed(2)} ms/day (max ${result.aiMax.toFixed(0)})`);
+                    if (!quiet) console.log(`seed ${result.seed}: ${result.over ? `${result.winner} won ${result.how === "time" ? "on time" : "by reaching the target"}` : "no winner"} ${result.date} | ${result.count.war} wars, ${result.count.peace} peaces, ${result.count.capture} captures | top ${result.top.slice(0, 3).map((t) => `${t.code} ${t.settlements}`).join(", ")} | ai ${result.aiMean.toFixed(2)} ms/day (max ${result.aiMax.toFixed(0)})`);
                 }
             });
             await Promise.all(lanes);
@@ -107,6 +109,9 @@ function report(results, seconds) {
     const wins = {};
     for (const r of results) if (r.over) wins[r.winner] = (wins[r.winner] ?? 0) + 1;
     console.log(`games with a winner: ${sum((r) => (r.over ? 1 : 0))} of ${n}; wins: ${Object.entries(wins).sort((a, b) => b[1] - a[1]).map(([c, k]) => `${c} ${k}`).join(", ") || "none"}`);
+    const reached = results.filter((r) => r.how === "reached"), onTime = results.filter((r) => r.how === "time");
+    const list = (rs) => rs.map((r) => `${r.winner} ${r.date.slice(0, 4)}`).join(", ") || "none";
+    console.log(`by reaching the target: ${reached.length} (${list(reached)}); on time: ${onTime.length}`);
     const avg = (f) => (sum(f) / n).toFixed(1);
     console.log(`per game: ${avg((r) => r.count.war)} wars declared (+${avg((r) => r.count.joins)} joined), ${avg((r) => r.count.peace)} peaces, ${avg((r) => r.count.capture)} captures, ${avg((r) => r.count.battle)} battles, ${avg((r) => r.count.agreement)} agreements, ${avg((r) => r.count.subject)} subjects, ${avg((r) => r.count.uprising)} uprisings, ${avg((r) => r.count.bankruptcy)} bankruptcies, ${avg((r) => r.count.eliminated)} countries eliminated, ${avg((r) => r.alive)} left`);
     const starters = {};
