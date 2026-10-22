@@ -13,7 +13,7 @@ test("scenarios, and starting a game", async () => {
     const server = await startServer({ dbPath: tempDb() });
     try {
         const scenarios = (await api(server, "GET", "/api/scenarios")).body;
-        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Mitteleuropa"], ["historical-1440", "Historical 1440"]]);
+        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Mitteleuropa: Balanced"], ["historical-1440", "Mitteleuropa: Historical 1440"]]);
         assert.equal(scenarios[0].countries.length, 45);
         assert.equal((await api(server, "POST", "/api/tables", { scenario: "nowhere", country: "BAV" })).status, 400);
         assert.equal((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "XXX" })).status, 400);

@@ -18,7 +18,7 @@ const boxOf = (l) => { const tw = CHAR_W * l.size * l.code.length, th = CHAR_W *
 const onOwnLand = (sc, st, l) => sc.settlements.some((s) => st.settlements[s.id].owner === l.code
     && [s.label.big, s.label.small, s.label.near].some((p) => p && p[0] === l.x && Math.abs(p[1] + CHAR_W * l.size / 2 - l.y) < 1e-9));
 
-for (const [name, sc, folder] of [["Mitteleuropa", mitteleuropa, "mitteleuropa"], ["Historical 1440", historical, "historical-1440"]]) {
+for (const [name, sc, folder] of [["Mitteleuropa: Balanced", mitteleuropa, "mitteleuropa"], ["Mitteleuropa: Historical 1440", historical, "historical-1440"]]) {
     test(`${name}: at the start every country the map itself could label has its code, on its own land, and no two overlap`, () => {
         const st = Game.create(sc, { seed: 1 }).state;
         const labels = countryLabels(st, sc);

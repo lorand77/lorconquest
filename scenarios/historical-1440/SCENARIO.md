@@ -1,4 +1,4 @@
-# SCENARIO: HISTORICAL 1440
+# SCENARIO: MITTELEUROPA: HISTORICAL 1440
 
 *Everything here is specific to this map; the general rules are in [RULES.md](../../docs/RULES.md).*
 

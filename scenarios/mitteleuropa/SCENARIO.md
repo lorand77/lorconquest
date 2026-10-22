@@ -1,4 +1,4 @@
-# SCENARIO: MITTELEUROPA
+# SCENARIO: MITTELEUROPA: BALANCED
 
 *Everything here is specific to this map; the general rules are in [RULES.md](../../docs/RULES.md).*
 
