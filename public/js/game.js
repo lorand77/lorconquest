@@ -171,8 +171,16 @@ async function march(storm) {
     if (!plan) return;
     const p = plan;
     plan = null;
-    await send({ type: "move", army: p.army, to: p.to, storm });
-    renderAll();
+    await dispatch({ type: "move", army: p.army, to: p.to, storm });
+}
+
+// an order that sends the selected army or fleet on its way (a march, a storm, a sortie, a fleet sailing, patrolling,
+// blockading): accepted, the selection is let go, so the next click starts afresh; refused, it stays to try again
+async function dispatch(cmd) {
+    const r = await send(cmd);
+    if (r.ok) select(null);
+    else renderAll();
+    return r;
 }
 
 function togglePause() {
@@ -189,7 +197,7 @@ function onKey(e) {
 
 // the context the panels in panels.js draw with
 const ctx = {
-    make, swatch, send, redraw: () => renderAll(true), name: (key) => name(key), ui,
+    make, swatch, send, dispatch, redraw: () => renderAll(true), name: (key) => name(key), ui,
     get state() { return state; }, get game() { return game; }, get me() { return me; }, get sel() { return sel; },
 };
 
@@ -345,11 +353,11 @@ function armyPanel(a) {
     if (a.at) {
         const node = game.map.nodes.get(a.at), s = node.kind === "settlement" ? state.settlements[node.id] : null;
         const here = armiesAt(a.at);
-        if (s && atWar(me, s.owner) && here.some((x) => x.owner === s.owner && !x.relief)) buttons.push(make("button", { onclick: () => send({ type: "storm", army: a.id }) }, "Storm"));
-        if (s && s.owner === me && s.siege && !a.relief) buttons.push(make("button", { onclick: () => send({ type: "sortie", army: a.id }) }, "Sortie"));
+        if (s && atWar(me, s.owner) && here.some((x) => x.owner === s.owner && !x.relief)) buttons.push(make("button", { onclick: () => dispatch({ type: "storm", army: a.id }) }, "Storm"));
+        if (s && s.owner === me && s.siege && !a.relief) buttons.push(make("button", { onclick: () => dispatch({ type: "sortie", army: a.id }) }, "Sortie"));
         if (menOf(a) + a.cannons > 1) buttons.push(make("button", { onclick: () => { splitOpen = !splitOpen; renderPanel(); } }, "Split…"));
         const post = state.posts[a.at];
-        if (post && atWar(me, post.owner)) buttons.push(make("button", { onclick: () => send({ type: "stormPost", army: a.id }) }, `Storm the post (${formatNumber(post.n)} sharpshooters)`));
+        if (post && atWar(me, post.owner)) buttons.push(make("button", { onclick: () => dispatch({ type: "stormPost", army: a.id }) }, `Storm the post (${formatNumber(post.n)} sharpshooters)`));
         const others = here.filter((x) => x.owner === me && x.id !== a.id && x.relief === a.relief && !x.retreating);
         for (const o of others) buttons.push(make("button", { onclick: () => send({ type: "merge", army: a.id, into: o.id }) }, `Merge into army ${o.id}`));
     }

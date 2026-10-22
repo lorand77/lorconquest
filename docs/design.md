@@ -513,7 +513,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   Split and Merge where they apply, and, when it has unarmed men, one button that arms them all with the best weapon
   the treasury can buy the missing lots of (`mirror.js`, `bestArming`: a `buyWeapons` and an `equip`, sent one after the
   other); its equipment form starts with every man of the kind chosen.
-- **Letting go of a selection:** a second click on the selected army or fleet (`mirror.js`, `isSelected`), a right-click
+- **Letting go of a selection:** an order that sends the army or fleet on its way, once accepted (`game.js`, `dispatch`: March,
+  March and storm, Storm, Sortie, Storm the post; Put to sea, Enter port, Sail, Patrol, Blockade — not Stop, Split, Merge,
+  Hold or equipping, after which one usually goes on with it); a second click on the selected army or fleet (`mirror.js`, `isSelected`), a right-click
   anywhere on the map (no browser menu there; a long press on a touch screen), the × at the top of the Map tab's panel,
   a click on the sea, or Escape (the first Escape drops a drawn route, the next the selection). A click on land never
   deselects an army of yours: it plans a march there.

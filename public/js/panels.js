@@ -26,6 +26,8 @@ const numberInput = (ctx, value, min, max, step = 1) => ctx.make("input", { type
 
 // a command sent, then the panels redrawn at once
 const act = (ctx, cmd) => async () => { const r = await ctx.send(cmd()); ctx.redraw(); return r; };
+// an order that sends the selected fleet on its way: accepted, the screen lets the fleet go (ctx.dispatch, game.js)
+const go = (ctx, cmd) => (ctx.dispatch ? () => ctx.dispatch(cmd()) : act(ctx, cmd));
 
 // ---------- Country ----------
 export function countryTab(ctx) {
@@ -225,21 +227,21 @@ export function fleetPanel(ctx, f) {
     const buttons = [];
     const zone = zones.get(f.zone);
     const ports = zone.ports.filter((p) => state.settlements[p]?.owner === me && p !== f.port);
-    if (f.port) buttons.push(make("button", { onclick: act(ctx, () => ({ type: "sail", fleet: f.id, zone: f.zone })) }, "Put to sea"));
+    if (f.port) buttons.push(make("button", { onclick: go(ctx, () => ({ type: "sail", fleet: f.id, zone: f.zone })) }, "Put to sea"));
     if (ports.length) {
         const pick = select(ctx, ports.map((p) => [p, ctx.name(String(p))]), ports[0]);
-        buttons.push(row(ctx, pick, make("button", { onclick: act(ctx, () => ({ type: "sail", fleet: f.id, port: Number(pick.value) })) }, "Enter port")));
+        buttons.push(row(ctx, pick, make("button", { onclick: go(ctx, () => ({ type: "sail", fleet: f.id, port: Number(pick.value) })) }, "Enter port")));
     }
     if (zone.next.length) {
         const pick = select(ctx, zone.next.map((z) => [z, zones.get(z).name]), zone.next[0]);
-        buttons.push(row(ctx, pick, make("button", { onclick: act(ctx, () => ({ type: "sail", fleet: f.id, zone: pick.value })) }, "Sail (2 months)")));
+        buttons.push(row(ctx, pick, make("button", { onclick: go(ctx, () => ({ type: "sail", fleet: f.id, zone: pick.value })) }, "Sail (2 months)")));
     }
     if (!f.port) {
-        buttons.push(make("button", { onclick: act(ctx, () => ({ type: "patrol", fleet: f.id })) }, "Patrol"));
+        buttons.push(make("button", { onclick: go(ctx, () => ({ type: "patrol", fleet: f.id })) }, "Patrol"));
         const enemyPorts = zone.ports.filter((p) => state.wars.some((w) => w.split("|").includes(me) && w.split("|").includes(state.settlements[p]?.owner)));
         if (enemyPorts.length) {
             const pick = select(ctx, enemyPorts.map((p) => [p, ctx.name(String(p))]), enemyPorts[0]);
-            buttons.push(row(ctx, pick, make("button", { onclick: act(ctx, () => ({ type: "blockade", fleet: f.id, port: Number(pick.value) })) }, "Blockade")));
+            buttons.push(row(ctx, pick, make("button", { onclick: go(ctx, () => ({ type: "blockade", fleet: f.id, port: Number(pick.value) })) }, "Blockade")));
         }
         if (f.order) buttons.push(make("button", { onclick: act(ctx, () => ({ type: "hold", fleet: f.id })) }, "Hold"));
     }
