@@ -172,7 +172,6 @@ country's lowest-numbered port.
 | **Market** | 0.075M | — | +15% money from settlement — its Workshop's 3500 included |
 | **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
-| **1000 cannon crew** | **free** | — | Raised like soldiers · trained in 3–6 months (§8) · serve only cannons |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
 | **Pikes** (1000) | 0.03M | unlocked | ×1.2 · makes guns stronger in pike and shot (§5) |
@@ -180,7 +179,7 @@ country's lowest-numbered port.
 | **Hand cannons** (1000) | 0.05M | x1.5MR | ×1.3 |
 | **Arquebuses** (1000) | 0.07M | x2MR | ×1.6 |
 | **Muskets** (1000) | 0.1M | x3.5MR | ×2 |
-| **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · needs 1000 crew (10 each) |
+| **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · manned by 10 of an army's soldiers each |
 | **Sharpshooters** (100) | 0.015M | x1MR | ×2.5 · rifles · bought and stationed at a mountain pass you own (§5, §8) |
 | **Buy people** (1000 pop) | 0.1M | — | |
 | **10 cogs** | 0.1M | unlocked | ×1 each |
@@ -189,7 +188,7 @@ country's lowest-numbered port.
 | **10 men-of-war** | 0.5M | x12MR | ×8 each |
 
 **Where purchases go.** Swords, pikes, cavalry, guns and cannons go to your **reserve**; an army
-is equipped from it instantly, wherever it is (§8) — with cannons only as far as its crew allow.
+is equipped from it instantly, wherever it is (§8) — each cannon taking 10 of the army's soldiers as its crew.
 New ships appear in a port you own, of your
 choice. People you buy are spread over your settlements in proportion to their pop.
 
@@ -197,9 +196,10 @@ A settlement holds **one** of each building. A **Library** beyond the tenth adds
 cannot buy it. **Cannon crew and soldiers over the cap:** if the law changes to a lower one, or
 people are lost, men already raised stay; only raising more is refused (§9).
 
-**Every cannon needs 10 crewmen.** Crew are raised separately from soldiers, the same way (free,
-trained in a core settlement, §8), and serve only cannons: an army carries at most one cannon per
-10 crew. Crew without cannons are like men without weapons — power 0, but they take losses.
+**Every cannon is manned by 10 crewmen**, taken from the army's own soldiers when the cannon is added to it: the unarmed
+first, then the weakest weapons (swords, pikes, hand cannons, cavalry, arquebuses, muskets), which go to the reserve;
+mercenaries never. Crew are not raised on their own. A cannon returned to the reserve leaves its crew soldiers again,
+unarmed. Crew without cannons — their cannons lost — are like men without weapons: power 0, but they take losses.
 Cannon crew do **not** count as men in the power formula.
 **Every ship needs 50 crew at sea.** Ships in port need no crew. **Ships have no upkeep** of
 their own — only their crew at sea do.
@@ -441,7 +441,7 @@ fleet takes on one order at a time: patrol, blockade or none.
 
 *(The army speed and the route lengths are scenario-specific.)*
 
-**Raising forces.** New soldiers and cannon crew are trained in a **core settlement** and take
+**Raising forces.** New soldiers are trained in a **core settlement** (they also man cannons, §3) and take
 time to appear:
 
 A country may only raise or hire up to its **army cap**, counting men in training, soldiers, crew and

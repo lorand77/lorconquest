@@ -6,8 +6,8 @@
 //   deposit { amount }  withdraw { amount }  borrow { chunks }  repay { chunks }  defaultOnLoans {}
 //   buyBuilding { building, settlement }  buyWeapons { weapon, lots }  buyPeople { lots }
 //   buySharpshooters { pass, lots }  buyShips { kind, port, lots }
-//   raise { settlement, kind: "soldiers" | "crew", lots }  hireMercenaries { settlement, lots }
-//   equip { army, from, to, n }  equipCannons { army, n }  disband { army, men, cannons, crew }
+//   raise { settlement, kind: "soldiers", lots }  hireMercenaries { settlement, lots }
+//   equip { army, from, to, n }  equipCannons { army, n }  (n < 0 returns them)  disband { army, men, cannons, crew }
 //   dismissMercenaries { army, n }  proclaim { region }
 import { CREW_PER_CANNON, WEAPONS, menOf, takeMen } from "./army.js";
 import { longDate } from "./calendar.js";
@@ -31,6 +31,8 @@ function ownSettlement(game, cmd, id = cmd.settlement) {
 const LOT = (weapon) => (weapon === "cannons" ? 100 : 1000);
 const PRICE = (weapon) => (weapon === "cannons" ? CANNON_PRICE : WEAPON_PRICE[weapon]);
 const unlocked = (c, tech) => c.techs.includes(tech);
+// the men who become a cannon's crew, the least use in battle first
+const CREW_FROM = ["unarmed", "swords", "pikes", "handCannons", "cavalry", "arquebuses", "muskets"];
 
 export const countryCommands = {
     setTax(game, cmd) {
@@ -206,10 +208,11 @@ export const countryCommands = {
         return done([{ type: "ships", day: st.day, country: c.code, fleet: fleet.id, port: s.id, kind, n: cmd.lots * 10 }]);
     },
 
-    // soldiers or cannon crew, free, trained in a core settlement: 3 months in the capital, 6 elsewhere (RULES.md §8)
+    // soldiers, free, trained in a core settlement: 3 months in the capital, 6 elsewhere (RULES.md §8). Cannon crew are not
+    // raised: an army's own soldiers man its cannons (equipCannons)
     raise(game, cmd) {
         const st = game.state, c = mine(game, cmd);
-        if (!["soldiers", "crew"].includes(cmd.kind)) return refuse("raise soldiers or crew");
+        if ((cmd.kind ?? "soldiers") !== "soldiers") return refuse("only soldiers are raised: they man cannons themselves");
         if (!positive(cmd.lots)) return refuse("raise a whole number of lots of 1000");
         const { s, error } = ownSettlement(game, cmd);
         if (error) return refuse(error);
@@ -218,7 +221,7 @@ export const countryCommands = {
         if (armySoldiersOf(st, c.code) + n > armyCapOf(st, c.code)) return refuse("that is more soldiers than your law allows");
         if (economyOf(game, c.code).civilians < n) return refuse("not enough civilians");
         const capital = st.settlements[c.capital]?.owner === c.code && c.capital === s.id;
-        c.training.push({ settlement: s.id, kind: cmd.kind, n, ready: st.day + (capital ? TRAIN_CAPITAL_DAYS : TRAIN_OTHER_DAYS) });
+        c.training.push({ settlement: s.id, kind: "soldiers", n, ready: st.day + (capital ? TRAIN_CAPITAL_DAYS : TRAIN_OTHER_DAYS) });
         return done();
     },
 
@@ -255,7 +258,9 @@ export const countryCommands = {
         return done();
     },
 
-    // cannons from the reserve, as far as the army's crew allow (n < 0 returns them)
+    // cannons from the reserve, each manned by CREW_PER_CANNON (10) of the army's own soldiers, who become its crew: the
+    // unarmed first, then the weakest weapons, which go back to the reserve; never mercenaries (RULES.md §3). n < 0 returns
+    // cannons to the reserve, and their crew are soldiers again, unarmed.
     equipCannons(game, cmd) {
         const c = mine(game, cmd), { army, error } = ownArmy(game, cmd);
         if (error) return refuse(error);
@@ -263,10 +268,22 @@ export const countryCommands = {
         if (!Number.isInteger(n) || n === 0) return refuse("equip a whole number of cannons");
         if (n > 0) {
             if (c.reserve.cannons < n) return refuse(`the reserve holds ${c.reserve.cannons} cannons`);
-            if ((army.cannons + n) * CREW_PER_CANNON > army.crew) return refuse(`every cannon needs ${CREW_PER_CANNON} crew; army ${army.id} has ${army.crew}`);
-        } else if (-n > army.cannons) return refuse(`army ${army.id} has ${army.cannons} cannons`);
-        army.cannons += n;
-        c.reserve.cannons -= n;
+            const free = menOf(army) - army.mercs, need = n * CREW_PER_CANNON;
+            if (free < need) return refuse(`each cannon is manned by ${CREW_PER_CANNON} of the army's soldiers; army ${army.id} has ${free}, not counting mercenaries`);
+            const taken = takeMen(army, need, CREW_FROM);
+            for (const w of WEAPONS) if (w !== "unarmed") c.reserve[w] += taken[w];
+            army.crew += need;
+            army.cannons += n;
+            c.reserve.cannons -= n;
+            return done();
+        }
+        const k = -n;
+        if (k > army.cannons) return refuse(`army ${army.id} has ${army.cannons} cannons`);
+        const back = Math.min(army.crew, k * CREW_PER_CANNON);
+        army.cannons -= k;
+        army.crew -= back;
+        army.men.unarmed += back;
+        c.reserve.cannons += k;
         return done();
     },
 

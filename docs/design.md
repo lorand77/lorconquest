@@ -625,12 +625,12 @@ handlers are in `src/engine/commands*.js`, and each file lists its commands' arg
 | | `besiege` · `storm` a settlement · `sortie` (garrison only) | §6 |
 | | `stormPost`: storm the sharpshooter post at a pass | §5 |
 | | `split` · `merge` | §8 |
-| | `equip` (change men's weapons from the reserve) · `equipCannons` (one per 10 crew) | §3, §8 |
+| | `equip` (change men's weapons from the reserve) · `equipCannons` (10 of the army's soldiers become each cannon's crew) | §3, §8 |
 | | `disband` (men or crew home, weapons and cannons to the reserve) · `dismissMercenaries` | §8 |
 | Fleet | `sail` (into a port of yours, to sea, or to a neighbouring zone) | §8 |
 | | `blockade` · `patrol` · `hold` | §7 |
 | | `splitFleet` · `mergeFleet` | §8 |
-| Country | `raise` soldiers or cannon crew at a core settlement · `hireMercenaries` | §3, §8 |
+| Country | `raise` soldiers at a core settlement · `hireMercenaries` | §3, §8 |
 | | `buyWeapons` (and cannons) to the reserve · `buyPeople` | §3 |
 | | `buySharpshooters` at a pass you own · `buyShips` at a port | §3, §8 |
 | | `buyBuilding` (walls, library, workshop, market, courthouse) | §3 |

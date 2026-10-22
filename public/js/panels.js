@@ -122,12 +122,12 @@ export function shopTab(ctx) {
                 : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
     } else out.push(make("p", { class: "hint" }, "Select one of your settlements on the map to build walls, a library, workshop, market or courthouse there."));
 
-    // raising soldiers and crew
-    const rs = select(ctx, settlementOptions(core), capital ?? core[0]?.id), rk = select(ctx, [["soldiers", "soldiers"], ["crew", "cannon crew"]], "soldiers"), rl = numberInput(ctx, 1, 1, 50);
+    // raising soldiers (who also man cannons: an army's own soldiers become their crew)
+    const rs = select(ctx, settlementOptions(core), capital ?? core[0]?.id), rl = numberInput(ctx, 1, 1, 50);
     out.push(section(ctx, "Raise soldiers (free)",
-        row(ctx, rs, rk, rl, make("span", {}, "× 1000")),
+        row(ctx, rs, rl, make("span", {}, "× 1000")),
         make("p", { class: "hint" }, `Trained in a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere. Soldiers now ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
-        make("button", { onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: rk.value, lots: Number(rl.value) })) }, "Raise")));
+        make("button", { onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", lots: Number(rl.value) })) }, "Raise")));
 
     // mercenaries
     const ms = select(ctx, settlementOptions(core), capital ?? core[0]?.id), ml = numberInput(ctx, 1, 1, 50);
@@ -260,6 +260,7 @@ export function armyEquipment(ctx, a) {
         c.reserve.cannons || a.cannons ? row(ctx, cannons,
             make("button", { onclick: act(ctx, () => ({ type: "equipCannons", army: a.id, n: Number(cannons.value) })) }, "Add cannons"),
             make("button", { onclick: act(ctx, () => ({ type: "equipCannons", army: a.id, n: -Number(cannons.value) })) }, "Return cannons")) : "",
+        c.reserve.cannons || a.cannons ? make("p", { class: "hint" }, "Each cannon is manned by 10 of the army's soldiers, unarmed men first; their weapons go to the reserve. Returned, they are soldiers again, unarmed.") : "",
         make("div", { class: "buttons" },
             make("button", { onclick: async () => { if (confirm(`Send ${n(Number(count.value))} ${WEAPON_NAMES[from.value]} home? Their weapons go to the reserve.`)) { await ctx.send({ type: "disband", army: a.id, men: { [from.value]: Number(count.value) } }); ctx.redraw(); } } }, "Disband men"),
             a.mercs ? make("button", { onclick: act(ctx, () => ({ type: "dismissMercenaries", army: a.id, n: Math.min(a.mercs, Number(count.value)) })) }, `Dismiss mercenaries (${n(a.mercs)})`) : "")));

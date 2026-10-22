@@ -122,7 +122,7 @@ test("buying people spreads them over the settlements by their pop", () => {
     assert.equal(AAA(game).treasury, 5000000 - 100000);
 });
 
-test("equipping: new weapons from the reserve, the old back to it; cannons only as far as the crew allow", () => {
+test("equipping: new weapons from the reserve, the old back to it; cannons manned by the army's own soldiers", () => {
     const game = tinyGame(), c = AAA(game);
     order(game, cmd("buyWeapons", { weapon: "pikes", lots: 1 }));
     order(game, cmd("equip", { army: 1, from: "swords", to: "pikes", n: 300 }));
@@ -132,13 +132,22 @@ test("equipping: new weapons from the reserve, the old back to it; cannons only 
     assert.match(refused(game, cmd("equip", { army: 1, from: "swords", to: "swords", n: 1 })), /two different/);
     order(game, cmd("equip", { army: 1, from: "pikes", to: "unarmed", n: 100 }));      // disarm
     assert.deepEqual([game.state.armies[1].men.unarmed, c.reserve.pikes], [100, 800]);
+    // each cannon takes 10 of the army's men as its crew: the unarmed first, then the weakest weapons, which go to the reserve
     c.reserve.cannons = 3;
-    setArmy(game, 2, { swords: 400, crew: 25 });
-    assert.match(refused(game, cmd("equipCannons", { army: 2, n: 3 })), /needs 10 crew/);
+    const a = setArmy(game, 2, { unarmed: 10, swords: 15, muskets: 5 });       // 30 men
+    assert.match(refused(game, cmd("equipCannons", { army: 2, n: 4 })), /reserve holds 3/);
+    const swords = c.reserve.swords;
     order(game, cmd("equipCannons", { army: 2, n: 2 }));
-    assert.deepEqual([game.state.armies[2].cannons, c.reserve.cannons], [2, 1]);
+    assert.deepEqual([a.cannons, a.crew, a.men.unarmed, a.men.swords, a.men.muskets, c.reserve.cannons, c.reserve.swords],
+        [2, 20, 0, 5, 5, 1, swords + 10]);
+    assert.match(refused(game, cmd("equipCannons", { army: 2, n: 2 })), /reserve holds 1/);
+    // returned, a cannon's crew are soldiers again, unarmed
     order(game, cmd("equipCannons", { army: 2, n: -1 }));
-    assert.deepEqual([game.state.armies[2].cannons, c.reserve.cannons], [1, 2]);
+    assert.deepEqual([a.cannons, a.crew, a.men.unarmed, c.reserve.cannons], [1, 10, 10, 2]);
+    assert.match(refused(game, cmd("equipCannons", { army: 2, n: -2 })), /has 1 cannons/);
+    // not enough men, or only mercenaries: no crew
+    setArmy(game, 3, { pikes: 100 }).mercs = 95;
+    assert.match(refused(game, cmd("equipCannons", { army: 3, n: 1 })), /manned by 10 of the army's soldiers; army 3 has 5, not counting mercenaries/);
 });
 
 test("disbanding sends men home and weapons to the reserve, but dismisses no mercenary", () => {
@@ -163,16 +172,17 @@ test("soldiers are trained for free in a core settlement: 3 months in the capita
     assert.match(refused(game, cmd("raise", { settlement: 4, kind: "soldiers", lots: 1 })), /not AAA's/);
     game.state.settlements[2].cores = ["AAA"];
     order(game, cmd("raise", { settlement: 1, kind: "soldiers", lots: 1 }));
-    order(game, cmd("raise", { settlement: 2, kind: "crew", lots: 1 }));
-    assert.deepEqual(c.training.map((t) => [t.settlement, t.kind, t.n, t.ready]), [[1, "soldiers", 1000, 91], [2, "crew", 1000, 183]]);
+    order(game, cmd("raise", { settlement: 2, lots: 1 }));                    // soldiers are what is raised
+    assert.match(refused(game, cmd("raise", { settlement: 2, kind: "crew", lots: 1 })), /only soldiers are raised/);
+    assert.deepEqual(c.training.map((t) => [t.settlement, t.kind, t.n, t.ready]), [[1, "soldiers", 1000, 91], [2, "soldiers", 1000, 183]]);
     assert.equal(economyOf(game, "AAA").soldiers, 3600);                       // training soldiers already pay upkeep
     assert.match(refused(game, cmd("raise", { settlement: 3, kind: "soldiers", lots: 3 })), /more soldiers/);   // 3,600 + 3,000 > 6,000
     runTo(game, 91);
     assert.deepEqual([game.state.armies[1].men.unarmed, game.state.armies[1].men.swords], [1000, 800]);   // joined the garrison
     assert.equal(c.training.length, 1);
     const events = runTo(game, 183);
-    assert.equal(game.state.armies[2].crew, 1000);
-    assert.deepEqual(events.filter((e) => e.type === "ready").map((e) => [e.what, e.n, e.army]), [["crew", 1000, 2]]);
+    assert.equal(game.state.armies[2].men.unarmed, 1000);
+    assert.deepEqual(events.filter((e) => e.type === "ready").map((e) => [e.what, e.n, e.army]), [["soldiers", 1000, 2]]);
 });
 
 test("training in a settlement that falls is cancelled", () => {
