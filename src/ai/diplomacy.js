@@ -10,9 +10,12 @@
 // rules: a rival's proposal is still answered by the engine's formula, like anyone's.
 import { YEAR_DAYS, agreementAnswer, need, demandChance, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
     peaceAnswer, sizeOf, subjectsOf, warJoiners, warScore } from "../engine/index.js";
-import { agreementsBetween } from "../engine/relations.js";
+import { agreementsBetween, alliesOf } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
 import { dice, enemiesOf, hash, ownSettlements, rivalsOf, thinksOn } from "./util.js";
+
+// the most alliances (defensive and military together) a computer country seeks, or helps another to
+export const ALLIANCE_CAP = 2;
 
 const realFoes = (st, code) => enemiesOf(st, code).filter((c) => !st.countries[c].rebel);
 
@@ -122,8 +125,13 @@ export function diplomacyOrders(game, code, fl, { plans, asked }) {
     }
 
     // agreements, at most one proposal a think: a military alliance against a common enemy, then a defensive alliance
-    // or a pact with a neighbour
+    // or a pact with a neighbour. Alliances are sought sparingly — with every country allied to every neighbour that would
+    // have it, a war on anyone brought in a dozen (experiments/README.md, 6): a defensive alliance only when the country
+    // feels threatened, only with a neighbour about as strong as itself or stronger, and no alliance of either kind once
+    // it, or the other, has ALLIANCE_CAP of them.
     const planned = plans.get(code)?.target;
+    const mine = militaryPowerOf(st, code), threatened = need(game, code) > 15;
+    const roomFor = (c) => alliesOf(st, c).length < ALLIANCE_CAP;
     const neighbours = neighboursOf(game, code).filter((n) => n !== planned && !isVassal(st, n) && !foes.includes(n) && !enemiesOf(st, code).includes(n));
     const tries = [];
     if (foes.length) for (const n of Object.keys(st.countries)) if (!st.countries[n].rebel && n !== code && !isVassal(st, n) && foes.some((f) => f !== n && st.wars.includes(warKey(n, f))) && !foes.includes(n)) tries.push(["military", n]);
@@ -132,6 +140,8 @@ export function diplomacyOrders(game, code, fl, { plans, asked }) {
     for (const n of neighbours.sort((a, b) => militaryPowerOf(st, b) - militaryPowerOf(st, a) || (a < b ? -1 : 1))) tries.push(["defensive", n], ...(wary ? [["pact", n]] : []));
     for (const [kind, n] of tries) {
         if (rivals.has(n)) continue;                                                   // never with a rival
+        if ((kind === "defensive" || kind === "military") && (!roomFor(code) || !roomFor(n))) continue;
+        if (kind === "defensive" && (!threatened || militaryPowerOf(st, n) < 0.8 * mine)) continue;
         if (r() > 0.3 + 0.5 * fl.friendliness) continue;
         if (hasAgreement(st, kind, code, n) || hasAgreement(st, kind, n, code) || !mayAsk(n, kind)) continue;
         if (n < code && thinksOn(n, day) && kind !== "military") continue;              // it asks us today, and its question is put first

@@ -3,7 +3,7 @@
 // 68,800, CCC's 17,200.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { setSubject } from "../../src/engine/diplomacy.js";
+import { addAgreement, setSubject } from "../../src/engine/diplomacy.js";
 import { demandChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused, rigRoll } from "../helpers/tiny.js";
 
@@ -172,6 +172,32 @@ test("each year the warmonger score falls by 2, and computer countries bordering
     humans.state.countries.BBB.warmonger = 40;
     runTo(humans, 365);
     assert.equal(hasAgreement(humans.state, "defensive", "AAA", "CCC"), false);
+});
+
+test("a coalition's alliances lapse when the warmonger they were made against is one no more, or is out of the game", () => {
+    const game = tinyGame();
+    game.state.countries.BBB.warmonger = 40;
+    runTo(game, 365);
+    const coalition = game.state.agreements.find((x) => x.kind === "defensive" && x.a === "AAA" && x.b === "CCC");
+    assert.equal(coalition?.against, "BBB", "AAA and CCC ally against BBB");
+    addAgreement(game, "defensive", "DDD", "EEE");                              // an alliance of their own, against nobody
+    // BBB keeps the peace: its score falls under 30 by the start of a year, and the coalition lapses then — not before
+    game.state.countries.BBB.warmonger = 31;
+    runTo(game, 2 * 365 - 1);
+    assert.ok(hasAgreement(game.state, "defensive", "AAA", "CCC"), "still standing during the year");
+    const events = runTo(game, 2 * 365);
+    assert.equal(hasAgreement(game.state, "defensive", "AAA", "CCC"), false);
+    assert.deepEqual(ofType(events, "expired").map((e) => [e.a, e.b, e.against]), [["AAA", "CCC", "BBB"]]);
+    assert.ok(hasAgreement(game.state, "defensive", "DDD", "EEE"), "an ordinary alliance does not lapse");
+    // a warmonger that is eliminated takes its coalitions with it, at once
+    const out = tinyGame();
+    out.state.countries.BBB.warmonger = 60;
+    runTo(out, 365);
+    assert.ok(hasAgreement(out.state, "defensive", "AAA", "CCC"));
+    for (const id of [4, 5]) { out.state.settlements[id].owner = "AAA"; delete out.state.armies[id]; }
+    const gone = runTo(out, 366);
+    assert.ok(ofType(gone, "eliminated").some((e) => e.country === "BBB"));
+    assert.equal(hasAgreement(out.state, "defensive", "AAA", "CCC"), false);
 });
 
 test("winning: the settlements held and vassalized, protectorates half; the end year goes to the most, then the most people", () => {

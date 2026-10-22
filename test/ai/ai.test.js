@@ -249,6 +249,30 @@ test("diplomacy: it asks once a year of a human, and never something the other s
     assert.ok(game.state.offers.every((o) => o.kind === "agreement" && o.to === "BBB"), "as questions, not as agreements made");
 });
 
+test("alliances are sought sparingly: only when threatened, only with a neighbour as strong, and not past two", () => {
+    // AAA is small beside BBB; BBB in turn is small beside CCC, so it would welcome an ally. Twenty years of peace.
+    const setup = (aaa = 100) => {
+        const game = tinyGame(1);
+        for (const id of [1, 2, 3]) setArmy(game, id, { swords: aaa });
+        setArmy(game, 4, { swords: 1000 });
+        setArmy(game, 5, { swords: 1000 });
+        setArmy(game, 6, { swords: 20000 });
+        game.state.day = 7300;
+        return game;
+    };
+    const asks = (game) => {
+        const mem = { plans: new Map(), asked: new Map() }, out = [];
+        for (let d = 0; d < 200; d++) { game.state.day++; out.push(...diplomacyOrders(game, "AAA", { aggression: 0.3, friendliness: 1, builder: 0.5 }, mem).orders); }
+        return out.filter((o) => o.type === "proposeAgreement" && o.kind === "defensive").map((o) => o.with);
+    };
+    assert.deepEqual([...new Set(asks(setup()))], ["BBB"], "threatened, it asks its strong neighbour");
+    assert.deepEqual(asks(setup(5000)), [], "not threatened, it asks nobody");
+    const full = setup();
+    addAgreement(full, "defensive", "BBB", "DDD");
+    addAgreement(full, "defensive", "BBB", "EEE");
+    assert.deepEqual(asks(full), [], "nor a neighbour that has two alliances already");
+});
+
 test("the caretaker joins the wars its allies call it into and lets everything else wait; the full AI answers it all", () => {
     const game = tinyGame(1, () => {}, ["AAA"]);
     const ai = createAI({ seed: 1, humans: ["AAA"] });

@@ -48,6 +48,7 @@ export function check(game, where) {
         assert.ok(["defensive", "military", "guarantee", "access", "pact", "truce"].includes(x.kind), `${where}: agreement ${x.kind}`);
         assert.ok(st.countries[x.a] && st.countries[x.b] && !st.countries[x.a].rebel && !st.countries[x.b].rebel && x.a !== x.b, `${where}: agreement of ${x.a} and ${x.b}`);
         assert.ok(x.until === null || x.until > st.day, `${where}: an agreement that has run out`);
+        if (x.against) assert.ok(x.kind === "defensive" && st.countries[x.against] && st.countries[x.against].out === null, `${where}: a coalition against ${x.against}, which is gone`);
         if (x.kind === "defensive" || x.kind === "military") assert.ok(!st.countries[x.a].subjectKind || st.countries[x.a].subjectKind !== "vassal", `${where}: a vassal in an alliance`);
     }
     for (const c of Object.values(st.countries)) {

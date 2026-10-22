@@ -768,7 +768,9 @@ A neighbour is any country whose settlements share a land route with its settlem
 **Coalitions.** At the start of each year, every computer country that borders a country with a
 warmonger score of **30 or more** proposes a **defensive alliance** to every other computer
 country that borders the same warmonger. Each proposal is answered as above — the warmonger part
-of `need` counts for both, since neither is the warmonger.
+of `need` counts for both, since neither is the warmonger. A coalition's alliance is **against that warmonger**: it lapses
+at the start of a year when the warmonger's score has fallen below 30, or the moment the warmonger is out of the game. (An
+alliance the two had already, or sign for themselves, is not a coalition's and does not lapse.)
 
 **Becoming your subject** — mostly size, a little opinion. The HRE vote is rolled the same way
 ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)):

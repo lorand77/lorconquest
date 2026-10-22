@@ -43,7 +43,6 @@ $("start").addEventListener("submit", async (e) => {
     e.preventDefault();
     $("error").textContent = "";
     const body = { scenario: $("scenario").value, country: $("country").value, solo };
-    if ($("seed").value !== "") body.seed = Number($("seed").value);
     const r = await post("/api/tables", body);
     if (!r.ok) { $("error").textContent = r.error; return; }
     if (r.started) location.href = `/game.html?id=${r.id}`;

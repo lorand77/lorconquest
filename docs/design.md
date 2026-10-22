@@ -234,7 +234,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   engine's pure `peaceAnswer`, `agreementAnswer`, `demandChance`) would accept, since the same proposal may be
   made once in 5 years. Wars are *planned*: a neighbour it outmatches, with nothing binding them, gets a 40-day
   muster before the declaration, dropped if it stops being a good idea; a warlike country seeks no pacts. Also
-  defensive alliances and pacts with neighbours, military alliances against a common enemy, subjects demanded of
+  pacts with neighbours, a defensive alliance only when it feels threatened (need over 15) and only with a neighbour at
+  least 80% as strong, military alliances against a common enemy — no alliance of either kind once it or the other holds
+  two (`ALLIANCE_CAP`; experiments/README.md, 6), subjects demanded of
   much weaker neighbours, and the Empire proposed once when it holds enough. To a human it asks once a year, and
   not while a question stands.
 - **Reflexes:** the country looks at its war again on the tick after a siege begins or a war is declared or joined

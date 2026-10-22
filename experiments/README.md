@@ -107,3 +107,32 @@ On Mitteleuropa the Ruhr, an opportunist of 50K people among small merchants, di
 the games. Made a defender instead — truer to Cleves, Jülich and Berg, which grew by marriage and inheritance — the same 24 games
 had thirteen different winners: BRB 4, PRU 4, LIT 3, SCH 2, GDA 2, SAX 2, and seven others once (RUH among them); 17.6 wars
 declared and 10.3 joined a game (18.4 and 7.8 before characters), 39 captures (35). AI time a day: mean 1.2 ms, p95 3.2 ms.
+
+## 6. Fewer alliances (2026-10-22)
+
+Declaring war on anyone brought in a crowd: one computer-only game per map, asking every five years how many countries would
+join against a neighbour that declared war on each country (almost all of them its defensive allies, who join on their own).
+
+| | year 1 | year 5 | year 25 |
+|---|---|---|---|
+| Mitteleuropa, before: defensive alliances / joiners on average (most) | 33 / 1.2 (6) | 89 / 6.3 (15) | 103 / 5.6 (10) |
+| Mitteleuropa, sparing proposals | 8 / 0.4 (2) | 82 / 5.9 (14) | 86 / 5.5 (13) |
+| Historical, before | 131 / 3.9 (12) | 302 / 10.3 (29) | 304 / 11.4 (23) |
+| Historical, sparing proposals | 28 / 1.0 (2) | 233 / 7.9 (29) | 218 / 8.0 (25) |
+
+A computer country now asks for a defensive alliance only when it feels threatened, only of a neighbour at least 80% as strong,
+and neither of the two may hold two alliances already (`src/ai/diplomacy.js`). That fixed the first year. The webs that still
+grow after it are not the AI's: in the same games, of the defensive alliances signed in 10 years, the computers' own proposals
+made 29 (Mitteleuropa) and 43 (historical), and the **coalition rule** (RULES.md §10: every year the computer neighbours of a
+warmonger with 30 or more propose an alliance to each other, every pair) made 46 and 257. They never lapse.
+
+Then a coalition's alliances were made to lapse with their warmonger: at the start of a year once its score is under 30, or when
+it is out of the game (RULES.md §10; rules version 7). Same probe, joiners against an attacker, average (most):
+
+| | year 1 | year 5 | year 10 | year 25 | year 50 |
+|---|---|---|---|---|---|
+| Mitteleuropa, sparing proposals and lapsing coalitions | 0.4 (2) | 4.9 (14) | 5.0 (14) | 4.0 (9) | 3.6 (8) |
+| Historical, the same | 1.0 (2) | 6.9 (25) | 7.4 (25) | 6.5 (17) | 2.7 (9) |
+
+Better in the long run (Mitteleuropa 39 defensive alliances at year 50 against 86; historical 49 against 218), little better in
+years 5 to 25: a computer conqueror's score stays over 30 for years (it falls by only 2 a year), and its coalition with it.

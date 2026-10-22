@@ -5,7 +5,7 @@
 // subjects are free and it is nobody's subject. Its record stays, marked `out` with the day, so that events, scores, replays
 // and the leaderboard can still name it; it gives no orders again. Peasant rebels are not countries in this sense: they hold
 // no land of their own to begin with.
-import { closeWar, freeSubject, removeAgreements } from "./diplomacy.js";
+import { closeWar, freeSubject, lapseCoalitions, removeAgreements } from "./diplomacy.js";
 import { settle } from "./fighting.js";
 import { subjectsOf } from "./relations.js";
 import { armyList, fleetList, isRebel, removeArmy } from "./state.js";
@@ -35,6 +35,7 @@ function eliminate(game, code, events) {
         if (x === code || y === code) closeWar(game, x, y);
     }
     removeAgreements(game, (x) => x.a === code || x.b === code);
+    lapseCoalitions(game, events);                           // the coalitions against it have nothing left to stand against
     for (const s of subjectsOf(st, code)) freeSubject(game, s, events);
     c.overlord = null;
     c.subjectKind = null;

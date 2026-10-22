@@ -54,11 +54,12 @@ export function recordCapture(game, settlement, from, to) {
 
 // ---------- agreements ----------
 
-export function addAgreement(game, kind, a, b, days = null) {
+// `against`: the warmonger a coalition's alliance is made against (coalitions, below); it lapses with the threat
+export function addAgreement(game, kind, a, b, days = null, against = null) {
     const st = game.state;
     if (hasAgreement(st, kind, a, b)) return;
     const [x, y] = kind === "guarantee" || kind === "access" ? [a, b] : pair(a, b);
-    st.agreements.push({ kind, a: x, b: y, since: st.day, until: days === null ? null : st.day + days });
+    st.agreements.push({ kind, a: x, b: y, since: st.day, until: days === null ? null : st.day + days, ...(against ? { against } : {}) });
 }
 
 export function removeAgreements(game, pred) {
@@ -320,6 +321,17 @@ export function notePropose(game, from, to, kind) {
 }
 
 // the computer countries that border the same warmonger propose defensive alliances to each other (RULES.md §10)
+// a coalition's alliances lapse once the warmonger they were made against is one no more — its score fallen under 30 (checked
+// at the start of the year, after the fall) — or is out of the game (RULES.md §10, Coalitions)
+export function lapseCoalitions(game, events) {
+    const st = game.state;
+    const over = (x) => x.against && (!st.countries[x.against] || st.countries[x.against].out !== null || (st.countries[x.against].warmonger ?? 0) < 30);
+    const ended = st.agreements.filter(over);
+    if (!ended.length) return;
+    removeAgreements(game, over);
+    for (const x of ended) events.push({ type: "expired", day: st.day, kind: x.kind, a: x.a, b: x.b, against: x.against });
+}
+
 export function coalitions(game, events) {
     const st = game.state;
     const computer = (c) => real(st, c) && !isHuman(st, c) && !st.countries[c].overlord;
@@ -329,7 +341,7 @@ export function coalitions(game, events) {
         for (const c of near) for (const d of near) {
             if (c === d || allied(st, c, d) || atWar(st, c, d)) continue;
             if (agreementAnswer(game, d, c, "defensive").accept) {
-                addAgreement(game, "defensive", c, d);
+                addAgreement(game, "defensive", c, d, null, w);
                 events.push({ type: "agreement", day: st.day, kind: "defensive", a: c, b: d, why: `against ${w}` });
             }
         }
