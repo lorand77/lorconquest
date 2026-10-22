@@ -697,8 +697,8 @@ A warmonger is punished in two ways: computer countries like it less (*Opinion* 
 neighbours are more willing to ally with each other against it (*Alliances* below).
 
 ### Elimination
-A country that has **no settlement left** — its last one taken by storm or siege, or given up in a peace — is **out of the
-game**, at the end of that day or that order (a peace taking several settlements is signed whole first):
+A country that has **no settlement left** — its last one taken by storm or siege (a peace never takes it, §10) — is **out of
+the game**, at the end of that day or that order:
 
 - its armies, wherever they stand, and its fleets **vanish** with every man in them, and its training and hires with them;
 - its **wars end**, with no truce, and every **agreement** with it lapses, as do questions put to it or by it;
@@ -821,7 +821,9 @@ countries, and **their allies make their own peace**. A vassal's wars end with i
 other its vassal or protectorate, become the other's, and free subjects of the other. A computer accepts if its war
 score is at least the price. The price is what is asked, in the units of §10 — and **what the proposer gives counts the
 same way against it**: a country losing a war can buy peace with a city. A settlement's people are those at the start of
-the war. A peace may take a country's last settlement, and then it is out of the game (*Elimination*). A vassal does not sign peace: its
+the war. **A peace leaves each side at least one settlement**: terms that would take a country's last one — or give away the
+proposer's last — are refused, whoever proposes them; the last one is taken by force or not at all. Each settlement, and
+each subject freed, is named once. A vassal does not sign peace: its
 overlord does. A peace starts a **truce** of 5 years between the two, and sends every army left in land now closed to it
 home. Offered to a human, terms wait 6 months for an answer and lapse after.
 

@@ -53,6 +53,9 @@ test("a declaration during a truce breaks it; a computer refuses a peace it is w
     const plain = order(game, cmd("BBB", "proposePeace", { with: "AAA" }));
     assert.equal(ofType(plain, "answer")[0].accepted, false);
     assert.deepEqual(game.state.wars, ["AAA|BBB"]);
+    // its city is all it has left, and a peace leaves it one settlement; with a town besides, it may give the city
+    assert.match(refused(game, cmd("BBB", "proposePeace", { with: "AAA", terms: { give: [4] } })), /you would be left with no settlement/);
+    game.state.settlements[3].owner = "BBB";
     assert.match(refused(game, cmd("BBB", "proposePeace", { with: "AAA", terms: { give: [4] } })), /less than 5 years ago/);
     game.state.memory.proposed = {};
     const gift = order(game, cmd("BBB", "proposePeace", { with: "AAA", terms: { give: [4] } }));

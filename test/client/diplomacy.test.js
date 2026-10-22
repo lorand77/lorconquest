@@ -104,7 +104,7 @@ test("at war: the war score, and a peace form whose preview is the computer's ow
     takes.checked = true;
     await takes.handlers.change();
     const preview = find(nodes, (e) => e.attrs.class?.startsWith("preview"))[0];
-    assert.match(preview.text, /against a price of 100\.0: it will refuse\./);                        // all of Ulm's people
+    assert.match(preview.text, /Not possible: ULM would be left with no settlement/);               // Ulm is one town: a peace leaves it that
     const money = find(nodes, (e) => e.attrs.type === "number")[0];
     takes.checked = false;
     money.value = "1000";

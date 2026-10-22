@@ -38,9 +38,11 @@ export function createAI({ seed, humans = [] }) {
     function think(game, code) {
         const st = game.state, c = st.countries[code], fl = flavor(game, code), e = economyOf(game, code);
         const atWarNow = enemiesOf(st, code).length > 0;
-        const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e) };
+        const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e) }, start = ctx.budget;
         const out = [...answerOffers(game, code), ...forceOrders(game, code, fl, ctx), ...economyOrders(game, code, fl, ctx)];
-        const { orders, prepare } = isVassal(st, code) && !atWarNow ? { orders: [], prepare: false } : diplomacyOrders(game, code, fl, memory);
+        // money offered for peace is what the treasury will hold once this think's spending is applied before it
+        const cash = c.treasury - (start - ctx.budget);
+        const { orders, prepare } = isVassal(st, code) && !atWarNow ? { orders: [], prepare: false } : diplomacyOrders(game, code, fl, memory, cash);
         out.push(...orders, ...warOrders(game, code, fl, { prepare }));
         if (out.some((o) => ["split", "merge", "equip", "raise"].includes(o.type))) again.add(code);
         return out;

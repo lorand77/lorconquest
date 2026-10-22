@@ -1,5 +1,5 @@
-// Elimination (RULES.md §10): a country that loses its last settlement is out of the game — by storm, by an undefended
-// capture, or by a peace that hands it away — and with it go its armies (wherever they are), its fleets, its wars, its
+// Elimination (RULES.md §10): a country that loses its last settlement is out of the game — by storm or by an undefended
+// capture; never by a peace, which must leave it one — and with it go its armies (wherever they are), its fleets, its wars, its
 // agreements, its subjects and the questions to and from it. Peasant rebels, who hold no land of their own, are not eliminated.
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -45,18 +45,35 @@ test("a country whose last settlement falls is out: its armies anywhere, its fle
     assert.equal(runTo(game, 200).filter((e) => e.type === "eliminated").length, 0);
 });
 
-test("a peace that gives away a country's last settlement puts it out at once", () => {
+test("a peace never takes a country's last settlement, nor gives away the proposer's, nor names one twice", () => {
     const game = tinyGame(1);
     const st = game.state;
     order(game, { type: "declareWar", country: "DDD", target: "CCC" });
-    game.state.day = 400;
-    game.state.warInfo["CCC|DDD"].start = 0;
-    game.state.warInfo["CCC|DDD"].taken.CCC = 10000;          // CCC is far ahead: DDD would give it everything
-    const events = order(game, { type: "proposePeace", country: "CCC", with: "DDD", terms: { take: [7] } });
-    assert.equal(st.settlements[7].owner, "CCC");
-    assert.ok(events.some((e) => e.type === "peace") && events.some((e) => e.type === "eliminated" && e.country === "DDD"));
-    assert.equal(st.countries.DDD.out, 400);
-    assert.ok(!st.agreements.some((x) => x.a === "DDD" || x.b === "DDD"), "not even the truce the peace signed");
+    st.day = 400;
+    st.warInfo["CCC|DDD"].start = 0;
+    st.warInfo["CCC|DDD"].taken.CCC = 10000;                 // CCC is far ahead: a computer DDD would give it everything
+    assert.match(refused(game, { type: "proposePeace", country: "CCC", with: "DDD", terms: { take: [7] } }), /DDD would be left with no settlement/);
+    // DDD, the loser, may not buy peace with its only town either
+    assert.match(refused(game, { type: "proposePeace", country: "DDD", with: "CCC", terms: { give: [7] } }), /you would be left with no settlement/);
+    // nor is a settlement counted twice in the price, nor terms that are not lists taken at all
+    assert.match(refused(game, { type: "proposePeace", country: "CCC", with: "DDD", terms: { give: [6, 6], take: [7] } }), /give names something twice/);
+    assert.match(refused(game, { type: "proposePeace", country: "CCC", with: "DDD", terms: { take: 7 } }), /take is a list/);
+    // a settlement for one: DDD keeps one, and the peace is signed
+    const events = order(game, { type: "proposePeace", country: "CCC", with: "DDD", terms: { take: [7], give: [6] } });
+    assert.ok(events.some((e) => e.type === "peace") && !events.some((e) => e.type === "eliminated"));
+    assert.deepEqual([st.settlements[7].owner, st.settlements[6].owner, st.countries.DDD.out], ["CCC", "DDD", null]);
+});
+
+test("terms put to a human are checked again when accepted: by then they may take its last settlement", () => {
+    const game = tinyGame(1, () => {}, ["DDD"]);
+    const st = game.state;
+    order(game, { type: "declareWar", country: "CCC", target: "DDD" });
+    st.settlements[8].owner = "DDD";                         // DDD holds two towns when asked
+    order(game, { type: "proposePeace", country: "CCC", with: "DDD", terms: { take: [7] } });
+    st.settlements[8].owner = "EEE";                         // and one when it answers
+    const events = order(game, { type: "answerOffer", country: "DDD", id: st.offers[0].id, accept: true });
+    assert.ok(!events.some((e) => e.type === "peace"));
+    assert.equal(st.settlements[7].owner, "DDD");
 });
 
 test("peasant rebels, who start with no land, are never put out", () => {

@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands, the Empire. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { BAR, agreementAnswer, bordering, demandChance, hreSettlementsOf, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, warJoiners, warScore } from "/engine/index.js";
+import { BAR, agreementAnswer, bordering, demandChance, hreSettlementsOf, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 const n = formatNumber;
@@ -158,7 +158,10 @@ function peaceForm(ctx, t) {
         return t2;
     };
     const update = () => {
-        if (human) { preview.textContent = "A person will answer."; return; }
+        // terms the engine would refuse whoever answers, such as taking its last settlement
+        const bad = validateTerms(game, me, t, terms());
+        if (bad) { preview.textContent = `Not possible: ${bad}.`; preview.className = "preview bad"; return; }
+        if (human) { preview.textContent = "A person will answer."; preview.className = "preview"; return; }
         const a = peaceAnswer(game, t, me, terms());
         preview.textContent = `War score ${a.score.toFixed(1)} against a price of ${a.cost.toFixed(1)}: ${a.accept ? "it will accept" : "it will refuse"}.`;
         preview.className = `preview ${a.accept ? "good" : "bad"}`;
@@ -167,14 +170,12 @@ function peaceForm(ctx, t) {
     money.addEventListener("input", update);
     subject.addEventListener("change", update);
     update();
-    const noSettlements = !theirs.length;
     return [section(ctx, `Peace with ${them.name}`,
-        noSettlements ? mk("p", { class: "good" }, "It has no settlement left: you dictate the terms.") : "",
         mk("details", { open: "open" }, mk("summary", {}, `Take from ${them.name}`), mk("div", { class: "checks" }, ...takes.map((x) => x[2]))),
         mk("details", {}, mk("summary", {}, "Give to them"), mk("div", { class: "checks" }, ...gives.map((x) => x[2]))),
         row(ctx, mk("label", {}, "Money (+ they pay you) "), money),
         row(ctx, subject),
         preview,
         mk("button", { class: "primary", onclick: async () => { const r = await ctx.send({ type: "proposePeace", with: t, terms: terms() }); if (r.ok) ctx.redraw(); } }, "Propose peace"),
-        mk("p", { class: "hint" }, "Price: what you ask, in % of its people, 10 for a year of its money, 50 for a vassal or 25 for a protectorate — less what you give. War score: the share of its people you took, less the share of yours it took, plus how much stronger you are."))];
+        mk("p", { class: "hint" }, "Price: what you ask, in % of its people, 10 for a year of its money, 50 for a vassal or 25 for a protectorate — less what you give. A peace leaves each side at least one settlement. War score: the share of its people you took, less the share of yours it took, plus how much stronger you are."))];
 }

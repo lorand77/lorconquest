@@ -191,9 +191,19 @@ export function declareWar(game, a, b, events) {
 // becomes my "vassal" | "protectorate", becomeSubject: I become the other's, release: [subjects of the other freed] }
 export function validateTerms(game, mine, other, terms) {
     const st = game.state, t = terms ?? {};
+    // lists, each naming a thing once: a settlement given twice would count twice in the price (opinion.js, peaceCost)
+    for (const key of ["take", "give", "release"]) {
+        if (t[key] === undefined || t[key] === null) continue;
+        if (!Array.isArray(t[key])) return `${key} is a list`;
+        if (new Set(t[key]).size !== t[key].length) return `${key} names something twice`;
+    }
     for (const [key, owner] of [["take", other], ["give", mine]]) {
         for (const id of t[key] ?? []) if (st.settlements[id]?.owner !== owner) return `${id} is not ${owner}'s`;
     }
+    // a peace leaves each side at least one settlement: it does not wipe a country off the map (RULES.md §10)
+    const kept = (c, lose, gain) => Object.values(st.settlements).filter((s) => s.owner === c).length - (lose ?? []).length + (gain ?? []).length;
+    if (kept(other, t.take, t.give) < 1) return `${other} would be left with no settlement: a peace must leave it one`;
+    if (kept(mine, t.give, t.take) < 1) return "you would be left with no settlement: a peace must leave you one";
     if (t.money !== undefined && (typeof t.money !== "number" || !Number.isFinite(t.money))) return "money is a number";
     if ((t.money ?? 0) > 0 && st.countries[other].treasury < t.money) return `${other} cannot pay that much`;
     if ((t.money ?? 0) < 0 && st.countries[mine].treasury < -t.money) return "you cannot pay that much";

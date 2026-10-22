@@ -19,8 +19,8 @@ export const ALLIANCE_CAP = 2;
 
 const realFoes = (st, code) => enemiesOf(st, code).filter((c) => !st.countries[c].rebel);
 
-// the terms to offer `foe` for peace, or null to fight on
-function peaceTerms(game, code, foe) {
+// the terms to offer `foe` for peace, or null to fight on; `cash` is what we will have to pay with
+function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury) {
     const st = game.state, info = st.warInfo[warKey(code, foe)];
     if (!info || st.day - info.start < 180) return null;
     const age = st.day - info.start, score = warScore(game, code, foe);
@@ -33,7 +33,7 @@ function peaceTerms(game, code, foe) {
         const wanted = ownSettlements(st, foe).sort((a, b) => b.cores.includes(code) - a.cores.includes(code) || nextToUs(b) - nextToUs(a) || b.pop - a.pop || a.id - b.id);
         const terms = { take: [], give: [], money: 0, makeSubject: null, becomeSubject: null, release: [] };
         for (const s of wanted) {
-            if (terms.take.length >= 6) break;
+            if (terms.take.length >= Math.min(6, wanted.length - 1)) break;          // a peace leaves it one settlement
             const tried = { ...terms, take: [...terms.take, s.id] };
             if (ok(tried)) terms.take = tried.take;
         }
@@ -48,14 +48,14 @@ function peaceTerms(game, code, foe) {
     if (age < YEAR_DAYS || (mine > 0.7 * theirs && age < 3 * YEAR_DAYS)) return null;
     // losing: money first, then the settlements it can best spare
     const terms = { take: [], give: [], money: 0, makeSubject: null, becomeSubject: null, release: [] };
-    const cash = Math.floor(st.countries[code].treasury * 0.5 / 1000) * 1000;
+    const offer = Math.floor(Math.max(0, cash) * 0.5 / 1000) * 1000;
     for (const share of [0, 0.25, 0.5, 1]) {
-        terms.money = -cash * share;
+        terms.money = -offer * share;
         if (ok(terms)) return terms;
     }
     const spare = ownSettlements(st, code).sort((a, b) => a.cores.includes(code) - b.cores.includes(code) || a.pop - b.pop || a.id - b.id);
     for (const s of spare) {
-        if (terms.give.length >= 6) break;
+        if (terms.give.length >= Math.min(6, spare.length - 1)) break;            // and leaves us one
         terms.give.push(s.id);
         if (ok(terms)) return terms;
     }
@@ -91,8 +91,8 @@ export function bestTarget(game, code, fl) {
 
 // the computer player's diplomacy for one country on one think; `memory` is the AI's: the wars it is preparing (`plans`)
 // and when it last asked a human something (`asked`), since a question to a human leaves no mark in the game until
-// it is answered
-export function diplomacyOrders(game, code, fl, { plans, asked }) {
+// it is answered. `cash` is the treasury once the orders of the same think that spend are applied.
+export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.state.countries[code].treasury) {
     const st = game.state, c = st.countries[code], out = [], day = st.day, r = dice(hash(`${st.seed}:${code}:${day}:diplomacy`));
     const cmd = (type, rest) => out.push({ type, country: code, ...rest });
     // may it ask `to` this now: a computer once in five years (the game's rule), a human once a year and not while a question stands
@@ -106,7 +106,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }) {
     // peace
     for (const foe of foes) {
         if (isVassal(st, foe) || !mayAsk(foe, "peace")) continue;
-        const terms = peaceTerms(game, code, foe);
+        const terms = peaceTerms(game, code, foe, cash);
         if (terms) ask("proposePeace", foe, "peace", { with: foe, terms });
     }
 
