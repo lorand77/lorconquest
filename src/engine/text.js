@@ -13,6 +13,7 @@ export function placeName(map, key) {
 
 export function describeEvent(map, e) {
     const place = (key) => placeName(map, key);
+    const town = (id) => map.nodes.get(String(id))?.name ?? String(id);          // peace terms name settlements without their numbers
     const side = (s) => `${s.countries.join("+")} ${fmt(s.men)} ${s.unit ?? "men"}${s.cannons ? ` ${s.cannons} cannons` : ""} (×${s.roll}, power ${fmt(s.power)})`;
     const tech = (t) => t.replace(/([A-Z])/g, " $1").toLowerCase();
     switch (e.type) {
@@ -70,7 +71,7 @@ export function describeEvent(map, e) {
         case "expired": return e.against ? `the alliance of ${e.a} and ${e.b} against ${e.against} lapses: the threat is past`
             : `the ${e.kind === "pact" ? "non-aggression pact" : e.kind} between ${e.a} and ${e.b} runs out`;
         case "broke": return `${e.country} breaks an agreement: its alliances end, and the world remembers`;
-        case "peace": return `${e.country} and ${e.with} make peace${[e.terms?.take?.length && `, ${e.country} takes ${e.terms.take.join(", ")}`, e.terms?.give?.length && `, ${e.country} gives ${e.terms.give.join(", ")}`, e.terms?.money && `, ${fmt(Math.abs(e.terms.money))} paid`, e.terms?.makeSubject && `, ${e.with} becomes its ${e.terms.makeSubject}`, e.terms?.becomeSubject && `, ${e.country} becomes its ${e.terms.becomeSubject}`].filter(Boolean).join("")}`;
+        case "peace": return `${e.country} and ${e.with} make peace${[e.terms?.take?.length && `, ${e.country} takes ${e.terms.take.map(town).join(", ")}`, e.terms?.give?.length && `, ${e.country} gives ${e.terms.give.map(town).join(", ")}`, e.terms?.money && `, ${fmt(Math.abs(e.terms.money))} paid`, e.terms?.makeSubject && `, ${e.with} becomes its ${e.terms.makeSubject}`, e.terms?.becomeSubject && `, ${e.country} becomes its ${e.terms.becomeSubject}`].filter(Boolean).join("")}`;
         case "subject": return `${e.country} becomes a ${e.kind} of ${e.overlord}`;
         case "freedom": return `${e.country} breaks free of ${e.overlord}`;
         case "eliminated": return `${e.country} is no more: its last settlement has fallen`;

@@ -6,6 +6,9 @@
 import { BAR, agreementAnswer, bordering, demandChance, hreSettlementsOf, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
+// a settlement by its name alone, as peace terms show it (names are unique within a scenario)
+const town = (ctx, id) => ctx.game.map.nodes.get(String(id))?.name ?? String(id);
+
 const n = formatNumber;
 const AGREEMENT_NAMES = { defensive: "defensive alliance", military: "military alliance", guarantee: "guarantee", pact: "non-aggression pact (10 years)", access: "military access" };
 const ASK_LABEL = { defensive: "Propose a defensive alliance", military: "Propose a military alliance", guarantee: "Guarantee them", pact: "Propose a non-aggression pact", access: "Ask for military access" };
@@ -23,7 +26,7 @@ function offerText(ctx, o) {
     if (o.kind === "demand") return `${who(o.from)} demands that you become its ${o.subject}.`;
     if (o.kind === "empire") return `${who(o.from)} demands the Empire: join as its protectorate, or join the League against it.`;
     const t = o.terms ?? {};
-    const parts = [t.take?.length && `it takes ${t.take.map((id) => ctx.name(String(id))).join(", ")}`, t.give?.length && `it gives you ${t.give.map((id) => ctx.name(String(id))).join(", ")}`,
+    const parts = [t.take?.length && `it takes ${t.take.map((id) => town(ctx, id)).join(", ")}`, t.give?.length && `it gives you ${t.give.map((id) => town(ctx, id)).join(", ")}`,
         t.money && `${t.money > 0 ? "you pay" : "it pays"} ${n(Math.abs(t.money))}`, t.makeSubject && `you become its ${t.makeSubject}`, t.becomeSubject && `it becomes your ${t.becomeSubject}`].filter(Boolean);
     return `${who(o.from)} proposes peace${parts.length ? `: ${parts.join("; ")}` : ""}.`;
 }
@@ -147,7 +150,7 @@ function peaceForm(ctx, t) {
     const theirs = Object.values(state.settlements).filter((s) => s.owner === t), mine = Object.values(state.settlements).filter((s) => s.owner === me);
     const human = state.humans.includes(t);
     const checks = (list, label) => list.map((s) => { const box = mk("input", { type: "checkbox", value: String(s.id) }); return [s.id, box, mk("label", { class: "check" }, box, ` ${label(s)}`)]; });
-    const takes = checks(theirs, (s) => `${ctx.name(String(s.id))} (${n(s.pop)})`), gives = checks(mine, (s) => `${ctx.name(String(s.id))} (${n(s.pop)})`);
+    const takes = checks(theirs, (s) => `${town(ctx, s.id)} (${n(s.pop)})`), gives = checks(mine, (s) => `${town(ctx, s.id)} (${n(s.pop)})`);
     const money = mk("input", { type: "number", step: 1000, value: 0 });
     const subject = mk("select", {}, ...[["", "no subject"], ["makeSubject:vassal", `${them.name} becomes your vassal`], ["makeSubject:protectorate", `${them.name} becomes your protectorate`],
         ["becomeSubject:vassal", `you become ${them.name}'s vassal`], ["becomeSubject:protectorate", `you become ${them.name}'s protectorate`]].map(([v, l]) => mk("option", { value: v }, l)));

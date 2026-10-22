@@ -7,7 +7,7 @@ import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "
 
 register("./loader.mjs", import.meta.url);
 globalThis.confirm = () => true;
-const { Game, buildMap } = await import("../../src/engine/index.js");
+const { Game, buildMap, describeEvent } = await import("../../src/engine/index.js");
 const { viewFor } = await import("../../src/game/view.js");
 const { diplomacyTab } = await import("../../public/js/diplomacy.js");
 
@@ -135,4 +135,17 @@ test("agreements you hold can be broken or cancelled; a vassal is not dealt with
     const emp = diplomacyTab({ ...ctx, ui: { target: "SWI" } });
     assert.match(textOf(emp), /at least 10 settlements inside the Empire \(you hold 4\)/);
     assert.equal(button(emp, "Demand the Empire").attrs.disabled, "disabled");
+});
+
+test("peace terms name settlements without their numbers: in a question, in the form and in the news", () => {
+    const { ctx } = setup((g) => {
+        g.command({ type: "declareWar", country: "BAV", target: "ULM" });
+        g.command({ type: "proposePeace", country: "ULM", with: "BAV", terms: { take: [36] } });
+    });
+    const nodes = diplomacyTab({ ...ctx, ui: { target: "ULM" } }), text = textOf(nodes);
+    assert.match(text, /Ulm proposes peace: it takes Passau\./);
+    assert.match(text, /Ulm \(\d[\d,]*\)/);                                     // the form's box: name and people, no number
+    assert.ok(!/\b(36|48) (Passau|Ulm)/.test(text), text);
+    assert.equal(describeEvent(ctx.game.map, { type: "peace", country: "ULM", with: "BAV", terms: { take: [36], give: [48] } }),
+        "ULM and BAV make peace, ULM takes Passau, ULM gives Ulm");
 });
