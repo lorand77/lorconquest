@@ -499,8 +499,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 `public/js/game.js`, `public/js/mapview.js`.)
 
 - **Layout:** a top bar (the player's country, the date, pause, the treasury; money and research
-  join it in milestone 3), the map filling the rest, and a column on the right with the selection
-  above the event feed.
+  join it in milestone 3), the map filling the rest, and a column on the right with the tabs and
+  their panel.
 - **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
   as a marker in its owner's colour with its men on it — a column of them beside a place with
   several; marching armies glide along the roads between ticks; a ring round each besieged
@@ -514,6 +514,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   tab; one of your own settlements the Shop, to build there; anyone else's settlement or a pass the Map tab; your own land
   the Country tab; another country's land the Diplomacy tab, with that country picked; a click on the sea leaves the tab
   as it is.
+- **Events** have a tab of their own, newest first: while another tab is open it counts the new ones ("Events (4)"), and a
+  click on one brings its place to the middle of the map, leaving the list open.
 - **Running the country:** tabs above the panel — **Map** (the selection), **Country** (money and its
   parts, tax, the research slider, the law with its caps, the bank and loans, regions to proclaim, a lost
   capital), **Shop** (buildings for the selected settlement, raising soldiers, hiring mercenaries,

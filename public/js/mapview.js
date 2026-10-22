@@ -94,6 +94,12 @@ export async function createMapView(container, svgUrl, onPick) {
     return {
         zoom: (factor) => zoomAt(factor, view.x + view.w / 2, view.y + view.h / 2),
 
+        // bring a point of the map to the middle of the view, at the same zoom (as near as the map's edges allow)
+        centerOn(x, y) {
+            view = { x: x - view.w / 2, y: y - view.h / 2, w: view.w };
+            setView();
+        },
+
         // every land in its owner's colour; borders wherever two neighbouring lands have different owners
         colourLands(ownerOf, colourOf) {
             for (const land of svg.querySelectorAll("#lands [id^='land-']")) land.style.fill = colourOf(ownerOf(land.id.slice(5)));

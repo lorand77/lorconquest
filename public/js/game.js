@@ -34,8 +34,9 @@ let multi = false;         // a game with other people: no pause, a setup minute
 let seats = [];            // the people in it: [{ country, username, state }]
 let setupEnds = 0;         // when the setup minute ends, by performance.now(); 0 once it has
 let unread = 0;            // chat lines not yet seen
+let unseen = 0;            // events that came in while the Events tab was not open
 let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
-let tab = "selection";     // selection | country | shop | research | diplomacy
+let tab = "selection";     // selection (the Map tab) | country | shop | research | diplomacy | events
 const ui = { target: null };   // the country the Diplomacy tab deals with
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 let plan = null;           // { army, to, path, days }
@@ -152,6 +153,7 @@ function select(s) {
 
 function setTab(t) {
     tab = t;
+    if (t === "events") { unseen = 0; renderEventsTab(); }
     renderAll(true);
 }
 
@@ -285,6 +287,10 @@ function frame() {
 
 function renderPanel(force = false) {
     const panel = $("panel");
+    // the Events tab shows the event list (kept by feed) where the panel was
+    $("events").hidden = tab !== "events";
+    panel.hidden = tab === "events";
+    if (tab === "events") return;
     let nodes;
     if (tab === "country") nodes = countryTab(ctx);
     else if (tab === "shop") nodes = shopTab(ctx);
@@ -414,14 +420,19 @@ function countryPanel(code) {
 }
 
 // ---------- events and notices ----------
+// the Events tab: newest first; a click on one brings its place to the middle of the map and leaves the list open
 function feed(e) {
     const list = $("events");
     const item = make("li", {}, make("span", { class: "when" }, longDate(e.day)), " ", describeEvent(game.map, e));
     const where = e.settlement ?? e.place ?? e.at;
-    if (where !== undefined && !String(where).includes("|")) item.addEventListener("click", () => select({ kind: "place", key: String(where) }));
+    const node = where !== undefined && !String(where).includes("|") ? game.map.nodes.get(String(where)) : null;
+    if (node) item.addEventListener("click", () => map.centerOn(node.x, node.y));
     list.prepend(item);
     while (list.children.length > 200) list.lastChild.remove();
+    if (tab !== "events") { unseen++; renderEventsTab(); }
 }
+
+const renderEventsTab = () => { $("events-tab").textContent = unseen ? `Events (${unseen})` : "Events"; };
 
 function toast(text, ms = 6000) {
     const t = make("div", { class: "toast" }, text);

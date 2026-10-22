@@ -44,7 +44,7 @@ body.game { height: 100vh; display: flex; flex-direction: column; overflow: hidd
 .tabs { display: flex; border-bottom: 1px solid #ccc; }
 .tabs button { flex: 1; border: none; border-radius: 0; background: #ece8dd; padding: 6px 4px; border-right: 1px solid #ccc; }
 .tabs button.active { background: #fbfaf6; font-weight: 600; box-shadow: inset 0 -2px #2f5d8a; }
-.panel { padding: 10px 12px; border-bottom: 1px solid #ddd; min-height: 9em; max-height: 58vh; overflow-y: auto; }
+.panel { padding: 10px 12px; border-bottom: 1px solid #ddd; min-height: 9em; flex: 1; overflow-y: auto; }
 .panel h2 { font-size: 16px; margin: 0 0 6px; }
 .panel p { margin: 4px 0; }
 .panel .men { font-weight: 600; }
@@ -55,7 +55,7 @@ body.game { height: 100vh; display: flex; flex-direction: column; overflow: hidd
 .panel .split { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
 .panel .split input { width: 6em; }
 .side h3 { margin: 8px 12px 4px; font-size: 13px; text-transform: uppercase; color: #666; }
-.events { list-style: none; margin: 0; padding: 0 12px 12px; overflow-y: auto; flex: 1; font-size: 13px; }
+.events { list-style: none; margin: 0; padding: 6px 12px 12px; overflow-y: auto; flex: 1; font-size: 13px; }
 .events li { padding: 3px 0; border-bottom: 1px solid #eee; cursor: pointer; }
 .events .when { color: #888; font-variant-numeric: tabular-nums; }
 
