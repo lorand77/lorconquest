@@ -338,10 +338,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
         joinTable(id, userId, country) {
             const row = table(id);
-            if (!row) return { error: "that table is gone or has started" };
+            if (!row) return { error: "that room is gone or its game has started" };
             if (!validCountry(row.scenario, country)) return { error: `no country ${country} in ${row.scenario}` };
             const seats = seatsOf(row.id);
-            if (seats.some((s) => s.userId === userId)) return { error: "you already have a seat at this table" };
+            if (seats.some((s) => s.userId === userId)) return { error: "you already have a seat in this room" };
             if (seats.length >= maxHumans) return { error: `a game has at most ${maxHumans} people` };
             if (seats.some((s) => s.country === country)) return { error: `${country} is taken` };
             db.q.insertSeat.run(row.id, country, userId);
@@ -352,9 +352,9 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
         leaveTable(id, userId) {
             const row = table(id);
-            if (!row) return { error: "that table is gone or has started" };
-            if (row.host_id === userId) return { error: "the host cancels the table instead" };
-            if (!db.q.seatOfUser.get(row.id, userId)) return { error: "you have no seat at this table" };
+            if (!row) return { error: "that room is gone or its game has started" };
+            if (row.host_id === userId) return { error: "the host cancels the room instead" };
+            if (!db.q.seatOfUser.get(row.id, userId)) return { error: "you have no seat in this room" };
             db.q.deleteSeat.run(row.id, userId);
             log.info("table.left", { game: row.id, user: userId });
             tellLobby();
@@ -363,8 +363,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
         cancelTable(id, userId) {
             const row = table(id);
-            if (!row) return { error: "that table is gone or has started" };
-            if (row.host_id !== userId) return { error: "only the host cancels a table" };
+            if (!row) return { error: "that room is gone or its game has started" };
+            if (row.host_id !== userId) return { error: "only the host cancels a room" };
             db.q.setStatus.run("aborted", row.id);
             log.info("table.cancelled", { game: row.id, host: userId });
             for (const s of seatsOf(row.id)) io.to(`user:${s.userId}`).emit("table:cancelled", { id: row.id });
@@ -375,7 +375,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         // the host starts the game, with seats still open if they like: the computer takes them. Resolves once it runs.
         async startTable(id, userId) {
             const row = table(id);
-            if (!row) return { error: "that table is gone or has started" };
+            if (!row) return { error: "that room is gone or its game has started" };
             if (row.host_id !== userId) return { error: "only the host starts a game" };
             db.q.setStatus.run("active", row.id);
             const room = launch(db.q.game.get(row.id));

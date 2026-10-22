@@ -75,7 +75,8 @@ find. With the server alone running the rules, only Node has to agree with itsel
 
 **What was built** (milestone 6; `src/auth/`, `src/game/rooms.js`, `socket.js`, `routes.js`, `public/index.html` and `login.html`):
 
-- **Tables.** A game starts as a table: a person opens one on a scenario in the seat of a country; up to three more take a
+- **Tables** (on the page they are called **rooms**; in the code and the API they stay tables, since `rooms.js` already names
+  the games that are running). A game starts as a table: a person opens one on a scenario in the seat of a country; up to three more take a
   free country each, first come; the host starts it whenever they like, and the computer plays every country nobody took.
   A table is a row of `games` with status `lobby`, its seats rows of `game_seats`; starting it makes the seats the
   game's humans for good (the same list a replay is given). One person, one seat per game; a seat can be given up
@@ -470,7 +471,9 @@ would break that.
 
 `map.svg` is shown as it is. Its shapes carry ids — `land-ID` for each settlement's land,
 `route-…`, `settlement-…`, `pass-…`, `sea-…` — so the client recolours lands as they change hands
-and draws armies and fleets on a layer above. No canvas renderer.
+and draws armies and fleets on a layer above. No canvas renderer. The view is kept on the map (`mirror.js`, `fitView`): shaped like the box it is
+shown in, zoomed out at most until the map's width or height fills it, and panned no further than the map's edges, so
+nothing beyond the map ever shows.
 
 **Settlements show no numbers** — the game never shows a settlement's id. Each marker is a red pill (rounded for a town,
 square-cornered for a city) holding a short form of the name, 3 or 4 letters in mixed case ("Vie", "Kön", "FrO" for Frankfurt

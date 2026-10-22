@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armyPoint, buildLegs, formatMen, routeLine, tabForSelection } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armyPoint, buildLegs, fitView, formatMen, routeLine, tabForSelection } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -84,4 +84,17 @@ test("what is selected on the map opens the tab that deals with it", () => {
     assert.equal(tabForSelection({ kind: "country", code: "ULM" }, "BAV"), "diplomacy", "another country's: diplomacy");
     assert.equal(tabForSelection({ kind: "country", code: "REB1" }, "BAV", { rebel: true }), "selection", "peasant rebels: the map");
     assert.equal(tabForSelection(null, "BAV"), null, "nothing (the sea): the tab stays");
+});
+
+test("the view stays on the map: shaped like its box, no larger than the map, never past an edge", () => {
+    const W = 1308, H = 1165;
+    // a wide box (2:1): the whole width fits, and half of it in height (654 of 1165), which can be panned
+    assert.deepEqual(fitView({ x: -500, y: -500, w: 99999 }, W, H, 2), { x: 0, y: 0, w: 1308, h: 654 });
+    // a tall box (1:2): the whole height fits, and less than half the width (582.5 of 1308)
+    assert.deepEqual(fitView({ x: 0, y: 0, w: 99999 }, W, H, 0.5), { x: 0, y: 0, w: 582.5, h: 1165 });
+    // panned past the right and bottom edges: pulled back to them
+    const v = fitView({ x: 5000, y: 5000, w: 300 }, W, H, 1.5);
+    assert.deepEqual(v, { x: W - 300, y: H - 200, w: 300, h: 200 });
+    // zoomed in too far: a twelfth of the map's width at most
+    assert.equal(fitView({ x: 100, y: 100, w: 1 }, W, H, 1.5).w, W / 12);
 });

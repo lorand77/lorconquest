@@ -54,7 +54,7 @@ test("a table: seats first come first served, at most four people, a host who st
         ch = changed();
         assert.equal((await join("bobby", "ULM")).status, 200);
         await ch;
-        assert.equal((await join("bobby", "SAX")).body.error, "you already have a seat at this table");
+        assert.equal((await join("bobby", "SAX")).body.error, "you already have a seat in this room");
         assert.equal((await join("carol", "SAX")).status, 200);
         assert.equal((await join("dave_d", "BOH")).status, 200);
         assert.equal((await join("erin_e", "AUS")).body.error, "a game has at most 4 people");
@@ -62,10 +62,10 @@ test("a table: seats first come first served, at most four people, a host who st
         // leaving frees a seat; the host cannot leave, only cancel
         assert.equal((await api(server, "POST", `/api/tables/${id}/leave`, {}, "carol")).status, 200);
         assert.equal((await join("erin_e", "SAX")).status, 200);
-        assert.equal((await api(server, "POST", `/api/tables/${id}/leave`, {}, "alice")).body.error, "the host cancels the table instead");
-        assert.equal((await api(server, "POST", `/api/tables/${id}/leave`, {}, "carol")).body.error, "you have no seat at this table");
+        assert.equal((await api(server, "POST", `/api/tables/${id}/leave`, {}, "alice")).body.error, "the host cancels the room instead");
+        assert.equal((await api(server, "POST", `/api/tables/${id}/leave`, {}, "carol")).body.error, "you have no seat in this room");
         assert.equal((await api(server, "POST", `/api/tables/${id}/start`, {}, "bobby")).body.error, "only the host starts a game");
-        assert.equal((await api(server, "POST", `/api/tables/${id}/cancel`, {}, "bobby")).body.error, "only the host cancels a table");
+        assert.equal((await api(server, "POST", `/api/tables/${id}/cancel`, {}, "bobby")).body.error, "only the host cancels a room");
 
         // the host cancels: everyone seated is told, and the table is gone
         const bobby = await connect(server, "bobby");
@@ -73,7 +73,7 @@ test("a table: seats first come first served, at most four people, a host who st
         assert.equal((await api(server, "POST", `/api/tables/${id}/cancel`, {}, "alice")).status, 200);
         assert.deepEqual(await told, { id });
         assert.deepEqual((await api(server, "GET", "/api/tables", null, "carol")).body, []);
-        assert.equal((await join("carol", "SAX")).body.error, "that table is gone or has started");
+        assert.equal((await join("carol", "SAX")).body.error, "that room is gone or its game has started");
         assert.equal(status(server, id), "aborted");
         assert.deepEqual((await api(server, "GET", "/api/games", null, "alice")).body, [], "an aborted table is not one of anyone's games");
     } finally {

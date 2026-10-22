@@ -1,6 +1,7 @@
-// The lobby: start a game alone or open a table, take a free country at someone else's, start or cancel your own, and
+// The lobby: start a game alone or open a room, take a free country in someone else's, start or cancel your own, and
 // open the games you are in. The server decides everything (src/game/routes.js); this page asks, and listens for the
-// lobby changing and for a table it sits at starting.
+// lobby changing and for a room it has a seat in starting. (People see "rooms"; the code and the API say "tables", since
+// "rooms" are the games running in src/game/rooms.js.)
 import { longDate } from "/engine/index.js";
 import { requireUser, signOut } from "./auth.js";
 import { gameLine, tableActions } from "./lobbylogic.js";
@@ -53,7 +54,7 @@ $("start").addEventListener("submit", async (e) => {
 function tableItem(t) {
     const scenario = scenarioOf(t.scenario), a = tableActions(t, me, scenario);
     const li = make("li", { class: "table" });
-    li.append(make("b", {}, `${scenario.name}, ${t.host}'s table`), ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
+    li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
     const row = make("div", { class: "row" });
     const err = make("span", { class: "error" });
     const act = async (url, body) => { const r = await post(url, body); if (!r.ok) err.textContent = r.error; else if (r.id !== undefined && url.endsWith("/start")) location.href = `/game.html?id=${r.id}`; else refresh(); };
@@ -63,7 +64,7 @@ function tableItem(t) {
     }
     if (a.canLeave) row.append(make("button", { onclick: () => act(`/api/tables/${t.id}/leave`) }, "Give up my seat"));
     if (a.canStart) row.append(make("button", { class: "primary", onclick: () => act(`/api/tables/${t.id}/start`) }, `Start now (the computer plays ${a.computerCountries} countries)`));
-    if (a.canCancel) row.append(make("button", { class: "danger", onclick: () => act(`/api/tables/${t.id}/cancel`) }, "Cancel the table"));
+    if (a.canCancel) row.append(make("button", { class: "danger", onclick: () => act(`/api/tables/${t.id}/cancel`) }, "Cancel the room"));
     row.append(err);
     li.append(row);
     return li;

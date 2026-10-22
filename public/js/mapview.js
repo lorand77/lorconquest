@@ -1,8 +1,10 @@
 // The map on screen (design.md, "The map on screen"): map.svg shown as it is, with lands recoloured by owner,
 // borders redrawn where owners change, and an overlay of armies, siege rings and a planned route. Drag to pan,
-// wheel or the +/- buttons to zoom; a click (no drag) is reported as what it hit: an army, a place (a settlement
+// wheel or the +/- buttons to zoom, never out past the map's edges (mirror.js, fitView); a click (no drag) is reported as what it hit: an army, a place (a settlement
 // or pass marker), a land, or the sea. Pointer events, so mouse and touch take one path. Zoomed out, a settlement shows only the
 // short form in its marker; zoomed in to twice the whole map or more, its name too (the svg gets the class "zoomed").
+import { fitView } from "./mirror.js";
+
 const NS = "http://www.w3.org/2000/svg";
 // names show from this zoom on: the whole map's width over the width in view
 const NAMES_FROM = 2;
@@ -18,8 +20,11 @@ export async function createMapView(container, svgUrl, onPick) {
     svg.removeAttribute("width");
     svg.removeAttribute("height");
     const [, , W, H] = svg.getAttribute("viewBox").split(" ").map(Number);
-    let view = { x: 0, y: 0, w: W, h: H };
+    // the view is shaped like the box the map is shown in, so the box shows exactly the view, and kept on the map
+    const aspect = () => { const r = svg.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? r.width / r.height : W / H; };
+    let view = { x: 0, y: 0, w: W };
     const setView = () => {
+        view = fitView(view, W, H, aspect());
         svg.setAttribute("viewBox", `${view.x} ${view.y} ${view.w} ${view.h}`);
         svg.classList.toggle("zoomed", W / view.w >= NAMES_FROM);
     };
@@ -37,12 +42,15 @@ export async function createMapView(container, svgUrl, onPick) {
         pt.y = clientY;
         return pt.matrixTransform(svg.getScreenCTM().inverse());
     };
+    // zoom about a point; at the limit the step is what is left of it, so the map does not lurch sideways
     function zoomAt(factor, cx, cy) {
-        const w = Math.min(W * 1.2, Math.max(W / 12, view.w * factor));
-        const k = w / view.w;
-        view = { x: cx - (cx - view.x) * k, y: cy - (cy - view.y) * k, w, h: view.h * k };
+        const w = fitView({ ...view, w: view.w * factor }, W, H, aspect()).w, k = w / view.w;
+        view = { x: cx - (cx - view.x) * k, y: cy - (cy - view.y) * k, w };
         setView();
     }
+    window.addEventListener("resize", setView);
+    setView();
+    requestAnimationFrame(setView);                         // again once the page is laid out and the box has its size
     svg.addEventListener("wheel", (e) => {
         e.preventDefault();
         const p = toMap(e.clientX, e.clientY);
@@ -58,7 +66,7 @@ export async function createMapView(container, svgUrl, onPick) {
         if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 5) return;
         if (!drag.moved) { drag.moved = true; svg.setPointerCapture(e.pointerId); svg.classList.add("dragging"); }
         const scale = drag.view.w / svg.getBoundingClientRect().width;
-        view = { ...drag.view, x: drag.view.x - (e.clientX - drag.x) * scale, y: drag.view.y - (e.clientY - drag.y) * scale };
+        view = { x: drag.view.x - (e.clientX - drag.x) * scale, y: drag.view.y - (e.clientY - drag.y) * scale, w: drag.view.w };
         setView();
     });
     svg.addEventListener("pointerup", (e) => {

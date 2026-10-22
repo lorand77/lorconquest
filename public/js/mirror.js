@@ -142,3 +142,13 @@ export function tabForSelection(sel, me, { place = null, owner = null, rebel = f
     if (sel.kind === "country") return sel.code === me ? "country" : rebel ? "selection" : "diplomacy";
     return "selection";
 }
+
+// the part of the map in view, kept on the map (design.md, "The map on screen"): shaped like the box it is shown in (its width
+// over its height, `aspect`), no wider than the map nor taller, and never past an edge — so nothing beyond the map shows.
+// Zoomed in at most to a twelfth of the map's width. `view` is { x, y, w } (the height follows); returns { x, y, w, h }.
+export function fitView(view, W, H, aspect) {
+    const most = Math.min(W, H * aspect), least = Math.min(W / 12, most);
+    const w = Math.min(most, Math.max(least, view.w)), h = w / aspect;
+    const x = Math.min(W - w, Math.max(0, view.x)), y = Math.min(H - h, Math.max(0, view.y));
+    return { x, y, w, h };
+}
