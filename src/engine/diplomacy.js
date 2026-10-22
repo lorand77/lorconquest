@@ -263,12 +263,15 @@ export const hreSettlementsOf = (game, code) => {
     return Object.values(game.state.settlements).filter((s) => s.owner === code && hre.has(s.id)).length;
 };
 
-// states that refuse the Empire form the League: a defensive alliance among them all
+// states that refuse the Empire form the League: a defensive alliance among them all — but never between two at war with
+// each other, and none with a member that is out of the game or a vassal (which has no diplomacy). A human's late refusal
+// forms it again, from members some of whom may have gone since (RULES.md §10).
 export function formLeague(game, members, events) {
-    for (let i = 0; i < members.length; i++) for (let j = i + 1; j < members.length; j++) {
-        if (!allied(game.state, members[i], members[j])) addAgreement(game, "defensive", members[i], members[j]);
+    const st = game.state, able = members.filter((c) => real(st, c) && st.countries[c].out === null && !isVassal(st, c));
+    for (let i = 0; i < able.length; i++) for (let j = i + 1; j < able.length; j++) {
+        if (!allied(st, able[i], able[j]) && !atWar(st, able[i], able[j])) addAgreement(game, "defensive", able[i], able[j]);
     }
-    if (members.length > 1) events.push({ type: "league", day: game.state.day, members: [...members] });
+    if (able.length > 1) events.push({ type: "league", day: st.day, members: [...able] });
 }
 const allied = (st, a, b) => hasAgreement(st, "defensive", a, b) || hasAgreement(st, "military", a, b);
 

@@ -3,8 +3,8 @@
 // 68,800, CCC's 17,200.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { addAgreement, setSubject } from "../../src/engine/diplomacy.js";
-import { demandChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
+import { addAgreement, formLeague, setSubject } from "../../src/engine/diplomacy.js";
+import { atWar, demandChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused, rigRoll } from "../helpers/tiny.js";
 
 const cmd = (country, type, rest = {}) => ({ type, country, ...rest });
@@ -152,6 +152,27 @@ test("a human state asked to join the Empire answers; a refusal, or none in 6 mo
     order(game, cmd("AAA", "proposeEmpire"));
     const lapsed = runTo(game, 183);
     assert.deepEqual(ofType(lapsed, "lapsed").map((e) => e.kind), ["empire"]);
+});
+
+test("the League allies no two members at war with each other, nor a vassal, nor a country that is out", () => {
+    const game = tinyGame();
+    order(game, cmd("CCC", "declareWar", { target: "EEE" }));
+    game.state.countries.BBB.overlord = "AAA";
+    game.state.countries.BBB.subjectKind = "vassal";
+    const events = [];
+    formLeague(game, ["BBB", "CCC", "DDD", "EEE"], events);
+    assert.ok(hasAgreement(game.state, "defensive", "CCC", "DDD") && hasAgreement(game.state, "defensive", "DDD", "EEE"));
+    assert.ok(!hasAgreement(game.state, "defensive", "CCC", "EEE"), "at war: no alliance");
+    assert.ok(!game.state.agreements.some((x) => x.a === "BBB" || x.b === "BBB"), "a vassal makes none");
+    assert.deepEqual(ofType(events, "league")[0].members, ["CCC", "DDD", "EEE"]);
+    // a human's refusal months later: a refuser now at war with it gets no alliance with it
+    const g = tinyGame(3, (sc) => { for (const s of sc.settlements) s.hre = true; sc.empire = { needed: 3 }; }, ["DDD"]);
+    order(g, cmd("AAA", "proposeEmpire"));
+    const [foe, ...rest] = g.state.memory.empire.AAA.league;
+    order(g, cmd(foe, "declareWar", { target: "DDD" }));
+    order(g, cmd("DDD", "answerOffer", { id: g.state.offers.find((o) => o.kind === "empire").id, accept: false }));
+    assert.ok(!hasAgreement(g.state, "defensive", foe, "DDD"));
+    for (const r of rest) if (!atWar(g.state, r, "DDD")) assert.ok(hasAgreement(g.state, "defensive", r, "DDD"));
 });
 
 test("each year the warmonger score falls by 2, and computer countries bordering a warmonger of 30 or more ally against it", () => {
