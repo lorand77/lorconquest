@@ -170,7 +170,7 @@ country's lowest-numbered port.
 | **Library** | 0.075M | — | +5% of total R · max one per settlement · capped at +50% (see §4) |
 | **Workshop** | 0.075M | — | +3500 money from settlement |
 | **Market** | 0.075M | — | +15% money from settlement — its Workshop's 3500 included |
-| **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) |
+| **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) · only where it is not your core already |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |

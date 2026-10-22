@@ -140,6 +140,8 @@ export const countryCommands = {
         const { s, error } = ownSettlement(game, cmd);
         if (error) return refuse(error);
         if (s[cmd.building]) return refuse(`${cmd.settlement} has its ${cmd.building} already`);
+        // a courthouse only makes a settlement core (RULES.md §2): where it is core already it would do nothing
+        if (cmd.building === "courthouse" && s.cores.includes(c.code)) return refuse(`${cmd.settlement} is your core already: a courthouse there would do nothing`);
         if (cmd.building === "library" && ownedBy(game.state, c.code).filter((x) => x.library).length >= MAX_LIBRARIES) return refuse(`${MAX_LIBRARIES} libraries are the most that count`);
         const why = afford(c, BUILDING_PRICE[cmd.building]);
         if (why) return refuse(why);

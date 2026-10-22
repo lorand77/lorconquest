@@ -118,7 +118,8 @@ export function shopTab(ctx) {
     const sel = ctx.sel?.kind === "place" ? state.settlements[ctx.sel.key] : null;
     if (sel && sel.owner === me) {
         out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}`, make("div", { class: "buttons" },
-            ...Object.keys(BUILDING_PRICE).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${b}`)
+            // (no courthouse where the settlement is core already: it would do nothing)
+            ...Object.keys(BUILDING_PRICE).filter((b) => b !== "courthouse" || sel.courthouse || !sel.cores.includes(me)).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${b}`)
                 : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
     } else out.push(make("p", { class: "hint" }, "Select one of your settlements on the map to build walls, a library, workshop, market or courthouse there."));
 

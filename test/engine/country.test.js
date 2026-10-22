@@ -92,7 +92,11 @@ test("buildings: one of each a settlement, only in your own, only with the money
     assert.match(refused(game, cmd("buyBuilding", { building: "walls", settlement: 4 })), /not AAA's/);
     assert.match(refused(game, cmd("buyBuilding", { building: "moat", settlement: 2 })), /no building/);
     rich(game);
-    for (const b of ["walls", "library", "market", "courthouse"]) order(game, cmd("buyBuilding", { building: b, settlement: 3 }));
+    for (const b of ["walls", "library", "market"]) order(game, cmd("buyBuilding", { building: b, settlement: 3 }));
+    // a courthouse only where the settlement is not core already: Three is AAA's core
+    assert.match(refused(game, cmd("buyBuilding", { building: "courthouse", settlement: 3 })), /is your core already/);
+    game.state.settlements[3].cores = [];                                      // held, but not core
+    order(game, cmd("buyBuilding", { building: "courthouse", settlement: 3 }));
     assert.equal(c.treasury, 5000000 - 100000 - 75000 - 75000 - 50000);
 });
 
