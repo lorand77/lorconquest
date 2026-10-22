@@ -206,7 +206,7 @@ test("soldiers raised with a weapon take it from the reserve, buy the lots missi
     rich(game);
     c.reserve.pikes = 300;
     assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "muskets" })), /not unlocked/);
-    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "cannons" })), /no weapon/);
+    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "ships" })), /no weapon/);
     order(game, cmd("raise", { settlement: 1, lots: 1, weapon: "pikes" }));      // 700 missing: one lot of 1000 bought
     assert.deepEqual([c.treasury, c.reserve.pikes], [5000000 - 30000, 300]);
     order(game, cmd("raise", { settlement: 2, lots: 2, weapon: "swords" }));     // none in reserve: two lots
@@ -220,6 +220,24 @@ test("soldiers raised with a weapon take it from the reserve, buy the lots missi
     game.state.settlements[2].owner = "BBB";                                    // the swords' settlement falls: they go back
     runTo(game, 183);
     assert.equal(c.reserve.swords, 2000);
+});
+
+test("soldiers raised with cannons get one for every 10 of them, and arrive as its crew", () => {
+    const game = tinyGame(), c = AAA(game);
+    order(game, cmd("setLaw", { law: "mass" }));
+    rich(game);
+    c.reserve.cannons = 30;
+    order(game, cmd("raise", { settlement: 1, lots: 1, weapon: "cannons" }));    // 100 cannons: 30 in reserve, a lot of 100 bought
+    assert.deepEqual([c.treasury, c.reserve.cannons], [5000000 - 100000, 30]);
+    order(game, cmd("raise", { settlement: 2, lots: 2, weapon: "cannons" }));    // 200 more: 30 in reserve, two lots bought
+    assert.deepEqual([c.treasury, c.reserve.cannons], [5000000 - 300000, 30]);
+    const before = { ...game.state.armies[1] };
+    runTo(game, 91);
+    const a = game.state.armies[1];
+    assert.deepEqual([a.cannons - before.cannons, a.crew - before.crew, a.men.unarmed], [100, 1000, 0]);
+    game.state.settlements[2].owner = "BBB";                                   // the second lot's settlement falls: its cannons go back
+    runTo(game, 183);
+    assert.equal(c.reserve.cannons, 230);
 });
 
 test("mercenaries arrive in a month with pikes, up to the army cap, and add no soldiers", () => {

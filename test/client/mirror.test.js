@@ -104,6 +104,7 @@ test("arming men costs the lots of 1000 the reserve lacks; one click picks the b
     assert.deepEqual(armingCost({ pikes: 300 }, "pikes", 2500, 30000), { lots: 3, cost: 90000 });
     assert.deepEqual(armingCost({ pikes: 3000 }, "pikes", 2500, 30000), { lots: 0, cost: 0 });
     assert.deepEqual(armingCost({}, "unarmed", 1000, undefined), { lots: 0, cost: 0 });
+    assert.deepEqual(armingCost({ cannons: 30 }, "cannons", 2000, 100000), { lots: 2, cost: 200000 });       // 200 cannons for 2,000 men
     const prices = { swords: 25000, pikes: 30000, cavalry: 60000, muskets: 100000 };
     const country = { techs: ["swords", "pikes", "cavalry"], reserve: { swords: 0, pikes: 0, cavalry: 0 }, treasury: 100000 };
     assert.deepEqual(bestArming(country, 1000, prices), { weapon: "cavalry", n: 1000, lots: 1, cost: 60000 });

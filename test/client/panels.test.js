@@ -213,3 +213,16 @@ test("the weapon soldiers are raised with stays as the player chose it, redraw a
     weaponOf(nodes).handlers.change();
     assert.equal(weaponOf(shopTab(ctx)).value, "unarmed");
 });
+
+test("soldiers can be raised with cannons, one to every 10 of them", async () => {
+    const { ctx, sent } = setup();
+    ctx.ui = { target: null, raiseWeapon: null };
+    const nodes = shopTab(ctx);
+    const weapon = find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "cannons"))[0];
+    assert.match(weapon.text, /with cannons, 1 to 10 men as its crew/);
+    weapon.value = "cannons";
+    weapon.handlers.change();
+    assert.equal(button(nodes, "Raise").text, "Raise · 100,000 for weapons");    // 100 cannons for 1,000 men: one lot
+    await button(nodes, "Raise").handlers.click();
+    assert.equal(sent[0].weapon, "cannons");
+});

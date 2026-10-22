@@ -638,7 +638,7 @@ handlers are in `src/engine/commands*.js`, and each file lists its commands' arg
 | Fleet | `sail` (into a port of yours, to sea, or to a neighbouring zone) | §8 |
 | | `blockade` · `patrol` · `hold` | §7 |
 | | `splitFleet` · `mergeFleet` | §8 |
-| Country | `raise` soldiers at a core settlement, unarmed or with a `weapon` (from the reserve, the missing lots bought) · `hireMercenaries` | §3, §8 |
+| Country | `raise` soldiers at a core settlement, unarmed or with a `weapon` (from the reserve, the missing lots bought; `cannons`: one to 10 men, who arrive as its crew) · `hireMercenaries` | §3, §8 |
 | | `buyWeapons` (and cannons) to the reserve · `buyPeople` | §3 |
 | | `buySharpshooters` at a pass you own · `buyShips` at a port | §3, §8 |
 | | `buyBuilding` (walls, library, workshop, market, courthouse) | §3 |

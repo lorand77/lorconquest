@@ -212,12 +212,13 @@ export const countryCommands = {
 
     // soldiers, free, trained in a core settlement: 3 months in the capital, 6 elsewhere (RULES.md §8). Cannon crew are not
     // raised: an army's own soldiers man its cannons (equipCannons). Raised with a weapon, the men are set aside its
-    // weapons now — from the reserve, the lots missing bought — and arrive carrying them.
+    // weapons now — from the reserve, the lots missing bought — and arrive carrying them; raised with cannons, one cannon
+    // for every 10 men, and they arrive as its crew.
     raise(game, cmd) {
         const st = game.state, c = mine(game, cmd), weapon = cmd.weapon ?? "unarmed";
         if ((cmd.kind ?? "soldiers") !== "soldiers") return refuse("only soldiers are raised: they man cannons themselves");
         if (!positive(cmd.lots)) return refuse("raise a whole number of lots of 1000");
-        if (!WEAPONS.includes(weapon)) return refuse(`no weapon ${weapon}`);
+        if (!WEAPONS.includes(weapon) && weapon !== "cannons") return refuse(`no weapon ${weapon}`);
         if (weapon !== "unarmed" && !unlocked(c, weapon)) return refuse(`${weapon} is not unlocked yet`);
         const { s, error } = ownSettlement(game, cmd);
         if (error) return refuse(error);
@@ -226,11 +227,12 @@ export const countryCommands = {
         if (armySoldiersOf(st, c.code) + n > armyCapOf(st, c.code)) return refuse("that is more soldiers than your law allows");
         if (economyOf(game, c.code).civilians < n) return refuse("not enough civilians");
         if (weapon !== "unarmed") {
-            const lots = Math.ceil(Math.max(0, n - c.reserve[weapon]) / LOT(weapon)), cost = lots * PRICE(weapon);
+            const k = weapon === "cannons" ? n / CREW_PER_CANNON : n;
+            const lots = Math.ceil(Math.max(0, k - c.reserve[weapon]) / LOT(weapon)), cost = lots * PRICE(weapon);
             const why = cost ? afford(c, cost) : null;
             if (why) return refuse(why);
             c.treasury -= cost;
-            c.reserve[weapon] += lots * LOT(weapon) - n;
+            c.reserve[weapon] += lots * LOT(weapon) - k;
         }
         const capital = st.settlements[c.capital]?.owner === c.code && c.capital === s.id;
         c.training.push({ settlement: s.id, kind: "soldiers", weapon, n, ready: st.day + (capital ? TRAIN_CAPITAL_DAYS : TRAIN_OTHER_DAYS) });

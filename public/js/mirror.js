@@ -156,10 +156,12 @@ export function fitView(view, W, H, aspect) {
 // the weapons the screen offers first, the best first
 export const BEST_FIRST = ["muskets", "arquebuses", "cavalry", "handCannons", "pikes", "swords"];
 
-// what arming `n` men with `weapon` costs (RULES.md §8, Raising forces): the reserve first, then whole lots of 1000 at `price` a lot
+// what arming `n` men with `weapon` costs (RULES.md §8, Raising forces): the reserve first, then whole lots of 1000 at `price` a
+// lot — or, for cannons, one for every 10 men, in lots of 100
 export function armingCost(reserve, weapon, n, price) {
     if (weapon === "unarmed" || n <= 0) return { lots: 0, cost: 0 };
-    const lots = Math.ceil(Math.max(0, n - (reserve[weapon] ?? 0)) / 1000);
+    const [need, lot] = weapon === "cannons" ? [n / 10, 100] : [n, 1000];
+    const lots = Math.ceil(Math.max(0, need - (reserve[weapon] ?? 0)) / lot);
     return { lots, cost: lots * price };
 }
 

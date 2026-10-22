@@ -10,7 +10,7 @@ import { BEST_FIRST, armingCost, bestArming, formatNumber } from "./mirror.js";
 const n = formatNumber;
 const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
 const pct = (x) => `${Math.round(x * 100)}%`;
-const WEAPON_NAMES = { unarmed: "unarmed", swords: "swords", pikes: "pikes", cavalry: "cavalry", handCannons: "hand cannons", arquebuses: "arquebuses", muskets: "muskets" };
+const WEAPON_NAMES = { cannons: "cannons", unarmed: "unarmed", swords: "swords", pikes: "pikes", cavalry: "cavalry", handCannons: "hand cannons", arquebuses: "arquebuses", muskets: "muskets" };
 const SHIP_NAMES = { cogs: "cogs", carracks: "carracks", galleons: "galleons", menOfWar: "men-of-war" };
 const TECH_NAMES = { handCannons: "Hand cannons", arquebuses: "Arquebuses", muskets: "Muskets", sharpshooters: "Sharpshooters", carracks: "Carracks", galleons: "Galleons", menOfWar: "Men-of-war" };
 
@@ -126,10 +126,12 @@ export function shopTab(ctx) {
     // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: with the weapon the
     // player chose last (kept in ctx.ui while the page is open), or else the best the treasury can pay for, the reserve's first
     const rs = select(ctx, settlementOptions(core), capital ?? core[0]?.id), rl = numberInput(ctx, 1, 1, 50);
-    const armable = WEAPONS.filter((w) => w === "unarmed" || c.techs.includes(w));
-    const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed" : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), armable.includes(ctx.ui?.raiseWeapon) ? ctx.ui.raiseWeapon : bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
+    const armable = [...WEAPONS, "cannons"].filter((w) => w === "unarmed" || c.techs.includes(w));
+    const price = (w) => (w === "cannons" ? CANNON_PRICE : WEAPON_PRICE[w]);
+    const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed"
+        : w === "cannons" ? `with cannons, 1 to 10 men as its crew (${n(c.reserve.cannons)} in reserve)` : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), armable.includes(ctx.ui?.raiseWeapon) ? ctx.ui.raiseWeapon : bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
     const raiseLabel = () => {
-        const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * 1000, WEAPON_PRICE[rw.value]);
+        const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * 1000, price(rw.value));
         return cost ? `Raise · ${money(cost)} for weapons` : "Raise";
     };
     const raise = make("button", { class: "primary", onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", lots: Number(rl.value), weapon: rw.value })) }, raiseLabel());
@@ -138,7 +140,7 @@ export function shopTab(ctx) {
     rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
         row(ctx, rs, rl, make("span", {}, "× 1000"), rw),
-        make("p", { class: "hint" }, `Trained in a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere; they arrive carrying their weapons, taken from the reserve now and what is missing bought. Soldiers now ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
+        make("p", { class: "hint" }, `Trained in a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere; they arrive carrying their weapons — or, with cannons, manning one for every 10 of them — taken from the reserve now and what is missing bought. Soldiers now ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
         raise));
 
     // mercenaries

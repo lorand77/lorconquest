@@ -4,21 +4,22 @@
 // army of the country there or forming a new one, carrying the weapons set aside for them when they were raised. If the
 // settlement was captured or stopped being core before then, training is cancelled, the men come home and their weapons
 // go back to the reserve; a hire is cancelled and its money lost.
-import { emptyMen } from "./army.js";
+import { CREW_PER_CANNON, emptyMen } from "./army.js";
 import { armiesAt, isCore, isRebel, newArmy } from "./state.js";
 
 // men join the country's army inside the settlement (not one outside its walls, not one retreating), else form one
-export function joinArmy(state, owner, key, { men = emptyMen(), crew = 0, mercs = 0 }) {
+export function joinArmy(state, owner, key, { men = emptyMen(), cannons = 0, crew = 0, mercs = 0 }) {
     const army = armiesAt(state, key).find((a) => a.owner === owner && !a.relief && !a.retreating);
-    if (!army) return newArmy(state, owner, key, men, 0, crew, mercs);
+    if (!army) return newArmy(state, owner, key, men, cannons, crew, mercs);
     for (const w of Object.keys(men)) army.men[w] += men[w];
+    army.cannons += cannons;
     army.crew += crew;
     army.mercs += mercs;
     return army;
 }
 
-// the weapons set aside for men in training go back to the reserve
-const unqueue = (c, t) => { if (t.weapon && t.weapon !== "unarmed") c.reserve[t.weapon] += t.n; };
+// the weapons set aside for men in training go back to the reserve: one each, or a cannon for every 10 of its crew
+const unqueue = (c, t) => { if (t.weapon && t.weapon !== "unarmed") c.reserve[t.weapon] += t.weapon === "cannons" ? t.n / CREW_PER_CANNON : t.n; };
 
 // a captured settlement's queued training and hires are cancelled
 export function cancelAt(state, settlement) {
@@ -53,6 +54,7 @@ export function forcesDay(game, events) {
                     men.pikes = t.n;
                     army = joinArmy(st, code, String(t.settlement), { men, mercs: t.n });
                 } else if (t.kind === "crew") army = joinArmy(st, code, String(t.settlement), { crew: t.n });
+                else if (t.weapon === "cannons") army = joinArmy(st, code, String(t.settlement), { cannons: t.n / CREW_PER_CANNON, crew: t.n });
                 else {
                     const men = emptyMen();
                     men[t.weapon ?? "unarmed"] = t.n;
