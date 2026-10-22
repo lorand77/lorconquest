@@ -16,7 +16,7 @@ import { done, isPlayable, ownArmy, refuse, whole } from "./command-util.js";
 import { countryCommands } from "./commands-country.js";
 import { diplomacyCommands } from "./commands-diplomacy.js";
 import { navalCommands } from "./commands-naval.js";
-import { settle, situation, sortie, storm, stormThePost } from "./fighting.js";
+import { besiegedIn, settle, situation, sortie, storm, stormThePost } from "./fighting.js";
 import { follow, routeFor } from "./movement.js";
 import { atWar, newArmy, removeArmy } from "./state.js";
 import { isVassal } from "./relations.js";
@@ -29,6 +29,8 @@ const COMMANDS = {
         const to = String(cmd.to);
         if (!game.map.nodes.has(to)) return refuse(`no place ${cmd.to}`);
         if (army.at === to) return refuse(`army ${army.id} is already at ${to}`);
+        const besieged = besiegedIn(game, army);
+        if (besieged) return refuse(`army ${army.id} is besieged in ${besieged.name}: it can only break out by a sortie`);
         const found = routeFor(game, army, to);
         if (!found) return refuse(`army ${army.id} has no way to ${to} through land it may enter`);
         const left = army.at, events = [];

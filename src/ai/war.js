@@ -6,7 +6,7 @@
 // Everything is read from the state, nothing is remembered: a restarted game plays on as before. An army's id is only
 // known once its split has been applied, so musters take two thinks (the second a tick after the first, see index.js).
 import { mayFight } from "../engine/battle.js";
-import { armyList, isFriend, isRebel, situation, siegeDays } from "../engine/index.js";
+import { armyList, besiegedIn, isFriend, isRebel, situation, siegeDays } from "../engine/index.js";
 import { WEAPONS } from "../engine/army.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, ownArmies, ownSettlements, reachFrom, stagingSettlement } from "./util.js";
 
@@ -42,11 +42,12 @@ export function sorties(game, code, out) {
     }
 }
 
-// idle armies of ours outside the garrisons, grouped by the place they stand in
-function hostsOf(st, code) {
+// idle armies of ours outside the garrisons, grouped by the place they stand in; one shut in a besieged settlement may only sortie
+function hostsOf(game, code) {
+    const st = game.state;
     const keep = new Set([...garrisons(st, code).values()].map((a) => a.id)), groups = new Map();
     for (const a of ownArmies(st, code)) {
-        if (keep.has(a.id) || !a.at || a.retreating || a.relief || a.path.length || isRebel(st, code)) continue;
+        if (keep.has(a.id) || !a.at || a.retreating || a.relief || a.path.length || isRebel(st, code) || besiegedIn(game, a)) continue;
         if (!groups.has(a.at)) groups.set(a.at, []);
         groups.get(a.at).push(a);
     }
@@ -67,7 +68,7 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     const ratio = 1.5 - 0.4 * fl.aggression;
     const sieges = besiegedOwn(game, code);
 
-    for (const [at, group] of [...hostsOf(st, code)].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
+    for (const [at, group] of [...hostsOf(game, code)].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
         group.sort((a, b) => a.id - b.id);
         const host = group[0], ours = forcePower(group);
         if (defend && group.length > 1) continue;

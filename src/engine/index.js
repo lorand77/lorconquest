@@ -14,7 +14,7 @@ export { blockaded, crossable, crewAtSea, fleetPower, shipCount, shipsIn } from 
 export * from "./costs.js";
 export { WEAPONS, MULTIPLIER, menOf, militaryPower, power } from "./army.js";
 export { COOLDOWN_DAYS } from "./battle.js";
-export { siegeDays, situation } from "./fighting.js";
+export { besiegedIn, siegeDays, situation } from "./fighting.js";
 export { positionOf, progress, routeFor } from "./movement.js";
 export { START_YEAR, YEAR_DAYS, MONTH_NAMES, dateOf, dayOf, formatDate, longDate, parseDate } from "./calendar.js";
 export { describeEvent, eventCountries, placeName } from "./text.js";

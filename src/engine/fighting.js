@@ -31,6 +31,14 @@ export function situation(game, key) {
     };
 }
 
+// the settlement whose besieged garrison the army is part of, or null: it may not march out, only break out by a
+// sortie (RULES.md §6)
+export function besiegedIn(game, army) {
+    if (!army.at) return null;
+    const { s, garrison, hostile } = situation(game, army.at);
+    return s?.siege && hostile.length && garrison.includes(army) ? s : null;
+}
+
 // siege length (RULES.md §6): pop ÷ 20000 years, ×2 with walls, less 20% per full 100 × x cannons, at least 40%
 export function siegeDays(game, s, cannons) {
     const years = s.pop / 20000 * (s.walls ? 2 : 1) * Math.max(0.4, 1 - 0.2 * Math.floor(cannons / (100 * game.map.x)));

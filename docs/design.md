@@ -226,7 +226,8 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   armed men over that split off, gather at a staging settlement beside the front and merge into one host. The
   host marches on the settlement with the best value for its days — by storm if it outmatches the garrison
   ×1.2 (×1.8 behind walls) by a margin, else by siege — or on an enemy army it is much stronger than, or to the
-  relief of a besieged settlement of its own. Garrisons sortie when they outmatch the besiegers. All of it is
+  relief of a besieged settlement of its own. Garrisons sortie when they outmatch the besiegers; an army shut in a
+  besieged settlement (`besiegedIn`) is never given a march, which the engine refuses. All of it is
   read from the state and nothing is remembered: a split gives an army its id only when applied, so the think
   that splits is followed by one on the next tick (the reflex layer) that moves what was made.
 - **Diplomacy:** peace is asked for when a war has run its course — dictating terms (settlements next to its land,
@@ -621,7 +622,7 @@ handlers are in `src/engine/commands*.js`, and each file lists its commands' arg
 
 | Group | Command | Rules |
 |---|---|---|
-| Army | `move` (to a settlement or pass, by a route or a strait; `storm`: on arrival storm) · `stop` | §6, §8 |
+| Army | `move` (to a settlement or pass, by a route or a strait; `storm`: on arrival storm; not out of a siege) · `stop` | §6, §8 |
 | | `besiege` · `storm` a settlement · `sortie` (garrison only) | §6 |
 | | `stormPost`: storm the sharpshooter post at a pass | §5 |
 | | `split` · `merge` | §8 |

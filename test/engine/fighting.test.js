@@ -2,7 +2,7 @@
 // battles at passes and head-on on routes. rig() loads the dice, so every number can be worked out by hand.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { tinyGame, setArmy, runTo, order, rig } from "../helpers/tiny.js";
+import { tinyGame, setArmy, runTo, order, rig, refused } from "../helpers/tiny.js";
 
 const ofType = (events, type) => events.filter((e) => e.type === type);
 const popOf = (game, country) => Object.values(game.state.settlements).filter((s) => s.owner === country).reduce((n, s) => n + s.pop, 0);
@@ -110,6 +110,23 @@ test("a sortie that wins drives the besiegers off; one that loses falls back ins
     assert.equal(ofType(events, "retreat").length, 0);
     assert.deepEqual([game.state.armies[5].at, game.state.armies[5].men.swords], ["5", 100]);
     assert.equal(game.state.settlements[5].siege.end, end);
+});
+
+test("a besieged garrison cannot march out, nor a part split off from it, until a sortie wins", () => {
+    const game = atThePass();
+    order(game, { type: "move", country: "AAA", army: 3, to: 5 });
+    runTo(game, 182);
+    assert.match(refused(game, { type: "move", country: "BBB", army: 5, to: 4 }), /army 5 is besieged in .*only break out by a sortie/);
+    order(game, { type: "split", country: "BBB", army: 5, men: { swords: 100 } });
+    const part = Math.max(...Object.keys(game.state.armies).map(Number));
+    assert.match(refused(game, { type: "move", country: "BBB", army: part, to: 4 }), /is besieged/);
+    assert.equal(game.state.settlements[5].owner, "BBB");
+    setArmy(game, 5, { swords: 1000 });
+    rig(game, 5, 5, 3, 3);
+    order(game, { type: "sortie", country: "BBB", army: 5 });
+    assert.equal(game.state.settlements[5].siege, null);
+    order(game, { type: "move", country: "BBB", army: 5, to: 4 });            // the siege broken, it may go
+    assert.equal(game.state.armies[5].march.to, "4");
 });
 
 test("a relief force fights the besiegers in the open; the garrison stays inside", () => {

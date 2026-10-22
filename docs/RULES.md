@@ -404,6 +404,11 @@ and fights the besieging army in a normal land battle (§5) — out in the open,
 defence bonus** (no settlement or wall multiplier). If the garrison wins, the besiegers retreat
 and the siege ends. If it loses, it falls back inside and the siege continues on the same timer.
 
+**No marching out.** While the siege lasts, the garrison — every army inside the walls, the owner's or
+a friend's, and any part split off from one — **cannot be ordered to move**: the only way out is a
+sortie that wins, a relief force that drives the besiegers off, or the end of the siege. A relief
+force outside the walls (§8) is in the field and may leave when it likes.
+
 **Surrender.** When the timer expires the garrison surrenders and the settlement falls to the
 besieger. The garrison is **disbanded on the spot**: its men come home as civilians
 (no one dies), but its weapons and cannons are lost — they do **not** go to the reserve.
@@ -548,7 +553,7 @@ in one land counts together, so splitting up means spreading out. A besieger ove
 2% a month: 1% to supply, 1% to siege disease (§6). Peasant rebels (§11) are fed by their own
 people and never suffer this.
 
-**Orders:** `move` · `besiege` · `storm` · `sortie` (garrison only, §6).
+**Orders:** `move` (not for a besieged garrison, §6) · `besiege` · `storm` · `sortie` (garrison only, §6).
 **Fleet orders:** `move` · `blockade` · `patrol` (§7).
 
 **Battle cooldown:** one resolution per pair of armies per 3 months. The loser retreats
