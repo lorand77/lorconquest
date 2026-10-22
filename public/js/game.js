@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, formatNumber, routeLine } from "./mirror.js";
+import { applyChanges, applyPrivate, buildLegs, formatNumber, routeLine, tabForSelection } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
@@ -137,12 +137,16 @@ function onPick(hit) {
     else select({ kind: "country", code: ownerOfLand(hit.key) });
 }
 
+// what is selected opens the tab that deals with it (mirror.js, tabForSelection); a country's land picks it in Diplomacy
 function select(s) {
     sel = s;
     plan = null;
     splitOpen = false;
-    if (tab === "diplomacy" && s?.kind === "country") ui.target = s.code;       // a click on a country's land picks it to deal with
-    else if (tab !== "shop") tab = "selection";       // the shop keeps the selected settlement in view
+    const place = s?.kind === "place" ? game.map.nodes.get(s.key) : null;
+    const owner = place ? state.settlements[place.land]?.owner : null;
+    const next = tabForSelection(s, me, { place, owner, rebel: s?.kind === "country" && Boolean(country(s.code)?.rebel) });
+    if (next) tab = next;
+    if (next === "diplomacy") ui.target = s.code;
     renderAll(true);
 }
 

@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armyPoint, buildLegs, formatMen, routeLine } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armyPoint, buildLegs, formatMen, routeLine, tabForSelection } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -71,4 +71,17 @@ test("where fleets are drawn: in a port, at sea in their zone, or between zones"
     assert.deepEqual(pts.get(2), [oslo.x - 8, oslo.y + 36]);                  // a second fleet in the same port sits below
     assert.deepEqual(pts.get(3), [sk.x, sk.y + 14]);
     assert.deepEqual(pts.get(4), [(of.x + sk.x) / 2, (of.y + sk.y) / 2 + 14]); // halfway between the zones
+});
+
+test("what is selected on the map opens the tab that deals with it", () => {
+    const town = { kind: "settlement" }, pass = { kind: "pass" };
+    assert.equal(tabForSelection({ kind: "army", id: 37 }, "BAV"), "selection");
+    assert.equal(tabForSelection({ kind: "fleet", id: 101 }, "BAV"), "selection");
+    assert.equal(tabForSelection({ kind: "place", key: "37" }, "BAV", { place: town, owner: "BAV" }), "shop", "one's own settlement: the shop");
+    assert.equal(tabForSelection({ kind: "place", key: "48" }, "BAV", { place: town, owner: "ULM" }), "selection", "another's: the map");
+    assert.equal(tabForSelection({ kind: "place", key: "P1" }, "BAV", { place: pass, owner: "BAV" }), "selection", "a pass: the map");
+    assert.equal(tabForSelection({ kind: "country", code: "BAV" }, "BAV"), "country", "one's own land: the country");
+    assert.equal(tabForSelection({ kind: "country", code: "ULM" }, "BAV"), "diplomacy", "another country's: diplomacy");
+    assert.equal(tabForSelection({ kind: "country", code: "REB1" }, "BAV", { rebel: true }), "selection", "peasant rebels: the map");
+    assert.equal(tabForSelection(null, "BAV"), null, "nothing (the sea): the tab stays");
 });

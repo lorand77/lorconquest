@@ -507,6 +507,10 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy
   settlement, [Cancel] (or Escape) drops it. The selected army's panel has Stop, Storm, Sortie,
   Split and Merge where they apply.
+- **A click opens the tab that deals with it** (`mirror.js`, `tabForSelection`): an army or a fleet its panel on the Map
+  tab; one of your own settlements the Shop, to build there; anyone else's settlement or a pass the Map tab; your own land
+  the Country tab; another country's land the Diplomacy tab, with that country picked; a click on the sea leaves the tab
+  as it is.
 - **Running the country:** tabs above the panel — **Map** (the selection), **Country** (money and its
   parts, tax, the research slider, the law with its caps, the bank and loans, regions to proclaim, a lost
   capital), **Shop** (buildings for the selected settlement, raising soldiers, hiring mercenaries,

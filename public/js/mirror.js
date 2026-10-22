@@ -130,3 +130,15 @@ export function fleetPoints(state, nodes, zones, day) {
     }
     return out;
 }
+
+// the tab a selection on the map opens (design.md, "The game screen"): an army or a fleet its panel on the Map tab, one of the
+// player's own settlements the Shop (to build there), anyone else's settlement or a pass the Map tab, the player's own land the
+// Country tab, another country's land the Diplomacy tab (to deal with it) — peasant rebels', with whom there is no dealing,
+// the Map tab. Nothing selected (a click on the sea) keeps the tab there is. `place` is the clicked place's map node, if any.
+export function tabForSelection(sel, me, { place = null, owner = null, rebel = false } = {}) {
+    if (!sel) return null;
+    if (sel.kind === "army" || sel.kind === "fleet") return "selection";
+    if (sel.kind === "place") return place?.kind === "settlement" && owner === me ? "shop" : "selection";
+    if (sel.kind === "country") return sel.code === me ? "country" : rebel ? "selection" : "diplomacy";
+    return "selection";
+}
