@@ -123,18 +123,18 @@ export function shopTab(ctx) {
                 : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
     } else out.push(make("p", { class: "hint" }, "Select one of your settlements on the map to build walls, a library, workshop, market or courthouse there."));
 
-    // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: by default with the
-    // best weapon the treasury can pay for, the reserve's first
+    // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: with the weapon the
+    // player chose last (kept in ctx.ui while the page is open), or else the best the treasury can pay for, the reserve's first
     const rs = select(ctx, settlementOptions(core), capital ?? core[0]?.id), rl = numberInput(ctx, 1, 1, 50);
     const armable = WEAPONS.filter((w) => w === "unarmed" || c.techs.includes(w));
-    const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed" : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
+    const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed" : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), armable.includes(ctx.ui?.raiseWeapon) ? ctx.ui.raiseWeapon : bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
     const raiseLabel = () => {
         const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * 1000, WEAPON_PRICE[rw.value]);
         return cost ? `Raise · ${money(cost)} for weapons` : "Raise";
     };
     const raise = make("button", { class: "primary", onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", lots: Number(rl.value), weapon: rw.value })) }, raiseLabel());
     const relabel = () => { raise.textContent = raiseLabel(); };
-    rw.addEventListener("change", relabel);
+    rw.addEventListener("change", () => { if (ctx.ui) ctx.ui.raiseWeapon = rw.value; relabel(); });
     rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
         row(ctx, rs, rl, make("span", {}, "× 1000"), rw),

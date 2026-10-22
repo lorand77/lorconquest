@@ -525,8 +525,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   click on one brings its place to the middle of the map, leaving the list open.
 - **Running the country:** tabs above the panel — **Map** (the selection), **Country** (money and its
   parts, tax, the research slider, the law with its caps, the bank and loans, regions to proclaim, a lost
-  capital), **Shop** (buildings for the selected settlement, raising soldiers — armed in the same click, with the best
-  weapon the treasury pays for unless another is chosen — hiring mercenaries, weapons by as many lots as asked, people,
+  capital), **Shop** (buildings for the selected settlement, raising soldiers — armed in the same click, with the weapon
+  the player last chose, kept while the page is open (at first the best the treasury pays for) — hiring mercenaries, weapons by as many lots as asked, people,
   sharpshooters, ships, and what is queued) and **Research** (the tree, the tech
   being researched). Fleets are chips on the map — in a port below its marker, at sea below the zone's
   name, gliding between zones when sailing — and their panel has the orders. Sharpshooter posts show

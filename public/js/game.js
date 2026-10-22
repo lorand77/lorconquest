@@ -37,7 +37,8 @@ let unread = 0;            // chat lines not yet seen
 let unseen = 0;            // events that came in while the Events tab was not open
 let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
 let tab = "selection";     // selection (the Map tab) | country | shop | research | diplomacy | events
-const ui = { target: null };   // the country the Diplomacy tab deals with
+// choices the panels keep while the page is open: the country the Diplomacy tab deals with, the weapon soldiers are raised with
+const ui = { target: null, raiseWeapon: null };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 let plan = null;           // { army, to, path, days }
 let splitOpen = false;

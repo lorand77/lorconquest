@@ -194,3 +194,22 @@ test("an army's unarmed are armed at one click, with the best weapon the treasur
     a.men.unarmed = 0;
     assert.equal(button(armyEquipment(ctx, a), "Arm "), undefined);           // nobody to arm
 });
+
+test("the weapon soldiers are raised with stays as the player chose it, redraw after redraw, until changed", async () => {
+    const { ctx, sent } = setup();
+    ctx.ui = { target: null, raiseWeapon: null };
+    const weaponOf = (nodes) => find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "cavalry"))[0];
+    let nodes = shopTab(ctx);
+    assert.equal(weaponOf(nodes).value, "cavalry");                           // nothing chosen yet: the best the treasury pays for
+    weaponOf(nodes).value = "pikes";
+    weaponOf(nodes).handlers.change();
+    assert.equal(ctx.ui.raiseWeapon, "pikes");
+    nodes = shopTab(ctx);                                                      // the panel is rebuilt as the days go by
+    assert.equal(weaponOf(nodes).value, "pikes");
+    assert.equal(button(nodes, "Raise").text, "Raise · 30,000 for weapons");
+    await button(nodes, "Raise").handlers.click();
+    assert.equal(sent[0].weapon, "pikes");
+    weaponOf(nodes).value = "unarmed";                                         // unarmed is a choice too
+    weaponOf(nodes).handlers.change();
+    assert.equal(weaponOf(shopTab(ctx)).value, "unarmed");
+});
