@@ -4,6 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { economyOf, fleetList, shipsIn } from "../../src/engine/index.js";
+import { capture } from "../../src/engine/fighting.js";
 import { tinyGame, setArmy, runTo, order, refused, rig, giveFleet } from "../helpers/tiny.js";
 
 const cmd = (type, rest = {}) => ({ type, country: "AAA", ...rest });
@@ -109,6 +110,25 @@ test("the beaten side runs for its nearest port in the zone; a fleet with no shi
     rig(game, 6, 6, 1, 1);
     runTo(game, 64);
     assert.equal(game.state.fleets[doomed.id], undefined);
+});
+
+test("a port that falls is left by its old owner's fleets: for another port of theirs in the zone, else to sea", () => {
+    // Five is a second port of BBB's in the south
+    const game = tinyGame(1, (sc) => { Object.assign(sc.settlements[4], { port: true, seaZone: "south" }); sc.seaZones[1].ports = [4, 5]; });
+    order(game, cmd("declareWar", { target: "BBB" }));
+    const f = giveFleet(game, "BBB", { cogs: 10 }, 4, "south");
+    let events = [];
+    capture(game, game.state.settlements[4], "AAA", events, "storm");
+    assert.deepEqual([f.port, f.zone], [5, "south"]);
+    assert.deepEqual(ofType(events, "fleetInPort").map((e) => [e.fleet, e.port, e.fled]), [[f.id, 5, 4]]);
+    events = [];
+    capture(game, game.state.settlements[5], "AAA", events, "storm");           // its last port there: out to sea
+    assert.deepEqual([f.port, f.zone, f.moving], [null, "south", null]);
+    assert.deepEqual(ofType(events, "fleetAtSea").map((e) => [e.fleet, e.zone, e.fled]), [[f.id, "south", 5]]);
+    // at sea it can be fought; AAA's own fleets are not moved by its captures
+    const mine = giveFleet(game, "AAA", { cogs: 5 }, 1, "north");
+    capture(game, game.state.settlements[2], "AAA", [], "storm");
+    assert.equal(mine.port, 1);
 });
 
 test("a blockade halves an enemy port's money while it holds", () => {

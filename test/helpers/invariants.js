@@ -28,6 +28,7 @@ export function check(game, where) {
         assert.ok(ships.every((n) => Number.isInteger(n) && n >= 0) && ships.some((n) => n > 0), `${where}: fleet ${id} ships ${JSON.stringify(f.ships)}`);
         assert.ok(game.map.zones.has(f.zone), `${where}: fleet ${id} in no zone`);
         assert.ok(!(f.port && f.moving), `${where}: fleet ${id} in port and sailing`);
+        if (f.port) assert.equal(st.settlements[f.port]?.owner, f.owner, `${where}: fleet ${id} in port ${f.port}, which is not its country's`);
     }
     for (const s of Object.values(st.settlements)) {
         assert.ok(s.pop >= 0 && st.countries[s.owner], `${where}: settlement ${s.id}`);

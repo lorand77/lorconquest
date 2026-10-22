@@ -69,16 +69,33 @@ export function fleetBattle(game, { kind, zone, a, b, tie }) {
     return ev;
 }
 
+// the country's port in a zone a fleet makes for — the first by id — or undefined
+const homePort = (game, country, zone, except = null) => (game.map.zones.get(zone)?.ports ?? []).filter((p) => p !== except && game.state.settlements[p].owner === country).sort((x, y) => x - y)[0];
+
 // the losing side runs for its nearest port in the zone, if it has one, and waits there
 function runForPort(game, fleets, zone, events) {
     const st = game.state;
     for (const f of fleets) {
         if (!st.fleets[f.id] || f.port) continue;
-        const port = (game.map.zones.get(zone)?.ports ?? []).filter((p) => st.settlements[p].owner === f.owner).sort((x, y) => x - y)[0];
+        const port = homePort(game, f.owner, zone);
         if (port === undefined) continue;
         f.port = port;
         f.order = null;
         events.push({ type: "fleetInPort", day: st.day, fleet: f.id, owner: f.owner, port });
+    }
+}
+
+// a port that changes hands (RULES.md §7): the fleets in it that are not the new owner's slip out, to another port of
+// their country in the zone, or else to sea there — crew or no crew under the navy cap, since they have no choice
+export function leavePort(game, s, events) {
+    const st = game.state, zone = game.map.nodes.get(String(s.id)).zone;
+    for (const f of fleetList(st)) {
+        if (f.port !== s.id || f.owner === s.owner) continue;
+        const port = homePort(game, f.owner, zone, s.id);
+        f.order = null;
+        f.port = port ?? null;
+        events.push(port !== undefined ? { type: "fleetInPort", day: st.day, fleet: f.id, owner: f.owner, port, fled: s.id }
+            : { type: "fleetAtSea", day: st.day, fleet: f.id, owner: f.owner, zone, fled: s.id });
     }
 }
 
