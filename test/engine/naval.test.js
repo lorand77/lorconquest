@@ -122,13 +122,36 @@ test("a port that falls is left by its old owner's fleets: for another port of t
     assert.deepEqual([f.port, f.zone], [5, "south"]);
     assert.deepEqual(ofType(events, "fleetInPort").map((e) => [e.fleet, e.port, e.fled]), [[f.id, 5, 4]]);
     events = [];
-    capture(game, game.state.settlements[5], "AAA", events, "storm");           // its last port there: out to sea
+    game.state.settlements[1].owner = "BBB";                                   // BBB holds a port in the north too
+    capture(game, game.state.settlements[5], "AAA", events, "storm");           // its last port in the south: out to sea
     assert.deepEqual([f.port, f.zone, f.moving], [null, "south", null]);
     assert.deepEqual(ofType(events, "fleetAtSea").map((e) => [e.fleet, e.zone, e.fled]), [[f.id, "south", 5]]);
-    // at sea it can be fought; AAA's own fleets are not moved by its captures
-    const mine = giveFleet(game, "AAA", { cogs: 5 }, 1, "north");
+    assert.equal(ofType(events, "fleetPaidOff").length, 0);
+    // AAA's own fleets are not moved by its captures
+    const mine = giveFleet(game, "AAA", { cogs: 5 }, null, "north");
     capture(game, game.state.settlements[2], "AAA", [], "storm");
-    assert.equal(mine.port, 1);
+    assert.deepEqual([mine.port, game.state.fleets[mine.id]], [null, mine]);
+});
+
+test("a country that loses its last port pays off every fleet it has, in port, at sea or sailing", () => {
+    const game = tinyGame();
+    order(game, cmd("declareWar", { target: "BBB" }));
+    const inPort = giveFleet(game, "BBB", { cogs: 10 }, 4, "south");
+    const atSea = giveFleet(game, "BBB", { cogs: 6 }, null, "north");
+    const sailing = giveFleet(game, "BBB", { cogs: 4 }, null, "south");
+    order(game, { type: "sail", country: "BBB", fleet: sailing.id, zone: "north" });
+    const crewBefore = economyOf(game, "BBB").crewAtSea;
+    assert.equal(crewBefore, (6 + 4) * 50);
+    const events = [];
+    capture(game, game.state.settlements[4], "AAA", events, "storm");           // BBB's only port
+    assert.deepEqual(ofType(events, "fleetPaidOff").map((e) => [e.fleet, e.ships, e.crew]).sort((x, y) => x[0] - y[0]),
+        [[inPort.id, 10, 0], [atSea.id, 6, 300], [sailing.id, 4, 200]].sort((x, y) => x[0] - y[0]));
+    assert.ok(!Object.values(game.state.fleets).some((x) => x.owner === "BBB"));
+    assert.equal(economyOf(game, "BBB").crewAtSea, 0);                         // the crew are civilians again
+    // a country with no port that never had ships: nothing happens
+    const quiet = [];
+    capture(game, game.state.settlements[5], "AAA", quiet, "storm");
+    assert.equal(ofType(quiet, "fleetPaidOff").length, 0);
 });
 
 test("a blockade halves an enemy port's money while it holds", () => {

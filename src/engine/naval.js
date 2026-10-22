@@ -99,6 +99,19 @@ export function leavePort(game, s, events) {
     }
 }
 
+// a country that has lost its last port (RULES.md §7) pays off its fleets: with no harbour to come home to, every one of
+// them — in port, at sea or sailing — is disbanded, its ships lost and its crew back among the civilians
+export function payOffPortless(game, country, events) {
+    const st = game.state;
+    if (!st.countries[country] || Object.values(st.settlements).some((s) => s.owner === country && game.map.nodes.get(String(s.id)).port)) return;
+    for (const f of fleetList(st)) {
+        if (f.owner !== country) continue;
+        const ships = shipCount(f);
+        delete st.fleets[f.id];
+        events.push({ type: "fleetPaidOff", day: st.day, fleet: f.id, owner: country, ships, crew: f.port ? 0 : ships * CREW_PER_SHIP });
+    }
+}
+
 // each day: fleets that have reached the next zone arrive, and patrols engage the enemy fleets at sea in their zone
 export function navalDay(game, events) {
     const st = game.state;

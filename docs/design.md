@@ -621,8 +621,10 @@ named (see [plan.md](plan.md)).
    electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal both
    scenarios share (RULES.md §10) and the scenario's starting wars and agreements, not this. It is a subsystem of its own
    — worth its own milestone if that scenario is to be played in earnest.
-2. **Computer fleets** (not scheduled). The computer countries keep their starting ships and never build, sail or
-   fight with them; a strait it cannot cross without ships stays shut to it. Naval war would be the next thing to teach it.
+2. **Computer fleets** (not scheduled). The computer countries keep their starting ships and never build or fight with
+   them; a strait it cannot cross without ships stays shut to it. They sail only to go home: a fleet put to sea by the fall
+   of its port makes for a port of its country, in its zone or the next (`src/ai/forces.js`, `fleetsHome`). (A country
+   that loses its last port has no fleet left: the rules pay them off.) Naval war would be the next thing to teach it.
 
 ---
 

@@ -1,7 +1,8 @@
 // The computer player's forces (docs/design.md, "The computer players"): it raises soldiers up to what its law allows
 // (all of it at war or under threat, most of it otherwise), arms the unarmed with pikes and the best shot it has
 // researched — a third pikes, for pike and shot — and hires mercenaries when a war is going badly, sending them home in
-// peace. What it spends comes out of `ctx.budget`, which the economy then shares.
+// peace. What it spends comes out of `ctx.budget`, which the economy then shares. Its fleets stay in port — it fights
+// no war at sea — and one that ends up at sea, put out of a port that fell, sails home (fleetsHome).
 import { menOf } from "../engine/army.js";
 import { MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
 import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf } from "../engine/index.js";
@@ -9,6 +10,22 @@ import { enemiesOf, exposed, ownArmies, ownSettlements, stagingSettlement } from
 import { threatRatio } from "./economy.js";
 
 const SHOT = ["muskets", "arquebuses", "handCannons"];
+
+// fleets of the country at sea with nothing to do — its port taken from under them (RULES.md §7) — make for a port of its
+// own: in their zone if it has one, else they sail to the first neighbouring zone that does (and enter port on a later think).
+// At sea they cost crew and count on the navy cap for nothing.
+export function fleetsHome(game, code) {
+    const st = game.state, out = [], zones = game.map.zones;
+    const ownPort = (z) => (zones.get(z)?.ports ?? []).filter((p) => st.settlements[p]?.owner === code).sort((a, b) => a - b)[0];
+    for (const f of Object.values(st.fleets)) {
+        if (f.owner !== code || f.port || f.moving || f.order) continue;
+        const port = ownPort(f.zone);
+        if (port !== undefined) { out.push({ type: "sail", country: code, fleet: f.id, port }); continue; }
+        const next = [...zones.get(f.zone).next].sort().find((z) => ownPort(z) !== undefined);
+        if (next) out.push({ type: "sail", country: code, fleet: f.id, zone: next });
+    }
+    return out;
+}
 
 export function forceOrders(game, code, fl, ctx) {
     const st = game.state, c = st.countries[code], e = economyOf(game, code), out = [];

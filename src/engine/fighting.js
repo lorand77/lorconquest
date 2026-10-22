@@ -11,7 +11,7 @@ import { legKey } from "./map.js";
 import { recordCapture } from "./diplomacy.js";
 import { cancelAt } from "./forces.js";
 import { destroy, mayDepart, progress, retreat, routeFor, startLeg } from "./movement.js";
-import { leavePort } from "./naval.js";
+import { leavePort, payOffPortless } from "./naval.js";
 import { fireSharpshooters, postsLost, stormPost } from "./passes.js";
 import { d6 } from "./random.js";
 import { armiesAt, armyList, atWar, canEnter, isAlive, isFriend, ownerOf, removeArmy } from "./state.js";
@@ -51,7 +51,8 @@ export function siegeDays(game, s, cannons) {
 export const wallDefence = (walls, cannons, x) => (walls ? Math.max(1.2, 1.8 - 0.3 * Math.floor(cannons / (100 * x))) : 1.2);
 
 // a settlement falls (RULES.md §6, §8): it is held from today, loses its courthouse, the training and hires queued in
-// it are cancelled, sharpshooters of a pass in its land die, and the old owner's fleets in its port slip out (§7). It keeps its walls, library, workshop and market,
+// it are cancelled, sharpshooters of a pass in its land die, and the old owner's fleets in its port slip out — or, if it
+// was the old owner's last port, all its fleets are paid off (§7). It keeps its walls, library, workshop and market,
 // and stays core for every country that had it core, so retaking it makes it core again.
 export function capture(game, s, country, events, how) {
     const from = s.owner;
@@ -63,7 +64,7 @@ export function capture(game, s, country, events, how) {
     cancelAt(game.state, s.id);
     events.push({ type: "capture", day: game.state.day, settlement: s.id, from, to: country, how });
     postsLost(game, s.id, events);
-    if (game.map.nodes.get(String(s.id)).port) leavePort(game, s, events);
+    if (game.map.nodes.get(String(s.id)).port) { payOffPortless(game, from, events); leavePort(game, s, events); }
     for (const a of armiesAt(game.state, String(s.id))) if (!isFriend(game.state, a.owner, country)) a.relief = false;
 }
 

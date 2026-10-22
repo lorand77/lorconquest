@@ -432,7 +432,9 @@ the enemy fleets at sea in its zone on the day it arrives or is ordered, if the 
 within 3 months; if two patrols meet, the one that came to the zone later attacks. There is no bonus for
 the defender but a tie goes to it. Fleets in port are safe — but **a port that changes hands**, by force or in a
 peace, is left at once by the fleets of anyone but its new owner: each makes for another port of its country in the
-zone (the first by number), or else puts to sea there, whatever its crew and the navy cap, and may be fought at sea. The beaten side **runs for its nearest port**
+zone (the first by number), or else puts to sea there, whatever its crew and the navy cap, and may be fought at sea. A country
+that loses its **last port** pays off all its fleets — in port, at sea or sailing: the ships are lost and their crew come
+home. The beaten side **runs for its nearest port**
 in the zone, if it has one, and waits there; ships sunk take their 50 crew each from the population. A
 blockade holds only while its fleet is at sea in the zone, and ends if it leaves, is sunk or runs. A
 fleet takes on one order at a time: patrol, blockade or none.

@@ -13,11 +13,11 @@ import { bestTarget, diplomacyOrders } from "../../src/ai/diplomacy.js";
 import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
 import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
 import { economyOrders } from "../../src/ai/economy.js";
-import { forceOrders } from "../../src/ai/forces.js";
+import { fleetsHome, forceOrders } from "../../src/ai/forces.js";
 import { THINK_DAYS, dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 import { check } from "../helpers/invariants.js";
-import { setArmy, tinyGame } from "../helpers/tiny.js";
+import { giveFleet, setArmy, tinyGame } from "../helpers/tiny.js";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -191,6 +191,22 @@ test("forces: soldiers raised up to the law, the unarmed armed with pikes, merce
     game.state.armies[1].mercs = 100;
     const home = forceOrders(game, "AAA", fl, { budget: 0 });
     assert.ok(home.some((o) => o.type === "dismissMercenaries" && o.army === 1 && o.n === 100));
+});
+
+test("fleets: one at sea with nothing to do goes home — into a port in its zone, else to the next zone with one", () => {
+    const game = tinyGame();
+    const near = giveFleet(game, "AAA", { cogs: 5 }, null, "north");          // AAA's port 1 is in the north
+    const far = giveFleet(game, "AAA", { cogs: 5 }, null, "south");           // none in the south: it sails north
+    giveFleet(game, "AAA", { cogs: 5 }, 1, "north");                          // in port already: left alone
+    const patrol = giveFleet(game, "AAA", { cogs: 5 }, null, "north");
+    patrol.order = { type: "patrol" };                                         // under orders: left alone
+    const orders = fleetsHome(game, "AAA");
+    assert.deepEqual(orders, [
+        { type: "sail", country: "AAA", fleet: near.id, port: 1 },
+        { type: "sail", country: "AAA", fleet: far.id, zone: "north" },
+    ]);
+    for (const o of orders) assert.ok(game.command(o).ok);
+    assert.deepEqual(fleetsHome(game, "CCC"), []);                            // no port anywhere: nothing to do
 });
 
 test("war: an overwhelming country takes what it is next to, with no command refused", () => {

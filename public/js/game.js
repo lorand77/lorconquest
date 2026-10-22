@@ -102,7 +102,7 @@ function onTick(m) {
         const mine = who.includes(me);
         if ((e.type === "war" && e.target === me) || (e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
             || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
-                "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "broke"].includes(e.type))) toast(describeEvent(game.map, e));
+                "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "broke", "fleetPaidOff"].includes(e.type))) toast(describeEvent(game.map, e));
     }
     if (sel?.kind === "army" && !state.armies[sel.id]) { sel = null; plan = null; }
     if (sel?.kind === "fleet" && !state.fleets[sel.id]) sel = null;

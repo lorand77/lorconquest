@@ -50,6 +50,7 @@ export function describeEvent(map, e) {
         case "cancelled": return `${e.what === "hire" ? "the hire of" : "the training of"} ${fmt(e.n)} men of ${e.country} at ${place(String(e.settlement))} is cancelled`;
         case "ships": return `${e.country} buys ${e.n} ${tech(e.kind)} at ${place(String(e.port))} (fleet ${e.fleet})`;
         case "fleetInPort": return `fleet ${e.fleet} (${e.owner}) ${e.fled ? `slips out of ${place(String(e.fled))}, lost, and ` : ""}enters ${place(String(e.port))}`;
+        case "fleetPaidOff": return `fleet ${e.fleet} (${e.owner}) is paid off, ${fmt(e.ships)} ships: ${e.owner} has no port left${e.crew ? `, and its ${fmt(e.crew)} crew come home` : ""}`;
         case "fleetAtSea": return `fleet ${e.fleet} (${e.owner}) ${e.fled ? `slips out of ${place(String(e.fled))}, lost, and ` : ""}puts to sea in ${place(e.zone)}`;
         case "fleetSails": return `fleet ${e.fleet} (${e.owner}) sails from ${place(e.from)} to ${place(e.to)}, ${e.days} days`;
         case "fleetArrives": return `fleet ${e.fleet} (${e.owner}) arrives in ${place(e.zone)}`;
