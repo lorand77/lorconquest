@@ -292,7 +292,8 @@ function arriveRetreating(game, army, events) {
     if (!isAlive(st, army)) return;
     if (army.path.length) return carryOn(game, army, events);
     army.retreating = false;
-    if (!sit.s || sit.s.owner !== army.owner) return retreat(game, army, events, key);     // its refuge fell meanwhile
+    // its refuge fell meanwhile — a refuge being a settlement of its own country or of a friend, as retreat() chose it
+    if (!sit.s || !isFriend(st, army.owner, sit.s.owner)) return retreat(game, army, events, key);
     if (situation(game, key).hostile.length) army.relief = true;
     events.push({ type: "arrive", day: st.day, army: army.id, owner: army.owner, at: key });
 }

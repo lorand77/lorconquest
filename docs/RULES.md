@@ -319,15 +319,17 @@ first. In a head-on meeting on a route (§8), it is the side holding the settlem
 nearer end of the route; if neither holds it, the army that set out first.
 
 **After the battle:** winner may advance or hold. Loser retreats to the nearest settlement
-owned by itself or a **military ally** (§10) — nearest by marching time; from a route, back along
-it either way.
+owned by itself or a **friend** — an ally of either kind, its overlord or a subject (§10), whether or not that friend is in
+the war — nearest by marching time; from a route, back along it either way. Once there it stays, as a guest in a friend's
+settlement.
 
 **Retreating armies march.** The loser marches there at army speed (§8), by the fastest way
 open to it: only through land it may enter (§10), with river and pass delays as usual. On the
 way it takes no orders, takes no settlement and does not stop for zone of control, but enemy
 armies it meets attack it — head-on on a route, at a pass it crosses, or besieging a settlement of
 its own it passes; a garrison stays inside. It fights as a normal army, with no defence bonus.
-When it arrives it can be given orders again. If no settlement of its own or a military ally can be reached, there is
+When it arrives it can be given orders again; if the settlement fell to someone else on the way, it retreats again from there.
+If no settlement of its own or a friend's can be reached, there is
 nowhere to retreat and **the whole losing army dies**.
 
 ### Defence
