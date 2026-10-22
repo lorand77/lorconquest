@@ -499,11 +499,16 @@ are kept: pointer events (one path for mouse and touch), orders by click or tap 
 right-click, nothing shown only on hover. Small-screen layouts are not built. (`public/game.html`,
 `public/js/game.js`, `public/js/mapview.js`.)
 
-- **Layout:** as in LorCiv, the map fills the screen but for a sidebar on its right: at its top the name (back to the
-  lobby), then the player's country, the date, pause, the treasury and the other people, then the tabs (two rows of
-  three) and their panel, and at the bottom Chat and Leave the game when there are other people. The replay page has
-  the same sidebar with its controls, the standing and the events. Every page is dark, in LorCiv's colours, which are
-  CSS variables at the top of `public/css/game.css`; the sign-in page is LorCiv's card.
+- **Layout:** as in LorCiv, the tabs are a rail on the left — the name, then Map, Country, Shop, Research, Diplomacy and
+  Events one under the other with an icon each, and at its foot the Light/Dark switch, the way back to the lobby and the
+  legal pages — the map fills the middle, and a sidebar on its right holds the player's country, the date, pause, the
+  treasury and the other people, then the open tab's panel, and at the bottom Chat and Leave the game when there are
+  other people. The replay page has the sidebar alone, with its controls, the standing and the events; the sign-in page
+  is LorCiv's card.
+- **Colours:** LorCiv's two schemes, dark by default and light, as two sets of CSS variables at the top of
+  `public/css/game.css`. `public/js/theme.js`, a plain script in every page's head so a page paints in its scheme at
+  once, applies the choice and wires every Light/Dark switch; the choice is kept in the browser's local storage, the
+  only thing the site keeps there besides the sign-in cookie (privacy.html; `test/server/finishing.test.js` holds it).
 - **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
   as a marker in its owner's colour with its men on it — a column of them beside a place with
   several; marching armies glide along the roads between ticks; a ring round each besieged

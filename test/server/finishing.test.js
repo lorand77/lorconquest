@@ -347,6 +347,12 @@ test("what the privacy page says is what the server does: no password or chat te
         const page = fs.readFileSync(path.join(import.meta.dirname, "..", "..", "public", "privacy.html"), "utf8");
         assert.equal(config.CHAT_RETENTION_DAYS, 30);
         assert.match(page, /deleted 30 days after the game ends/);
+        // and what it says is kept in the browser: the sign-in cookie, and the colour scheme alone in local storage
+        const js = path.join(import.meta.dirname, "..", "..", "public", "js");
+        const storing = fs.readdirSync(js).filter((x) => /localStorage|sessionStorage|indexedDB|document\.cookie/.test(fs.readFileSync(path.join(js, x), "utf8")));
+        assert.deepEqual(storing, ["theme.js"], "only theme.js keeps anything in the browser");
+        assert.deepEqual([...new Set([...fs.readFileSync(path.join(js, "theme.js"), "utf8").matchAll(/"(lorconquest\.[\w.]+)"/g)].map((m) => m[1]))], ["lorconquest.scheme"]);
+        assert.match(page, /light or the dark colours, in its local\s+storage/);
         assert.equal((await fetch(server.baseUrl + "/privacy.html")).status, 200);
         assert.equal((await fetch(server.baseUrl + "/terms.html")).status, 200);
     } finally {

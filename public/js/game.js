@@ -444,7 +444,7 @@ function feed(e) {
     if (tab !== "events") { unseen++; renderEventsTab(); }
 }
 
-const renderEventsTab = () => { $("events-tab").textContent = unseen ? `Events (${unseen})` : "Events"; };
+const renderEventsTab = () => { $("events-label").textContent = unseen ? `Events (${unseen})` : "Events"; };
 
 function toast(text, ms = 6000) {
     const t = make("div", { class: "toast" }, text);

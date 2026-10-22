@@ -61,7 +61,9 @@ dependencies.
   Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node) and
   `login.html` the sign-in page (`js/login.js`, `js/auth.js`); `replay.html` plays a finished game over (`js/replay.js`, with
   `js/replayer.js` — the pure part, tested against real games — and `js/mapdraw.js`, which the game page shares); `leaderboard.html`;
-  `terms.html` and `privacy.html`, which must stay true of what the code does.
+  `terms.html` and `privacy.html`, which must stay true of what the code does. `js/theme.js` (a plain script, not a module, in every
+  page's head) applies the dark or light colours and keeps the choice in local storage, the one thing stored in the browser
+  besides the sign-in cookie.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
 - `tools/` — the runner, the bench, the map tools (`map.js`, and `abbreviations.js`: the short names in the map's markers).
 - `test/ai/` — each AI layer on the tiny map, the caretaker, and computer-only games on the real map (invariants every month,

@@ -1,6 +1,7 @@
-/* Every page: the game and the replay (the map with a sidebar on its right, as in LorCiv), the lobby, the leaderboard, the
-   sign-in card and the legal pages. One dark scheme, LorCiv's: the colours are the variables below, so a light scheme would be
-   a second set of them. Desktop first (design.md, "The game screen"). */
+/* Every page: the game (as in LorCiv: the tabs in a rail on the left, the map, a sidebar on its right), the replay, the lobby,
+   the leaderboard, the sign-in card and the legal pages. Two colour schemes, LorCiv's: dark, the default, and light when
+   <html data-scheme="light"> is set (public/js/theme.js, which every page loads). The colours are the variables below; use
+   them for anything that should follow the scheme. Desktop first (design.md, "The game screen"). */
 :root {
     color-scheme: dark;                 /* native controls (selects, checkboxes, scrollbars) drawn dark too */
     --page-bg: #0a0a1a;
@@ -30,25 +31,81 @@
     --good: #6ed48a;
     --bad: #ff7b7b;
     --warn: #f2d58c;
+    --hover-text: #fff;                 /* a button's text under the pointer */
+    --danger-hover: #5a2626;
+    --overlay: rgba(15, 15, 25, 0.9);   /* boxes over the map: notices, chat, zoom */
+    --warn-bg: #3a3218;                 /* paused, the setup minute */
+    --warn-border: #6a5a28;
+    --good-bg: #16261c;                 /* a tech researched */
+    --good-border: #24402c;
+    --info-bg: #16223a;                 /* a question waiting for an answer */
+    --info-border: #3a5070;
+    --track: #1a2030;                   /* a progress bar's track */
+    --current: #2b4a78;                 /* the open tab in the rail */
+    --current-text: #fff;
+    --swatch-border: rgba(255, 255, 255, 0.35);
+}
+:root[data-scheme="light"] {
+    color-scheme: light;
+    --page-bg: #ececec;
+    --side-bg: #fafafa;
+    --surface: #fff;
+    --surface-2: #f0f0f0;
+    --line: #e2e2e2;
+    --border: #d0d0d0;
+    --text: #222;
+    --text-strong: #000;
+    --text-muted: #666;
+    --label: #7a8696;
+    --gold: #7a5c0c;
+    --btn: #fff;
+    --btn-border: #b8b8b8;
+    --btn-hover: #e8e8e8;
+    --primary: #2f5d8a;
+    --primary-border: #2f5d8a;
+    --primary-text: #fff;
+    --primary-hover: #244a6f;
+    --danger: #b83b3b;
+    --danger-border: #a02f2f;
+    --danger-text: #fff;
+    --danger-hover: #a02f2f;
+    --field: #fff;
+    --accent: #2f5d8a;
+    --link: #2f5f9e;
+    --good: #276b2c;
+    --bad: #b22222;
+    --warn: #8a5a00;
+    --hover-text: #000;
+    --overlay: rgba(255, 255, 255, 0.95);
+    --warn-bg: #fbefc9;
+    --warn-border: #e2c36a;
+    --good-bg: #eef5ee;
+    --good-border: #cfe3cf;
+    --info-bg: #eef3f9;
+    --info-border: #2f5d8a;
+    --track: #ddd;
+    --current: #3d6098;
+    --current-text: #fff;
+    --swatch-border: rgba(0, 0, 0, 0.45);
 }
 * { box-sizing: border-box; }
 body { margin: 0; font: 14px/1.4 "Segoe UI", system-ui, -apple-system, Roboto, sans-serif; color: var(--text); background: var(--page-bg); }
 a { color: var(--link); }
 h1, h2 { color: var(--gold); }
 button { font: inherit; font-size: 13px; padding: 4px 10px; border: 1px solid var(--btn-border); border-radius: 4px; background: var(--btn); color: var(--text); cursor: pointer; touch-action: manipulation; }
-button:hover:not(:disabled) { background: var(--btn-hover); color: #fff; }
+button:hover:not(:disabled) { background: var(--btn-hover); color: var(--hover-text); }
 button:disabled { opacity: 0.4; cursor: default; }
 button.primary { background: var(--primary); border-color: var(--primary-border); color: var(--primary-text); }
 button.primary:hover:not(:disabled) { background: var(--primary-hover); color: var(--primary-text); }
 button.danger { background: var(--danger); border-color: var(--danger-border); color: var(--danger-text); }
-button.danger:hover:not(:disabled) { background: #5a2626; color: #fff; }
+button.danger:hover:not(:disabled) { background: var(--danger-hover); color: var(--danger-text); }
 button.link { border: none; background: none; padding: 0; color: var(--link); text-align: left; }
 button.link:hover:not(:disabled) { text-decoration: underline; background: none; color: var(--link); }
 input, select { font: inherit; font-size: 13px; color: var(--text-strong); background: var(--field); border: 1px solid var(--btn-border); border-radius: 3px; padding: 3px 5px; }
 select option { background: var(--side-bg); }
 input:focus, select:focus { outline: none; border-color: var(--accent); }
 input[type=range], input[type=checkbox] { accent-color: var(--accent); padding: 0; border: none; background: none; }
-.swatch { display: inline-block; width: 0.9em; height: 0.9em; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 2px; vertical-align: -0.1em; }
+.swatch { display: inline-block; width: 0.9em; height: 0.9em; border: 1px solid var(--swatch-border); border-radius: 2px; vertical-align: -0.1em; }
 .hint { color: var(--text-muted); }
 .error { color: var(--bad); }
 [hidden] { display: none !important; }
@@ -94,29 +151,29 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .map svg.zoomed .name { display: inline; }
 .map [id^="settlement-"], .map [id^="pass-"], .map .lc-army { cursor: pointer; }
 .zoom { position: absolute; left: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
-.zoom button { width: 32px; height: 32px; padding: 0; font-size: 18px; background: rgba(17, 24, 39, 0.9); }
+.zoom button { width: 32px; height: 32px; padding: 0; font-size: 18px; background: var(--overlay); }
 .toasts { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
-.toast { background: rgba(15, 15, 25, 0.92); color: var(--text-strong); border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; max-width: 520px; }
+.toast { background: var(--overlay); color: var(--text-strong); border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; max-width: 520px; }
 
 .side { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; min-height: 0; background: var(--side-bg); border-left: 1px solid var(--border); }
 .side > .head, .side > .status { padding: 10px 12px; border-bottom: 1px solid var(--line); }
 .side .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.side .brand { color: var(--gold); font-weight: 700; text-decoration: none; font-size: 15px; white-space: nowrap; }
+.brand { color: var(--gold); font-weight: 700; text-decoration: none; font-size: 15px; white-space: nowrap; }
 .side .lobby-link { padding: 2px 8px; font-size: 12px; border: 1px solid var(--btn-border); border-radius: 4px; background: var(--btn); color: var(--text); text-decoration: none; }
-.side .lobby-link:hover { background: var(--btn-hover); color: #fff; }
+.side .lobby-link:hover { background: var(--btn-hover); color: var(--hover-text); }
 .status .me { display: block; font-size: 15px; font-weight: 700; color: var(--gold); }
 .status .date { display: block; color: var(--text-strong); font-variant-numeric: tabular-nums; margin: 2px 0 8px; }
 .status .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .status .pause { min-width: 6.5em; }
-.status .pause.paused { background: #3a3218; border-color: #6a5a28; color: var(--warn); }
+.status .pause.paused { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn); }
 .status .treasury { color: var(--text); font-size: 13px; font-variant-numeric: tabular-nums; }
 .status .treasury.bad { color: var(--bad); }
-.status .setup { display: block; margin-top: 8px; background: #3a3218; color: var(--warn); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+.status .setup { display: block; margin-top: 8px; background: var(--warn-bg); color: var(--warn); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
 .status .people { display: flex; flex-wrap: wrap; gap: 0.3em 0.9em; margin-top: 8px; font-size: 13px; }
 .status .people:empty { display: none; }
 .status .person.present { color: var(--good); }
 .status .person.away, .status .person.full { color: var(--warn); }
-.status .person.quit { color: #666; text-decoration: line-through; }
+.status .person.quit { color: var(--text-muted); text-decoration: line-through; }
 .status label { display: flex; align-items: center; gap: 4px; color: var(--text-muted); font-size: 13px; }
 .status .seek { width: 100%; margin: 0 0 8px; }
 .status .verdict { display: block; margin-top: 6px; font-size: 13px; }
@@ -126,13 +183,24 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .side .foot button { flex: 1; }
 .side .foot:not(:has(button:not([hidden]))) { display: none; }
 
-.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
-.tabs button { border: none; border-radius: 0; background: var(--surface-2); padding: 7px 2px; font-size: 13px; color: var(--text-muted); }
-.tabs button.active { background: var(--side-bg); color: var(--gold); font-weight: 600; box-shadow: inset 0 -2px var(--gold); }
+/* the rail, LorCiv's: the name, the tabs one under the other with an icon each, and at its foot the colours and the lobby */
+.rail { width: 150px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; padding: 10px 8px; background: var(--side-bg); border-right: 1px solid var(--border); overflow-y: auto; }
+.rail .brand { padding: 2px 8px 12px; }
+.tabs { display: flex; flex-direction: column; gap: 2px; }
+.tabs button, .rail .rail-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border: none; border-left: 3px solid transparent; border-radius: 6px; background: none; color: var(--text); font-size: 14px; text-align: left; text-decoration: none; }
+.tabs button:hover:not(:disabled), .rail .rail-item:hover { background: var(--surface-2); color: var(--text-strong); }
+.tabs button.active, .tabs button.active:hover:not(:disabled) { background: var(--current); border-left-color: var(--gold); color: var(--current-text); font-weight: 600; }
+.rail-icon { width: 18px; flex: 0 0 18px; text-align: center; }
+.rail .rail-foot { margin-top: auto; display: flex; flex-direction: column; gap: 6px; padding-top: 12px; }
+.rail .rail-foot button { text-align: left; }
+.rail .rail-legal { display: flex; gap: 10px; padding: 4px 10px 0; font-size: 12px; }
+.rail .rail-legal a { color: var(--text-muted); text-decoration: none; }
+.rail .rail-legal a:hover { color: var(--text); }
+.scheme { white-space: nowrap; }
 .panel { position: relative; padding: 10px 12px; min-height: 9em; flex: 1; overflow-y: auto; }
 .panel h2 { font-size: 16px; margin: 0 0 6px; padding-right: 28px; }
 .panel .close { position: absolute; top: 6px; right: 8px; width: 24px; height: 24px; padding: 0; border: none; background: none; font-size: 20px; line-height: 1; color: var(--text-muted); }
-.panel .close:hover:not(:disabled) { color: #fff; background: none; }
+.panel .close:hover:not(:disabled) { color: var(--text-strong); background: none; }
 .panel p { margin: 4px 0; }
 .panel .men { font-weight: 600; color: var(--text-strong); }
 .panel .siege { color: var(--bad); }
@@ -187,14 +255,14 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .panel details summary { cursor: pointer; color: var(--link); }
 .panel .queue { margin: 0; padding-left: 18px; }
 .panel .tech { border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; margin: 5px 0; background: var(--surface); }
-.panel .tech.done { background: #16261c; border-color: #24402c; }
+.panel .tech.done { background: var(--good-bg); border-color: var(--good-border); }
 .panel .tech.target { border-color: var(--gold); }
 .panel .tech .row { justify-content: space-between; }
-.panel .bar { height: 7px; background: #1a2030; border-radius: 3px; margin: 4px 0; overflow: hidden; }
+.panel .bar { height: 7px; background: var(--track); border-radius: 3px; margin: 4px 0; overflow: hidden; }
 .panel .bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
 
 /* ---------- diplomacy ---------- */
-.panel .offer { border: 1px solid #3a5070; border-radius: 4px; padding: 6px 8px; margin: 6px 0; background: #16223a; }
+.panel .offer { border: 1px solid var(--info-border); border-radius: 4px; padding: 6px 8px; margin: 6px 0; background: var(--info-bg); }
 .panel .hint.good { color: var(--good); }
 .panel .preview { margin: 6px 0; font-weight: 600; }
 .panel .preview.good { color: var(--good); }
@@ -203,7 +271,7 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .panel label.check { display: block; }
 
 /* ---------- chat, over the map ---------- */
-.chat { position: absolute; left: 52px; bottom: 10px; width: 320px; max-width: 60%; background: rgba(15, 15, 25, 0.9); border: 1px solid var(--border); border-radius: 4px; display: flex; flex-direction: column; }
+.chat { position: absolute; left: 52px; bottom: 10px; width: 320px; max-width: 60%; background: var(--overlay); border: 1px solid var(--border); border-radius: 4px; display: flex; flex-direction: column; }
 .chat-log { list-style: none; margin: 0; padding: 6px 8px; max-height: 14em; overflow-y: auto; font-size: 13px; }
 .chat-log li { padding: 1px 0; overflow-wrap: anywhere; }
 .chat-log b { color: var(--gold); }
