@@ -222,3 +222,10 @@ export function warAlert(events, me, wars = { attackers: [], against: [], allies
     }
     return any || out.against.length > wars.against.length || out.allies.length > wars.allies.length ? out : null;
 }
+
+// the tech a country is offered at one click when it researches nothing: the cheapest it may research now (its prerequisite
+// held, itself not), by `costOf(id)`; null if there is none. `techs` is the engine's TECHS, `owned` the country's techs.
+export function cheapestOpenTech(techs, owned, costOf) {
+    const open = Object.entries(techs).filter(([id, t]) => !owned.includes(id) && owned.includes(t.needs)).map(([id]) => id);
+    return open.sort((a, b) => costOf(a) - costOf(b))[0] ?? null;
+}

@@ -17,6 +17,8 @@
                 <button id="zoom-in" title="Zoom in">+</button>
                 <button id="zoom-out" title="Zoom out">−</button>
             </div>
+            <!-- the banners across the top of the map, and the notices below them -->
+            <div class="banners">
             <!-- a war declared on the player, big, until closed (mirror.js, warAlert) -->
             <div id="war" class="war" role="alert" hidden>
                 <div class="war-title">⚔ War!</div>
@@ -26,7 +28,18 @@
                     <button id="war-close">Close</button>
                 </div>
             </div>
+            <!-- nothing being researched: a tech to choose (mirror.js, cheapestOpenTech) -->
+            <div id="ask" class="ask" hidden>
+                <div class="ask-title">📚 Choose a research</div>
+                <div id="ask-text" class="ask-text"></div>
+                <div class="ask-buttons">
+                    <button id="ask-research" class="primary"></button>
+                    <button id="ask-tab">Research tab</button>
+                    <button id="ask-later">Later</button>
+                </div>
+            </div>
             <div id="toasts" class="toasts"></div>
+            </div>
             <section id="chat" class="chat" hidden>
                 <ul id="chat-log" class="chat-log"></ul>
                 <form id="chat-form" class="chat-form">

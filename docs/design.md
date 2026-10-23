@@ -564,6 +564,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 - **War on you:** a red banner across the top of the map (`mirror.js`, `warAlert`) — "⚔ War! Austria declares war on you",
   who joins them and who joins you, with those who answer a call later added — and Diplomacy and Close; it stays until closed
   and blocks nothing. Other news stays a notice that fades.
+- **Nothing researched:** a banner under the war banner's place, in gold (`mirror.js`, `cheapestOpenTech`): "📚 Choose a research",
+  the R waiting, and the cheapest tech open now at one click, the Research tab, or Later — which puts it off until the next tech
+  is done. It goes as soon as something is being researched.
 - **The end:** a card over the screen (`mirror.js`, `endScreen`) — **Victory!**, **Defeat** or **Game over** — with who won
   and how (the scenario's number of settlements reached, or the most when its last year came: the server's `over` message
   says which), the ten countries ahead with the winner first and the player's own row marked (added after them if it is not

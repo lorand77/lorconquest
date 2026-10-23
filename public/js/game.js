@@ -2,11 +2,11 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, CREW_PER_CANNON, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, endScreen, formatNumber, isSelected, routeLine, tabForSelection, warAlert } from "./mirror.js";
+import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
+import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatNumber, isSelected, routeLine, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
-import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
+import { TECH_NAMES, armyEquipment, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { formatCountdown, presenceText } from "./lobbylogic.js";
 
@@ -43,7 +43,9 @@ let tab = "selection";     // selection (the Map tab) | country | shop | researc
 const ui = { target: null, raiseWeapon: null };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 let pressing = false;
-let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
+let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed
+let askLater = false;      // the research banner put off until the next tech is done
+let asked = "";            // what the research banner shows now, so it is redrawn only when that changes      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
 let plan = null;           // { army, to, path, days }
 let splitOpen = false;
 let owners = "";             // who owned what when the lands were last coloured
@@ -91,6 +93,8 @@ async function start() {
     });
     $("end-close").addEventListener("click", () => { $("end").hidden = true; });
     $("war-close").addEventListener("click", closeWar);
+    $("ask-later").addEventListener("click", () => { askLater = true; renderAsk(); });
+    $("ask-tab").addEventListener("click", () => setTab("research"));
     $("war-diplomacy").addEventListener("click", () => { ui.target = war?.attackers[0] ?? ui.target; closeWar(); setTab("diplomacy"); });
     $("results").addEventListener("click", () => { $("end").hidden = false; });
     socket.on("failed", (m) => toast(`The game stopped: ${m.error}`));
@@ -119,6 +123,7 @@ function onTick(m) {
         // the player's news and their enemies'; a watcher's, the news of the people's countries
         if (me ? who.includes(me) || who.some((c) => enemies().includes(c)) : who.some((c) => seats.some((s) => s.country === c))) feed(e);
         const mine = who.includes(me);
+        if (mine && e.type === "tech") askLater = false;    // a tech done: a new one to choose, the banner again
         if ((e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
             || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
                 "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "broke", "fleetPaidOff"].includes(e.type))) toast(describeEvent(game.map, e));
@@ -245,6 +250,23 @@ function renderTop() {
         $("treasury").classList.toggle("bad", country(me).treasury < 0);
     }
     for (const b of document.querySelectorAll("#tabs button")) b.classList.toggle("active", b.dataset.tab === tab);
+    renderAsk();
+}
+
+// nothing being researched: a banner at the top offering the cheapest tech open now, until one is chosen or put off
+function renderAsk() {
+    const c = me ? country(me) : null;
+    const tech = c?.techs && !c.target && !askLater && !state.winner ? cheapestOpenTech(TECHS, c.techs, (id) => techCost(game, id)) : null;
+    const key = tech ? `${tech}|${Math.floor(c.r / 1000)}` : "";
+    if (key === asked) return;
+    asked = key;
+    $("ask").hidden = !tech;
+    if (!tech) return;
+    const e = economyOf(game, me);
+    $("ask-text").textContent = `Nothing is being researched: your ${money(c.r)} R in store and ${money(e.rPerYear)} a year are waiting.`;
+    $("ask-research").textContent = `Research ${TECH_NAMES[tech]} · ${money(techCost(game, tech))} R`;
+    // chosen: the copy knows it at once, before the private change that says so arrives, so the banner does not flicker back
+    $("ask-research").onclick = async () => { const r = await send({ type: "research", tech }); if (r.ok) { country(me).target = tech; renderAsk(); } };
 }
 
 // ---------- a war declared on the player (mirror.js, warAlert) ----------

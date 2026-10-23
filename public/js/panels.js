@@ -5,14 +5,14 @@
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, LAW_DAYS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, longDate, techCost } from "/engine/index.js";
-import { BEST_FIRST, armingCost, bestArming, formatNumber } from "./mirror.js";
+import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, formatNumber } from "./mirror.js";
 
 const n = formatNumber;
-const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
+export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
 const pct = (x) => `${Math.round(x * 100)}%`;
 const WEAPON_NAMES = { cannons: "cannons", unarmed: "unarmed", swords: "swords", pikes: "pikes", cavalry: "cavalry", handCannons: "hand cannons", arquebuses: "arquebuses", muskets: "muskets" };
 const SHIP_NAMES = { cogs: "cogs", carracks: "carracks", galleons: "galleons", menOfWar: "men-of-war" };
-const TECH_NAMES = { handCannons: "Hand cannons", arquebuses: "Arquebuses", muskets: "Muskets", sharpshooters: "Sharpshooters", carracks: "Carracks", galleons: "Galleons", menOfWar: "Men-of-war" };
+export const TECH_NAMES = { handCannons: "Hand cannons", arquebuses: "Arquebuses", muskets: "Muskets", sharpshooters: "Sharpshooters", carracks: "Carracks", galleons: "Galleons", menOfWar: "Men-of-war" };
 
 const section = (ctx, title, ...children) => ctx.make("section", { class: "block" }, ctx.make("h3", {}, title), ...children);
 const line = (ctx, label, value, cls = "") => ctx.make("div", { class: `kv ${cls}` }, ctx.make("span", {}, label), ctx.make("b", {}, value));
@@ -203,8 +203,7 @@ export function researchTab(ctx) {
         make("p", { class: "hint" }, "Choose one tech at a time. It unlocks the moment your R covers its cost, which is taken from the store; unspent R banks."))];
     // nothing being researched: say so, and offer the cheapest tech open now at one click (R only piles up meanwhile)
     if (!c.target) {
-        const open = Object.entries(TECHS).filter(([id, t]) => !c.techs.includes(id) && c.techs.includes(t.needs))
-            .sort((a, b) => techCost(game, a[0]) - techCost(game, b[0]))[0];
+        const next = cheapestOpenTech(TECHS, c.techs, (id) => techCost(game, id)), open = next && [next];
         out.unshift(open
             ? make("div", { class: "notice" },
                 make("p", {}, make("b", {}, "Nothing is being researched."), ` Your ${money(c.r)} R in store and ${money(e.rPerYear)} a year are waiting for a tech.`),

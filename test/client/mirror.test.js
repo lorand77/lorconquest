@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, endScreen, fitView, formatMen, isSelected, routeLine, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, routeLine, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -170,4 +170,13 @@ test("someone watching gets the end as Game over, with who won: neither a victor
     assert.deepEqual([s.kind, s.title, s.subtitle, s.final], ["over", "Game over", "Bavaria (alice) wins, holding 45 settlements of the 45 needed.", true]);
     assert.ok(!s.rows.some((r) => r.you));
     assert.equal(endScreen({ me: null, end: { winner: null, defeated: true }, table, names: {}, target: 45, endYear: 1650 }).subtitle, "Every player's country has fallen.");
+});
+
+test("the tech offered at one click when nothing is researched: the cheapest open now, or none", () => {
+    const techs = { handCannons: { cost: 1.5, needs: "swords" }, arquebuses: { cost: 2, needs: "handCannons" }, carracks: { cost: 3, needs: "cogs" } };
+    const cost = (id) => techs[id].cost;
+    assert.equal(cheapestOpenTech(techs, ["swords", "cogs"], cost), "handCannons");
+    assert.equal(cheapestOpenTech(techs, ["swords", "cogs", "handCannons"], cost), "arquebuses");      // now open, and cheaper than carracks
+    assert.equal(cheapestOpenTech(techs, ["cogs"], cost), "carracks");
+    assert.equal(cheapestOpenTech(techs, ["swords", "cogs", "handCannons", "arquebuses", "carracks"], cost), null);
 });
