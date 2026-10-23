@@ -539,8 +539,10 @@ whole leg. Enemy armies meet in two ways:
 - **At a place.** An army arriving where an enemy army stands stops there, cancelling the rest
   of its path. At an enemy settlement with an army inside it begins a siege (§6); anywhere else
   — a pass, or a settlement where the enemy is the besieger — the two fight a battle (§5). An army
-  that reaches its own besieged settlement fights the besiegers as a relief force; the garrison
-  stays inside, and may sortie (§6). If the relief force wins it goes inside too.
+  that reaches its own besieged settlement fights the besiegers as a relief force, and **the garrison marches out to
+  fight beside it**: one side, in the open, with no defence bonus. If they win, the besiegers retreat, the siege is lifted
+  and the relief force goes inside too. If they lose, the relief force retreats and the garrison falls back inside with its
+  losses, the siege going on on the same timer (as after a lost sortie, §6).
 - **Head-on on a route.** Two enemy armies marching towards each other along the same route
   fight where they meet. No army stays on a route: the loser retreats (§5) and the winner carries
   on its march, from where they met, and can be given new orders. Armies marching the same way

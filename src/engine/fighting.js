@@ -142,7 +142,9 @@ export function stormThePost(game, country, key, events) {
 }
 
 // battles where enemies stand at the same place: at a pass, the army that got there first defends at ×2; at a
-// besieged settlement, a relief force fights the besiegers in the open. Armies on cooldown wait.
+// besieged settlement, a relief force fights the besiegers in the open, the garrison marching out beside it (RULES.md §8):
+// won, the besiegers fall back and the siege is lifted; lost, the relief force falls back and the garrison goes back inside.
+// Armies on cooldown wait.
 export function placeBattles(game, events) {
     const st = game.state;
     for (const key of game.map.keys) {
@@ -170,10 +172,12 @@ export function placeBattles(game, events) {
                     }
                 }
             } else {
-                const { relief, hostile } = situation(game, key);
-                if (relief.length && hostile.length && mayFight(st, relief, hostile)) {
-                    const ev = fight(game, { kind: "relief", place: key, a: relief, b: hostile, tie: "a" });
+                const { relief, garrison, hostile } = situation(game, key);
+                const side = [...relief, ...garrison];
+                if (relief.length && hostile.length && mayFight(st, side, hostile)) {
+                    const ev = fight(game, { kind: "relief", place: key, a: side, b: hostile, tie: "a" });
                     events.push(ev);
+                    // the beaten besiegers fall back; a beaten relief force falls back, its garrison inside the walls again
                     for (const l of ev.winner === "a" ? hostile : relief) if (isAlive(st, l)) retreat(game, l, events, key);
                     fought = true;
                 }

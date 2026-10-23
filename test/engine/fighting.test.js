@@ -148,21 +148,39 @@ test("splitting or merging dodges no rest: a part split off, or an army merged i
     assert.equal(game.command({ type: "sortie", country: "BBB", army: split.into }).ok, true);
 });
 
-test("a relief force fights the besiegers in the open; the garrison stays inside", () => {
-    const game = atThePass();
+test("a relief force fights the besiegers in the open with the garrison beside it; beaten, the garrison goes back inside", () => {
+    // won: relief and garrison together, the besiegers fall back, the siege is lifted and the relief force goes inside
+    let game = atThePass();
     order(game, { type: "move", country: "AAA", army: 3, to: 5 });
     runTo(game, 182);
-    setArmy(game, 4, { swords: 5000 });
+    setArmy(game, 4, { swords: 600 });
+    setArmy(game, 3, { swords: 900 });                                      // more than the relief force alone (600)
     order(game, { type: "move", country: "BBB", army: 4, to: 5 });
-    const events = runTo(game, 182 + 73);
-    const relief = ofType(events, "battle")[0];
+    rig(game, 4, 4, 4, 4);
+    let events = runTo(game, 182 + 73);
+    let relief = ofType(events, "battle")[0];
     assert.equal(relief.kind, "relief");
-    assert.deepEqual(relief.a.armies, [4]);
-    assert.deepEqual(relief.b.armies, [3]);
-    assert.equal(relief.winner, "a");
-    assert.equal(game.state.armies[5].men.swords, 400);                    // the garrison was not in it
+    assert.deepEqual([relief.a.armies, relief.b.armies, relief.a.men, relief.winner], [[4, 5], [3], 1000, "a"]);   // 600 + the 400 inside
+    assert.ok(game.state.armies[5].men.swords < 400, "the garrison fought, and lost men");
     assert.equal(game.state.settlements[5].siege, null);
-    assert.equal(game.state.armies[4].relief, false);                      // and the relief force is now inside too
+    assert.equal(game.state.armies[4].relief, false);                       // the relief force is inside too
+    assert.equal(game.state.armies[3].retreating, true);
+    // lost: the relief force falls back; the garrison goes back inside and the siege goes on, on the same timer
+    game = atThePass();
+    order(game, { type: "move", country: "AAA", army: 3, to: 5 });
+    runTo(game, 182);
+    const end = game.state.settlements[5].siege.end;
+    setArmy(game, 4, { swords: 300 });
+    setArmy(game, 3, { swords: 900 });                                      // more than relief and garrison together (700)
+    order(game, { type: "move", country: "BBB", army: 4, to: 5 });
+    rig(game, 4, 4, 4, 4);
+    events = runTo(game, 182 + 73);
+    relief = ofType(events, "battle")[0];
+    assert.deepEqual([relief.a.armies, relief.winner], [[4, 5], "b"]);
+    assert.equal(ofType(events, "retreat").some((e) => e.army === 4), true);
+    assert.equal(ofType(events, "retreat").some((e) => e.army === 5), false);
+    assert.deepEqual([game.state.armies[5].at, game.state.armies[5].relief, game.state.settlements[5].owner], ["5", false, "BBB"]);
+    assert.equal(game.state.settlements[5].siege?.end, end);
 });
 
 test("at a pass the army that got there first defends at ×2", () => {
