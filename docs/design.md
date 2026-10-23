@@ -556,6 +556,11 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   state it holds; every control sends a command. **A panel is rebuilt only when what it shows has
   changed, and never while a hand is typing, dragging or pressing in it** — a click is a press and a release on the same
   button, and a panel whose numbers change rebuilds ten times a second, which would swallow it.
+- **Watching:** any signed-in person may watch a game being played, from the lobby's Live games (`GET /api/live`):
+  `game.html?id=…&watch=1` asks the socket to `watch` rather than `join`. The watcher has no country: the public view (no
+  private part, no questions waiting), the days, pauses, presence and the end — never the chat or a player's private changes
+  (they go to `game:<id>` and `game:<id>:<country>`, a watcher is in `watch:<id>`) — the Map and Events tabs only (the news of
+  the people's countries), no orders, and at the end Game over with who won. Watching counts as online, not playing.
 - **War on you:** a red banner across the top of the map (`mirror.js`, `warAlert`) — "⚔ War! Austria declares war on you",
   who joins them and who joins you, with those who answer a call later added — and Diplomacy and Close; it stays until closed
   and blocks nothing. Other news stays a notice that fades.

@@ -30,6 +30,9 @@ const PROGRESS_EVERY = 10;
 const CHAT_MAX = 300;
 
 export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs }) {
+    // a game's players ("game:<id>") and those watching it ("watch:<id>", socket.js): both hear the days, pauses, presence and
+    // the end; only the players hear the chat, and each player alone their country's private part ("game:<id>:<country>")
+    const everyone = (room) => io.to([`game:${room.id}`, `watch:${room.id}`]);
     const live = new Map();
     let closing = false;
 
@@ -63,7 +66,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             for (const p of room.pending.values()) p({ ok: false, error: "the game stopped" });
             clearTimers(room);
             live.delete(room.id);
-            io.to(`game:${room.id}`).emit("failed", { error: "the game stopped" });
+            everyone(room).emit("failed", { error: "the game stopped" });
         });
         live.set(row.id, room);
         // the players of a multiplayer game are away until they join; the two minutes run from when the game is running.
@@ -111,7 +114,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 room.lastTick = performance.now();
                 save(room, m);
                 for (const e of m.events) if (e.type === "eliminated" && room.seats.has(e.country)) seatOut(room, room.seats.get(e.country), e.day);
-                io.to(`game:${room.id}`).emit("tick", { day: m.day, events: m.events, changes: m.pub });
+                everyone(room).emit("tick", { day: m.day, events: m.events, changes: m.pub });
                 for (const [code, changes] of Object.entries(m.priv)) io.to(`game:${room.id}:${code}`).emit("private", { day: m.day, changes });
                 break;
             case "reply":
@@ -125,7 +128,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 room.paused = m.paused;
                 room.lastTick = performance.now();
                 save(room, { day: m.day }, true);
-                io.to(`game:${room.id}`).emit("paused", { paused: m.paused, day: m.day });
+                everyone(room).emit("paused", { paused: m.paused, day: m.day });
                 break;
             case "over":
                 // the game is won (SCENARIO.md, Victory): saved as finished, and never resumed
@@ -135,7 +138,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 room.paused = true;
                 room.over = m.winner ?? "defeat";
                 clearTimers(room);
-                io.to(`game:${room.id}`).emit("over", { day: m.day, winner: m.winner, why: m.why, defeated: Boolean(m.defeated) });
+                everyone(room).emit("over", { day: m.day, winner: m.winner, why: m.why, defeated: Boolean(m.defeated) });
                 log.info("game.over", { game: room.id, winner: m.winner, defeated: Boolean(m.defeated), humans: [...room.seats.keys()], day: m.day });
                 break;
             case "stats":
@@ -160,7 +163,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     // ---------- people in a game ----------
 
     const seatView = (seat) => ({ country: seat.country, username: seat.username, state: seat.state });
-    const tell = (room, seat) => io.to(`game:${room.id}`).emit("presence", seatView(seat));
+    const tell = (room, seat) => everyone(room).emit("presence", seatView(seat));
     const caretaker = (room, country, mode) => room.worker.postMessage({ type: "caretaker", country, mode });
     const setPaused = (room, paused) => room.worker.postMessage({ type: "pause", paused });
 
@@ -194,7 +197,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         if (seats.some((s) => s.state === "present" || s.state === "away")) return;
         room.ending = true;
         db.q.abandonGame.run(room.day, room.id);
-        io.to(`game:${room.id}`).emit("over", { day: room.day, winner: null, abandoned: true });
+        everyone(room).emit("over", { day: room.day, winner: null, abandoned: true });
         log.info("game.abandoned", { game: room.id, day: room.day });
         retire(room);
     }
@@ -465,6 +468,14 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated }));
             return { username: u.username, joined: u.created_at, row: row ? boardRow(row) : null, games };
         },
+
+        // the games being played now that anyone signed in may watch (socket.js, watch): live, going, not ending; with their
+        // people and whether `userId` has a seat in one (then it plays it rather than watches)
+        liveGames: (userId) => [...live.values()].filter((r) => !r.over && !r.ending && !r.unloading).map((r) => ({
+            id: r.id, scenario: r.scenario, day: r.day, multi: r.multi, paused: r.paused,
+            people: [...r.seats.values()].map((s) => ({ country: s.country, username: s.username.startsWith("deleted-") ? "deleted" : s.username, state: s.state })),
+            mine: [...r.seats.values()].some((s) => s.userId === userId),
+        })).sort((a, b) => b.people.length - a.people.length || b.id - a.id),
 
         // the games a person has a seat in
         gamesOf: (userId) => db.q.gamesOf.all(userId).map((g) => ({

@@ -76,6 +76,38 @@ test("a command is applied and answered at once, not at the next day, paused or 
     }
 });
 
+test("anyone may watch a game being played: the public view and the days, never a private part, and no orders", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const id = await newGame(server);                                         // tester's, as Bavaria
+        const p = await connect(server);
+        await emitAck(p, "join", { gameId: id });
+        // carol sees it among the live games, not hers; tester sees it as his
+        const live = (await api(server, "GET", "/api/live", null, "carol")).body;
+        assert.deepEqual(live.map((g) => [g.id, g.mine, g.people.map((x) => x.username)]), [[id, false, ["tester"]]]);
+        assert.equal((await api(server, "GET", "/api/live")).body[0].mine, true);
+        const w = await connect(server, "carol");
+        const watched = await emitAck(w, "watch", { gameId: id });
+        assert.equal(watched.ok, true);
+        assert.equal(watched.me, undefined);
+        assert.equal(watched.view.countries.BAV.treasury, undefined);             // the public view only
+        assert.equal(watched.view.countries.BAV.name, "Bavaria");
+        let privates = 0;
+        w.on("private", () => privates++);
+        const tick = waitFor(w, "tick", (m) => m.day > watched.view.day);
+        await emitAck(p, "pause", { paused: false });
+        await tick;                                                               // the days come to the watcher
+        assert.equal((await emitAck(w, "command", { cmd: { type: "setTax", tax: 2.5 } })).error, "join a game first");
+        assert.equal((await emitAck(w, "pause", { paused: true })).ok, false);
+        await emitAck(p, "command", { cmd: { type: "setTax", tax: 2.6 } });       // the player's private change...
+        await new Promise((r) => setTimeout(r, 100));
+        assert.equal(privates, 0);                                                // ...never reaches the watcher
+        assert.equal((await emitAck(w, "watch", { gameId: 999 })).ok, false);
+    } finally {
+        await server.close();
+    }
+});
+
 test("a player sees the game without its dice and without other countries' treasuries", async () => {
     const server = await startServer({ dbPath: tempDb() });
     try {

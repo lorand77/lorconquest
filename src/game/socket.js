@@ -9,6 +9,10 @@
 //                                   the user's seat in the game; the socket then receives "tick" { day, events, changes },
 //                                   "private" { day, changes }, "paused", "presence" { country, username, state },
 //                                   "chat" { id, userId, username, text, at }, "over" { day, winner, why?, defeated?, abandoned? }, "failed"
+//   watch   { gameId }            -> { ok, gameId, scenario, multi, paused, tickMs, view, seats, setup, over }
+//                                   a game being played, watched: the public view (no country's private part, no questions
+//                                   waiting); the socket then hears "tick", "paused", "presence" and "over" — never "private"
+//                                   or "chat" — and gives no orders
 //   command { cmd }               -> { ok, error, events }   the country is always the user's seat's, never the client's
 //   pause   { paused }            -> { ok }                  single-player games only
 //   chat    { text }              -> { ok, error }
@@ -54,7 +58,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
 
     io.on("connection", (socket) => {
         const { user } = socket;
-        let room = null, seat = null;
+        let room = null, seat = null, watching = null;
         const said = [];
         socket.join([`user:${user.id}`, `session:${user.hash}`]);
 
@@ -90,6 +94,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             if (joined.error) return reply(ack, { ok: false, error: joined.error });
             room = r;
             seat = joined.seat;
+            if (watching) { socket.leave(`watch:${watching}`); watching = null; }
             mark(user, socket.id, "game");
             socket.join([`game:${room.id}`, `game:${room.id}:${seat.country}`]);
             const view = await rooms.view(room, seat.country);
@@ -98,6 +103,22 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
                 ok: true, gameId: room.id, scenario: room.scenario, me: seat.country, multi: room.multi, paused: room.paused, tickMs, view,
                 seats: rooms.seatList(room), setup: Math.max(0, room.setupUntil - Date.now()), chat: rooms.chatOf(room),
                 over: room.over ?? null,
+            });
+        });
+
+        on("watch", async (msg, ack) => {
+            const r = rooms.get(msg?.gameId);
+            if (!r || r.over || r.ending || r.unloading) return reply(ack, { ok: false, error: "that game is not being played now" });
+            try { await r.ready; } catch { return reply(ack, { ok: false, error: "that game is not being played now" }); }
+            if (room) leave();
+            if (watching) socket.leave(`watch:${watching}`);
+            watching = r.id;
+            socket.join(`watch:${r.id}`);
+            mark(user, socket.id, "lobby");                         // online, not playing
+            const view = await rooms.view(r, null);
+            reply(ack, {
+                ok: true, gameId: r.id, scenario: r.scenario, multi: r.multi, paused: r.paused, tickMs, view,
+                seats: rooms.seatList(r), setup: Math.max(0, r.setupUntil - Date.now()), over: r.over ?? null,
             });
         });
 

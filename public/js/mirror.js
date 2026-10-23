@@ -181,7 +181,7 @@ export const isSelected = (sel, hit) => Boolean(sel) && (hit.kind === "army" || 
 
 // The screen at the end (design.md, "The game screen"): what `me` sees when the game is over, or when their country falls in
 // a game that goes on. `end` is the server's word — { winner, why ("reached" or "end"), defeated, abandoned } — or { out: true }
-// for a country fallen while the others play on; `table` is the engine's scores (victory.js); `names` and `players` give each
+// for a country fallen while the others play on (`me` null for someone watching); `table` is the engine's scores (victory.js); `names` and `players` give each
 // country's name and its person, if it has one; `target` the scenario's number of settlements and `endYear` its last year.
 // Returns { kind: "victory" | "defeat" | "over", title, subtitle, final, rows }: the ten countries ahead (and `me` after them if
 // not among them), each { rank, code, name, player, settlements, pop, you, winner }.
@@ -195,6 +195,8 @@ export function endScreen({ me, end, table, names, players = {}, target, endYear
         : `holding ${table[c]?.settlements ?? 0} settlements of the ${target} needed`);
     const who = (c) => `${name(c)}${players[c] && c !== me ? ` (${players[c]})` : ""}`;
     if (end.abandoned) return { kind: "over", title: "Game over", subtitle: "Everyone has left the game.", final: true, rows };
+    // someone watching (no country): who won, neither a victory nor a defeat of theirs
+    if (!me) return { kind: "over", title: "Game over", subtitle: end.winner ? `${who(end.winner)} wins, ${how(end.winner)}.` : "Every player's country has fallen.", final: true, rows };
     if (end.out) return { kind: "defeat", title: "Defeat", subtitle: `${name(me)} is no more: its last settlement has fallen. The others play on; you may watch to the end.`, final: false, rows };
     if (end.defeated || !end.winner) {
         const many = Object.keys(players).length > 1;

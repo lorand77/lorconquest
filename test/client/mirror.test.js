@@ -163,3 +163,11 @@ test("the war banner: who declared war on you, who joins them, who joins you —
     assert.equal(warAlert([{ type: "joins", country: "BOH", enemy: "BAV", side: "att" }], "BAV"), null);
     assert.deepEqual(warAlert([{ type: "war", country: "STY", target: "BAV" }], "BAV", w).attackers, ["AUS", "STY"]);
 });
+
+test("someone watching gets the end as Game over, with who won: neither a victory nor a defeat of theirs", () => {
+    const table = { BAV: { settlements: 45, pop: 900000 }, SAX: { settlements: 20, pop: 400000 } };
+    const s = endScreen({ me: null, end: { winner: "BAV", why: "reached" }, table, names: { BAV: "Bavaria", SAX: "Saxony" }, players: { BAV: "alice" }, target: 45, endYear: 1650 });
+    assert.deepEqual([s.kind, s.title, s.subtitle, s.final], ["over", "Game over", "Bavaria (alice) wins, holding 45 settlements of the 45 needed.", true]);
+    assert.ok(!s.rows.some((r) => r.you));
+    assert.equal(endScreen({ me: null, end: { winner: null, defeated: true }, table, names: {}, target: 45, endYear: 1650 }).subtitle, "Every player's country has fallen.");
+});

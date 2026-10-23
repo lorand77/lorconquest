@@ -305,3 +305,29 @@ test("the lobby shows who is online — the lobby or a game open — and who is 
         await server.close();
     }
 });
+
+test("someone watching a game with people in it sees who plays and how they stand, but not their chat", async () => {
+    const server = await startServer({ dbPath: tempDb(), setupMs: 0 });
+    try {
+        const id = await makeTable(server, ALICE_BOB);
+        const [a, b] = await play(server, id, ALICE_BOB);
+        const w = await connect(server, "carol");
+        const watched = await emitAck(w, "watch", { gameId: id });
+        assert.deepEqual([watched.ok, watched.multi, watched.seats.map((s) => s.username).sort()], [true, true, ["alice", "bobby"]]);
+        let chats = 0;
+        w.on("chat", () => chats++);
+        const heard = waitFor(b.socket, "chat", (m) => m.text === "only for us");
+        assert.equal((await emitAck(a.socket, "chat", { text: "only for us" })).ok, true);
+        await heard;                                                              // bobby has it...
+        await new Promise((r) => setTimeout(r, 100));
+        assert.equal(chats, 0);                                                   // ...carol does not
+        assert.equal((await emitAck(w, "chat", { text: "hello" })).ok, false);   // nor may she write
+        // she shows as online, not playing
+        const lobby = await connect(server, "dave");
+        const seen = waitFor(lobby, "online", (list) => list.some((p) => p.username === "carol"));
+        await emitAck(lobby, "lobby:enter", {});
+        assert.equal((await seen).find((p) => p.username === "carol").playing, false);
+    } finally {
+        await server.close();
+    }
+});

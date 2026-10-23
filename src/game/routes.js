@@ -8,6 +8,7 @@
 //   POST /api/tables/:id/leave   -> { ok }                 give your seat up (the host cancels instead)
 //   POST /api/tables/:id/cancel  -> { ok }                 the host takes the table down
 //   POST /api/tables/:id/start   -> { ok, id }             the host starts the game; seats left open are the computer's
+//   GET  /api/live               the games being played now, to watch: [{ id, scenario, day, multi, paused, people, mine }]
 //   GET  /api/games              the games you have a seat in: [{ id, scenario, status, winner, day, country, people, live }]
 //   GET  /api/games/:id/replay   a finished or abandoned game, to play over in the browser: its seed, humans and every command,
 //                                with the fingerprint its final state must have; 409 while it is going on or if it was played
@@ -72,6 +73,7 @@ export function gameRoutes(rooms, scenarios) {
     });
 
     router.get("/games", (req, res) => res.json(rooms.gamesOf(req.user.id)));
+    router.get("/live", (req, res) => res.json(rooms.liveGames(req.user.id)));
 
     router.get("/games/:id/replay", (req, res) => {
         const r = rooms.replayOf(req.params.id);

@@ -1,6 +1,6 @@
 // The lobby, the Play section of the shell (shell.js): start a game alone or open a room, take a free country in someone
 // else's, start or cancel your own, open the games you are in that are still going (the finished ones are under My Profile,
-// My Games), and see who is online — has the lobby or a game open (socket.js). The server decides everything (src/game/routes.js); this page asks, and listens for the
+// My Games), watch the games being played now, and see who is online — has the lobby or a game open (socket.js). The server decides everything (src/game/routes.js); this page asks, and listens for the
 // lobby changing and for a room it has a seat in starting. (People see "rooms"; the code and the API say "tables", since
 // "rooms" are the games running in src/game/rooms.js.)
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
@@ -73,7 +73,14 @@ function tableItem(t) {
 }
 
 async function refresh() {
-    const [tables, games] = await Promise.all([fetch("/api/tables").then((r) => r.json()), fetch("/api/games").then((r) => r.json())]);
+    const [tables, games, live] = await Promise.all([fetch("/api/tables").then((r) => r.json()), fetch("/api/games").then((r) => r.json()),
+        fetch("/api/live").then((r) => r.json())]);
+    // games being played now: watch someone else's, open your own
+    $("live-count").textContent = live.length ? `(${live.length})` : "";
+    $("live").replaceChildren(...live.map((g) => make("li", {},
+        `${scenarioOf(g.scenario)?.name ?? g.scenario}: ${g.people.map((p) => `${nameOf(g.scenario, p.country)} (${p.username})`).join(", ")} · ${longDate(g.day)}${g.paused ? " · paused" : ""} — `,
+        g.mine ? make("a", { href: `/game.html?id=${g.id}` }, "open") : make("a", { href: `/game.html?id=${g.id}&watch=1` }, "👁 watch"))));
+    if (!live.length) $("live").textContent = "None right now.";
     $("tables").replaceChildren(...tables.map(tableItem));
     if (!tables.length) $("tables").textContent = "None. Open one above.";
     const going = games.filter((g) => g.status === "active");                 // a room not yet started is under Rooms
@@ -88,6 +95,7 @@ async function refresh() {
 const socket = globalThis.io({ transports: ["websocket"] });
 socket.on("connect", () => { socket.emit("lobby:enter", {}); refresh(); });
 socket.on("lobby:changed", refresh);
+setInterval(refresh, 30000);                              // the live games' dates, and games begun or ended alone
 // who has the lobby or a game open, each name opening their profile
 socket.on("online", (list) => {
     $("online-count").textContent = `(${list.length})`;

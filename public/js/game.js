@@ -24,6 +24,8 @@ const make = (tag, props = {}, ...children) => {
 
 const WEAPON_NAMES = { unarmed: "unarmed", swords: "swords", pikes: "pikes", cavalry: "cavalry", handCannons: "hand cannons", arquebuses: "arquebuses", muskets: "muskets" };
 const gameId = Number(new URLSearchParams(location.search).get("id"));
+// watching a game being played (?watch=1): no country, no orders — the map, the events and who is playing (socket.js, watch)
+const watching = new URLSearchParams(location.search).has("watch");
 const socket = globalThis.io({ transports: ["websocket"] });
 socket.on("connect_error", (e) => { if (e.message === "sign in first") location.href = `/login.html?next=${encodeURIComponent(location.pathname + location.search)}`; });
 const ask = (event, payload) => new Promise((resolve) => socket.emit(event, payload, resolve));
@@ -50,9 +52,15 @@ let owners = "";             // who owned what when the lands were last coloured
 async function start() {
     // who we are is asked alongside the join, and the scenario's data alongside its map: one round trip each, not five in a row
     const whoAmI = fetch("/api/me").then((r) => r.json());
-    const joined = await ask("join", { gameId });
+    const joined = await ask(watching ? "watch" : "join", { gameId });
     if (!joined.ok) { $("panel").textContent = `Cannot open this game: ${joined.error}`; return; }
-    ({ me, paused, tickMs, multi, seats } = joined);
+    ({ paused, tickMs, multi, seats } = joined);
+    me = joined.me ?? null;
+    if (!me) {
+        // a watcher: the Map and Events tabs, no clock to stop, no orders
+        for (const b of document.querySelectorAll("#tabs button")) b.hidden = !["selection", "events"].includes(b.dataset.tab);
+        document.title = "LorConquest — watching";
+    }
     setupEnds = joined.setup ? performance.now() + joined.setup : 0;
     state = joined.view;
     let who;
@@ -64,8 +72,8 @@ async function start() {
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("pause").addEventListener("click", togglePause);
-    $("pause").hidden = multi;
-    if (multi) startPeople(joined);
+    $("pause").hidden = multi || !me;
+    if (multi || !me) startPeople(joined);
     for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
     // a click is a press and a release on the same element: a panel rebuilt between them (ten times a second while numbers in
     // it change) would swallow it, so it waits until the click is done
@@ -90,7 +98,7 @@ async function start() {
     // a reconnect joins again: in a game with others the country is ours at once; the page catches up from the view
     socket.on("connect", () => {
         if (!state) return;
-        ask("join", { gameId }).then((j) => {
+        ask(watching ? "watch" : "join", { gameId }).then((j) => {
             if (!j.ok) { toast(j.error, 600000); return; }
             state = Object.assign(state, j.view);
             paused = j.paused;
@@ -108,7 +116,8 @@ function onTick(m) {
     lastTick = performance.now();
     for (const e of m.events) {
         const who = eventCountries(e);
-        if (who.includes(me) || who.some((c) => enemies().includes(c))) feed(e);
+        // the player's news and their enemies'; a watcher's, the news of the people's countries
+        if (me ? who.includes(me) || who.some((c) => enemies().includes(c)) : who.some((c) => seats.some((s) => s.country === c))) feed(e);
         const mine = who.includes(me);
         if ((e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
             || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
@@ -160,7 +169,8 @@ function select(s) {
     splitOpen = false;
     const place = s?.kind === "place" ? game.map.nodes.get(s.key) : null;
     const owner = place ? state.settlements[place.land]?.owner : null;
-    const next = tabForSelection(s, me, { place, owner, rebel: s?.kind === "country" && Boolean(country(s.code)?.rebel) });
+    let next = tabForSelection(s, me, { place, owner, rebel: s?.kind === "country" && Boolean(country(s.code)?.rebel) });
+    if (!me && next) next = "selection";                       // a watcher has the Map tab only
     if (next) tab = next;
     if (next === "diplomacy") ui.target = s.code;
     renderAll(true);
@@ -197,7 +207,7 @@ async function dispatch(cmd) {
 }
 
 function togglePause() {
-    if (multi) return;                                // with other people in the game the clock never stops
+    if (multi || !me) return;                         // with other people in the game the clock never stops; a watcher has none
     ask("pause", { paused: !paused });
 }
 
@@ -223,12 +233,13 @@ function renderAll(force = false) {
 }
 
 function renderTop() {
-    $("me").replaceChildren(swatch(me), ` ${country(me).name}`);
+    if (!me) $("me").textContent = "👁 Watching";
+    else $("me").replaceChildren(swatch(me), ` ${country(me).name}`);
     $("date").textContent = longDate(state.day);
     $("pause").textContent = state.winner ? "Game over" : paused ? "▶ Play" : "⏸ Pause";
     $("pause").disabled = Boolean(state.winner);
     $("pause").classList.toggle("paused", paused);
-    if (country(me).treasury !== undefined) {
+    if (me && country(me).treasury !== undefined) {
         const e = economyOf(game, me);
         $("treasury").textContent = `Treasury ${formatNumber(country(me).treasury)} (${e.moneyPerYear >= 0 ? "+" : "−"}${formatNumber(Math.abs(e.moneyPerYear))} a year)`;
         $("treasury").classList.toggle("bad", country(me).treasury < 0);
@@ -277,17 +288,20 @@ function showEnd(end) {
 
 // ---------- other people: who is here, the setup minute, chat, leaving ----------
 function startPeople(joined) {
+    socket.on("presence", (p) => {
+        if (p.country === me && p.state === "out" && !state.winner) showEnd({ out: true });
+        seats = seats.filter((s) => s.country !== p.country).concat(p);
+        renderPeople();
+    });
+    renderPeople();
+    setInterval(renderSetup, 250);
+    if (!me) return;                                  // a watcher sees who plays, but has no seat to leave and no chat
     $("quit").hidden = false;
     $("chat-toggle").hidden = false;
     $("quit").addEventListener("click", async () => {
         if (!confirm("Leave this game? The computer will play your country for good and you cannot come back.")) return;
         const r = await ask("quit", {});
         if (r.ok) location.href = "/"; else toast(r.error);
-    });
-    socket.on("presence", (p) => {
-        if (p.country === me && p.state === "out" && !state.winner) showEnd({ out: true });
-        seats = seats.filter((s) => s.country !== p.country).concat(p);
-        renderPeople();
     });
     $("chat-toggle").addEventListener("click", () => {
         $("chat").hidden = !$("chat").hidden;
@@ -304,8 +318,6 @@ function startPeople(joined) {
         const r = await ask("chat", { text });
         if (r.ok) $("chat-text").value = ""; else toast(r.error);
     });
-    setInterval(renderSetup, 250);
-    renderPeople();
 }
 
 function chatLine(m, live) {
@@ -359,6 +371,7 @@ function renderPanel(force = false) {
     else if (tab === "shop") nodes = shopTab(ctx);
     else if (tab === "research") nodes = researchTab(ctx);
     else if (tab === "diplomacy") nodes = diplomacyTab(ctx);
+    else if (!sel && !me) nodes = [make("p", { class: "hint" }, "You are watching this game: click an army, a fleet, a settlement or a country's land to see it. The Events tab has the news of the people playing.")];
     else if (!sel) nodes = [make("p", { class: "hint" }, "Click an army or fleet to select it; with an army selected, click where it should go. Click it again, right-click the map, press Escape or × to let go. Click a settlement or a country's land to see it. Space pauses. The tabs above run your country.")];
     else if (sel.kind === "army") nodes = armyPanel(state.armies[sel.id]);
     else if (sel.kind === "fleet") nodes = fleetPanel(ctx, state.fleets[sel.id]);
@@ -481,7 +494,7 @@ function countryPanel(code) {
     const out = [make("h2", {}, swatch(code), ` ${c.name}`),
         make("p", {}, `${towns.length} settlements, ${formatNumber(towns.reduce((n, s) => n + s.pop, 0))} people, ${formatNumber(armies.reduce((n, a) => n + menOf(a), 0))} soldiers.`),
         make("p", {}, wars.length ? `At war with ${wars.map((w) => country(w).name).join(", ")}.` : "At peace.")];
-    if (code !== me) out.push(make("button", { onclick: () => { ui.target = code; setTab("diplomacy"); } }, "Diplomacy…"));
+    if (me && code !== me) out.push(make("button", { onclick: () => { ui.target = code; setTab("diplomacy"); } }, "Diplomacy…"));
     return out;
 }
 
