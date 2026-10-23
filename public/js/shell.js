@@ -30,12 +30,15 @@ export const profileTab = (hash) => (hash === "#games" ? "#games" : "#stats");
 
 export function mountShell(user) {
     const path = location.pathname === "/index.html" ? "/" : location.pathname;
+    // someone else's profile (profile.html?name=…) is not My Profile: its rail items stay links back to yours
+    const name = new URLSearchParams(location.search).get("name");
+    const yours = path !== "/profile.html" || !name || name.toLowerCase() === user.username.toLowerCase();
     const item = (href, icon, label, cls = "") => make("a", { class: `rail-item ${cls}`.trim(), href }, make("span", { class: "rail-icon" }, icon), make("span", {}, label));
     const rail = make("nav", { class: "app-rail", "aria-label": "Sections" });
     const subs = [];
     for (const it of ITEMS) {
         const parent = item(it.href, it.icon, it.label, it.children ? "rail-parent" : "");
-        if (path === it.href) parent.classList.add("current");
+        if (path === it.href && yours) parent.classList.add("current");
         rail.append(parent);
         for (const c of it.children ?? []) {
             const sub = item(it.href + c.hash, c.icon, c.label, "rail-sub");
@@ -44,7 +47,7 @@ export function mountShell(user) {
         }
     }
     // the open tab of My Profile is marked, and follows the hash
-    const markTab = () => { for (const [sub, hash] of subs) sub.classList.toggle("current", path === "/profile.html" && profileTab(location.hash) === hash); };
+    const markTab = () => { for (const [sub, hash] of subs) sub.classList.toggle("current", path === "/profile.html" && yours && profileTab(location.hash) === hash); };
     markTab();
     window.addEventListener("hashchange", markTab);
     rail.append(make("div", { class: "rail-legal" }, make("a", { href: "/terms.html" }, "Terms"), make("a", { href: "/privacy.html" }, "Privacy")));

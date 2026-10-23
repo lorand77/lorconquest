@@ -433,10 +433,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
         // everyone, ranked over the games they finished: most firsts among people, then victories, the best average place,
         // the most games; those who have finished none come last, by name
-        leaderboard: () => db.q.leaderboard.all().map((r) => ({
-            username: r.username, games: r.games, shared: r.shared, firsts: r.firsts, victories: r.victories,
-            averagePlace: r.shared ? Math.round(r.place_sum / r.shared * 100) / 100 : null,
-        })).sort((x, y) => y.firsts - x.firsts || y.victories - x.victories || (x.averagePlace ?? 99) - (y.averagePlace ?? 99) || y.games - x.games || (x.username < y.username ? -1 : 1)),
+        leaderboard: () => db.q.leaderboard.all().map(boardRow).sort((x, y) => y.firsts - x.firsts || y.victories - x.victories || (x.averagePlace ?? 99) - (y.averagePlace ?? 99) || y.games - x.games || (x.username < y.username ? -1 : 1)),
 
         // games that should be ticking and have not for this long (in ms): the loop is stuck (src/health.js)
         stalled: (ms) => [...live.values()].filter((r) => !r.paused && !r.over && !r.ending && !r.unloading && performance.now() - r.lastTick > ms).map((r) => r.id),
@@ -455,6 +452,18 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             const removed = days < 0 ? 0 : db.q.deleteOldChat.run("-" + days + " days").changes;
             if (removed) log.info("chat.retention", { removed, days });
             return removed;
+        },
+
+        // another person's profile, as anyone signed in may see it: their name, when they joined, their leaderboard row and the
+        // games of theirs that are over (finished or abandoned, whose replays anyone may watch) — not the ones still going.
+        // Null for no such account, or one deleted.
+        player(name) {
+            const u = typeof name === "string" ? db.q.userByNameLoose.get(name) : null;
+            if (!u || u.username.startsWith("deleted-")) return null;
+            const row = db.q.leaderboard.all().find((r) => r.username === u.username);
+            const games = db.q.gamesOf.all(u.id).filter((g) => g.status === "finished" || g.status === "abandoned")
+                .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated }));
+            return { username: u.username, joined: u.created_at, row: row ? boardRow(row) : null, games };
         },
 
         // the games a person has a seat in
@@ -497,4 +506,9 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     };
 }
 
+// a person's row of the leaderboard, from the query's sums
+const boardRow = (r) => ({
+    username: r.username, games: r.games, shared: r.shared, firsts: r.firsts, victories: r.victories,
+    averagePlace: r.shared ? Math.round(r.place_sum / r.shared * 100) / 100 : null,
+});
 const chatView = (m) => ({ id: m.id, userId: m.user_id, username: m.username, text: m.text, at: m.created_at });

@@ -513,7 +513,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   and a rail of sections on the left — Play (the lobby: a new game, rooms, games in progress), My Profile with its two tabs
   Stats and My Games (`profile.html`: the numbers worked out by `lobbylogic.js`, `statsOf`, from your games and your
   leaderboard row; every game, the finished ones with their replays), Customize (`customize.html`: the colours) and the
-  Leaderboard. Each page reserves the shell's room (`body.shell`) so nothing moves when the script builds it. The game, the
+  Leaderboard, where a name opens that player's profile (`profile.html?name=…`, `GET /api/players/:name`): their stats and their
+  games that are over, with the replays — what anyone signed in may already watch — never the games they are still playing.
+  Each page reserves the shell's room (`body.shell`) so nothing moves when the script builds it. The game, the
   replay, the sign-in page (LorCiv's card) and the legal pages have no shell.
 - **Colours:** LorCiv's two schemes, dark by default and light, as two sets of CSS variables at the top of
   `public/css/game.css`. `public/js/theme.js`, a plain script in every page's head so a page paints in its scheme at

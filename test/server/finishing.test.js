@@ -42,6 +42,30 @@ async function finishedGame(server, [[a, ca], [b, cb]] = [["alice", "BAV"], ["bo
     return { id: made.body.id, over: await over };
 }
 
+test("another player's profile: their name, when they joined, their leaderboard row and their games that are over, not the ones going", async () => {
+    const root = quickRoot();
+    const server = await startServer({ dbPath: tempDb(), root });
+    try {
+        const { id } = await finishedGame(server);
+        await newGame(server, { scenario: "mitteleuropa", country: "SAX", seed: 2 }, "bobby");       // one of bobby's still going
+        const res = await api(server, "GET", "/api/players/bobby", null, "carol");
+        assert.equal(res.status, 200);
+        const p = res.body;
+        assert.equal(p.username, "bobby");
+        assert.match(p.joined, /^\d{4}-\d\d-\d\d /);
+        assert.deepEqual(p.games.map((g) => [g.id, g.status, g.country]), [[id, "finished", "ULM"]]);
+        assert.deepEqual([p.row.username, p.row.games], ["bobby", 1]);
+        assert.equal((await api(server, "GET", "/api/players/BOBBY", null, "carol")).body.username, "bobby");   // any case
+        assert.equal((await api(server, "GET", "/api/players/nobody", null, "carol")).status, 404);
+        assert.equal((await api(server, "GET", "/api/players/bobby", null, null)).status, 401);
+        assert.equal(deleteAccount(server.app.db, "bobby").ok, true);
+        assert.equal((await api(server, "GET", "/api/players/bobby", null, "carol")).status, 404);   // gone with the account
+    } finally {
+        await server.close();
+        fs.rmSync(root, { recursive: true, force: true });
+    }
+});
+
 test("a finished game keeps its standings, ranked among its people, and the fingerprint of its final state", async () => {
     const root = quickRoot();
     const server = await startServer({ dbPath: tempDb(), root });

@@ -13,6 +13,8 @@
 //                                with the fingerprint its final state must have; 409 while it is going on or if it was played
 //                                under other rules (src/game/rooms.js, replayOf)
 //   GET  /api/leaderboard        every account, ranked over the games it finished (rooms.js, leaderboard)
+//   GET  /api/players/:name      another person's profile: { username, joined, row, games } — their leaderboard row and their games
+//                                that are over, never the ones still going (rooms.js, player); 404 for no such account
 import crypto from "node:crypto";
 import express from "express";
 import { requireAuth } from "../auth/session.js";
@@ -78,6 +80,10 @@ export function gameRoutes(rooms, scenarios) {
     });
 
     router.get("/leaderboard", (req, res) => res.json(rooms.leaderboard()));
+    router.get("/players/:name", (req, res) => {
+        const p = rooms.player(req.params.name);
+        return p ? res.json(p) : res.status(404).json({ error: "no such player" });
+    });
 
     return router;
 }

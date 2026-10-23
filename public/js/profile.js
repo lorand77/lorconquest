@@ -1,6 +1,8 @@
-// My Profile (a section of the shell, shell.js): who you are and since when, and two tabs — Stats, your numbers over every
-// game you have played (lobbylogic.js, statsOf), and My Games, all of them: the ones going to open, the finished ones to watch
-// as replays. The tab is the page's hash (#stats, #games), so the rail's links open the one they name.
+// A profile (a section of the shell, shell.js): who and since when, and two tabs — Stats, the numbers over their games
+// (lobbylogic.js, statsOf), and Games. Your own (My Profile) has every game of yours: the ones going to open, the finished ones
+// to watch as replays. Someone else's (profile.html?name=…, opened from the leaderboard) has only what anyone signed in may
+// see of them (GET /api/players/:name): their games that are over, with their replays, and the numbers over those. The tab
+// is the page's hash (#stats, #games), so the rail's links open the one they name.
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
 import { gameLine, statsOf } from "./lobbylogic.js";
@@ -17,15 +19,36 @@ const make = (tag, props = {}, ...children) => {
     return e;
 };
 
-// everything at once: who you are, your games, the leaderboard and the scenarios' names
-const [me, games, board, scenarios] = await Promise.all([requireUser(),
-    fetch("/api/games").then((r) => r.json()), fetch("/api/leaderboard").then((r) => r.json()), fetch("/api/scenarios").then((r) => r.json())]);
+// whose profile: ?name=… is someone else's (unless it is yours)
+const asked = new URLSearchParams(location.search).get("name");
+const json = (r) => r.json().then((body) => ({ ok: r.ok, body }));
+// everything at once: who you are, the games, the leaderboard (for your own row) and the scenarios' names
+const [me, theirs, mine, board, scenarios] = await Promise.all([requireUser(),
+    asked ? fetch(`/api/players/${encodeURIComponent(asked)}`).then(json) : null,
+    asked ? null : fetch("/api/games").then((r) => r.json()),
+    asked ? null : fetch("/api/leaderboard").then((r) => r.json()),
+    fetch("/api/scenarios").then((r) => r.json())]);
 mountShell(me);
-$("name").textContent = me.username;
-if (me.joined) {
-    const when = new Date(me.joined.replace(" ", "T") + "Z");
+const own = !asked || theirs?.body?.username === me.username;
+if (asked && !theirs.ok) {
+    $("name").textContent = asked;
+    $("joined").textContent = "There is no such player.";
+    document.querySelector(".profile-tabs").hidden = true;
+    $("stats-panel").hidden = true;
+    throw new Error("no such player");
+}
+const person = asked ? theirs.body : { username: me.username, joined: me.joined };
+const games = asked ? theirs.body.games : mine;
+const row = asked ? theirs.body.row : board.find((r) => r.username === me.username);
+
+$("name").textContent = person.username;
+document.title = `LorConquest — ${person.username}`;
+if (person.joined) {
+    const when = new Date(person.joined.replace(" ", "T") + "Z");
     $("joined").textContent = `Playing since ${when.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}`;
 }
+$("tab-games").textContent = own ? "📜 My Games" : "📜 Games";
+$("games-title").textContent = own ? "My Games" : `${person.username}'s games that are over`;
 
 // the tab the hash names
 function showTab() {
@@ -42,26 +65,27 @@ const scenarioOf = (id) => scenarios.find((s) => s.id === id);
 const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === code)?.name ?? code;
 
 // ---------- Stats ----------
-const s = statsOf(games, board.find((r) => r.username === me.username));
+// someone else's count only the games that are over: what is going on in theirs is theirs alone
+const s = statsOf(games, row);
 const stat = (value, label) => make("div", { class: "stat" }, make("b", {}, String(value)), make("span", {}, label));
-$("stat-grid").replaceChildren(
-    stat(s.games, "games played"),
-    stat(s.going, "going now"),
+$("stat-grid").replaceChildren(...[
+    own && stat(s.games, "games played"),
+    own && stat(s.going, "going now"),
     stat(s.finished, "finished"),
     stat(s.won, "won"),
     stat(s.winRate === null ? "—" : `${s.winRate}%`, "of finished games won"),
-    stat(s.alone, "alone"),
-    stat(s.withOthers, "with other people"),
+    stat(s.alone, own ? "alone" : "alone, over"),
+    stat(s.withOthers, own ? "with other people" : "with other people, over"),
     stat(s.firsts, "first among people"),
     stat(s.averagePlace ?? "—", "average place among people"),
     stat(s.abandoned, "abandoned"),
-);
+].filter(Boolean));
 
-// ---------- My Games ----------
+// ---------- Games ----------
 const played = games.filter((g) => g.status !== "lobby");
 $("game-list").replaceChildren(...played.map((g) => {
     const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day));
-    return make("li", {}, line.open ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text,
+    return make("li", {}, line.open && own ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text,
         line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
 }));
-if (!played.length) $("game-list").textContent = "None yet: start one under Play.";
+if (!played.length) $("game-list").textContent = own ? "None yet: start one under Play." : "None over yet.";

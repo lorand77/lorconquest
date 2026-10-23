@@ -10,9 +10,15 @@ $("empty").hidden = rows.length > 0;
 $("board").hidden = rows.length === 0;
 $("rows").replaceChildren(...rows.map((r, i) => {
     const tr = document.createElement("tr");
-    for (const text of [i + 1, r.username, r.games, r.shared, r.firsts, r.averagePlace ?? "—", r.victories]) {
+    for (const [k, text] of [[0, i + 1], [1, r.username], [2, r.games], [3, r.shared], [4, r.firsts], [5, r.averagePlace ?? "—"], [6, r.victories]]) {
         const td = document.createElement("td");
-        td.textContent = String(text);
+        if (k === 1) {
+            // a name opens that player's profile: their stats and the games of theirs that are over
+            const a = document.createElement("a");
+            a.href = `/profile.html?name=${encodeURIComponent(r.username)}`;
+            a.textContent = r.username;
+            td.append(a);
+        } else td.textContent = String(text);
         tr.append(td);
     }
     return tr;
