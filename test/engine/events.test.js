@@ -149,3 +149,26 @@ test("peasants are at war with their country and its enemies — with everyone o
     runTo(game, st.day + 1);
     for (const c of ["AAA", "CCC", "DDD", "EEE"]) assert.equal(atWarWith(reb, c), true, c);
 });
+
+test("a new uprising joins the country's rebels already up — their army where they rise, if they have one there", () => {
+    const game = tinyGame(), st = game.state;
+    const first = [], second = [], third = [];
+    uprising(game, "BBB", first);
+    const reb = first[0].rebels, army = st.armies[first[0].army];
+    assert.equal(first[0].joined, undefined);
+    const men = menOf(army);
+    uprising(game, "BBB", second);                                  // the same place: the same army grows
+    assert.deepEqual([second[0].rebels, second[0].joined, second[0].army], [reb, true, army.id]);
+    assert.equal(menOf(army), men + second[0].men);
+    assert.equal(Object.values(st.countries).filter((c) => c.rebel).length, 1, "one band, not two");
+    // the band\x27s army has marched off: the next rising is a new army of the same band
+    army.at = "5";
+    uprising(game, "BBB", third);
+    assert.deepEqual([third[0].rebels, third[0].joined], [reb, true]);
+    assert.notEqual(third[0].army, army.id);
+    assert.equal(st.armies[third[0].army].owner, reb);
+    // another country\x27s peasants are a band of their own
+    const other = [];
+    uprising(game, "AAA", other);
+    assert.notEqual(other[0].rebels, reb);
+});

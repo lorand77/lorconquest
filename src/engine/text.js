@@ -38,7 +38,7 @@ export function describeEvent(map, e) {
         case "tech": return `${e.country} unlocks ${tech(e.tech)}`;
         case "harvest": return `a good harvest in ${e.country}`;
         case "plague": return `plague in ${e.country}: ${fmt(e.dead)} dead`;
-        case "uprising": return `peasants rise against ${e.country} outside ${place(String(e.at))}: ${e.rebels}, ${fmt(e.men)} men`;
+        case "uprising": return `peasants rise against ${e.country} outside ${place(String(e.at))}: ${fmt(e.men)} men${e.joined ? `, joining the rebels already up, ${e.rebels}` : `, ${e.rebels}`}`;
         case "scattered": return `army ${e.army} (${e.owner}) is beaten and scatters home`;
         case "default": return `${e.country} defaults on ${fmt(e.owed)} of loans`;
         case "desertion": return `${fmt(e.men)} mercenaries of ${e.country} desert`;

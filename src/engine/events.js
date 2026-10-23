@@ -13,6 +13,7 @@ import { YEAR_DAYS } from "./calendar.js";
 import { ownedBy, plague, popOf } from "./economy.js";
 import { evictClosed } from "./diplomacy.js";
 import { settle } from "./fighting.js";
+import { joinArmy } from "./forces.js";
 import { follow, routeFor } from "./movement.js";
 import { random } from "./random.js";
 import { armiesAt, armyList, isCore, isRebel, newArmy, warKey } from "./state.js";
@@ -33,20 +34,25 @@ export function yearly(game, events) {
     }
 }
 
-// rebels rise outside the capital, or if it is lost in the largest settlement the country has
+// rebels rise outside the capital, or if it is lost in the largest settlement the country has. If peasants of the country are
+// up in arms already, the new ones join them — the oldest band still standing, and its army there if it has one — rather
+// than forming a band of their own (RULES.md §11).
 export function uprising(game, code, events) {
     const st = game.state, c = st.countries[code], owned = ownedBy(st, code);
     if (!owned.length) return;
     const home = st.settlements[c.capital]?.owner === code ? st.settlements[c.capital] : [...owned].sort((a, b) => b.pop - a.pop || a.id - b.id)[0];
     const n = Math.round(0.03 * popOf(st, code));
-    const rebel = `REB${++st.rebels}`;
-    st.countries[rebel] = { code: rebel, name: `Rebels of ${c.name}`, capital: null, rebel: true, of: code, treasury: 0 };
-    st.wars.push(warKey(rebel, code));
-    st.wars.sort();
+    const bands = Object.keys(st.countries).filter((x) => st.countries[x].rebel && st.countries[x].of === code).sort((a, b) => Number(a.slice(3)) - Number(b.slice(3)));
+    const joined = bands.length > 0, rebel = joined ? bands[0] : `REB${++st.rebels}`;
+    if (!joined) {
+        st.countries[rebel] = { code: rebel, name: `Rebels of ${c.name}`, capital: null, rebel: true, of: code, treasury: 0 };
+        st.wars.push(warKey(rebel, code));
+        st.wars.sort();
+    }
     const men = emptyMen();
     men.swords = n;
-    const army = newArmy(st, rebel, String(home.id), men);
-    events.push({ type: "uprising", day: st.day, country: code, rebels: rebel, army: army.id, men: n, at: home.id });
+    const army = joined ? joinArmy(st, rebel, String(home.id), { men }) : newArmy(st, rebel, String(home.id), men);
+    events.push({ type: "uprising", day: st.day, country: code, rebels: rebel, army: army.id, men: n, at: home.id, ...(joined ? { joined: true } : {}) });
     settle(game, String(home.id), events);
 }
 

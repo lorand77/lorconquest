@@ -898,7 +898,9 @@ cities, favouring undefended ones and your core territory. **There is no peace w
 first, then core ones, then the nearest**; an army besieging one stays until it falls or the siege is lifted.
 Rebels take no orders and make no peace. They are fed by their own people, but still sicken in a siege. If
 the country has lost its capital, they rise outside its largest settlement. The uprising is over when the
-rebels have no army and hold no settlement.
+rebels have no army and hold no settlement. **A new uprising while the country's rebels are still up joins them**: the
+new peasants are added to their army where they rise, if it stands there, or form a new army of the same rebels — not a
+band of their own.
 
 **Who fights the rebels.** The rebels are at war with the country they rose against **and with every country at war with
 it**: its enemies may fight them and take the towns they hold, and they fight back. Once their country is out of the game,
