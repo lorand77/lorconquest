@@ -550,7 +550,7 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   capital), **Shop** (buildings for the selected settlement, raising soldiers — armed in the same click, with the weapon
   the player last chose, kept while the page is open (at first the best the treasury pays for) — hiring mercenaries, weapons by as many lots as asked, people,
   sharpshooters, ships, and what is queued) and **Research** (the tree, the tech
-  being researched). Fleets are chips on the map — in a port below its marker, at sea below the zone's
+  being researched — or, when none is, a notice saying so, with the R waiting and the cheapest open tech at one click). Fleets are chips on the map — in a port below its marker, at sea below the zone's
   name, gliding between zones when sailing — and their panel has the orders. Sharpshooter posts show
   beside their pass. The panels show the engine's own numbers, worked out in the browser from the
   state it holds; every control sends a command. **A panel is rebuilt only when what it shows has

@@ -297,6 +297,10 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .panel details { margin-top: 8px; }
 .panel details summary { cursor: pointer; color: var(--link); }
 .panel .queue { margin: 0; padding-left: 18px; }
+.panel .notice { border: 1px solid var(--warn-border); background: var(--warn-bg); border-radius: 4px; padding: 8px 10px; margin: 0 0 10px; }
+.panel .notice p { margin: 0 0 6px; }
+.panel .notice.done { border-color: var(--good-border); background: var(--good-bg); }
+.panel .notice.done p { margin: 0; }
 .panel .tech { border: 1px solid var(--border); border-radius: 4px; padding: 5px 8px; margin: 5px 0; background: var(--surface); }
 .panel .tech.done { background: var(--good-bg); border-color: var(--good-border); }
 .panel .tech.target { border-color: var(--gold); }

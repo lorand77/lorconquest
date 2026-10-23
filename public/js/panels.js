@@ -201,6 +201,16 @@ export function researchTab(ctx) {
         line(ctx, "R in store", n(c.r)),
         line(ctx, "R a year", n(e.rPerYear)),
         make("p", { class: "hint" }, "Choose one tech at a time. It unlocks the moment your R covers its cost, which is taken from the store; unspent R banks."))];
+    // nothing being researched: say so, and offer the cheapest tech open now at one click (R only piles up meanwhile)
+    if (!c.target) {
+        const open = Object.entries(TECHS).filter(([id, t]) => !c.techs.includes(id) && c.techs.includes(t.needs))
+            .sort((a, b) => techCost(game, a[0]) - techCost(game, b[0]))[0];
+        out.unshift(open
+            ? make("div", { class: "notice" },
+                make("p", {}, make("b", {}, "Nothing is being researched."), ` Your ${money(c.r)} R in store and ${money(e.rPerYear)} a year are waiting for a tech.`),
+                make("button", { class: "primary", onclick: act(ctx, () => ({ type: "research", tech: open[0] })) }, `Research ${TECH_NAMES[open[0]]} · ${money(techCost(game, open[0]))} R`))
+            : make("div", { class: "notice done" }, make("p", {}, make("b", {}, "Every technology is researched."), " R still banks, for nothing.")));
+    }
     const rows = Object.entries(TECHS).map(([id, t]) => {
         const cost = techCost(game, id), have = c.techs.includes(id), open = !have && c.techs.includes(t.needs), target = c.target === id;
         const bar = make("div", { class: "bar" }, make("i", { style: `width:${Math.min(100, (c.r / cost) * 100).toFixed(1)}%` }));

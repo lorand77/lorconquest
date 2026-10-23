@@ -241,3 +241,17 @@ test("a fleet sent on its way is let go of (ctx.dispatch); merging it keeps it s
     await button(fleetPanel(ctx, f), "Merge into fleet 999").handlers.click();
     assert.deepEqual(sent.map((c) => c.type), ["mergeFleet"]);                 // sent plainly: the selection stays
 });
+
+test("the Research tab says when nothing is being researched and offers the cheapest open tech at one click", async () => {
+    const { ctx, sent } = setup();
+    let nodes = researchTab(ctx);
+    assert.match(nodes.map((n) => n.text).join(" | "), /Nothing is being researched\.\s+Your 0 R in store and [\d,.KM]+ a year are waiting/);
+    await button(nodes, "Research Hand cannons · 1.50M R").handlers.click();           // cheaper than carracks (3M)
+    assert.deepEqual(sent, [{ type: "research", tech: "handCannons" }]);
+    ctx.state.countries.BAV.target = "handCannons";                                   // something chosen: no notice
+    assert.doesNotMatch(researchTab(ctx).map((n) => n.text).join(" | "), /Nothing is being researched/);
+    ctx.state.countries.BAV.target = null;
+    ctx.state.countries.BAV.techs.push("handCannons", "arquebuses", "muskets", "sharpshooters", "carracks", "galleons", "menOfWar");
+    nodes = researchTab(ctx);
+    assert.match(nodes.map((n) => n.text).join(" | "), /Every technology is researched/);
+});
