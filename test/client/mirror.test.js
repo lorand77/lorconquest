@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, endScreen, fitView, formatMen, isSelected, routeLine, tabForSelection } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, endScreen, fitView, formatMen, isSelected, routeLine, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -145,4 +145,21 @@ test("the end screen: victory, defeat by another or by falling, game over; the s
     assert.match(out.subtitle, /you may watch to the end/);
     const gone = endScreen({ ...base, me: "SAX", end: { winner: null, abandoned: true } });
     assert.deepEqual([gone.kind, gone.title, gone.final], ["over", "Game over", true]);
+});
+
+test("the war banner: who declared war on you, who joins them, who joins you — and later joiners added while it shows", () => {
+    assert.equal(warAlert([{ type: "war", country: "AUS", target: "SAX" }], "BAV"), null);         // a war of others
+    const w = warAlert([
+        { type: "war", country: "AUS", target: "BAV" },
+        { type: "joins", country: "HUN", enemy: "BAV", side: "att" },
+        { type: "joins", country: "SAX", enemy: "AUS", side: "def" },
+        { type: "joins", country: "POL", enemy: "BRB", side: "att" },                                // another war
+    ], "BAV");
+    assert.deepEqual(w, { attackers: ["AUS"], against: ["HUN"], allies: ["SAX"] });
+    // a day later an ally answers its call: added; a day with nothing new for the banner: nothing
+    assert.deepEqual(warAlert([{ type: "joins", country: "BOH", enemy: "AUS", side: "def" }], "BAV", w), { attackers: ["AUS"], against: ["HUN"], allies: ["SAX", "BOH"] });
+    assert.equal(warAlert([{ type: "capture" }], "BAV", w), null);
+    // with the banner closed, joiners alone raise nothing; a second declaration adds to an open one
+    assert.equal(warAlert([{ type: "joins", country: "BOH", enemy: "BAV", side: "att" }], "BAV"), null);
+    assert.deepEqual(warAlert([{ type: "war", country: "STY", target: "BAV" }], "BAV", w).attackers, ["AUS", "STY"]);
 });

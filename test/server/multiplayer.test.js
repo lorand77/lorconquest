@@ -191,7 +191,9 @@ test("a player who goes away has a caretaker, then the full computer player; com
         assert.equal(caretaker(), n, "no more orders from the computer");
         assert.equal((await emitAck(socket, "command", { cmd: { type: "setTax", tax: 2.3 } })).ok, true);
         assert.equal(status(server, id), "active");
-        assert.deepEqual(states.map((s) => s[1]), ["away", "full", "present"]);
+        // from his going away on (the notice of his first joining may still be on its way when the list starts)
+        const seen = states.map((s) => s[1]);
+        assert.deepEqual(seen.slice(seen.indexOf("away")), ["away", "full", "present"]);
     } finally {
         await server.close();
     }

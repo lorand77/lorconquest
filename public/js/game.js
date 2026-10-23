@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, endScreen, formatNumber, isSelected, routeLine, tabForSelection } from "./mirror.js";
+import { applyChanges, applyPrivate, buildLegs, endScreen, formatNumber, isSelected, routeLine, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
@@ -40,7 +40,8 @@ let tab = "selection";     // selection (the Map tab) | country | shop | researc
 // choices the panels keep while the page is open: the country the Diplomacy tab deals with, the weapon soldiers are raised with
 const ui = { target: null, raiseWeapon: null };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
-let pressing = false;      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
+let pressing = false;
+let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
 let plan = null;           // { army, to, path, days }
 let splitOpen = false;
 let owners = "";             // who owned what when the lands were last coloured
@@ -81,6 +82,8 @@ async function start() {
         showEnd(m);
     });
     $("end-close").addEventListener("click", () => { $("end").hidden = true; });
+    $("war-close").addEventListener("click", closeWar);
+    $("war-diplomacy").addEventListener("click", () => { ui.target = war?.attackers[0] ?? ui.target; closeWar(); setTab("diplomacy"); });
     $("results").addEventListener("click", () => { $("end").hidden = false; });
     socket.on("failed", (m) => toast(`The game stopped: ${m.error}`));
     socket.on("disconnect", () => toast("Lost the connection to the server; trying again…"));
@@ -107,10 +110,13 @@ function onTick(m) {
         const who = eventCountries(e);
         if (who.includes(me) || who.some((c) => enemies().includes(c))) feed(e);
         const mine = who.includes(me);
-        if ((e.type === "war" && e.target === me) || (e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
+        if ((e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
             || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
                 "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "broke", "fleetPaidOff"].includes(e.type))) toast(describeEvent(game.map, e));
     }
+    // a war declared on us: the banner, and anyone joining it since is added to it
+    const alert = warAlert(m.events, me, war ?? undefined);
+    if (alert) showWar(alert);
     if (sel?.kind === "army" && !state.armies[sel.id]) { sel = null; plan = null; }
     if (sel?.kind === "fleet" && !state.fleets[sel.id]) sel = null;
     if (plan && !state.armies[plan.army]) plan = null;
@@ -229,6 +235,18 @@ function renderTop() {
     }
     for (const b of document.querySelectorAll("#tabs button")) b.classList.toggle("active", b.dataset.tab === tab);
 }
+
+// ---------- a war declared on the player (mirror.js, warAlert) ----------
+function showWar(w) {
+    war = w;
+    const names = (list) => list.flatMap((c, i) => [i ? (i === list.length - 1 ? " and " : ", ") : "", swatch(c), " ", country(c)?.name ?? c]);
+    $("war-text").replaceChildren(
+        make("div", {}, ...names(w.attackers), w.attackers.length > 1 ? " declare war on you." : " declares war on you."),
+        ...(w.against.length ? [make("div", {}, "Joining them: ", ...names(w.against))] : []),
+        ...(w.allies.length ? [make("div", {}, "On your side: ", ...names(w.allies))] : []));
+    $("war").hidden = false;
+}
+function closeWar() { war = null; $("war").hidden = true; }
 
 // ---------- the end: victory, defeat, game over (mirror.js, endScreen) ----------
 // shown when the game is over, or when the player's country falls while the others play on; Look at the map hides it and

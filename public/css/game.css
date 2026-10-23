@@ -203,6 +203,15 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .zoom { position: absolute; left: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
 .zoom button { width: 32px; height: 32px; padding: 0; font-size: 18px; background: var(--overlay); }
 .toasts { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+/* a war declared on the player: red and large across the top of the map, the notices below it while it shows */
+.war { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 20; min-width: 360px; max-width: calc(100% - 120px); padding: 12px 20px 14px; text-align: center; color: #fff; background: rgba(110, 20, 20, 0.95); border: 2px solid #d24a4a; border-radius: 8px; box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5); }
+.war-title { font-size: 30px; font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 18px rgba(255, 90, 90, 0.6); }
+.war-text { margin: 4px 0 10px; font-size: 15px; line-height: 1.5; }
+.war-text .swatch { border-color: rgba(255, 255, 255, 0.6); }
+.war-buttons { display: flex; gap: 8px; justify-content: center; }
+.war-buttons button { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.4); color: #fff; }
+.war-buttons button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.25); color: #fff; }
+.war:not([hidden]) ~ .toasts { top: 150px; }
 .toast { background: var(--overlay); color: var(--text-strong); border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; max-width: 520px; }
 
 .side { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; min-height: 0; background: var(--side-bg); border-left: 1px solid var(--border); }

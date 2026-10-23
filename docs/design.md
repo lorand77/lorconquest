@@ -556,6 +556,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   state it holds; every control sends a command. **A panel is rebuilt only when what it shows has
   changed, and never while a hand is typing, dragging or pressing in it** — a click is a press and a release on the same
   button, and a panel whose numbers change rebuilds ten times a second, which would swallow it.
+- **War on you:** a red banner across the top of the map (`mirror.js`, `warAlert`) — "⚔ War! Austria declares war on you",
+  who joins them and who joins you, with those who answer a call later added — and Diplomacy and Close; it stays until closed
+  and blocks nothing. Other news stays a notice that fades.
 - **The end:** a card over the screen (`mirror.js`, `endScreen`) — **Victory!**, **Defeat** or **Game over** — with who won
   and how (the scenario's number of settlements reached, or the most when its last year came: the server's `over` message
   says which), the ten countries ahead with the winner first and the player's own row marked (added after them if it is not

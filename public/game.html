@@ -17,6 +17,15 @@
                 <button id="zoom-in" title="Zoom in">+</button>
                 <button id="zoom-out" title="Zoom out">−</button>
             </div>
+            <!-- a war declared on the player, big, until closed (mirror.js, warAlert) -->
+            <div id="war" class="war" role="alert" hidden>
+                <div class="war-title">⚔ War!</div>
+                <div id="war-text" class="war-text"></div>
+                <div class="war-buttons">
+                    <button id="war-diplomacy">Diplomacy</button>
+                    <button id="war-close">Close</button>
+                </div>
+            </div>
             <div id="toasts" class="toasts"></div>
             <section id="chat" class="chat" hidden>
                 <ul id="chat-log" class="chat-log"></ul>

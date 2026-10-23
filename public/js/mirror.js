@@ -203,3 +203,20 @@ export function endScreen({ me, end, table, names, players = {}, target, endYear
     if (end.winner === me) return { kind: "victory", title: "Victory!", subtitle: `${name(me)} wins, ${how(me)}.`, final: true, rows };
     return { kind: "defeat", title: "Defeat", subtitle: `${who(end.winner)} wins, ${how(end.winner)}.`, final: true, rows };
 }
+
+// A war declared on `me`, from one day's events, for the war banner (design.md, "The game screen"): who declared, who joins
+// them against `me`, and who joins `me` against them (the countries that join a war against a declarer). Null if none was
+// declared on `me` that day. `wars` carries over what an open banner already shows, so later joiners add to it.
+export function warAlert(events, me, wars = { attackers: [], against: [], allies: [] }) {
+    const out = { attackers: [...wars.attackers], against: [...wars.against], allies: [...wars.allies] };
+    const add = (list, c) => { if (!list.includes(c)) list.push(c); };
+    let any = false;
+    for (const e of events) if (e.type === "war" && e.target === me) { add(out.attackers, e.country); any = true; }
+    if (!any && !out.attackers.length) return null;
+    for (const e of events) {
+        if (e.type !== "joins" || e.country === me) continue;
+        if (e.enemy === me) add(out.against, e.country);
+        else if (out.attackers.includes(e.enemy)) add(out.allies, e.country);
+    }
+    return any || out.against.length > wars.against.length || out.allies.length > wars.allies.length ? out : null;
+}
