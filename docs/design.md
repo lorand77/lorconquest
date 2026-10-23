@@ -576,7 +576,7 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   answer after another. Compression is Caddy's (docs/setup.md).
 - **Diplomacy:** a fifth tab — questions waiting for the player (Accept, Refuse; Join a call to arms), wars with their
   war scores, the agreements held (with Break and Cancel), the player's subjects and overlord, and a country to deal
-  with, picked from a list or by clicking its land. For it the tab shows its opinion of the player, who would join each
+  with, picked from a list or by clicking its land. For it the tab shows who it is at war with and since when, its opinion of the player, who would join each
   side of a war and what a declaration breaks, each agreement with whether the computer is likely to accept and why,
   the chance of a demand, the Empire, and a **peace form**: tick the settlements to take or give, money, a subject —
   and the computer's own answer shown as you edit. A game that is won shows who won and stops.

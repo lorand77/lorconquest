@@ -85,6 +85,17 @@ export function diplomacyTab(ctx) {
     return out;
 }
 
+// who a country is at war with, and since when: you first, then the others by name; peasant rebels as an uprising
+function warsOf(ctx, t) {
+    const { state, me, make: mk } = ctx;
+    const foes = state.wars.filter((w) => w.split("|").includes(t)).map((w) => w.split("|").find((x) => x !== t))
+        .sort((a, b) => (b === me) - (a === me) || (state.countries[a]?.name ?? a).localeCompare(state.countries[b]?.name ?? b));
+    if (!foes.length) return mk("p", { class: "hint" }, "At peace.");
+    const since = (e) => { const w = state.warInfo[pairKey(t, e)]; return w ? ` since ${longDate(w.start)}` : ""; };
+    return mk("p", {}, "At war with: ", ...foes.flatMap((e, i) => [i ? ", " : "", ctx.swatch(e),
+        state.countries[e]?.rebel ? ` peasant rebels` : ` ${e === me ? "you" : state.countries[e]?.name ?? e}`, since(e)]), ".");
+}
+
 // everything the player can do about one country
 function dealWith(ctx, t) {
     const { state, game, me, make: mk } = ctx;
@@ -96,7 +107,8 @@ function dealWith(ctx, t) {
     out.push(section(ctx, `${them.name}`,
         mk("p", {}, `${n(Object.values(state.settlements).filter((s) => s.owner === t).reduce((k, s) => k + s.pop, 0))} people, military power ${n(power)} against your ${n(mypower)}${bordering(game, me, t) ? ", a neighbour" : ""}.`),
         human ? mk("p", { class: "hint" }, "A person plays this country: proposals wait for its answer.") : mk("p", {}, `Its opinion of you: ${op > 0 ? "+" : ""}${Math.round(op)}. Warmonger score ${Math.round(them.warmonger ?? 0)}.`),
-        them.overlord ? mk("p", {}, `A ${them.subjectKind} of ${state.countries[them.overlord].name}${vassal ? ": it has no diplomacy of its own — speak to its overlord" : ""}.`) : ""));
+        them.overlord ? mk("p", {}, `A ${them.subjectKind} of ${state.countries[them.overlord].name}${vassal ? ": it has no diplomacy of its own — speak to its overlord" : ""}.`) : "",
+        warsOf(ctx, t)));
     if (vassal || state.countries[t].rebel) return out;
 
     // war

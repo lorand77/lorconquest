@@ -149,3 +149,13 @@ test("peace terms name settlements without their numbers: in a question, in the 
     assert.equal(describeEvent(ctx.game.map, { type: "peace", country: "ULM", with: "BAV", terms: { take: [36], give: [48] } }),
         "ULM and BAV make peace, ULM takes Passau, ULM gives Ulm");
 });
+
+test("the country dealt with shows who it is at war with, and since when — you first — or that it is at peace", () => {
+    const { ctx } = setup((game) => {
+        game.command({ type: "declareWar", country: "SAX", target: "BAV" });
+        game.command({ type: "declareWar", country: "SAX", target: "BRB" });
+    });
+    const text = textOf(diplomacyTab({ ...ctx, ui: { target: "SAX" } }));
+    assert.match(text, /At war with:\s+BAV\s+you\s+since 1 January 1440\s*,\s+BRB\s+Brandenburg\s+since 1 January 1440\s*\./);
+    assert.match(textOf(diplomacyTab({ ...ctx, ui: { target: "ULM" } })), /At peace\./);
+});
