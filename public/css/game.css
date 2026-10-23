@@ -132,7 +132,14 @@ body.shell > .page.lobby { max-width: 1100px; display: grid; grid-template-colum
 .online .tag.you { background: var(--current); border-color: var(--current); color: var(--current-text); }
 .board-table { border-collapse: collapse; width: 100%; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
 .board-table th, .board-table td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
-.board-table th { color: var(--gold); font-size: 13px; }
+.board-table th { color: var(--gold); font-size: 13px; padding: 0; }
+.board-table th .sort { width: 100%; padding: 6px 10px; border: none; border-radius: 0; background: none; color: inherit; font: inherit; font-weight: 600; text-align: left; white-space: nowrap; }
+.board-table th .sort:hover:not(:disabled) { background: var(--surface-2); color: var(--text-strong); }
+.board-table th .sort.on { color: var(--text-strong); }
+.board-table th .sort[data-dir="asc"]::after { content: " ▲"; font-size: 10px; }
+.board-table th .sort[data-dir="desc"]::after { content: " ▼"; font-size: 10px; }
+.board-table tr.you td { background: var(--current); color: var(--current-text); }
+.board-table tr.you td a { color: var(--current-text); font-weight: 600; }
 
 /* ---------- the shell of the signed-in pages (LorCiv's; public/js/shell.js builds it) ---------- */
 /* The page reserves the room (body.shell) so nothing moves when the script fills it in. */

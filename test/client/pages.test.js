@@ -5,7 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { formatCountdown, freeCountries, gameLine, presenceText, statsOf, tableActions } from "../../public/js/lobbylogic.js";
+import { DEFAULT_DIR, formatCountdown, freeCountries, gameLine, presenceText, sortBoard, statsOf, tableActions } from "../../public/js/lobbylogic.js";
 
 const publicDir = path.join(import.meta.dirname, "..", "..", "public");
 const read = (f) => fs.readFileSync(path.join(publicDir, f), "utf8");
@@ -102,4 +102,23 @@ test("every signed-in page but the game and the replay has the shell; the rail l
     }
     const shell = read("js/shell.js");
     assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Customize", "Leaderboard"]);
+});
+
+test("the leaderboard sorts by any column, either way; each row keeps its rank, and no average place comes last", () => {
+    const rows = [   // as the server ranks them
+        { username: "ann", games: 5, shared: 3, firsts: 2, averagePlace: 1.5, victories: 1 },
+        { username: "Bob", games: 9, shared: 2, firsts: 1, averagePlace: 2, victories: 3 },
+        { username: "cid", games: 2, shared: 0, firsts: 0, averagePlace: null, victories: 0 },
+        { username: "dee", games: 0, shared: 0, firsts: 0, averagePlace: null, victories: 0 },
+    ];
+    const names = (key, dir) => sortBoard(rows, key, dir).map((r) => r.username);
+    assert.deepEqual(names("rank"), ["ann", "Bob", "cid", "dee"]);
+    assert.deepEqual(sortBoard(rows, "games").map((r) => [r.username, r.rank]), [["Bob", 2], ["ann", 1], ["cid", 3], ["dee", 4]]);   // most first, rank kept
+    assert.deepEqual(names("games", "asc"), ["dee", "cid", "ann", "Bob"]);
+    assert.deepEqual(names("victories"), ["Bob", "ann", "cid", "dee"]);
+    assert.deepEqual(names("averagePlace"), ["ann", "Bob", "cid", "dee"]);                  // the best first; none last
+    assert.deepEqual(names("averagePlace", "desc"), ["Bob", "ann", "cid", "dee"]);          // still last the other way
+    assert.deepEqual(names("username"), ["ann", "Bob", "cid", "dee"]);                      // A to Z, whatever the case
+    assert.deepEqual(names("username", "desc"), ["dee", "cid", "Bob", "ann"]);
+    assert.deepEqual([DEFAULT_DIR.games, DEFAULT_DIR.averagePlace, DEFAULT_DIR.username], ["desc", "asc", "asc"]);
 });

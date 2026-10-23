@@ -71,3 +71,19 @@ export function statsOf(games, row = null) {
         averagePlace: row?.averagePlace ?? null,
     };
 }
+
+// The leaderboard sorted by a column the person chose (leaderboard.js): `rows` as the server ranks them, `key` one of rank,
+// username, games, shared, firsts, averagePlace, victories, and `dir` "asc" or "desc" (DEFAULT_DIR, when a column is first
+// clicked: the most first, but the best — the lowest — average place first, and names from A). Each row keeps its overall
+// rank; ties go by it, and a player with no average place comes last whichever way it is sorted.
+export const DEFAULT_DIR = { rank: "asc", username: "asc", games: "desc", shared: "desc", firsts: "desc", averagePlace: "asc", victories: "desc" };
+export function sortBoard(rows, key = "rank", dir = DEFAULT_DIR[key] ?? "asc") {
+    const ranked = rows.map((r, i) => ({ ...r, rank: i + 1 }));
+    const sign = dir === "desc" ? -1 : 1;
+    const value = (r) => (key === "username" ? r.username.toLowerCase() : r[key]);
+    return ranked.sort((a, b) => {
+        const x = value(a), y = value(b);
+        if (x === null || x === undefined || y === null || y === undefined) return (x == null) - (y == null) || a.rank - b.rank;
+        return (x < y ? -1 : x > y ? 1 : 0) * sign || a.rank - b.rank;
+    });
+}

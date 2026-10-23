@@ -346,7 +346,8 @@ quitter first. (An abandoned game has no result.)
   those with other people in them, how often they came first among those people, their average place there, and their
   *victories* — their country winning the whole game, a game alone included. It lists every account, one that has finished no
   game too (with noughts, after everyone else, by name), and is ordered by firsts, then victories, then the average place,
-  then the most games. A deleted account is left off.
+  then the most games. A deleted account is left off. On the page a click on a column's head sorts by it, a second the other
+  way (`lobbylogic.js`, `sortBoard`); each row keeps its overall rank, and the player's own row is marked.
 - **A replay** (`GET /api/games/:id/replay`, `public/replay.html`) is, for anyone signed in, a finished or abandoned game's seed,
   humans (a deleted player shows as "deleted"), every command with its day, its last day and its fingerprint — 2 MB of JSON for
   a game of 210 years, a tenth of that compressed. The browser makes the game from the seed with the engine it already has

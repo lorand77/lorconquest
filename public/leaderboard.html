@@ -13,9 +13,9 @@
         <h1>Leaderboard</h1>
         <p class="hint">Everyone, ranked over the games they finished; those who have not finished one yet come last. In a game with other people, a person is placed among them by how
             their country stood at the end (settlements, then people); someone who left the game is placed after everyone who stayed.
-            A victory is their country winning the whole game, alone or not.</p>
+            A victory is their country winning the whole game, alone or not. Click a column to sort by it.</p>
         <table id="board" class="board-table">
-            <thead><tr><th>#</th><th>Player</th><th>Games</th><th>With others</th><th>First among them</th><th>Average place</th><th>Victories</th></tr></thead>
+            <thead><tr><th><button class="sort" data-key="rank" title="Sort by this">#</button></th><th><button class="sort" data-key="username" title="Sort by this">Player</button></th><th><button class="sort" data-key="games" title="Sort by this">Games</button></th><th><button class="sort" data-key="shared" title="Sort by this">With others</button></th><th><button class="sort" data-key="firsts" title="Sort by this">First among them</button></th><th><button class="sort" data-key="averagePlace" title="Sort by this">Average place</button></th><th><button class="sort" data-key="victories" title="Sort by this">Victories</button></th></tr></thead>
             <tbody id="rows"></tbody>
         </table>
         <p id="empty" class="hint" hidden>Nobody is here yet.</p>
