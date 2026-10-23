@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatNumber, isSelected, routeLine, tabForSelection, warAlert } from "./mirror.js";
+import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatNumber, isSelected, pressGuard, routeLine, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
@@ -42,7 +42,7 @@ let tab = "selection";     // selection (the Map tab) | country | shop | researc
 // choices the panels keep while the page is open: the country the Diplomacy tab deals with, the weapon soldiers are raised with
 const ui = { target: null, raiseWeapon: null };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
-let pressing = false;
+const press = pressGuard((fn) => setTimeout(fn, 0));    // a hand pressing in the panel: the days do not rebuild it under it
 let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed
 let askLater = false;      // the research banner put off until the next tech is done
 let asked = "";            // what the research banner shows now, so it is redrawn only when that changes      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
@@ -79,8 +79,11 @@ async function start() {
     for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
     // a click is a press and a release on the same element: a panel rebuilt between them (ten times a second while numbers in
     // it change) would swallow it, so it waits until the click is done
-    $("panel").addEventListener("pointerdown", () => { pressing = true; });
-    for (const ev of ["pointerup", "pointercancel"]) window.addEventListener(ev, () => { if (pressing) setTimeout(() => { pressing = false; }, 0); });
+    // what a click in the panel asks to redraw (the Split… form, a route's Cancel) is redrawn at once; the days' rebuilds wait
+    // for a press to end (mirror.js, pressGuard)
+    $("panel").addEventListener("pointerdown", () => press.down());
+    $("panel").addEventListener("click", () => press.click(), true);
+    for (const ev of ["pointerup", "pointercancel"]) window.addEventListener(ev, () => press.up());
     document.addEventListener("keydown", onKey);
     socket.on("tick", onTick);
     socket.on("private", (m) => { applyPrivate(state, me, m.changes); renderTop(); });
@@ -405,7 +408,7 @@ function renderPanel(force = false) {
     const box = make("div", {}, ...nodes.filter((x) => x !== "" && x !== undefined));
     const html = box.innerHTML;
     if (!force && html === panelHtml) return;
-    if (!force && pressing) return;
+    if (!force && press.pressed) return;
     const focus = document.activeElement;
     if (!force && panel.contains(focus) && focus.matches("input, select, textarea")) return;
     panelHtml = html;

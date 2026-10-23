@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, routeLine, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, pressGuard, routeLine, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -179,4 +179,25 @@ test("the tech offered at one click when nothing is researched: the cheapest ope
     assert.equal(cheapestOpenTech(techs, ["swords", "cogs", "handCannons"], cost), "arquebuses");      // now open, and cheaper than carracks
     assert.equal(cheapestOpenTech(techs, ["cogs"], cost), "carracks");
     assert.equal(cheapestOpenTech(techs, ["swords", "cogs", "handCannons", "arquebuses", "carracks"], cost), null);
+});
+
+test("a press in the panel holds the days' rebuilds, but a click's own redraw goes through at once (the Split… form)", () => {
+    const deferred = [], press = pressGuard((fn) => deferred.push(fn));
+    // a click on a button: down, up (the release defers its end), then the click — which ends the press before its handler
+    press.down();
+    assert.equal(press.pressed, true);                      // a day's rebuild now would swallow the click: held
+    press.up();
+    assert.equal(press.pressed, true);
+    press.click();
+    assert.equal(press.pressed, false, "the button's handler may redraw the panel");
+    deferred.splice(0).forEach((fn) => fn());
+    assert.equal(press.pressed, false);
+    // a press released without a click (a drag off the button) ends just after the release
+    press.down();
+    press.up();
+    assert.equal(press.pressed, true);
+    deferred.splice(0).forEach((fn) => fn());
+    assert.equal(press.pressed, false);
+    press.up();                                             // a release with no press: nothing to end
+    assert.equal(deferred.length, 0);
 });

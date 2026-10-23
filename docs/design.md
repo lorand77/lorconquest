@@ -556,7 +556,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   beside their pass. The panels show the engine's own numbers, worked out in the browser from the
   state it holds; every control sends a command. **A panel is rebuilt only when what it shows has
   changed, and never while a hand is typing, dragging or pressing in it** — a click is a press and a release on the same
-  button, and a panel whose numbers change rebuilds ten times a second, which would swallow it.
+  button, and a panel whose numbers change rebuilds ten times a second, which would swallow it. The click ends the press
+  before the button's handler runs (`mirror.js`, `pressGuard`), so what a click asks to redraw — the Split… form — shows at once.
 - **Watching:** any signed-in person may watch a game being played, from the lobby's Live games (`GET /api/live`):
   `game.html?id=…&watch=1` asks the socket to `watch` rather than `join`. The watcher has no country: the public view (no
   private part, no questions waiting), the days, pauses, presence and the end — never the chat or a player's private changes

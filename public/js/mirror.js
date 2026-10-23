@@ -229,3 +229,17 @@ export function cheapestOpenTech(techs, owned, costOf) {
     const open = Object.entries(techs).filter(([id, t]) => !owned.includes(id) && owned.includes(t.needs)).map(([id]) => id);
     return open.sort((a, b) => costOf(a) - costOf(b))[0] ?? null;
 }
+
+// Whether a hand is pressing in the panel, which the days' rebuilds of it must not replace (a click is a press and a release
+// on the same button: a button rebuilt between them swallows it). The click itself ends the press, before the button's own
+// handler runs (game.js listens for it in the capture phase), so what a click asks to redraw is redrawn at once; a press
+// released without a click (a drag) ends just after the release. `later(fn)` defers, setTimeout in the browser.
+export function pressGuard(later) {
+    let pressed = false;
+    return {
+        get pressed() { return pressed; },
+        down() { pressed = true; },
+        click() { pressed = false; },
+        up() { if (pressed) later(() => { pressed = false; }); },
+    };
+}
