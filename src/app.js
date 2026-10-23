@@ -79,7 +79,10 @@ export function createApp({
     app.use("/api", requireSameOrigin(log), (req, res, next) => sessions.middleware(req, res, next));
 
     const server = http.createServer(app);
-    const io = new Server(server, { allowRequest: allowSocketRequest(log) });
+    // messages over 512 bytes are compressed (permessage-deflate, which Caddy's encode does not do for a websocket): a day of
+    // the historical scenario can be 10 KB or more, ten times a second, and a player's answers queue behind it on a slow line;
+    // compressed it is a seventh of that
+    const io = new Server(server, { allowRequest: allowSocketRequest(log), perMessageDeflate: { threshold: 512 } });
     const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs });
     const healthCheck = health({ db, rooms, log, dbPath, stallMs });
     app.use("/api", authRoutes({ db, sessions, throttles, io }));

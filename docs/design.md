@@ -138,12 +138,17 @@ Every tick, in this order:
 
 1. **Apply queued commands** in the order they arrived — humans, computer players and caretakers
    alike. Each is checked against the state *now*, not when the player clicked, so money spent in
-   between is caught. The sender gets an accept or a reject with a reason.
+   between is caught. The sender gets an accept or a reject with a reason. A person's command does not
+   wait for this step: it is applied the moment it reaches the game, with the computer's orders still
+   queued ahead of it, and its changes go out at once (`worker.js`, `applyNow`). Nothing happens between
+   days, so the outcome and the log are the same as if it had waited — but a click is answered in a round
+   trip, not up to a tick later. The computer players hear its events with the next day's (step 3).
 2. **Advance one day:** marches and arrivals, battles, sieges, training. Monthly and yearly steps
    (money, supply, disease, growth, random events) run on their boundaries.
 3. **Let the computer countries due this tick think.** Their commands join the queue for the next
    tick, like anyone's.
-4. **Send each client one message** with the day's changes.
+4. **Send each client one message** with the day's changes — compressed over 512 bytes (permessage-deflate,
+   `src/app.js`): on the historical map a day is often several KB, ten times a second.
 5. **Log** the commands applied this tick; save a snapshot once per game year.
 
 A game is a single loop, so two commands never run at the same time. Concurrency inside a game is

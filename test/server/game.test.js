@@ -47,6 +47,31 @@ test("the pages come with every module their script needs to preload, so the bro
     }
 });
 
+test("a command is applied and answered at once, not at the next day, paused or running", async () => {
+    const server = await startServer({ dbPath: tempDb(), tickMs: 1500 });        // a day every 1.5 s: waiting for it would show
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        const j = await emitAck(s, "join", { gameId: id });
+        const day0 = j.view.day;
+        const timed = async (cmd) => { const t0 = performance.now(); const r = await emitAck(s, "command", { cmd }); return [r, performance.now() - t0]; };
+        // paused (a new game alone starts paused): answered at once, and its change goes out on the same day
+        const seen = waitFor(s, "private", () => true);
+        const [r1, ms1] = await timed({ type: "setTax", tax: 2.7 });
+        assert.ok(r1.ok && ms1 < 500, `${ms1} ms`);
+        assert.equal((await seen).changes.tax, 2.7);
+        // running: the same, between two days
+        await emitAck(s, "pause", { paused: false });
+        const [r2, ms2] = await timed({ type: "setTax", tax: 2.2 });
+        assert.ok(r2.ok && ms2 < 500, `${ms2} ms`);
+        const [r3] = await timed({ type: "setTax", tax: 9 });
+        assert.equal(r3.ok, false);                                                // refused at once too, with the reason
+        assert.ok(day0 <= 1);
+    } finally {
+        await server.close();
+    }
+});
+
 test("a player sees the game without its dice and without other countries' treasuries", async () => {
     const server = await startServer({ dbPath: tempDb() });
     try {
