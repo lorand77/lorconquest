@@ -243,3 +243,17 @@ export function pressGuard(later) {
         up() { if (pressed) later(() => { pressed = false; }); },
     };
 }
+
+// The live scoreboard (design.md, "The game screen"): the five countries ahead by `key` — "settlements" (as victory counts
+// them: vassals' 1, protectorates' ½, ties to the most people), "people" (their own and their subjects') or "military" (the
+// power diplomacy weighs) — and `me` after them if not among them. `table` is the engine's scores, `power` each country's
+// military power, `alive` the countries still in the game. Rows: { rank, code, value, you }.
+export function scoreboard({ table, power, alive, me = null, key = "settlements", n = 5 }) {
+    const value = (c) => (key === "people" ? table[c].pop : key === "military" ? power[c] ?? 0 : table[c].settlements);
+    const order = alive.filter((c) => table[c]).sort((a, b) => value(b) - value(a) || table[b].pop - table[a].pop || (a < b ? -1 : 1));
+    const row = (c, i) => ({ rank: i + 1, code: c, value: value(c), you: c === me });
+    const rows = order.slice(0, n).map(row);
+    const mine = order.indexOf(me);
+    if (mine >= n) rows.push(row(me, mine));
+    return rows;
+}

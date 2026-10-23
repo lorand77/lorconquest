@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, pressGuard, routeLine, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -200,4 +200,21 @@ test("a press in the panel holds the days' rebuilds, but a click's own redraw go
     assert.equal(press.pressed, false);
     press.up();                                             // a release with no press: nothing to end
     assert.equal(deferred.length, 0);
+});
+
+test("the scoreboard: the five ahead by settlements, people or military, and you after them if not among them", () => {
+    const table = {
+        BAV: { settlements: 9, pop: 300000 }, SAX: { settlements: 9, pop: 350000 }, AUS: { settlements: 12.5, pop: 280000 },
+        BOH: { settlements: 4, pop: 500000 }, HUN: { settlements: 6, pop: 200000 }, POL: { settlements: 5, pop: 210000 },
+        ULM: { settlements: 1, pop: 10000 }, OUT: { settlements: 0, pop: 0 },
+    };
+    const power = { BAV: 50, SAX: 20, AUS: 30, BOH: 10, HUN: 90, POL: 40, ULM: 5 };
+    const alive = ["BAV", "SAX", "AUS", "BOH", "HUN", "POL", "ULM"];                  // OUT is out of the game
+    const codes = (rows) => rows.map((r) => `${r.rank}${r.code}${r.you ? "*" : ""}`);
+    // settlements as victory counts them, ties to the more people
+    assert.deepEqual(codes(scoreboard({ table, power, alive, me: "BAV" })), ["1AUS", "2SAX", "3BAV*", "4HUN", "5POL"]);
+    assert.deepEqual(codes(scoreboard({ table, power, alive, me: "ULM" })), ["1AUS", "2SAX", "3BAV", "4HUN", "5POL", "7ULM*"]);
+    assert.deepEqual(codes(scoreboard({ table, power, alive, me: "ULM", key: "people" })), ["1BOH", "2SAX", "3BAV", "4AUS", "5POL", "7ULM*"]);
+    assert.deepEqual(codes(scoreboard({ table, power, alive, me: null, key: "military" })), ["1HUN", "2BAV", "3POL", "4AUS", "5SAX"]);
+    assert.equal(scoreboard({ table, power, alive, me: "BAV" })[0].value, 12.5);
 });

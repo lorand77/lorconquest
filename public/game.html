@@ -13,6 +13,22 @@
     <main class="board">
         <section class="mapbox">
             <div id="map" class="map"></div>
+            <!-- the live scores, top right (mirror.js, scoreboard) -->
+            <div id="scoreboard" class="scoreboard">
+                <div class="sb-head">
+                    <b>Scores</b>
+                    <button id="sb-fold" class="sb-fold" title="Fold the scores away" aria-label="Fold the scores away">–</button>
+                </div>
+                <div id="sb-body">
+                    <div class="sb-tabs">
+                        <button data-score="settlements" class="on">Settlements</button>
+                        <button data-score="people">People</button>
+                        <button data-score="military">Military</button>
+                    </div>
+                    <ol id="sb-rows" class="sb-rows"></ol>
+                    <div id="sb-note" class="sb-note"></div>
+                </div>
+            </div>
             <div class="zoom">
                 <button id="zoom-in" title="Zoom in">+</button>
                 <button id="zoom-out" title="Zoom out">−</button>

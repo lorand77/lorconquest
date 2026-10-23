@@ -2,8 +2,8 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatNumber, isSelected, pressGuard, routeLine, tabForSelection, warAlert } from "./mirror.js";
+import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
+import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
@@ -45,7 +45,8 @@ let panelHtml = "";        // what the panel shows now, so it is rebuilt only wh
 const press = pressGuard((fn) => setTimeout(fn, 0));    // a hand pressing in the panel: the days do not rebuild it under it
 let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed
 let askLater = false;      // the research banner put off until the next tech is done
-let asked = "";            // what the research banner shows now, so it is redrawn only when that changes      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
+let asked = "";            // what the research banner shows now, so it is redrawn only when that changes
+let scoreKey = "settlements", scored = "";   // the scoreboard's tab, and what it shows now (redrawn only when that changes)      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
 let plan = null;           // { army, to, path, days }
 let splitOpen = false;
 let owners = "";             // who owned what when the lands were last coloured
@@ -97,6 +98,11 @@ async function start() {
     $("end-close").addEventListener("click", () => { $("end").hidden = true; });
     $("war-close").addEventListener("click", closeWar);
     $("ask-later").addEventListener("click", () => { askLater = true; renderAsk(); });
+    for (const b of document.querySelectorAll(".sb-tabs button")) b.addEventListener("click", () => { scoreKey = b.dataset.score; renderScores(); });
+    $("sb-fold").addEventListener("click", () => {
+        const folded = $("scoreboard").classList.toggle("folded");
+        $("sb-fold").textContent = folded ? "+" : "–";
+    });
     $("ask-tab").addEventListener("click", () => setTab("research"));
     $("war-diplomacy").addEventListener("click", () => { ui.target = war?.attackers[0] ?? ui.target; closeWar(); setTab("diplomacy"); });
     $("results").addEventListener("click", () => { $("end").hidden = false; });
@@ -254,6 +260,26 @@ function renderTop() {
     }
     for (const b of document.querySelectorAll("#tabs button")) b.classList.toggle("active", b.dataset.tab === tab);
     renderAsk();
+    renderScores();
+}
+
+// the live scores: the five ahead on the tab chosen, and the player after them if not among them (mirror.js, scoreboard)
+function renderScores() {
+    const alive = Object.keys(state.countries).filter((c) => !state.countries[c].rebel && (state.countries[c].out ?? null) === null);
+    const power = scoreKey === "military" ? Object.fromEntries(alive.map((c) => [c, militaryPowerOf(state, c)])) : {};
+    const rows = scoreboard({ table: scores(state), power, alive, me, key: scoreKey });
+    const player = (c) => (multi ? seats.find((s) => s.country === c)?.username : null);    // names only with other people
+    const show = (r) => (scoreKey === "settlements" ? (Number.isInteger(r.value) ? String(r.value) : r.value.toFixed(1)) : formatMen(Math.round(r.value)));
+    const key = scoreKey + "|" + rows.map((r) => `${r.code}:${show(r)}`).join(",");
+    if (key === scored) return;
+    scored = key;
+    for (const b of document.querySelectorAll(".sb-tabs button")) b.classList.toggle("on", b.dataset.score === scoreKey);
+    $("sb-rows").replaceChildren(...rows.map((r, i) => make("li", { class: [r.you ? "you" : "", i === 5 ? "gap" : ""].join(" ").trim() },
+        make("span", { class: "rank" }, String(r.rank)), swatch(r.code),
+        make("span", { class: "who" }, `${country(r.code)?.name ?? r.code}${player(r.code) ? ` (${player(r.code)})` : ""}`),
+        make("span", { class: "val" }, show(r)))));
+    const target = scenario.victory?.settlements;
+    $("sb-note").textContent = scoreKey === "settlements" ? `${target} to win; at the start of ${scenario.victory?.endYear} the most win` : scoreKey === "people" ? "their own and their subjects'" : "the strength of their armies";
 }
 
 // nothing being researched: a banner at the top offering the cheapest tech open now, until one is chosen or put off

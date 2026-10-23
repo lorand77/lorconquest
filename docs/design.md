@@ -567,6 +567,10 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   private part, no questions waiting), the days, pauses, presence and the end — never the chat or a player's private changes
   (they go to `game:<id>` and `game:<id>:<country>`, a watcher is in `watch:<id>`) — the Map and Events tabs only (the news of
   the people's countries), no orders, and at the end Game over with who won. Watching counts as online, not playing.
+- **Scores:** a small board over the map's top right (`mirror.js`, `scoreboard`) — the five countries ahead and the player's
+  own after them if not among them — with three tabs: Settlements (as victory counts them, with the target), People (their own
+  and their subjects') and Military (the power diplomacy weighs). It folds to its title, and shows the players' names in a game
+  with others; watchers have it too.
 - **War on you:** a red banner across the top of the map (`mirror.js`, `warAlert`) — "⚔ War! Austria declares war on you",
   who joins them and who joins you, with those who answer a call later added — and Diplomacy and Close; it stays until closed
   and blocks nothing. Other news stays a notice that fades.

@@ -210,6 +210,23 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .zoom { position: absolute; left: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
 .zoom button { width: 32px; height: 32px; padding: 0; font-size: 18px; background: var(--overlay); }
 .toasts { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+/* the live scores, over the map's top right corner */
+.scoreboard { position: absolute; top: 10px; right: 10px; z-index: 15; width: 230px; padding: 8px 10px 8px; background: var(--overlay); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); }
+.sb-head { display: flex; align-items: center; justify-content: space-between; }
+.sb-head b { color: var(--gold); letter-spacing: 1px; text-transform: uppercase; font-size: 12px; }
+.sb-fold { padding: 0 7px; line-height: 1.3; }
+.scoreboard.folded #sb-body { display: none; }
+.sb-tabs { display: flex; gap: 2px; margin: 6px 0 4px; }
+.sb-tabs button { flex: 1; padding: 2px 0; font-size: 11px; border-radius: 3px; color: var(--text-muted); }
+.sb-tabs button.on { background: var(--current); border-color: var(--current); color: var(--current-text); }
+.sb-rows { list-style: none; margin: 0; padding: 0; }
+.sb-rows li { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+.sb-rows li.gap { border-top: 1px dashed var(--line); margin-top: 2px; padding-top: 4px; }
+.sb-rows li.you { font-weight: 700; color: var(--text-strong); }
+.sb-rows .rank { width: 1.4em; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
+.sb-rows .who { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-rows .val { font-variant-numeric: tabular-nums; }
+.sb-note { margin-top: 4px; font-size: 11px; color: var(--text-muted); }
 /* a war declared on the player: red and large across the top of the map, the notices below it while it shows */
 /* the banners across the top of the map, one under another, and the notices under them */
 .banners { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; flex-direction: column; align-items: center; gap: 8px; width: max-content; max-width: calc(100% - 120px); pointer-events: none; }
