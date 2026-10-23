@@ -95,6 +95,7 @@ test("a game with a winner is saved as finished, tells its players, and is not r
         const o = await over;
         const victory = ticks.flatMap((t) => t.events).find((e) => e.type === "victory");
         assert.deepEqual([victory.country, victory.why], [o.winner, "reached"]);
+        assert.equal(o.why, "reached");                                                     // for the victory screen
         assert.ok(victory.settlements >= 6);
         assert.equal(o.abandoned, undefined);
         const last = ticks.at(-1).day;

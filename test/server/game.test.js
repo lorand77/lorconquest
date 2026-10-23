@@ -48,25 +48,29 @@ test("the pages come with every module their script needs to preload, so the bro
 });
 
 test("a command is applied and answered at once, not at the next day, paused or running", async () => {
-    const server = await startServer({ dbPath: tempDb(), tickMs: 1500 });        // a day every 1.5 s: waiting for it would show
+    // days 5 s apart: an answer that waited for the day would come after the next one (orders, not timings, so a busy machine
+    // running the whole suite cannot fail it)
+    const server = await startServer({ dbPath: tempDb(), tickMs: 5000 });
     try {
         const id = await newGame(server);
         const s = await connect(server);
-        const j = await emitAck(s, "join", { gameId: id });
-        const day0 = j.view.day;
-        const timed = async (cmd) => { const t0 = performance.now(); const r = await emitAck(s, "command", { cmd }); return [r, performance.now() - t0]; };
-        // paused (a new game alone starts paused): answered at once, and its change goes out on the same day
+        await emitAck(s, "join", { gameId: id });
+        const days = [];
+        s.on("tick", (m) => days.push(m.day));
+        // paused (a new game alone starts paused): answered, and its change sent, with no day gone by
         const seen = waitFor(s, "private", () => true);
-        const [r1, ms1] = await timed({ type: "setTax", tax: 2.7 });
-        assert.ok(r1.ok && ms1 < 500, `${ms1} ms`);
+        const r1 = await emitAck(s, "command", { cmd: { type: "setTax", tax: 2.7 } });
+        assert.equal(r1.ok, true);
         assert.equal((await seen).changes.tax, 2.7);
-        // running: the same, between two days
+        // running: just after a day, the answer comes before the next
         await emitAck(s, "pause", { paused: false });
-        const [r2, ms2] = await timed({ type: "setTax", tax: 2.2 });
-        assert.ok(r2.ok && ms2 < 500, `${ms2} ms`);
-        const [r3] = await timed({ type: "setTax", tax: 9 });
+        await waitFor(s, "tick", () => true, 15000);
+        const before = days.length;
+        const r2 = await emitAck(s, "command", { cmd: { type: "setTax", tax: 2.2 } });
+        assert.equal(r2.ok, true);
+        assert.equal(new Set(days.slice(before)).size <= 1 && days.slice(before).every((d) => d === days[before - 1]), true, `days went by: ${days.slice(before - 1)}`);
+        const r3 = await emitAck(s, "command", { cmd: { type: "setTax", tax: 9 } });
         assert.equal(r3.ok, false);                                                // refused at once too, with the reason
-        assert.ok(day0 <= 1);
     } finally {
         await server.close();
     }

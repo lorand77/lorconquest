@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, fitView, formatMen, isSelected, routeLine, tabForSelection } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, endScreen, fitView, formatMen, isSelected, routeLine, tabForSelection } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -121,4 +121,28 @@ test("a second click on the selected army or fleet lets it go; anything else is 
     assert.equal(isSelected({ kind: "army", id: 3 }, { kind: "fleet", id: 3 }), false);       // a fleet with the same number
     assert.equal(isSelected({ kind: "place", key: "37" }, { kind: "place", key: "37" }), false); // a place: clicking it again keeps it
     assert.equal(isSelected(null, { kind: "army", id: 3 }), false);
+});
+
+test("the end screen: victory, defeat by another or by falling, game over; the standings with the winner first and you marked", () => {
+    const table = { BAV: { settlements: 45, pop: 900000 }, SAX: { settlements: 20, pop: 400000 }, AUS: { settlements: 20.5, pop: 380000 } };
+    for (let i = 0; i < 12; i++) table[`C${i}`] = { settlements: 1, pop: 10000 + i };
+    table.ZZZ = { settlements: 0, pop: 0 };
+    const names = { BAV: "Bavaria", SAX: "Saxony", AUS: "Austria", ZZZ: "Zed" };
+    const base = { table, names, target: 45, endYear: 1650 };
+    const won = endScreen({ ...base, me: "BAV", end: { winner: "BAV", why: "reached" } });
+    assert.deepEqual([won.kind, won.title, won.subtitle, won.final], ["victory", "Victory!", "Bavaria wins, holding 45 settlements of the 45 needed.", true]);
+    assert.deepEqual(won.rows.slice(0, 3).map((r) => [r.rank, r.code, r.you, r.winner]), [[1, "BAV", true, true], [2, "AUS", false, false], [3, "SAX", false, false]]);
+    assert.equal(won.rows.length, 10);
+    // beaten by another person, on time: their name is given; you are added after the ten if you are not among them
+    const lost = endScreen({ ...base, me: "ZZZ", players: { BAV: "alice", ZZZ: "bob" }, end: { winner: "BAV", why: "end" } });
+    assert.deepEqual([lost.kind, lost.subtitle], ["defeat", "Bavaria (alice) wins, holding the most settlements when 1650 came, 45."]);
+    assert.deepEqual([lost.rows.length, lost.rows[10].code, lost.rows[10].you, lost.rows[10].rank], [11, "ZZZ", true, 16]);
+    // fallen: alone the game ends; with others it goes on, and the screen is not the last word
+    assert.equal(endScreen({ ...base, me: "SAX", end: { winner: null, defeated: true } }).subtitle, "Saxony is no more: its last settlement has fallen.");
+    assert.equal(endScreen({ ...base, me: "SAX", players: { SAX: "a", AUS: "b" }, end: { winner: null, defeated: true } }).subtitle, "Every player's country has fallen.");
+    const out = endScreen({ ...base, me: "SAX", players: { SAX: "a", AUS: "b" }, end: { out: true } });
+    assert.deepEqual([out.kind, out.final], ["defeat", false]);
+    assert.match(out.subtitle, /you may watch to the end/);
+    const gone = endScreen({ ...base, me: "SAX", end: { winner: null, abandoned: true } });
+    assert.deepEqual([gone.kind, gone.title, gone.final], ["over", "Game over", true]);
 });

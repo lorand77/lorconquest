@@ -552,6 +552,11 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   state it holds; every control sends a command. **A panel is rebuilt only when what it shows has
   changed, and never while a hand is typing, dragging or pressing in it** — a click is a press and a release on the same
   button, and a panel whose numbers change rebuilds ten times a second, which would swallow it.
+- **The end:** a card over the screen (`mirror.js`, `endScreen`) — **Victory!**, **Defeat** or **Game over** — with who won
+  and how (the scenario's number of settlements reached, or the most when its last year came: the server's `over` message
+  says which), the ten countries ahead with the winner first and the player's own row marked (added after them if it is not
+  among them), and Watch the replay, Back to the lobby and Look at the map; Results in the sidebar brings it back. A player
+  whose country falls while the others play on gets it as a Defeat, with Keep watching and no replay yet.
 - **Loading fast:** the pages are served with a `<link rel="modulepreload">` for every module their script needs
   (`src/preload.js`), so the browser asks for them all at once: the game page's modules import each other 14 deep, and found
   one import at a time each step is a round trip. A page needing only a little of the engine imports that file, not

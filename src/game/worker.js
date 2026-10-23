@@ -12,7 +12,7 @@
 //      { type: "caretaker", country, mode }  (mode "caretaker", "full" or null: who plays a human's country while away)  { type: "stop" }
 // Out: { type: "ready", day }  { type: "tick", day, events, pub, priv, commands, snapshot }
 //      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
-//      { type: "stats", days, mean, max }  { type: "over", day, winner, defeated, scores, hash }  { type: "stopped", day, commands }
+//      { type: "stats", days, mean, max }  { type: "over", day, winner, why, defeated, scores, hash }  { type: "stopped", day, commands }
 // A game is over when a country has won (the engine says so), or when every person's country is out of the game (RULES.md
 // §10, Elimination: a single-player game ends as a defeat when the player's does). It is saved one last time, at exactly the
 // state a replay must reach, and its loop stops; a command after that is answered "the game is over".
@@ -61,7 +61,9 @@ function finish(events) {
     snap = { day: game.day, state: game.snapshot() };
     const hash = fingerprint(snap.state);
     publish(events);
-    post({ type: "over", day: game.day, winner: game.state.winner ?? null, defeated: !game.state.winner, scores: scores(game.state), hash });
+    // how it was won, for the victory screen: by reaching the scenario's number of settlements, or on time
+    const why = events.find((e) => e.type === "victory")?.why ?? null;
+    post({ type: "over", day: game.day, winner: game.state.winner ?? null, why, defeated: !game.state.winner, scores: scores(game.state), hash });
     stopping = finished = true;
 }
 

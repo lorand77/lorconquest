@@ -2,8 +2,8 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, formatNumber, isSelected, routeLine, tabForSelection } from "./mirror.js";
+import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, WEAPONS } from "/engine/index.js";
+import { applyChanges, applyPrivate, buildLegs, endScreen, formatNumber, isSelected, routeLine, tabForSelection } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } from "./panels.js";
@@ -77,12 +77,11 @@ async function start() {
     socket.on("over", (m) => {
         state.winner = m.winner;
         paused = true;
-        const text = m.abandoned ? "Everyone has left: the game is over."
-            : m.defeated ? (multi ? "Every player's country has fallen: the game is over." : "Your country is no more: you have lost the game.")
-            : m.winner === me ? "You have won!" : `${state.countries[m.winner].name} has won the game.`;
-        toast(text, 600000);
         renderAll(true);
+        showEnd(m);
     });
+    $("end-close").addEventListener("click", () => { $("end").hidden = true; });
+    $("results").addEventListener("click", () => { $("end").hidden = false; });
     socket.on("failed", (m) => toast(`The game stopped: ${m.error}`));
     socket.on("disconnect", () => toast("Lost the connection to the server; trying again…"));
     // a reconnect joins again: in a game with others the country is ours at once; the page catches up from the view
@@ -198,6 +197,7 @@ function togglePause() {
 
 function onKey(e) {
     if (e.target.closest("input, textarea, select")) return;
+    if (e.key === "Escape" && !$("end").hidden) { $("end").hidden = true; return; }      // the end screen first, then the map
     if (e.key === " ") { e.preventDefault(); togglePause(); }
     else if (e.key === "Enter" && plan) { e.preventDefault(); march(false); }
     else if (e.key === "Escape") { if (plan) { plan = null; renderAll(); } else select(null); }
@@ -230,6 +230,33 @@ function renderTop() {
     for (const b of document.querySelectorAll("#tabs button")) b.classList.toggle("active", b.dataset.tab === tab);
 }
 
+// ---------- the end: victory, defeat, game over (mirror.js, endScreen) ----------
+// shown when the game is over, or when the player's country falls while the others play on; Look at the map hides it and
+// Results brings it back
+function showEnd(end) {
+    const v = scenario.victory ?? {};
+    const screen = endScreen({
+        me, end, table: scores(state), target: v.settlements, endYear: v.endYear,
+        names: Object.fromEntries(Object.values(state.countries).map((c) => [c.code, c.name])),
+        players: Object.fromEntries(seats.map((s) => [s.country, s.username])),
+    });
+    $("end").className = `end ${screen.kind}`;
+    $("end-title").textContent = screen.title;
+    $("end-subtitle").textContent = screen.subtitle;
+    const cell = (text) => make("td", {}, text);
+    $("end-rows").replaceChildren(...screen.rows.flatMap((r, i) => [
+        ...(i === 10 ? [make("tr", { class: "gap" }, make("td", { colspan: "4" }, "…"))] : []),
+        make("tr", { class: [r.you ? "you" : "", r.winner ? "winner" : ""].join(" ").trim() },
+            cell(String(r.rank)), make("td", {}, swatch(r.code), ` ${r.name}${r.player ? ` (${r.player})` : ""}`), cell(Number.isInteger(r.settlements) ? String(r.settlements) : r.settlements.toFixed(1)), cell(formatNumber(r.pop))),
+    ]));
+    // a game over can be watched again; one still going (a country fallen while the others play) cannot yet
+    $("end-replay").hidden = !screen.final;
+    $("end-replay").href = `/replay.html?id=${gameId}`;
+    $("end-close").textContent = screen.final ? "Look at the map" : "Keep watching";
+    $("results").hidden = false;
+    $("end").hidden = false;
+}
+
 // ---------- other people: who is here, the setup minute, chat, leaving ----------
 function startPeople(joined) {
     $("quit").hidden = false;
@@ -240,7 +267,7 @@ function startPeople(joined) {
         if (r.ok) location.href = "/"; else toast(r.error);
     });
     socket.on("presence", (p) => {
-        if (p.country === me && p.state === "out") toast("Your country is no more. You can watch the game to its end.", 600000);
+        if (p.country === me && p.state === "out" && !state.winner) showEnd({ out: true });
         seats = seats.filter((s) => s.country !== p.country).concat(p);
         renderPeople();
     });

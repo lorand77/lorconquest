@@ -135,7 +135,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 room.paused = true;
                 room.over = m.winner ?? "defeat";
                 clearTimers(room);
-                io.to(`game:${room.id}`).emit("over", { day: m.day, winner: m.winner, defeated: Boolean(m.defeated) });
+                io.to(`game:${room.id}`).emit("over", { day: m.day, winner: m.winner, why: m.why, defeated: Boolean(m.defeated) });
                 log.info("game.over", { game: room.id, winner: m.winner, defeated: Boolean(m.defeated), humans: [...room.seats.keys()], day: m.day });
                 break;
             case "stats":

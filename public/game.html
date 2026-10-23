@@ -52,10 +52,27 @@
             <div id="panel" class="panel"></div>
             <ul id="events" class="events" hidden></ul>
             <div class="foot">
+                <button id="results" class="primary" hidden>Results</button>
                 <button id="chat-toggle" hidden>Chat</button>
                 <button id="quit" class="danger" hidden title="Give your country to the computer for good">Leave the game</button>
             </div>
         </aside>
     </main>
+    <!-- the end: victory, defeat or game over (mirror.js, endScreen) -->
+    <div id="end" class="end" hidden>
+        <div class="end-card" role="dialog" aria-labelledby="end-title">
+            <h1 id="end-title" class="end-title"></h1>
+            <p id="end-subtitle" class="end-subtitle"></p>
+            <table class="end-table">
+                <thead><tr><th>#</th><th>Country</th><th>Settlements</th><th>People</th></tr></thead>
+                <tbody id="end-rows"></tbody>
+            </table>
+            <div class="end-buttons">
+                <a id="end-replay" class="button-link" hidden>Watch the replay</a>
+                <a class="button-link primary" href="/">Back to the lobby</a>
+                <button id="end-close">Look at the map</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -7,7 +7,7 @@
 //   join    { gameId }            -> { ok, gameId, scenario, me, multi, paused, tickMs, view, seats, setup, chat }
 //                                   the user's seat in the game; the socket then receives "tick" { day, events, changes },
 //                                   "private" { day, changes }, "paused", "presence" { country, username, state },
-//                                   "chat" { id, userId, username, text, at }, "over" { day, winner, abandoned? }, "failed"
+//                                   "chat" { id, userId, username, text, at }, "over" { day, winner, why?, defeated?, abandoned? }, "failed"
 //   command { cmd }               -> { ok, error, events }   the country is always the user's seat's, never the client's
 //   pause   { paused }            -> { ok }                  single-player games only
 //   chat    { text }              -> { ok, error }
