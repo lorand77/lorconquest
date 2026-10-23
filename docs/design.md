@@ -545,7 +545,13 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   name, gliding between zones when sailing — and their panel has the orders. Sharpshooter posts show
   beside their pass. The panels show the engine's own numbers, worked out in the browser from the
   state it holds; every control sends a command. **A panel is rebuilt only when what it shows has
-  changed, and never while a hand is typing or dragging in it.**
+  changed, and never while a hand is typing, dragging or pressing in it** — a click is a press and a release on the same
+  button, and a panel whose numbers change rebuilds ten times a second, which would swallow it.
+- **Loading fast:** the pages are served with a `<link rel="modulepreload">` for every module their script needs
+  (`src/preload.js`), so the browser asks for them all at once: the game page's modules import each other 14 deep, and found
+  one import at a time each step is a round trip. A page needing only a little of the engine imports that file, not
+  `index.js` (the lobby takes `longDate` from `calendar.js`), and a page asks for what it needs side by side, not one
+  answer after another. Compression is Caddy's (docs/setup.md).
 - **Diplomacy:** a fifth tab — questions waiting for the player (Accept, Refuse; Join a call to arms), wars with their
   war scores, the agreements held (with Break and Cancel), the player's subjects and overlord, and a country to deal
   with, picked from a list or by clicking its land. For it the tab shows its opinion of the player, who would join each

@@ -42,7 +42,7 @@ dependencies.
   way time moves on. The module list is in design.md, *The engine*.
 - `src/app.js` builds the server (Express, Socket.IO, the database, every game) without listening;
   `src/server.js` listens. `src/db.js` is the database (node:sqlite): schema and every query.
-- `src/health.js` (`/health`), `src/retention.js` (tables and chat tidied hourly; started by `server.js` only), `src/accounts.js` (what
+- `src/preload.js` (the pages served with a modulepreload tag for every module their script needs), `src/health.js` (`/health`), `src/retention.js` (tables and chat tidied hourly; started by `server.js` only), `src/accounts.js` (what
   `tools/user.js` does), `src/game/results.js` (how a finished game ranks its people).
 - `src/auth/` — accounts: `routes.js` (register, login, logout, me), `session.js` (the cookie and the sessions table, shared by REST
   and the socket handshake), `password.js` (scrypt), `origin.js` (the same-origin check), `throttle.js`, `usernamePolicy.js`.

@@ -3,7 +3,7 @@
 // Profile, My Games). The server decides everything (src/game/routes.js); this page asks, and listens for the
 // lobby changing and for a room it has a seat in starting. (People see "rooms"; the code and the API say "tables", since
 // "rooms" are the games running in src/game/rooms.js.)
-import { longDate } from "/engine/index.js";
+import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
 import { gameLine, tableActions } from "./lobbylogic.js";
@@ -24,9 +24,8 @@ const post = async (url, body = {}) => {
     return { ok: res.ok, ...(await res.json().catch(() => ({}))) };
 };
 
-const me = await requireUser();
+const [me, scenarios] = await Promise.all([requireUser(), fetch("/api/scenarios").then((r) => r.json())]);
 mountShell(me);
-const scenarios = await (await fetch("/api/scenarios")).json();
 const scenarioOf = (id) => scenarios.find((s) => s.id === id);
 const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === code)?.name ?? code;
 // a country's people at the start, as the lists show them: "50K"

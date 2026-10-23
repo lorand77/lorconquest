@@ -23,15 +23,16 @@ const make = (tag, props = {}, ...children) => {
 // the events worth a line in the feed
 const WORTHY = new Set(["war", "peace", "capture", "victory", "empire", "subject", "freedom", "joins", "uprising", "bankruptcy"]);
 
-await requireUser();
+// the requests run side by side, not one after another
 const id = Number(new URLSearchParams(location.search).get("id"));
-const res = await fetch(`/api/games/${id}/replay`);
+const [, res] = await Promise.all([requireUser(), fetch(`/api/games/${id}/replay`)]);
 const data = await res.json();
 if (!res.ok) { $("title").textContent = data.error ?? "No such replay."; throw new Error(data.error); }
 
-const scenario = await (await fetch(`/scenario/${data.scenario}/scenario.json`)).json();
+const [scenario, scenarios, map] = await Promise.all([fetch(`/scenario/${data.scenario}/scenario.json`).then((r) => r.json()),
+    fetch("/api/scenarios").then((r) => r.json()), createMapView($("map"), `/scenario/${data.scenario}/map.svg`, () => {})]);
 // the name the lobby shows (scenario.json has none: it is the first line of the scenario's SCENARIO.md)
-const scenarioName = (await (await fetch("/api/scenarios")).json()).find((s) => s.id === data.scenario)?.name ?? data.scenario;
+const scenarioName = scenarios.find((s) => s.id === data.scenario)?.name ?? data.scenario;
 const replayer = createReplayer(scenario, data);
 const built = buildMap(scenario), nodes = built.nodes, zones = built.zones, legs = buildLegs(scenario);
 const player = new Map(data.humans.map((h) => [h.country, h.username]));
@@ -39,7 +40,6 @@ const colourOf = (code) => (replayer.state.countries[code]?.rebel ? "#8c3a3a" : 
 const ownerOfLand = (key) => replayer.state.settlements[key]?.owner;
 const nameOf = (code) => replayer.state.countries[code]?.name ?? code;
 
-const map = await createMapView($("map"), `/scenario/${data.scenario}/map.svg`, () => {});
 $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
 $("zoom-out").addEventListener("click", () => map.zoom(1.4));
 $("title").textContent = `Game ${id}: ${scenarioName}${data.humans.length ? ` — ${data.humans.map((h) => `${nameOf(h.country)} (${h.username})`).join(", ")}` : ""}`;

@@ -134,9 +134,13 @@ stay closed**. Add DNS (name.com): an A record, host `lorconquest`, to the serve
 ```
 lorconquest.lorand77.dev {
     header Strict-Transport-Security "max-age=31536000"
+    encode zstd gzip
     reverse_proxy localhost:3002
 }
 ```
+
+`encode` compresses what is sent: the app does not, and uncompressed a game page is about 800 KB with the historical
+scenario (its map, its data and the engine), a fifth of that compressed.
 
 and `sudo systemctl reload caddy`. Caddy passes WebSockets through with no further setting, and sends `X-Forwarded-For` and
 `X-Forwarded-Proto`, which `TRUST_PROXY=1` makes the app use.

@@ -1,7 +1,7 @@
 // My Profile (a section of the shell, shell.js): who you are and since when, and two tabs — Stats, your numbers over every
 // game you have played (lobbylogic.js, statsOf), and My Games, all of them: the ones going to open, the finished ones to watch
 // as replays. The tab is the page's hash (#stats, #games), so the rail's links open the one they name.
-import { longDate } from "/engine/index.js";
+import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
 import { gameLine, statsOf } from "./lobbylogic.js";
 import { mountShell, profileTab } from "./shell.js";
@@ -17,7 +17,9 @@ const make = (tag, props = {}, ...children) => {
     return e;
 };
 
-const me = await requireUser();
+// everything at once: who you are, your games, the leaderboard and the scenarios' names
+const [me, games, board, scenarios] = await Promise.all([requireUser(),
+    fetch("/api/games").then((r) => r.json()), fetch("/api/leaderboard").then((r) => r.json()), fetch("/api/scenarios").then((r) => r.json())]);
 mountShell(me);
 $("name").textContent = me.username;
 if (me.joined) {
@@ -36,9 +38,6 @@ function showTab() {
 window.addEventListener("hashchange", showTab);
 showTab();
 
-const [games, board, scenarios] = await Promise.all([
-    fetch("/api/games").then((r) => r.json()), fetch("/api/leaderboard").then((r) => r.json()), fetch("/api/scenarios").then((r) => r.json()),
-]);
 const scenarioOf = (id) => scenarios.find((s) => s.id === id);
 const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === code)?.name ?? code;
 

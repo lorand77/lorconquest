@@ -26,6 +26,27 @@ test("scenarios, and starting a game", async () => {
     }
 });
 
+test("the pages come with every module their script needs to preload, so the browser asks for them all at once", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const page = await (await fetch(server.baseUrl + "/game.html")).text();
+        const preloads = [...page.matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((m) => m[1]);
+        // the page's own script, the screen's modules and the whole engine, each of them there to be had
+        for (const u of ["/js/game.js", "/js/mirror.js", "/js/panels.js", "/engine/index.js", "/engine/state.js", "/engine/calendar.js"]) assert.ok(preloads.includes(u), u);
+        assert.ok(preloads.length >= 30, `${preloads.length} modules`);
+        for (const u of preloads) assert.equal((await fetch(server.baseUrl + u)).status, 200, u);
+        assert.ok(page.indexOf("modulepreload") < page.indexOf("</head>"));
+        // / is the lobby, which no longer needs the engine; a page without a module script is left as it is
+        const lobby = await (await fetch(server.baseUrl + "/")).text();
+        assert.match(lobby, /<link rel="modulepreload" href="\/js\/lobby\.js">/);
+        assert.doesNotMatch(lobby, /href="\/engine\/index\.js"/);
+        assert.doesNotMatch(await (await fetch(server.baseUrl + "/terms.html")).text(), /modulepreload/);
+        assert.equal((await fetch(server.baseUrl + "/nothing.html")).status, 404);
+    } finally {
+        await server.close();
+    }
+});
+
 test("a player sees the game without its dice and without other countries' treasuries", async () => {
     const server = await startServer({ dbPath: tempDb() });
     try {

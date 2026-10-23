@@ -18,6 +18,7 @@ import { gameRoutes } from "./game/routes.js";
 import { loadScenarios } from "./game/scenarios.js";
 import { attachSockets } from "./game/socket.js";
 import defaultLog from "./log.js";
+import { preloadPages } from "./preload.js";
 
 // at or over this, a request is logged as a warning
 const SLOW_MS = 1000;
@@ -92,6 +93,8 @@ export function createApp({
         if (!s || !["map.svg", "scenario.json"].includes(req.params.file)) return res.status(404).end();
         res.sendFile(path.join(s.dir, req.params.file));
     });
+    // the pages, each with every module its script needs to load at once (preload.js); then the rest of public/
+    app.use(preloadPages(root, production));
     app.use(express.static(path.join(root, "public")));
 
     // errors no handler dealt with: logged with their stack, answered with neither

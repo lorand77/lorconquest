@@ -40,28 +40,36 @@ let tab = "selection";     // selection (the Map tab) | country | shop | researc
 // choices the panels keep while the page is open: the country the Diplomacy tab deals with, the weapon soldiers are raised with
 const ui = { target: null, raiseWeapon: null };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
+let pressing = false;      // a pointer is down in the panel: it is not rebuilt under it, or the click would be lost
 let plan = null;           // { army, to, path, days }
 let splitOpen = false;
 let owners = "";             // who owned what when the lands were last coloured
 
 // ---------- start ----------
 async function start() {
+    // who we are is asked alongside the join, and the scenario's data alongside its map: one round trip each, not five in a row
+    const whoAmI = fetch("/api/me").then((r) => r.json());
     const joined = await ask("join", { gameId });
     if (!joined.ok) { $("panel").textContent = `Cannot open this game: ${joined.error}`; return; }
     ({ me, paused, tickMs, multi, seats } = joined);
-    myUserId = (await (await fetch("/api/me")).json()).id;
     setupEnds = joined.setup ? performance.now() + joined.setup : 0;
     state = joined.view;
-    scenario = await (await fetch(`/scenario/${joined.scenario}/scenario.json`)).json();
+    let who;
+    [who, scenario, map] = await Promise.all([whoAmI, fetch(`/scenario/${joined.scenario}/scenario.json`).then((r) => r.json()),
+        createMapView($("map"), `/scenario/${joined.scenario}/map.svg`, onPick, () => select(null))]);
+    myUserId = who.id;
     game = new Game(buildMap(scenario), state);
     legs = buildLegs(scenario);
-    map = await createMapView($("map"), `/scenario/${joined.scenario}/map.svg`, onPick, () => select(null));
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("pause").addEventListener("click", togglePause);
     $("pause").hidden = multi;
     if (multi) startPeople(joined);
     for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
+    // a click is a press and a release on the same element: a panel rebuilt between them (ten times a second while numbers in
+    // it change) would swallow it, so it waits until the click is done
+    $("panel").addEventListener("pointerdown", () => { pressing = true; });
+    for (const ev of ["pointerup", "pointercancel"]) window.addEventListener(ev, () => { if (pressing) setTimeout(() => { pressing = false; }, 0); });
     document.addEventListener("keydown", onKey);
     socket.on("tick", onTick);
     socket.on("private", (m) => { applyPrivate(state, me, m.changes); renderTop(); });
@@ -317,6 +325,7 @@ function renderPanel(force = false) {
     const box = make("div", {}, ...nodes.filter((x) => x !== "" && x !== undefined));
     const html = box.innerHTML;
     if (!force && html === panelHtml) return;
+    if (!force && pressing) return;
     const focus = document.activeElement;
     if (!force && panel.contains(focus) && focus.matches("input, select, textarea")) return;
     panelHtml = html;
