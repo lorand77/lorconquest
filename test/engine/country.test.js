@@ -269,6 +269,19 @@ test("special coring: the capital in the region, all of it held, and every settl
     assert.match(refused(game, { type: "proclaim", country: "BBB", region: "aaa-lands" }), /capital must lie/);
 });
 
+test("special coring counts a vassal's settlements as held, and makes them core too; a protectorate's do not count", () => {
+    const game = tinyGame(), st = game.state;
+    for (const id of [1, 2, 3]) st.settlements[id].cores = [];
+    st.settlements[3].owner = "BBB";
+    Object.assign(st.countries.BBB, { overlord: "AAA", subjectKind: "protectorate" });
+    assert.match(refused(game, cmd("proclaim", { region: "aaa-lands" })), /you and your vassals must control all of AAA lands; 1 settlements are not yours or theirs/);
+    st.countries.BBB.subjectKind = "vassal";
+    const [ev] = order(game, cmd("proclaim", { region: "aaa-lands" }));
+    assert.equal(ev.settlements, 3);
+    assert.deepEqual([1, 2, 3].map((id) => st.settlements[id].cores), [["AAA"], ["AAA"], ["AAA"]]);   // the vassal's town too
+    assert.equal(st.settlements[3].owner, "BBB");                                        // it stays the vassal's
+});
+
 test("a captured settlement stays core for those who had it, so retaking it makes it core again", () => {
     const game = tinyGame();
     order(game, cmd("declareWar", { target: "BBB" }));

@@ -8,7 +8,7 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 16;
+export const RULES_VERSION = 17;
 // bump when the shape of the state changes
 export const FORMAT = 6;
 

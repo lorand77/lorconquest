@@ -400,10 +400,11 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 You may proclaim a region when **both** are true:
 
 1. Your **capital** lies within the region.
-2. You control **100%** of its settlements.
+2. You and your **vassals** together control **100%** of its settlements (a protectorate's do not count: it keeps its own
+   diplomacy). Your vassals' settlements count as they do for winning.
 
-Every settlement in the region becomes core immediately. If you later lose one and retake it, it is core again
-on capture.
+Every settlement in the region becomes your core immediately, your vassals' too (they stay theirs, core for you should
+they ever be yours). If you later lose one and retake it, it is core again on capture.
 
 | Formable | What it was | Settlements | Count |
 |---|---|---|---|

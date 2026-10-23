@@ -87,9 +87,11 @@ export function countryTab(ctx) {
     // special coring
     const regions = (game.map.scenario.formables ?? []).filter((f) => f.settlements.includes(c.capital));
     if (regions.length) {
-        out.push(section(ctx, "Regions to proclaim", make("p", { class: "hint" }, "Your capital is in each; you must hold all of it. Every settlement in it then becomes core at once."),
+        // held by you or a vassal of yours (RULES.md, Special coring)
+        const ours = (owner) => owner === me || (state.countries[owner]?.overlord === me && state.countries[owner]?.subjectKind === "vassal");
+        out.push(section(ctx, "Regions to proclaim", make("p", { class: "hint" }, "Your capital is in each; you and your vassals must hold all of it. Every settlement in it then becomes your core at once, your vassals' too."),
             ...regions.map((f) => {
-                const held = f.settlements.filter((id) => state.settlements[id]?.owner === me), core = f.settlements.filter((id) => state.settlements[id]?.cores.includes(me));
+                const held = f.settlements.filter((id) => ours(state.settlements[id]?.owner)), core = f.settlements.filter((id) => state.settlements[id]?.cores.includes(me));
                 const ready = held.length === f.settlements.length && core.length < f.settlements.length;
                 return row(ctx, make("span", {}, `${f.name}: ${held.length} of ${f.settlements.length} held${core.length === f.settlements.length ? ", all core" : ""}`),
                     ready ? make("button", { class: "primary", onclick: act(ctx, () => ({ type: "proclaim", region: f.id })) }, "Proclaim") : "");

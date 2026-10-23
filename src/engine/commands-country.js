@@ -17,6 +17,7 @@ import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LAW_DA
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
 import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, unlockTech } from "./economy.js";
 import { newFleet, isCore, ownerOf } from "./state.js";
+import { isVassal, overlordOf } from "./relations.js";
 
 const mine = (game, cmd) => game.state.countries[cmd.country];
 const near = (x, step) => Math.abs(x / step - Math.round(x / step)) < 1e-9;
@@ -346,8 +347,10 @@ export const countryCommands = {
         const region = (game.map.scenario.formables ?? []).find((f) => f.id === cmd.region);
         if (!region) return refuse(`no region ${cmd.region}`);
         if (!region.settlements.includes(c.capital) || st.settlements[c.capital]?.owner !== c.code) return refuse("your capital must lie within the region");
-        const missing = region.settlements.filter((id) => st.settlements[id]?.owner !== c.code);
-        if (missing.length) return refuse(`you must control all of ${region.name}; ${missing.length} settlements are not yours`);
+        // held by the country or one of its vassals (not a protectorate, which keeps its own diplomacy), as for winning
+        const ours = (owner) => owner === c.code || (isVassal(st, owner) && overlordOf(st, owner) === c.code);
+        const missing = region.settlements.filter((id) => !ours(st.settlements[id]?.owner));
+        if (missing.length) return refuse(`you and your vassals must control all of ${region.name}; ${missing.length} settlements are not yours or theirs`);
         const fresh = region.settlements.filter((id) => !st.settlements[id].cores.includes(c.code));
         if (!fresh.length) return refuse(`${region.name} is already core`);
         for (const id of fresh) st.settlements[id].cores.push(c.code);
