@@ -5,7 +5,7 @@
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it.
 import { BUILDING_PRICE, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, militaryPowerOf, neighboursOf } from "../engine/index.js";
-import { enemiesOf, exposed, nextToEnemy, ownSettlements, reserveOf } from "./util.js";
+import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
 
 // how much stronger than the country its strongest neighbour is (0 with no neighbour)
 export function threatRatio(game, code) {
@@ -23,7 +23,7 @@ function nextTech(game, code) {
 
 export function economyOrders(game, code, fl, ctx) {
     const st = game.state, c = st.countries[code], e = economyOf(game, code), out = [];
-    const enemies = enemiesOf(st, code), atWarNow = enemies.length > 0, reserve = reserveOf(e);
+    const enemies = threatsOf(st, code), atWarNow = enemies.length > 0, reserve = reserveOf(e);
     const cmd = (type, rest = {}) => out.push({ type, country: code, ...rest });
 
     // tax: none above 2 in peace, a little in war, more if the treasury needs it

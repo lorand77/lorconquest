@@ -5,7 +5,7 @@
 import { YEAR_DAYS, isMonthStart } from "./calendar.js";
 import { diplomacyDay } from "./diplomacy-day.js";
 import { monthly } from "./economy.js";
-import { endUprisings, rebelOrders, yearly } from "./events.js";
+import { endUprisings, rebelOrders, rebelWars, yearly } from "./events.js";
 import { arrive, meetings, placeBattles, settle, surrenders } from "./fighting.js";
 import { forcesDay } from "./forces.js";
 import { navalDay } from "./naval.js";
@@ -49,5 +49,6 @@ export function advanceDay(game) {
     const occupied = new Set(armyList(st).map((a) => a.at));
     for (const s of Object.values(st.settlements)) if (s.siege || occupied.has(String(s.id))) settle(game, String(s.id), events);
     eliminations(game, events);
+    rebelWars(game, events);
     return events;
 }

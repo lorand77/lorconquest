@@ -900,6 +900,12 @@ Rebels take no orders and make no peace. They are fed by their own people, but s
 the country has lost its capital, they rise outside its largest settlement. The uprising is over when the
 rebels have no army and hold no settlement.
 
+**Who fights the rebels.** The rebels are at war with the country they rose against **and with every country at war with
+it**: its enemies may fight them and take the towns they hold, and they fight back. Once their country is out of the game,
+they are at war with **every** country, and their towns are anyone's to take. Nobody declares these wars (no warmonger
+score, no allies called) and none ends in a peace; a country that makes peace with the rebels' country is no longer at war
+with them, and its armies leave their land as after any peace.
+
 **The rebels are your own people.** They are taken from your civilians (§2), spread over your
 settlements in proportion to their pop, and pay no tax while they are under arms — but they stay
 in your population and still count toward growth. Rebels killed are lost from your population

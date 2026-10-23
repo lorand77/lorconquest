@@ -11,7 +11,7 @@ import { caretakerOrders, answerOffers } from "./caretaker.js";
 import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
 import { fleetsHome, forceOrders } from "./forces.js";
-import { enemiesOf, flavorOf, reserveOf, thinksOn } from "./util.js";
+import { flavorOf, reserveOf, thinksOn, threatsOf } from "./util.js";
 import { warOrders } from "./war.js";
 
 // what, from a day's events, a country should look at again at once
@@ -37,7 +37,7 @@ export function createAI({ seed, humans = [] }) {
     // the country thinks in full: forces first, then the economy with what is left, then diplomacy and the war it leads to
     function think(game, code) {
         const st = game.state, c = st.countries[code], fl = flavor(game, code), e = economyOf(game, code);
-        const atWarNow = enemiesOf(st, code).length > 0;
+        const atWarNow = threatsOf(st, code).length > 0;
         const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e) }, start = ctx.budget;
         const out = [...answerOffers(game, code), ...forceOrders(game, code, fl, ctx), ...economyOrders(game, code, fl, ctx)];
         // money offered for peace is what the treasury will hold once this think's spending is applied before it

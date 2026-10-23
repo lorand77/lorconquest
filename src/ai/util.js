@@ -51,6 +51,9 @@ export const forcePower = (armies) => (armies.length ? power(combine(armies), 1.
 export const armyPower = (army) => forcePower([army]);
 
 export const enemiesOf = (st, code) => Object.keys(st.countries).filter((c) => atWar(st, code, c));
+// the enemies that put a country on a war footing (taxes, spending, raising): real countries, and its own peasants — not other
+// countries' peasants, with whom it is at war only as their country's enemy or because their country is gone (RULES.md §11)
+export const threatsOf = (st, code) => enemiesOf(st, code).filter((c) => !st.countries[c].rebel || st.countries[c].of === code);
 export const ownSettlements = (st, code) => Object.values(st.settlements).filter((s) => s.owner === code);
 export const ownArmies = (st, code) => armyList(st).filter((a) => a.owner === code);
 

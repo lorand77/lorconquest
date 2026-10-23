@@ -2,7 +2,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { economyOf, isRebel, menOf, rebelsOf } from "../../src/engine/index.js";
-import { uprising, yearly } from "../../src/engine/events.js";
+import { rebelWars, uprising, yearly } from "../../src/engine/events.js";
+import { makePeace } from "../../src/engine/diplomacy.js";
 import { plague } from "../../src/engine/economy.js";
 import { retreat } from "../../src/engine/movement.js";
 import { tinyGame, setArmy, runTo, order, refused, rig } from "../helpers/tiny.js";
@@ -118,4 +119,33 @@ test("scattering costs no lives, and rebels, fed by their own people, never go h
     const events = runTo(big, 31);
     const lost = ofType(events, "attrition").filter((e) => e.army === army.id);
     assert.deepEqual(lost.map((e) => [e.sick, e.hungry, e.dead]), [[true, false, 200]]);
+});
+
+test("peasants are at war with their country and its enemies — with everyone once it is gone — and the war ends with a peace", () => {
+    const game = tinyGame(), st = game.state;
+    const atWarWith = (a, b) => st.wars.includes(a < b ? `${a}|${b}` : `${b}|${a}`);
+    order(game, { type: "declareWar", country: "AAA", target: "BBB" });
+    uprising(game, "BBB", []);
+    const reb = Object.keys(st.countries).find((c) => st.countries[c].rebel);
+    runTo(game, st.day + 1);
+    // BBB's peasants: at war with BBB and with AAA, BBB's enemy; not with CCC
+    assert.deepEqual([atWarWith(reb, "BBB"), atWarWith(reb, "AAA"), atWarWith(reb, "CCC")], [true, true, false]);
+    // they hold Five: AAA may march on it, as on any enemy town; nobody may declare war on them or make peace with them
+    st.settlements[5].owner = reb;
+    for (const a of Object.values(st.armies)) if (a.at === "5") a.owner = reb;
+    setArmy(game, 3, { swords: 3000 });
+    order(game, { type: "move", country: "AAA", army: 3, to: 5 });
+    assert.match(refused(game, { type: "declareWar", country: "CCC", target: reb }), /peasants/);
+    assert.match(refused(game, { type: "proposePeace", country: "AAA", with: reb }), /peasants/);
+    // a peace with BBB ends the war with its peasants too, and AAA's army leaves their land
+    const events = [];
+    makePeace(game, "AAA", "BBB", {}, events);
+    rebelWars(game, events);
+    assert.deepEqual([atWarWith("AAA", "BBB"), atWarWith(reb, "AAA"), atWarWith(reb, "BBB")], [false, false, true]);
+    assert.match(refused(game, { type: "move", country: "AAA", army: 3, to: 5 }), /no way/);   // their land is closed to it again
+    // BBB gone from the game: its peasants are at war with every country there is
+    st.countries.BBB.out = st.day;
+    st.wars = st.wars.filter((w) => !w.split("|").includes("BBB"));
+    runTo(game, st.day + 1);
+    for (const c of ["AAA", "CCC", "DDD", "EEE"]) assert.equal(atWarWith(reb, c), true, c);
 });

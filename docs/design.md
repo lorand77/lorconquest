@@ -235,6 +235,10 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   besieged settlement (`besiegedIn`) is never given a march, which the engine refuses. All of it is
   read from the state and nothing is remembered: a split gives an army its id only when applied, so the think
   that splits is followed by one on the next tick (the reflex layer) that moves what was made.
+- **Peasants as enemies:** the computer takes towns held by peasants like any enemy's (its own peasants' back, or others'
+  as their country's enemy, or anyone's once that country is gone), but only its real enemies and its own peasants put it
+  on a war footing (`src/ai/util.js`, `threatsOf`) — otherwise the peasants of a fallen country, at war with everyone,
+  would keep every country taxing for war, and heavy taxes raise more peasants.
 - **Diplomacy:** peace is asked for when a war has run its course — dictating terms (settlements next to its land,
   its own cores first) when far ahead and the war gains something, a white peace after two years of stalemate,
   money and then settlements to buy it when losing; the computer asks only what the other side's formula (the

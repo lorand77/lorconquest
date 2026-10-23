@@ -8,7 +8,7 @@
 import { mayFight } from "../engine/battle.js";
 import { armyList, besiegedIn, isFriend, isRebel, situation, siegeDays } from "../engine/index.js";
 import { WEAPONS } from "../engine/army.js";
-import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, ownArmies, ownSettlements, reachFrom, stagingSettlement } from "./util.js";
+import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf } from "./util.js";
 
 const wallsFactor = (s) => (s.walls ? 1.8 : 1.2);
 const menIn = (a) => WEAPONS.reduce((n, w) => n + a.men[w], 0);
@@ -58,9 +58,12 @@ function hostsOf(game, code) {
 // settlement or meet an enemy army that has come in. It musters, merges, gathers and attacks nothing.
 export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false } = {}) {
     const st = game.state, out = [], foes = new Set(enemiesOf(st, code));
-    const realFoes = [...foes].filter((c) => !isRebel(st, c));
     sorties(game, code, out);
-    if (!foes.size && !prepare) return out;
+    // other countries' peasants are enemies too (RULES.md §11): their towns are there to take, but only those next to our land
+    // stir a country with no other war
+    const own = new Set(ownSettlements(st, code).map((s) => String(s.id)));
+    const peasantsNear = Object.values(st.settlements).some((s) => foes.has(s.owner) && isRebel(st, s.owner) && game.map.adj.get(String(s.id)).some((e) => own.has(e.to)));
+    if (!threatsOf(st, code).length && !prepare && !peasantsNear) return out;
 
     const base = stagingSettlement(game, code), baseKey = base ? String(base.id) : null;
     const enemyArmies = armyList(st).filter((a) => foes.has(a.owner));
@@ -98,7 +101,7 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             if (ours + inside >= 1.2 * against) options.push({ key: b.key, score: (40 + b.s.pop / 1000) / (1 + days / 40), storm: false });
         }
         if (!defend) for (const s of Object.values(st.settlements)) {
-            if (!foes.has(s.owner) || isRebel(st, s.owner)) continue;
+            if (!foes.has(s.owner)) continue;                                // peasants' towns too: theirs to take back, or anyone's
             const key = String(s.id), days = reach.get(key);
             if (days === undefined) continue;
             const sit = situation(game, key), raw = forcePower(sit.garrison), def = raw * wallsFactor(s);

@@ -11,6 +11,7 @@
 import { emptyMen } from "./army.js";
 import { YEAR_DAYS } from "./calendar.js";
 import { ownedBy, plague, popOf } from "./economy.js";
+import { evictClosed } from "./diplomacy.js";
 import { settle } from "./fighting.js";
 import { follow, routeFor } from "./movement.js";
 import { random } from "./random.js";
@@ -72,6 +73,29 @@ export function rebelOrders(game, events) {
             if (options.length) follow(game, army, options[0].route.path, events);
         }
     }
+}
+
+// who peasant rebels are at war with (RULES.md §11): the country they rose against and every country at war with it — or, once
+// that country is out of the game, every country. They take no orders, so this is worked out, not declared: kept in the wars
+// list (no declaration, no warmonger score, no allies drawn in, no peace), at the end of each day and of each order. A country
+// that stops being at war with them (a peace with their country) has its armies sent out of their land, as after any peace.
+export function rebelWars(game, events) {
+    const st = game.state;
+    const real = Object.keys(st.countries).filter((c) => !st.countries[c].rebel && st.countries[c].out === null);
+    let changed = false, ended = false;
+    for (const code of Object.keys(st.countries)) {
+        const r = st.countries[code];
+        if (!r.rebel) continue;
+        const theirs = real.includes(r.of);
+        for (const c of real) {
+            const want = !theirs || c === r.of || st.wars.includes(warKey(c, r.of));
+            const k = warKey(code, c), has = st.wars.includes(k);
+            if (want && !has) { st.wars.push(k); changed = true; }
+            else if (!want && has) { st.wars = st.wars.filter((w) => w !== k); changed = ended = true; }
+        }
+    }
+    if (changed) st.wars.sort();
+    if (ended) evictClosed(game, events);
 }
 
 // an uprising is over when its country has no army and holds no settlement

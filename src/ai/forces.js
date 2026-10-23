@@ -6,7 +6,7 @@
 import { menOf } from "../engine/army.js";
 import { MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
 import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf } from "../engine/index.js";
-import { enemiesOf, exposed, ownArmies, ownSettlements, stagingSettlement } from "./util.js";
+import { exposed, ownArmies, ownSettlements, stagingSettlement, threatsOf } from "./util.js";
 import { threatRatio } from "./economy.js";
 
 const SHOT = ["muskets", "arquebuses", "handCannons"];
@@ -29,7 +29,7 @@ export function fleetsHome(game, code) {
 
 export function forceOrders(game, code, fl, ctx) {
     const st = game.state, c = st.countries[code], e = economyOf(game, code), out = [];
-    const foes = enemiesOf(st, code), atWarNow = foes.length > 0;
+    const foes = threatsOf(st, code), atWarNow = foes.length > 0;
     const cmd = (type, rest) => out.push({ type, country: code, ...rest });
 
     // distress: in the red and losing money, the soldiers above what the law allows go home (their weapons to the reserve),
