@@ -12,7 +12,7 @@ export { checkVictory, scores } from "./victory.js";
 export { TRIBUTE, armyCapOf, armySoldiersOf, economyOf, manpowerOf, mercenariesOf, navyCapOf, ownedBy, popOf, rebelsOf, soldiersOf, techCost } from "./economy.js";
 export { blockaded, crossable, crewAtSea, fleetPower, shipCount, shipsIn } from "./naval.js";
 export * from "./costs.js";
-export { WEAPONS, MULTIPLIER, menOf, militaryPower, power } from "./army.js";
+export { CREW_PER_CANNON, WEAPONS, MULTIPLIER, menOf, militaryPower, power } from "./army.js";
 export { COOLDOWN_DAYS } from "./battle.js";
 export { besiegedIn, siegeDays, situation } from "./fighting.js";
 export { positionOf, progress, routeFor } from "./movement.js";

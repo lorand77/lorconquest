@@ -569,7 +569,9 @@ people and never suffer this.
 **Battle cooldown:** one resolution per pair of armies per 3 months. The loser retreats
 immediately, as in §5 *After the battle*. Storms and sorties are battles too. Enemy armies that
 meet at a place while on cooldown wait there, and fight when it ends; enemy armies that pass each
-other on a route while on cooldown have passed.
+other on a route while on cooldown have passed. An army **split off** from another keeps every cooldown its parent has,
+and an army **merged** into another passes its cooldowns on (the longer of the two counts): the same troops, the same wait.
+Fleets likewise.
 
 **Straits (dashed lines).** An army may cross if you control **≥10 × x ships** in that sea zone (see
 [Sea zones](../scenarios/mitteleuropa/SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes

@@ -11,7 +11,7 @@
 // Running a country is in commands-country.js, fleets in commands-naval.js, diplomacy in commands-diplomacy.js.
 
 import { CREW_PER_CANNON, WEAPONS, emptyMen, menOf } from "./army.js";
-import { mayFight } from "./battle.js";
+import { inheritCooldowns, mayFight } from "./battle.js";
 import { done, isPlayable, ownArmy, refuse, whole } from "./command-util.js";
 import { countryCommands } from "./commands-country.js";
 import { diplomacyCommands } from "./commands-diplomacy.js";
@@ -122,6 +122,7 @@ const COMMANDS = {
         const part = newArmy(game.state, army.owner, army.at, men, cannons, crew, mercs);
         part.relief = army.relief;
         part.arrived = army.arrived;
+        inheritCooldowns(game.state, army.id, part.id);
         return done([{ type: "split", day: game.state.day, army: army.id, owner: army.owner, into: part.id }]);
     },
 
@@ -138,6 +139,7 @@ const COMMANDS = {
         into.army.crew += army.crew;
         into.army.mercs += army.mercs;
         into.army.arrived = Math.min(into.army.arrived, army.arrived);
+        inheritCooldowns(game.state, army.id, into.army.id);
         removeArmy(game.state, army);
         return done([{ type: "merge", day: game.state.day, army: army.id, owner: army.owner, into: into.army.id }]);
     },

@@ -238,3 +238,16 @@ test("armies on a strait are at sea: they pass each other", () => {
     order(game, cmd("move", { army: 3, to: 6 }));
     assert.equal(fleetList(game.state).length, 2);
 });
+
+test("a fleet split off, or merged into another, keeps the 3 months since its last battle", () => {
+    const game = tinyGame(), st = game.state;
+    const f = giveFleet(game, "AAA", { cogs: 10 }, 1, "north"), foe = giveFleet(game, "BBB", { cogs: 5 }, 4, "south");
+    const until = st.day + 90;
+    st.cooldowns[f.id < foe.id ? `${f.id}|${foe.id}` : `${foe.id}|${f.id}`] = until;   // they fought today
+    const [ev] = order(game, cmd("splitFleet", { fleet: f.id, ships: { cogs: 4 } }));
+    const key = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
+    assert.equal(st.cooldowns[key(ev.into, foe.id)], until);
+    const fresh = giveFleet(game, "AAA", { cogs: 2 }, 1, "north");
+    order(game, cmd("mergeFleet", { fleet: ev.into, into: fresh.id }));
+    assert.equal(st.cooldowns[key(fresh.id, foe.id)], until);
+});

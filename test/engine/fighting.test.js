@@ -129,6 +129,25 @@ test("a besieged garrison cannot march out, nor a part split off from it, until 
     assert.equal(game.state.armies[5].march.to, "4");
 });
 
+test("splitting or merging dodges no rest: a part split off, or an army merged into another, keeps the 3 months", () => {
+    const game = atThePass(), st = game.state;
+    setArmy(game, 3, { swords: 2000 });
+    order(game, { type: "move", country: "AAA", army: 3, to: 5 });
+    runTo(game, 182);
+    setArmy(game, 5, { swords: 1800 });
+    rig(game, 4, 4, 5, 5);
+    order(game, { type: "sortie", country: "BBB", army: 5 });                     // lost: the garrison falls back inside
+    assert.match(refused(game, { type: "sortie", country: "BBB", army: 5 }), /less than 3 months/);
+    const [split] = order(game, { type: "split", country: "BBB", army: 5, men: { swords: 1 } });
+    assert.match(refused(game, { type: "sortie", country: "BBB", army: split.into }), /less than 3 months/);   // the part too
+    // merged back, or merged the other way round, the wait stays
+    order(game, { type: "merge", country: "BBB", army: 5, into: split.into });
+    assert.match(refused(game, { type: "sortie", country: "BBB", army: split.into }), /less than 3 months/);
+    runTo(game, st.day + 92);                                                      // three months on: it may
+    rig(game, 4, 4, 5, 5);
+    assert.equal(game.command({ type: "sortie", country: "BBB", army: split.into }).ok, true);
+});
+
 test("a relief force fights the besiegers in the open; the garrison stays inside", () => {
     const game = atThePass();
     order(game, { type: "move", country: "AAA", army: 3, to: 5 });

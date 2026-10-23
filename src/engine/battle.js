@@ -11,6 +11,20 @@ import { killPeople, removeArmy } from "./state.js";
 export const COOLDOWN_DAYS = Math.round(3 * MONTH);
 const pairKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 
+// an army split off from another, or merged into one, is the same troops: `to` takes on every cooldown `from` has, the longer
+// of the two where both have one (RULES.md §8, Battle cooldown) — or a part split off a beaten army could fight again at once.
+// Armies and fleets share ids, and the cooldowns with them.
+export function inheritCooldowns(state, from, to) {
+    for (const [key, until] of Object.entries(state.cooldowns)) {
+        const [x, y] = key.split("|").map(Number);
+        if (x !== from && y !== from) continue;
+        const other = x === from ? y : x;
+        if (other === to) continue;
+        const k = pairKey(other, to);
+        state.cooldowns[k] = Math.max(state.cooldowns[k] ?? -1, until);
+    }
+}
+
 // may these sides fight today? Yes if any pair of their armies is off cooldown.
 export function mayFight(state, sideA, sideB) {
     for (const a of sideA) for (const b of sideB) if ((state.cooldowns[pairKey(a.id, b.id)] ?? -1) <= state.day) return true;

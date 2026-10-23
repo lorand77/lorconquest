@@ -2,7 +2,7 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, WEAPONS } from "/engine/index.js";
+import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, placeName, routeFor, scores, CREW_PER_CANNON, WEAPONS } from "/engine/index.js";
 import { applyChanges, applyPrivate, buildLegs, endScreen, formatNumber, isSelected, routeLine, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
@@ -447,15 +447,28 @@ function armyStatus(a) {
     return `At ${name(a.at)}.`;
 }
 
+// what is typed in an army's split form, kept while the panel is rebuilt around it (the numbers of an army change monthly);
+// a cannon split off takes its crew with it, 10 a cannon, unless the crew is changed by hand
+const splitDraft = new Map();                       // army id -> { swords: 200, cannons: 1, crew: 10, ... }
 function splitForm(a) {
-    const inputs = [];
+    const draft = splitDraft.get(a.id) ?? {};
+    splitDraft.set(a.id, draft);
+    const inputs = new Map();
     const row = (label, max, key) => {
-        const input = make("input", { type: "number", min: 0, max, value: 0, step: 1 });
-        inputs.push([key, input]);
+        const input = make("input", { type: "number", min: 0, max, value: Math.min(draft[key] ?? 0, max), step: 1 });
+        input.addEventListener("input", () => {
+            draft[key] = Number(input.value) || 0;
+            if (key === "cannons" && inputs.has("crew")) {
+                draft.crew = Math.min(a.crew, draft.cannons * CREW_PER_CANNON);
+                inputs.get("crew").value = draft.crew;
+            }
+        });
+        inputs.set(key, input);
         return make("label", {}, `${label} (of ${formatNumber(max)}) `, input);
     };
     const rows = WEAPONS.filter((w) => a.men[w]).map((w) => row(WEAPON_NAMES[w], a.men[w], w));
-    if (a.cannons) rows.push(row("cannons", a.cannons, "cannons"), row("crew", a.crew, "crew"));
+    if (a.cannons) rows.push(row("cannons", a.cannons, "cannons"));
+    if (a.crew) rows.push(row(`crew (${CREW_PER_CANNON} a cannon)`, a.crew, "crew"));
     const go = async () => {
         const cmd = { type: "split", army: a.id, men: {} };
         for (const [key, input] of inputs) {
@@ -464,7 +477,7 @@ function splitForm(a) {
             else if (n) cmd.men[key] = n;
         }
         const r = await send(cmd);
-        if (r.ok) { splitOpen = false; renderPanel(); }
+        if (r.ok) { splitOpen = false; splitDraft.delete(a.id); renderPanel(); }
     };
     return make("div", { class: "split" }, make("p", {}, "Split off a new army with:"), ...rows, make("button", { class: "primary", onclick: go }, "Split"));
 }

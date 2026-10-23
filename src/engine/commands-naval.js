@@ -7,6 +7,7 @@
 //   splitFleet { fleet, ships: { cogs: 4, ... } }    mergeFleet { fleet, into }
 import { CREW_PER_SHIP, SHIPS } from "./costs.js";
 import { done, ownFleet, refuse, whole } from "./command-util.js";
+import { inheritCooldowns } from "./battle.js";
 import { economyOf } from "./economy.js";
 import { sailDays, shipCount } from "./naval.js";
 import { atWar, newFleet } from "./state.js";
@@ -86,6 +87,7 @@ export const navalCommands = {
         for (const k of Object.keys(ships)) fleet.ships[k] -= ships[k];
         const part = newFleet(st, fleet.owner, ships, fleet.port, fleet.zone);
         part.since = fleet.since;
+        inheritCooldowns(st, fleet.id, part.id);
         return done([{ type: "splitFleet", day: st.day, fleet: fleet.id, owner: fleet.owner, into: part.id }]);
     },
 
@@ -100,6 +102,7 @@ export const navalCommands = {
         if (fleet.zone !== other.zone || fleet.port !== other.port) return refuse(`fleets ${fleet.id} and ${other.id} are not in the same place`);
         for (const k of SHIPS) other.ships[k] += fleet.ships[k];
         other.since = Math.min(other.since, fleet.since);
+        inheritCooldowns(st, fleet.id, other.id);
         delete st.fleets[fleet.id];
         return done([{ type: "mergeFleet", day: st.day, fleet: fleet.id, owner: fleet.owner, into: other.id }]);
     },
