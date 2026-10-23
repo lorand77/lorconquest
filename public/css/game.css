@@ -118,11 +118,18 @@ input[type=range], input[type=checkbox] { accent-color: var(--accent); padding: 
 .tables, .games { list-style: none; padding: 0; margin: 0; }
 .tables .table { border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; margin: 8px 0; background: var(--surface); }
 .tables .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
-.online { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
-.online li { display: flex; align-items: center; gap: 6px; }
-.online li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--good); }
-.online li.you a { font-weight: 600; }
-.online .tag { font-size: 11px; padding: 0 6px; border-radius: 8px; background: var(--info-bg); border: 1px solid var(--info-border); color: var(--text); }
+/* the Play page: the sections, and who is online in a column on the right (as in LorCiv), kept in view while the page scrolls */
+body.shell > .page.lobby { max-width: 1100px; display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 18px; align-items: start; }
+.lobby-main, .lobby-side { min-width: 0; }
+.lobby-side { position: sticky; top: calc(var(--topbar-h) + 8px); margin-top: 3.2em; }
+@media (max-width: 900px) { body.shell > .page.lobby { grid-template-columns: minmax(0, 1fr); } .lobby-side { position: static; margin-top: 0; } }
+.online { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.online li { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 4px; background: var(--surface); font-size: 13px; }
+.online li::before { content: ""; flex: 0 0 8px; height: 8px; border-radius: 50%; background: var(--good); }
+.online li a { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-strong); text-decoration: none; font-weight: 600; }
+.online li a:hover { text-decoration: underline; }
+.online .tag { font-size: 11px; padding: 0 7px; border-radius: 10px; background: var(--info-bg); border: 1px solid var(--info-border); color: var(--text); }
+.online .tag.you { background: var(--current); border-color: var(--current); color: var(--current-text); }
 .board-table { border-collapse: collapse; width: 100%; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
 .board-table th, .board-table td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
 .board-table th { color: var(--gold); font-size: 13px; }

@@ -91,9 +91,10 @@ socket.on("lobby:changed", refresh);
 // who has the lobby or a game open, each name opening their profile
 socket.on("online", (list) => {
     $("online-count").textContent = `(${list.length})`;
-    $("online").replaceChildren(...list.map((p) => make("li", { class: p.username === me.username ? "you" : "" },
-        make("a", { href: `/profile.html?name=${encodeURIComponent(p.username)}` }, p.username),
-        p.playing ? make("span", { class: "tag" }, "playing") : "")));
+    $("online").replaceChildren(...list.map((p) => make("li", {},
+        make("a", { href: `/profile.html?name=${encodeURIComponent(p.username)}`, title: `${p.username}'s profile` }, p.username),
+        p.playing ? make("span", { class: "tag" }, "playing") : "",
+        p.username === me.username ? make("span", { class: "tag you" }, "you") : "")));
 });
 socket.on("table:started", (m) => { location.href = `/game.html?id=${m.id}`; });
 socket.on("table:cancelled", refresh);

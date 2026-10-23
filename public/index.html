@@ -10,7 +10,8 @@
     <script type="module" src="/js/lobby.js"></script>
 </head>
 <body class="shell">
-    <div class="page">
+    <div class="page lobby">
+      <div class="lobby-main">
         <h1>Play</h1>
 
         <section class="page-section">
@@ -28,11 +29,6 @@
         </section>
 
         <section class="page-section">
-            <h2>Online now <span id="online-count" class="hint"></span></h2>
-            <ul id="online" class="online"></ul>
-        </section>
-
-        <section class="page-section">
             <h2>Rooms waiting for people</h2>
             <ul id="tables" class="tables"></ul>
         </section>
@@ -42,6 +38,15 @@
             <ul id="games" class="games"></ul>
             <p class="hint"><a href="/profile.html#games">All my games, with the replays of the finished ones →</a></p>
         </section>
+      </div>
+      <!-- who is online, on the right as in LorCiv -->
+      <aside class="lobby-side">
+        <section class="page-section">
+            <h2>Online <span id="online-count" class="hint"></span></h2>
+            <ul id="online" class="online"></ul>
+            <p class="hint">Everyone with the lobby or a game open.</p>
+        </section>
+      </aside>
     </div>
 </body>
 </html>
