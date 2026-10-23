@@ -120,7 +120,7 @@ export function openDb(file) {
         userByNameNoCase: db.prepare("SELECT id FROM users WHERE username = ? COLLATE NOCASE"),
         userById: db.prepare("SELECT id, username, created_at FROM users WHERE id = ?"),
         insertSession: db.prepare("INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)"),
-        sessionUser: db.prepare("SELECT u.id, u.username FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ?"),
+        sessionUser: db.prepare("SELECT u.id, u.username, u.created_at AS joined FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ?"),
         deleteSession: db.prepare("DELETE FROM sessions WHERE token_hash = ?"),
         // what an account deletion needs (src/accounts.js)
         userByNameLoose: db.prepare("SELECT id, username, created_at FROM users WHERE username = ? COLLATE NOCASE"),

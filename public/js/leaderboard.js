@@ -1,8 +1,10 @@
-// The leaderboard page: the people ranked over the games they finished (src/game/rooms.js, leaderboard).
+// The leaderboard page, a section of the shell (shell.js): the people ranked over the games they finished (src/game/rooms.js,
+// leaderboard).
 import { requireUser } from "./auth.js";
+import { mountShell } from "./shell.js";
 
 const $ = (id) => document.getElementById(id);
-await requireUser();
+mountShell(await requireUser());
 const rows = await (await fetch("/api/leaderboard")).json();
 $("empty").hidden = rows.length > 0;
 $("board").hidden = rows.length === 0;

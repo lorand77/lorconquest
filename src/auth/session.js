@@ -31,13 +31,13 @@ export function createSessions({ db, name, days, production }) {
             return hash;
         },
 
-        // who a request, or a socket's handshake, comes from: { id, username, hash } or null
+        // who a request, or a socket's handshake, comes from: { id, username, joined, hash } or null
         userOf(headers) {
             const token = readCookie(headers.cookie, name);
             if (!token) return null;
             const hash = sha256(token);
             const user = db.q.sessionUser.get(hash, new Date().toISOString());
-            return user ? { id: user.id, username: user.username, hash } : null;
+            return user ? { id: user.id, username: user.username, joined: user.joined, hash } : null;
         },
 
         end(res, hash) {

@@ -20,7 +20,9 @@ test("registering signs in, with a cookie no script can read; the password and t
         const set = cookieOf(res);
         assert.match(set, /^lc_session=[\w-]{40,}; Max-Age=604800; Path=\/; HttpOnly; SameSite=Lax$/);
         const me = await fetch(server.baseUrl + "/api/me", { headers: { Cookie: set.split(";")[0] } });
-        assert.deepEqual(await me.json(), { id: 1, username: "alice" });
+        const who = await me.json();
+        assert.deepEqual([who.id, who.username], [1, "alice"]);
+        assert.match(who.joined, /^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/);            // when the account was made, for My Profile
         assert.equal((await fetch(server.baseUrl + "/api/me")).status, 401);
         const db = new DatabaseSync(dbPath);
         const user = db.prepare("SELECT password_hash FROM users").get();

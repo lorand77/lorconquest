@@ -1,9 +1,11 @@
-// The lobby: start a game alone or open a room, take a free country in someone else's, start or cancel your own, and
-// open the games you are in. The server decides everything (src/game/routes.js); this page asks, and listens for the
+// The lobby, the Play section of the shell (shell.js): start a game alone or open a room, take a free country in someone
+// else's, start or cancel your own, and open the games you are in that are still going (the finished ones are under My
+// Profile, My Games). The server decides everything (src/game/routes.js); this page asks, and listens for the
 // lobby changing and for a room it has a seat in starting. (People see "rooms"; the code and the API say "tables", since
 // "rooms" are the games running in src/game/rooms.js.)
 import { longDate } from "/engine/index.js";
-import { requireUser, signOut } from "./auth.js";
+import { requireUser } from "./auth.js";
+import { mountShell } from "./shell.js";
 import { gameLine, tableActions } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -23,8 +25,7 @@ const post = async (url, body = {}) => {
 };
 
 const me = await requireUser();
-$("username").textContent = me.username;
-$("signout").addEventListener("click", signOut);
+mountShell(me);
 const scenarios = await (await fetch("/api/scenarios")).json();
 const scenarioOf = (id) => scenarios.find((s) => s.id === id);
 const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === code)?.name ?? code;
@@ -76,11 +77,12 @@ async function refresh() {
     const [tables, games] = await Promise.all([fetch("/api/tables").then((r) => r.json()), fetch("/api/games").then((r) => r.json())]);
     $("tables").replaceChildren(...tables.map(tableItem));
     if (!tables.length) $("tables").textContent = "None. Open one above.";
-    $("games").replaceChildren(...games.map((g) => {
+    const going = games.filter((g) => g.status === "active");                 // a room not yet started is under Rooms
+    $("games").replaceChildren(...going.map((g) => {
         const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day));
         return make("li", {}, line.open ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text, line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
     }));
-    if (!games.length) $("games").textContent = "None yet.";
+    if (!going.length) $("games").textContent = "None going.";
 }
 
 // ---------- live ----------

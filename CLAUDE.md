@@ -58,7 +58,9 @@ dependencies.
   with rivalries; `tools/map.js` checks the spread), `util.js` (their own dice, a country's character for the game, distances).
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
   `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
-  Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node) and
+  Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node),
+  `profile.html` (`js/profile.js`: Stats and My Games) and `customize.html` (`js/customize.js`: the colours), which with the leaderboard
+  have LorCiv's shell (`js/shell.js`: a top bar and a rail of sections on the left), and
   `login.html` the sign-in page (`js/login.js`, `js/auth.js`); `replay.html` plays a finished game over (`js/replay.js`, with
   `js/replayer.js` — the pure part, tested against real games — and `js/mapdraw.js`, which the game page shares); `leaderboard.html`;
   `terms.html` and `privacy.html`, which must stay true of what the code does. `js/theme.js` (a plain script, not a module, in every

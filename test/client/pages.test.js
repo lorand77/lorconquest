@@ -5,7 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { formatCountdown, freeCountries, gameLine, presenceText, tableActions } from "../../public/js/lobbylogic.js";
+import { formatCountdown, freeCountries, gameLine, presenceText, statsOf, tableActions } from "../../public/js/lobbylogic.js";
 
 const publicDir = path.join(import.meta.dirname, "..", "..", "public");
 const read = (f) => fs.readFileSync(path.join(publicDir, f), "utf8");
@@ -49,7 +49,8 @@ test("a game's line says where it stands: one going can be opened (even if the s
 });
 
 // each page with the script that drives it
-const PAGES = [["login.html", "login.js"], ["index.html", "lobby.js"], ["game.html", "game.js"], ["replay.html", "replay.js"], ["leaderboard.html", "leaderboard.js"]];
+const PAGES = [["login.html", "login.js"], ["index.html", "lobby.js"], ["game.html", "game.js"], ["replay.html", "replay.js"], ["leaderboard.html", "leaderboard.js"],
+    ["profile.html", "profile.js"], ["customize.html", "customize.js"]];
 
 test("every element a page's script looks for is in the page", () => {
     for (const [html, script] of PAGES) {
@@ -78,4 +79,27 @@ test("no page has an inline script, an inline handler or a javascript: link: the
         assert.doesNotMatch(page, /\son\w+\s*=/i, `${f} has an inline handler`);
         assert.doesNotMatch(page, /javascript:/i, `${f} has a javascript: URL`);
     }
+});
+
+test("My Profile's stats: games played, going, finished and won, alone or with people, and the places from the leaderboard", () => {
+    const games = [
+        { status: "finished", country: "BAV", winner: "BAV", people: 1 },
+        { status: "finished", country: "SAX", winner: "AUS", people: 3 },
+        { status: "finished", country: "BRB", winner: "BRB", people: 2 },
+        { status: "active", country: "BAV", winner: null, people: 1 },
+        { status: "abandoned", country: "HUN", winner: null, people: 2 },
+        { status: "lobby", country: "POL", winner: null, people: 2 },               // a room not started: no game yet
+    ];
+    assert.deepEqual(statsOf(games, { firsts: 1, averagePlace: 1.5 }),
+        { games: 5, going: 1, finished: 3, abandoned: 1, won: 2, winRate: 67, alone: 2, withOthers: 3, firsts: 1, averagePlace: 1.5 });
+    assert.deepEqual(statsOf([]), { games: 0, going: 0, finished: 0, abandoned: 0, won: 0, winRate: null, alone: 0, withOthers: 0, firsts: 0, averagePlace: null });
+});
+
+test("every signed-in page but the game and the replay has the shell; the rail lists Play, My Profile, Stats, My Games, Customize, Leaderboard", () => {
+    for (const [html, script] of [["index.html", "lobby.js"], ["profile.html", "profile.js"], ["customize.html", "customize.js"], ["leaderboard.html", "leaderboard.js"]]) {
+        assert.match(read(html), /<body class="shell">/, `${html} reserves the room for the shell`);
+        assert.match(read(`js/${script}`), /mountShell\(/, `${script} builds the shell`);
+    }
+    const shell = read("js/shell.js");
+    assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Customize", "Leaderboard"]);
 });

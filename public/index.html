@@ -3,41 +3,40 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LorConquest</title>
+    <title>LorConquest — Play</title>
     <link rel="stylesheet" href="/css/game.css">
     <script src="/js/theme.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="/js/lobby.js"></script>
 </head>
-<body class="dev lobby">
-    <header class="lobbybar">
-        <h1>LorConquest</h1>
-        <span class="who"><a href="/leaderboard.html">Leaderboard</a> · <span id="username"></span> <button id="signout" class="link">Sign out</button> <button class="scheme" data-scheme-toggle>☀ Light</button></span>
-    </header>
+<body class="shell">
+    <div class="page">
+        <h1>Play</h1>
 
-    <section>
-        <h2>New game</h2>
-        <form id="start" class="start">
-            <label>Scenario <select id="scenario"></select></label>
-            <label>Country <select id="country"></select></label>
-            <button class="primary" type="submit" data-solo="1">Play alone</button>
-            <button type="submit" data-solo="">Open a room</button>
-            <span id="error" class="error"></span>
-        </form>
-        <p class="hint">Alone, you can pause whenever you like and the game waits for you. A room waits here for up to three
-            more people to take a country each; when you start it the computer plays every other country, the clock stands
-            still for a minute, and then nobody can pause.</p>
-    </section>
+        <section class="page-section">
+            <h2>New game</h2>
+            <form id="start" class="start">
+                <label>Scenario <select id="scenario"></select></label>
+                <label>Country <select id="country"></select></label>
+                <button class="primary" type="submit" data-solo="1">Play alone</button>
+                <button type="submit" data-solo="">Open a room</button>
+                <span id="error" class="error"></span>
+            </form>
+            <p class="hint">Alone, you can pause whenever you like and the game waits for you. A room waits here for up to three
+                more people to take a country each; when you start it the computer plays every other country, the clock stands
+                still for a minute, and then nobody can pause.</p>
+        </section>
 
-    <section>
-        <h2>Rooms waiting for people</h2>
-        <ul id="tables" class="tables"></ul>
-    </section>
+        <section class="page-section">
+            <h2>Rooms waiting for people</h2>
+            <ul id="tables" class="tables"></ul>
+        </section>
 
-    <section>
-        <h2>My games</h2>
-        <ul id="games" class="games"></ul>
-    </section>
-    <footer class="hint"><a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a></footer>
+        <section class="page-section">
+            <h2>My games in progress</h2>
+            <ul id="games" class="games"></ul>
+            <p class="hint"><a href="/profile.html#games">All my games, with the replays of the finished ones →</a></p>
+        </section>
+    </div>
 </body>
 </html>

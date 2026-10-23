@@ -51,3 +51,23 @@ export function gameLine(game, scenarioName, countryName, dateText) {
     // a game that is going can always be opened: one let go from memory is brought back
     return { text: where, open: true, replay: false };
 }
+
+// a person's numbers, for My Profile's Stats: from their games (GET /api/games, each with the country they played and the
+// winner's) and their row of the leaderboard, if they have one (the places among people are worked out by the server)
+export function statsOf(games, row = null) {
+    const played = games.filter((g) => g.status !== "lobby");              // a room not yet started is no game yet
+    const finished = played.filter((g) => g.status === "finished");
+    const won = finished.filter((g) => g.winner === g.country).length;
+    return {
+        games: played.length,
+        going: played.filter((g) => g.status === "active").length,
+        finished: finished.length,
+        abandoned: played.filter((g) => g.status === "abandoned").length,
+        won,
+        winRate: finished.length ? Math.round(won / finished.length * 100) : null,
+        alone: played.filter((g) => g.people <= 1).length,
+        withOthers: played.filter((g) => g.people > 1).length,
+        firsts: row?.firsts ?? 0,
+        averagePlace: row?.averagePlace ?? null,
+    };
+}

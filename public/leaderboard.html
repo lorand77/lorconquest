@@ -3,23 +3,22 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>LorConquest — leaderboard</title>
+    <title>LorConquest — Leaderboard</title>
     <link rel="stylesheet" href="/css/game.css">
     <script src="/js/theme.js"></script>
     <script type="module" src="/js/leaderboard.js"></script>
 </head>
-<body class="dev lobby">
-    <header class="lobbybar">
+<body class="shell">
+    <div class="page">
         <h1>Leaderboard</h1>
-        <span class="who"><a href="/">← Lobby</a> <button class="scheme" data-scheme-toggle>☀ Light</button></span>
-    </header>
-    <p class="hint">People ranked over the games they finished. In a game with other people, a person is placed among them by how
-        their country stood at the end (settlements, then people); someone who left the game is placed after everyone who stayed.
-        A victory is their country winning the whole game, alone or not.</p>
-    <table id="board" class="board-table">
-        <thead><tr><th>#</th><th>Player</th><th>Games</th><th>With others</th><th>First among them</th><th>Average place</th><th>Victories</th></tr></thead>
-        <tbody id="rows"></tbody>
-    </table>
-    <p id="empty" class="hint" hidden>Nobody has finished a game yet.</p>
+        <p class="hint">People ranked over the games they finished. In a game with other people, a person is placed among them by how
+            their country stood at the end (settlements, then people); someone who left the game is placed after everyone who stayed.
+            A victory is their country winning the whole game, alone or not.</p>
+        <table id="board" class="board-table">
+            <thead><tr><th>#</th><th>Player</th><th>Games</th><th>With others</th><th>First among them</th><th>Average place</th><th>Victories</th></tr></thead>
+            <tbody id="rows"></tbody>
+        </table>
+        <p id="empty" class="hint" hidden>Nobody has finished a game yet.</p>
+    </div>
 </body>
 </html>

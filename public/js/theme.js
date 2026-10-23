@@ -2,7 +2,8 @@
 // "lorconquest.scheme" (privacy.html says so). game.css keys the light colours off <html data-scheme="light">. Every page
 // loads this in its <head>, before anything is drawn, so it paints in the chosen colours at once — which is why it is a
 // plain script and not a module (a module would run after the page had shown itself dark). Any button with
-// data-scheme-toggle switches the scheme and is labelled with the one it switches to; another tab of the site follows.
+// data-scheme-toggle switches the scheme and is labelled with the one it switches to; another tab of the site follows. The
+// Customize page sets it through window.lorconquestScheme.
 (function () {
     const KEY = "lorconquest.scheme";
     let scheme = "dark";
@@ -17,17 +18,18 @@
         }
     }
 
+    function choose(next) {
+        scheme = next === "light" ? "light" : "dark";
+        try { localStorage.setItem(KEY, scheme); } catch (e) { /* storage blocked: this page only */ }
+        apply();
+    }
+
     apply();
     document.addEventListener("DOMContentLoaded", () => {
         apply();
-        for (const b of document.querySelectorAll("[data-scheme-toggle]")) {
-            b.addEventListener("click", () => {
-                scheme = scheme === "light" ? "dark" : "light";
-                try { localStorage.setItem(KEY, scheme); } catch (e) { /* storage blocked: this page only */ }
-                apply();
-            });
-        }
+        for (const b of document.querySelectorAll("[data-scheme-toggle]")) b.addEventListener("click", () => choose(scheme === "light" ? "dark" : "light"));
     });
+    window.lorconquestScheme = { get current() { return scheme; }, choose };
     window.addEventListener("storage", (e) => {
         if (e.key !== KEY) return;
         scheme = e.newValue === "light" ? "light" : "dark";

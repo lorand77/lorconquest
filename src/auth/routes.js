@@ -3,7 +3,7 @@
 //   POST /api/register { username, password } -> { id, username }   and signs in
 //   POST /api/login    { username, password } -> { id, username }
 //   POST /api/logout                          -> { ok }
-//   GET  /api/me                              -> { id, username }, or 401
+//   GET  /api/me                              -> { id, username, joined }, or 401 (joined: when the account was made, UTC)
 import express from "express";
 import { hashPassword, verifyPassword } from "./password.js";
 import { requireAuth } from "./session.js";
@@ -100,7 +100,7 @@ export function authRoutes({ db, sessions, throttles, io }) {
         res.json({ ok: true });
     });
 
-    router.get("/me", requireAuth, (req, res) => res.json({ id: req.user.id, username: req.user.username }));
+    router.get("/me", requireAuth, (req, res) => res.json({ id: req.user.id, username: req.user.username, joined: req.user.joined }));
 
     return router;
 }

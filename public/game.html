@@ -11,22 +11,6 @@
 </head>
 <body class="game">
     <main class="board">
-        <nav class="rail" aria-label="Tabs">
-            <a class="brand" href="/">⬡ LorConquest</a>
-            <div id="tabs" class="tabs">
-                <button data-tab="selection" class="active"><span class="rail-icon">🗺️</span><span class="rail-label">Map</span></button>
-                <button data-tab="country"><span class="rail-icon">🏰</span><span class="rail-label">Country</span></button>
-                <button data-tab="shop"><span class="rail-icon">🛒</span><span class="rail-label">Shop</span></button>
-                <button data-tab="research"><span class="rail-icon">📚</span><span class="rail-label">Research</span></button>
-                <button data-tab="diplomacy"><span class="rail-icon">🤝</span><span class="rail-label">Diplomacy</span></button>
-                <button data-tab="events" id="events-tab"><span class="rail-icon">📰</span><span id="events-label" class="rail-label">Events</span></button>
-            </div>
-            <div class="rail-foot">
-                <button class="scheme" data-scheme-toggle>☀ Light</button>
-                <a class="rail-item" href="/"><span class="rail-icon">←</span><span class="rail-label">Lobby</span></a>
-                <div class="rail-legal"><a href="/terms.html">Terms</a><a href="/privacy.html">Privacy</a></div>
-            </div>
-        </nav>
         <section class="mapbox">
             <div id="map" class="map"></div>
             <div class="zoom">
@@ -43,6 +27,10 @@
             </section>
         </section>
         <aside class="side">
+            <div class="head">
+                <a class="brand" href="/">⬡ LorConquest</a>
+                <span><button class="scheme" data-scheme-toggle>☀ Light</button> <a class="lobby-link" href="/">← Lobby</a></span>
+            </div>
             <div class="status">
                 <span id="me" class="me"></span>
                 <span id="date" class="date"></span>
@@ -53,6 +41,14 @@
                 <span id="setup" class="setup" hidden></span>
                 <div id="people" class="people"></div>
             </div>
+            <nav id="tabs" class="tabs">
+                <button data-tab="selection" class="active"><span class="tab-icon">🗺️</span><span>Map</span></button>
+                <button data-tab="country"><span class="tab-icon">🏰</span><span>Country</span></button>
+                <button data-tab="shop"><span class="tab-icon">🛒</span><span>Shop</span></button>
+                <button data-tab="research"><span class="tab-icon">📚</span><span>Research</span></button>
+                <button data-tab="diplomacy"><span class="tab-icon">🤝</span><span>Diplomacy</span></button>
+                <button data-tab="events" id="events-tab"><span class="tab-icon">📰</span><span id="events-label">Events</span></button>
+            </nav>
             <div id="panel" class="panel"></div>
             <ul id="events" class="events" hidden></ul>
             <div class="foot">

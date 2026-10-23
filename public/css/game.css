@@ -1,5 +1,6 @@
-/* Every page: the game (as in LorCiv: the tabs in a rail on the left, the map, a sidebar on its right), the replay, the lobby,
-   the leaderboard, the sign-in card and the legal pages. Two colour schemes, LorCiv's: dark, the default, and light when
+/* Every page: the game and the replay (the map, a sidebar on its right), the signed-in pages with LorCiv's shell (a top bar
+   and a rail of sections on the left: Play, My Profile with Stats and My Games, Customize, Leaderboard), the sign-in card and
+   the legal pages. Two colour schemes, LorCiv's: dark, the default, and light when
    <html data-scheme="light"> is set (public/js/theme.js, which every page loads). The colours are the variables below; use
    them for anything that should follow the scheme. Desktop first (design.md, "The game screen"). */
 :root {
@@ -110,22 +111,59 @@ input[type=range], input[type=checkbox] { accent-color: var(--accent); padding: 
 .error { color: var(--bad); }
 [hidden] { display: none !important; }
 
-/* ---------- pages of text and lists: the lobby, the leaderboard ---------- */
-body.dev { max-width: 820px; margin: 2em auto; padding: 0 1em; }
+/* ---------- the lobby's forms and lists, the leaderboard ---------- */
 .start { display: flex; flex-wrap: wrap; gap: 0.8em; align-items: end; }
 .start label { display: flex; flex-direction: column; gap: 3px; color: var(--text-muted); font-size: 13px; }
 .games li { margin: 0.3em 0; }
-.lobbybar { display: flex; align-items: baseline; justify-content: space-between; }
-.lobbybar h1 { margin: 0.4em 0; }
-.lobbybar .who { color: var(--text-muted); }
-body.lobby section { margin: 1.2em 0; padding: 12px 16px; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
-body.lobby section h2 { margin: 0 0 10px; font-size: 15px; }
 .tables, .games { list-style: none; padding: 0; margin: 0; }
 .tables .table { border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; margin: 8px 0; background: var(--surface); }
 .tables .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
 .board-table { border-collapse: collapse; width: 100%; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
 .board-table th, .board-table td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
 .board-table th { color: var(--gold); font-size: 13px; }
+
+/* ---------- the shell of the signed-in pages (LorCiv's; public/js/shell.js builds it) ---------- */
+/* The page reserves the room (body.shell) so nothing moves when the script fills it in. */
+:root { --rail-w: 200px; --topbar-h: 48px; }
+body.shell { max-width: none; margin: 0; padding: calc(var(--topbar-h) + 8px) 24px 32px calc(var(--rail-w) + 24px); }
+body.shell > .page { max-width: 860px; margin: 0 auto; }
+.app-topbar { position: fixed; top: 0; left: 0; right: 0; height: var(--topbar-h); z-index: 60; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 20px; background: var(--side-bg); border-bottom: 1px solid var(--border); }
+.app-topbar .brand { font-size: 18px; }
+.userbar { display: flex; align-items: center; gap: 10px; color: var(--text-muted); font-size: 13px; }
+.userbar .who { color: var(--text-strong); font-weight: 600; }
+.app-rail { position: fixed; top: var(--topbar-h); left: 0; bottom: 0; width: var(--rail-w); z-index: 55; display: flex; flex-direction: column; gap: 2px; padding: 12px 8px; overflow-y: auto; background: var(--side-bg); border-right: 1px solid var(--border); }
+.rail-item { display: flex; align-items: center; gap: 9px; padding: 9px 12px; border-radius: 6px; border-left: 3px solid transparent; color: var(--text); font-size: 14px; text-decoration: none; }
+.rail-item:hover { background: var(--surface-2); color: var(--text-strong); }
+.rail-item.current { background: var(--current); border-left-color: var(--gold); color: var(--current-text); font-weight: 600; }
+.rail-icon { width: 18px; flex: 0 0 18px; text-align: center; }
+.app-rail .rail-sub { padding: 6px 12px 6px 30px; font-size: 13px; }
+/* while one of My Profile's tabs is open, the parent is only emphasised, so the open tab is what stands out */
+.app-rail .rail-parent.current { background: none; border-left-color: transparent; color: var(--text-strong); }
+.rail-legal { margin-top: auto; padding: 12px 12px 0; display: flex; gap: 12px; font-size: 12px; }
+.rail-legal a { color: var(--text-muted); text-decoration: none; }
+.rail-legal a:hover { color: var(--text); }
+.page h1 { margin: 0.2em 0 0.6em; font-size: 24px; }
+.page-section { margin: 0 0 1.2em; padding: 12px 16px; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
+.page-section h2 { margin: 0 0 10px; font-size: 15px; }
+.profile-tabs { display: flex; gap: 6px; margin: 0 0 12px; }
+.profile-tabs a { padding: 6px 12px; border-radius: 4px; border: 1px solid var(--btn-border); background: var(--btn); color: var(--text); text-decoration: none; font-size: 13px; }
+.profile-tabs a.current { background: var(--current); border-color: var(--current); color: var(--current-text); }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.stat { padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+.stat b { display: block; font-size: 22px; color: var(--text-strong); font-variant-numeric: tabular-nums; }
+.stat span { color: var(--text-muted); font-size: 12px; }
+.choices { display: flex; gap: 12px; flex-wrap: wrap; }
+.choice { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); cursor: pointer; }
+.choice:has(input:checked) { border-color: var(--gold); }
+@media (max-width: 700px) {
+    :root { --rail-w: 0px; }
+    body.shell { padding: 8px 12px 24px; }
+    .app-topbar { position: static; margin: -8px -12px 0; }
+    .app-rail { position: static; flex-direction: row; overflow-x: auto; margin: 0 -12px 12px; padding: 8px 10px; border-right: none; border-bottom: 1px solid var(--border); }
+    .app-rail .rail-item { white-space: nowrap; }
+    .app-rail .rail-sub { display: none; }
+    .rail-legal { display: none; }
+}
 
 /* ---------- the sign-in card (LorCiv's) ---------- */
 body.auth { display: flex; justify-content: center; padding: 24px; }
@@ -183,20 +221,13 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .side .foot button { flex: 1; }
 .side .foot:not(:has(button:not([hidden]))) { display: none; }
 
-/* the rail, LorCiv's: the name, the tabs one under the other with an icon each, and at its foot the colours and the lobby */
-.rail { width: 150px; flex-shrink: 0; display: flex; flex-direction: column; gap: 2px; padding: 10px 8px; background: var(--side-bg); border-right: 1px solid var(--border); overflow-y: auto; }
-.rail .brand { padding: 2px 8px 12px; }
-.tabs { display: flex; flex-direction: column; gap: 2px; }
-.tabs button, .rail .rail-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border: none; border-left: 3px solid transparent; border-radius: 6px; background: none; color: var(--text); font-size: 14px; text-align: left; text-decoration: none; }
-.tabs button:hover:not(:disabled), .rail .rail-item:hover { background: var(--surface-2); color: var(--text-strong); }
-.tabs button.active, .tabs button.active:hover:not(:disabled) { background: var(--current); border-left-color: var(--gold); color: var(--current-text); font-weight: 600; }
-.rail-icon { width: 18px; flex: 0 0 18px; text-align: center; }
-.rail .rail-foot { margin-top: auto; display: flex; flex-direction: column; gap: 6px; padding-top: 12px; }
-.rail .rail-foot button { text-align: left; }
-.rail .rail-legal { display: flex; gap: 10px; padding: 4px 10px 0; font-size: 12px; }
-.rail .rail-legal a { color: var(--text-muted); text-decoration: none; }
-.rail .rail-legal a:hover { color: var(--text); }
-.scheme { white-space: nowrap; }
+/* the game's tabs: one row across the sidebar, an icon over each name */
+.tabs { display: flex; background: var(--surface-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.tabs button { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 6px 1px 5px; border: none; border-radius: 0; background: none; color: var(--text-muted); font-size: 11px; white-space: nowrap; }
+.tabs button .tab-icon { font-size: 16px; line-height: 1.2; }
+.tabs button:hover:not(:disabled) { background: var(--btn-hover); color: var(--text-strong); }
+.tabs button.active, .tabs button.active:hover:not(:disabled) { background: var(--side-bg); color: var(--gold); font-weight: 600; box-shadow: inset 0 -2px var(--gold); }
+.scheme { white-space: nowrap; font-size: 12px; padding: 2px 8px; }
 .panel { position: relative; padding: 10px 12px; min-height: 9em; flex: 1; overflow-y: auto; }
 .panel h2 { font-size: 16px; margin: 0 0 6px; padding-right: 28px; }
 .panel .close { position: absolute; top: 6px; right: 8px; width: 24px; height: 24px; padding: 0; border: none; background: none; font-size: 20px; line-height: 1; color: var(--text-muted); }

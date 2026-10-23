@@ -499,12 +499,16 @@ are kept: pointer events (one path for mouse and touch), orders by click or tap 
 right-click, nothing shown only on hover. Small-screen layouts are not built. (`public/game.html`,
 `public/js/game.js`, `public/js/mapview.js`.)
 
-- **Layout:** as in LorCiv, the tabs are a rail on the left — the name, then Map, Country, Shop, Research, Diplomacy and
-  Events one under the other with an icon each, and at its foot the Light/Dark switch, the way back to the lobby and the
-  legal pages — the map fills the middle, and a sidebar on its right holds the player's country, the date, pause, the
-  treasury and the other people, then the open tab's panel, and at the bottom Chat and Leave the game when there are
-  other people. The replay page has the sidebar alone, with its controls, the standing and the events; the sign-in page
-  is LorCiv's card.
+- **Layout:** as in LorCiv, the map fills the screen but for a sidebar on its right: at its top the name, the Light/Dark
+  switch and the way back to the lobby, then the player's country, the date, pause, the treasury and the other people, then
+  the tabs in one row (an icon over each name) and the open tab's panel, and at the bottom Chat and Leave the game when there
+  are other people. The replay page has the same sidebar with its controls, the standing and the events.
+- **The signed-in pages** have LorCiv's shell (`public/js/shell.js`): a top bar with the name, who is signed in and Log out,
+  and a rail of sections on the left — Play (the lobby: a new game, rooms, games in progress), My Profile with its two tabs
+  Stats and My Games (`profile.html`: the numbers worked out by `lobbylogic.js`, `statsOf`, from your games and your
+  leaderboard row; every game, the finished ones with their replays), Customize (`customize.html`: the colours) and the
+  Leaderboard. Each page reserves the shell's room (`body.shell`) so nothing moves when the script builds it. The game, the
+  replay, the sign-in page (LorCiv's card) and the legal pages have no shell.
 - **Colours:** LorCiv's two schemes, dark by default and light, as two sets of CSS variables at the top of
   `public/css/game.css`. `public/js/theme.js`, a plain script in every page's head so a page paints in its scheme at
   once, applies the choice and wires every Light/Dark switch; the choice is kept in the browser's local storage, the
