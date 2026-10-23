@@ -4,7 +4,7 @@
 // milliseconds here, and a game day takes 2 ms.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { api, connect, emitAck, startServer, tempDb, waitFor } from "./helpers.js";
+import { api, connect, emitAck, newGame, startServer, tempDb, waitFor } from "./helpers.js";
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 async function until(check, what, timeoutMs = 8000) {
@@ -277,6 +277,28 @@ test("a game of several people survives a restart: it runs on at once, every pla
         const b = await connect(server, "bobby");
         assert.equal((await emitAck(b, "join", { gameId: id })).me, "ULM");
         assert.equal((await api(server, "GET", "/api/games", null, "bobby")).body[0].live, true);
+    } finally {
+        await server.close();
+    }
+});
+
+test("the lobby shows who is online — the lobby or a game open — and who is playing, as it changes", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        const a = await connect(server, "alice");
+        const first = waitFor(a, "online", (list) => list.length === 1);
+        await emitAck(a, "lobby:enter", {});
+        assert.deepEqual(await first, [{ username: "alice", playing: false }]);
+        // bobby opens his game: alice's list has him, playing
+        const id = await newGame(server, { scenario: "mitteleuropa", country: "SAX", seed: 2 }, "bobby");
+        const b = await connect(server, "bobby");
+        const playing = waitFor(a, "online", (list) => list.some((p) => p.username === "bobby" && p.playing));
+        await emitAck(b, "join", { gameId: id });
+        assert.deepEqual(await playing, [{ username: "alice", playing: false }, { username: "bobby", playing: true }]);
+        // he closes it: gone from the list
+        const gone = waitFor(a, "online", (list) => !list.some((p) => p.username === "bobby"));
+        b.close();
+        assert.deepEqual(await gone, [{ username: "alice", playing: false }]);
     } finally {
         await server.close();
     }

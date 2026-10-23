@@ -510,7 +510,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   the tabs in one row (an icon over each name) and the open tab's panel, and at the bottom Chat and Leave the game when there
   are other people. The replay page has the same sidebar with its controls, the standing and the events.
 - **The signed-in pages** have LorCiv's shell (`public/js/shell.js`): a top bar with the name, who is signed in and Log out,
-  and a rail of sections on the left — Play (the lobby: a new game, rooms, games in progress), My Profile with its two tabs
+  and a rail of sections on the left — Play (the lobby: a new game, who is online — has the lobby or a game open, and
+  whether playing, kept in memory by `socket.js` and sent to the lobby as it changes — rooms, games in progress), My Profile with its two tabs
   Stats and My Games (`profile.html`: the numbers worked out by `lobbylogic.js`, `statsOf`, from your games and your
   leaderboard row; every game, the finished ones with their replays), Customize (`customize.html`: the colours) and the
   Leaderboard, where a name opens that player's profile (`profile.html?name=…`, `GET /api/players/:name`): their stats and their

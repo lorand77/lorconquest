@@ -118,6 +118,11 @@ input[type=range], input[type=checkbox] { accent-color: var(--accent); padding: 
 .tables, .games { list-style: none; padding: 0; margin: 0; }
 .tables .table { border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; margin: 8px 0; background: var(--surface); }
 .tables .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
+.online { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.online li { display: flex; align-items: center; gap: 6px; }
+.online li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--good); }
+.online li.you a { font-weight: 600; }
+.online .tag { font-size: 11px; padding: 0 6px; border-radius: 8px; background: var(--info-bg); border: 1px solid var(--info-border); color: var(--text); }
 .board-table { border-collapse: collapse; width: 100%; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
 .board-table th, .board-table td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); }
 .board-table th { color: var(--gold); font-size: 13px; }

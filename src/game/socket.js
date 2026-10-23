@@ -3,7 +3,8 @@
 // the person), "session:<hash>" (so signing out drops the session's sockets), "lobby", and a game's rooms.
 //
 //   lobby:enter                   -> { ok }   the socket then hears "lobby:changed" (the tables or their seats changed),
-//                                   and "table:started" { id } / "table:cancelled" { id } for tables it has a seat at
+//                                   "table:started" { id } / "table:cancelled" { id } for tables it has a seat at, and
+//                                   "online" [{ username, playing }] — who has the lobby or a game open — at once and on change
 //   join    { gameId }            -> { ok, gameId, scenario, me, multi, paused, tickMs, view, seats, setup, chat }
 //                                   the user's seat in the game; the socket then receives "tick" { day, events, changes },
 //                                   "private" { day, changes }, "paused", "presence" { country, username, state },
@@ -20,6 +21,29 @@ const reply = (ack, value) => { if (typeof ack === "function") ack(value); };
 const CHAT_BURST = 5, CHAT_WINDOW_MS = 5000;
 
 export function attachSockets({ io, rooms, sessions, log, tickMs }) {
+    // who is online — has the lobby or a game open — for the lobby's list: per person, what each of their sockets has open.
+    // Kept in memory only; a person is online while any of their sockets is in the lobby or a game, and playing while one
+    // is in a game.
+    const online = new Map();                               // user id -> { username, sockets: Map(socket id -> "lobby" | "game") }
+    const onlineList = () => [...online.values()]
+        .map((u) => ({ username: u.username, playing: [...u.sockets.values()].includes("game") }))
+        .sort((a, b) => (a.username < b.username ? -1 : 1));
+    let told = "";
+    const tellOnline = () => {
+        const list = onlineList(), json = JSON.stringify(list);
+        if (json === told) return;
+        told = json;
+        io.to("lobby").emit("online", list);
+    };
+    const mark = (user, socketId, what) => {
+        let u = online.get(user.id);
+        if (!u) online.set(user.id, (u = { username: user.username, sockets: new Map() }));
+        if (what) u.sockets.set(socketId, what);
+        else u.sockets.delete(socketId);
+        if (!u.sockets.size) online.delete(user.id);
+        tellOnline();
+    };
+
     // who is asking: the session of the cookie, or nobody, and then the handshake is refused
     io.use((socket, next) => {
         const user = sessions.userOf(socket.request.headers);
@@ -46,7 +70,12 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             }
         });
 
-        on("lobby:enter", (msg, ack) => { socket.join("lobby"); reply(ack, { ok: true }); });
+        on("lobby:enter", (msg, ack) => {
+            socket.join("lobby");
+            mark(user, socket.id, "lobby");
+            socket.emit("online", onlineList());
+            reply(ack, { ok: true });
+        });
 
         on("join", async (msg, ack) => {
             const r = await rooms.open(msg?.gameId, user.id);
@@ -61,6 +90,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             if (joined.error) return reply(ack, { ok: false, error: joined.error });
             room = r;
             seat = joined.seat;
+            mark(user, socket.id, "game");
             socket.join([`game:${room.id}`, `game:${room.id}:${seat.country}`]);
             const view = await rooms.view(room, seat.country);
             log.debug("socket.join", { game: room.id, socket: socket.id, country: seat.country });
@@ -108,7 +138,8 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             rooms.detach(room, user.id, socket.id);
             room = null;
             seat = null;
+            mark(user, socket.id, socket.rooms.has("lobby") ? "lobby" : null);
         }
-        socket.on("disconnect", leave);
+        socket.on("disconnect", () => { leave(); mark(user, socket.id, null); });
     });
 }

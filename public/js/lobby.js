@@ -1,6 +1,6 @@
 // The lobby, the Play section of the shell (shell.js): start a game alone or open a room, take a free country in someone
-// else's, start or cancel your own, and open the games you are in that are still going (the finished ones are under My
-// Profile, My Games). The server decides everything (src/game/routes.js); this page asks, and listens for the
+// else's, start or cancel your own, open the games you are in that are still going (the finished ones are under My Profile,
+// My Games), and see who is online — has the lobby or a game open (socket.js). The server decides everything (src/game/routes.js); this page asks, and listens for the
 // lobby changing and for a room it has a seat in starting. (People see "rooms"; the code and the API say "tables", since
 // "rooms" are the games running in src/game/rooms.js.)
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
@@ -88,6 +88,13 @@ async function refresh() {
 const socket = globalThis.io({ transports: ["websocket"] });
 socket.on("connect", () => { socket.emit("lobby:enter", {}); refresh(); });
 socket.on("lobby:changed", refresh);
+// who has the lobby or a game open, each name opening their profile
+socket.on("online", (list) => {
+    $("online-count").textContent = `(${list.length})`;
+    $("online").replaceChildren(...list.map((p) => make("li", { class: p.username === me.username ? "you" : "" },
+        make("a", { href: `/profile.html?name=${encodeURIComponent(p.username)}` }, p.username),
+        p.playing ? make("span", { class: "tag" }, "playing") : "")));
+});
 socket.on("table:started", (m) => { location.href = `/game.html?id=${m.id}`; });
 socket.on("table:cancelled", refresh);
 socket.on("connect_error", (e) => { if (e.message === "sign in first") location.href = "/login.html"; });
