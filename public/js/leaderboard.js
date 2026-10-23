@@ -1,4 +1,4 @@
-// The leaderboard page, a section of the shell (shell.js): the people ranked over the games they finished (src/game/rooms.js,
+// The leaderboard page, a section of the shell (shell.js): every account, ranked over the games it finished (src/game/rooms.js,
 // leaderboard).
 import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";

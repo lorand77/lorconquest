@@ -65,11 +65,12 @@ test("a finished game keeps its standings, ranked among its people, and the fing
     }
 });
 
-test("the leaderboard counts the games finished: firsts among people, average place, victories", async () => {
+test("the leaderboard lists everyone and counts the games finished: firsts among people, average place, victories", async () => {
     const root = quickRoot();
     const server = await startServer({ dbPath: tempDb(), root });
     try {
-        assert.deepEqual((await api(server, "GET", "/api/leaderboard", null, "alice")).body, []);
+        // everyone is on it, a game finished or not
+        assert.deepEqual((await api(server, "GET", "/api/leaderboard", null, "alice")).body, [{ username: "alice", games: 0, shared: 0, firsts: 0, victories: 0, averagePlace: null }]);
         assert.equal((await api(server, "GET", "/api/leaderboard", null, null)).status, 401);
         const { id } = await finishedGame(server);
         const rows = (await api(server, "GET", "/api/leaderboard", null, "alice")).body;
@@ -77,11 +78,16 @@ test("the leaderboard counts the games finished: firsts among people, average pl
         const first = placed.find((p) => p.place === 1), second = placed.find((p) => p.place === 2);
         assert.deepEqual(rows.map((r) => [r.username, r.games, r.shared, r.firsts]), [[first.username, 1, 1, 1], [second.username, 1, 1, 0]]);
         assert.deepEqual(rows.map((r) => r.averagePlace), [1, 2]);
+        // one who has finished no game comes after, by name
+        await api(server, "GET", "/api/me", null, "zed");
+        await api(server, "GET", "/api/me", null, "carl");
+        assert.deepEqual((await api(server, "GET", "/api/leaderboard", null, "alice")).body.map((r) => [r.username, r.games]).slice(2), [["carl", 0], ["zed", 0]]);
         const winner = server.app.db.q.game.get(id).winner;
         assert.equal(rows.reduce((n, r) => n + r.victories, 0), placed.some((p) => p.country === winner) ? 1 : 0, "a victory only if a person's country won");
         // an account that was deleted is not on it
         assert.equal(deleteAccount(server.app.db, second.username).ok, true);
-        assert.deepEqual((await api(server, "GET", "/api/leaderboard", null, first.username)).body.map((r) => r.username), [first.username]);
+        const after = (await api(server, "GET", "/api/leaderboard", null, first.username)).body.map((r) => r.username);
+        assert.deepEqual([after.includes(second.username), after[0]], [false, first.username]);
     } finally {
         await server.close();
         fs.rmSync(root, { recursive: true, force: true });

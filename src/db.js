@@ -154,16 +154,21 @@ export function openDb(file) {
         markQuit: db.prepare("UPDATE game_seats SET quit_day = ? WHERE game_id = ? AND user_id = ?"),
         seatQuits: db.prepare("SELECT country, quit_day, out_day FROM game_seats WHERE game_id = ?"),
         markOut: db.prepare("UPDATE game_seats SET out_day = ? WHERE game_id = ? AND country = ?"),
-        // the leaderboard: per person, over the finished games they played. A game counts for "firsts" and the average
-        // place only with two or more people in it; a "victory" is their country winning the whole game.
+        // the leaderboard: every account, with what it did over the finished games it played (none for one that has finished
+        // none). A game counts for "firsts" and the average place only with two or more people in it; a "victory" is their
+        // country winning the whole game.
         leaderboard: db.prepare(`SELECT u.username,
-                COUNT(*) AS games,
-                SUM(CASE WHEN (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 THEN 1 ELSE 0 END) AS shared,
-                SUM(CASE WHEN (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 AND s.place = 1 THEN 1 ELSE 0 END) AS firsts,
-                SUM(CASE WHEN (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 THEN s.place ELSE 0 END) AS place_sum,
-                SUM(CASE WHEN g.winner = s.country THEN 1 ELSE 0 END) AS victories
-            FROM game_seats s JOIN games g ON g.id = s.game_id JOIN users u ON u.id = s.user_id
-            WHERE g.status = 'finished' AND s.place IS NOT NULL AND u.username NOT LIKE 'deleted-%'
+                COUNT(f.game_id) AS games,
+                COALESCE(SUM(f.many), 0) AS shared,
+                COALESCE(SUM(f.many AND f.place = 1), 0) AS firsts,
+                COALESCE(SUM(CASE WHEN f.many THEN f.place ELSE 0 END), 0) AS place_sum,
+                COALESCE(SUM(f.won), 0) AS victories
+            FROM users u LEFT JOIN (
+                SELECT s.user_id, s.game_id, s.place, (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 AS many, g.winner = s.country AS won
+                FROM game_seats s JOIN games g ON g.id = s.game_id
+                WHERE g.status = 'finished' AND s.place IS NOT NULL
+            ) f ON f.user_id = u.id
+            WHERE u.username NOT LIKE 'deleted-%'
             GROUP BY u.id`),
         replayGame: db.prepare("SELECT id, scenario, seed, rules_version, status, winner, day, result_hash FROM games WHERE id = ?"),
         allCommands: db.prepare("SELECT day, country, source, cmd FROM commands WHERE game_id = ? ORDER BY seq"),

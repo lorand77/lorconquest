@@ -12,7 +12,7 @@
 //   GET  /api/games/:id/replay   a finished or abandoned game, to play over in the browser: its seed, humans and every command,
 //                                with the fingerprint its final state must have; 409 while it is going on or if it was played
 //                                under other rules (src/game/rooms.js, replayOf)
-//   GET  /api/leaderboard        the people ranked over the games they finished (rooms.js, leaderboard)
+//   GET  /api/leaderboard        every account, ranked over the games it finished (rooms.js, leaderboard)
 import crypto from "node:crypto";
 import express from "express";
 import { requireAuth } from "../auth/session.js";

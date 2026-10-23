@@ -431,7 +431,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             };
         },
 
-        // the people ranked over the games they finished: most firsts among people, then the best average place
+        // everyone, ranked over the games they finished: most firsts among people, then victories, the best average place,
+        // the most games; those who have finished none come last, by name
         leaderboard: () => db.q.leaderboard.all().map((r) => ({
             username: r.username, games: r.games, shared: r.shared, firsts: r.firsts, victories: r.victories,
             averagePlace: r.shared ? Math.round(r.place_sum / r.shared * 100) / 100 : null,
