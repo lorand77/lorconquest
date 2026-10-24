@@ -257,3 +257,11 @@ export function scoreboard({ table, power, alive, me = null, key = "settlements"
     if (mine >= n) rows.push(row(me, mine));
     return rows;
 }
+
+// Two fingers on the map (mapview.js): the view zoomed by how far apart they are now against when they touched down (`from`,
+// `to`, in pixels), keeping the map point that was under their midpoint (`anchor`) under it now (`at`, pixels from the box's
+// top left); `width` is the box's width in pixels. Kept on the map and within its zoom as fitView keeps any view.
+export function pinchView(start, { from, to, anchor, at, width }, W, H, aspect) {
+    const w = fitView({ ...start, w: start.w * from / Math.max(1, to) }, W, H, aspect).w, k = w / width;
+    return fitView({ x: anchor.x - at.x * k, y: anchor.y - at.y * k, w }, W, H, aspect);
+}

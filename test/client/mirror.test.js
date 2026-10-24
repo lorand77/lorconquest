@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -217,4 +217,17 @@ test("the scoreboard: the five ahead by settlements, people or military, and you
     assert.deepEqual(codes(scoreboard({ table, power, alive, me: "ULM", key: "people" })), ["1BOH", "2SAX", "3BAV", "4AUS", "5POL", "7ULM*"]);
     assert.deepEqual(codes(scoreboard({ table, power, alive, me: null, key: "military" })), ["1HUN", "2BAV", "3POL", "4AUS", "5SAX"]);
     assert.equal(scoreboard({ table, power, alive, me: "BAV" })[0].value, 12.5);
+});
+
+test("pinching the map zooms by the fingers' spread and keeps the point under them where it was", () => {
+    const W = 1200, H = 800, aspect = 1.5, start = { x: 0, y: 0, w: 1200 };       // the whole map, in a box 600 px wide
+    // fingers twice as far apart, at the box's middle (300, 200 px), which showed the map's middle (600, 400): half the width,
+    // still centred there
+    assert.deepEqual(pinchView(start, { from: 100, to: 200, anchor: { x: 600, y: 400 }, at: { x: 300, y: 200 }, width: 600 }, W, H, aspect),
+        { x: 300, y: 200, w: 600, h: 400 });
+    // the fingers also moved 100 px left: the point under them moves with them
+    assert.deepEqual(pinchView(start, { from: 100, to: 200, anchor: { x: 600, y: 400 }, at: { x: 200, y: 200 }, width: 600 }, W, H, aspect),
+        { x: 400, y: 200, w: 600, h: 400 });
+    // pinched in past the whole map: no further out than the map
+    assert.equal(pinchView(start, { from: 200, to: 50, anchor: { x: 600, y: 400 }, at: { x: 300, y: 200 }, width: 600 }, W, H, aspect).w, 1200);
 });

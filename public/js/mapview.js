@@ -1,9 +1,9 @@
 // The map on screen (design.md, "The map on screen"): map.svg shown as it is, with lands recoloured by owner,
 // borders redrawn where owners change, and an overlay of armies, siege rings and a planned route. Drag to pan,
 // wheel or the +/- buttons to zoom, never out past the map's edges (mirror.js, fitView); a click (no drag) is reported as what it hit: an army, a place (a settlement
-// or pass marker), a land, or the sea; a right-click as onCancel (to deselect). Pointer events, so mouse and touch take one path. Zoomed out, a settlement shows only the
+// or pass marker), a land, or the sea; a right-click as onCancel (to deselect). Two fingers pinch to zoom. Pointer events, so mouse and touch take one path. Zoomed out, a settlement shows only the
 // short form in its marker; zoomed in to twice the whole map or more, its name too (the svg gets the class "zoomed").
-import { fitView } from "./mirror.js";
+import { fitView, pinchView } from "./mirror.js";
 
 const NS = "http://www.w3.org/2000/svg";
 // names show from this zoom on: the whole map's width over the width in view
@@ -57,30 +57,60 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         zoomAt(e.deltaY > 0 ? 1.2 : 1 / 1.2, p.x, p.y);
     }, { passive: false });
 
-    let drag = null;
+    // one finger (or the mouse) drags the map, or taps; two pinch it. A finger moves more than a mouse in a tap: it may stray
+    // 10 pixels before the tap is a drag, the mouse 5. Once two fingers have touched, nothing is picked until all are lifted.
+    let drag = null, pinch = null, lastType = "mouse";
+    const fingers = new Map();                              // pointer id -> where it is now
+    const mid = () => { const [a, b] = [...fingers.values()]; return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, d: Math.hypot(a.x - b.x, a.y - b.y) }; };
     svg.addEventListener("pointerdown", (e) => {
         if (e.button === 2) return;                         // the right button picks nothing: it cancels (contextmenu)
-        drag = { id: e.pointerId, x: e.clientX, y: e.clientY, start: toMap(e.clientX, e.clientY), view: { ...view }, moved: false, target: e.target };
+        lastType = e.pointerType;
+        fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (fingers.size === 2) {
+            const m = mid();
+            pinch = { from: m.d, anchor: toMap(m.x, m.y), view: { ...view } };
+            drag = null;
+            svg.classList.remove("dragging");
+            return;
+        }
+        if (fingers.size > 2 || pinch) return;
+        drag = { id: e.pointerId, x: e.clientX, y: e.clientY, start: toMap(e.clientX, e.clientY), view: { ...view }, moved: false, target: e.target, slop: e.pointerType === "touch" ? 10 : 5 };
     });
     svg.addEventListener("pointermove", (e) => {
+        if (fingers.has(e.pointerId)) fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+        if (pinch && fingers.size >= 2) {
+            const m = mid(), r = svg.getBoundingClientRect();
+            view = pinchView(pinch.view, { from: pinch.from, to: m.d, anchor: pinch.anchor, at: { x: m.x - r.left, y: m.y - r.top }, width: r.width }, W, H, aspect());
+            setView();
+            return;
+        }
         if (!drag || e.pointerId !== drag.id) return;
-        if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 5) return;
+        if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < drag.slop) return;
         if (!drag.moved) { drag.moved = true; svg.setPointerCapture(e.pointerId); svg.classList.add("dragging"); }
         const scale = drag.view.w / svg.getBoundingClientRect().width;
         view = { x: drag.view.x - (e.clientX - drag.x) * scale, y: drag.view.y - (e.clientY - drag.y) * scale, w: drag.view.w };
         setView();
     });
+    const lift = (e) => {
+        fingers.delete(e.pointerId);
+        if (pinch && fingers.size === 0) pinch = null;      // the pinch is over when every finger is up
+    };
     svg.addEventListener("pointerup", (e) => {
+        lift(e);
         if (!drag || e.pointerId !== drag.id) return;
         const d = drag;
         drag = null;
         svg.classList.remove("dragging");
         if (!d.moved) onPick(pick(d.target));
     });
-    svg.addEventListener("pointercancel", () => { drag = null; svg.classList.remove("dragging"); });
-    // a right-click (or a long press) anywhere on the map: no browser menu, the selection is dropped
+    svg.addEventListener("pointercancel", (e) => { lift(e); drag = null; svg.classList.remove("dragging"); });
+    // a finger lifted off the map counts too, or a pinch could wait for it for ever
+    for (const ev of ["pointerup", "pointercancel"]) window.addEventListener(ev, lift);
+    // a right-click anywhere on the map: no browser menu, the selection is dropped. A long press on a touch screen opens no menu
+    // either, but drops nothing: a finger held still before a slow drag would lose the selection (and the drag) otherwise.
     svg.addEventListener("contextmenu", (e) => {
         e.preventDefault();
+        if (lastType === "touch" || lastType === "pen") return;
         drag = null;
         svg.classList.remove("dragging");
         onCancel();

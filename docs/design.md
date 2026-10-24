@@ -530,7 +530,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 - **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
   as a marker in its owner's colour with its men on it — a column of them beside a place with
   several; marching armies glide along the roads between ticks; a ring round each besieged
-  settlement fills as the siege runs. Drag to pan, wheel or +/- to zoom.
+  settlement fills as the siege runs. Drag to pan, wheel, +/- or two fingers to zoom (`mirror.js`, `pinchView`); a finger may
+  stray 10 pixels in a tap, a mouse 5.
 - **Orders:** click an army to select it; with one of your own selected, click a settlement, a
   pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy
@@ -541,7 +542,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 - **Letting go of a selection:** an order that sends the army or fleet on its way, once accepted (`game.js`, `dispatch`: March,
   March and storm, Storm, Sortie, Storm the post; Put to sea, Enter port, Sail, Patrol, Blockade — not Stop, Split, Merge,
   Hold or equipping, after which one usually goes on with it); a second click on the selected army or fleet (`mirror.js`, `isSelected`), a right-click
-  anywhere on the map (no browser menu there; a long press on a touch screen), the × at the top of the Map tab's panel,
+  anywhere on the map (no browser menu there; a long press on a touch screen opens none either, but deselects nothing, or a
+  finger held still before a slow drag would drop the selection), the × at the top of the Map tab's panel,
   a click on the sea, or Escape (the first Escape drops a drawn route, the next the selection). A click on land never
   deselects an army of yours: it plans a march there.
 - **A click opens the tab that deals with it** (`mirror.js`, `tabForSelection`): an army or a fleet its panel on the Map
