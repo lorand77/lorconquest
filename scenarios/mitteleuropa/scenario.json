@@ -8475,6 +8475,15 @@
    }
   },
   {
+   "id": "reunification",
+   "name": "Reunification",
+   "icon": "🧱",
+   "desc": "Proclaim Germany within its borders of 1990.",
+   "goal": {
+    "proclaim": "germany"
+   }
+  },
+  {
    "id": "hegemon-of-the-empire",
    "name": "Hegemon of the Empire",
    "icon": "🏛️",

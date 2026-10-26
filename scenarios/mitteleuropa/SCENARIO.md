@@ -359,6 +359,7 @@ the Empire and have at least *n* German states join), `by` a year (everything el
 | North Star | ❄️ | `proclaim unite-scandinavia` | Proclaim Scandinavia united. |
 | Danube Monarchy | 🦅 | `proclaim austrohungary` | Proclaim AustroHungary. |
 | Two Nations | 🐎 | `proclaim polish-lithuanian-commonwealth` | Proclaim the Polish–Lithuanian Commonwealth. |
+| Reunification | 🧱 | `proclaim germany` | Proclaim Germany within its borders of 1990. |
 | Hegemon of the Empire | 🏛️ | `empire 8` | Demand the Empire and have at least 8 German states join. |
 | Three Capitals | 🏰 | `hold 33 30 76; by 1500` | Hold Vienna, Prague and Berlin at once before 1500. |
 | Queen of the Hanse | ⚓ | `as HAM; hold 66 16 7 3` | As Hamburg, hold Hamburg, Danzig, Copenhagen and Stockholm at once. |

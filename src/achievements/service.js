@@ -16,8 +16,8 @@ import { RULES_VERSION, YEAR_DAYS } from "../engine/index.js";
 import { ACHIEVEMENTS, BY_KEY as A, GROUPS, describe, maxTier, scenarioAchievements, tierFor, tierName } from "./catalogue.js";
 
 // Bump when the catalogue gains achievements that games already awarded could have earned: at the next boot every finished
-// game is awarded again (games.awards_version), which only ever adds. 1: the first catalogue; 2: five more historical ones.
-export const AWARDS_VERSION = 2;
+// game is awarded again (games.awards_version), which only ever adds. 1: the first catalogue; 2: five more historical ones; 3: a Germany in each scenario.
+export const AWARDS_VERSION = 3;
 
 const WORKER = new URL("./worker.js", import.meta.url);
 

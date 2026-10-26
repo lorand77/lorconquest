@@ -17029,6 +17029,15 @@
      121
     ]
    }
+  },
+  {
+   "id": "five-centuries-early",
+   "name": "Five Centuries Early",
+   "icon": "🕰️",
+   "desc": "Proclaim Germany within its borders of today — some 550 years before 1990.",
+   "goal": {
+    "proclaim": "germany"
+   }
   }
  ],
  "victory": {

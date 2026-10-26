@@ -636,6 +636,7 @@ all at once, `keep` settlements held at the end, `eliminate` a country (take its
 | The Black Army | 🏴 | `as HUN; hold 137; by 1490` | As Hungary, hold Vienna before 1490 — Matthias Corvinus took it in 1485. |
 | Highest Bidder | 💰 | `hold 103 101 80 112 110 88 53` | Hold all seven electors' seats at once: Mainz, Trier, Arnsberg, Prague, Heidelberg, Wittenberg and Brandenburg. Cheaper than the Fuggers' 850,000 florins. |
 | Bold Move | 🐂 | `as BUR; hold 121` | As Burgundy, take Nancy — where Charles the Bold fell in 1477. |
+| Five Centuries Early | 🕰️ | `proclaim germany` | Proclaim Germany within its borders of today — some 550 years before 1990. |
 
 ## Characters
 
