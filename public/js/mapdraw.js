@@ -51,13 +51,24 @@ export function paintMap(map, state, nodes, zones, legs, day, colourOf, options)
 }
 
 // who owns what, as one string: when it changes, the lands are repainted
-export const ownersKey = (state) => Object.values(state.settlements).map((s) => s.owner).join();
+// what the lands' colours and the labels depend on: who holds each settlement, and who is whose subject
+export const ownersKey = (state) => Object.values(state.settlements).map((s) => s.owner).join()
+    + "|" + Object.values(state.countries).filter((c) => c.overlord).map((c) => `${c.code}>${c.overlord}:${c.subjectKind}`).join();
+
+// how a country's land is filled: its own colour, or — for a subject — its own colour striped with its overlord's, broad
+// stripes for a vassal and thin ones for a protectorate (mapview.js, colourLands, draws them)
+export const landFill = (state, colourOf) => (code) => {
+    const c = state.countries[code];
+    if (!c?.overlord || c.rebel || !state.countries[c.overlord]) return colourOf(code);
+    return { colour: colourOf(code), stripe: colourOf(c.overlord), kind: c.subjectKind };
+};
 
 // Countries' codes on the map, where their land is now (the map's own, drawn in 1440, are hidden by the game): each country
 // still in the game gets its code on the clearest spot (tools/map.js worked them out, land by land) of the land it holds that
 // lies nearest the middle of all it holds, large if it fits and small if not — or, if none of its lands has room, beside one
 // of its settlements — never over another code, larger countries first. A country with nowhere free gets none. Peasant rebels
-// and countries out of the game get none.
+// and countries out of the game get none. A subject's label names its overlord too, "ULM▸BAV", where that fits, and its own code
+// alone where it does not.
 const CHAR_W = 0.72;                                      // a capital letter's width, in em, as tools/map.js reckons it
 export function countryLabels(state, scenario) {
     const lands = new Map();
@@ -77,20 +88,24 @@ export function countryLabels(state, scenario) {
         const mx = g.list.reduce((n, s) => n + at(s)[0] * (s.label.area || 1), 0) / weight;
         const my = g.list.reduce((n, s) => n + at(s)[1] * (s.label.area || 1), 0) / weight;
         let chosen = null;
-        for (const [size, key] of [[15, "big"], [10, "small"], [10, "near"]]) {
-            const tw = CHAR_W * size * g.code.length, th = CHAR_W * size, m = size / 5;
-            const spots = g.list.map((s) => s.label[key]).filter(Boolean).sort((p, q) => (p[0] - mx) ** 2 + (p[1] - my) ** 2 - ((q[0] - mx) ** 2 + (q[1] - my) ** 2));
-            for (const [x, y] of spots) {
-                const box = [x - tw / 2 - m, y - th / 2 - m, x + tw / 2 + m, y + th / 2 + m];
-                if (!clear(box)) continue;
-                chosen = { code: g.code, x, y: y + th / 2, size, box };
-                break;
+        const overlord = state.countries[g.code].overlord;
+        for (const text of overlord ? [`${g.code}▸${overlord}`, g.code] : [g.code]) {
+            for (const [size, key] of [[15, "big"], [10, "small"], [10, "near"]]) {
+                const tw = CHAR_W * size * text.length, th = CHAR_W * size, m = size / 5;
+                const spots = g.list.map((s) => s.label[key]).filter(Boolean).sort((p, q) => (p[0] - mx) ** 2 + (p[1] - my) ** 2 - ((q[0] - mx) ** 2 + (q[1] - my) ** 2));
+                for (const [x, y] of spots) {
+                    const box = [x - tw / 2 - m, y - th / 2 - m, x + tw / 2 + m, y + th / 2 + m];
+                    if (!clear(box)) continue;
+                    chosen = { code: g.code, text, x, y: y + th / 2, size, box };
+                    break;
+                }
+                if (chosen) break;
             }
             if (chosen) break;
         }
         if (!chosen) continue;
         placed.push(chosen.box);
-        out.push({ code: chosen.code, x: chosen.x, y: chosen.y, size: chosen.size });
+        out.push({ code: chosen.code, text: chosen.text, x: chosen.x, y: chosen.y, size: chosen.size });
     }
     return out;
 }

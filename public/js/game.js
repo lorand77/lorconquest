@@ -5,7 +5,7 @@
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
 import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
-import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
+import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { toast as achievementToast } from "./achievements.js";
@@ -435,7 +435,7 @@ const armyMarkers = (day) => drawArmies(state, game.map.nodes, legs, day, colour
 let empireShown = false;
 function renderMap() {
     const now = ownersKey(state);
-    if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); map.setLabels(countryLabels(state, scenario)); }
+    if (now !== owners) { owners = now; map.colourLands(ownerOfLand, landFill(state, colourOf)); map.setLabels(countryLabels(state, scenario)); }
     if (ui.empire !== empireShown) { empireShown = ui.empire; map.markLands(ui.empire ? new Set(scenario.settlements.filter((x) => x.hre).map((x) => String(x.id))) : null); }   // the Diplomacy tab's "Show on the map"
     paintMap(map, state, game.map.nodes, game.map.zones, legs, displayDay(), colourOf, markerOptions());
     const a = plan && state.armies[plan.army];

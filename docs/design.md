@@ -582,6 +582,11 @@ over another code. `tools/map.js` works out each land's spots in advance (`label
 clearest spot for a large code, a small one, and near its settlement). A country that is out of the game has no code. As on
 the map drawn for 1440, a few small countries on a crowded map find no room (58 of the historical scenario's 74).
 
+A subject's land keeps its own colour, striped at 45° with its overlord's (`mapdraw.js`, `landFill`; `mapview.js` makes one SVG
+pattern per pair of colours, in map units so the stripes zoom with the land): broad stripes for a vassal, thin ones for a
+protectorate. Its label names the overlord, "ULM▸BAV", where that fits, and its own code alone where it does not. The lands
+and labels are redrawn when a settlement changes hands or a country becomes, or stops being, a subject (`ownersKey`).
+
 ### The game screen
 
 Desktop first. Phones are not a priority, but the habits that keep them possible cost nothing and

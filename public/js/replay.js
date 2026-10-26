@@ -3,7 +3,7 @@
 // this replay came out exactly as the game did. Everything is drawn by the same code as the game page (mapdraw.js).
 import { buildMap, describeEvent, longDate, scores } from "/engine/index.js";
 import { requireUser } from "./auth.js";
-import { countryLabels, ownersKey, paintMap } from "./mapdraw.js";
+import { countryLabels, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
 import { buildLegs } from "./mirror.js";
 import { createReplayer } from "./replayer.js";
@@ -64,7 +64,7 @@ function standing() {
 
 function draw() {
     const now = ownersKey(replayer.state);
-    if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); map.setLabels(countryLabels(replayer.state, scenario)); }
+    if (now !== owners) { owners = now; map.colourLands(ownerOfLand, landFill(replayer.state, colourOf)); map.setLabels(countryLabels(replayer.state, scenario)); }
     paintMap(map, replayer.state, nodes, zones, legs, replayer.day, colourOf, {});
     $("date").textContent = longDate(replayer.day);
     if (!dragging) $("seek").value = replayer.day;     // not under a hand moving it
