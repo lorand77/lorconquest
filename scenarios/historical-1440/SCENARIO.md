@@ -430,6 +430,7 @@ they ever be yours). If you later lose one and retake it, it is core again on ca
 | **Bavarian Circle** | the Imperial Circle of 1500: the duchies, the Upper Palatinate, Regensburg, Passau and Salzburg | Reunite Bavaria + 111, 134, 157 | 9 |
 | **Swedish Empire** | Sweden at its height after Westphalia (1648): Gotland, Livonia, Pomerania and Bremen | 4–8, 15–19, 38, 39, 45 | 13 |
 | **Danubian Monarchy** | the three crowns Ferdinand of Habsburg gathered in 1526 | Habsburg Austria + Kingdom of Hungary + Lands of the Bohemian Crown | 33 |
+| **Germany** (1990) | the Federal Republic within its borders of today, four and a half centuries early: no Silesia, Pomerania east of the Oder, Alsace or Lorraine | 32–38, 43–55, 76–83, 85–94, 101–111, 123, 124, 126–134, 149, 151 | 62 |
 
 ## Sea zones
 
