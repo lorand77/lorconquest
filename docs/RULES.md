@@ -876,7 +876,9 @@ years" includes one going on. "Years since you were last at war" run from the st
 
 **The Empire.** One proposal ever per country, with at least the scenario's number of settlements inside it. Every other
 country that holds an Empire settlement and is not already someone's subject rolls once, in the order of their codes; a
-human is asked, and a yes from one that has become someone's subject since changes nothing. The refusers form the League: a defensive alliance between each pair — except two at war with each other,
+human is asked, and a yes from one that has become someone's subject since changes nothing. A state **at war with the proposer
+refuses** — at once, a person too, and a person who is at war with it by the time they say yes has refused: joining is no way
+out of a war. The refusers form the League: a defensive alliance between each pair — except two at war with each other,
 and a member that has since become a vassal or gone out of the game (a human refusing later joins the League as it then is). A scenario with no such number has no
 proposal. (The historical scenario's Emperor, Imperial Authority, elections, ban and reforms are not built.)
 

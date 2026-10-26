@@ -225,8 +225,8 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
         }
     }
 
-    // the Empire, once
+    // the Empire, once — at peace, since every German state at war with it would refuse and join the League
     const needed = game.map.scenario.empire?.needed;
-    if (needed && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
+    if (needed && !foes.length && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
     return { orders: out, prepare: plans.has(code) };
 }

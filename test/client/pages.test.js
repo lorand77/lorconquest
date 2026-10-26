@@ -138,3 +138,12 @@ test("an achievement's card: greyed while locked, how far along the next tier, g
     assert.equal(won.props.class, "ach-card maxed");
     assert.match(text(won), /Earned 26 October 2026 · replay/);
 });
+
+test("every page's make() leaves out an attribute given as undefined, null or false: disabled=\"undefined\" would still disable", () => {
+    const js = path.join(import.meta.dirname, "..", "..", "public", "js");
+    for (const file of fs.readdirSync(js).filter((f) => f.endsWith(".js"))) {
+        const src = fs.readFileSync(path.join(js, file), "utf8");
+        if (!/const make = \(tag, props/.test(src)) continue;
+        assert.match(src, /else if \(v !== undefined && v !== null && v !== false\) e\.setAttribute\(k, v\);/, `${file}'s make() sets every attribute it is given`);
+    }
+});

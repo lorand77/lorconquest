@@ -304,3 +304,27 @@ test("integration: a vassal of 10 years, neither at war, for a courthouse a sett
     order(game, cmd("BBB", "answerOffer", { id: offer.id, accept: true }));
     assert.equal(game.state.countries.BBB.out, INTEGRATE_DAYS);
 });
+
+test("the Empire: a state at war with the proposer refuses and joins the League — a person too, even with a yes; `joined` counts only the new", () => {
+    const make = (humans = []) => tinyGame(1, (sc) => { for (const s of sc.settlements) s.hre = true; sc.empire = { needed: 3 }; }, humans);
+    for (let seed = 1; seed <= 20; seed++) {
+        const g = make();
+        g.state.rng = seed;
+        setSubject(g, "EEE", "AAA", "protectorate", []);                     // a subject it had already
+        order(g, cmd("AAA", "declareWar", { target: "BBB" }));
+        const events = order(g, cmd("AAA", "proposeEmpire"));
+        assert.ok(atWar(g.state, "AAA", "BBB") && g.state.countries.BBB.overlord === null, "joining is no way out of a war");
+        assert.ok(g.state.memory.empire.AAA.league.includes("BBB"));
+        const now = ["CCC", "DDD"].filter((c) => g.state.countries[c].overlord === "AAA").length;
+        assert.equal(ofType(events, "empire")[0].joined, now, "EEE was a subject before");
+    }
+    // a person asked, at war with the proposer by the time they answer: their yes is a refusal
+    const g = make(["DDD"]);
+    g.state.countries.AAA.treasury = 1e9;
+    order(g, cmd("AAA", "proposeEmpire"));
+    const offer = g.state.offers.find((o) => o.kind === "empire" && o.to === "DDD");
+    order(g, cmd("AAA", "declareWar", { target: "DDD" }));
+    order(g, cmd("DDD", "answerOffer", { id: offer.id, accept: true }));
+    assert.equal(g.state.countries.DDD.overlord, null);
+    assert.ok(g.state.memory.empire.AAA.league.includes("DDD"));
+});

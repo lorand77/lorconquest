@@ -189,8 +189,10 @@ export const diplomacyCommands = {
         } else if (offer.kind === "integrate") {
             if (accept && !integrateError(game, offer.from, offer.to)) integrate(game, offer.from, offer.to, events);
         } else if (offer.kind === "empire") {
-            // one that has become someone's subject since it was asked has nothing to give: its yes changes nothing
-            if (accept) { if (!st.countries[offer.to].overlord) setSubject(game, offer.to, offer.from, "protectorate", events); }
+            // one that has become someone's subject since it was asked has nothing to give: its yes changes nothing; one at
+            // war with the proposer by now cannot end the war by it: its yes counts as a refusal, and it joins the League
+            if (accept && atWar(st, offer.to, offer.from)) refuseEmpire(game, offer, events);
+            else if (accept) { if (!st.countries[offer.to].overlord) setSubject(game, offer.to, offer.from, "protectorate", events); }
             else refuseEmpire(game, offer, events);
         }
         return done(events);

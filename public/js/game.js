@@ -17,7 +17,7 @@ const make = (tag, props = {}, ...children) => {
     for (const [k, v] of Object.entries(props)) {
         if (k === "class") e.className = v;
         else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
-        else e.setAttribute(k, v);
+        else if (v !== undefined && v !== null && v !== false) e.setAttribute(k, v);      // no attribute at all: disabled="undefined" would still disable
     }
     e.append(...children);
     return e;

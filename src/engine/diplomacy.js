@@ -282,23 +282,27 @@ const allied = (st, a, b) => hasAgreement(st, "defensive", a, b) || hasAgreement
 
 // demand the Empire: each German state rolls like a protectorate demand (RULES.md §10); those that join become protectorates,
 // those that refuse form the League. Humans are asked.
+// A state at war with the proposer refuses at once, a person too: joining would end the war with no peace (a demand is not
+// made in a war either). `joined` in the event counts those that joined now, not the subjects it had already.
 export function proposeEmpire(game, proposer, events) {
     const st = game.state, refused = [], asked = [];
+    let joined = 0;
     st.memory.empire[proposer] = { league: [] };
     for (const c of germanStates(game)) {
         if (c === proposer || st.countries[c].overlord || wouldCycle(st, c, proposer)) continue;
+        if (atWar(st, c, proposer)) { refused.push(c); continue; }
         if (isHuman(st, c)) {
             st.offers.push({ id: ++st.offerSeq, kind: "empire", from: proposer, to: c, deadline: st.day + OFFER_DAYS });
             asked.push(c);
             events.push({ type: "offer", day: st.day, country: c, from: proposer, what: "to join the Empire as a protectorate" });
             continue;
         }
-        if (random(st) * 100 < demandChance(game, c, proposer, "protectorate").chance) setSubject(game, c, proposer, "protectorate", events);
+        if (random(st) * 100 < demandChance(game, c, proposer, "protectorate").chance) { setSubject(game, c, proposer, "protectorate", events); joined++; }
         else refused.push(c);
     }
     st.memory.empire[proposer].league = refused;
     formLeague(game, refused, events);
-    events.push({ type: "empire", day: st.day, country: proposer, joined: germanStates(game).filter((c) => st.countries[c].overlord === proposer).length, refused: refused.length, asked: asked.length });
+    events.push({ type: "empire", day: st.day, country: proposer, joined, refused: refused.length, asked: asked.length });
 }
 
 // ---------- integrating a vassal ----------

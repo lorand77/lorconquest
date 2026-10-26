@@ -115,12 +115,13 @@ function empireSection(ctx) {
         out.push(mk("p", { class: "hint" }, "A vassal cannot demand the Empire: its overlord speaks for it."));
         return section(ctx, "The Holy Roman Empire", ...out);
     }
-    // how the German states would answer now: each rolls like a protectorate demand; a person is asked
-    const asked = german.filter((x) => x !== me && !state.countries[x].overlord && !wouldCycle(state, x, me));
+    // how the German states would answer now: one at war with you refuses; the rest roll like a protectorate demand, a person is asked
+    const eligible = german.filter((x) => x !== me && !state.countries[x].overlord && !wouldCycle(state, x, me));
+    const foes = eligible.filter((x) => state.wars.includes(pairKey(me, x))), asked = eligible.filter((x) => !foes.includes(x));
     const people = asked.filter((x) => state.humans.includes(x)), rolled = asked.filter((x) => !state.humans.includes(x));
     const expect = rolled.reduce((k, x) => k + demandChance(game, x, me, "protectorate").chance / 100, 0);
     out.push(mk("p", { class: "hint" }, `Demand that every German state become your protectorate: once, ever, with at least ${needed} settlements inside the Empire. The states that refuse form the League, a defensive alliance against you.`),
-        mk("p", {}, `If you demanded it now: about ${Math.round(expect)} of ${rolled.length} computer states would join${people.length ? `, and ${list(people)} would be asked` : ""}.`),
+        mk("p", {}, `If you demanded it now: about ${Math.round(expect)} of ${rolled.length} computer states would join${people.length ? `, and ${list(people)} would be asked` : ""}${foes.length ? `; ${list(foes)}, at war with you, would refuse` : ""}.`),
         row(ctx, mk("button", { disabled: held < needed ? "disabled" : undefined, class: "danger", onclick: async () => { if (confirm("Demand the Empire? You may do this only once, ever.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand the Empire"),
             held < needed ? mk("span", { class: "hint" }, `${needed - held} more settlements inside the Empire needed`) : ""));
     return section(ctx, "The Holy Roman Empire", ...out);
