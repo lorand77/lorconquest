@@ -4,7 +4,8 @@
 // distress — in the red and losing money, as one that borrowed in a war and then lost its land is — taxes as much as it may,
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it.
-import { BUILDING_PRICE, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, militaryPowerOf, neighboursOf } from "../engine/index.js";
+import { BUILDING_PRICE, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, isVassal, militaryPowerOf, neighboursOf, overlordOf } from "../engine/index.js";
+import { navalNeed } from "./navy.js";
 import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
 
 // how much stronger than the country its strongest neighbour is (0 with no neighbour)
@@ -13,12 +14,13 @@ export function threatRatio(game, code) {
     return Math.max(0, ...neighboursOf(game, code).map((c) => militaryPowerOf(st, c))) / mine;
 }
 
-// the tech to research next: the guns. Not the ships: the computer builds only cogs (navy.js), so carracks, galleons and
-// men-of-war would be R thrown away
-const TECH_ORDER = ["handCannons", "arquebuses", "sharpshooters", "muskets"];
+// the tech to research next: the guns, then — only for a country facing a stronger fleet where it has a port, the only one
+// that builds anything but cogs (navy.js) — the ships
+const LAND = ["handCannons", "arquebuses", "sharpshooters", "muskets"], SEA = ["carracks", "galleons", "menOfWar"];
 function nextTech(game, code) {
     const c = game.state.countries[code];
-    return TECH_ORDER.find((t) => !c.techs.includes(t) && c.techs.includes(TECHS[t].needs));
+    const open = (t) => !c.techs.includes(t) && c.techs.includes(TECHS[t].needs);
+    return LAND.find(open) ?? (navalNeed(game, code) ? SEA.find(open) : undefined);
 }
 
 export function economyOrders(game, code, fl, ctx) {
@@ -34,6 +36,20 @@ export function economyOrders(game, code, fl, ctx) {
         if (pick) cmd("setCapital", { settlement: pick.id });
     }
 
+    // the bank: what is put by comes out when a war starts or the treasury runs thin (it pays 3% a year, RULES.md §2)
+    if (c.bank > 0 && ((atWarNow && c.treasury < 2 * reserve) || c.treasury < 0.5 * reserve)) {
+        const amount = Math.min(c.bank, Math.max(LOAN_CHUNK, 2 * reserve - c.treasury));
+        cmd("withdraw", { amount });
+        ctx.budget += amount;
+    }
+
+    // regions: one its capital lies in, held whole by it and its vassals and not all its core yet, is proclaimed (RULES.md, Special coring)
+    const ours = (owner) => owner === code || (isVassal(st, owner) && overlordOf(st, owner) === code);
+    for (const f of game.map.scenario.formables ?? []) {
+        if (st.settlements[c.capital]?.owner !== code || !f.settlements.includes(c.capital)) continue;
+        if (f.settlements.every((id) => ours(st.settlements[id]?.owner)) && f.settlements.some((id) => !st.settlements[id].cores.includes(code))) cmd("proclaim", { region: f.id });
+    }
+
     // tax: none above 2 in peace, a little in war, more if the treasury needs it
     let tax = atWarNow ? 2.2 : 2.0;
     if (c.treasury < 0 && e.moneyPerYear < 0) tax = 3.0;
@@ -41,11 +57,12 @@ export function economyOrders(game, code, fl, ctx) {
     else if (atWarNow && c.treasury < 0.5 * reserve) tax = 2.4;
     if (tax !== c.tax) cmd("setTax", { tax });
 
-    // research: less when poor and at war, more when rich and at peace
+    // research: less when poor and at war, more when rich (the bank counts) and at peace
+    const wealth = c.treasury + (c.bank ?? 0);
     let slider = 50;
     if (c.treasury < 0 || (atWarNow && c.treasury < reserve)) slider = 20;
-    else if (c.treasury > 6 * reserve) slider = 100;
-    else if (!atWarNow && c.treasury > 3 * reserve) slider = 70;
+    else if (wealth > 6 * reserve) slider = 100;
+    else if (!atWarNow && wealth > 3 * reserve) slider = 70;
     if (slider !== c.slider) cmd("setSlider", { slider });
     if (!c.target) { const t = nextTech(game, code); if (t) cmd("research", { tech: t }); }
 
@@ -63,9 +80,9 @@ export function economyOrders(game, code, fl, ctx) {
     } else if (atWarNow && c.treasury < 0.5 * reserve && c.loans < 0.7 * e.loanLimit && e.moneyPerYear > 0 && st.day >= c.noBorrowUntil) {
         cmd("borrow", { chunks: Math.min(4, Math.max(1, Math.ceil((reserve - c.treasury) / LOAN_CHUNK))) });
     } else if (c.loans > 0 && spare > c.loans + reserve) {
-        const chunks = Math.min(Math.floor(c.loans / LOAN_CHUNK), Math.floor(spare / LOAN_CHUNK / 2) || 1);
-        cmd("repay", { chunks });
-        ctx.budget -= chunks * LOAN_CHUNK;
+        // what this think has spent already (forces: men raised armed, weapons) is gone by the time the repayment is applied
+        const chunks = Math.min(Math.floor(c.loans / LOAN_CHUNK), Math.floor(spare / LOAN_CHUNK / 2) || 1, Math.floor(Math.max(0, ctx.budget) / LOAN_CHUNK));
+        if (chunks > 0) { cmd("repay", { chunks }); ctx.budget -= chunks * LOAN_CHUNK; }
     }
 
     // buildings: courthouses where a settlement is not core for it (it becomes core after 20 years held), then walls at the front in war, libraries, workshops, markets
@@ -84,5 +101,9 @@ export function economyOrders(game, code, fl, ctx) {
     for (const s of own) if (bought < 2 && !s.workshop && buy("workshop", s)) { bought++; break; }
     for (const s of own) if (bought < 2 && s.workshop && !s.market && buy("market", s)) { bought++; break; }
     for (const s of own) if (bought < 2 && !s.walls && exposed(game, code, String(s.id)) && s.pop >= 20000 && fl.builder > 0.6 && buy("walls", s)) { bought++; break; }
+
+    // the bank, in peace and free of loans: what is left above three reserves once this think's spending is done goes in
+    const left = c.treasury - (ctx.start - ctx.budget);
+    if (!atWarNow && c.loans === 0 && reserve > 0 && left > 3 * reserve + LOAN_CHUNK) cmd("deposit", { amount: Math.floor(left - 2 * reserve) });
     return out;
 }

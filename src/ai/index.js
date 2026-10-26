@@ -40,6 +40,7 @@ export function createAI({ seed, humans = [] }) {
         const st = game.state, c = st.countries[code], fl = flavor(game, code), e = economyOf(game, code);
         const atWarNow = threatsOf(st, code).length > 0;
         const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e) }, start = ctx.budget;
+        ctx.start = start;                                 // what was there to spend, so the economy knows what is left (the bank)
         const out = [...answerOffers(game, code), ...forceOrders(game, code, fl, ctx), ...economyOrders(game, code, fl, ctx)];
         // money offered for peace is what the treasury will hold once this think's spending is applied before it
         const cash = c.treasury - (start - ctx.budget);

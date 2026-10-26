@@ -193,3 +193,38 @@ port — so there was nothing to patrol against. The behaviour is there, and tes
 
 **Timing.** The AI's mean day is a little dearer and one day of the historical games took 198 ms, twice the tick's budget —
 once in 613,200 days (p99 16 ms). Worth watching: the likely cost is a route worked out per host to look for posts on its way.
+
+## 9. The computer does all a player can (2026-10-26)
+
+The rest of what a player can do was taught to the computer (design.md, *The computer players*): proclaiming regions, the bank,
+soldiers raised armed, stopping a march into land closed by a peace, peace terms that free a loser's subjects and make the loser
+a vassal or protectorate (or the loser a protectorate, to save its land), asking for military access, guaranteeing a weak
+neighbour, cancelling access, breaking a pact with a rival it would crush, and at sea blockades, merging and splitting fleets,
+and warships against a stronger enemy fleet. The usual run, 36 + 18 games side by side (29 and 37 minutes), against section 7
+(the same size, before sections 8 and 9) and section 8 (siege guns and the rest, 24 + 8 games).
+
+| | Balanced, 36 games | Historical 1440, 18 games |
+|---|---|---|
+| Winners | BRB 8, RUH 7, BAV 5, AUS 3, GDA 3, PRU 2, POZ 2, six once | BUR 7, BOH 4, POM 3, AUS, BRU, BRA, HUN 1 |
+| Won on time / by the target | 36 / 0 | 18 / 0 |
+| Winner's settlements, mean (least–most); runner-up | 19.8 (8–33.5); 12.2 — section 7: 21.6; 14.5 | 32.3 (17–44.5); 23.7 — section 7: 33.3; 24.9 |
+| Captures a game (section 7 / 8) | **95.6** (115 / 126) | 283 (271 / 316) |
+| Subjects made a game (section 7) | **27.4** (21.6) | **52.2** (34.1) |
+| Countries eliminated (section 7) | **13.0** (18.9) | **30.5** (36.1) |
+| Wars declared (+ joined) (section 7) | 39.9 (+24.8) (47.1 (+27.3)) | 67.7 (+99.6) (63.8 (+90.1)) |
+| AI a day: mean, p95, slowest (section 7) | 1.8, 4.2, 88 ms (1.3, 3.2, 50) | 5.2, 12.8, **170** ms (3.6, 8.9, 61) |
+
+**Vassals instead of graves.** With subjects as a term of peace, a winner far ahead takes the loser as its vassal or protectorate
+rather than its last towns: subjects made rise by a quarter on Balanced and by half on the historical map, countries eliminated
+fall by a third and a sixth, and on Balanced captures fall back below section 7. Victory counts a vassal's towns in full and a
+protectorate's at half, so the winners end about where they did; no game ends early. Burgundy still wins the historical map
+most often (7 of 18, as in section 7); Balanced is led by Brandenburg and the Ruhr (8 and 7 of 36), thirteen winners in all.
+
+**What the new behaviour does in a game** (one-off probes of 120 years): deposits 56 to 102 and withdrawals 63 to 242, blockades 3
+to 13, armies stopped on the way 4 to 145, access cancelled 1 to 6, armed raisings 150 to 370. A split fleet merged back before
+it could sail (39 splits and 38 merges in one historical game) until merging waits while a strait is short of ships. Two
+refusals the run showed were fixed after it: a repayment decided before the same think's spending, and a second offer to become
+a subject after the first was signed.
+
+**Timing.** The AI's day is dearer again: on the historical map the mean is 5.2 ms (p99 17.5 ms), and the slowest day 170 ms, over
+the tick's budget once or twice in 1,379,700 days. Section 8 suggested where it goes; worth looking at before more is added.

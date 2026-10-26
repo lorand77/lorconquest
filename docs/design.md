@@ -245,6 +245,19 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   side has 1.3 times their power, going back to port when outmatched or alone; it researches no warships it would not build.
   An army counts as a garrison only in a settlement of its own country: one at a pass or before an enemy town is a host,
   given orders like any (`util.js`, `garrisons`).
+- **The rest of what a player can do** (the same modules): a region it can proclaim it proclaims; in peace and free of loans it
+  puts what is left above three reserves in the bank, and takes it out in a war or when the treasury runs thin (the bank counts
+  towards its research spending); soldiers are raised armed (pikes to a third of the armed, then shot) when the money is
+  there; an army marching into the land of a country it is no longer at war with stops. Peace terms: far ahead it asks the
+  freedom of the loser's subjects and, twice the loser's size, the loser as vassal or protectorate; losing to a country twice
+  its size it offers to be its protectorate before it gives up land — one such offer a think. It asks a neighbour for
+  military access when an enemy cannot be reached otherwise; a friendly country guarantees a much weaker neighbour that
+  borders its rival; it cancels access it gave to a rival or to the enemy of a friend; a very warlike one may break a pact
+  with a rival it would crush, and plans the war. At sea, at war: it blockades the richest enemy port of a zone where its side
+  is 1.3 times the stronger (patrolling once every port there is blockaded, or when enemy ships are at sea), merges idle
+  fleets in one place (not while a strait is short of ships), splits off what a strait needs from a big fleet, and only
+  against a stronger enemy fleet where it holds a port builds and researches warships better than cogs (`navy.js`,
+  `navalNeed`).
 - **Peasants as enemies:** the computer takes towns held by peasants like any enemy's (its own peasants' back, or others'
   as their country's enemy, or anyone's once that country is gone), but only its real enemies and its own peasants put it
   on a war footing (`src/ai/util.js`, `threatsOf`) — otherwise the peasants of a fallen country, at war with everyone,
@@ -683,9 +696,9 @@ named (see [plan.md](plan.md)).
    electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal both
    scenarios share (RULES.md §10) and the scenario's starting wars and agreements, not this. It is a subsystem of its own
    — worth its own milestone if that scenario is to be played in earnest.
-2. **A computer navy that seeks battle** (not scheduled). The computer builds only cogs, only for the straits its armies
-   need, and fights at sea only where enemy ships come out and it is clearly the stronger (`src/ai/navy.js`): it never
-   blockades, never hunts fleets in port, and never builds carracks and better. That would be the next thing to teach it.
+2. **A computer navy that seeks battle** (not scheduled). The computer fights at sea only where it is clearly the stronger,
+   builds warships only against a stronger enemy fleet, and cannot hunt fleets in port (the rules keep them safe). Going out
+   to win command of a sea would be the next thing to teach it.
 
 ---
 

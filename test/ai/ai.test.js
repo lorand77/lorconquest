@@ -400,3 +400,83 @@ test("a computer's navy: ships in a strait's zone its armies need, bought or sai
     foe.ships.cogs = 30;
     assert.equal(navyOrders(game, "AAA", { budget: 0 }).some((o) => o.fleet === home.id && o.type === "patrol"), false);
 });
+
+test("economy: a region it can proclaim is proclaimed; spare money goes to the bank in peace, and comes out in war", () => {
+    const game = tinyGame(), st = game.state, c = st.countries.AAA, fl = flavorOf(game, "AAA");
+    st.settlements[2].cores = [];                                              // AAA lands: One (capital), Two, Three
+    let orders = economyOrders(game, "AAA", fl, { budget: 0 });
+    assert.deepEqual(orders.filter((o) => o.type === "proclaim").map((o) => o.region), ["aaa-lands"]);
+    // in peace, no loans, a fat treasury: the surplus over two reserves goes in
+    c.treasury = 2000000;
+    orders = economyOrders(game, "AAA", fl, { budget: 1900000, start: 1900000 });
+    const dep = orders.find((o) => o.type === "deposit");
+    assert.ok(dep && dep.amount > 1000000, JSON.stringify(dep));
+    assert.equal(game.command(dep).ok, true);
+    // at war with a thin treasury: it comes out
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    c.treasury = 1000;
+    orders = economyOrders(game, "AAA", fl, { budget: 0, start: 0 });
+    assert.ok(orders.some((o) => o.type === "withdraw" && o.amount > 0));
+    assert.equal(orders.some((o) => o.type === "deposit"), false);
+});
+
+test("navy: idle fleets in one place merge; a fleet blockades the enemy port of its zone; a big fleet splits off what a strait needs; warships against a stronger fleet", async () => {
+    const { navyOrders } = await import("../../src/ai/navy.js");
+    let game = tinyGame();
+    const a = giveFleet(game, "AAA", { cogs: 5 }, 1, "north"), b = giveFleet(game, "AAA", { cogs: 4 }, 1, "north");
+    assert.deepEqual(navyOrders(game, "AAA").filter((o) => o.type === "mergeFleet").map((o) => [o.fleet, o.into]), [[b.id, a.id]]);
+    // blockade: AAA at war with BBB, 20 cogs at sea in the south, where BBB\x27s port Four lies and BBB has no ships
+    game = tinyGame();
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    const s = giveFleet(game, "AAA", { cogs: 20 }, null, "south");
+    assert.deepEqual(navyOrders(game, "AAA").filter((o) => o.fleet === s.id).map((o) => [o.type, o.port]), [["blockade", 4]]);
+    // a strait in the north wants 10 ships; a fleet of 30 at sea in the south splits off 10 rather than sailing whole
+    game = tinyGame();
+    game.command({ type: "declareWar", country: "AAA", target: "CCC" });
+    const big = giveFleet(game, "AAA", { cogs: 30 }, null, "south");
+    assert.deepEqual(navyOrders(game, "AAA", { budget: 0 }).filter((o) => o.type === "splitFleet").map((o) => [o.fleet, o.ships]), [[big.id, { cogs: 10 }]]);
+    // BBB has 30 cogs in the north, where AAA\x27s port One is and AAA has none: AAA builds there, and wants warships
+    game = tinyGame();
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    giveFleet(game, "BBB", { cogs: 30 }, null, "north");
+    game.state.countries.AAA.treasury = 5000000;
+    assert.deepEqual(navyOrders(game, "AAA", { budget: 4000000 }).filter((o) => o.type === "buyShips").map((o) => [o.port, o.kind]), [[1, "cogs"]]);
+    const { navalNeed } = await import("../../src/ai/navy.js");
+    assert.equal(navalNeed(game, "AAA"), true);
+});
+
+test("an army marching on a country it is no longer at war with stops; access given to an enemy of a friend is cancelled", async () => {
+    const { warOrders } = await import("../../src/ai/war.js");
+    const game = tinyGame(), st = game.state;
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    game.command({ type: "move", country: "AAA", army: 3, to: 5 });
+    st.wars = [];                                                             // peace on the way
+    assert.ok(warOrders(game, "AAA", flavorOf(game, "AAA")).some((o) => o.type === "stop" && o.army === 3));
+    // AAA gives BBB access; BBB goes to war with CCC, AAA\x27s ally
+    addAgreement(game, "access", "AAA", "BBB");
+    addAgreement(game, "defensive", "AAA", "CCC");
+    st.wars = ["BBB|CCC"];
+    const orders = diplomacyOrders(game, "AAA", flavorOf(game, "AAA"), { plans: new Map(), asked: new Map() }).orders;
+    assert.ok(orders.some((o) => o.type === "cancelAccess" && o.with === "BBB"), JSON.stringify(orders));
+});
+
+test("peace far ahead: a small loser becomes its subject; soldiers are raised armed when the money is there", () => {
+    let game = tinyGame(), st = game.state;
+    game.command({ type: "declareWar", country: "AAA", target: "DDD" });          // DDD: one town, AAA four times its size
+    st.day = 800;
+    st.warInfo["AAA|DDD"].start = 0;
+    st.warInfo["AAA|DDD"].taken.AAA = 10000;
+    const { orders } = diplomacyOrders(game, "AAA", { aggression: 0.9, friendliness: 0.5, builder: 0.5 }, { plans: new Map(), asked: new Map() });
+    const peace = orders.find((o) => o.type === "proposePeace");
+    assert.ok(peace && ["vassal", "protectorate"].includes(peace.terms.makeSubject), JSON.stringify(peace));
+    assert.equal(game.command(peace).ok, true);
+    assert.equal(st.countries.DDD.overlord, "AAA");
+    // raised with pikes, bought now, when the budget allows
+    game = tinyGame();
+    game.command({ type: "setLaw", country: "AAA", law: "mass" });
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    game.state.countries.AAA.treasury = 5000000;
+    const raise = forceOrders(game, "AAA", flavorOf(game, "AAA"), { budget: 4000000 }).find((o) => o.type === "raise");
+    assert.equal(raise?.weapon, "pikes");
+    assert.equal(game.command(raise).ok, true);
+});

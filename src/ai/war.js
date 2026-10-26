@@ -62,6 +62,14 @@ function hostsOf(game, code) {
 export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false } = {}) {
     const st = game.state, out = [], foes = new Set(enemiesOf(st, code));
     sorties(game, code, out);
+    // an army marching into the land of a country it is no longer at war with, nor friendly with (a peace made on the way),
+    // stops at the next place
+    if (!defend) for (const a of ownArmies(st, code)) {
+        if (a.retreating || !a.march) continue;
+        const dest = a.path.length ? a.path[a.path.length - 1] : a.march.to;
+        const owner = st.settlements[game.map.nodes.get(dest)?.land]?.owner;
+        if (owner && owner !== code && !isFriend(st, code, owner) && !foes.has(owner)) out.push({ type: "stop", country: code, army: a.id });
+    }
     // other countries' peasants are enemies too (RULES.md §11): their towns are there to take, but only those next to our land
     // stir a country with no other war
     const own = new Set(ownSettlements(st, code).map((s) => String(s.id)));

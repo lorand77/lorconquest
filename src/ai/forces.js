@@ -62,7 +62,18 @@ export function forceOrders(game, code, fl, ctx) {
         const own = ownSettlements(st, code).filter((s) => s.cores.includes(code));
         const capital = own.find((s) => s.id === c.capital), staging = stagingSettlement(game, code);
         const site = capital ?? (staging && own.includes(staging) ? staging : own.sort((a, b) => b.pop - a.pop || a.id - b.id)[0]);
-        if (site) cmd("raise", { settlement: site.id, kind: "soldiers", lots });
+        if (site) {
+            // raised armed (RULES.md §8): pikes while they are under a third of the armed men, else the best shot it has — the
+            // weapons from the reserve, the lots missing bought now — or unarmed, to be armed later, if the money is not there
+            let pikesNow = 0, armedNow = 0;
+            for (const a of ownArmies(st, code)) { pikesNow += a.men.pikes; armedNow += menOf(a) - a.men.unarmed; }
+            const best = SHOT.find((w) => c.techs.includes(w));
+            const weapon = !best || pikesNow < (armedNow + lots * 1000) / 3 ? "pikes" : best;
+            const cost = Math.ceil(Math.max(0, lots * 1000 - c.reserve[weapon]) / 1000) * WEAPON_PRICE[weapon];
+            const armed = cost <= ctx.budget - 0.3 * e.settlementMoney;
+            cmd("raise", { settlement: site.id, kind: "soldiers", lots, ...(armed ? { weapon } : {}) });
+            if (armed) ctx.budget -= cost;
+        }
     }
 
     // arms: the unarmed first, then old swords if there is money to spare
