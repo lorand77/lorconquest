@@ -292,8 +292,8 @@ they ever be yours). If you later lose one and retake it, it is core again on ca
 | **Polish–Lithuanian Commonwealth** | Modern Poland + 17, 18, 19, 21, 24, 89 | 22 |
 | **Germany** (1990) | 10–13, 36–38, 47–52, 59–78 | 33 |
 | **Post Germany** (1930) | Germany + 14, 17, 20, 79, 85 | 38 |
-| **Greater Germany** (Kaiser 1880) | Post Germany + 16, 19, 45, 80, 82, 83 | 44 |
-| **Greater German Reich** (all German-speaking) | Greater Germany + 28, 29, 30, 32–35, 39, 40, 46, 53 | 55 |
+
+No region is as large as victory (45, *Victory*): one held whole would already have won, and its coring be worth nothing.
 
 ## Sea zones
 
@@ -359,7 +359,6 @@ the Empire and have at least *n* German states join), `by` a year (everything el
 | North Star | ❄️ | `proclaim unite-scandinavia` | Proclaim Scandinavia united. |
 | Danube Monarchy | 🦅 | `proclaim austrohungary` | Proclaim AustroHungary. |
 | Two Nations | 🐎 | `proclaim polish-lithuanian-commonwealth` | Proclaim the Polish–Lithuanian Commonwealth. |
-| Kaiserreich | 👑 | `proclaim greater-germany` | Proclaim Greater Germany. |
 | Hegemon of the Empire | 🏛️ | `empire 8` | Demand the Empire and have at least 8 German states join. |
 | Three Capitals | 🏰 | `hold 33 30 76; by 1500` | Hold Vienna, Prague and Berlin at once before 1500. |
 | Queen of the Hanse | ⚓ | `as HAM; hold 66 16 7 3` | As Hamburg, hold Hamburg, Danzig, Copenhagen and Stockholm at once. |

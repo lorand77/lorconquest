@@ -16497,6 +16497,151 @@
     65,
     66
    ]
+  },
+  {
+   "id": "united-duchies",
+   "name": "United Duchies",
+   "settlements": [
+    76,
+    77,
+    81,
+    82
+   ]
+  },
+  {
+   "id": "franconian-circle",
+   "name": "Franconian Circle",
+   "settlements": [
+    105,
+    106,
+    107,
+    108,
+    109
+   ]
+  },
+  {
+   "id": "swabian-league",
+   "name": "Swabian League",
+   "settlements": [
+    123,
+    124,
+    126,
+    127,
+    151
+   ]
+  },
+  {
+   "id": "electoral-rhine",
+   "name": "Electoral Rhine",
+   "settlements": [
+    79,
+    80,
+    101,
+    102,
+    103,
+    110
+   ]
+  },
+  {
+   "id": "lower-saxon-circle",
+   "name": "Lower Saxon Circle",
+   "settlements": [
+    36,
+    37,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50
+   ]
+  },
+  {
+   "id": "treaty-of-ribe",
+   "name": "Treaty of Ribe",
+   "settlements": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    32,
+    33
+   ]
+  },
+  {
+   "id": "bavarian-circle",
+   "name": "Bavarian Circle",
+   "settlements": [
+    111,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    157
+   ]
+  },
+  {
+   "id": "swedish-empire",
+   "name": "Swedish Empire",
+   "settlements": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    15,
+    16,
+    17,
+    18,
+    19,
+    38,
+    39,
+    45
+   ]
+  },
+  {
+   "id": "danubian-monarchy",
+   "name": "Danubian Monarchy",
+   "settlements": [
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    149,
+    155,
+    156,
+    158,
+    159,
+    160
+   ]
   }
  ],
  "rivalries": [

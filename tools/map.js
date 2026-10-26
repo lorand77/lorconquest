@@ -275,6 +275,8 @@ const VICTORY = {}, EMPIRE = {};
     if (w) VICTORY.settlements = Number(w[1]); else err("SCENARIO.md: no 'Control or vassalize N settlements' line under Victory");
     if (y) VICTORY.endYear = Number(y[1]); else err("SCENARIO.md: no 'End date: YEAR' under Victory");
     if (h) EMPIRE.needed = Number(h[1]);                  // a scenario without it has no plain Empire proposal
+    // a region held whole by one as large as victory would already have won: its coring could never be worth anything
+    for (const f of FORMABLES) if (w && f.settlements.length >= VICTORY.settlements - 1) err(`Special coring: ${f.name} has ${f.settlements.length} settlements; victory is ${VICTORY.settlements}, so it could only be proclaimed as the game is won`);
 }
 
 // how the game opens (RULES.md §10), if the scenario says: "### Wars" and "### Agreements" tables under "## The

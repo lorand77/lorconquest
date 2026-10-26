@@ -213,7 +213,8 @@ export function createAchievements({ db, scenarios, io, log }) {
             ...GROUPS.map((x) => ({ key: x.key, title: x.title, items: ACHIEVEMENTS.filter((a) => a.group === x.key).map(item) })),
             ...[...scenarios.values()].map((s) => ({ key: `scenario:${s.id}`, title: s.name, items: own.filter((a) => a.group === `scenario:${s.id}`).map(item) })),
         ].filter((x) => x.items.length);
-        return { groups, earned: got.size, total: all.size };
+        // one taken out of the catalogue since (a region a scenario no longer has) is neither shown nor counted
+        return { groups, earned: [...got.keys()].filter((k) => all.has(k)).length, total: all.size };
     }
 
     return { gameEnded, start, idle, stop, listFor };

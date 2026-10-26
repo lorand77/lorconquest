@@ -421,6 +421,15 @@ they ever be yours). If you later lose one and retake it, it is core again on ca
 | **Kingdom of Burgundy** | the realm Charles the Bold wanted, Frisia to the Alps | 42, 67–75, 84, 100, 119–121, 125, 148, 149, 166, 167 | 20 |
 | **Hanseatic League** | its leading towns, under Lübeck | 15, 16, 18, 28, 34, 35, 37, 38, 45, 83 | 10 |
 | **Polish-Lithuanian Commonwealth** | Poland and Lithuania joined at Lublin (1569) | 16–30, 56–66 | 26 |
+| **United Duchies** | Jülich, Berg, Cleves and Mark under one duke (1521) | 76, 77, 81, 82 | 4 |
+| **Franconian Circle** | the Imperial Circle of 1500: the bishops, the Hohenzollern margraves and Nuremberg | 105–109 | 5 |
+| **Swabian League** | Württemberg, Baden and the Swabian cities, allied against the Swiss and Bavaria (1488) | 123, 124, 126, 127, 151 | 5 |
+| **Electoral Rhine** | the Electoral Rhenish Circle (1512): the three archbishops and the Count Palatine | 79, 80, 101–103, 110 | 6 |
+| **Lower Saxon Circle** | the Guelph duchies, Magdeburg, Bremen and Mecklenburg (1512) | 36, 37, 45–50 | 8 |
+| **Treaty of Ribe** | the king of Denmark made duke of Schleswig and count of Holstein (1460) | 9–14, 32, 33 | 8 |
+| **Bavarian Circle** | the Imperial Circle of 1500: the duchies, the Upper Palatinate, Regensburg, Passau and Salzburg | Reunite Bavaria + 111, 134, 157 | 9 |
+| **Swedish Empire** | Sweden at its height after Westphalia (1648): Gotland, Livonia, Pomerania and Bremen | 4–8, 15–19, 38, 39, 45 | 13 |
+| **Danubian Monarchy** | the three crowns Ferdinand of Habsburg gathered in 1526 | Habsburg Austria + Kingdom of Hungary + Lands of the Bohemian Crown | 33 |
 
 ## Sea zones
 
