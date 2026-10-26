@@ -101,6 +101,8 @@ export function economyOrders(game, code, fl, ctx) {
     for (const s of own) if (bought < 2 && !s.workshop && buy("workshop", s)) { bought++; break; }
     for (const s of own) if (bought < 2 && s.workshop && !s.market && buy("market", s)) { bought++; break; }
     for (const s of own) if (bought < 2 && !s.walls && exposed(game, code, String(s.id)) && s.pop >= 20000 && fl.builder > 0.6 && buy("walls", s)) { bought++; break; }
+    // a first holding its lead in the endgame walls every exposed settlement of 10,000 or more
+    if (fl.defending) for (const s of own) if (bought < 2 && !s.walls && exposed(game, code, String(s.id)) && s.pop >= 10000 && buy("walls", s)) bought++;
 
     // the bank, in peace and free of loans: what is left above three reserves once this think's spending is done goes in
     const left = c.treasury - (ctx.start - ctx.budget);

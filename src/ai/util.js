@@ -6,7 +6,7 @@
 import { combine } from "../engine/army.js";
 import { findRoute } from "../engine/map.js";
 import { crossable } from "../engine/naval.js";
-import { armyList, atWar, canEnter, isRebel, power } from "../engine/index.js";
+import { YEAR_DAYS, armyList, atWar, canEnter, dayOf, isRebel, power, scores } from "../engine/index.js";
 import { CHARACTERS, NOISE } from "./characters.js";
 
 export function hash(text) {
@@ -49,6 +49,53 @@ export function rivalsOf(game, code) {
 // what an army or several together are worth in battle with the dice at their average (RULES.md §5)
 export const forcePower = (armies) => (armies.length ? power(combine(armies), 1.4) : 0);
 export const armyPower = (army) => forcePower([army]);
+
+// a front-runner, racing for the win (design.md, "The computer players"): one that holds 60% of the scenario's settlements to
+// win, or, in the last 30 years before its end year, one of the two ahead (as victory counts them: SCENARIO.md, Victory)
+export function racing(game, code) {
+    const v = game.map.scenario.victory, st = game.state;
+    if (!v) return false;
+    const table = scores(st), mine = table[code];
+    if (!mine) return false;
+    if (mine.settlements >= 0.6 * v.settlements) return true;
+    if (st.day < dayOf(v.endYear) - 30 * YEAR_DAYS) return false;
+    const ahead = Object.keys(table).filter((c) => c !== code && st.countries[c].out === null && (table[c].settlements > mine.settlements || (table[c].settlements === mine.settlements && table[c].pop > mine.pop)));
+    return ahead.length < 2;
+}
+
+// the leader the others gang up on (design.md, "The computer players"): the country with the most settlements as victory
+// counts them, once it holds 60% of those to win, or 40% and half as many again as the next; null if none
+export function leaderOf(game) {
+    const v = game.map.scenario.victory, st = game.state;
+    if (!v) return null;
+    const table = scores(st);
+    const order = Object.keys(table).filter((c) => st.countries[c].out === null).sort((a, b) => table[b].settlements - table[a].settlements || table[b].pop - table[a].pop || (a < b ? -1 : 1));
+    if (!order.length) return null;
+    const first = table[order[0]].settlements, second = order[1] ? table[order[1]].settlements : 0;
+    return first >= 0.6 * v.settlements || (first >= 0.4 * v.settlements && first >= 1.5 * second) ? order[0] : null;
+}
+
+// the endgame: the last 25 years before the scenario's end year, when the end-year count decides (SCENARIO.md, Victory)
+export function endgame(game) {
+    const v = game.map.scenario.victory;
+    return Boolean(v) && game.state.day >= dayOf(v.endYear) - 25 * YEAR_DAYS;
+}
+
+// the countries still in the game, first by settlements as victory counts them (then people, then code)
+export function standings(game) {
+    const st = game.state, table = scores(st);
+    return Object.keys(table).filter((c) => st.countries[c].out === null).sort((a, b) => table[b].settlements - table[a].settlements || table[b].pop - table[a].pop || (a < b ? -1 : 1));
+}
+
+// whom `code` gangs up on: the leader (leaderOf) if it is someone else; in the endgame, for the second to the fifth, the first,
+// whatever its lead — they go for what closes the gap
+export function leaderFor(game, code) {
+    const leader = leaderOf(game);
+    if (leader && leader !== code) return leader;
+    if (!endgame(game)) return null;
+    const order = standings(game), rank = order.indexOf(code);
+    return rank >= 1 && rank <= 4 ? order[0] : null;
+}
 
 export const enemiesOf = (st, code) => Object.keys(st.countries).filter((c) => atWar(st, code, c));
 // the enemies that put a country on a war footing (taxes, spending, raising): real countries, and its own peasants — not other

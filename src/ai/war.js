@@ -132,7 +132,8 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             const key = String(s.id), days = reach.get(key);
             if (days === undefined) continue;
             const sit = situation(game, key), raw = forcePower(sit.garrison), def = raw * wallsFactor(game, s, guns);
-            const value = s.pop / 1000 + (st.countries[s.owner].capital === s.id ? 15 : 0) + (s.cores.includes(code) ? 10 : 0) + 5;
+            // its people in thousands, and 10 for being one more settlement towards victory (as a town's people: diplomacy.js, TOWN_WORTH)
+            const value = s.pop / 1000 + (st.countries[s.owner].capital === s.id ? 15 : 0) + (s.cores.includes(code) ? 10 : 0) + 10;
             const danger = threat(days);
             if (ours < 1.1 * danger) continue;
             if (!sit.garrison.length) options.push({ key, score: value / (1 + days / 40), storm: false });
@@ -157,7 +158,7 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     }
 
     // muster: the armed men a garrison has over its floor split off as one more host, which gathers at the staging settlement
-    if (muster && baseKey && !defend) {
+    if (muster && baseKey && !defend && !fl.defending) {            // a first holding its lead in the endgame keeps its men home
         for (const [key, g] of [...garrisons(st, code)].sort((x, y) => (x[0] < y[0] ? -1 : 1))) {
             const s = st.settlements[key];
             if (!s || s.owner !== code || s.siege || g.march) continue;

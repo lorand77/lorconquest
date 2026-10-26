@@ -258,6 +258,22 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   fleets in one place (not while a strait is short of ships), splits off what a strait needs from a big fleet, and only
   against a stronger enemy fleet where it holds a port builds and researches warships better than cogs (`navy.js`,
   `navalNeed`).
+- **Settlements count:** victory counts settlements, not people, so the computer values each settlement in itself — a border
+  settlement weighs its people plus a town's worth (`diplomacy.js`, `TOWN_WORTH`) in choosing whom to fight, a target 10 points
+  above its people in choosing where to march — takes the smallest towns first in a peace (the same price buys more), and gives
+  one settlement rather than several when one will do.
+- **Racing for the win:** a front-runner — 60% of the settlements to win, or one of the two ahead in the last 30 years before
+  the end year (`util.js`, `racing`) — plays as if 0.3 more aggressive (wars sooner, two at once if warlike, fewer pacts, more
+  warmonger borne) and asks up to 9 towns in a peace, not 6.
+- **Stopping the leader:** the country with the most settlements, once it holds 60% of those to win or 40% and half as many
+  again as the next (`util.js`, `leaderOf`; a person too), is everyone else's target of choice — worth twice as much, fought
+  at odds of 1.1 down to 0.8 instead of 1.5 down to 1.1 — is proposed nothing, and two countries that both border it ally
+  against it even unthreatened (within the cap of two). Computer preferences only: the engine's answers to proposals are
+  unchanged, so it is no rules change.
+- **The endgame:** in the last 25 years before the end year (`util.js`, `endgame`) the first by settlements holds its lead —
+  aggression 0.3 lower, a new war only at three to one, walls on every exposed settlement of 10,000 or more, no men sent from
+  its garrisons to the field, a plain peace as soon as it is even — and the second to the fifth treat it as the leader to
+  stop (`leaderFor`), whatever its lead. Between 30 and 25 years out, the two ahead both race.
 - **Peasants as enemies:** the computer takes towns held by peasants like any enemy's (its own peasants' back, or others'
   as their country's enemy, or anyone's once that country is gone), but only its real enemies and its own peasants put it
   on a war footing (`src/ai/util.js`, `threatsOf`) — otherwise the peasants of a fallen country, at war with everyone,

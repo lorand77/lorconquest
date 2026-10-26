@@ -480,3 +480,56 @@ test("peace far ahead: a small loser becomes its subject; soldiers are raised ar
     assert.equal(raise?.weapon, "pikes");
     assert.equal(game.command(raise).ok, true);
 });
+
+test("playing to win: in a peace the winner takes the town before the city (cheaper, and counting the same for victory)", () => {
+    const game = tinyGame(), st = game.state;
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });          // BBB: Four (a city, 20,000), Five (a town, 10,000)
+    st.day = 800;
+    st.warInfo["AAA|BBB"].start = 0;
+    st.warInfo["AAA|BBB"].taken.AAA = 10000;
+    const { orders } = diplomacyOrders(game, "AAA", { aggression: 0.3, friendliness: 0.5, builder: 0.5 }, { plans: new Map(), asked: new Map() });
+    const peace = orders.find((o) => o.type === "proposePeace");
+    assert.deepEqual(peace?.terms.take, [5]);                                     // a peace leaves BBB one: the town is the one taken
+});
+
+test("racing: a country with 60% of the settlements to win, or one of the two ahead in the last 30 years, plays to win", async () => {
+    const { racing } = await import("../../src/ai/util.js");
+    const game = tinyGame(), st = game.state;                                     // to win: 99 settlements, by 1500
+    game.map.scenario.victory = { settlements: 5, endYear: 1500 };
+    assert.deepEqual(["AAA", "BBB"].map((c) => racing(game, c)), [true, false]);   // AAA holds 3 of 5; BBB 2
+    game.map.scenario.victory = { settlements: 99, endYear: 1500 };
+    assert.equal(racing(game, "AAA"), false);                                     // far from it, and far from the end
+    st.day = (1500 - 1440 - 20) * 365;                                            // the last 30 years: the two ahead race
+    assert.deepEqual(["AAA", "BBB", "CCC"].map((c) => racing(game, c)), [true, true, false]);
+});
+
+test("stop the leader: it is a target at odds no one else would be, and nothing is proposed to it", async () => {
+    const { leaderOf } = await import("../../src/ai/util.js");
+    const game = tinyGame(), st = game.state;
+    st.settlements[6].owner = "BBB";                                              // BBB: Four, Five and Six; AAA: One to Three
+    st.settlements[7].owner = "BBB";                                              // and Seven: four settlements to AAA\x27s three
+    setArmy(game, 3, { swords: 400 });
+    game.map.scenario.victory = { settlements: 99, endYear: 1650 };
+    assert.equal(leaderOf(game), null);                                           // nobody near the 99 to win
+    const fl = { aggression: 0, friendliness: 0.5, builder: 0.5 };
+    assert.equal(bestTarget(game, "AAA", fl), null);                              // AAA is not half as strong again as BBB
+    game.map.scenario.victory = { settlements: 6, endYear: 1650 };                // BBB holds 4 of 6: the leader
+    assert.equal(leaderOf(game), "BBB");
+    assert.equal(bestTarget(game, "AAA", fl)?.target, "BBB");                     // now worth the fight
+});
+
+test("the endgame: the second to the fifth go for the first, which holds its lead, walls its borders and fights only at long odds", async () => {
+    const { endgame, leaderFor } = await import("../../src/ai/util.js");
+    const game = tinyGame(), st = game.state;
+    game.map.scenario.victory = { settlements: 99, endYear: 1500 };              // nobody near the target: no leader before the end
+    assert.deepEqual([endgame(game), leaderFor(game, "BBB")], [false, null]);
+    st.day = (1500 - 1440 - 10) * 365;                                            // ten years left
+    assert.equal(endgame(game), true);
+    assert.deepEqual(["AAA", "BBB", "CCC"].map((c) => leaderFor(game, c)), [null, "AAA", "AAA"]);   // AAA first, with 3 settlements
+    // the first, defending: no war but at three to one; it walls its exposed settlement of 10,000 or more
+    const fl = { aggression: 0.5, friendliness: 0.5, builder: 0, defending: true };
+    assert.equal(bestTarget(game, "AAA", fl), null);
+    st.countries.AAA.treasury = 5000000;
+    const walls = economyOrders(game, "AAA", fl, { budget: 4000000 }).filter((o) => o.type === "buyBuilding" && o.building === "walls");
+    assert.ok(walls.length > 0, "walls on its borders");
+});

@@ -12,7 +12,7 @@ import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
 import { forceOrders } from "./forces.js";
 import { navyOrders } from "./navy.js";
-import { flavorOf, reserveOf, thinksOn, threatsOf } from "./util.js";
+import { endgame, flavorOf, racing, reserveOf, standings, thinksOn, threatsOf } from "./util.js";
 import { warOrders } from "./war.js";
 
 // what, from a day's events, a country should look at again at once
@@ -37,7 +37,14 @@ export function createAI({ seed, humans = [] }) {
 
     // the country thinks in full: forces first, then the economy with what is left, then diplomacy and the war it leads to
     function think(game, code) {
-        const st = game.state, c = st.countries[code], fl = flavor(game, code), e = economyOf(game, code);
+        const st = game.state, c = st.countries[code], e = economyOf(game, code);
+        // a front-runner plays to win: hungrier (aggression +0.3: wars sooner, two at once if warlike, fewer pacts, more warmonger
+        // borne) and asking more towns in a peace (util.js, racing)
+        // in the endgame the first holds what it has: careful (aggression -0.3, wars only at overwhelming odds), walls on its
+        // borders, its men at home, a plain peace as soon as it is even (util.js, endgame)
+        const base = flavor(game, code);
+        const fl = endgame(game) && standings(game)[0] === code ? { ...base, aggression: Math.max(0, base.aggression - 0.3), defending: true }
+            : racing(game, code) ? { ...base, aggression: Math.min(1, base.aggression + 0.3), racing: true } : base;
         const atWarNow = threatsOf(st, code).length > 0;
         const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e) }, start = ctx.budget;
         ctx.start = start;                                 // what was there to spend, so the economy knows what is left (the bank)

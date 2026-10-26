@@ -12,12 +12,16 @@ import { YEAR_DAYS, agreementAnswer, bordering, need, demandChance, hasAgreement
     peaceAnswer, sizeOf, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
 import { agreementsBetween, alliesOf, friendly } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
-import { dice, enemiesOf, hash, ownSettlements, reachFrom, rivalsOf, stagingSettlement, thinksOn } from "./util.js";
+import { dice, enemiesOf, hash, leaderFor, ownSettlements, reachFrom, rivalsOf, stagingSettlement, thinksOn } from "./util.js";
 
 // the most alliances (defensive and military together) a computer country seeks, or helps another to
 export const ALLIANCE_CAP = 2;
 
 const realFoes = (st, code) => enemiesOf(st, code).filter((c) => !st.countries[c].rebel);
+// what a settlement is worth to a country that wants to win: its people, and as much again as a town's for being one more
+// settlement — victory counts settlements, not people (SCENARIO.md, Victory), so two towns come before a city
+export const TOWN_WORTH = 10000;
+const worth = (s) => s.pop + TOWN_WORTH;
 
 // the terms to offer `foe` for peace, or null to fight on; `cash` is what we will have to pay with. Far ahead it asks the
 // towns it can, money, the freedom of the loser's subjects, and — at least twice its size — the loser as its vassal, or else
@@ -33,10 +37,11 @@ function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury,
         // far ahead: ask for what it will give, our cores and what lies next to us first
         const own = new Set(ownSettlements(st, code).map((s) => String(s.id)));
         const nextToUs = (s) => game.map.adj.get(String(s.id)).some((e) => own.has(e.to));
-        const wanted = ownSettlements(st, foe).sort((a, b) => b.cores.includes(code) - a.cores.includes(code) || nextToUs(b) - nextToUs(a) || b.pop - a.pop || a.id - b.id);
+        // the price of a town is its people (opinion.js, peaceCost): the smallest first buy the most settlements for the price
+        const wanted = ownSettlements(st, foe).sort((a, b) => b.cores.includes(code) - a.cores.includes(code) || nextToUs(b) - nextToUs(a) || a.pop - b.pop || a.id - b.id);
         const terms = { take: [], give: [], money: 0, makeSubject: null, becomeSubject: null, release: [] };
         for (const s of wanted) {
-            if (terms.take.length >= Math.min(6, wanted.length - 1)) break;          // a peace leaves it one settlement
+            if (terms.take.length >= Math.min(fl.racing ? 9 : 6, wanted.length - 1)) break;   // a peace leaves it one settlement; a front-runner asks more
             const tried = { ...terms, take: [...terms.take, s.id] };
             if (ok(tried)) terms.take = tried.take;
         }
@@ -57,7 +62,8 @@ function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury,
         if (closing || (!terms.take.length && !terms.makeSubject)) return age >= 2 * YEAR_DAYS && !closing ? terms : null;
         return terms;
     }
-    if (score >= 0) return age >= 2 * YEAR_DAYS ? { take: [], give: [], money: 0 } : null;
+    // even: a plain peace after two years — at once for a first holding its lead in the endgame
+    if (score >= 0) return age >= (fl.defending ? 0 : 2 * YEAR_DAYS) ? { take: [], give: [], money: 0 } : null;
     if (age < YEAR_DAYS || (mine > 0.7 * theirs && age < 3 * YEAR_DAYS)) return null;
     // losing: money first, then the settlements it can best spare
     const terms = { take: [], give: [], money: 0, makeSubject: null, becomeSubject: null, release: [] };
@@ -69,6 +75,8 @@ function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury,
     // to a country twice our size: its protectorate, before any land
     if (sizeOf(st, foe) >= 2 * sizeOf(st, code) && ok({ ...terms, money: 0, becomeSubject: "protectorate" })) return { ...terms, money: 0, becomeSubject: "protectorate" };
     const spare = ownSettlements(st, code).sort((a, b) => a.cores.includes(code) - b.cores.includes(code) || a.pop - b.pop || a.id - b.id);
+    // one settlement that will do, the least of them, rather than several: each counts as one for victory, whatever its people
+    if (spare.length > 1) for (const s of spare) if (ok({ ...terms, give: [s.id] })) return { ...terms, give: [s.id] };
     for (const s of spare) {
         if (terms.give.length >= Math.min(6, spare.length - 1)) break;            // and leaves us one
         terms.give.push(s.id);
@@ -90,15 +98,18 @@ function sideOf(game, declarer, target) {
 // a neighbour worth attacking: weak enough, with nothing binding us to it, giving the most land next to ours
 export function bestTarget(game, code, fl) {
     const st = game.state, own = new Set(ownSettlements(st, code).map((s) => String(s.id))), rivals = rivalsOf(game, code);
+    // the leader (util.js, leaderFor) is worth twice as much, and fought at worse odds: everyone must stop it winning. A first
+    // holding its lead in the endgame fights only at overwhelming odds
+    const leader = leaderFor(game, code);
     let best = null;
     for (const t of neighboursOf(game, code)) {
         if (!st.countries[t] || isVassal(st, t) || overlordOf(st, code) === t || overlordOf(st, t) === code) continue;
         if (agreementsBetween(st, code, t).some((x) => ["pact", "truce", "defensive", "military"].includes(x.kind)) || hasAgreement(st, "guarantee", code, t)) continue;
         const { ours, theirs } = sideOf(game, code, t);
-        if (ours < (1.5 - 0.4 * fl.aggression) * Math.max(theirs, 1)) continue;
-        const gain = ownSettlements(st, t).filter((s) => game.map.adj.get(String(s.id)).some((e) => own.has(e.to))).reduce((n, s) => n + s.pop, 0);
+        if (ours < (fl.defending ? 3 : t === leader ? 1.1 - 0.3 * fl.aggression : 1.5 - 0.4 * fl.aggression) * Math.max(theirs, 1)) continue;
+        const gain = ownSettlements(st, t).filter((s) => game.map.adj.get(String(s.id)).some((e) => own.has(e.to))).reduce((n, s) => n + worth(s), 0);
         // how much weaker it is counts up to three times: past that, every target is crushed alike, and the land and the grudge decide
-        const score = gain * (ours / Math.max(theirs, 1)) * (rivals.has(t) ? 1.5 : 1);
+        const score = gain * (ours / Math.max(theirs, 1)) * (rivals.has(t) ? 1.5 : 1) * (t === leader ? 2 : 1);
         if (gain > 0 && (!best || score > best.score || (score === best.score && t < best.target))) best = { target: t, score };
     }
     return best;
@@ -136,7 +147,8 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     const calm = foes.length < limit && c.treasury > 0 && (c.warmonger ?? 0) < 12 + 30 * fl.aggression;
     if (plan) {
         const target = st.countries[plan.target], { ours, theirs } = sideOf(game, code, plan.target);
-        const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && ours >= (1.3 - 0.4 * fl.aggression) * Math.max(theirs, 1);
+        const odds = fl.defending ? 2.5 : plan.target === leaderFor(game, code) ? 1.0 - 0.3 * fl.aggression : 1.3 - 0.4 * fl.aggression;
+        const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && ours >= odds * Math.max(theirs, 1);
         if (!valid) plans.delete(code);
         else if (day - plan.since >= 40) { plans.delete(code); cmd("declareWar", { target: plan.target }); }
     } else if (calm && r() < 0.03 + 0.1 * fl.aggression) {
@@ -168,10 +180,13 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     // a guarantee, from a friendly country, to a much weaker neighbour that borders a rival of ours: a buffer kept standing
     const given = st.agreements.filter((x) => x.kind === "guarantee" && x.a === code).length;
     if (fl.friendliness > 0.6 && given < 2) for (const n of neighbours) if (militaryPowerOf(st, n) <= 0.4 * mine && [...rivals].some((rv) => bordering(game, n, rv))) tries.push(["guarantee", n]);
+    // the leader: nothing proposed to it, and its neighbours stand together — two that both border it ally even unthreatened
+    const leader = leaderFor(game, code);
+    const againstLeader = (n) => leader !== null && n !== leader && bordering(game, code, leader) && bordering(game, n, leader);
     for (const [kind, n] of tries) {
-        if (rivals.has(n)) continue;                                                   // never with a rival
+        if (rivals.has(n) || n === leader) continue;                                   // never with a rival, nor the leader
         if ((kind === "defensive" || kind === "military") && (!roomFor(code) || !roomFor(n))) continue;
-        if (kind === "defensive" && (!threatened || militaryPowerOf(st, n) < 0.8 * mine)) continue;
+        if (kind === "defensive" && !againstLeader(n) && (!threatened || militaryPowerOf(st, n) < 0.8 * mine)) continue;
         if (r() > 0.3 + 0.5 * fl.friendliness) continue;
         if (hasAgreement(st, kind, code, n) || hasAgreement(st, kind, n, code) || !mayAsk(n, kind)) continue;
         if (n < code && thinksOn(n, day) && kind !== "military") continue;              // it asks us today, and its question is put first
