@@ -14,6 +14,11 @@ import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, ownArmies, 
 const wallsFactor = (game, s, guns = 0) => wallDefence(s.walls, guns, game.map.x);
 // the strength of an enemy sharpshooter post at a pass, as a storm of it weighs it (passes.js): its men × 2.5 × 2
 const postPower = (post) => post.n * 5;
+// raiding parties: a host of RAID_FROM men or more splits off RAID armed men for an undefended enemy town it is not going to
+// itself, up to RAIDERS of them; an army under RAIDER men is a raiding party — never merged into a host, it goes only for
+// undefended towns, and waits at the staging settlement when there is none left within reach
+const RAID = 600, RAID_FROM = 3000, RAIDERS = 3, RAIDER = 800, RAID_DAYS = 60;
+const isRaider = (a) => menIn(a) < RAIDER;
 const menIn = (a) => WEAPONS.reduce((n, w) => n + a.men[w], 0);
 const armedIn = (a) => menIn(a) - a.men.unarmed;
 
@@ -51,8 +56,9 @@ function hostsOf(game, code) {
     const keep = new Set([...garrisons(st, code).values()].map((a) => a.id)), groups = new Map();
     for (const a of ownArmies(st, code)) {
         if (keep.has(a.id) || !a.at || a.retreating || a.relief || a.path.length || isRebel(st, code) || besiegedIn(game, a)) continue;
-        if (!groups.has(a.at)) groups.set(a.at, []);
-        groups.get(a.at).push(a);
+        const key = isRaider(a) ? `${a.at}#${a.id}` : a.at;                // a raiding party is a host of its own
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(a);
     }
     return groups;
 }
@@ -84,9 +90,11 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     let spareGuns = st.countries[code].reserve.cannons;            // cannons in the reserve, for the hosts to take on
     const enemyPost = (k) => { const p = st.posts[k]; return p && p.n > 0 && foes.has(p.owner) ? p : null; };
 
-    for (const [at, group] of [...hostsOf(game, code)].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
+    const garrisoning = new Set([...garrisons(st, code).values()].map((a) => a.id));
+    let raiders = ownArmies(st, code).filter((a) => isRaider(a) && !garrisoning.has(a.id) && !a.retreating).length;
+    for (const [, group] of [...hostsOf(game, code)].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
         group.sort((a, b) => a.id - b.id);
-        const host = group[0], ours = forcePower(group);
+        const host = group[0], ours = forcePower(group), at = host.at, raider = !defend && group.length === 1 && isRaider(host);
         if (defend && group.length > 1) continue;
         for (const other of group.slice(1)) if (!defend) out.push({ type: "merge", country: code, army: other.id, into: host.id });
         const reach = reachFrom(game, code, at), here = situation(game, at);
@@ -136,7 +144,7 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             const value = s.pop / 1000 + (st.countries[s.owner].capital === s.id ? 15 : 0) + (s.cores.includes(code) ? 10 : 0) + 10;
             const danger = threat(days);
             if (ours < 1.1 * danger) continue;
-            if (!sit.garrison.length) options.push({ key, score: value / (1 + days / 40), storm: false });
+            if (!sit.garrison.length) options.push({ key, score: value / (1 + days / 40), storm: false, open: !sit.relief.length, days });
             else if (ours >= ratio * def + danger) options.push({ key, score: value / (1 + days / 40), storm: true });
             else if (ours >= ratio * raw + danger && siegeDays(game, s, guns) <= 500) options.push({ key, score: 0.6 * value / (1 + days / 40), storm: false });
         }
@@ -148,6 +156,19 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             if (days !== undefined && ours >= 1.5 * their) options.push({ key: a.at, score: (8 + menIn(a) / 500) / (1 + days / 40), storm: false });
         }
         options.sort((x, y) => y.score - x.score || (x.key < y.key ? -1 : 1));
+        if (raider) {
+            // a raiding party: the best undefended town within reach, else back to the host at the staging settlement
+            const take = options.find((o) => o.open && o.days <= RAID_DAYS);
+            if (take) out.push({ type: "move", country: code, army: host.id, to: take.key, storm: false });
+            else if (baseKey && at !== baseKey && reach.has(baseKey)) out.push({ type: "move", country: code, army: host.id, to: baseKey, storm: false });
+            continue;                                                // at the base, it waits for the next town to take
+        }
+        // a big host sends a raiding party to an undefended town it is not going to itself
+        if (!defend && raiders < RAIDERS && menIn(host) >= RAID_FROM && options.some((o, i) => i > 0 && o.open && o.days <= RAID_DAYS)) {
+            const armed = armedIn(host), share = RAID / Math.max(1, armed), men = {};
+            for (const w of WEAPONS) if (w !== "unarmed" && host.men[w]) men[w] = Math.floor(host.men[w] * share);
+            if (Object.values(men).some((n) => n > 0)) { out.push({ type: "split", country: code, army: host.id, men }); raiders++; }
+        }
         // an enemy post at a pass on the way, which the host can take: stop there first, to storm it on the next think, rather
         // than be shot at in passing (and every army after it)
         const way = options.length ? routeFor(game, host, options[0].key)?.path ?? [] : [];

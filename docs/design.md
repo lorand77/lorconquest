@@ -264,13 +264,17 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   one settlement rather than several when one will do.
 - **Racing for the win:** a front-runner — 60% of the settlements to win, or one of the two ahead in the last 30 years before
   the end year (`util.js`, `racing`) — plays as if 0.3 more aggressive (wars sooner, two at once if warlike, fewer pacts, more
-  warmonger borne) and asks up to 9 towns in a peace, not 6.
-- **Stopping the leader:** the country with the most settlements, once it holds 60% of those to win or 40% and half as many
-  again as the next (`util.js`, `leaderOf`; a person too), is everyone else's target of choice — worth twice as much, fought
+  warmonger borne) and asks up to 9 towns in a peace, not 6; it looks for its next war at every think and declares without the
+  40 days of preparing, and winning a war it fights on three years before it offers terms.
+- **Raiding parties:** a host of 3,000 men or more splits off 600 for an undefended enemy town within 60 days it is not going
+  to itself, up to 3 at a time; an army under 800 men is a raiding party, never merged into a host, going only for undefended
+  towns and waiting at the staging settlement when none is left (`war.js`).
+- **Stopping the leader:** the country with the most settlements, once it holds 75% of those to win (`util.js`, `leaderOf`;
+  a person too; before that a front-runner is let run), is everyone else's target of choice — worth twice as much, fought
   at odds of 1.1 down to 0.8 instead of 1.5 down to 1.1 — is proposed nothing, and two countries that both border it ally
   against it even unthreatened (within the cap of two). Computer preferences only: the engine's answers to proposals are
   unchanged, so it is no rules change.
-- **The endgame:** in the last 25 years before the end year (`util.js`, `endgame`) the first by settlements holds its lead —
+- **The endgame:** in the last 25 years before the end year (`util.js`, `endgame`) the first by settlements, if its lead over the second is under a quarter, holds it (a bigger lead it presses home, racing) —
   aggression 0.3 lower, a new war only at three to one, walls on every exposed settlement of 10,000 or more, no men sent from
   its garrisons to the field, a plain peace as soon as it is even — and the second to the fifth treat it as the leader to
   stop (`leaderFor`), whatever its lead. Between 30 and 25 years out, the two ahead both race.

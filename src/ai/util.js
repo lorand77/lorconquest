@@ -64,15 +64,14 @@ export function racing(game, code) {
 }
 
 // the leader the others gang up on (design.md, "The computer players"): the country with the most settlements as victory
-// counts them, once it holds 60% of those to win, or 40% and half as many again as the next; null if none
+// counts them, once it holds 75% of those to win — before that a front-runner is let run; null if none
 export function leaderOf(game) {
     const v = game.map.scenario.victory, st = game.state;
     if (!v) return null;
     const table = scores(st);
     const order = Object.keys(table).filter((c) => st.countries[c].out === null).sort((a, b) => table[b].settlements - table[a].settlements || table[b].pop - table[a].pop || (a < b ? -1 : 1));
     if (!order.length) return null;
-    const first = table[order[0]].settlements, second = order[1] ? table[order[1]].settlements : 0;
-    return first >= 0.6 * v.settlements || (first >= 0.4 * v.settlements && first >= 1.5 * second) ? order[0] : null;
+    return table[order[0]].settlements >= 0.75 * v.settlements ? order[0] : null;
 }
 
 // the endgame: the last 25 years before the scenario's end year, when the end-year count decides (SCENARIO.md, Victory)

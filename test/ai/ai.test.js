@@ -513,7 +513,7 @@ test("stop the leader: it is a target at odds no one else would be, and nothing 
     assert.equal(leaderOf(game), null);                                           // nobody near the 99 to win
     const fl = { aggression: 0, friendliness: 0.5, builder: 0.5 };
     assert.equal(bestTarget(game, "AAA", fl), null);                              // AAA is not half as strong again as BBB
-    game.map.scenario.victory = { settlements: 6, endYear: 1650 };                // BBB holds 4 of 6: the leader
+    game.map.scenario.victory = { settlements: 5, endYear: 1650 };                // BBB holds 4 of 5 (75% or more): the leader
     assert.equal(leaderOf(game), "BBB");
     assert.equal(bestTarget(game, "AAA", fl)?.target, "BBB");                     // now worth the fight
 });

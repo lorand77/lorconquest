@@ -33,6 +33,8 @@ function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury,
     // terms the rules allow (RULES.md §10, validateTerms) and the other side will take
     const ok = (terms) => !validateTerms(game, code, foe, terms) && peaceAnswer(game, foe, code, terms).accept;
     const mine = militaryPowerOf(st, code), theirs = militaryPowerOf(st, foe);
+    // a front-runner winning a war fights on for three years before it offers terms: there is more to take
+    if (score >= 20 && fl.racing && age < 3 * YEAR_DAYS) return null;
     if (score >= 20) {
         // far ahead: ask for what it will give, our cores and what lies next to us first
         const own = new Set(ownSettlements(st, code).map((s) => String(s.id)));
@@ -150,8 +152,9 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
         const odds = fl.defending ? 2.5 : plan.target === leaderFor(game, code) ? 1.0 - 0.3 * fl.aggression : 1.3 - 0.4 * fl.aggression;
         const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && ours >= odds * Math.max(theirs, 1);
         if (!valid) plans.delete(code);
-        else if (day - plan.since >= 40) { plans.delete(code); cmd("declareWar", { target: plan.target }); }
-    } else if (calm && r() < 0.03 + 0.1 * fl.aggression) {
+        // a front-runner declares at once: no 40 days of preparing
+        else if (day - plan.since >= (fl.racing ? 0 : 40)) { plans.delete(code); cmd("declareWar", { target: plan.target }); }
+    } else if (calm && (fl.racing || r() < 0.03 + 0.1 * fl.aggression)) {           // a front-runner looks for its next war at every think
         const t = bestTarget(game, code, fl);
         if (t) plans.set(code, { target: t.target, since: day });
     }
