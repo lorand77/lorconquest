@@ -95,8 +95,14 @@ test("buildings: one of each a settlement, only in your own, only with the money
     for (const b of ["walls", "library", "market"]) order(game, cmd("buyBuilding", { building: b, settlement: 3 }));
     // a courthouse only where the settlement is not core already: Three is AAA's core
     assert.match(refused(game, cmd("buyBuilding", { building: "courthouse", settlement: 3 })), /is your core already/);
-    game.state.settlements[3].cores = [];                                      // held, but not core
-    order(game, cmd("buyBuilding", { building: "courthouse", settlement: 3 }));
+    // held, but not core: only once its people are compliant, 20 years held — and then it is core at once
+    game.state.settlements[3].cores = [];
+    game.state.settlements[3].heldSince = 0;
+    game.state.day = 10 * 365;
+    assert.match(refused(game, cmd("buyBuilding", { building: "courthouse", settlement: 3 })), /not compliant yet: 50%/);
+    game.state.day = 20 * 365;
+    const [cored] = order(game, cmd("buyBuilding", { building: "courthouse", settlement: 3 }));
+    assert.deepEqual([cored.type, game.state.settlements[3].cores], ["cored", ["AAA"]]);
     assert.equal(c.treasury, 5000000 - 100000 - 75000 - 75000 - 50000);
 });
 

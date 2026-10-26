@@ -4,7 +4,7 @@
 // distress — in the red and losing money, as one that borrowed in a war and then lost its land is — taxes as much as it may,
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it.
-import { BUILDING_PRICE, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, isVassal, militaryPowerOf, neighboursOf, overlordOf } from "../engine/index.js";
+import { BUILDING_PRICE, CORING_DAYS, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, isVassal, militaryPowerOf, neighboursOf, overlordOf } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
 import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
 
@@ -85,7 +85,7 @@ export function economyOrders(game, code, fl, ctx) {
         if (chunks > 0) { cmd("repay", { chunks }); ctx.budget -= chunks * LOAN_CHUNK; }
     }
 
-    // buildings: courthouses where a settlement is not core for it (it becomes core after 20 years held), then walls at the front in war, libraries, workshops, markets
+    // buildings: courthouses where a settlement is compliant and not core, then walls at the front in war, libraries, workshops, markets
     const own = ownSettlements(st, code).sort((a, b) => b.pop - a.pop || a.id - b.id);
     const buy = (building, s) => {
         if (s[building] || ctx.budget < BUILDING_PRICE[building]) return false;
@@ -94,7 +94,8 @@ export function economyOrders(game, code, fl, ctx) {
         return true;
     };
     let bought = 0;
-    for (const s of own) if (bought < 2 && !s.cores.includes(code) && buy("courthouse", s)) bought++;
+    // a courthouse where a settlement is not core but its people are compliant (20 years held): it becomes core at once
+    for (const s of own) if (bought < 2 && !s.cores.includes(code) && st.day - s.heldSince >= CORING_DAYS && buy("courthouse", s)) bought++;
     if (atWarNow) for (const s of own) if (bought < 2 && nextToEnemy(game, code, String(s.id)) && s.pop >= 15000 && buy("walls", s)) bought++;
     const libraries = own.filter((s) => s.library).length;
     if (libraries < MAX_LIBRARIES && fl.builder > 0.4) for (const s of own) if (bought < 2 && !s.library && buy("library", s)) { bought++; break; }

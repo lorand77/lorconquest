@@ -12,7 +12,7 @@
 import { CREW_PER_CANNON, WEAPONS, menOf, takeMen } from "./army.js";
 import { longDate } from "./calendar.js";
 import { afford, done, money, ownArmy, positive, refuse, whole } from "./command-util.js";
-import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, MERCENARY_DAYS,
+import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, DEFAULT_BAN_DAYS, LAWS, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, MERCENARY_DAYS,
     MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTER_PRICE, SHARPSHOOTERS_PER_PASS, SHIPS, SHIP_PRICE, TECHS, TRAIN_CAPITAL_DAYS,
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
 import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, unlockTech } from "./economy.js";
@@ -143,11 +143,21 @@ export const countryCommands = {
         if (s[cmd.building]) return refuse(`${cmd.settlement} has its ${cmd.building} already`);
         // a courthouse only makes a settlement core (RULES.md §2): where it is core already it would do nothing
         if (cmd.building === "courthouse" && s.cores.includes(c.code)) return refuse(`${cmd.settlement} is your core already: a courthouse there would do nothing`);
+        // and only once its people are compliant: 20 years held (RULES.md §2)
+        if (cmd.building === "courthouse" && game.state.day - s.heldSince < CORING_DAYS) {
+            const pct = Math.floor((game.state.day - s.heldSince) / CORING_DAYS * 100);
+            return refuse(`the people of ${cmd.settlement} are not compliant yet: ${pct}% — a courthouse once they are, after 20 years held`);
+        }
         if (cmd.building === "library" && ownedBy(game.state, c.code).filter((x) => x.library).length >= MAX_LIBRARIES) return refuse(`${MAX_LIBRARIES} libraries are the most that count`);
         const why = afford(c, BUILDING_PRICE[cmd.building]);
         if (why) return refuse(why);
         c.treasury -= BUILDING_PRICE[cmd.building];
         s[cmd.building] = true;
+        // a courthouse in a compliant settlement makes it core at once
+        if (cmd.building === "courthouse") {
+            s.cores.push(c.code);
+            return done([{ type: "cored", day: game.state.day, country: c.code, settlement: s.id }]);
+        }
         return done();
     },
 

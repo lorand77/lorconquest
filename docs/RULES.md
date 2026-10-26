@@ -100,8 +100,9 @@ town. Lost people come back
 only through growth or **Buy people**.
 **Mercenaries** are the exception: they are foreigners, and their dead cost you no people (§8).
 
-**Coring.** A settlement becomes core after you have held it **20 years** *and* bought a
-**Courthouse**. Special coring (see [Special coring](../scenarios/mitteleuropa/SCENARIO.md#special-coring)) waives both.
+**Coring.** A settlement's people grow **compliant** with you as you hold it: from 0% when you take it to **100% after 20
+years**. Only then may you buy it a **Courthouse**, and it becomes core at once. Special coring (see
+[Special coring](../scenarios/mitteleuropa/SCENARIO.md#special-coring)) waives both.
 
 **Conquest.** A captured settlement is held from the day it falls: the 20 years start again, its
 courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It
@@ -139,7 +140,7 @@ carry — their men fight on, unarmed. The debt clock then stops.
 
 **Each month**, in this order: people grow; unpaid mercenaries desert; the month's money is paid; the bank
 pays interest; research is added and a tech whose cost is covered unlocks; the debt clock starts or stops;
-a bankrupt country is sold up; settlements held 20 years with a courthouse become core. Every figure is
+a bankrupt country is sold up; settlements held 20 years with a courthouse become core (a courthouse bought at full compliance does so at once). Every figure is
 worked out from the state on that day.
 
 A country with **no settlement left** is out of the game (§10, *Elimination*): it has no monthly step at all — no money,
@@ -170,7 +171,7 @@ country's lowest-numbered port.
 | **Library** | 0.075M | — | +5% of total R · max one per settlement · capped at +50% (see §4) |
 | **Workshop** | 0.075M | — | +3500 money from settlement |
 | **Market** | 0.075M | — | +15% money from settlement — its Workshop's 3500 included |
-| **Courthouse** | 0.05M | — | Settlement can be cored (also needs 20 years) · only where it is not your core already |
+| **Courthouse** | 0.05M | — | Makes the settlement core at once · only once its people are 100% compliant (20 years held), and not where it is your core already |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |

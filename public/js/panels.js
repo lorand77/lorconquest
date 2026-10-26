@@ -3,9 +3,9 @@
 // Research tab, the panel of a selected fleet, and an army's equipment. Every control sends a command to the server,
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
-import { BUILDING_PRICE, CANNON_PRICE, LAWS, LAW_DAYS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
+import { BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, LAWS, LAW_DAYS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, longDate, techCost } from "/engine/index.js";
-import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, formatNumber } from "./mirror.js";
+import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber } from "./mirror.js";
 
 const n = formatNumber;
 export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
@@ -108,6 +108,18 @@ export function countryTab(ctx) {
     return out;
 }
 
+// a settlement's compliance with its owner (mirror.js, compliance): a bar to 100%, after which a courthouse makes it core;
+// nothing for a settlement core for its owner already
+export function complianceBlock(ctx, s) {
+    const c = compliance(s, ctx.state.day, CORING_DAYS);
+    if (c.core) return "";
+    const years = Math.floor(c.daysLeft / 365), months = Math.floor((c.daysLeft % 365) / 30.4);
+    const left = c.ready ? "compliant: a courthouse makes it core" : `${years ? `${years} year${years === 1 ? "" : "s"} ` : ""}${months} month${months === 1 ? "" : "s"} to go`;
+    return ctx.make("div", { class: "compliance" },
+        ctx.make("div", { class: "row" }, ctx.make("span", {}, `Compliance ${c.pct}%`), ctx.make("span", { class: "hint" }, left)),
+        ctx.make("div", { class: "bar" }, ctx.make("i", { style: `width:${c.pct}%` })));
+}
+
 // ---------- Shop ----------
 export function shopTab(ctx) {
     const { state, game, me, make } = ctx;
@@ -121,10 +133,12 @@ export function shopTab(ctx) {
     // buildings, in the settlement selected on the map
     const sel = ctx.sel?.kind === "place" ? state.settlements[ctx.sel.key] : null;
     if (sel && sel.owner === me) {
-        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}`, make("div", { class: "buttons" },
-            // (no courthouse where the settlement is core already: it would do nothing)
+        // (no courthouse where the settlement is core already, where it would do nothing, nor before its people are compliant)
+        const ready = compliance(sel, state.day, CORING_DAYS).ready;
+        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}`, complianceBlock(ctx, sel), make("div", { class: "buttons" },
             ...Object.keys(BUILDING_PRICE).filter((b) => b !== "courthouse" || sel.courthouse || !sel.cores.includes(me)).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${b}`)
-                : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
+                : b === "courthouse" && !ready ? make("span", { class: "hint" }, "courthouse: once compliant")
+                    : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
     } else out.push(make("p", { class: "hint" }, "Select one of your settlements on the map to build walls, a library, workshop, market or courthouse there."));
 
     // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: with the weapon the

@@ -612,6 +612,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   private part, no questions waiting), the days, pauses, presence and the end — never the chat or a player's private changes
   (they go to `game:<id>` and `game:<id>:<country>`, a watcher is in `watch:<id>`) — the Map and Events tabs only (the news of
   the people's countries), no orders, and at the end Game over with who won. Watching counts as online, not playing.
+- **Compliance:** a settlement not core for its owner shows how far its people comply — a bar from 0% when taken to 100% after
+  20 years held (`mirror.js`, `compliance`; `panels.js`, `complianceBlock`) — in its panel and in the Shop's buildings for it;
+  the Shop offers the courthouse, which makes it core at once, only at 100%.
 - **Scores:** a small board over the map's top right (`mirror.js`, `scoreboard`) — the five countries ahead and the player's
   own after them if not among them — with three tabs: Settlements (as victory counts them, with the target), People (their own
   and their subjects') and Military (the power diplomacy weighs). It folds to its title, and shows the players' names in a game

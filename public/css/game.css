@@ -357,6 +357,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .panel .tech.done { background: var(--good-bg); border-color: var(--good-border); }
 .panel .tech.target { border-color: var(--gold); }
 .panel .tech .row { justify-content: space-between; }
+.panel .compliance { margin: 6px 0 8px; }
+.panel .compliance .row { justify-content: space-between; margin: 0; }
 .panel .bar { height: 7px; background: var(--track); border-radius: 3px; margin: 4px 0; overflow: hidden; }
 .panel .bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
 

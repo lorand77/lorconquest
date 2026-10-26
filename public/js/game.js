@@ -6,7 +6,7 @@ import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, men
 import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
-import { TECH_NAMES, armyEquipment, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
+import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { formatCountdown, presenceText } from "./lobbylogic.js";
 
@@ -544,6 +544,8 @@ function placePanel(key) {
     const out = [make("h2", {}, swatch(s.owner), ` ${name(key)}`),
         make("p", {}, `${country(s.owner).name}. ${formatNumber(s.pop)} people.${s.cores.includes(s.owner) ? " Core." : ""}${s.walls ? " Walls." : ""}`)];
     if (s.siege) out.push(make("p", { class: "siege" }, `Besieged by ${country(s.siege.by).name}: it falls ${longDate(s.siege.end)} unless relieved.`));
+    const comply = complianceBlock(ctx, s);                   // a settlement not core for its owner: how far its people comply
+    if (comply) out.push(comply);
     out.push(here.length ? armyList(here) : make("p", {}, "No army here."));
     return out;
 }

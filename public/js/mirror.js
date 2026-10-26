@@ -265,3 +265,11 @@ export function pinchView(start, { from, to, anchor, at, width }, W, H, aspect) 
     const w = fitView({ ...start, w: start.w * from / Math.max(1, to) }, W, H, aspect).w, k = w / width;
     return fitView({ x: anchor.x - at.x * k, y: anchor.y - at.y * k, w }, W, H, aspect);
 }
+
+// how compliant a settlement's people are with its owner (RULES.md §2): the share of the 20 years held after which a courthouse
+// may be bought, making it core. { core } for a settlement core for its owner already; else { pct (0-100), daysLeft, ready }.
+export function compliance(s, day, coringDays) {
+    if (s.cores.includes(s.owner)) return { core: true };
+    const held = Math.max(0, day - (s.heldSince ?? 0));
+    return { core: false, pct: Math.min(100, Math.floor(held / coringDays * 100)), daysLeft: Math.max(0, Math.ceil(coringDays - held)), ready: held >= coringDays };
+}

@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -230,4 +230,11 @@ test("pinching the map zooms by the fingers' spread and keeps the point under th
         { x: 400, y: 200, w: 600, h: 400 });
     // pinched in past the whole map: no further out than the map
     assert.equal(pinchView(start, { from: 200, to: 50, anchor: { x: 600, y: 400 }, at: { x: 300, y: 200 }, width: 600 }, W, H, aspect).w, 1200);
+});
+
+test("compliance: the share of 20 years held, ready at 100%; nothing for a settlement core already", () => {
+    const years = 20 * 365, s = { owner: "AAA", cores: [], heldSince: 100 };
+    assert.deepEqual(compliance(s, 100 + 5 * 365, years), { core: false, pct: 25, daysLeft: 15 * 365, ready: false });
+    assert.deepEqual(compliance(s, 100 + years + 50, years), { core: false, pct: 100, daysLeft: 0, ready: true });
+    assert.deepEqual(compliance({ ...s, cores: ["AAA"] }, 5000, years), { core: true });
 });
