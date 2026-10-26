@@ -172,3 +172,22 @@ test("the country dealt with shows who it is at war with, and since when — you
     assert.match(text, /At war with:\s+BAV\s+you\s+since 1 January 1440\s*,\s+BRB\s+Brandenburg\s+since 1 January 1440\s*\./);
     assert.match(textOf(diplomacyTab({ ...ctx, ui: { target: "ULM" } })), /At peace\./);
 });
+
+test("your own vassal shows Integrate: why not until it may, then the button", async () => {
+    const vassal = (game) => {
+        const u = game.state.countries.ULM;
+        Object.assign(u, { overlord: "BAV", subjectKind: "vassal", vassalSince: 0 });
+    };
+    let { ctx } = setup(vassal, "ULM");
+    let nodes = diplomacyTab(ctx);
+    assert.match(textOf(nodes), /Your vassal since 1 January 1440/);
+    assert.equal(button(nodes, "Integrate").attrs.disabled, "disabled");
+    assert.match(textOf(nodes), /after 10 years: ULM on 1 January 1450/);
+    let sent;
+    ({ ctx, sent } = setup((game) => { vassal(game); game.state.day = 3650; }, "ULM"));
+    nodes = diplomacyTab(ctx);
+    assert.equal(button(nodes, "Integrate").attrs.disabled, undefined);
+    globalThis.confirm = () => true;
+    await button(nodes, "Integrate").handlers.click();
+    assert.deepEqual(sent, [{ type: "integrate", target: "ULM" }]);
+});

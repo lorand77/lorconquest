@@ -129,6 +129,7 @@ function randomCommand(game, r) {
         case "cancelAccess": return { ...a, with: pick(codes) };
         case "demandSubject": return { ...a, target: pick(codes), kind: pick(["vassal", "protectorate"]) };
         case "proposeEmpire": return a;
+        case "integrate": { const mine = Object.keys(st.countries).filter((c) => st.countries[c].overlord === country); return { ...a, target: mine.length && r() < 0.8 ? pick(mine) : pick(codes) }; }
         case "answerOffer": { const o = pick(st.offers); return { ...a, id: o?.id, accept: r() < 0.5 }; }
         case "move": return { ...a, army: army?.id, to: pick(nodeKeys), storm: r() < 0.3 };
         case "stop": case "besiege": case "storm": case "sortie": case "stormPost": return { ...a, army: army?.id };
@@ -195,7 +196,8 @@ test("random play: 45 countries giving every kind of command keep the state sane
     if (process.env.FUZZ_REPORT) console.log([...happened].sort().map(([k, v]) => `${k}:${v}`).join(" "));
     // diplomacy really happened: wars joined by others, agreements signed, peaces made, subjects made
     for (const type of ["joins", "agreement", "peace", "subject"]) assert.ok(happened.get(type) > 0, `no ${type} event in the whole fuzz`);
-    // the fuzz is only worth anything if it does things: nearly every kind of command was accepted at least once
+    // the fuzz is only worth anything if it does things: nearly every kind of command was accepted at least once (integrate needs
+    // a vassal of 10 years at peace, which random play, always at war, hardly ever leaves: subjects.test.js covers it)
     const never = COMMAND_TYPES.filter((t) => !accepted.has(t));
-    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire"].includes(t)), [], "never accepted");
+    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire", "integrate"].includes(t)), [], "never accepted");
 });

@@ -3,8 +3,10 @@
 // taxes lightly in peace and harder in war, and spends what is above the reserve on the buildings that pay. A country in
 // distress — in the red and losing money, as one that borrowed in a war and then lost its land is — taxes as much as it may,
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
-// rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it.
-import { BUILDING_PRICE, CORING_DAYS, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, isVassal, militaryPowerOf, neighboursOf, overlordOf } from "../engine/index.js";
+// rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it. A vassal of 10 years it
+// integrates when it can pay.
+import { BUILDING_PRICE, CORING_DAYS, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, isVassal, militaryPowerOf, neighboursOf,
+    overlordOf, subjectsOf } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
 import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
 
@@ -83,6 +85,15 @@ export function economyOrders(game, code, fl, ctx) {
         // what this think has spent already (forces: men raised armed, weapons) is gone by the time the repayment is applied
         const chunks = Math.min(Math.floor(c.loans / LOAN_CHUNK), Math.floor(spare / LOAN_CHUNK / 2) || 1, Math.floor(Math.max(0, ctx.budget) / LOAN_CHUNK));
         if (chunks > 0) { cmd("repay", { chunks }); ctx.budget -= chunks * LOAN_CHUNK; }
+    }
+
+    // a vassal of 10 years is integrated, one a year, when the money is there (RULES.md §10, Integration): its land becomes core
+    // and its armies ours, and it can no longer break free. A person's vassal is asked, once while the question waits.
+    const ripe = subjectsOf(st, code).filter((v) => !integrateError(game, code, v) && integratePrice(game, v) <= ctx.budget
+        && !st.offers.some((o) => o.kind === "integrate" && o.from === code && o.to === v)).sort();
+    if (ripe.length) {
+        ctx.budget -= integratePrice(game, ripe[0]);
+        cmd("integrate", { target: ripe[0] });
     }
 
     // buildings: courthouses where a settlement is compliant and not core, then walls at the front in war, libraries, workshops, markets

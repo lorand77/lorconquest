@@ -113,7 +113,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             case "tick":
                 room.lastTick = performance.now();
                 save(room, m);
-                for (const e of m.events) if (e.type === "eliminated" && room.seats.has(e.country)) seatOut(room, room.seats.get(e.country), e.day);
+                for (const e of m.events) {
+                    const gone = e.type === "eliminated" ? e.country : e.type === "integrated" ? e.subject : null;     // out of the game either way
+                    if (gone && room.seats.has(gone)) seatOut(room, room.seats.get(gone), e.day);
+                }
                 everyone(room).emit("tick", { day: m.day, events: m.events, changes: m.pub });
                 for (const [code, changes] of Object.entries(m.priv)) io.to(`game:${room.id}:${code}`).emit("private", { day: m.day, changes });
                 break;

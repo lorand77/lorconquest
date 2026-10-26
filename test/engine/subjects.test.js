@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { addAgreement, formLeague, setSubject } from "../../src/engine/diplomacy.js";
-import { atWar, demandChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
+import { INTEGRATE_DAYS, atWar, demandChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused, rigRoll } from "../helpers/tiny.js";
 
 const cmd = (country, type, rest = {}) => ({ type, country, ...rest });
@@ -260,4 +260,47 @@ test("at the end date the most settlements win, a tie going to the larger popula
     pop.state.settlements[1].pop = 25000;                                       // CCC (1 and 6) has 35,000 people; BBB 30,000, DDD and EEE 20,000
     runTo(pop, 365);
     assert.equal(pop.state.winner, "CCC");
+});
+
+test("integration: a vassal of 10 years, neither at war, for a courthouse a settlement — its land core, its forces and money the overlord's", () => {
+    const make = (humans = []) => {
+        const game = tinyGame(1, () => {}, humans);
+        setSubject(game, "BBB", "AAA", "vassal", []);
+        return game;
+    };
+    let game = make();
+    const b = game.state.countries.BBB, a = game.state.countries.AAA;
+    assert.equal(b.vassalSince, 0);
+    assert.match(refused(game, cmd("AAA", "integrate", { target: "BBB" })), /after 10 years: BBB on 1 January 1450/);
+    assert.match(refused(game, cmd("AAA", "integrate", { target: "CCC" })), /CCC is not your vassal/);
+    game.state.day = INTEGRATE_DAYS;
+    a.treasury = 99999;
+    assert.match(refused(game, cmd("AAA", "integrate", { target: "BBB" })), /costs 100,000/);
+    a.treasury = 200000;
+    b.treasury = 30000;
+    b.loans = 5000;
+    const events = order(game, cmd("AAA", "integrate", { target: "BBB" }));
+    assert.deepEqual(ofType(events, "integrated")[0], { type: "integrated", day: INTEGRATE_DAYS, country: "AAA", subject: "BBB", settlements: 2 });
+    assert.equal(ofType(events, "eliminated").length, 0, "integrated, not eliminated");
+    for (const id of [4, 5]) {
+        assert.equal(game.state.settlements[id].owner, "AAA");
+        assert.ok(game.state.settlements[id].cores.includes("AAA"));
+        assert.equal(game.state.armies[id].owner, "AAA", "its garrisons are the overlord's now");
+    }
+    assert.deepEqual([a.treasury, a.loans, a.warmonger, b.out, b.overlord], [200000 - 100000 + 30000, 5000, 2, INTEGRATE_DAYS, null]);
+    // not while at war
+    game = make();
+    game.state.day = INTEGRATE_DAYS;
+    order(game, cmd("AAA", "declareWar", { target: "CCC" }));
+    assert.match(refused(game, cmd("AAA", "integrate", { target: "BBB" })), /not while either of you is at war/);
+    // a person's vassal is asked, and their yes integrates them
+    game = make(["BBB"]);
+    game.state.day = INTEGRATE_DAYS;
+    game.state.countries.AAA.treasury = 200000;
+    order(game, cmd("AAA", "integrate", { target: "BBB" }));
+    assert.match(refused(game, cmd("AAA", "integrate", { target: "BBB" })), /asked BBB already/);
+    const offer = game.state.offers.find((o) => o.kind === "integrate");
+    assert.equal(game.state.countries.BBB.out, null);
+    order(game, cmd("BBB", "answerOffer", { id: offer.id, accept: true }));
+    assert.equal(game.state.countries.BBB.out, INTEGRATE_DAYS);
 });

@@ -21,7 +21,7 @@ const make = (tag, props = {}, ...children) => {
 };
 
 // the events worth a line in the feed
-const WORTHY = new Set(["war", "peace", "capture", "victory", "empire", "subject", "freedom", "joins", "uprising", "bankruptcy"]);
+const WORTHY = new Set(["war", "peace", "capture", "victory", "empire", "integrated", "subject", "freedom", "joins", "uprising", "bankruptcy"]);
 
 // the requests run side by side, not one after another
 const id = Number(new URLSearchParams(location.search).get("id"));

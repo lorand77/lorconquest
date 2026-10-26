@@ -39,6 +39,7 @@ function eliminate(game, code, events) {
     for (const s of subjectsOf(st, code)) freeSubject(game, s, events);
     c.overlord = null;
     c.subjectKind = null;
+    c.vassalSince = null;
     st.offers = st.offers.filter((o) => o.from !== code && o.to !== code);
     events.push({ type: "eliminated", day: st.day, country: code });
     // a siege its armies held is lifted, a settlement they defended for a friend may fall

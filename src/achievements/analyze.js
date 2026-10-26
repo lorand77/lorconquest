@@ -36,6 +36,7 @@ export function analyzeGame(job) {
         let owners = false, subjects = false;
         for (const e of events) {
             if (e.type === "capture") { lastTaker.set(e.from, e.to); owners = true; }
+            if (e.type === "integrated") { owners = true; subjects = true; }
             if (e.type === "peace") {
                 owners = true; subjects = true;
                 for (const id of e.terms?.take ?? []) lastTaker.set(e.with, e.country);

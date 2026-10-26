@@ -7,7 +7,9 @@
 // joined drags in further allies. Every pair at war has a record — who is the attacking side, the people each had
 // at the start, and the people each has taken — for the war score and the warmonger score at the peace.
 
-import { YEAR_DAYS } from "./calendar.js";
+import { YEAR_DAYS, longDate } from "./calendar.js";
+import { money } from "./command-util.js";
+import { BUILDING_PRICE } from "./costs.js";
 import { popOf } from "./economy.js";
 import { capture } from "./fighting.js";
 import { retreat } from "./movement.js";
@@ -94,6 +96,8 @@ export function setSubject(game, subject, overlord, kind, events) {
     const st = game.state, c = st.countries[subject];
     if (subject === overlord || wouldCycle(st, subject, overlord) || (c.overlord && c.overlord !== overlord)) return false;
     if (atWar(st, subject, overlord)) closeWar(game, subject, overlord);
+    // the day it became this overlord's vassal, from which it may be integrated after 10 years (integrate, below)
+    c.vassalSince = kind !== "vassal" ? null : c.overlord === overlord && c.subjectKind === "vassal" ? c.vassalSince : st.day;
     c.overlord = overlord;
     c.subjectKind = kind;
     if (kind === "vassal") {
@@ -113,6 +117,7 @@ export function freeSubject(game, subject, events) {
     const st = game.state, c = st.countries[subject], overlord = c.overlord;
     c.overlord = null;
     c.subjectKind = null;
+    c.vassalSince = null;
     events.push({ type: "freedom", day: st.day, country: subject, overlord });
 }
 
@@ -294,6 +299,71 @@ export function proposeEmpire(game, proposer, events) {
     st.memory.empire[proposer].league = refused;
     formLeague(game, refused, events);
     events.push({ type: "empire", day: st.day, country: proposer, joined: germanStates(game).filter((c) => st.countries[c].overlord === proposer).length, refused: refused.length, asked: asked.length });
+}
+
+// ---------- integrating a vassal ----------
+
+// a vassal of 10 years may be made part of its overlord's country, for the price of a courthouse a settlement, while neither
+// is at war (peasants included); a person's country is asked first (RULES.md §10, Integration)
+export const INTEGRATE_DAYS = 10 * YEAR_DAYS;
+export const integratePrice = (game, subject) => Object.values(game.state.settlements).filter((s) => s.owner === subject).length * BUILDING_PRICE.courthouse;
+
+// why `overlord` may not integrate `subject` now, or null
+export function integrateError(game, overlord, subject) {
+    const st = game.state, c = st.countries[subject];
+    if (!c || c.overlord !== overlord || c.subjectKind !== "vassal") return `${subject} is not your vassal`;
+    const from = (c.vassalSince ?? 0) + INTEGRATE_DAYS;
+    if (st.day < from) return `a vassal may be integrated after 10 years: ${subject} on ${longDate(from)}`;
+    const fighting = (code) => st.wars.some((w) => w.split("|").includes(code));
+    if (fighting(overlord) || fighting(subject)) return "not while either of you is at war";
+    const price = integratePrice(game, subject);
+    if (st.countries[overlord].treasury < price) return `integrating ${subject} costs ${money(price)}, and the treasury holds ${money(st.countries[overlord].treasury)}`;
+    return null;
+}
+
+// the vassal becomes part of the overlord: its settlements (core for the overlord at once), armies, fleets, sharpshooters,
+// soldiers being raised, weapons, treasury, bank, loans and research pool, and its own subjects. It is then out of the game
+// — integrated, not eliminated: nothing of it vanishes, and it has no wars to end. +1 warmonger score a settlement.
+export function integrate(game, overlord, subject, events) {
+    const st = game.state, o = st.countries[overlord], c = st.countries[subject];
+    o.treasury -= integratePrice(game, subject);
+    let n = 0;
+    for (const s of Object.values(st.settlements)) {
+        if (s.owner !== subject) continue;
+        s.owner = overlord;
+        s.heldSince = st.day;
+        if (!s.cores.includes(overlord)) s.cores.push(overlord);
+        n++;
+    }
+    for (const a of armyList(st)) if (a.owner === subject) a.owner = overlord;
+    for (const fl of Object.values(st.fleets)) if (fl.owner === subject) fl.owner = overlord;
+    for (const p of Object.values(st.posts)) if (p.owner === subject) p.owner = overlord;
+    o.training.push(...c.training);
+    o.hires.push(...c.hires);
+    c.training = [];
+    c.hires = [];
+    for (const w of Object.keys(o.reserve)) { o.reserve[w] += c.reserve[w]; c.reserve[w] = 0; }
+    o.treasury += c.treasury;
+    o.bank += c.bank;
+    o.loans += c.loans;
+    o.r += c.r;
+    o.noBorrowUntil = Math.max(o.noBorrowUntil, c.noBorrowUntil);
+    if (o.treasury < 0) o.debtSince = Math.min(o.debtSince ?? st.day, c.debtSince ?? st.day);
+    c.treasury = c.bank = c.loans = c.r = 0;
+    for (const s of subjectsOf(st, subject)) {
+        const x = st.countries[s];
+        x.overlord = overlord;
+        x.vassalSince = x.subjectKind === "vassal" ? st.day : null;
+    }
+    removeAgreements(game, (x) => x.a === subject || x.b === subject);
+    st.offers = st.offers.filter((x) => x.from !== subject && x.to !== subject);
+    c.out = st.day;
+    c.overlord = null;
+    c.subjectKind = null;
+    c.vassalSince = null;
+    lapseCoalitions(game, events);
+    o.warmonger += n;
+    events.push({ type: "integrated", day: st.day, country: overlord, subject, settlements: n });
 }
 
 // ---------- asking a country to become a subject ----------

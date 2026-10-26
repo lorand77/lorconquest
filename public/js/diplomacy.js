@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { BAR, agreementAnswer, bordering, demandChance, germanStates, hreSettlementsOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { BAR, agreementAnswer, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -25,6 +25,7 @@ function offerText(ctx, o) {
     if (o.kind === "agreement") return `${who(o.from)} proposes a ${AGREEMENT_NAMES[o.agreement]}.`;
     if (o.kind === "demand") return `${who(o.from)} demands that you become its ${o.subject}.`;
     if (o.kind === "empire") return `${who(o.from)} demands the Empire: join as its protectorate, or join the League against it.`;
+    if (o.kind === "integrate") return `${who(o.from)} asks to integrate you: your land, armies and treasury become its own, and you are out of the game.`;
     const t = o.terms ?? {};
     const parts = [t.take?.length && `it takes ${t.take.map((id) => town(ctx, id)).join(", ")}`, t.give?.length && `it gives you ${t.give.map((id) => town(ctx, id)).join(", ")}`,
         t.money && `${t.money > 0 ? "you pay" : "it pays"} ${n(Math.abs(t.money))}`, t.makeSubject && `you become its ${t.makeSubject}`, t.becomeSubject && `it becomes your ${t.becomeSubject}`].filter(Boolean);
@@ -149,6 +150,14 @@ function dealWith(ctx, t) {
         human ? mk("p", { class: "hint" }, "A person plays this country: proposals wait for its answer.") : mk("p", {}, `Its opinion of you: ${op > 0 ? "+" : ""}${Math.round(op)}. Warmonger score ${Math.round(them.warmonger ?? 0)}.`),
         them.overlord ? mk("p", {}, `A ${them.subjectKind} of ${state.countries[them.overlord].name}${vassal ? ": it has no diplomacy of its own — speak to its overlord" : ""}.`) : "",
         warsOf(ctx, t)));
+    // your vassal of 10 years may become part of your country (RULES.md §10, Integration)
+    if (vassal && them.overlord === me) {
+        const why = integrateError(game, me, t), since = them.vassalSince ?? 0;
+        out.push(section(ctx, "Integrate",
+            mk("p", { class: "hint" }, `Your vassal since ${longDate(since)}. After 10 years, while neither of you is at war, it may become part of your country for ${n(integratePrice(game, t))} (a courthouse a settlement): its settlements become your core, its armies, fleets and treasury yours. +1 warmonger score a settlement.${human ? " A person plays it: they are asked." : ""}`),
+            row(ctx, mk("button", { class: "primary", disabled: why ? "disabled" : undefined, onclick: async () => { if (confirm(`Integrate ${them.name}?`)) { await ctx.send({ type: "integrate", target: t }); ctx.redraw(); } } }, "Integrate"),
+                why ? mk("span", { class: "hint" }, why) : "")));
+    }
     if (vassal || state.countries[t].rebel) return out;
 
     // war

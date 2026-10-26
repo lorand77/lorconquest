@@ -7,10 +7,10 @@
 //   proposeAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "access" }
 //       guarantee: you guarantee them; access: they give you military access
 //   breakAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "truce" }   cancelAccess { with }
-//   demandSubject { target, kind: "vassal" | "protectorate" }   proposeEmpire {}
+//   demandSubject { target, kind: "vassal" | "protectorate" }   proposeEmpire {}   integrate { target }   a vassal of 10 years
 //   answerOffer { id, accept }       a call to arms, or anything a human was asked
 import { done, refuse } from "./command-util.js";
-import { OFFER_DAYS, addAgreement, declareWar, demandSubject, evictClosed, hreSettlementsOf, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
+import { OFFER_DAYS, addAgreement, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, validateTerms, joinWar, PACT_DAYS } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { agreementAnswer, peaceAnswer } from "./opinion.js";
@@ -149,7 +149,23 @@ export const diplomacyCommands = {
         return done(events);
     },
 
-    // a human's answer to a question: a call to arms, a proposal, a demand, the Empire
+    // a vassal of 10 years becomes part of its overlord's country (RULES.md §10, Integration): a computer's vassal has no say, a
+    // person's is asked — and the conditions must still hold when they say yes
+    integrate(game, cmd) {
+        const st = game.state, { c, error } = other(game, cmd, cmd.target);
+        if (error) return refuse(error);
+        const why = integrateError(game, cmd.country, c);
+        if (why) return refuse(why);
+        if (isHuman(st, c)) {
+            if (st.offers.some((o) => o.kind === "integrate" && o.from === cmd.country && o.to === c)) return refuse(`you have asked ${c} already: it has 6 months to answer`);
+            return done([ask(game, "integrate", cmd.country, c)]);
+        }
+        const events = [];
+        integrate(game, cmd.country, c, events);
+        return done(events);
+    },
+
+    // a human's answer to a question: a call to arms, a proposal, a demand, the Empire, integration
     answerOffer(game, cmd) {
         const st = game.state, offer = st.offers.find((o) => o.id === cmd.id);
         if (!offer) return refuse(`no question ${cmd.id}`);
@@ -170,6 +186,8 @@ export const diplomacyCommands = {
         } else if (offer.kind === "demand") {
             if (accept && !(overlordOf(st, offer.to) && offer.subject === "protectorate")) setSubject(game, offer.to, offer.from, offer.subject, events);
             else if (!accept) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
+        } else if (offer.kind === "integrate") {
+            if (accept && !integrateError(game, offer.from, offer.to)) integrate(game, offer.from, offer.to, events);
         } else if (offer.kind === "empire") {
             // one that has become someone's subject since it was asked has nothing to give: its yes changes nothing
             if (accept) { if (!st.countries[offer.to].overlord) setSubject(game, offer.to, offer.from, "protectorate", events); }

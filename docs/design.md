@@ -291,7 +291,7 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   pacts with neighbours, a defensive alliance only when it feels threatened (need over 15) and only with a neighbour at
   least 80% as strong, military alliances against a common enemy — no alliance of either kind once it or the other holds
   two (`ALLIANCE_CAP`; experiments/README.md, 6), subjects demanded of
-  much weaker neighbours, and the Empire proposed once when it holds enough. To a human it asks once a year, and
+  much weaker neighbours, the Empire proposed once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). To a human it asks once a year, and
   not while a question stands.
 - **Reflexes:** the country looks at its war again on the tick after a siege begins or a war is declared or joined
   or a battle is fought involving it.
@@ -675,7 +675,7 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   war scores, the agreements held (with Break and Cancel), the player's subjects and overlord, and a country to deal
   with, picked from a list or by clicking its land. For it the tab shows who it is at war with and since when, its opinion of the player, who would join each
   side of a war and what a declaration breaks, each agreement with whether the computer is likely to accept and why,
-  the chance of a demand, and a **peace form**: tick the settlements to take or give, money, a subject —
+  the chance of a demand, for its own vassal an Integrate button (with why not, until it may), and a **peace form**: tick the settlements to take or give, money, a subject —
   and the computer's own answer shown as you edit. The Empire has a section of its own, whoever is picked: how much of
   it the player holds, a button that dims every land outside it on the map, each demand made and what came of it (the
   proposer's protectorates in it now, the League as it stands), and the player's own demand with how many computer

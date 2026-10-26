@@ -74,6 +74,7 @@ export function describeEvent(map, e) {
         case "broke": return `${e.country} breaks an agreement: its alliances end, and the world remembers`;
         case "peace": return `${e.country} and ${e.with} make peace${[e.terms?.take?.length && `, ${e.country} takes ${e.terms.take.map(town).join(", ")}`, e.terms?.give?.length && `, ${e.country} gives ${e.terms.give.map(town).join(", ")}`, e.terms?.money && `, ${fmt(Math.abs(e.terms.money))} paid`, e.terms?.makeSubject && `, ${e.with} becomes its ${e.terms.makeSubject}`, e.terms?.becomeSubject && `, ${e.country} becomes its ${e.terms.becomeSubject}`].filter(Boolean).join("")}`;
         case "subject": return `${e.country} becomes a ${e.kind} of ${e.overlord}`;
+        case "integrated": return `${e.country} integrates its vassal ${e.subject}: ${e.settlements} settlements become its own`;
         case "freedom": return `${e.country} breaks free of ${e.overlord}`;
         case "eliminated": return `${e.country} is no more: its last settlement has fallen`;
         case "refused": return `${e.country} refuses ${e.from}'s demand ${e.what}`;
@@ -95,6 +96,7 @@ export function eventCountries(e) {
         case "peace": case "ended": return [e.country, e.with];
         case "agreement": case "expired": return [e.a, e.b];
         case "subject": case "freedom": return [e.country, e.overlord];
+        case "integrated": return [e.country, e.subject];
         case "eliminated": return [e.country];
         case "league": return e.members;
         case "surrender": return [e.owner, e.by];

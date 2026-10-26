@@ -151,7 +151,7 @@ const COMMANDS = {
 };
 
 // a vassal has no diplomacy of its own: it cannot declare war, make agreements or sign peace (RULES.md §10)
-const DIPLOMACY = ["declareWar", "proposePeace", "proposeAgreement", "breakAgreement", "cancelAccess", "demandSubject", "proposeEmpire"];
+const DIPLOMACY = ["declareWar", "proposePeace", "proposeAgreement", "breakAgreement", "cancelAccess", "demandSubject", "proposeEmpire", "integrate"];
 
 export const COMMAND_TYPES = Object.keys(COMMANDS);
 

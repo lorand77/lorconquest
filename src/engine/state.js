@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 23;
+export const RULES_VERSION = 24;
 // bump when the shape of the state changes
-export const FORMAT = 6;
+export const FORMAT = 7;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -33,7 +33,7 @@ export function initialState(map, seed, humans = []) {
             treasury: sc.scaleX * c.pop * 2, bank: 0, loans: 0, noBorrowUntil: 0, debtSince: null,
             tax: 2, taxSum: 0, harvest: false, slider: 50, law: "feudal", lawDay: null,
             techs: [...START_TECHS], target: null, r: 0, reserve: emptyReserve(), training: [], hires: [],
-            warmonger: 0, overlord: null, subjectKind: null,
+            warmonger: 0, overlord: null, subjectKind: null, vassalSince: null,
             // the day it lost its last settlement and was out of the game (elimination.js), or null
             out: null,
         };

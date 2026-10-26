@@ -137,7 +137,7 @@ function onTick(m) {
         if (mine && e.type === "tech") askLater = false;    // a tech done: a new one to choose, the banner again
         if ((e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
             || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
-                "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "broke", "fleetPaidOff"].includes(e.type))) toast(describeEvent(game.map, e));
+                "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "integrated", "broke", "fleetPaidOff"].includes(e.type))) toast(describeEvent(game.map, e));
     }
     // a war declared on us: the banner, and anyone joining it since is added to it
     const alert = warAlert(m.events, me, war ?? undefined);

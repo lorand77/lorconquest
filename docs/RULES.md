@@ -674,6 +674,15 @@ your own — the overlord's forces only, not those of its other subjects. This i
 agreement. Raising unarmed men never frees a subject — it has to arm them, and an overlord with
 better weapons stays ahead with fewer men.
 
+**Integration.** A country that has been your **vassal for 10 years** (counted from when it became your vassal; a
+protectorate made a vassal counts from then) may be **integrated** into yours, while **neither of you is at war** —
+peasant rebels included. It costs the price of a **courthouse for each of its settlements** (0.05M each). Its settlements
+become yours and **core** for you at once; its armies, fleets, sharpshooters, soldiers and mercenaries being raised, weapons,
+treasury, bank deposit, loans and research pool become yours, and its own subjects become your subjects (a vassal among them
+counting its 10 years afresh). It is then out of the game — integrated, not defeated: nothing of it vanishes. Your warmonger
+score rises by **1 for each settlement**. A computer-run vassal has no say; a person's is **asked**, and their yes counts
+only if all of this still holds when they give it. A person whose country is integrated has lost it, as if eliminated.
+
 ### Peace
 Either side may propose peace, with **any terms both sides agree to**: settlements, money, making
 one side a vassal or protectorate of the other, releasing subjects. If you have conquered all of
