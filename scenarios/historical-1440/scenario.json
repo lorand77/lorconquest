@@ -16738,6 +16738,84 @@
     ],
     "win": true
    }
+  },
+  {
+   "id": "the-burgundian-inheritance",
+   "name": "The Burgundian Inheritance",
+   "icon": "💍",
+   "desc": "As a Habsburg, hold Amsterdam, Brussels and Besançon at once — Maximilian married into them in 1477.",
+   "goal": {
+    "as": [
+     "STY",
+     "AUS",
+     "TYR"
+    ],
+    "hold": [
+     67,
+     70,
+     167
+    ]
+   }
+  },
+  {
+   "id": "lion-of-the-north",
+   "name": "Lion of the North",
+   "icon": "🦁",
+   "desc": "As Sweden, hold Munich, as Gustavus Adolphus did in 1632.",
+   "goal": {
+    "as": [
+     "SWE"
+    ],
+    "hold": [
+     131
+    ]
+   }
+  },
+  {
+   "id": "the-black-army",
+   "name": "The Black Army",
+   "icon": "🏴",
+   "desc": "As Hungary, hold Vienna before 1490 — Matthias Corvinus took it in 1485.",
+   "goal": {
+    "as": [
+     "HUN"
+    ],
+    "hold": [
+     137
+    ],
+    "by": 1490
+   }
+  },
+  {
+   "id": "highest-bidder",
+   "name": "Highest Bidder",
+   "icon": "💰",
+   "desc": "Hold all seven electors' seats at once: Mainz, Trier, Arnsberg, Prague, Heidelberg, Wittenberg and Brandenburg. Cheaper than the Fuggers' 850,000 florins.",
+   "goal": {
+    "hold": [
+     103,
+     101,
+     80,
+     112,
+     110,
+     88,
+     53
+    ]
+   }
+  },
+  {
+   "id": "bold-move",
+   "name": "Bold Move",
+   "icon": "🐂",
+   "desc": "As Burgundy, take Nancy — where Charles the Bold fell in 1477.",
+   "goal": {
+    "as": [
+     "BUR"
+    ],
+    "hold": [
+     121
+    ]
+   }
   }
  ],
  "victory": {

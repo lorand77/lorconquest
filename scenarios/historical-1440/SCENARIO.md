@@ -621,6 +621,11 @@ all at once, `keep` settlements held at the end, `eliminate` a country (take its
 | Forest Cantons | 🏔️ | `as SWI ZUR; proclaim unite-the-swiss; by 1480` | As the Confederacy or Zürich, unite the Swiss before 1480. |
 | Teutonic Defiance | ✠ | `as TEU; survive; keep 27 28` | As the Teutonic Order, still hold Königsberg and Danzig at the end. |
 | City Air Makes Free | 🏙️ | `as LUB HAM BRE COL FFM NUR AUG ULM REG MET STR KON BAS DEC ERF; win` | Win as a free city. |
+| The Burgundian Inheritance | 💍 | `as STY AUS TYR; hold 67 70 167` | As a Habsburg, hold Amsterdam, Brussels and Besançon at once — Maximilian married into them in 1477. |
+| Lion of the North | 🦁 | `as SWE; hold 131` | As Sweden, hold Munich, as Gustavus Adolphus did in 1632. |
+| The Black Army | 🏴 | `as HUN; hold 137; by 1490` | As Hungary, hold Vienna before 1490 — Matthias Corvinus took it in 1485. |
+| Highest Bidder | 💰 | `hold 103 101 80 112 110 88 53` | Hold all seven electors' seats at once: Mainz, Trier, Arnsberg, Prague, Heidelberg, Wittenberg and Brandenburg. Cheaper than the Fuggers' 850,000 florins. |
+| Bold Move | 🐂 | `as BUR; hold 121` | As Burgundy, take Nancy — where Charles the Bold fell in 1477. |
 
 ## Characters
 
