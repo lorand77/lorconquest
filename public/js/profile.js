@@ -3,14 +3,17 @@
 // to watch as replays. Someone else's (profile.html?name=…, opened from the leaderboard) has only what anyone signed in may
 // see of them (GET /api/players/:name): their games that are over, with their replays, and the numbers over those, and a
 // friend control under their name. Friends (friends.js): your own requests to answer, your friends and the requests you sent;
-// someone else's accepted friends. The tab is the page's hash (#stats, #games, #friends), so the rail's links open it.
+// someone else's accepted friends. Achievements (achievements.js): every one there is, earned or not, fetched when the tab is
+// first opened. The tab is the page's hash (#stats, #games, #achievements, #friends), so the rail's links open it.
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
 import { gameLine, statsOf } from "./lobbylogic.js";
 import { mountShell, profileTab } from "./shell.js";
 import * as Friends from "./friends.js";
+import { card } from "./achievements.js";
 
 const $ = (id) => document.getElementById(id);
+let achievementsDrawn = false;                          // the Achievements tab is drawn when first opened
 const make = (tag, props = {}, ...children) => {
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(props)) {
@@ -59,6 +62,9 @@ function showTab() {
     $("stats-panel").hidden = tab !== "#stats";
     $("games-panel").hidden = tab !== "#games";
     $("friends-panel").hidden = tab !== "#friends";
+    $("achievements-panel").hidden = tab !== "#achievements";
+    $("tab-achievements").classList.toggle("current", tab === "#achievements");
+    if (tab === "#achievements") drawAchievements();
     $("tab-stats").classList.toggle("current", tab === "#stats");
     $("tab-games").classList.toggle("current", tab === "#games");
     $("tab-friends").classList.toggle("current", tab === "#friends");
@@ -94,6 +100,20 @@ $("game-list").replaceChildren(...played.map((g) => {
         line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
 }));
 if (!played.length) $("game-list").textContent = own ? "None yet: start one under Play." : "None over yet.";
+
+// ---------- Achievements ----------
+// the regular ones by group, then each scenario's own; drawn once, when the tab is first opened
+async function drawAchievements() {
+    if (achievementsDrawn) return;
+    achievementsDrawn = true;
+    const r = await fetch(own ? "/api/achievements" : `/api/achievements/user/${encodeURIComponent(person.username)}`).catch(() => null);
+    if (!r?.ok) { $("ach-summary").textContent = "Couldn't load the achievements."; achievementsDrawn = false; return; }
+    const data = await r.json();
+    $("ach-summary").textContent = `${data.earned} of ${data.total} unlocked. Achievements are awarded when a game is finished, by playing it over: it may take a minute.`;
+    $("ach-content").replaceChildren(...data.groups.map((g) => make("section", { class: "ach-group" },
+        make("h3", {}, `${g.title} `, make("span", { class: "count" }, `${g.items.filter((a) => a.tier).length}/${g.items.length}`)),
+        make("div", { class: "ach-grid" }, ...g.items.map((a) => card(make, a))))));
+}
 
 // ---------- Friends ----------
 const personLink = (name) => make("a", { href: `/profile.html?name=${encodeURIComponent(name)}` }, name);

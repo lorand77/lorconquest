@@ -82,6 +82,15 @@ CREATE TABLE IF NOT EXISTS friendships (
     CHECK (requester_id <> addressee_id)
 );
 CREATE INDEX IF NOT EXISTS idx_friendships_addressee ON friendships (addressee_id);
+-- achievements (src/achievements/): what each person has earned, at the highest tier reached, and the game that earned it
+CREATE TABLE IF NOT EXISTS user_achievements (
+    user_id INTEGER NOT NULL REFERENCES users (id),
+    key TEXT NOT NULL,                          -- a key of src/achievements/catalogue.js, or "<scenario>:<id>"
+    tier INTEGER NOT NULL DEFAULT 1,
+    earned_at TEXT NOT NULL,                    -- when the game that earned it (this tier) ended
+    game_id INTEGER REFERENCES games (id) ON DELETE SET NULL,
+    PRIMARY KEY (user_id, key)
+);
 `;
 
 export function openDb(file) {
@@ -121,6 +130,11 @@ export function openDb(file) {
     addColumnIfMissing("game_seats", "pop", "REAL");
     addColumnIfMissing("game_seats", "quit_day", "INTEGER");
     addColumnIfMissing("game_seats", "out_day", "INTEGER");                          // the day its country was eliminated
+    // achievements (src/achievements/service.js): which version of the awarding a finished game has had, and what each seat
+    // did in it (from playing it over; null when it could not be)
+    addColumnIfMissing("games", "awards_version", "INTEGER NOT NULL DEFAULT 0");
+    addColumnIfMissing("game_seats", "captures", "INTEGER");
+    addColumnIfMissing("game_seats", "battles", "INTEGER");
     // the default scenario lived in docs/ and had the id "docs" until it moved to scenarios/mitteleuropa
     db.exec("UPDATE games SET scenario = 'mitteleuropa' WHERE scenario = 'docs'");
     // games from before accounts (the development page's) have no host and no seats: nobody can open them now
@@ -217,6 +231,25 @@ export function openDb(file) {
         commandsFrom: db.prepare("SELECT seq, day, country, source, cmd FROM commands WHERE game_id = ? AND day >= ? ORDER BY seq"),
         saveSnapshot: db.prepare("INSERT INTO snapshots (game_id, day, state) VALUES (?, ?, ?) ON CONFLICT (game_id) DO UPDATE SET day = excluded.day, state = excluded.state"),
         snapshot: db.prepare("SELECT day, state FROM snapshots WHERE game_id = ?"),
+
+        // achievements (src/achievements/service.js)
+        unawardedGames: db.prepare("SELECT id FROM games WHERE status = 'finished' AND awards_version < ? ORDER BY updated_at, id"),
+        markAwarded: db.prepare("UPDATE games SET awards_version = ? WHERE id = ?"),
+        awardSeats: db.prepare(`SELECT s.country, s.user_id, u.username, s.place, s.quit_day, (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = s.game_id) AS people
+            FROM game_seats s JOIN users u ON u.id = s.user_id WHERE s.game_id = ? AND s.place IS NOT NULL AND u.username NOT LIKE 'deleted-%'`),
+        setSeatFeats: db.prepare("UPDATE game_seats SET captures = ?, battles = ? WHERE game_id = ? AND country = ?"),
+        // a person's finished games in the order they ended, up to one (or all, with null): what the record counts
+        achievementRecord: db.prepare(`SELECT g.id, g.winner = s.country AND s.quit_day IS NULL AS won, COALESCE(s.captures, 0) AS captures, COALESCE(s.battles, 0) AS battles
+            FROM game_seats s JOIN games g ON g.id = s.game_id
+            WHERE s.user_id = :userId AND g.status = 'finished' AND s.place IS NOT NULL AND g.awards_version > 0
+              AND (:gameId IS NULL OR g.updated_at < :at OR (g.updated_at = :at AND g.id <= :gameId))
+            ORDER BY g.updated_at, g.id`),
+        userAchievement: db.prepare("SELECT tier FROM user_achievements WHERE user_id = ? AND key = ?"),
+        // only ever raises a tier
+        awardAchievement: db.prepare(`INSERT INTO user_achievements (user_id, key, tier, earned_at, game_id) VALUES (:userId, :key, :tier, :at, :gameId)
+            ON CONFLICT (user_id, key) DO UPDATE SET tier = excluded.tier, earned_at = excluded.earned_at, game_id = excluded.game_id WHERE excluded.tier > user_achievements.tier`),
+        achievementsOf: db.prepare("SELECT key, tier, earned_at, game_id FROM user_achievements WHERE user_id = ? ORDER BY earned_at, key"),
+        deleteAchievementsOf: db.prepare("DELETE FROM user_achievements WHERE user_id = ?"),
     };
 
     return { db, q, tx, addColumnIfMissing, close: () => db.close() };

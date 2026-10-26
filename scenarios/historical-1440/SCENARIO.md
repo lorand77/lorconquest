@@ -472,6 +472,10 @@ declared from now on.
 
 ## The Holy Roman Empire
 
+> **Not built yet.** The engine plays none of this section: there is no Emperor, no election and no demand of the
+> Empire in this scenario; two German states only think 10 better of each other (RULES.md §10). It is the design for
+> when it is built (docs/design.md, *Open questions*).
+
 The Empire is every settlement marked **HRE** above (listed in the *Overview*). A **German state** is any country
 that holds at least one HRE settlement; an **outsider** is any country that holds none. The Empire is not a
 country: it is a **crown**, worn by one German state and won by election, and a set of **laws** that grow as
@@ -596,6 +600,27 @@ and vassalized settlements count 1, protectorates ½. A tie goes to the larger t
 and subjects).
 
 ---
+
+## Achievements
+
+This scenario's own achievements, beside the ones every scenario has (docs/design.md, *Achievements*). The **Goal** is
+for `tools/map.js` and the server: clauses joined by `;`, all met by your country in one game — `as` the countries you
+may play, `win`, `survive` (still in at the end), `proclaim` a region by its id (*Special coring*), `hold` settlements
+all at once, `keep` settlements held at the end, `eliminate` a country (take its last settlement), `by` a year
+(everything else done before it begins).
+
+| Achievement | Icon | Goal | Description |
+|---|---|---|---|
+| A.E.I.O.U. | 🦅 | `as STY AUS TYR; proclaim habsburg-austria; by 1500` | As a Habsburg — Inner Austria, Austria or Tyrol — proclaim Habsburg Austria before 1500. |
+| The Burgundian Dream | ⚜️ | `as BUR; proclaim kingdom-of-burgundy` | As Burgundy, proclaim the Kingdom of Burgundy. |
+| Queen of the Hanse | ⚓ | `as LUB HAM BRE COL; proclaim hanseatic-league` | As Lübeck, Hamburg, Bremen or Cologne, proclaim the Hanseatic League. |
+| Kalmar Union | ❄️ | `proclaim kalmar-union` | Unite the three northern crowns. |
+| Crown of Saint Wenceslas | 🔥 | `as BOH TAB; proclaim lands-of-the-bohemian-crown` | As Bohemia or Tábor, proclaim the Lands of the Bohemian Crown. |
+| Union of Lublin | 🐎 | `as POL LIT; proclaim polish-lithuanian-commonwealth` | As Poland or Lithuania, proclaim the Polish-Lithuanian Commonwealth. |
+| Brandenburg-Prussia | 🦅 | `as BRA; proclaim brandenburg-prussia` | As Brandenburg, proclaim Brandenburg-Prussia. |
+| Forest Cantons | 🏔️ | `as SWI ZUR; proclaim unite-the-swiss; by 1480` | As the Confederacy or Zürich, unite the Swiss before 1480. |
+| Teutonic Defiance | ✠ | `as TEU; survive; keep 27 28` | As the Teutonic Order, still hold Königsberg and Danzig at the end. |
+| City Air Makes Free | 🏙️ | `as LUB HAM BRE COL FFM NUR AUG ULM REG MET STR KON BAS DEC ERF; win` | Win as a free city. |
 
 ## Characters
 

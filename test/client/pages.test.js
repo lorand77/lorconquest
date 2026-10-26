@@ -101,7 +101,7 @@ test("every signed-in page but the game and the replay has the shell; the rail l
         assert.match(read(`js/${script}`), /mountShell\(/, `${script} builds the shell`);
     }
     const shell = read("js/shell.js");
-    assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Friends", "Customize", "Leaderboard"]);
+    assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Achievements", "Friends", "Customize", "Leaderboard"]);
 });
 
 test("the leaderboard sorts by any column, either way; each row keeps its rank, and no average place comes last", () => {
@@ -121,4 +121,20 @@ test("the leaderboard sorts by any column, either way; each row keeps its rank, 
     assert.deepEqual(names("username"), ["ann", "Bob", "cid", "dee"]);                      // A to Z, whatever the case
     assert.deepEqual(names("username", "desc"), ["dee", "cid", "Bob", "ann"]);
     assert.deepEqual([DEFAULT_DIR.games, DEFAULT_DIR.averagePlace, DEFAULT_DIR.username], ["desc", "asc", "asc"]);
+});
+
+test("an achievement's card: greyed while locked, how far along the next tier, gold-edged at the top, with when and the replay", async () => {
+    const { card, tierLine } = await import("../../public/js/achievements.js");
+    const tiered = { key: "wins", name: "Victorious", icon: "🏅", tiers: [3, 10, 50], max: 3, desc: "Win 10 games." };
+    assert.equal(tierLine({ ...tiered, tier: 0, tierName: null, progress: 2 }), "2 / 3");
+    assert.equal(tierLine({ ...tiered, tier: 1, tierName: "Bronze", progress: 4 }), "Bronze · 4 / 10");
+    assert.equal(tierLine({ ...tiered, tier: 3, tierName: "Gold", progress: 60 }), "Gold");
+    assert.equal(tierLine({ key: "laurels", tiers: null, tier: 1, max: 1 }), null);
+    const make = (tag, props = {}, ...children) => ({ tag, props, children });
+    const text = (n) => (typeof n === "string" ? n : n.children.map(text).join(""));
+    const locked = card(make, { key: "laurels", name: "Laurels", icon: "🏆", tier: 0, max: 1, desc: "Win a game.", tiers: null, earnedAt: null, gameId: null });
+    assert.equal(locked.props.class, "ach-card locked");
+    const won = card(make, { key: "laurels", name: "Laurels", icon: "🏆", tier: 1, max: 1, desc: "Win a game.", tiers: null, earnedAt: "2026-10-26 12:00:00", gameId: 7 });
+    assert.equal(won.props.class, "ach-card maxed");
+    assert.match(text(won), /Earned 26 October 2026 · replay/);
 });

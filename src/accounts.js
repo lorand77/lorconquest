@@ -3,7 +3,7 @@
 //
 // A deleted account's row cannot simply go: seats point at it, and a finished game is the other players' record too. So the
 // row stays, emptied and renamed deleted-<id>: it can never sign in (an empty hash verifies nothing), shows on no
-// leaderboard and as "deleted" in a replay, and the old name can be registered again. Its chat and sessions are deleted,
+// leaderboard and as "deleted" in a replay, and the old name can be registered again. Its chat, sessions, friendships and achievements are deleted,
 // tables it hosts are cancelled, seats it holds at tables are released, and its single-player games are put away. A game
 // with other people still going stops the deletion: they would lose a player in the middle of it.
 import { hashPassword } from "./auth/password.js";
@@ -40,6 +40,7 @@ export function deleteAccount(db, username) {
         db.q.releaseLobbySeats.run(user.id);
         db.q.deleteChatOf.run(user.id);
         db.q.deleteFriendshipsOf.run(user.id, user.id);
+        db.q.deleteAchievementsOf.run(user.id);
         db.q.deleteSessionsOf.run(user.id);
         db.q.scrubUser.run(user.id);
     });

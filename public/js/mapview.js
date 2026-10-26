@@ -138,6 +138,11 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
             setView();
         },
 
+        // dim every land not in `keep` (a Set of land keys), to show a part of the map — the Empire; null shows it all again
+        markLands(keep) {
+            for (const land of svg.querySelectorAll("#lands [id^='land-']")) land.classList.toggle("lc-dim", Boolean(keep) && !keep.has(land.id.slice(5)));
+        },
+
         // every land in its owner's colour; borders wherever two neighbouring lands have different owners
         colourLands(ownerOf, colourOf) {
             for (const land of svg.querySelectorAll("#lands [id^='land-']")) land.style.fill = colourOf(ownerOf(land.id.slice(5)));

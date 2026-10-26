@@ -7,6 +7,7 @@ import { longDate } from "/engine/calendar.js";          // calendar.js alone: i
 import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
 import * as Friends from "./friends.js";
+import { toast as achievementToast } from "./achievements.js";
 import { gameLine, tableActions } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -100,6 +101,7 @@ setInterval(refresh, 30000);                              // the live games' dat
 // who has the lobby or a game open, each name opening their profile; friends starred (friends.js)
 let online = [];
 Friends.load().then(() => drawOnline(online)).catch(() => {});   // not waited for: the online list may come first
+socket.on("achievements:earned", achievementToast);          // a game of yours just finished being awarded
 socket.on("friends:changed", async () => { await Friends.load().catch(() => {}); drawOnline(online); });
 socket.on("online", (list) => drawOnline((online = list)));
 function drawOnline(list) {

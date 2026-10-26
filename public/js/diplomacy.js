@@ -1,9 +1,9 @@
 // The Diplomacy tab (design.md, "The game screen"): questions waiting for the player, wars and how they stand, agreements,
 // subjects, and a country picked to deal with — declaring war, a peace with terms and what the computer will make of
-// them, agreements with what to expect, demands, the Empire. Like panels.js it only sends commands; the numbers (opinion,
+// them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { BAR, agreementAnswer, bordering, demandChance, hreSettlementsOf, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { BAR, agreementAnswer, bordering, demandChance, germanStates, hreSettlementsOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -74,6 +74,9 @@ export function diplomacyTab(ctx) {
         } }, label) : "");
     })) : mk("p", { class: "hint" }, "None.")));
 
+    // the Empire
+    out.push(empireSection(ctx));
+
     // a country to deal with
     // (a country that is out of the game is no one to deal with)
     const others = Object.values(state.countries).filter((x) => x.code !== me && !x.rebel && (x.out ?? null) === null).sort((a, b) => a.name.localeCompare(b.name));
@@ -83,6 +86,43 @@ export function diplomacyTab(ctx) {
     out.push(section(ctx, "Deal with", row(ctx, sel), mk("p", { class: "hint" }, "· borders you. Or click a country's land on the map.")));
     if (pick) out.push(...dealWith(ctx, pick));
     return out;
+}
+
+// the Holy Roman Empire: which land is in it (shown on the map at a click), who has demanded it and what came of it, and the
+// player's own demand — once, ever, with the scenario's number of settlements inside it — with how the German states would
+// answer (RULES.md §10)
+function empireSection(ctx) {
+    const { state, game, me, make: mk } = ctx, c = state.countries[me];
+    const name = (code) => state.countries[code]?.name ?? code;
+    const needed = game.map.scenario.empire?.needed, inside = game.map.scenario.settlements.filter((s) => s.hre).length;
+    const german = germanStates(game), held = hreSettlementsOf(game, me);
+    const list = (codes) => (codes.length ? codes.map(name).join(", ") : "none");
+    const out = [mk("p", {}, `${inside} settlements are inside the Empire, held by ${german.length} German states. You hold ${held}.`),
+        row(ctx, mk("button", { onclick: () => { ctx.ui.empire = !ctx.ui.empire; ctx.redraw(); } }, ctx.ui.empire ? "Show the whole map" : "Show the Empire on the map"))];
+    if (!needed) {
+        out.push(mk("p", { class: "hint" }, "Two German states think 10 better of each other. This scenario has no demand of the Empire."));
+        return section(ctx, "The Holy Roman Empire", ...out);
+    }
+    // the demands made so far: the proposer's protectorates inside the Empire now, and the League as it stands
+    for (const p of Object.keys(state.memory.empire)) {
+        const joined = german.filter((x) => state.countries[x].overlord === p && state.countries[x].subjectKind === "protectorate");
+        const league = state.memory.empire[p].league.filter((x) => (state.countries[x]?.out ?? null) === null && !isVassal(state, x));
+        out.push(mk("p", {}, `${p === me ? "You" : name(p)} demanded the Empire. Its protectorates in the Empire: ${list(joined)}. The League against it: ${list(league)}.`));
+    }
+    if (state.memory.empire[me]) return section(ctx, "The Holy Roman Empire", ...out);
+    if (isVassal(state, me)) {
+        out.push(mk("p", { class: "hint" }, "A vassal cannot demand the Empire: its overlord speaks for it."));
+        return section(ctx, "The Holy Roman Empire", ...out);
+    }
+    // how the German states would answer now: each rolls like a protectorate demand; a person is asked
+    const asked = german.filter((x) => x !== me && !state.countries[x].overlord && !wouldCycle(state, x, me));
+    const people = asked.filter((x) => state.humans.includes(x)), rolled = asked.filter((x) => !state.humans.includes(x));
+    const expect = rolled.reduce((k, x) => k + demandChance(game, x, me, "protectorate").chance / 100, 0);
+    out.push(mk("p", { class: "hint" }, `Demand that every German state become your protectorate: once, ever, with at least ${needed} settlements inside the Empire. The states that refuse form the League, a defensive alliance against you.`),
+        mk("p", {}, `If you demanded it now: about ${Math.round(expect)} of ${rolled.length} computer states would join${people.length ? `, and ${list(people)} would be asked` : ""}.`),
+        row(ctx, mk("button", { disabled: held < needed ? "disabled" : undefined, class: "danger", onclick: async () => { if (confirm("Demand the Empire? You may do this only once, ever.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand the Empire"),
+            held < needed ? mk("span", { class: "hint" }, `${needed - held} more settlements inside the Empire needed`) : ""));
+    return section(ctx, "The Holy Roman Empire", ...out);
 }
 
 // who a country is at war with, and since when: you first, then the others by name; peasant rebels as an uprising
@@ -146,13 +186,6 @@ function dealWith(ctx, t) {
         })));
     }
 
-    // the Empire
-    const needed = game.map.scenario.empire?.needed;
-    if (needed && !state.memory.empire[me]) {
-        const held = hreSettlementsOf(game, me);
-        out.push(section(ctx, "The Empire", mk("p", { class: "hint" }, `Demand that every German state become your protectorate: once, ever, with at least ${needed} settlements inside the Empire (you hold ${held}). The states that refuse form the League.`),
-            mk("button", { disabled: held < needed ? "disabled" : undefined, class: "danger", onclick: async () => { if (confirm("Demand the Empire? You may do this only once, ever.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand the Empire")));
-    }
     return out;
 }
 

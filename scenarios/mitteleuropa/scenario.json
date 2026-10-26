@@ -8557,6 +8557,113 @@
    "WAR"
   ]
  ],
+ "achievements": [
+  {
+   "id": "north-star",
+   "name": "North Star",
+   "icon": "❄️",
+   "desc": "Proclaim Scandinavia united.",
+   "goal": {
+    "proclaim": "unite-scandinavia"
+   }
+  },
+  {
+   "id": "danube-monarchy",
+   "name": "Danube Monarchy",
+   "icon": "🦅",
+   "desc": "Proclaim AustroHungary.",
+   "goal": {
+    "proclaim": "austrohungary"
+   }
+  },
+  {
+   "id": "two-nations",
+   "name": "Two Nations",
+   "icon": "🐎",
+   "desc": "Proclaim the Polish–Lithuanian Commonwealth.",
+   "goal": {
+    "proclaim": "polish-lithuanian-commonwealth"
+   }
+  },
+  {
+   "id": "kaiserreich",
+   "name": "Kaiserreich",
+   "icon": "👑",
+   "desc": "Proclaim Greater Germany.",
+   "goal": {
+    "proclaim": "greater-germany"
+   }
+  },
+  {
+   "id": "hegemon-of-the-empire",
+   "name": "Hegemon of the Empire",
+   "icon": "🏛️",
+   "desc": "Demand the Empire and have at least 8 German states join.",
+   "goal": {
+    "empire": 8
+   }
+  },
+  {
+   "id": "three-capitals",
+   "name": "Three Capitals",
+   "icon": "🏰",
+   "desc": "Hold Vienna, Prague and Berlin at once before 1500.",
+   "goal": {
+    "hold": [
+     33,
+     30,
+     76
+    ],
+    "by": 1500
+   }
+  },
+  {
+   "id": "queen-of-the-hanse",
+   "name": "Queen of the Hanse",
+   "icon": "⚓",
+   "desc": "As Hamburg, hold Hamburg, Danzig, Copenhagen and Stockholm at once.",
+   "goal": {
+    "as": [
+     "HAM"
+    ],
+    "hold": [
+     66,
+     16,
+     7,
+     3
+    ]
+   }
+  },
+  {
+   "id": "from-one-town",
+   "name": "From One Town",
+   "icon": "🏘️",
+   "desc": "Win with a country that began with a single settlement.",
+   "goal": {
+    "as": [
+     "GOT",
+     "STO",
+     "CPH",
+     "RZE",
+     "LVI",
+     "SAL",
+     "TYR",
+     "ULM",
+     "STU",
+     "LUX",
+     "LIE",
+     "MST",
+     "BRE",
+     "HAM",
+     "HAN",
+     "WOL",
+     "JEN",
+     "MAG"
+    ],
+    "win": true
+   }
+  }
+ ],
  "victory": {
   "settlements": 45,
   "endYear": 1650

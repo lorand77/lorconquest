@@ -407,6 +407,34 @@ quitter first. (An abandoned game has no result.)
 - **The map** is drawn by the same code on the game page and the replay page (`public/js/mapdraw.js`, pure functions of a state
   and a day, tested in Node).
 
+### Achievements
+
+As in LorCiv (`src/achievements/`). The **catalogue** (`catalogue.js`) holds the regular ones, the same in every scenario:
+Victory (a win; by reaching the number, not on time; within 100 years; with a country of at most 2 settlements; never losing
+a settlement; after losing the capital; with 3 people or more; 3 in a row), Conquest (a capital taken; a country's last
+settlement; a land battle won outnumbered 2 to 1; a relief battle; a storm with cannons; a sea battle; 20 settlements in a
+game), Realm (3 subjects at once; a region proclaimed; a peace taking 3 settlements; 10 courthouse cores in a game; every
+technology) and Milestones, tiered Bronze, Silver and Gold over a person's finished games (games, wins, settlements taken,
+battles won). A **scenario's own** are a table in its SCENARIO.md, *Achievements* — a name, an icon, a description and a goal
+of clauses (`as` codes, `win`, `survive`, `proclaim` a region, `hold` settlements at once, `keep` them to the end, `eliminate`
+a country, `empire` n, `by` a year) — which `tools/map.js` checks and writes into scenario.json; keyed `<scenario>:<id>`.
+
+**Awarding** (`service.js`): when a game finishes, rooms.js queues it; a worker thread (`worker.js`) plays it over from its log
+(`analyze.js`: the engine, the seed, the humans and each day's commands, as the replay page does) and watches the events for
+each person's country, up to the day they quit — after that the computer played it. The main thread then awards, in one
+transaction: what the replay found, what the result says (the winner, the end day, the people, the country's size at the
+start), and the record over the person's finished games; a tier only ever rises. Only a finished game's people with a place
+earn; an abandoned game earns nothing. A game played under another `RULES_VERSION`, or whose replay does not end on the stored
+fingerprint, is awarded from its result and record alone (`achievements.replay_failed` in the log). Games are done one at a
+time, oldest first; at boot every finished game not yet awarded by `AWARDS_VERSION` is queued, which is the backfill when the
+catalogue grows. A 210-year game takes about half a minute to play over. What is new goes to the person's `user:<id>` room as
+`achievements:earned`, each fully described, and the lobby and the game page show a toast (`public/js/achievements.js`).
+
+**Kept:** `user_achievements` (person, key, tier, when, the game), `games.awards_version`, and `game_seats.captures` and
+`battles` from the replay, which the Milestones count. **Shown** on the profile's Achievements tab (`GET /api/achievements`,
+`/api/achievements/user/:name`, built on the server): the regular groups, then a group per scenario, each card greyed until
+earned, gold-edged at its top tier, with its date and the replay that earned it. An account's achievements go with it.
+
 ### Operations
 
 How it is run is in [setup.md](setup.md); the program's parts for it are:
@@ -647,8 +675,11 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   war scores, the agreements held (with Break and Cancel), the player's subjects and overlord, and a country to deal
   with, picked from a list or by clicking its land. For it the tab shows who it is at war with and since when, its opinion of the player, who would join each
   side of a war and what a declaration breaks, each agreement with whether the computer is likely to accept and why,
-  the chance of a demand, the Empire, and a **peace form**: tick the settlements to take or give, money, a subject —
-  and the computer's own answer shown as you edit. A game that is won shows who won and stops.
+  the chance of a demand, and a **peace form**: tick the settlements to take or give, money, a subject —
+  and the computer's own answer shown as you edit. The Empire has a section of its own, whoever is picked: how much of
+  it the player holds, a button that dims every land outside it on the map, each demand made and what came of it (the
+  proposer's protectorates in it now, the League as it stands), and the player's own demand with how many computer
+  states would join if made now. A settlement in the Empire says so. A game that is won shows who won and stops.
 - **Looking:** a settlement shows its owner, people, any siege and the armies there; a country's
   land shows the country, its wars and — until diplomacy in milestone 4 — a [Declare war] button.
 - **Events:** the player's own and their wars', newest first (and every diplomatic event that concerns them); clicking one shows its place. A war
@@ -724,8 +755,9 @@ Settled answers move into §1, or into RULES.md where they are rules. Each is ne
 named (see [plan.md](plan.md)).
 
 1. **The historical scenario's Empire** (not scheduled). Its SCENARIO.md describes an Emperor, Imperial Authority,
-   electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal both
-   scenarios share (RULES.md §10) and the scenario's starting wars and agreements, not this. It is a subsystem of its own
+   electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal (RULES.md §10)
+   and the scenario's starting wars and agreements, not this; since its proposal is Renovatio Imperii, the fourth reform,
+   the historical scenario has no proposal at all until it is built — its Empire is only +10 between German states. It is a subsystem of its own
    — worth its own milestone if that scenario is to be played in earnest.
 2. **A computer navy that seeks battle** (not scheduled). The computer fights at sea only where it is clearly the stronger,
    builds warships only against a stronger enemy fleet, and cannot hunt fleets in port (the rules keep them safe). Going out

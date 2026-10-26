@@ -16593,6 +16593,153 @@
    "TAB"
   ]
  ],
+ "achievements": [
+  {
+   "id": "a-e-i-o-u",
+   "name": "A.E.I.O.U.",
+   "icon": "🦅",
+   "desc": "As a Habsburg — Inner Austria, Austria or Tyrol — proclaim Habsburg Austria before 1500.",
+   "goal": {
+    "as": [
+     "STY",
+     "AUS",
+     "TYR"
+    ],
+    "proclaim": "habsburg-austria",
+    "by": 1500
+   }
+  },
+  {
+   "id": "the-burgundian-dream",
+   "name": "The Burgundian Dream",
+   "icon": "⚜️",
+   "desc": "As Burgundy, proclaim the Kingdom of Burgundy.",
+   "goal": {
+    "as": [
+     "BUR"
+    ],
+    "proclaim": "kingdom-of-burgundy"
+   }
+  },
+  {
+   "id": "queen-of-the-hanse",
+   "name": "Queen of the Hanse",
+   "icon": "⚓",
+   "desc": "As Lübeck, Hamburg, Bremen or Cologne, proclaim the Hanseatic League.",
+   "goal": {
+    "as": [
+     "LUB",
+     "HAM",
+     "BRE",
+     "COL"
+    ],
+    "proclaim": "hanseatic-league"
+   }
+  },
+  {
+   "id": "kalmar-union",
+   "name": "Kalmar Union",
+   "icon": "❄️",
+   "desc": "Unite the three northern crowns.",
+   "goal": {
+    "proclaim": "kalmar-union"
+   }
+  },
+  {
+   "id": "crown-of-saint-wenceslas",
+   "name": "Crown of Saint Wenceslas",
+   "icon": "🔥",
+   "desc": "As Bohemia or Tábor, proclaim the Lands of the Bohemian Crown.",
+   "goal": {
+    "as": [
+     "BOH",
+     "TAB"
+    ],
+    "proclaim": "lands-of-the-bohemian-crown"
+   }
+  },
+  {
+   "id": "union-of-lublin",
+   "name": "Union of Lublin",
+   "icon": "🐎",
+   "desc": "As Poland or Lithuania, proclaim the Polish-Lithuanian Commonwealth.",
+   "goal": {
+    "as": [
+     "POL",
+     "LIT"
+    ],
+    "proclaim": "polish-lithuanian-commonwealth"
+   }
+  },
+  {
+   "id": "brandenburg-prussia",
+   "name": "Brandenburg-Prussia",
+   "icon": "🦅",
+   "desc": "As Brandenburg, proclaim Brandenburg-Prussia.",
+   "goal": {
+    "as": [
+     "BRA"
+    ],
+    "proclaim": "brandenburg-prussia"
+   }
+  },
+  {
+   "id": "forest-cantons",
+   "name": "Forest Cantons",
+   "icon": "🏔️",
+   "desc": "As the Confederacy or Zürich, unite the Swiss before 1480.",
+   "goal": {
+    "as": [
+     "SWI",
+     "ZUR"
+    ],
+    "proclaim": "unite-the-swiss",
+    "by": 1480
+   }
+  },
+  {
+   "id": "teutonic-defiance",
+   "name": "Teutonic Defiance",
+   "icon": "✠",
+   "desc": "As the Teutonic Order, still hold Königsberg and Danzig at the end.",
+   "goal": {
+    "as": [
+     "TEU"
+    ],
+    "survive": true,
+    "keep": [
+     27,
+     28
+    ]
+   }
+  },
+  {
+   "id": "city-air-makes-free",
+   "name": "City Air Makes Free",
+   "icon": "🏙️",
+   "desc": "Win as a free city.",
+   "goal": {
+    "as": [
+     "LUB",
+     "HAM",
+     "BRE",
+     "COL",
+     "FFM",
+     "NUR",
+     "AUG",
+     "ULM",
+     "REG",
+     "MET",
+     "STR",
+     "KON",
+     "BAS",
+     "DEC",
+     "ERF"
+    ],
+    "win": true
+   }
+  }
+ ],
  "victory": {
   "settlements": 85,
   "endYear": 1650

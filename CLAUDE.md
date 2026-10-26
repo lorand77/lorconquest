@@ -46,6 +46,9 @@ dependencies.
   `tools/user.js` does), `src/game/results.js` (how a finished game ranks its people).
 - `src/auth/` — accounts: `routes.js` (register, login, logout, me), `session.js` (the cookie and the sessions table, shared by REST
   and the socket handshake), `password.js` (scrypt), `origin.js` (the same-origin check), `throttle.js`, `usernamePolicy.js`.
+- `src/friends/routes.js` (friends, as in LorCiv); `src/achievements/` — achievements: `catalogue.js` (the regular ones; a
+  scenario's own are in its SCENARIO.md), `analyze.js` (a finished game played over, what each person did), `worker.js` (where
+  that runs), `service.js` (the queue, awarding, `AWARDS_VERSION`), `routes.js`. The page side is `public/js/achievements.js`.
 - `src/engine/` also holds diplomacy: `relations.js` (who is allied, subject or friend), `opinion.js` (the computer's
   formulas, pure), `diplomacy.js` (wars, peace, subjects, the Empire), `diplomacy-day.js`, `victory.js`, `elimination.js` (a country with no
   settlement left is out of the game: its forces vanish, its wars and agreements end).
@@ -98,6 +101,9 @@ dependencies.
 - Anything that makes the same commands on the same seed play out differently must bump
   `RULES_VERSION` in `src/engine/state.js`, or saved games and replays break. A change to the
   shape of the state bumps `FORMAT`.
+- A new achievement (regular, or in a SCENARIO.md) that finished games could have earned bumps `AWARDS_VERSION` in
+  `src/achievements/service.js`: the next boot awards every finished game again, which only ever adds. Achievements are
+  only found in games played under the current `RULES_VERSION`; older ones get what their result and record say.
 - A game's humans are its seats (`game_seats`), fixed when the host starts the table; `humans` are part of its state (`Game.create(scenario, { seed, humans })`), because a proposal to a human waits
   for its answer and to anyone else is answered at once: a replay must be given the same humans.
 - Who is away or back is not saved (`rooms.js`): a resumed game with several people starts with every player away, from that

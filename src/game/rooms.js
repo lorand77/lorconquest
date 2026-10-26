@@ -29,7 +29,7 @@ const WORKER = new URL("./worker.js", import.meta.url);
 const PROGRESS_EVERY = 10;
 const CHAT_MAX = 300;
 
-export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs }) {
+export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs, achievements }) {
     // a game's players ("game:<id>") and those watching it ("watch:<id>", socket.js): both hear the days, pauses, presence and
     // the end; only the players hear the chat, and each player alone their country's private part ("game:<id>:<country>")
     const everyone = (room) => io.to([`game:${room.id}`, `watch:${room.id}`]);
@@ -135,6 +135,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 // or every person's country is out: a defeat for all of them, finished with no winner
                 db.q.finishGame.run(m.day, m.winner, m.hash ?? null, room.id);
                 recordResult(room, m.scores);
+                achievements?.gameEnded(room.id);                 // played over in the achievements' worker (src/achievements/)
                 room.paused = true;
                 room.over = m.winner ?? "defeat";
                 clearTimers(room);

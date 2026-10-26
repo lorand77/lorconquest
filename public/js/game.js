@@ -8,6 +8,7 @@ import { createMapView } from "./mapview.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
+import { toast as achievementToast } from "./achievements.js";
 import { formatCountdown, presenceText } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -27,6 +28,7 @@ const gameId = Number(new URLSearchParams(location.search).get("id"));
 // watching a game being played (?watch=1): no country, no orders — the map, the events and who is playing (socket.js, watch)
 const watching = new URLSearchParams(location.search).has("watch");
 const socket = globalThis.io({ transports: ["websocket"] });
+socket.on("achievements:earned", achievementToast);          // the game just won or lost, played over and awarded (src/achievements/)
 socket.on("connect_error", (e) => { if (e.message === "sign in first") location.href = `/login.html?next=${encodeURIComponent(location.pathname + location.search)}`; });
 const ask = (event, payload) => new Promise((resolve) => socket.emit(event, payload, resolve));
 
@@ -40,7 +42,7 @@ let unseen = 0;            // events that came in while the Events tab was not o
 let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
 let tab = "selection";     // selection (the Map tab) | country | shop | research | diplomacy | events
 // choices the panels keep while the page is open: the country the Diplomacy tab deals with, the weapon soldiers are raised with
-const ui = { target: null, raiseWeapon: null };
+const ui = { target: null, raiseWeapon: null, empire: false };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 const press = pressGuard((fn) => setTimeout(fn, 0));    // a hand pressing in the panel: the days do not rebuild it under it
 let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed
@@ -394,9 +396,11 @@ function renderSetup() {
 const markerOptions = () => ({ me, selected: sel });
 const armyMarkers = (day) => drawArmies(state, game.map.nodes, legs, day, colourOf, markerOptions());
 
+let empireShown = false;
 function renderMap() {
     const now = ownersKey(state);
     if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); map.setLabels(countryLabels(state, scenario)); }
+    if (ui.empire !== empireShown) { empireShown = ui.empire; map.markLands(ui.empire ? new Set(scenario.settlements.filter((x) => x.hre).map((x) => String(x.id))) : null); }   // the Diplomacy tab's "Show on the map"
     paintMap(map, state, game.map.nodes, game.map.zones, legs, displayDay(), colourOf, markerOptions());
     const a = plan && state.armies[plan.army];
     map.setRoute(a ? routeLine(a, plan.path, displayDay(), legs, game.map.nodes) : null);
@@ -542,7 +546,7 @@ function placePanel(key) {
     }
     const s = state.settlements[node.id];
     const out = [make("h2", {}, swatch(s.owner), ` ${name(key)}`),
-        make("p", {}, `${country(s.owner).name}. ${formatNumber(s.pop)} people.${s.cores.includes(s.owner) ? " Core." : ""}${s.walls ? " Walls." : ""}`)];
+        make("p", {}, `${country(s.owner).name}. ${formatNumber(s.pop)} people.${s.cores.includes(s.owner) ? " Core." : ""}${s.walls ? " Walls." : ""}${scenario.settlements.find((x) => x.id === s.id)?.hre ? " In the Holy Roman Empire." : ""}`)];
     if (s.siege) out.push(make("p", { class: "siege" }, `Besieged by ${country(s.siege.by).name}: it falls ${longDate(s.siege.end)} unless relieved.`));
     const comply = complianceBlock(ctx, s);                   // a settlement not core for its owner: how far its people comply
     if (comply) out.push(comply);

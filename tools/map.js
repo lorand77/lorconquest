@@ -347,6 +347,44 @@ if (doc.some((l) => /^## Characters\s*$/.test(l))) {
         }
     }
 }
+// the scenario's own achievements (design.md, Achievements), if it has an "## Achievements" table: Achievement, Icon, Goal,
+// Description. The goal is clauses joined by ";", all of which a person's country must meet in one game: "as" codes (the
+// country played), "win", "survive" (still in at the end), "proclaim" a region (its id under Special coring), "hold" settlement
+// ids (all at once, at some moment), "keep" settlement ids (all held at the end), "eliminate" codes (take each one's last settlement), "empire" n (demand the Empire and have at least n
+// German states join), "by" a year (every clause met before it begins). src/achievements/catalogue.js reads them.
+const ACHIEVEMENTS = [];
+if (doc.some((l) => /^## Achievements\s*$/.test(l))) {
+    const [, rows] = table("Achievements");
+    const slugOf = (n) => n.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    for (const r of rows) {
+        const name = r.Achievement, at = `Achievements line ${r._line}`, goal = {};
+        if (!name || !r.Icon || !r.Description) { err(`${at}: needs a name, an icon and a description`); continue; }
+        for (const clause of (r.Goal ?? "").split(";").map((x) => x.replace(/`/g, "").trim()).filter(Boolean)) {
+            const [word, ...rest] = clause.split(/\s+/);
+            if (word === "win" || word === "survive") goal[word] = true;
+            else if (word === "as" || word === "eliminate") {
+                for (const code of rest) if (!CN.has(code)) err(`${at}: no country ${code}`);
+                goal[word] = rest;
+            } else if (word === "hold" || word === "keep") {
+                const ids = rest.map(Number);
+                for (const id of ids) if (!S.has(id)) err(`${at}: no settlement ${id}`);
+                goal[word] = ids;
+            } else if (word === "proclaim") {
+                if (!FORMABLES.some((f) => f.id === rest[0])) err(`${at}: no region '${rest[0]}' under Special coring (${FORMABLES.map((f) => f.id).join(", ")})`);
+                goal.proclaim = rest[0];
+            } else if (word === "empire") {
+                if (!EMPIRE.needed) err(`${at}: this scenario has no demand of the Empire`);
+                goal.empire = Number(rest[0]);
+            } else if (word === "by") goal.by = Number(rest[0]);
+            else err(`${at}: don't know '${clause}'`);
+            if (["empire", "by"].includes(word) && !Number.isInteger(goal[word])) err(`${at}: '${clause}' needs a whole number`);
+        }
+        if (!Object.keys(goal).some((k) => k !== "as" && k !== "by")) err(`${at}: the goal needs something to do, not only who and by when`);
+        const id = slugOf(name);
+        if (ACHIEVEMENTS.some((a) => a.id === id)) err(`${at}: two achievements are called '${name}'`);
+        ACHIEVEMENTS.push({ id, name, icon: r.Icon, desc: r.Description, goal });
+    }
+}
 check("SCENARIO.md");
 
 // =====================================================================================
@@ -1258,6 +1296,7 @@ const json = {
     passes: PASSES.map((p) => ({ id: p.id, x: p.x, y: p.y, land: p.owner, routes: p.routes })),
     formables: FORMABLES,
     rivalries: RIVALRIES,
+    achievements: ACHIEVEMENTS,
     victory: VICTORY, empire: EMPIRE, start: START,
     seaZones: ZONES.map((z) => ({ id: z.id, name: z.name, label: { x: z.x, y: z.y }, ports: zonePorts(z), straits: zoneStraits(z), next: zoneNext(z).map((x) => x.id) })),
 };

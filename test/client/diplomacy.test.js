@@ -132,9 +132,22 @@ test("agreements you hold can be broken or cancelled; a vassal is not dealt with
     await button(nodes, "Break").handlers.click();
     await button(nodes, "Cancel").handlers.click();
     assert.deepEqual(sent, [{ type: "breakAgreement", with: "TYR", kind: "defensive" }, { type: "cancelAccess", with: "AUS" }]);
-    const emp = diplomacyTab({ ...ctx, ui: { target: "SWI" } });
-    assert.match(textOf(emp), /at least 10 settlements inside the Empire \(you hold 4\)/);
+    // the Empire is a section of its own, whoever is picked — even a vassal
+    const emp = diplomacyTab(ctx), ui = ctx.ui;
+    assert.match(textOf(emp), /You hold 4\./);
+    assert.match(textOf(emp), /6 more settlements inside the Empire needed/);
+    assert.match(textOf(emp), /If you demanded it now: about \d+ of \d+ computer states would join/);
     assert.equal(button(emp, "Demand the Empire").attrs.disabled, "disabled");
+    button(emp, "Show the Empire on the map").handlers.click();
+    assert.equal(ui.empire, true);
+    assert.ok(button(diplomacyTab(ctx), "Show the whole map"));
+    // once demanded: what came of it, and no button
+    ctx.state.memory.empire.BAV = { league: ["SAX"] };
+    ctx.state.countries.ULM.overlord = "BAV";
+    ctx.state.countries.ULM.subjectKind = "protectorate";
+    const after = diplomacyTab(ctx);
+    assert.match(textOf(after), /You demanded the Empire\. Its protectorates in the Empire: Ulm\. The League against it: Saxony\./);
+    assert.equal(button(after, "Demand the Empire"), undefined);
 });
 
 test("peace terms name settlements without their numbers: in a question, in the form and in the news", () => {

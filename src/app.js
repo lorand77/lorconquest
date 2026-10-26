@@ -16,6 +16,8 @@ import { health } from "./health.js";
 import { createRooms } from "./game/rooms.js";
 import { gameRoutes } from "./game/routes.js";
 import { friendRoutes } from "./friends/routes.js";
+import { achievementRoutes } from "./achievements/routes.js";
+import { createAchievements } from "./achievements/service.js";
 import { loadScenarios } from "./game/scenarios.js";
 import { attachSockets } from "./game/socket.js";
 import defaultLog from "./log.js";
@@ -84,11 +86,13 @@ export function createApp({
     // the historical scenario can be 10 KB or more, ten times a second, and a player's answers queue behind it on a slow line;
     // compressed it is a seventh of that
     const io = new Server(server, { allowRequest: allowSocketRequest(log), perMessageDeflate: { threshold: 512 } });
-    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs });
+    const achievements = createAchievements({ db, scenarios, io, log });
+    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs, achievements });
     const healthCheck = health({ db, rooms, log, dbPath, stallMs });
     app.use("/api", authRoutes({ db, sessions, throttles, io }));
     app.use("/api", gameRoutes(rooms, scenarios));
     app.use("/api", friendRoutes({ db, io }));
+    app.use("/api", achievementRoutes({ db, achievements }));
 
     // the engine, for the browser's previews: the very files the server runs
     app.use("/engine", express.static(path.join(root, "src", "engine")));
@@ -112,15 +116,17 @@ export function createApp({
 
     attachSockets({ io, rooms, sessions, log, tickMs });
     rooms.resumeAll();
+    achievements.start();                                  // the finished games not yet awarded by this version of the awarding
 
     async function close() {
         clearInterval(sweeper);
         throttles.stop();
         await rooms.close();
+        await achievements.stop();
         server.closeAllConnections();
         await new Promise((resolve) => io.close(() => resolve()));
         db.close();
     }
 
-    return { app, server, io, rooms, db, scenarios, sessions, close };
+    return { app, server, io, rooms, db, scenarios, sessions, achievements, close };
 }

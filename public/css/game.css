@@ -189,6 +189,30 @@ body.shell > .page { max-width: 860px; margin: 0 auto; }
 .stat { padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
 .stat b { display: block; font-size: 22px; color: var(--text-strong); font-variant-numeric: tabular-nums; }
 .stat span { color: var(--text-muted); font-size: 12px; }
+/* the profile's Achievements tab (profile.js), as LorCiv's */
+.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.ach-group h3 .count { color: var(--text-muted); font-weight: normal; font-size: 13px; }
+.ach-card { display: flex; gap: 10px; padding: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; min-width: 0; }
+.ach-card.locked { opacity: 0.45; filter: grayscale(0.6); }
+.ach-card.maxed { border-color: #b8901f; }
+.ach-icon { font-size: 26px; line-height: 1; width: 32px; text-align: center; flex: none; padding-top: 2px; }
+.ach-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; font-size: 13px; }
+.ach-name { font-weight: bold; color: var(--text-strong); }
+.ach-desc { color: var(--text-muted); font-size: 12px; }
+.ach-tiers { display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+.ach-pip { width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: 1px solid var(--text-muted); }
+.ach-pip.on { background: #d9a92b; border-color: #f0c85a; }
+.ach-tier-label { margin-left: 4px; font-size: 11px; color: var(--text-muted); }
+.ach-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+/* "Achievement unlocked" (achievements.js), bottom-right, stacked; dark in either scheme */
+.ach-toasts { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 2000; pointer-events: none; }
+.ach-toast { display: flex; align-items: center; gap: 12px; width: 300px; max-width: calc(100vw - 32px); padding: 10px 14px; background: #2a2f3a; border: 1px solid #d9a92b; border-radius: 8px; color: #fff; text-decoration: none; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); opacity: 0; transform: translateX(24px); transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: auto; }
+.ach-toast.show { opacity: 1; transform: none; }
+.ach-toast-icon { font-size: 28px; line-height: 1; flex: none; }
+.ach-toast-body { display: flex; flex-direction: column; min-width: 0; }
+.ach-toast-head { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: #f0c85a; }
+.ach-toast-name { font-weight: bold; font-size: 14px; }
+.ach-toast-desc { font-size: 12px; color: #c8c8c8; }
 .choices { display: flex; gap: 12px; flex-wrap: wrap; }
 .choice { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); cursor: pointer; }
 .choice:has(input:checked) { border-color: var(--gold); }
@@ -329,6 +353,7 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .lc-army.retreating rect { stroke-dasharray: 2 2; }
 .lc-siege-track { fill: none; stroke: rgba(0, 0, 0, 0.15); stroke-width: 3; pointer-events: none; }
 .lc-siege { fill: none; stroke: #c9161f; stroke-width: 3; pointer-events: none; }
+#lands .lc-dim { opacity: 0.3; }
 .lc-route { fill: none; stroke: #222; stroke-width: 2; stroke-dasharray: 6 4; pointer-events: none; }
 .lc-fleet rect { stroke: #234; stroke-width: 1; }
 .lc-fleet text { font: bold 9px system-ui, sans-serif; text-anchor: middle; fill: #111; pointer-events: none; }

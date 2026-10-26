@@ -171,7 +171,8 @@ export const diplomacyCommands = {
             if (accept && !(overlordOf(st, offer.to) && offer.subject === "protectorate")) setSubject(game, offer.to, offer.from, offer.subject, events);
             else if (!accept) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
         } else if (offer.kind === "empire") {
-            if (accept) setSubject(game, offer.to, offer.from, "protectorate", events);
+            // one that has become someone's subject since it was asked has nothing to give: its yes changes nothing
+            if (accept) { if (!st.countries[offer.to].overlord) setSubject(game, offer.to, offer.from, "protectorate", events); }
             else refuseEmpire(game, offer, events);
         }
         return done(events);

@@ -152,6 +152,13 @@ test("a human state asked to join the Empire answers; a refusal, or none in 6 mo
     order(game, cmd("AAA", "proposeEmpire"));
     const lapsed = runTo(game, 183);
     assert.deepEqual(ofType(lapsed, "lapsed").map((e) => e.kind), ["empire"]);
+    // a state that became someone's subject while asked: its yes changes nothing (a vassal of the proposer stays a vassal)
+    game = make();
+    order(game, cmd("AAA", "proposeEmpire"));
+    game.state.countries.DDD.overlord = "AAA";
+    game.state.countries.DDD.subjectKind = "vassal";
+    order(game, cmd("DDD", "answerOffer", { id: game.state.offers.find((o) => o.kind === "empire").id, accept: true }));
+    assert.equal(game.state.countries.DDD.subjectKind, "vassal");
 });
 
 test("the League allies no two members at war with each other, nor a vassal, nor a country that is out", () => {

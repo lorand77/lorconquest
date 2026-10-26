@@ -9,6 +9,7 @@ const ITEMS = [
     { href: "/profile.html", icon: "👤", label: "My Profile", children: [
         { hash: "#stats", icon: "📊", label: "Stats" },
         { hash: "#games", icon: "📜", label: "My Games" },
+        { hash: "#achievements", icon: "🏅", label: "Achievements" },
         { hash: "#friends", icon: "👥", label: "Friends" },
     ] },
     { href: "/customize.html", icon: "🎨", label: "Customize" },
@@ -27,7 +28,7 @@ const make = (tag, props = {}, ...children) => {
 };
 
 // the tab of My Profile a hash names; Stats when it names none
-export const profileTab = (hash) => (["#games", "#friends"].includes(hash) ? hash : "#stats");
+export const profileTab = (hash) => (["#games", "#achievements", "#friends"].includes(hash) ? hash : "#stats");
 
 export function mountShell(user) {
     const path = location.pathname === "/index.html" ? "/" : location.pathname;

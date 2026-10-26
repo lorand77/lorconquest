@@ -346,6 +346,25 @@ computer country wins, every human player loses.
 
 ---
 
+## Achievements
+
+This scenario's own achievements, beside the ones every scenario has (docs/design.md, *Achievements*). The **Goal** is
+for `tools/map.js` and the server: clauses joined by `;`, all met by your country in one game — `as` the countries you
+may play, `win`, `survive` (still in at the end), `proclaim` a region by its id (*Special coring*), `hold` settlements
+all at once, `keep` settlements held at the end, `eliminate` a country (take its last settlement), `empire` *n* (demand
+the Empire and have at least *n* German states join), `by` a year (everything else done before it begins).
+
+| Achievement | Icon | Goal | Description |
+|---|---|---|---|
+| North Star | ❄️ | `proclaim unite-scandinavia` | Proclaim Scandinavia united. |
+| Danube Monarchy | 🦅 | `proclaim austrohungary` | Proclaim AustroHungary. |
+| Two Nations | 🐎 | `proclaim polish-lithuanian-commonwealth` | Proclaim the Polish–Lithuanian Commonwealth. |
+| Kaiserreich | 👑 | `proclaim greater-germany` | Proclaim Greater Germany. |
+| Hegemon of the Empire | 🏛️ | `empire 8` | Demand the Empire and have at least 8 German states join. |
+| Three Capitals | 🏰 | `hold 33 30 76; by 1500` | Hold Vienna, Prague and Berlin at once before 1500. |
+| Queen of the Hanse | ⚓ | `as HAM; hold 66 16 7 3` | As Hamburg, hold Hamburg, Danzig, Copenhagen and Stockholm at once. |
+| From One Town | 🏘️ | `as GOT STO CPH RZE LVI SAL TYR ULM STU LUX LIE MST BRE HAM HAN WOL JEN MAG; win` | Win with a country that began with a single settlement. |
+
 ## Characters
 
 *How the computer plays each country when no person does (docs/design.md, *Characters and rivalries*). Data: every country
