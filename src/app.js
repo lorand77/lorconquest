@@ -15,6 +15,7 @@ import { openDb } from "./db.js";
 import { health } from "./health.js";
 import { createRooms } from "./game/rooms.js";
 import { gameRoutes } from "./game/routes.js";
+import { friendRoutes } from "./friends/routes.js";
 import { loadScenarios } from "./game/scenarios.js";
 import { attachSockets } from "./game/socket.js";
 import defaultLog from "./log.js";
@@ -87,6 +88,7 @@ export function createApp({
     const healthCheck = health({ db, rooms, log, dbPath, stallMs });
     app.use("/api", authRoutes({ db, sessions, throttles, io }));
     app.use("/api", gameRoutes(rooms, scenarios));
+    app.use("/api", friendRoutes({ db, io }));
 
     // the engine, for the browser's previews: the very files the server runs
     app.use("/engine", express.static(path.join(root, "src", "engine")));

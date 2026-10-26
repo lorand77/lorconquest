@@ -101,7 +101,7 @@ test("every signed-in page but the game and the replay has the shell; the rail l
         assert.match(read(`js/${script}`), /mountShell\(/, `${script} builds the shell`);
     }
     const shell = read("js/shell.js");
-    assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Customize", "Leaderboard"]);
+    assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Friends", "Customize", "Leaderboard"]);
 });
 
 test("the leaderboard sorts by any column, either way; each row keeps its rank, and no average place comes last", () => {

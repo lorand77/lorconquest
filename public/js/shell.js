@@ -1,5 +1,5 @@
 // The shell of the signed-in pages, as in LorCiv: a top bar (the name, who is signed in, Log out) and a rail of sections on
-// the left — Play, My Profile with its Stats and My Games, Customize and the Leaderboard, with the legal pages at its foot.
+// the left — Play, My Profile with its Stats, My Games and Friends, Customize and the Leaderboard, with the legal pages at its foot.
 // Built here so the sections are listed once. Each page reserves the room for it (body.shell, game.css), so nothing moves
 // when it appears; the game and the replay have no shell.
 import { signOut } from "./auth.js";
@@ -9,6 +9,7 @@ const ITEMS = [
     { href: "/profile.html", icon: "👤", label: "My Profile", children: [
         { hash: "#stats", icon: "📊", label: "Stats" },
         { hash: "#games", icon: "📜", label: "My Games" },
+        { hash: "#friends", icon: "👥", label: "Friends" },
     ] },
     { href: "/customize.html", icon: "🎨", label: "Customize" },
     { href: "/leaderboard.html", icon: "🏆", label: "Leaderboard" },
@@ -26,7 +27,7 @@ const make = (tag, props = {}, ...children) => {
 };
 
 // the tab of My Profile a hash names; Stats when it names none
-export const profileTab = (hash) => (hash === "#games" ? "#games" : "#stats");
+export const profileTab = (hash) => (["#games", "#friends"].includes(hash) ? hash : "#stats");
 
 export function mountShell(user) {
     const path = location.pathname === "/index.html" ? "/" : location.pathname;

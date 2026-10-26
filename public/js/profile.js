@@ -1,18 +1,21 @@
 // A profile (a section of the shell, shell.js): who and since when, and two tabs — Stats, the numbers over their games
 // (lobbylogic.js, statsOf), and Games. Your own (My Profile) has every game of yours: the ones going to open, the finished ones
 // to watch as replays. Someone else's (profile.html?name=…, opened from the leaderboard) has only what anyone signed in may
-// see of them (GET /api/players/:name): their games that are over, with their replays, and the numbers over those. The tab
-// is the page's hash (#stats, #games), so the rail's links open the one they name.
+// see of them (GET /api/players/:name): their games that are over, with their replays, and the numbers over those, and a
+// friend control under their name. Friends (friends.js): your own requests to answer, your friends and the requests you sent;
+// someone else's accepted friends. The tab is the page's hash (#stats, #games, #friends), so the rail's links open it.
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
 import { gameLine, statsOf } from "./lobbylogic.js";
 import { mountShell, profileTab } from "./shell.js";
+import * as Friends from "./friends.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
     const e = document.createElement(tag);
     for (const [k, v] of Object.entries(props)) {
         if (k === "class") e.className = v;
+        else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
         else e.setAttribute(k, v);
     }
     e.append(...children);
@@ -55,8 +58,10 @@ function showTab() {
     const tab = profileTab(location.hash);
     $("stats-panel").hidden = tab !== "#stats";
     $("games-panel").hidden = tab !== "#games";
+    $("friends-panel").hidden = tab !== "#friends";
     $("tab-stats").classList.toggle("current", tab === "#stats");
     $("tab-games").classList.toggle("current", tab === "#games");
+    $("tab-friends").classList.toggle("current", tab === "#friends");
 }
 window.addEventListener("hashchange", showTab);
 showTab();
@@ -89,3 +94,28 @@ $("game-list").replaceChildren(...played.map((g) => {
         line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
 }));
 if (!played.length) $("game-list").textContent = own ? "None yet: start one under Play." : "None over yet.";
+
+// ---------- Friends ----------
+const personLink = (name) => make("a", { href: `/profile.html?name=${encodeURIComponent(name)}` }, name);
+const friendRow = (name, ...rest) => make("div", { class: "row friend-row" }, make("span", { class: "who" }, personLink(name)), ...rest);
+async function drawFriends() {
+    try { await Friends.load(); } catch (e) { $("friends-error").textContent = e.message; }
+    if (!own) {
+        // someone else's: the control under their name, and their friends
+        $("friend-ctl").replaceChildren(Friends.control(make, person.username, me.username, drawFriends));
+        const theirs = await Friends.friendsOf(person.username).catch(() => []);
+        $("friend-requests").replaceChildren();
+        $("friend-list").replaceChildren(...theirs.map((f) => friendRow(f.username)));
+        if (!theirs.length) $("friend-list").textContent = "No friends yet.";
+        return;
+    }
+    const { friends, incoming, outgoing } = Friends.current();
+    const act = (fn) => async () => { try { await fn(); } catch (e) { $("friends-error").textContent = e.message; } drawFriends(); };
+    $("friend-requests").replaceChildren(...incoming.map((r) => friendRow(r.username, make("span", { class: "hint" }, "wants to be friends"),
+        make("button", { class: "primary", onclick: act(() => Friends.accept(r.id)) }, "Accept"), make("button", { onclick: act(() => Friends.decline(r.id)) }, "Decline"))));
+    $("friend-list").replaceChildren(
+        ...friends.map((f) => friendRow(f.username, make("button", { onclick: async () => { if (confirm(`Remove ${f.username} from your friends?`)) await act(() => Friends.remove(f.id))(); } }, "Remove"))),
+        ...outgoing.map((r) => friendRow(r.username, make("span", { class: "tag" }, "request sent"), make("button", { onclick: act(() => Friends.remove(r.id)) }, "Withdraw"))));
+    if (!friends.length && !incoming.length && !outgoing.length) $("friend-list").textContent = "No friends yet: add one from their profile or the leaderboard.";
+}
+drawFriends();

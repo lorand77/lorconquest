@@ -39,6 +39,7 @@ export function deleteAccount(db, username) {
         for (const { id } of db.q.tablesHostedBy.all(user.id)) db.q.setStatus.run("aborted", id);
         db.q.releaseLobbySeats.run(user.id);
         db.q.deleteChatOf.run(user.id);
+        db.q.deleteFriendshipsOf.run(user.id, user.id);
         db.q.deleteSessionsOf.run(user.id);
         db.q.scrubUser.run(user.id);
     });

@@ -612,6 +612,14 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   private part, no questions waiting), the days, pauses, presence and the end — never the chat or a player's private changes
   (they go to `game:<id>` and `game:<id>:<country>`, a watcher is in `watch:<id>`) — the Map and Events tabs only (the news of
   the people's countries), no orders, and at the end Game over with who won. Watching counts as online, not playing.
+- **Friends** (`src/friends/routes.js`, `public/js/friends.js`), as in LorCiv: one `friendships` row a pair, a request until the
+  one asked accepts; asking someone who asked you accepts their request. Only the two people see or touch a row (the one asked
+  accepts or declines, the one who asked withdraws, either ends a friendship; anyone else gets a 404); someone else's accepted
+  friends show on their profile. People are named by username. Every change sends `friends:changed` to both people's
+  `user:<id>` rooms, a nudge to fetch again. The profile has a Friends tab (requests to answer, friends, requests sent; on
+  someone else's, their friends, and a control under their name: + Add friend, Requested and Withdraw, Accept and Decline,
+  ✓ Friends and Remove), the leaderboard a control on each row, the lobby's online list a ★ for a friend. An account's
+  friendships go with it.
 - **Compliance:** a settlement not core for its owner shows how far its people comply — a bar from 0% when taken to 100% after
   20 years held (`mirror.js`, `compliance`; `panels.js`, `complianceBlock`) — in its panel and in the Shop's buildings for it;
   the Shop offers the courthouse, which makes it core at once, only at 100%.

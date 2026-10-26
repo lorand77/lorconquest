@@ -6,6 +6,7 @@
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
+import * as Friends from "./friends.js";
 import { gameLine, tableActions } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
@@ -96,14 +97,19 @@ const socket = globalThis.io({ transports: ["websocket"] });
 socket.on("connect", () => { socket.emit("lobby:enter", {}); refresh(); });
 socket.on("lobby:changed", refresh);
 setInterval(refresh, 30000);                              // the live games' dates, and games begun or ended alone
-// who has the lobby or a game open, each name opening their profile
-socket.on("online", (list) => {
+// who has the lobby or a game open, each name opening their profile; friends starred (friends.js)
+let online = [];
+Friends.load().then(() => drawOnline(online)).catch(() => {});   // not waited for: the online list may come first
+socket.on("friends:changed", async () => { await Friends.load().catch(() => {}); drawOnline(online); });
+socket.on("online", (list) => drawOnline((online = list)));
+function drawOnline(list) {
     $("online-count").textContent = `(${list.length})`;
     $("online").replaceChildren(...list.map((p) => make("li", {},
         make("a", { href: `/profile.html?name=${encodeURIComponent(p.username)}`, title: `${p.username}'s profile` }, p.username),
         p.playing ? make("span", { class: "tag" }, "playing") : "",
-        p.username === me.username ? make("span", { class: "tag you" }, "you") : "")));
-});
+        p.username === me.username ? make("span", { class: "tag you" }, "you") : "",
+        Friends.relation(Friends.current(), p.username).kind === "friend" ? make("span", { class: "tag friend", title: "a friend of yours" }, "★") : "")));
+}
 socket.on("table:started", (m) => { location.href = `/game.html?id=${m.id}`; });
 socket.on("table:cancelled", refresh);
 socket.on("connect_error", (e) => { if (e.message === "sign in first") location.href = "/login.html"; });

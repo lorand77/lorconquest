@@ -70,6 +70,18 @@ CREATE TABLE IF NOT EXISTS snapshots (
     day INTEGER NOT NULL,
     state TEXT NOT NULL
 );
+-- friends (src/friends/routes.js): one row a pair, a request until the one asked accepts it
+CREATE TABLE IF NOT EXISTS friendships (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    requester_id INTEGER NOT NULL REFERENCES users (id),
+    addressee_id INTEGER NOT NULL REFERENCES users (id),
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted')),
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    responded_at TEXT,
+    UNIQUE (requester_id, addressee_id),
+    CHECK (requester_id <> addressee_id)
+);
+CREATE INDEX IF NOT EXISTS idx_friendships_addressee ON friendships (addressee_id);
 `;
 
 export function openDb(file) {
@@ -129,6 +141,18 @@ export function openDb(file) {
         tablesHostedBy: db.prepare("SELECT id FROM games WHERE status = 'lobby' AND host_id = ?"),
         releaseLobbySeats: db.prepare("DELETE FROM game_seats WHERE user_id = ? AND game_id IN (SELECT id FROM games WHERE status = 'lobby')"),
         deleteChatOf: db.prepare("DELETE FROM chat_messages WHERE user_id = ?"),
+        // friendships (src/friends/routes.js): the row between two people, whichever asked
+        findFriendship: db.prepare("SELECT * FROM friendships WHERE (requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?)"),
+        friendshipById: db.prepare("SELECT * FROM friendships WHERE id = ?"),
+        createFriendRequest: db.prepare("INSERT INTO friendships (requester_id, addressee_id) VALUES (?, ?)"),
+        acceptFriendRequest: db.prepare("UPDATE friendships SET status = 'accepted', responded_at = datetime('now') WHERE id = ? AND status = 'pending'"),
+        deleteFriendship: db.prepare("DELETE FROM friendships WHERE id = ?"),
+        deleteFriendshipsOf: db.prepare("DELETE FROM friendships WHERE requester_id = ? OR addressee_id = ?"),
+        // every friendship and request of a person, with the other: friends first, then by name; a deleted account left out
+        friendshipsOf: db.prepare(`SELECT f.id, f.status, f.created_at, f.responded_at, f.requester_id, f.addressee_id, u.username AS other
+            FROM friendships f JOIN users u ON u.id = CASE WHEN f.requester_id = ? THEN f.addressee_id ELSE f.requester_id END
+            WHERE (f.requester_id = ? OR f.addressee_id = ?) AND u.username NOT LIKE 'deleted-%'
+            ORDER BY f.status = 'accepted' DESC, u.username COLLATE NOCASE`),
         deleteSessionsOf: db.prepare("DELETE FROM sessions WHERE user_id = ?"),
         scrubUser: db.prepare("UPDATE users SET username = 'deleted-' || id, password_hash = '' WHERE id = ?"),
         deletionSummary: db.prepare(`SELECT

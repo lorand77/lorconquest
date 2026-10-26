@@ -12,9 +12,11 @@
     <div class="page">
         <h1 id="name">My Profile</h1>
         <p id="joined" class="hint"></p>
+        <p id="friend-ctl"></p>
         <nav class="profile-tabs">
             <a id="tab-stats" href="#stats">📊 Stats</a>
             <a id="tab-games" href="#games">📜 My Games</a>
+            <a id="tab-friends" href="#friends">👥 Friends</a>
         </nav>
 
         <section id="stats-panel" class="page-section">
@@ -22,6 +24,13 @@
             <div id="stat-grid" class="stats"></div>
             <p class="hint">A game won is the player's country winning the whole game. "First among people" and the average place count the
                 finished games played with others, as on the <a href="/leaderboard.html">leaderboard</a>.</p>
+        </section>
+
+        <section id="friends-panel" class="page-section" hidden>
+            <h2>Friends</h2>
+            <div id="friend-requests" class="friend-list"></div>
+            <div id="friend-list" class="friend-list"></div>
+            <p id="friends-error" class="error"></p>
         </section>
 
         <section id="games-panel" class="page-section" hidden>
