@@ -328,3 +328,31 @@ test("the Empire: a state at war with the proposer refuses and joins the League 
     assert.equal(g.state.countries.DDD.overlord, null);
     assert.ok(g.state.memory.empire.AAA.league.includes("DDD"));
 });
+
+test("found by review: a vassal's own wars end and none is declared on it; peace terms by number; stale questions; one question at a time", () => {
+    // becoming a vassal ends its wars with anyone its overlord is not fighting; a war on a vassal is declared on its overlord
+    let game = tinyGame();
+    order(game, cmd("DDD", "declareWar", { target: "CCC" }));
+    setSubject(game, "CCC", "BBB", "vassal", []);
+    assert.ok(!atWar(game.state, "CCC", "DDD"), "nobody could ever have ended that war");
+    assert.match(refused(game, cmd("DDD", "declareWar", { target: "CCC" })), /CCC is a vassal of BBB: its overlord answers for it/);
+    // "2" and 2 are the same settlement
+    game = tinyGame();
+    order(game, cmd("AAA", "declareWar", { target: "BBB" }));
+    assert.match(refused(game, cmd("AAA", "proposePeace", { with: "BBB", terms: { give: [2, "2"] } })), /give names settlements by their numbers/);
+    // a call to arms answered after its war ended joins nothing
+    game = tinyGame(1, () => {}, ["AAA"]);
+    addAgreement(game, "military", "AAA", "BBB");
+    order(game, cmd("BBB", "declareWar", { target: "CCC" }));
+    const call = game.state.offers.find((o) => o.kind === "call");
+    game.state.wars = game.state.wars.filter((w) => w !== "BBB|CCC");
+    order(game, cmd("AAA", "answerOffer", { id: call.id, accept: true }));
+    assert.ok(!atWar(game.state, "AAA", "CCC"));
+    // a person is asked one thing of a kind at a time; a demand accepted while at war is a refusal
+    game = tinyGame(1, () => {}, ["BBB"]);
+    order(game, cmd("AAA", "demandSubject", { target: "BBB", kind: "protectorate" }));
+    assert.match(refused(game, cmd("AAA", "demandSubject", { target: "BBB", kind: "protectorate" })), /asked BBB already/);
+    order(game, cmd("BBB", "declareWar", { target: "AAA" }));
+    order(game, cmd("BBB", "answerOffer", { id: game.state.offers.find((o) => o.kind === "demand").id, accept: true }));
+    assert.ok(atWar(game.state, "AAA", "BBB") && game.state.countries.BBB.overlord === null, "a yes is no way out of a war");
+});

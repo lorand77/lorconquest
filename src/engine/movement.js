@@ -5,7 +5,7 @@
 import { menOf, peopleLost } from "./army.js";
 import { findNearest, findRoute, legKey } from "./map.js";
 import { crossStrait, crossable } from "./naval.js";
-import { canEnter, isFriend, isRebel, killPeople, removeArmy } from "./state.js";
+import { atWar, canEnter, isFriend, isRebel, killPeople, removeArmy } from "./state.js";
 
 // how far along its leg a march is on `day`: 0 at the start, 1 on arrival (not clamped)
 export const progress = (march, day) => (day - march.start) / (march.end - march.start);
@@ -26,8 +26,17 @@ export function startLeg(game, army, from, to, start) {
 // a strait is open to an army only where its country has the ships (RULES.md §8)
 const straitOpen = (game, country) => (from, edge) => !edge.strait || crossable(game, country, edge.strait);
 
-// the fastest way for an army from where it is to `to`, through land it may enter
-export const routeFor = (game, army, to) => findRoute(game.map, positionOf(army, game.state.day), to, (k) => canEnter(game, army.owner, k), straitOpen(game, army.owner));
+// may the army pass through `key`? Land it may enter — and an army sent home (retreating "home": land closed to it by a peace,
+// the end of an agreement, a capture) may also cross land that is not an enemy's on its way out, or it could never leave
+export function mayPass(game, army, key) {
+    if (canEnter(game, army.owner, key)) return true;
+    if (army.retreating !== "home") return false;
+    const node = game.map.nodes.get(key), land = node.kind === "pass" ? node.land : node.id;
+    return !atWar(game.state, army.owner, game.state.settlements[land].owner);
+}
+
+// the fastest way for an army from where it is to `to`, through land it may pass
+export const routeFor = (game, army, to) => findRoute(game.map, positionOf(army, game.state.day), to, (k) => mayPass(game, army, k), straitOpen(game, army.owner));
 
 // may the army set out from `from` to `to`? A strait needs its ships there, and a battle if an enemy fleet holds it
 export function mayDepart(game, army, from, to, events) {
@@ -57,21 +66,30 @@ export function follow(game, army, path, events) {
 }
 
 // a beaten army falls back to the nearest settlement of its own, by marching time, through land it may enter
-// (RULES.md §5); never to `exclude`, the place it lost at. With nowhere to go the whole army dies.
-export function retreat(game, army, events, exclude = null) {
+// (RULES.md §5); never to `exclude`, the place it lost at. With nowhere to go the whole army dies. `home`: it is not beaten
+// but sent home from land closed to it, and may cross land that is not an enemy's on the way (mayPass). A route that opens
+// with a strait it cannot cross after all (an enemy fleet there) is given up for one by land.
+export function retreat(game, army, events, exclude = null, home = false) {
     const st = game.state;
     const isRefuge = (k) => k !== exclude && game.map.nodes.get(k).kind === "settlement" && isFriend(st, army.owner, st.settlements[game.map.nodes.get(k).id].owner);
-    const found = findNearest(game.map, positionOf(army, st.day), (k) => canEnter(game, army.owner, k), isRefuge, straitOpen(game, army.owner));
     army.relief = false;
     army.storm = false;
-    if (!found && isRebel(st, army.owner)) {                 // rebels with nowhere to go scatter home (RULES.md §11)
-        removeArmy(st, army);
-        return events.push({ type: "scattered", day: st.day, army: army.id, owner: army.owner, men: menOf(army) });
-    }
-    if (!found) return destroy(game, army, events, "nowhere to retreat");
+    army.retreating = home || army.retreating === "home" ? "home" : true;
+    const nearest = (straits) => findNearest(game.map, positionOf(army, st.day), (k) => mayPass(game, army, k), isRefuge, straits);
+    let found = nearest(straitOpen(game, army.owner));
     const from = army.at ?? legKey(army.march.from, army.march.to);
-    army.retreating = true;
-    follow(game, army, found.path, events);
+    if (found && !follow(game, army, found.path, events)) {
+        found = nearest((f, edge) => !edge.strait);
+        if (found && !follow(game, army, found.path, events)) found = null;
+    }
+    if (!found) {
+        army.retreating = false;
+        if (isRebel(st, army.owner)) {                       // rebels with nowhere to go scatter home (RULES.md §11)
+            removeArmy(st, army);
+            return events.push({ type: "scattered", day: st.day, army: army.id, owner: army.owner, men: menOf(army) });
+        }
+        return destroy(game, army, events, "nowhere to retreat");
+    }
     events.push({ type: "retreat", day: st.day, army: army.id, owner: army.owner, from, to: found.target, days: found.days });
 }
 

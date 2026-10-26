@@ -27,7 +27,7 @@ export function advanceDay(game) {
     meetings(game, events);
     // arrivals, earliest first; at the same moment an army falling back to its refuge gets in first
     const due = armyList(st).filter((a) => a.march && a.march.end <= st.day)
-        .sort((x, y) => x.march.end - y.march.end || Number(y.retreating) - Number(x.retreating) || x.id - y.id);
+        .sort((x, y) => x.march.end - y.march.end || Number(Boolean(y.retreating)) - Number(Boolean(x.retreating)) || x.id - y.id);
     for (const a of due) {
         if (!isAlive(st, a) || !a.march || a.march.end > st.day) continue;     // turned round or beaten by an earlier arrival
         a.at = a.march.to;

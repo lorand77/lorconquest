@@ -476,7 +476,15 @@ How it is run is in [setup.md](setup.md); the program's parts for it are:
   everyone (warmonger scores) are public. A country's treasury, research, tax, slider, loans,
   weapons reserve and the computer countries' opinions are private to it. The worker sends
   each tick's public changes to everyone and each country's private changes to its player only;
-  the full state on joining is filtered the same way.
+  the full state on joining is filtered the same way. The day's events are split alike (`view.js`, `splitEvents`): a question
+  put to a person and its lapsing, research, a change of law, a default and cancelled training go, with the private changes,
+  only to the countries concerned — never to the other players or to watchers.
+- **Never a gap:** the page listens for days before it joins, holds what comes while it loads (or joins again after a
+  reconnect), and applies only the days newer than the view it was given.
+- **Limits:** a command is at most 8,000 characters as JSON (it is kept in the log as it came), a socket message 64 KB, and
+  a person may have 3 rooms waiting and 6 games running at once (each is a thread). Chat's burst limit is per person. A
+  finished game's worker stops once none of its players has it open; a page closed while its game was being brought back
+  never counts as a player there. One who has quit gives no orders and writes no chat, from any tab.
 
 ### The engine
 

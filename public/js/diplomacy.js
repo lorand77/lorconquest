@@ -56,7 +56,7 @@ export function diplomacyTab(ctx) {
         wars.length ? mk("div", {}, ...wars.map((e) => {
             const w = state.warInfo[pairKey(me, e)], s = state.countries[e].rebel ? null : warScore(game, me, e);
             return row(ctx, mk("span", { class: "w" }, ctx.swatch(e), ` ${name(e)}${w ? ` since ${longDate(w.start)}` : ""}${s === null ? " (peasants: no peace)" : `: war score ${s >= 0 ? "+" : ""}${s.toFixed(1)}`}`),
-                s === null ? "" : mk("button", { onclick: () => { ctx.ui.target = e; ctx.redraw(); } }, "Peace…"));
+                s === null || isVassal(state, me) ? "" : mk("button", { onclick: () => { ctx.ui.target = e; ctx.redraw(); } }, "Peace…"));
         })) : mk("p", { class: "hint" }, "At peace.")));
 
     // agreements
@@ -160,6 +160,11 @@ function dealWith(ctx, t) {
                 why ? mk("span", { class: "hint" }, why) : "")));
     }
     if (vassal || state.countries[t].rebel) return out;
+    // a vassal has no diplomacy of its own (RULES.md §10): nothing to offer that the rules would only refuse
+    if (isVassal(state, me)) {
+        out.push(mk("p", { class: "hint" }, `You are a vassal of ${state.countries[state.countries[me].overlord]?.name}: it speaks for you — it declares your wars and makes your peace.`));
+        return out;
+    }
 
     // war
     if (atWar) out.push(...peaceForm(ctx, t));
@@ -204,11 +209,17 @@ function peaceForm(ctx, t) {
     const { state, game, me, make: mk } = ctx, them = state.countries[t];
     const theirs = Object.values(state.settlements).filter((s) => s.owner === t), mine = Object.values(state.settlements).filter((s) => s.owner === me);
     const human = state.humans.includes(t);
-    const checks = (list, label) => list.map((s) => { const box = mk("input", { type: "checkbox", value: String(s.id) }); return [s.id, box, mk("label", { class: "check" }, box, ` ${label(s)}`)]; });
-    const takes = checks(theirs, (s) => `${town(ctx, s.id)} (${n(s.pop)})`), gives = checks(mine, (s) => `${town(ctx, s.id)} (${n(s.pop)})`);
-    const money = mk("input", { type: "number", step: 1000, value: 0 });
+    // the terms being drawn up live in ctx.ui, not in the form: the panel is rebuilt as the war score moves, almost daily
+    if (ctx.ui.peace?.with !== t) ctx.ui.peace = { with: t, take: [], give: [], money: 0, subject: "", giveOpen: false };
+    const draft = ctx.ui.peace;
+    const checks = (list, label, kept) => list.map((s) => {
+        const box = mk("input", { type: "checkbox", value: String(s.id), checked: kept.includes(s.id) ? "checked" : undefined });
+        return [s.id, box, mk("label", { class: "check" }, box, ` ${label(s)}`)];
+    });
+    const takes = checks(theirs, (s) => `${town(ctx, s.id)} (${n(s.pop)})`, draft.take), gives = checks(mine, (s) => `${town(ctx, s.id)} (${n(s.pop)})`, draft.give);
+    const money = mk("input", { type: "number", step: 1000, value: draft.money });
     const subject = mk("select", {}, ...[["", "no subject"], ["makeSubject:vassal", `${them.name} becomes your vassal`], ["makeSubject:protectorate", `${them.name} becomes your protectorate`],
-        ["becomeSubject:vassal", `you become ${them.name}'s vassal`], ["becomeSubject:protectorate", `you become ${them.name}'s protectorate`]].map(([v, l]) => mk("option", { value: v }, l)));
+        ["becomeSubject:vassal", `you become ${them.name}'s vassal`], ["becomeSubject:protectorate", `you become ${them.name}'s protectorate`]].map(([v, l]) => mk("option", { value: v, selected: v === draft.subject ? "selected" : undefined }, l)));
     const preview = mk("p", { class: "preview" }, "");
     const terms = () => {
         const t2 = { take: takes.filter(([, b]) => b.checked).map(([id]) => id), give: gives.filter(([, b]) => b.checked).map(([id]) => id), money: Number(money.value) || 0 };
@@ -216,6 +227,8 @@ function peaceForm(ctx, t) {
         return t2;
     };
     const update = () => {
+        const now = terms();
+        Object.assign(draft, { take: now.take, give: now.give, money: now.money, subject: subject.value });
         // terms the engine would refuse whoever answers, such as taking its last settlement
         const bad = validateTerms(game, me, t, terms());
         if (bad) { preview.textContent = `Not possible: ${bad}.`; preview.className = "preview bad"; return; }
@@ -228,12 +241,14 @@ function peaceForm(ctx, t) {
     money.addEventListener("input", update);
     subject.addEventListener("change", update);
     update();
+    const giveBox = mk("details", { open: draft.giveOpen ? "open" : undefined }, mk("summary", {}, "Give to them"), mk("div", { class: "checks" }, ...gives.map((x) => x[2])));
+    giveBox.addEventListener("toggle", () => { draft.giveOpen = giveBox.open; });
     return [section(ctx, `Peace with ${them.name}`,
         mk("details", { open: "open" }, mk("summary", {}, `Take from ${them.name}`), mk("div", { class: "checks" }, ...takes.map((x) => x[2]))),
-        mk("details", {}, mk("summary", {}, "Give to them"), mk("div", { class: "checks" }, ...gives.map((x) => x[2]))),
+        giveBox,
         row(ctx, mk("label", {}, "Money (+ they pay you) "), money),
         row(ctx, subject),
         preview,
-        mk("button", { class: "primary", onclick: async () => { const r = await ctx.send({ type: "proposePeace", with: t, terms: terms() }); if (r.ok) ctx.redraw(); } }, "Propose peace"),
+        mk("button", { class: "primary", onclick: async () => { const r = await ctx.send({ type: "proposePeace", with: t, terms: terms() }); if (r.ok) { ctx.ui.peace = null; ctx.redraw(); } } }, "Propose peace"),
         mk("p", { class: "hint" }, "Price: what you ask, in % of its people, 10 for a year of its money, 50 for a vassal or 25 for a protectorate — less what you give. A peace leaves each side at least one settlement. War score: the share of its people you took, less the share of yours it took, plus how much stronger you are."))];
 }

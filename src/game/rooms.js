@@ -28,6 +28,8 @@ const WORKER = new URL("./worker.js", import.meta.url);
 // progress (the day reached) is saved at least this often, in days, and whenever there is something else to save
 const PROGRESS_EVERY = 10;
 const CHAT_MAX = 300;
+// what one person may have at once: rooms waiting in the lobby, and games running (each is a worker thread)
+const MAX_TABLES = 3, MAX_RUNNING = 6;
 
 export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs, achievements }) {
     // a game's players ("game:<id>") and those watching it ("watch:<id>", socket.js): both hear the days, pauses, presence and
@@ -59,8 +61,12 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         room.gone = new Promise((resolve) => { room.onGone = resolve; });
         room.ready = new Promise((resolve, reject) => { room.onReady = resolve; room.onFail = reject; });
         room.ready.catch(() => {});
-        worker.on("message", (m) => onMessage(room, m));
+        worker.on("message", (m) => {
+            // a save that fails (a locked or full disk) is logged; it must not take every other game down with it
+            try { onMessage(room, m); } catch (err) { log.error("game.message_failed", { game: room.id, type: m.type, err }); }
+        });
         worker.on("error", (err) => {
+            room.dead = true;
             log.error("game.worker_failed", { game: room.id, err });
             room.onFail(err);
             for (const p of room.pending.values()) p({ ok: false, error: "the game stopped" });
@@ -118,7 +124,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                     if (gone && room.seats.has(gone)) seatOut(room, room.seats.get(gone), e.day);
                 }
                 everyone(room).emit("tick", { day: m.day, events: m.events, changes: m.pub });
-                for (const [code, changes] of Object.entries(m.priv)) io.to(`game:${room.id}:${code}`).emit("private", { day: m.day, changes });
+                // each country's private part: what changed of it, and the events only it may see (view.js, splitEvents)
+                for (const code of new Set([...Object.keys(m.priv), ...Object.keys(m.privEvents ?? {})])) {
+                    io.to(`game:${room.id}:${code}`).emit("private", { day: m.day, changes: m.priv[code] ?? null, events: m.privEvents?.[code] ?? [] });
+                }
                 break;
             case "reply":
             case "view": {
@@ -143,6 +152,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 room.over = m.winner ?? "defeat";
                 clearTimers(room);
                 everyone(room).emit("over", { day: m.day, winner: m.winner, why: m.why, defeated: Boolean(m.defeated) });
+                retireIfEmpty(room);
                 log.info("game.over", { game: room.id, winner: m.winner, defeated: Boolean(m.defeated), humans: [...room.seats.keys()], day: m.day });
                 break;
             case "stats":
@@ -157,6 +167,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
     // ask the worker something and wait for its answer
     function ask(room, message) {
+        // a game whose worker died, or is being stopped, has nobody to answer: say so rather than leave the caller waiting
+        if (room.dead) return Promise.resolve({ ok: false, error: "the game stopped", view: null });
         return new Promise((resolve) => {
             const reqId = room.nextReq++;
             room.pending.set(reqId, resolve);
@@ -224,6 +236,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
     // stop a game's worker for good, saving where it got to
     function retire(room) {
+        if (room.dead) return;
+        room.dead = true;
         clearTimers(room);
         const done = () => { room.worker.terminate().catch(() => {}); live.delete(room.id); room.onGone(); };
         const timer = setTimeout(done, 3000);
@@ -251,11 +265,18 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         return { seat };
     }
 
+    // a game that is over has nothing left to run: its worker goes once none of its players has it open (its replay remains)
+    function retireIfEmpty(room) {
+        if (room.over && [...room.seats.values()].every((s) => !s.sockets.size)) retire(room);
+    }
+
     // a socket of the player's leaves (or is lost)
     function detach(room, userId, socketId) {
         if (closing) return;
         const seat = [...room.seats.values()].find((s) => s.userId === userId);
-        if (!seat || !seat.sockets.delete(socketId) || seat.sockets.size || seat.state !== "present") return;          // (one who is out only watched)
+        if (!seat || !seat.sockets.delete(socketId)) return;
+        if (room.over) { retireIfEmpty(room); return; }
+        if (seat.sockets.size || seat.state !== "present") return;          // (one who is out only watched)
         if (!room.multi) {
             // leaving a single-player game pauses it; it waits for the player to come back
             seat.state = "idle";
@@ -329,6 +350,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         // a new table, the host in the seat of `country`
         createTable({ userId, scenario, country, seed }) {
             if (!scenarios.has(scenario)) return { error: `no scenario ${scenario}` };
+            // every game started is a thread: one person cannot open them without end
+            if (db.q.tablesHostedBy.all(userId).length >= MAX_TABLES) return { error: `you have ${MAX_TABLES} rooms open already: start or cancel one` };
+            const running = [...live.values()].filter((r) => !r.over && !r.ending && [...r.seats.values()].some((x) => x.userId === userId)).length;
+            if (running >= MAX_RUNNING) return { error: `you have ${MAX_RUNNING} games running: finish or leave one first` };
             if (!validCountry(scenario, country)) return { error: `no country ${country} in ${scenario}` };
             const id = db.tx(() => {
                 const { lastInsertRowid } = db.q.insertGame.run(scenario, seed, RULES_VERSION, country, "lobby", userId);
@@ -491,6 +516,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         seatList: (room) => [...room.seats.values()].map(seatView),
         chatOf: (room, limit = 50) => db.q.chatOf.all(room.id, limit).reverse().map(chatView),
         say(room, userId, text) {
+            if ([...room.seats.values()].some((x) => x.userId === userId && x.state === "quit")) return { ok: false, error: "you left this game" };
             text = typeof text === "string" ? text.trim() : "";
             if (!text || text.length > CHAT_MAX) return { ok: false, error: `a message is 1 to ${CHAT_MAX} characters` };
             const { lastInsertRowid } = db.q.insertChat.run(room.id, userId, text);
@@ -501,7 +527,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         attach, detach, quit,
 
         // a person's command, in the country of their seat
-        command: (room, country, cmd) => ask(room, { type: "command", country, source: "human", cmd }),
+        command: (room, country, cmd) => (room.seats.get(country)?.state === "quit" ? Promise.resolve({ ok: false, error: "you left this game" })
+            : ask(room, { type: "command", country, source: "human", cmd })),
         view: (room, country) => ask(room, { type: "view", country }).then((m) => m.view),
         setPaused,
         setCaretaker: caretaker,

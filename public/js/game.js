@@ -54,6 +54,24 @@ let splitOpen = false;
 let owners = "";             // who owned what when the lands were last coloured
 
 // ---------- start ----------
+// The days come as changes to the day before, so none may be missed: the listeners are there before the join, and what comes
+// while the page is loading (or joining again after a reconnect) waits, then only what is newer than the view is applied.
+let loading = true;
+const early = [];
+// a country's own part of the day: what changed of it, and the events only it may see (research, its questions...)
+function onPrivate(m) {
+    if (m.changes) applyPrivate(state, me, m.changes);
+    if (m.events?.length) news(m.events);
+    renderTop();
+}
+socket.on("tick", (m) => (loading ? early.push(["tick", m]) : onTick(m)));
+socket.on("private", (m) => (loading ? early.push(["private", m]) : onPrivate(m)));
+function caughtUp() {
+    const from = state.day;
+    for (const [kind, m] of early.splice(0)) if (m.day > from) (kind === "tick" ? onTick : onPrivate)(m);
+    loading = false;
+}
+
 async function start() {
     // who we are is asked alongside the join, and the scenario's data alongside its map: one round trip each, not five in a row
     const whoAmI = fetch("/api/me").then((r) => r.json());
@@ -88,8 +106,6 @@ async function start() {
     $("panel").addEventListener("click", () => press.click(), true);
     for (const ev of ["pointerup", "pointercancel"]) window.addEventListener(ev, () => press.up());
     document.addEventListener("keydown", onKey);
-    socket.on("tick", onTick);
-    socket.on("private", (m) => { applyPrivate(state, me, m.changes); renderTop(); });
     socket.on("paused", (m) => { paused = m.paused; if (!paused) setupEnds = 0; renderTop(); });
     socket.on("over", (m) => {
         state.winner = m.winner;
@@ -113,23 +129,42 @@ async function start() {
     // a reconnect joins again: in a game with others the country is ours at once; the page catches up from the view
     socket.on("connect", () => {
         if (!state) return;
+        loading = true;
         ask(watching ? "watch" : "join", { gameId }).then((j) => {
-            if (!j.ok) { toast(j.error, 600000); return; }
+            if (!j.ok) { loading = false; early.length = 0; toast(j.error, 600000); return; }
             state = Object.assign(state, j.view);
             paused = j.paused;
             seats = j.seats;
             setupEnds = j.setup ? performance.now() + j.setup : 0;
+            prune();
+            caughtUp();
             renderAll();
         });
     });
+    caughtUp();
     renderAll();
     requestAnimationFrame(frame);
+    // a game that ended while the page was away: its end screen (the server keeps only who won, or "defeat")
+    if (joined.over) {
+        const winner = joined.over === "defeat" ? null : joined.over, target = scenario.victory?.settlements;
+        showEnd({ day: state.day, winner, defeated: !winner, why: winner && scores(state)[winner]?.settlements >= target ? "reached" : "end" });
+    }
 }
 
 function onTick(m) {
     applyChanges(state, m.changes);
     lastTick = performance.now();
-    for (const e of m.events) {
+    news(m.events);
+    // a war declared on us: the banner, and anyone joining it since is added to it
+    const alert = warAlert(m.events, me, war ?? undefined);
+    if (alert) showWar(alert);
+    prune();
+    renderAll();
+}
+
+// the day's events into the feed, and the ones that matter to the player as a toast
+function news(events) {
+    for (const e of events) {
         const who = eventCountries(e);
         // the player's news and their enemies'; a watcher's, the news of the people's countries
         if (me ? who.includes(me) || who.some((c) => enemies().includes(c)) : who.some((c) => seats.some((s) => s.country === c))) feed(e);
@@ -139,13 +174,14 @@ function onTick(m) {
             || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
                 "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "integrated", "broke", "fleetPaidOff"].includes(e.type))) toast(describeEvent(game.map, e));
     }
-    // a war declared on us: the banner, and anyone joining it since is added to it
-    const alert = warAlert(m.events, me, war ?? undefined);
-    if (alert) showWar(alert);
+}
+
+// a selection or a planned route whose army, fleet or country is gone (fallen, merged, an uprising over) is let go
+function prune() {
     if (sel?.kind === "army" && !state.armies[sel.id]) { sel = null; plan = null; }
     if (sel?.kind === "fleet" && !state.fleets[sel.id]) sel = null;
+    if (sel?.kind === "country" && !state.countries[sel.code]) sel = null;
     if (plan && !state.armies[plan.army]) plan = null;
-    renderAll();
 }
 
 // ---------- helpers ----------

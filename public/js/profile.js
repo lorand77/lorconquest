@@ -31,8 +31,8 @@ const json = (r) => r.json().then((body) => ({ ok: r.ok, body }));
 // everything at once: who you are, the games, the leaderboard (for your own row) and the scenarios' names
 const [me, theirs, mine, board, scenarios] = await Promise.all([requireUser(),
     asked ? fetch(`/api/players/${encodeURIComponent(asked)}`).then(json) : null,
-    asked ? null : fetch("/api/games").then((r) => r.json()),
-    asked ? null : fetch("/api/leaderboard").then((r) => r.json()),
+    asked ? null : fetch("/api/games").then((r) => (r.ok ? r.json() : [])).catch(() => []),          // drawn empty, not broken, if the server fails
+    asked ? null : fetch("/api/leaderboard").then((r) => (r.ok ? r.json() : [])).catch(() => []),
     fetch("/api/scenarios").then((r) => r.json())]);
 mountShell(me);
 const own = !asked || theirs?.body?.username === me.username;
@@ -95,7 +95,7 @@ $("stat-grid").replaceChildren(...[
 // ---------- Games ----------
 const played = games.filter((g) => g.status !== "lobby");
 $("game-list").replaceChildren(...played.map((g) => {
-    const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day));
+    const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day), nameOf(g.scenario, g.winner));
     return make("li", {}, line.open && own ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text,
         line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
 }));

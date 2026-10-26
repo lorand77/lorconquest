@@ -95,7 +95,8 @@ CREATE TABLE IF NOT EXISTS user_achievements (
 
 export function openDb(file) {
     if (file !== ":memory:") fs.mkdirSync(path.dirname(file), { recursive: true });
-    const db = new DatabaseSync(file);
+    // a second writer (tools/user.js, a backup's checkpoint) makes a save wait, not fail and take every game down
+    const db = new DatabaseSync(file, { timeout: 5000 });
     db.exec("PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;");
     db.exec(SCHEMA);
 
@@ -194,7 +195,7 @@ export function openDb(file) {
         markOut: db.prepare("UPDATE game_seats SET out_day = ? WHERE game_id = ? AND country = ?"),
         // the leaderboard: every account, with what it did over the finished games it played (none for one that has finished
         // none). A game counts for "firsts" and the average place only with two or more people in it; a "victory" is their
-        // country winning the whole game.
+        // country winning the whole game while they still played it (one who quit and left it to the computer has no victory).
         leaderboard: db.prepare(`SELECT u.username,
                 COUNT(f.game_id) AS games,
                 COALESCE(SUM(f.many), 0) AS shared,
@@ -202,7 +203,7 @@ export function openDb(file) {
                 COALESCE(SUM(CASE WHEN f.many THEN f.place ELSE 0 END), 0) AS place_sum,
                 COALESCE(SUM(f.won), 0) AS victories
             FROM users u LEFT JOIN (
-                SELECT s.user_id, s.game_id, s.place, (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 AS many, g.winner = s.country AS won
+                SELECT s.user_id, s.game_id, s.place, (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 AS many, g.winner = s.country AND s.quit_day IS NULL AS won
                 FROM game_seats s JOIN games g ON g.id = s.game_id
                 WHERE g.status = 'finished' AND s.place IS NOT NULL
             ) f ON f.user_id = u.id
@@ -215,7 +216,7 @@ export function openDb(file) {
         // tables that have waited longer than this
         staleTables: db.prepare("SELECT id FROM games WHERE status = 'lobby' AND created_at < datetime('now', ?)"),
         abandonGame: db.prepare("UPDATE games SET status = 'abandoned', day = ?, paused = 1, updated_at = datetime('now') WHERE id = ?"),
-        saveProgress: db.prepare("UPDATE games SET day = ?, paused = ?, updated_at = datetime('now') WHERE id = ?"),
+        saveProgress: db.prepare("UPDATE games SET day = ?, paused = ?, updated_at = datetime('now') WHERE id = ? AND status = 'active'"),          // a game over keeps when it ended
 
         insertSeat: db.prepare("INSERT INTO game_seats (game_id, country, user_id) VALUES (?, ?, ?)"),
         deleteSeat: db.prepare("DELETE FROM game_seats WHERE game_id = ? AND user_id = ?"),

@@ -65,7 +65,7 @@ function hostsOf(game, code) {
 
 // `defend`: a caretaker's war — only the armies it has, only within its own and its friends' land: to relieve a besieged
 // settlement or meet an enemy army that has come in. It musters, merges, gathers and attacks nothing.
-export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false } = {}) {
+export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false, thinned = new Set() } = {}) {
     const st = game.state, out = [], foes = new Set(enemiesOf(st, code));
     sorties(game, code, out);
     // an army marching into the land of a country it is no longer at war with, nor friendly with (a peace made on the way),
@@ -182,8 +182,9 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     if (muster && baseKey && !defend && !fl.defending) {            // a first holding its lead in the endgame keeps its men home
         for (const [key, g] of [...garrisons(st, code)].sort((x, y) => (x[0] < y[0] ? -1 : 1))) {
             const s = st.settlements[key];
-            if (!s || s.owner !== code || s.siege || g.march) continue;
-            const armed = armedIn(g), excess = Math.min(armed, menIn(g) - garrisonFloor(game, code, s));
+            if (!s || s.owner !== code || s.siege || g.march || thinned.has(g.id)) continue;
+            // only armed men leave, so only armed men count towards the floor that stays: never a garrison of unarmed men alone
+            const armed = armedIn(g), excess = armed - garrisonFloor(game, code, s);
             if (excess < Math.max(400, 0.2 * armed)) continue;
             const f = excess / armed, men = {};
             for (const w of WEAPONS) if (w !== "unarmed" && g.men[w]) men[w] = Math.floor(g.men[w] * f);

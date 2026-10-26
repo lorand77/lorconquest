@@ -21,8 +21,10 @@
 // Leaving a game — a closed page, a lost connection — is what makes a player "away" (rooms.js).
 const reply = (ack, value) => { if (typeof ack === "function") ack(value); };
 
-// a socket may send this many chat messages in this many milliseconds
+// a person may send this many chat messages in this many milliseconds, from all their tabs together
 const CHAT_BURST = 5, CHAT_WINDOW_MS = 5000;
+// the longest command a client may send, as JSON: a peace naming every settlement of the larger map is well under it
+const COMMAND_MAX = 8000;
 
 export function attachSockets({ io, rooms, sessions, log, tickMs }) {
     // who is online — has the lobby or a game open — for the lobby's list: per person, what each of their sockets has open.
@@ -56,10 +58,12 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
         next();
     });
 
+    // the chat's burst limit is a person's, whichever of their tabs they write from
+    const saidBy = new Map();
+
     io.on("connection", (socket) => {
         const { user } = socket;
         let room = null, seat = null, watching = null;
-        const said = [];
         socket.join([`user:${user.id}`, `session:${user.hash}`]);
 
         // a handler that fails answers the caller and logs, never takes the server down
@@ -89,6 +93,8 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             } catch {
                 return reply(ack, { ok: false, error: "the game could not be started" });
             }
+            // a page closed while the game was being brought back: its socket must not be counted as a player there
+            if (socket.disconnected) return;
             if (room !== r) leave();
             const joined = rooms.attach(r, user.id, socket.id);
             if (joined.error) return reply(ack, { ok: false, error: joined.error });
@@ -110,6 +116,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             const r = rooms.get(msg?.gameId);
             if (!r || r.over || r.ending || r.unloading) return reply(ack, { ok: false, error: "that game is not being played now" });
             try { await r.ready; } catch { return reply(ack, { ok: false, error: "that game is not being played now" }); }
+            if (socket.disconnected) return;
             if (room) leave();
             if (watching) socket.leave(`watch:${watching}`);
             watching = r.id;
@@ -125,6 +132,8 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
         on("command", async (msg, ack) => {
             if (!room) return reply(ack, { ok: false, error: "join a game first" });
             if (!msg || typeof msg.cmd !== "object" || msg.cmd === null) return reply(ack, { ok: false, error: "no command" });
+            // every command is kept in the game's log as it came: one padded with junk would fill the disk
+            if (JSON.stringify(msg.cmd).length > COMMAND_MAX) return reply(ack, { ok: false, error: "that command is too long" });
             const r = await rooms.command(room, seat.country, msg.cmd);
             reply(ack, { ok: r.ok, error: r.error, events: r.events });
         });
@@ -138,7 +147,8 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
 
         on("chat", (msg, ack) => {
             if (!room) return reply(ack, { ok: false, error: "join a game first" });
-            const now = Date.now();
+            const now = Date.now(), said = saidBy.get(user.id) ?? [];
+            saidBy.set(user.id, said);
             while (said.length && now - said[0] > CHAT_WINDOW_MS) said.shift();
             if (said.length >= CHAT_BURST) return reply(ack, { ok: false, error: "slow down" });
             said.push(now);

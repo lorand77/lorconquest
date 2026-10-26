@@ -146,17 +146,27 @@ test("when access, an alliance or a war ends, armies left in the land go home", 
     let game = tinyGame();
     stand(game, "access");
     const events = order(game, cmd("BBB", "cancelAccess", { with: "AAA" }));
-    assert.equal(game.state.armies[3].retreating, true);
+    assert.equal(game.state.armies[3].retreating, "home");
     assert.ok(ofType(events, "retreat").length === 1 && game.state.memory.broke.BBB === undefined);
     game = tinyGame();
     stand(game, "defensive");
     order(game, cmd("BBB", "breakAgreement", { with: "AAA", kind: "defensive" }));
-    assert.equal(game.state.armies[3].retreating, true);
+    assert.equal(game.state.armies[3].retreating, "home");
     game = tinyGame();
     order(game, cmd("AAA", "declareWar", { target: "BBB" }));
     game.state.armies[3].at = "5";
     order(game, cmd("AAA", "proposePeace", { with: "BBB" }));                  // the peace sends the besieger home
-    assert.equal(game.state.armies[3].retreating, true);
+    assert.equal(game.state.armies[3].retreating, "home");
+    // two steps inside: from CCC's 6 home through BBB's land, closed to it but not an enemy's — not destroyed for want of a way
+    game = tinyGame();
+    order(game, cmd("AAA", "declareWar", { target: "CCC" }));
+    Object.assign(game.state.armies[2], { at: "6", arrived: 0 });
+    const peace = order(game, cmd("AAA", "proposePeace", { with: "CCC" }));
+    assert.equal(ofType(peace, "destroyed").length, 0);
+    assert.equal(game.state.armies[2].retreating, "home");
+    runTo(game, 400);
+    assert.ok(["1", "2", "3"].includes(game.state.armies[2].at), `home at ${game.state.armies[2].at}`);
+    assert.equal(game.state.armies[2].retreating, false);
 });
 
 test("friendly land feeds an army; land opened by access does not", () => {

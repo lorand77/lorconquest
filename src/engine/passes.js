@@ -47,7 +47,8 @@ export function stormPost(game, country, key, events) {
         ev.a.dead += loss.dead + loss.crew;
         if (isEmpty(a)) { removeArmy(st, a); ev.destroyed.push(a.id); }
     }
-    const lost = Math.min(post.n, Math.round(post.n * (winner === "b" ? dmg.winner : dmg.loser)));
+    // a post that loses is wiped out (RULES.md §5); one that wins loses the winner's share
+    const lost = winner === "a" ? post.n : Math.min(post.n, Math.round(post.n * dmg.winner));
     killPeople(st, post.owner, lost);
     ev.b.dead = lost;
     post.n -= lost;

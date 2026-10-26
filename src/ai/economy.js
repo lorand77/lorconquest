@@ -80,7 +80,9 @@ export function economyOrders(game, code, fl, ctx) {
     if (c.loans > 0 && c.treasury < 0 && e.moneyPerYear < 0 && c.debtSince !== null && st.day - c.debtSince >= YEAR_DAYS) {
         cmd("defaultOnLoans");
     } else if (atWarNow && c.treasury < 0.5 * reserve && c.loans < 0.7 * e.loanLimit && e.moneyPerYear > 0 && st.day >= c.noBorrowUntil) {
-        cmd("borrow", { chunks: Math.min(4, Math.max(1, Math.ceil((reserve - c.treasury) / LOAN_CHUNK))) });
+        // no more than the bankers lend: what is left under the loan limit, in whole chunks (none at all for a small country)
+        const room = Math.floor((e.loanLimit - c.loans) / LOAN_CHUNK);
+        if (room > 0) cmd("borrow", { chunks: Math.min(4, room, Math.max(1, Math.ceil((reserve - c.treasury) / LOAN_CHUNK))) });
     } else if (c.loans > 0 && spare > c.loans + reserve) {
         // what this think has spent already (forces: men raised armed, weapons) is gone by the time the repayment is applied
         const chunks = Math.min(Math.floor(c.loans / LOAN_CHUNK), Math.floor(spare / LOAN_CHUNK / 2) || 1, Math.floor(Math.max(0, ctx.budget) / LOAN_CHUNK));
@@ -88,11 +90,14 @@ export function economyOrders(game, code, fl, ctx) {
     }
 
     // a vassal of 10 years is integrated, one a year, when the money is there (RULES.md §10, Integration): its land becomes core
-    // and its armies ours, and it can no longer break free. A person's vassal is asked, once while the question waits.
-    const ripe = subjectsOf(st, code).filter((v) => !integrateError(game, code, v) && integratePrice(game, v) <= ctx.budget
-        && !st.offers.some((o) => o.kind === "integrate" && o.from === code && o.to === v)).sort();
+    // and its armies ours, and it can no longer break free. A person's vassal is asked once a year, as the computer asks a
+    // person anything (diplomacy.js, mayAsk), and not while a question of ours waits for them.
+    const askable = (v) => !st.humans.includes(v) || (!st.offers.some((o) => o.from === code && o.to === v)
+        && st.day - (ctx.asked?.get(`${code}>${v}>integrate`) ?? -Infinity) >= YEAR_DAYS);
+    const ripe = subjectsOf(st, code).filter((v) => !integrateError(game, code, v) && integratePrice(game, v) <= ctx.budget && askable(v)).sort();
     if (ripe.length) {
         ctx.budget -= integratePrice(game, ripe[0]);
+        if (st.humans.includes(ripe[0])) ctx.asked?.set(`${code}>${ripe[0]}>integrate`, st.day);
         cmd("integrate", { target: ripe[0] });
     }
 

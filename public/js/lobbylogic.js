@@ -42,11 +42,11 @@ export function tableActions(table, me, scenario, maxHumans = 4) {
 }
 
 // a line for one of a person's games: where it stands, and whether it can be opened
-export function gameLine(game, scenarioName, countryName, dateText) {
+export function gameLine(game, scenarioName, countryName, dateText, winnerName = game.winner) {
     const people = game.people > 1 ? `, ${game.people} people` : "";
     const where = `${scenarioName}, ${countryName}${people}, ${dateText}`;
     // a finished or abandoned game is not opened but watched, as a replay
-    if (game.status === "finished") return { text: game.winner ? `${where} — won by ${game.winner}` : `${where} — lost: every player's country fell`, open: false, replay: true };
+    if (game.status === "finished") return { text: game.winner ? `${where} — won by ${winnerName}` : `${where} — lost: every player's country fell`, open: false, replay: true };
     if (game.status === "abandoned") return { text: `${where} — abandoned: nobody was left`, open: false, replay: true };
     // a game that is going can always be opened: one let go from memory is brought back
     return { text: where, open: true, replay: false };

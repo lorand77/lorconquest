@@ -5,8 +5,26 @@
 // stand, subjects, warmonger scores, the winner — except the questions waiting for a human's answer, which only the
 // two countries concerned see. Runs in the game's worker.
 
+// The day's events, split as the state is: most are public, but a question put to a person (and its lapsing), research, a
+// change of law, a default on loans and soldiers' training cancelled are only for the countries concerned — the state keeps
+// those private, and watchers must never see them (public/privacy.html). { pub: [event], priv: { code: [event] } }
+const PRIVATE_EVENTS = {
+    offer: (e) => [e.country, e.from], lapsed: (e) => [e.country, e.from],
+    tech: (e) => [e.country], law: (e) => [e.country], default: (e) => [e.country], cancelled: (e) => [e.country],
+};
+export function splitEvents(events) {
+    const pub = [], priv = {};
+    for (const e of events) {
+        const to = PRIVATE_EVENTS[e.type];
+        if (!to) { pub.push(e); continue; }
+        for (const code of new Set(to(e).filter(Boolean))) (priv[code] ??= []).push(e);
+    }
+    return { pub, priv };
+}
+
 // the public part of a country
-const publicCountry = (c) => ({ code: c.code, name: c.name, capital: c.capital, rebel: c.rebel, of: c.of, warmonger: c.warmonger, overlord: c.overlord, subjectKind: c.subjectKind });
+const publicCountry = (c) => ({ code: c.code, name: c.name, capital: c.capital, rebel: c.rebel, of: c.of, warmonger: c.warmonger, overlord: c.overlord, subjectKind: c.subjectKind,
+    vassalSince: c.vassalSince ?? null, out: c.out ?? null });
 // the private part, for its own player
 const PRIVATE = ["treasury", "bank", "loans", "noBorrowUntil", "debtSince", "tax", "taxSum", "harvest", "slider", "law", "lawDay", "techs", "target", "r", "reserve", "training", "hires"];
 const privateCountry = (c, state) => ({

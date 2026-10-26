@@ -10,7 +10,7 @@
 //
 // In:  { type: "command", reqId, country, source, cmd }  { type: "pause", paused }  { type: "view", reqId, country }
 //      { type: "caretaker", country, mode }  (mode "caretaker", "full" or null: who plays a human's country while away)  { type: "stop" }
-// Out: { type: "ready", day }  { type: "tick", day, events, pub, priv, commands, snapshot }
+// Out: { type: "ready", day }  { type: "tick", day, events, privEvents, pub, priv, commands, snapshot }   (events public, privEvents by country: view.js)
 //      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
 //      { type: "stats", days, mean, max }  { type: "over", day, winner, why, defeated, scores, hash }  { type: "stopped", day, commands }
 // A game is over when a country has won (the engine says so), or when every person's country is out of the game (RULES.md
@@ -19,7 +19,7 @@
 import { parentPort, workerData } from "node:worker_threads";
 import { fingerprint, replay, resume, scores } from "../engine/index.js";
 import { createAI } from "../ai/index.js";
-import { Changes, viewFor } from "./view.js";
+import { Changes, splitEvents, viewFor } from "./view.js";
 
 const CATCH_UP = 5;
 const { scenario, seed, snapshot, log, day, humans, tickMs, statsEvery } = workerData;
@@ -49,8 +49,8 @@ function applyQueue(events) {
 }
 
 function publish(events) {
-    const { pub, priv } = changes.next(game.state);
-    post({ type: "tick", day: game.day, events, pub, priv, commands: toSave, snapshot: snap });
+    const { pub, priv } = changes.next(game.state), split = splitEvents(events);
+    post({ type: "tick", day: game.day, events: split.pub, privEvents: split.priv, pub, priv, commands: toSave, snapshot: snap });
     toSave = [];
     snap = null;
 }

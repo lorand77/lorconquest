@@ -67,7 +67,7 @@ function draw() {
     if (now !== owners) { owners = now; map.colourLands(ownerOfLand, colourOf); map.setLabels(countryLabels(replayer.state, scenario)); }
     paintMap(map, replayer.state, nodes, zones, legs, replayer.day, colourOf, {});
     $("date").textContent = longDate(replayer.day);
-    $("seek").value = replayer.day;
+    if (!dragging) $("seek").value = replayer.day;     // not under a hand moving it
     standing();
     lastDraw = replayer.day;
     if (replayer.done) {
@@ -100,13 +100,22 @@ $("play").addEventListener("click", () => {
     draw();
 });
 
-// going to a day: back is quick (a keyframe), forward plays through in chunks so the page stays alive
+// going to a day: back is quick (a keyframe), forward plays through in chunks so the page stays alive. A newer seek (the
+// slider moved again, or arrowed) takes over from one still under way: only the last one counts.
+let dragging = false, seeking = 0;
+$("seek").addEventListener("pointerdown", () => { dragging = true; });
+window.addEventListener("pointerup", () => { dragging = false; });
 $("seek").addEventListener("change", async () => {
-    const day = Number($("seek").value);
+    const day = Number($("seek").value), mine = ++seeking;
+    dragging = false;
     working = true;
     $("verdict").textContent = "Going there…";
     $("events").replaceChildren();
-    do { replayer.seek(day, 500); await new Promise((r) => setTimeout(r, 0)); } while (replayer.day < day && !replayer.done);
+    do {
+        replayer.seek(day, 500);
+        await new Promise((r) => setTimeout(r, 0));
+        if (mine !== seeking) return;                      // a newer seek has the replay now
+    } while (replayer.day < day && !replayer.done);
     working = false;
     draw();
 });

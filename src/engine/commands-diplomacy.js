@@ -10,7 +10,7 @@
 //   demandSubject { target, kind: "vassal" | "protectorate" }   proposeEmpire {}   integrate { target }   a vassal of 10 years
 //   answerOffer { id, accept }       a call to arms, or anything a human was asked
 import { done, refuse } from "./command-util.js";
-import { OFFER_DAYS, addAgreement, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
+import { OFFER_DAYS, addAgreement, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, validateTerms, joinWar, PACT_DAYS } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { agreementAnswer, peaceAnswer } from "./opinion.js";
@@ -29,11 +29,18 @@ function other(game, cmd, code) {
     if (st.countries[code].out !== null) return { error: `${code} is no more` };
     return { c: code };
 }
+// a question to a person — one of each kind (and agreement) from the same country at a time: a new peace offer replaces the
+// one still waiting, anything else is refused until it is answered or lapses (asking: below)
 const ask = (game, kind, from, to, extra) => {
     const st = game.state;
+    if (kind === "peace") st.offers = st.offers.filter((o) => !(o.kind === "peace" && o.from === from && o.to === to));
     st.offers.push({ id: ++st.offerSeq, kind, from, to, ...extra, deadline: st.day + OFFER_DAYS });
     return { type: "offer", day: st.day, country: to, from, what: kind };
 };
+
+const waiting = (st, kind, from, to, extra = {}) => st.offers.some((o) => o.kind === kind && o.from === from && o.to === to && Object.entries(extra).every(([k, v]) => o[k] === v));
+const asking = (game, kind, from, to, extra = {}, same = {}) => (kind !== "peace" && waiting(game.state, kind, from, to, same)
+    ? refuse(`you have asked ${to} already: it has 6 months to answer`) : done([ask(game, kind, from, to, extra)]));
 
 function agreementError(game, cmd, to, kind) {
     const st = game.state;
@@ -59,6 +66,7 @@ export const diplomacyCommands = {
         if (error) return refuse(error);
         if (atWar(st, cmd.country, c)) return refuse(`${cmd.country} is already at war with ${c}`);
         if (overlordOf(st, cmd.country) === c || overlordOf(st, c) === cmd.country) return refuse("a subject and its overlord do not make war on each other: it breaks free instead");
+        if (isVassal(st, c)) return refuse(`${c} is a vassal of ${overlordOf(st, c)}: its overlord answers for it — declare war on ${overlordOf(st, c)}`);
         const events = [];
         declareWar(game, cmd.country, c, events);
         return done(events);
@@ -73,7 +81,7 @@ export const diplomacyCommands = {
         const bad = validateTerms(game, cmd.country, c, terms);
         if (bad) return refuse(bad);
         const events = [];
-        if (isHuman(st, c)) return done([ask(game, "peace", cmd.country, c, { terms })]);
+        if (isHuman(st, c)) return asking(game, "peace", cmd.country, c, { terms });
         if (!mayPropose(game, cmd.country, c, "peace")) return refuse(`you asked ${c} for peace less than 5 years ago`);
         notePropose(game, cmd.country, c, "peace");
         const a = peaceAnswer(game, c, cmd.country, terms);
@@ -87,7 +95,7 @@ export const diplomacyCommands = {
         if (error) return refuse(error);
         const bad = agreementError(game, cmd, c, cmd.kind);
         if (bad) return refuse(bad);
-        if (isHuman(st, c)) return done([ask(game, "agreement", cmd.country, c, { agreement: cmd.kind })]);
+        if (isHuman(st, c)) return asking(game, "agreement", cmd.country, c, { agreement: cmd.kind }, { agreement: cmd.kind });
         if (!mayPropose(game, cmd.country, c, cmd.kind)) return refuse(`you proposed that to ${c} less than 5 years ago`);
         notePropose(game, cmd.country, c, cmd.kind);
         const a = agreementAnswer(game, c, cmd.country, cmd.kind), events = [];
@@ -130,7 +138,7 @@ export const diplomacyCommands = {
         if (overlordOf(st, c) && !upgrade) return refuse(`${c} is already ${overlordOf(st, c) === cmd.country ? "your subject" : "a subject"}`);
         if (wouldCycle(st, c, cmd.country)) return refuse(`${cmd.country} is itself a subject of ${c}'s side: there can be no ring of overlords`);
         const events = [];
-        if (isHuman(st, c)) return done([ask(game, "demand", cmd.country, c, { subject: cmd.kind })]);
+        if (isHuman(st, c)) return asking(game, "demand", cmd.country, c, { subject: cmd.kind }, { subject: cmd.kind });
         if (!mayPropose(game, cmd.country, c, `demand-${cmd.kind}`)) return refuse(`you asked ${c} for that less than 5 years ago`);
         notePropose(game, cmd.country, c, `demand-${cmd.kind}`);
         // a refusal is already an event of its own
@@ -174,17 +182,20 @@ export const diplomacyCommands = {
         const events = [], accept = Boolean(cmd.accept);
         events.push({ type: "answer", day: st.day, country: offer.to, from: offer.from, what: offer.kind === "agreement" ? offer.agreement : offer.kind, accepted: accept });
         if (offer.kind === "call") {
-            if (accept) joinWar(game, offer.to, offer.side, offer.from, offer.enemy, events);
+            if (accept) { if (callStands(game, offer)) joinWar(game, offer.to, offer.side, offer.from, offer.enemy, events); }
             else {
                 removeAgreements(game, (x) => x.kind === "military" && ((x.a === offer.to && x.b === offer.from) || (x.a === offer.from && x.b === offer.to)));
                 events.push({ type: "ended", day: st.day, country: offer.to, with: offer.from, kind: "military" });
+                evictClosed(game, events);
             }
         } else if (offer.kind === "agreement") {
-            if (accept && !agreementError(game, { country: offer.from }, offer.to, offer.agreement)) sign(game, offer.agreement, offer.from, offer.to, events);
+            if (accept && !isVassal(st, offer.from) && !agreementError(game, { country: offer.from }, offer.to, offer.agreement)) sign(game, offer.agreement, offer.from, offer.to, events);
         } else if (offer.kind === "peace") {
-            if (accept && atWar(st, offer.from, offer.to) && !validateTerms(game, offer.from, offer.to, offer.terms)) makePeace(game, offer.from, offer.to, offer.terms, events);
+            if (accept && atWar(st, offer.from, offer.to) && !isVassal(st, offer.from) && !isVassal(st, offer.to) && !validateTerms(game, offer.from, offer.to, offer.terms)) makePeace(game, offer.from, offer.to, offer.terms, events);
         } else if (offer.kind === "demand") {
-            if (accept && !(overlordOf(st, offer.to) && offer.subject === "protectorate")) setSubject(game, offer.to, offer.from, offer.subject, events);
+            // at war with the demander by now: a yes would end the war with no peace — it counts as a refusal
+            if (accept && atWar(st, offer.to, offer.from)) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
+            else if (accept && !(overlordOf(st, offer.to) && offer.subject === "protectorate")) setSubject(game, offer.to, offer.from, offer.subject, events);
             else if (!accept) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
         } else if (offer.kind === "integrate") {
             if (accept && !integrateError(game, offer.from, offer.to)) integrate(game, offer.from, offer.to, events);

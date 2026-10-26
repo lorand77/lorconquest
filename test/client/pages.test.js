@@ -41,7 +41,8 @@ test("a game's line says where it stands: one going can be opened (even if the s
     assert.deepEqual(gameLine(g, "Mitteleuropa", "Bavaria", "1 January 1441"), { text: "Mitteleuropa, Bavaria, 1 January 1441", open: true, replay: false });
     assert.deepEqual(gameLine({ ...g, people: 3, live: false }, "Mitteleuropa", "Bavaria", "d"), { text: "Mitteleuropa, Bavaria, 3 people, d", open: true, replay: false });
     const won = gameLine({ ...g, status: "finished", winner: "AUS" }, "M", "B", "d");
-    assert.match(won.text, /won by AUS/);
+    assert.match(won.text, /won by AUS/);                                                  // the code, when no name is given
+    assert.match(gameLine({ status: "finished", winner: "AUS", people: 1 }, "Mitteleuropa", "Bavaria", "1 January 1500", "Austria").text, /won by Austria$/);
     assert.deepEqual([won.open, won.replay], [false, true]);
     const gone = gameLine({ ...g, status: "abandoned" }, "M", "B", "d");
     assert.match(gone.text, /abandoned/);

@@ -76,6 +76,7 @@ function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury,
     }
     // to a country twice our size: its protectorate, before any land
     if (sizeOf(st, foe) >= 2 * sizeOf(st, code) && ok({ ...terms, money: 0, becomeSubject: "protectorate" })) return { ...terms, money: 0, becomeSubject: "protectorate" };
+    terms.money = 0;                                                            // land is offered alone, not with the money as well
     const spare = ownSettlements(st, code).sort((a, b) => a.cores.includes(code) - b.cores.includes(code) || a.pop - b.pop || a.id - b.id);
     // one settlement that will do, the least of them, rather than several: each counts as one for victory, whatever its people
     if (spare.length > 1) for (const s of spare) if (ok({ ...terms, give: [s.id] })) return { ...terms, give: [s.id] };
@@ -97,6 +98,12 @@ function sideOf(game, declarer, target) {
     };
 }
 
+// is `code` bound not to attack `t`: a subject or overlord, a pact, a truce, an alliance, a guarantee of ours
+function bound(st, code, t) {
+    return isVassal(st, t) || overlordOf(st, code) === t || overlordOf(st, t) === code || hasAgreement(st, "guarantee", code, t)
+        || agreementsBetween(st, code, t).some((x) => ["pact", "truce", "defensive", "military"].includes(x.kind));
+}
+
 // a neighbour worth attacking: weak enough, with nothing binding us to it, giving the most land next to ours
 export function bestTarget(game, code, fl) {
     const st = game.state, own = new Set(ownSettlements(st, code).map((s) => String(s.id))), rivals = rivalsOf(game, code);
@@ -105,8 +112,7 @@ export function bestTarget(game, code, fl) {
     const leader = leaderFor(game, code);
     let best = null;
     for (const t of neighboursOf(game, code)) {
-        if (!st.countries[t] || isVassal(st, t) || overlordOf(st, code) === t || overlordOf(st, t) === code) continue;
-        if (agreementsBetween(st, code, t).some((x) => ["pact", "truce", "defensive", "military"].includes(x.kind)) || hasAgreement(st, "guarantee", code, t)) continue;
+        if (!st.countries[t] || bound(st, code, t)) continue;
         const { ours, theirs } = sideOf(game, code, t);
         if (ours < (fl.defending ? 3 : t === leader ? 1.1 - 0.3 * fl.aggression : 1.5 - 0.4 * fl.aggression) * Math.max(theirs, 1)) continue;
         const gain = ownSettlements(st, t).filter((s) => game.map.adj.get(String(s.id)).some((e) => own.has(e.to))).reduce((n, s) => n + worth(s), 0);
@@ -131,16 +137,14 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     if (isVassal(st, code)) return { orders: out, prepare: false };
     const foes = realFoes(st, code), rivals = rivalsOf(game, code);
 
-    // peace — but only one offer a think that makes us or the other a subject: once one is signed, the next would be refused
-    let subjecting = false;
+    // peace — one offer a think: the terms are worked out from the state as it is, and a first peace signed at once changes it
+    // (the land, the money and the wars it ends) for any other
     for (const foe of foes) {
         if (isVassal(st, foe) || !mayAsk(foe, "peace")) continue;
         const terms = peaceTerms(game, code, foe, cash, fl);
         if (!terms) continue;
-        const binds = Boolean(terms.makeSubject || terms.becomeSubject);
-        if (binds && subjecting) continue;
-        subjecting ||= binds;
         ask("proposePeace", foe, "peace", { with: foe, terms });
+        break;
     }
 
     // war: choose a target, prepare for 40 days, declare if it is still a good idea
@@ -150,7 +154,9 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     if (plan) {
         const target = st.countries[plan.target], { ours, theirs } = sideOf(game, code, plan.target);
         const odds = fl.defending ? 2.5 : plan.target === leaderFor(game, code) ? 1.0 - 0.3 * fl.aggression : 1.3 - 0.4 * fl.aggression;
-        const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && ours >= odds * Math.max(theirs, 1);
+        // and nothing binds us to it now: it may have signed a pact or an alliance with us while we mustered (the engine answers
+        // for the computer), and declaring through it would end every alliance we have
+        const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && !bound(st, code, plan.target) && ours >= odds * Math.max(theirs, 1);
         if (!valid) plans.delete(code);
         // a front-runner declares at once: no 40 days of preparing
         else if (day - plan.since >= (fl.racing ? 0 : 40)) { plans.delete(code); cmd("declareWar", { target: plan.target }); }
@@ -227,6 +233,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
 
     // the Empire, once — at peace, since every German state at war with it would refuse and join the League
     const needed = game.map.scenario.empire?.needed;
-    if (needed && !foes.length && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
+    const warring = out.some((o) => o.type === "declareWar" || o.type === "breakAgreement");          // a war begun this very think
+    if (needed && !foes.length && !warring && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
     return { orders: out, prepare: plans.has(code) };
 }

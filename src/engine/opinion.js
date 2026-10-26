@@ -110,7 +110,9 @@ export function peaceCost(game, mine, other, terms) {
     const base = Math.max(1, w ? w.startPop[other] : popOf(st, other));
     const pop = (ids) => sum(ids, (id) => st.settlements[id].pop) / base * 100;
     let cost = pop(terms.take ?? []) - pop(terms.give ?? []);
-    if (terms.money) cost += 10 * terms.money / Math.max(1, economyOf(game, other).moneyPerYear);
+    // a year of its money — never less than a quarter of what its settlements yield: one deep in debt, earning nothing a year,
+    // does not sell a peace for a handful of coins
+    if (terms.money) { const e = economyOf(game, other); cost += 10 * terms.money / Math.max(1, e.moneyPerYear, 0.25 * (e.settlementMoney ?? 0)); }
     cost += pop((terms.release ?? []).flatMap((c) => Object.values(st.settlements).filter((s) => s.owner === c).map((s) => s.id)));
     cost += { vassal: 50, protectorate: 25 }[terms.makeSubject] ?? 0;
     cost -= { vassal: 50, protectorate: 25 }[terms.becomeSubject] ?? 0;

@@ -10,7 +10,7 @@ import { fight, mayFight } from "./battle.js";
 import { legKey } from "./map.js";
 import { recordCapture } from "./diplomacy.js";
 import { cancelAt } from "./forces.js";
-import { destroy, mayDepart, progress, retreat, routeFor, startLeg } from "./movement.js";
+import { destroy, mayDepart, mayPass, progress, retreat, routeFor, startLeg } from "./movement.js";
 import { leavePort, payOffPortless } from "./naval.js";
 import { fireSharpshooters, postsLost, stormPost } from "./passes.js";
 import { d6 } from "./random.js";
@@ -66,6 +66,8 @@ export function capture(game, s, country, events, how) {
     postsLost(game, s.id, events);
     if (game.map.nodes.get(String(s.id)).port) { payOffPortless(game, from, events); leavePort(game, s, events); }
     for (const a of armiesAt(game.state, String(s.id))) if (!isFriend(game.state, a.owner, country)) a.relief = false;
+    // another besieger, at war with the old owner but not the new one, may not stay in the new owner's settlement: home it goes
+    for (const a of armiesAt(game.state, String(s.id))) if (!a.retreating && !canEnter(game, a.owner, String(s.id))) retreat(game, a, events, null, true);
 }
 
 // bring a settlement in line with who is there: enemies with nobody inside to stop them take it, enemies facing a
@@ -80,7 +82,8 @@ export function settle(game, key, events) {
                 events.push({ type: "siegeLifted", day: st.day, settlement: s.id, by: s.siege.by });
                 s.siege = null;
             }
-            for (const a of relief) a.relief = false;
+            // nobody hostile here: nobody is outside the walls any more (a friend's army that came while not at war included)
+            for (const a of armiesAt(st, key)) a.relief = false;
             return;
         }
         if (!garrison.length && relief.length) {        // nobody left inside: the relief force goes in
@@ -269,7 +272,7 @@ export function arrive(game, army, events) {
 
 // on to the next place of its path; if its way has closed, find another to the same destination
 function carryOn(game, army, events) {
-    if (!canEnter(game, army.owner, army.path[0])) {
+    if (!mayPass(game, army, army.path[0])) {
         const found = routeFor(game, army, army.path[army.path.length - 1]);
         if (!found || !found.path.length) {
             if (army.retreating) return retreat(game, army, events);

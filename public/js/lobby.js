@@ -56,7 +56,9 @@ $("start").addEventListener("submit", async (e) => {
 
 // ---------- tables ----------
 function tableItem(t) {
-    const scenario = scenarioOf(t.scenario), a = tableActions(t, me, scenario);
+    const scenario = scenarioOf(t.scenario);
+    if (!scenario) return make("li", { class: "table" }, `${t.host}'s room, on a scenario this server no longer has`);
+    const a = tableActions(t, me, scenario);
     const li = make("li", { class: "table" });
     li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} ${popOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
     const row = make("div", { class: "row" });
@@ -75,8 +77,9 @@ function tableItem(t) {
 }
 
 async function refresh() {
-    const [tables, games, live] = await Promise.all([fetch("/api/tables").then((r) => r.json()), fetch("/api/games").then((r) => r.json()),
-        fetch("/api/live").then((r) => r.json())]);
+    // a list the server could not give (a restart, a lost connection) is drawn as empty, not left to break the others
+    const list = (url) => fetch(url).then((r) => (r.ok ? r.json() : [])).catch(() => []);
+    const [tables, games, live] = await Promise.all([list("/api/tables"), list("/api/games"), list("/api/live")]);
     // games being played now: watch someone else's, open your own
     $("live-count").textContent = live.length ? `(${live.length})` : "";
     $("live").replaceChildren(...live.map((g) => make("li", {},
@@ -87,7 +90,7 @@ async function refresh() {
     if (!tables.length) $("tables").textContent = "None. Open one above.";
     const going = games.filter((g) => g.status === "active");                 // a room not yet started is under Rooms
     $("games").replaceChildren(...going.map((g) => {
-        const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day));
+        const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day), nameOf(g.scenario, g.winner));
         return make("li", {}, line.open ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text, line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
     }));
     if (!going.length) $("games").textContent = "None going.";

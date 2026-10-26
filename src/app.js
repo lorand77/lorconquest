@@ -85,7 +85,8 @@ export function createApp({
     // messages over 512 bytes are compressed (permessage-deflate, which Caddy's encode does not do for a websocket): a day of
     // the historical scenario can be 10 KB or more, ten times a second, and a player's answers queue behind it on a slow line;
     // compressed it is a seventh of that
-    const io = new Server(server, { allowRequest: allowSocketRequest(log), perMessageDeflate: { threshold: 512 } });
+    // no message from a page needs more than a few KB (a command is at most 8,000 characters, socket.js): 64 KB, not the default 1 MB
+    const io = new Server(server, { allowRequest: allowSocketRequest(log), perMessageDeflate: { threshold: 512 }, maxHttpBufferSize: 64 * 1024 });
     const achievements = createAchievements({ db, scenarios, io, log });
     const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs, achievements });
     const healthCheck = health({ db, rooms, log, dbPath, stallMs });

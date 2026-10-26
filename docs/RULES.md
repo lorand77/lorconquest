@@ -633,7 +633,9 @@ enemy. Every other country is **neutral**: its land cannot be entered or marched
 mountain passes cannot be used, and a strait cannot be crossed into it. Armies that are not at war
 ignore each other — no battle and no zone of control. When peace is signed, or an alliance or
 military access ends, any army left in land now closed to it returns to the nearest settlement
-its country owns.
+its country owns — crossing on its way, if it must, land that is closed to it but not an enemy's. So does an army left in a
+settlement another country has just taken from a common enemy. A retreat whose way opens with a strait it cannot cross after
+all (an enemy fleet there) goes by land, or the army is lost.
 
 When you declare war:
 - your target's **defensive allies** and **guarantors** join against you automatically;
@@ -770,7 +772,8 @@ the sum of everything below that applies:
 war score = % of its pop you have taken in this war − % of your pop it has taken
             + 10 × (strength − 1), this part at most +30
 cost      = settlements you ask for, as % of its pop
-            + 10 for each year of its money (§2) you ask for
+            + 10 for each year of its money (§2) you ask for — a year counted as at least a quarter of
+              what its settlements yield, so one deep in debt does not sell peace for a few coins
             + 50 to make it your vassal · 25 to make it your protectorate
 ```
 Pops are counted as they were when the war began. A plain peace (cost 0) is accepted whenever your
@@ -855,13 +858,19 @@ demand — whether it was accepted or not. An agreement cannot be proposed while
 given by the proposer; access is given by the one asked. A pact lasts 10 years, a truce 5; neither can be re-signed
 while it stands.
 
+**Questions to a person** wait 6 months. Only one of each kind from the same country waits at a time (a new peace offer
+replaces the one waiting). An answer counts only if what was asked still makes sense: a call to arms whose war is over, or
+whose alliance has ended, joins nothing; a yes to a demand from a country it is now at war with is a refusal; an agreement or
+a peace with a side that has become a vassal since is not signed.
+
 **Breaking an agreement** ends the agreement, **all the breaker's alliances**, and costs its name for 10 years (−40 in
 every computer country's opinion). Cancelling military access you give is not a break. Declaring war through a pact,
 truce or alliance is. When an agreement ends or a peace is signed, armies in land now closed go home.
 
 **Subjects.** A subject has one overlord, and overlords never form a ring. A vassal gives up its agreements and joins its
-overlord's wars; a war between the two ends. It cannot declare war, propose peace or make agreements: its overlord speaks
-for it. The tribute is a share of the subject's money *before* its own tribute — received or paid — is counted, when that
+overlord's wars; a war between the two ends, and so does every war of its own that its overlord is not fighting (peasant
+risings aside): nobody could make that peace. It cannot declare war, propose peace or make agreements: its overlord speaks
+for it — and war is not declared on a vassal, but on its overlord. The tribute is a share of the subject's money *before* its own tribute — received or paid — is counted, when that
 is positive; it counts in the overlord's money per year and so in its research. A subject breaks free the moment its
 military power is greater than its overlord's own: raising men without weapons never frees one, and the overlord's other
 subjects do not count for it. Each day this is checked.

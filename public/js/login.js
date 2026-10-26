@@ -12,7 +12,8 @@ $("login").addEventListener("submit", async (e) => {
     });
     const out = await res.json().catch(() => ({}));
     if (!res.ok) { $("error").textContent = out.error ?? "Something went wrong."; return; }
-    // only a path on this site: never an address a link could point elsewhere
     const next = new URLSearchParams(location.search).get("next");
-    location.href = next && /^\/[^/\\]/.test(next) ? next : "/";
+    // only a page of this site: the browser drops tabs and newlines from a URL, so "/%09/evil.com" would be "//evil.com"
+    const url = next ? new URL(next, location.origin) : null;
+    location.href = url && url.origin === location.origin && next.startsWith("/") ? url.pathname + url.search + url.hash : "/";
 });

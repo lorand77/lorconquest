@@ -25,6 +25,7 @@ export function yearly(game, events) {
         const c = st.countries[code];
         // three rolls a year, always, so what one country rolls never changes what the next does
         const harvest = random(st), sick = random(st), rise = random(st);
+        if (c.out !== null) continue;                            // a country out of the game: nothing befalls it
         c.harvest = harvest < 0.10;
         if (c.harvest) events.push({ type: "harvest", day: st.day, country: code });
         if (sick < 0.05) plague(game, code, 0.10, events);

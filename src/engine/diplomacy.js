@@ -84,7 +84,7 @@ export function evictClosed(game, events) {
     for (const a of armyList(st)) {
         if (a.retreating) continue;
         const key = a.at ?? a.march.to;
-        if (!canEnter(game, a.owner, key)) retreat(game, a, events);
+        if (!canEnter(game, a.owner, key)) retreat(game, a, events, null, true);
     }
 }
 
@@ -101,6 +101,12 @@ export function setSubject(game, subject, overlord, kind, events) {
     c.overlord = overlord;
     c.subjectKind = kind;
     if (kind === "vassal") {
+        // its own wars end — it has no diplomacy left to make peace with, and its overlord is not in them — except with its
+        // own peasants; then it joins every war of its overlord's
+        for (const w of [...st.wars]) {
+            const [x, y] = w.split("|"), enemy = x === subject ? y : y === subject ? x : null;
+            if (enemy && enemy !== overlord && real(st, enemy) && !atWar(st, overlord, enemy)) closeWar(game, subject, enemy);
+        }
         removeAgreements(game, (x) => x.a === subject || x.b === subject);
         for (const w of [...st.wars]) {
             const [x, y] = w.split("|");
@@ -110,6 +116,7 @@ export function setSubject(game, subject, overlord, kind, events) {
         }
     }
     events.push({ type: "subject", day: st.day, country: subject, overlord, kind });
+    if (kind === "vassal") evictClosed(game, events);           // its alliances are gone: allies' armies in its land go home
     return true;
 }
 
@@ -158,6 +165,14 @@ export function joinWar(game, joiner, side, principal, other, events) {
     return true;
 }
 
+// a call to arms answered (or lapsed) months after it was made: the caller must still be at war with the enemy, the alliance
+// still stand, and the ally be free to fight that enemy — not its overlord or subject, not at war with the caller
+export function callStands(game, o) {
+    const st = game.state;
+    return atWar(st, o.from, o.enemy) && hasAgreement(st, "military", o.from, o.to) && !atWar(st, o.to, o.from)
+        && overlordOf(st, o.to) !== o.enemy && overlordOf(st, o.enemy) !== o.to && st.countries[o.to].out === null;
+}
+
 // a country calls its military ally: a computer joins; a human is asked, and joins if it does not answer in 6 months
 function call(game, ally, caller, side, declarer, target, events) {
     const st = game.state, other = side === "att" ? target : declarer;
@@ -200,6 +215,8 @@ export function validateTerms(game, mine, other, terms) {
     for (const key of ["take", "give", "release"]) {
         if (t[key] === undefined || t[key] === null) continue;
         if (!Array.isArray(t[key])) return `${key} is a list`;
+        if (key !== "release" && !t[key].every(Number.isInteger)) return `${key} names settlements by their numbers`;
+        if (key === "release" && !t[key].every((c) => typeof c === "string")) return "release names countries by their codes";
         if (new Set(t[key]).size !== t[key].length) return `${key} names something twice`;
     }
     for (const [key, owner] of [["take", other], ["give", mine]]) {
@@ -243,10 +260,11 @@ export function makePeace(game, mine, other, terms, events) {
     for (const id of t.take ?? []) { capture(game, st.settlements[id], mine, events, "peace"); gained[id] = mine; }
     for (const id of t.give ?? []) { capture(game, st.settlements[id], other, events, "peace"); gained[id] = other; }
     if (t.money) { st.countries[other].treasury -= t.money; st.countries[mine].treasury += t.money; }
-    for (const c of t.release ?? []) freeSubject(game, c, events);
-    // the wars between the two, and between their vassals, end
+    // the wars between the two, and between their vassals, end — before any subject is freed, so that one freed by this peace
+    // is not left at war with the side that freed it
     const sides = (c) => [c, ...subjectsOf(st, c).filter((x) => isVassal(st, x))];
     for (const x of sides(mine)) for (const y of sides(other)) if (atWar(st, x, y)) closeWar(game, x, y);
+    for (const c of t.release ?? []) freeSubject(game, c, events);
     if (info) scoreWarmongers(game, mine, other, info, { ...t, who: mine, other }, gained);
     if (t.makeSubject) setSubject(game, other, mine, t.makeSubject, events);
     if (t.becomeSubject) setSubject(game, mine, other, t.becomeSubject, events);
@@ -417,6 +435,7 @@ export function lapseCoalitions(game, events) {
     if (!ended.length) return;
     removeAgreements(game, over);
     for (const x of ended) events.push({ type: "expired", day: st.day, kind: x.kind, a: x.a, b: x.b, against: x.against });
+    evictClosed(game, events);
 }
 
 export function coalitions(game, events) {

@@ -56,13 +56,16 @@ export function createAI({ seed, humans = [] }) {
         const fl = endgame(game) && holdsSmallLead(game, code) ? { ...base, aggression: Math.max(0, base.aggression - 0.3), defending: true }
             : racing(game, code) ? { ...base, aggression: Math.min(1, base.aggression + 0.3), racing: true } : base;
         const atWarNow = threatsOf(st, code).length > 0;
-        const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e) }, start = ctx.budget;
+        const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e), asked: memory.asked }, start = ctx.budget;
         ctx.start = start;                                 // what was there to spend, so the economy knows what is left (the bank)
         const out = [...answerOffers(game, code), ...forceOrders(game, code, fl, ctx), ...economyOrders(game, code, fl, ctx)];
         // money offered for peace is what the treasury will hold once this think's spending is applied before it
         const cash = c.treasury - (start - ctx.budget);
         const { orders, prepare } = isVassal(st, code) && !atWarNow ? { orders: [], prepare: false } : diplomacyOrders(game, code, fl, memory, cash);
-        out.push(...orders, ...warOrders(game, code, fl, { prepare }), ...navyOrders(game, code, ctx));
+        // armies this think's orders take men from already (disbanded, mercenaries dismissed) are not split by the muster: its
+        // numbers would be the ones from before
+        const thinned = new Set(out.filter((o) => o.type === "disband" || o.type === "dismissMercenaries").map((o) => o.army));
+        out.push(...orders, ...warOrders(game, code, fl, { prepare, thinned }), ...navyOrders(game, code, ctx));
         if (out.some((o) => ["split", "merge", "equip", "raise"].includes(o.type))) again.add(code);
         return out;
     }
