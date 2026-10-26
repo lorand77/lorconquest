@@ -105,6 +105,9 @@ export function garrisons(st, code) {
     const out = new Map();
     for (const a of ownArmies(st, code)) {
         if (!a.at || a.relief || a.retreating) continue;
+        // only in a settlement of its own: an army at a pass, or before an enemy's town, is a host in the field (war.js) — taken
+        // for a garrison it would never be given another order
+        if (st.settlements[a.at]?.owner !== code) continue;
         const cur = out.get(a.at);
         if (!cur || a.id < cur.id) out.set(a.at, a);
     }

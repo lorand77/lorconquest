@@ -162,3 +162,34 @@ keep anyone from running away with it. Against people this is not necessarily so
 **Balanced is spread out; the historical map is not.** On Balanced eleven countries won, none more than 8 of 36 games (Saxony,
 then Bavaria); on the historical map Burgundy, second only to Poland in people at the start (90K to 100K), won 7 of 18 and declared the most wars (204,
 against Bohemia's 144).
+
+## 8. Siege guns, posts, the capital, a small navy (2026-10-26)
+
+The computer players learned what they could not do (`src/ai/`, design.md): in a war with a real country they buy cannons
+(a hundred once their law allows 2,000 soldiers, up to three hundreds) and their hosts take them on in whole hundreds; a host
+storms an enemy sharpshooter post at its pass, and stops at one on its way to do so; a country that loses its capital names
+its largest city; at sea they build cogs for the straits between their land and an enemy's and patrol only where they are the
+stronger, and they research no warships. Fixed on the way: an army alone at a pass or before an enemy town was taken for a
+garrison and never given another order. Same commands as section 7, the usual 24 + 8 games side by side (18 and 20 minutes).
+
+| | Balanced, 24 games (section 7: 36) | Historical 1440, 8 games (section 7: 18) |
+|---|---|---|
+| Winners | PRU 4, RUH 4, POZ 3, BAV 3, SAX 2, BRB 2, SCH 2, WAR, MEC, MAG, AUS 1 (SAX 8, BAV 6, BRB 5, GDA 5 …) | BUR 3, HUN 2, TEU, SAX, POL 1 (BUR 7, SAX 3, BOH 3 …) |
+| Won on time / by the target | 24 / 0 (36 / 0) | 8 / 0 (18 / 0) |
+| Winner's settlements, mean (least–most); runner-up | 21.6 (12.5–36); 14.4 (21.6 (11–30); 14.5) | 32.9 (28–41.5); 26.6 (33.3 (21–43); 24.9) |
+| Captures a game | 126 (115) | 316 (271) |
+| Wars declared (+ joined); countries eliminated | 45.8 (+24.2); 19.3 (47.1 (+27.3); 18.9) | 66.1 (+96.3); 37.8 (63.8 (+90.1); 36.1) |
+| AI a day: mean, p95, slowest | 1.5, 4.1, 43 ms (1.3, 3.2, 50) | 4.4, 11.3, **198** ms (3.6, 8.9, 61) |
+
+**More captures, the same shape of game.** Cannons and storming hosts take about a tenth more towns on Balanced and a sixth more
+on the historical map, but no game ends early and the winners hold what they held before. Balanced spreads its wins wider
+still: eleven winners, none above 4 of 24. Burgundy still leads the historical map, 3 of 8.
+
+**What the new behaviour does in a game** (one-off probes of 120 years): new capitals 9 to 31 a game; cannons bought 1,000 to
+2,800 and taken on a dozen to three dozen times. Posts and the navy almost never come up: in 120 years no army was shot at a
+pass (posts stand in their owner's land, where its enemies seldom march), a war across a strait went on for about one year on
+the historical map and none on Balanced, and no two enemy fleets were ever in one zone with one at sea — every fleet stays in
+port — so there was nothing to patrol against. The behaviour is there, and tested, for when it does.
+
+**Timing.** The AI's mean day is a little dearer and one day of the historical games took 198 ms, twice the tick's budget —
+once in 613,200 days (p99 16 ms). Worth watching: the likely cost is a route worked out per host to look for posts on its way.

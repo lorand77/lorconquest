@@ -13,18 +13,26 @@ export function threatRatio(game, code) {
     return Math.max(0, ...neighboursOf(game, code).map((c) => militaryPowerOf(st, c))) / mine;
 }
 
-// the tech to research next: guns first, then ships for a country that has them
-const TECH_ORDER = ["handCannons", "arquebuses", "sharpshooters", "muskets", "carracks", "galleons", "menOfWar"];
+// the tech to research next: the guns. Not the ships: the computer builds only cogs (navy.js), so carracks, galleons and
+// men-of-war would be R thrown away
+const TECH_ORDER = ["handCannons", "arquebuses", "sharpshooters", "muskets"];
 function nextTech(game, code) {
-    const st = game.state, c = st.countries[code];
-    const ships = Object.values(st.fleets).some((f) => f.owner === code);
-    return TECH_ORDER.find((t) => !c.techs.includes(t) && c.techs.includes(TECHS[t].needs) && (ships || !["carracks", "galleons", "menOfWar"].includes(t)));
+    const c = game.state.countries[code];
+    return TECH_ORDER.find((t) => !c.techs.includes(t) && c.techs.includes(TECHS[t].needs));
 }
 
 export function economyOrders(game, code, fl, ctx) {
     const st = game.state, c = st.countries[code], e = economyOf(game, code), out = [];
     const enemies = threatsOf(st, code), atWarNow = enemies.length > 0, reserve = reserveOf(e);
     const cmd = (type, rest = {}) => out.push({ type, country: code, ...rest });
+
+    // a capital lost: the largest city held becomes the new one, or the largest settlement if it holds no city — the capital
+    // trains soldiers twice as fast (RULES.md §2); retaking the old one makes it the capital again by itself
+    if (st.settlements[c.capital]?.owner !== code) {
+        const city = (s) => game.map.scenario.settlements.find((x) => x.id === s.id)?.type === "city";
+        const pick = ownSettlements(st, code).sort((a, b) => city(b) - city(a) || b.pop - a.pop || a.id - b.id)[0];
+        if (pick) cmd("setCapital", { settlement: pick.id });
+    }
 
     // tax: none above 2 in peace, a little in war, more if the treasury needs it
     let tax = atWarNow ? 2.2 : 2.0;

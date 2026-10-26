@@ -1,10 +1,10 @@
 // The computer player's forces (docs/design.md, "The computer players"): it raises soldiers up to what its law allows
 // (all of it at war or under threat, most of it otherwise), arms the unarmed with pikes and the best shot it has
 // researched — a third pikes, for pike and shot — and hires mercenaries when a war is going badly, sending them home in
-// peace. What it spends comes out of `ctx.budget`, which the economy then shares. Its fleets stay in port — it fights
+// peace, and buys cannons for its sieges in a war. What it spends comes out of `ctx.budget`, which the economy then shares. Its fleets stay in port — it fights
 // no war at sea — and one that ends up at sea, put out of a port that fell, sails home (fleetsHome).
 import { menOf } from "../engine/army.js";
-import { MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
+import { CANNON_PRICE, MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
 import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf } from "../engine/index.js";
 import { exposed, ownArmies, ownSettlements, stagingSettlement, threatsOf } from "./util.js";
 import { threatRatio } from "./economy.js";
@@ -14,11 +14,11 @@ const SHOT = ["muskets", "arquebuses", "handCannons"];
 // fleets of the country at sea with nothing to do — its port taken from under them (RULES.md §7) — make for a port of its
 // own: in their zone if it has one, else they sail to the first neighbouring zone that does (and enter port on a later think).
 // At sea they cost crew and count on the navy cap for nothing.
-export function fleetsHome(game, code) {
+export function fleetsHome(game, code, keep = new Set()) {
     const st = game.state, out = [], zones = game.map.zones;
     const ownPort = (z) => (zones.get(z)?.ports ?? []).filter((p) => st.settlements[p]?.owner === code).sort((a, b) => a - b)[0];
     for (const f of Object.values(st.fleets)) {
-        if (f.owner !== code || f.port || f.moving || f.order) continue;
+        if (f.owner !== code || f.port || f.moving || f.order || keep.has(f.id)) continue;      // (keep: the navy's, navy.js)
         const port = ownPort(f.zone);
         if (port !== undefined) { out.push({ type: "sail", country: code, fleet: f.id, port }); continue; }
         const next = [...zones.get(f.zone).next].sort().find((z) => ownPort(z) !== undefined);
@@ -105,6 +105,20 @@ export function forceOrders(game, code, fl, ctx) {
         if (n < 1) continue;
         bought[j.to] -= n;
         cmd("equip", { army: j.army, from: j.from, to: j.to, n });
+    }
+
+    // cannons, in a war with a real country: 100 × x once its law allows 2,000 soldiers, a hundred more for every 4,000, up to
+    // three hundreds — each
+    // hundred shortens a siege by a fifth and takes 0.3 off the walls in a storm (RULES.md §6). Bought into the reserve a
+    // hundred at a time; the main host takes them on (war.js, siege guns).
+    if (foes.some((f) => !st.countries[f].rebel)) {
+        const lots = Math.max(1, Math.round(game.map.x)), step = 100 * lots, want = cap < 2000 ? 0 : step * Math.min(3, Math.max(1, Math.floor(cap / 4000)));
+        const held = c.reserve.cannons + ownArmies(st, code).reduce((n, a) => n + a.cannons, 0);
+        const price = CANNON_PRICE * lots;
+        if (held < want && ctx.budget >= price + 0.3 * e.settlementMoney) {
+            cmd("buyWeapons", { weapon: "cannons", lots });
+            ctx.budget -= price;
+        }
     }
 
     // mercenaries — they come on top of the army cap — in a war, as many as the money allows: more when it is going badly, and

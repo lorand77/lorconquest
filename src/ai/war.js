@@ -6,11 +6,14 @@
 // Everything is read from the state, nothing is remembered: a restarted game plays on as before. An army's id is only
 // known once its split has been applied, so musters take two thinks (the second a tick after the first, see index.js).
 import { mayFight } from "../engine/battle.js";
-import { armyList, besiegedIn, isFriend, isRebel, situation, siegeDays } from "../engine/index.js";
+import { CREW_PER_CANNON, armyList, besiegedIn, isFriend, isRebel, routeFor, situation, siegeDays, wallDefence } from "../engine/index.js";
 import { WEAPONS } from "../engine/army.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf } from "./util.js";
 
-const wallsFactor = (s) => (s.walls ? 1.8 : 1.2);
+// a garrison's defence in a storm against `guns` cannons (RULES.md §5): ×1.2, or behind walls ×1.8 less 0.3 a hundred × x
+const wallsFactor = (game, s, guns = 0) => wallDefence(s.walls, guns, game.map.x);
+// the strength of an enemy sharpshooter post at a pass, as a storm of it weighs it (passes.js): its men × 2.5 × 2
+const postPower = (post) => post.n * 5;
 const menIn = (a) => WEAPONS.reduce((n, w) => n + a.men[w], 0);
 const armedIn = (a) => menIn(a) - a.men.unarmed;
 
@@ -70,6 +73,8 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     const field = enemyArmies.filter((a) => inTheOpen(st, a));
     const ratio = 1.5 - 0.4 * fl.aggression;
     const sieges = besiegedOwn(game, code);
+    let spareGuns = st.countries[code].reserve.cannons;            // cannons in the reserve, for the hosts to take on
+    const enemyPost = (k) => { const p = st.posts[k]; return p && p.n > 0 && foes.has(p.owner) ? p : null; };
 
     for (const [at, group] of [...hostsOf(game, code)].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
         group.sort((a, b) => a.id - b.id);
@@ -78,10 +83,24 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
         for (const other of group.slice(1)) if (!defend) out.push({ type: "merge", country: code, army: other.id, into: host.id });
         const reach = reachFrom(game, code, at), here = situation(game, at);
 
+        // siege guns: a host takes on the cannons in the reserve in whole hundreds × x — only full hundreds shorten a siege or
+        // batter walls (RULES.md §6) — up to 40% of its men becoming their crew (10 a cannon)
+        let guns = group.reduce((n, a) => n + a.cannons, 0);
+        const step = 100 * game.map.x;
+        if (!defend && spareGuns > 0) {
+            const can = Math.floor((menIn(host) - host.mercs) * 0.4 / CREW_PER_CANNON) - host.cannons;
+            const n = Math.floor((guns + Math.min(spareGuns, Math.max(0, can))) / step) * step - guns;
+            if (n > 0) { out.push({ type: "equipCannons", country: code, army: host.id, n }); spareGuns -= n; guns += n; }
+        }
+
+        // at a pass held by an enemy post: storm it if the host is clearly the stronger, else go on as below
+        const post = defend ? null : enemyPost(at);
+        if (post && ours >= 1.5 * postPower(post)) { out.push({ type: "stormPost", country: code, army: host.id }); continue; }
+
         // at an enemy settlement: hold the siege, or storm if it can be won now
         if (here.s && foes.has(here.s.owner) && here.garrison.length) {
             if (defend) continue;
-            const sees = forcePower(here.garrison) * wallsFactor(here.s);
+            const sees = forcePower(here.garrison) * wallsFactor(game, here.s, guns);
             if (ours >= 1.35 * sees && mayFight(st, group, here.garrison)) out.push({ type: "storm", country: code, army: host.id });
             else if (!here.s.siege) out.push({ type: "besiege", country: code, army: host.id });
             continue;
@@ -104,13 +123,13 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             if (!foes.has(s.owner)) continue;                                // peasants' towns too: theirs to take back, or anyone's
             const key = String(s.id), days = reach.get(key);
             if (days === undefined) continue;
-            const sit = situation(game, key), raw = forcePower(sit.garrison), def = raw * wallsFactor(s);
+            const sit = situation(game, key), raw = forcePower(sit.garrison), def = raw * wallsFactor(game, s, guns);
             const value = s.pop / 1000 + (st.countries[s.owner].capital === s.id ? 15 : 0) + (s.cores.includes(code) ? 10 : 0) + 5;
             const danger = threat(days);
             if (ours < 1.1 * danger) continue;
             if (!sit.garrison.length) options.push({ key, score: value / (1 + days / 40), storm: false });
             else if (ours >= ratio * def + danger) options.push({ key, score: value / (1 + days / 40), storm: true });
-            else if (ours >= ratio * raw + danger && siegeDays(game, s, 0) <= 500) options.push({ key, score: 0.6 * value / (1 + days / 40), storm: false });
+            else if (ours >= ratio * raw + danger && siegeDays(game, s, guns) <= 500) options.push({ key, score: 0.6 * value / (1 + days / 40), storm: false });
         }
         for (const a of enemyArmies) {
             if (!a.at || !inTheOpen(st, a) || a.at === at) continue;
@@ -120,7 +139,12 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             if (days !== undefined && ours >= 1.5 * their) options.push({ key: a.at, score: (8 + menIn(a) / 500) / (1 + days / 40), storm: false });
         }
         options.sort((x, y) => y.score - x.score || (x.key < y.key ? -1 : 1));
-        if (options.length) out.push({ type: "move", country: code, army: host.id, to: options[0].key, storm: options[0].storm });
+        // an enemy post at a pass on the way, which the host can take: stop there first, to storm it on the next think, rather
+        // than be shot at in passing (and every army after it)
+        const way = options.length ? routeFor(game, host, options[0].key)?.path ?? [] : [];
+        const stop = way.find((k) => k !== options[0]?.key && enemyPost(k) && ours >= 1.5 * postPower(enemyPost(k)));
+        if (stop) out.push({ type: "move", country: code, army: host.id, to: stop, storm: false });
+        else if (options.length) out.push({ type: "move", country: code, army: host.id, to: options[0].key, storm: options[0].storm });
         else if (!defend && baseKey && at !== baseKey && reach.has(baseKey)) out.push({ type: "move", country: code, army: host.id, to: baseKey, storm: false });
     }
 

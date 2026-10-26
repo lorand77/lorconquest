@@ -235,6 +235,16 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   besieged settlement (`besiegedIn`) is never given a march, which the engine refuses. All of it is
   read from the state and nothing is remembered: a split gives an army its id only when applied, so the think
   that splits is followed by one on the next tick (the reflex layer) that moves what was made.
+- **Siege guns, posts, the capital, the navy** (`src/ai/forces.js`, `war.js`, `economy.js`, `navy.js`): in a war with a
+  real country it buys cannons — a hundred × x once its law allows 2,000 soldiers, up to three hundreds — and a host takes them
+  on in whole hundreds (only full hundreds shorten a siege or batter walls), up to 40% of its men as crew; its choice of sieges
+  and storms counts them. A host at a pass held by an enemy post storms it when clearly the stronger, and one whose way runs
+  through such a pass stops there first to do so. A country that loses its capital names its largest city the new one. At
+  sea it builds only cogs, and only for the straits between its land and an enemy's — 10 ships in the strait's zone,
+  sailed there a zone at a time or bought in a port it holds there — and patrols only where enemy ships are at sea and its
+  side has 1.3 times their power, going back to port when outmatched or alone; it researches no warships it would not build.
+  An army counts as a garrison only in a settlement of its own country: one at a pass or before an enemy town is a host,
+  given orders like any (`util.js`, `garrisons`).
 - **Peasants as enemies:** the computer takes towns held by peasants like any enemy's (its own peasants' back, or others'
   as their country's enemy, or anyone's once that country is gone), but only its real enemies and its own peasants put it
   on a war footing (`src/ai/util.js`, `threatsOf`) — otherwise the peasants of a fallen country, at war with everyone,
@@ -673,10 +683,9 @@ named (see [plan.md](plan.md)).
    electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal both
    scenarios share (RULES.md §10) and the scenario's starting wars and agreements, not this. It is a subsystem of its own
    — worth its own milestone if that scenario is to be played in earnest.
-2. **Computer fleets** (not scheduled). The computer countries keep their starting ships and never build or fight with
-   them; a strait it cannot cross without ships stays shut to it. They sail only to go home: a fleet put to sea by the fall
-   of its port makes for a port of its country, in its zone or the next (`src/ai/forces.js`, `fleetsHome`). (A country
-   that loses its last port has no fleet left: the rules pay them off.) Naval war would be the next thing to teach it.
+2. **A computer navy that seeks battle** (not scheduled). The computer builds only cogs, only for the straits its armies
+   need, and fights at sea only where enemy ships come out and it is clearly the stronger (`src/ai/navy.js`): it never
+   blockades, never hunts fleets in port, and never builds carracks and better. That would be the next thing to teach it.
 
 ---
 

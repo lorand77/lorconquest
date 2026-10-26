@@ -10,7 +10,8 @@ import { economyOf, isVassal } from "../engine/index.js";
 import { caretakerOrders, answerOffers } from "./caretaker.js";
 import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
-import { fleetsHome, forceOrders } from "./forces.js";
+import { forceOrders } from "./forces.js";
+import { navyOrders } from "./navy.js";
 import { flavorOf, reserveOf, thinksOn, threatsOf } from "./util.js";
 import { warOrders } from "./war.js";
 
@@ -43,7 +44,7 @@ export function createAI({ seed, humans = [] }) {
         // money offered for peace is what the treasury will hold once this think's spending is applied before it
         const cash = c.treasury - (start - ctx.budget);
         const { orders, prepare } = isVassal(st, code) && !atWarNow ? { orders: [], prepare: false } : diplomacyOrders(game, code, fl, memory, cash);
-        out.push(...orders, ...warOrders(game, code, fl, { prepare }), ...fleetsHome(game, code));
+        out.push(...orders, ...warOrders(game, code, fl, { prepare }), ...navyOrders(game, code, ctx));
         if (out.some((o) => ["split", "merge", "equip", "raise"].includes(o.type))) again.add(code);
         return out;
     }

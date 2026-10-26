@@ -340,3 +340,63 @@ test("games of computers alone on the real map: legal, sane every month, and rep
         assert.ok(st.wars.length >= 0 && armyList(st).length > 0);
     }
 });
+
+test("a computer that loses its capital names a new one: its largest city, else its largest settlement", () => {
+    const game = tinyGame(), st = game.state;
+    st.settlements[1].owner = "BBB";                                           // One, AAA's capital (its only city), falls
+    const orders = economyOrders(game, "AAA", flavorOf(game, "AAA"), { budget: 0 });
+    assert.deepEqual(orders.filter((o) => o.type === "setCapital").map((o) => o.settlement), [2]);   // Two and Three are towns alike: the first
+    assert.equal(game.command(orders.find((o) => o.type === "setCapital")).ok, true);
+    assert.equal(economyOrders(game, "AAA", flavorOf(game, "AAA"), { budget: 0 }).some((o) => o.type === "setCapital"), false);
+});
+
+test("at war, a computer buys cannons and its host takes them on; at a pass held by an enemy post, a host storms it", async () => {
+    const { newArmy } = await import("../../src/engine/state.js");
+    const { emptyMen } = await import("../../src/engine/army.js");
+    const { warOrders } = await import("../../src/ai/war.js");
+    const game = tinyGame(), st = game.state, c = st.countries.AAA;
+    game.command({ type: "setLaw", country: "AAA", law: "mass" });             // an army cap of 6,000: a hundred cannons
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    c.treasury = 5000000;
+    const buy = forceOrders(game, "AAA", flavorOf(game, "AAA"), { budget: 4000000 }).filter((o) => o.type === "buyWeapons" && o.weapon === "cannons");
+    assert.deepEqual(buy.map((o) => o.lots), [1]);
+    // a host of 3,000 at One with a hundred cannons in the reserve: it takes on all hundred (a third of its men as crew)
+    c.reserve.cannons = 100;
+    const host = newArmy(st, "AAA", "1", { ...emptyMen(), swords: 3000 });
+    const orders = warOrders(game, "AAA", flavorOf(game, "AAA"));
+    assert.deepEqual(orders.filter((o) => o.type === "equipCannons").map((o) => [o.army, o.n]), [[host.id, 100]]);
+    assert.equal(game.command(orders.find((o) => o.type === "equipCannons")).ok, true);
+    // the host at the pass, where BBB has a post of 100: it storms it
+    host.at = "P1";
+    st.posts.P1 = { owner: "BBB", n: 100 };
+    const atPass = warOrders(game, "AAA", flavorOf(game, "AAA"));
+    assert.deepEqual(atPass.filter((o) => o.type === "stormPost").map((o) => o.army), [host.id]);
+});
+
+test("a computer's navy: ships in a strait's zone its armies need, bought or sailed there, and a patrol only when the stronger", async () => {
+    const { navyOrders } = await import("../../src/ai/navy.js");
+    // the strait 3-6 lies in the north: AAA (3) at war with CCC (6) needs 10 ships there
+    let game = tinyGame(), st = game.state;
+    game.command({ type: "declareWar", country: "AAA", target: "CCC" });
+    st.countries.AAA.treasury = 5000000;
+    let orders = navyOrders(game, "AAA", { budget: 4000000 });
+    assert.deepEqual(orders.filter((o) => o.type === "buyShips").map((o) => [o.port, o.kind, o.lots]), [[1, "cogs", 1]]);   // in its port One
+    assert.equal(game.command(orders.find((o) => o.type === "buyShips")).ok, true);
+    assert.equal(navyOrders(game, "AAA", { budget: 4000000 }).some((o) => o.type === "buyShips"), false);           // 10 there now
+    // a fleet of its own in the south sails north rather than buying
+    game = tinyGame(); st = game.state;
+    game.command({ type: "declareWar", country: "AAA", target: "CCC" });
+    const south = giveFleet(game, "AAA", { cogs: 12 }, null, "south");
+    orders = navyOrders(game, "AAA", { budget: 4000000 });
+    assert.deepEqual(orders.filter((o) => o.type === "sail").map((o) => [o.fleet, o.zone]), [[south.id, "north"]]);
+    assert.equal(orders.some((o) => o.type === "buyShips"), false);
+    // a patrol: AAA\x27s 20 cogs in port in the north against BBB\x27s 5 at sea there — put out and patrol; against 30, stay in
+    game = tinyGame(); st = game.state;
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    const home = giveFleet(game, "AAA", { cogs: 20 }, 1, "north");
+    const foe = giveFleet(game, "BBB", { cogs: 5 }, null, "north");
+    orders = navyOrders(game, "AAA", { budget: 0 });
+    assert.deepEqual(orders.filter((o) => o.fleet === home.id).map((o) => o.type), ["sail", "patrol"]);
+    foe.ships.cogs = 30;
+    assert.equal(navyOrders(game, "AAA", { budget: 0 }).some((o) => o.fleet === home.id && o.type === "patrol"), false);
+});
