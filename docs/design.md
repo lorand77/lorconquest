@@ -391,7 +391,9 @@ quitter first. (An abandoned game has no result.)
 
 - **The leaderboard** (`GET /api/leaderboard`, `public/leaderboard.html`) counts, per person and over finished games: the games,
   those with other people in them, how often they came first among those people, their average place there, and their
-  *victories* — their country winning the whole game, a game alone included. It lists every account, one that has finished no
+  *victories* — their country winning the whole game, a game alone included (not one they quit) — and the *win %*, victories out of
+  games finished. The profile's Stats lead with the win rate, then alone against the computer and with other people, how often
+  first among the people at the table, and a table of the win rate in each scenario played to the end (`lobbylogic.js`, `statsOf`). It lists every account, one that has finished no
   game too (with noughts, after everyone else, by name), and is ordered by firsts, then victories, then the average place,
   then the most games. A deleted account is left off. On the page a click on a column's head sorts by it, a second the other
   way (`lobbylogic.js`, `sortBoard`); each row keeps its overall rank, and the player's own row is marked.

@@ -94,7 +94,7 @@ test("the leaderboard lists everyone and counts the games finished: firsts among
     const server = await startServer({ dbPath: tempDb(), root });
     try {
         // everyone is on it, a game finished or not
-        assert.deepEqual((await api(server, "GET", "/api/leaderboard", null, "alice")).body, [{ username: "alice", games: 0, shared: 0, firsts: 0, victories: 0, averagePlace: null }]);
+        assert.deepEqual((await api(server, "GET", "/api/leaderboard", null, "alice")).body, [{ username: "alice", games: 0, shared: 0, firsts: 0, victories: 0, averagePlace: null, winRate: null }]);
         assert.equal((await api(server, "GET", "/api/leaderboard", null, null)).status, 401);
         const { id } = await finishedGame(server);
         const rows = (await api(server, "GET", "/api/leaderboard", null, "alice")).body;
@@ -102,6 +102,7 @@ test("the leaderboard lists everyone and counts the games finished: firsts among
         const first = placed.find((p) => p.place === 1), second = placed.find((p) => p.place === 2);
         assert.deepEqual(rows.map((r) => [r.username, r.games, r.shared, r.firsts]), [[first.username, 1, 1, 1], [second.username, 1, 1, 0]]);
         assert.deepEqual(rows.map((r) => r.averagePlace), [1, 2]);
+        assert.ok(rows.every((r) => r.winRate === (r.victories ? 100 : 0)), "the win %: victories out of games finished");
         // one who has finished no game comes after, by name
         await api(server, "GET", "/api/me", null, "zed");
         await api(server, "GET", "/api/me", null, "carl");

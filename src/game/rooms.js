@@ -552,5 +552,6 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 const boardRow = (r) => ({
     username: r.username, games: r.games, shared: r.shared, firsts: r.firsts, victories: r.victories,
     averagePlace: r.shared ? Math.round(r.place_sum / r.shared * 100) / 100 : null,
+    winRate: r.games ? Math.round(r.victories / r.games * 100) : null,              // victories in % of the finished games
 });
 const chatView = (m) => ({ id: m.id, userId: m.user_id, username: m.username, text: m.text, at: m.created_at });

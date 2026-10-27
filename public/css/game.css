@@ -189,6 +189,9 @@ body.shell > .page { max-width: 860px; margin: 0 auto; }
 .stat { padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
 .stat b { display: block; font-size: 22px; color: var(--text-strong); font-variant-numeric: tabular-nums; }
 .stat span { color: var(--text-muted); font-size: 12px; }
+.stat.lead { grid-column: span 2; border-color: var(--accent); }
+.stat.lead b { font-size: 30px; }
+.stat-table { margin-top: 12px; max-width: 520px; }
 /* the profile's Achievements tab (profile.js), as LorCiv's */
 .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
 .ach-group h3 .count { color: var(--text-muted); font-weight: normal; font-size: 13px; }

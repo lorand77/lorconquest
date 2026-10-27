@@ -29,7 +29,7 @@ function render() {
     $("rows").replaceChildren(...sortBoard(rows, key, dir).map((r) => {
         const tr = document.createElement("tr");
         if (r.username === me.username) tr.className = "you";
-        for (const [k, text] of [["rank", r.rank], ["username", r.username], ["games", r.games], ["shared", r.shared], ["firsts", r.firsts], ["averagePlace", r.averagePlace ?? "—"], ["victories", r.victories]]) {
+        for (const [k, text] of [["rank", r.rank], ["username", r.username], ["games", r.games], ["shared", r.shared], ["firsts", r.firsts], ["averagePlace", r.averagePlace ?? "—"], ["victories", r.victories], ["winRate", r.winRate === null ? "—" : `${r.winRate}%`]]) {
             const td = document.createElement("td");
             if (k === "username") {
                 // a name opens that player's profile: their stats and the games of theirs that are over

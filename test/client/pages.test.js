@@ -84,16 +84,19 @@ test("no page has an inline script, an inline handler or a javascript: link: the
 
 test("My Profile's stats: games played, going, finished and won, alone or with people, and the places from the leaderboard", () => {
     const games = [
-        { status: "finished", country: "BAV", winner: "BAV", people: 1 },
-        { status: "finished", country: "SAX", winner: "AUS", people: 3 },
-        { status: "finished", country: "BRB", winner: "BRB", people: 2 },
+        { status: "finished", country: "BAV", winner: "BAV", people: 1, scenario: "mitteleuropa" },
+        { status: "finished", country: "SAX", winner: "AUS", people: 3, scenario: "mitteleuropa" },
+        { status: "finished", country: "BRB", winner: "BRB", people: 2, scenario: "historical-1440" },
         { status: "active", country: "BAV", winner: null, people: 1 },
         { status: "abandoned", country: "HUN", winner: null, people: 2 },
         { status: "lobby", country: "POL", winner: null, people: 2 },               // a room not started: no game yet
     ];
-    assert.deepEqual(statsOf(games, { firsts: 1, averagePlace: 1.5 }),
-        { games: 5, going: 1, finished: 3, abandoned: 1, won: 2, winRate: 67, alone: 2, withOthers: 3, firsts: 1, averagePlace: 1.5 });
-    assert.deepEqual(statsOf([]), { games: 0, going: 0, finished: 0, abandoned: 0, won: 0, winRate: null, alone: 0, withOthers: 0, firsts: 0, averagePlace: null });
+    assert.deepEqual(statsOf(games, { firsts: 1, shared: 2, averagePlace: 1.5 }), {
+        games: 5, going: 1, finished: 3, abandoned: 1, won: 2, winRate: 67, winRateAlone: 100, winRateWithOthers: 50, firstRate: 50,
+        scenarios: [{ scenario: "mitteleuropa", finished: 2, won: 1, winRate: 50 }, { scenario: "historical-1440", finished: 1, won: 1, winRate: 100 }],
+        alone: 2, withOthers: 3, firsts: 1, averagePlace: 1.5 });
+    assert.deepEqual(statsOf([]), { games: 0, going: 0, finished: 0, abandoned: 0, won: 0, winRate: null, winRateAlone: null, winRateWithOthers: null, firstRate: null,
+        scenarios: [], alone: 0, withOthers: 0, firsts: 0, averagePlace: null });
 });
 
 test("every signed-in page but the game and the replay has the shell; the rail lists Play, My Profile, Stats, My Games, Customize, Leaderboard", () => {
@@ -114,6 +117,10 @@ test("the leaderboard sorts by any column, either way; each row keeps its rank, 
     ];
     const names = (key, dir) => sortBoard(rows, key, dir).map((r) => r.username);
     assert.deepEqual(names("rank"), ["ann", "Bob", "cid", "dee"]);
+    // the win %: the highest first, and one with no game finished last whichever way
+    const rated = rows.map((r) => ({ ...r, winRate: r.games ? Math.round(r.victories / r.games * 100) : null }));
+    assert.deepEqual(sortBoard(rated, "winRate").map((r) => r.username), ["Bob", "ann", "cid", "dee"]);
+    assert.deepEqual(sortBoard(rated, "winRate", "asc").map((r) => r.username), ["cid", "ann", "Bob", "dee"]);
     assert.deepEqual(sortBoard(rows, "games").map((r) => [r.username, r.rank]), [["Bob", 2], ["ann", 1], ["cid", 3], ["dee", 4]]);   // most first, rank kept
     assert.deepEqual(names("games", "asc"), ["dee", "cid", "ann", "Bob"]);
     assert.deepEqual(names("victories"), ["Bob", "ann", "cid", "dee"]);

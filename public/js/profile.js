@@ -78,19 +78,25 @@ const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === co
 // ---------- Stats ----------
 // someone else's count only the games that are over: what is going on in theirs is theirs alone
 const s = statsOf(games, row);
-const stat = (value, label) => make("div", { class: "stat" }, make("b", {}, String(value)), make("span", {}, label));
+const stat = (value, label, cls = "stat") => make("div", { class: cls }, make("b", {}, String(value)), make("span", {}, label));
+const rate = (r) => (r === null ? "—" : `${r}%`);
 $("stat-grid").replaceChildren(...[
+    stat(rate(s.winRate), `win rate: ${s.won} of ${s.finished} finished games won`, "stat lead"),
+    stat(rate(s.winRateAlone), "win rate alone against the computer"),
+    stat(rate(s.winRateWithOthers), "win rate with other people"),
+    stat(rate(s.firstRate), "first among the people at the table"),
     own && stat(s.games, "games played"),
     own && stat(s.going, "going now"),
-    stat(s.finished, "finished"),
-    stat(s.won, "won"),
-    stat(s.winRate === null ? "—" : `${s.winRate}%`, "of finished games won"),
     stat(s.alone, own ? "alone" : "alone, over"),
     stat(s.withOthers, own ? "with other people" : "with other people, over"),
     stat(s.firsts, "first among people"),
     stat(s.averagePlace ?? "—", "average place among people"),
     stat(s.abandoned, "abandoned"),
 ].filter(Boolean));
+// the win rate in each scenario played to the end
+$("stat-scenarios").replaceChildren(...s.scenarios.map((x) => make("tr", {}, make("td", {}, scenarioOf(x.scenario)?.name ?? x.scenario),
+    make("td", {}, String(x.finished)), make("td", {}, String(x.won)), make("td", {}, rate(x.winRate)))));
+$("stat-by-scenario").hidden = !s.scenarios.length;
 
 // ---------- Games ----------
 const played = games.filter((g) => g.status !== "lobby");

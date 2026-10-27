@@ -54,17 +54,31 @@ export function gameLine(game, scenarioName, countryName, dateText, winnerName =
 
 // a person's numbers, for My Profile's Stats: from their games (GET /api/games, each with the country they played and the
 // winner's) and their row of the leaderboard, if they have one (the places among people are worked out by the server)
+// a share in whole per cent, or null with nothing to take it of
+const pct = (part, whole) => (whole ? Math.round(part / whole * 100) : null);
+
 export function statsOf(games, row = null) {
     const played = games.filter((g) => g.status !== "lobby");              // a room not yet started is no game yet
     const finished = played.filter((g) => g.status === "finished");
-    const won = finished.filter((g) => g.winner === g.country).length;
+    const wins = (list) => list.filter((g) => g.winner === g.country).length;
+    const won = wins(finished);
+    const alone = finished.filter((g) => g.people <= 1), together = finished.filter((g) => g.people > 1);
+    // the win rate scenario by scenario, the most played first
+    const scenarios = [...new Set(finished.map((g) => g.scenario))].map((id) => {
+        const list = finished.filter((g) => g.scenario === id);
+        return { scenario: id, finished: list.length, won: wins(list), winRate: pct(wins(list), list.length) };
+    }).sort((a, b) => b.finished - a.finished || (a.scenario < b.scenario ? -1 : 1));
     return {
         games: played.length,
         going: played.filter((g) => g.status === "active").length,
         finished: finished.length,
         abandoned: played.filter((g) => g.status === "abandoned").length,
         won,
-        winRate: finished.length ? Math.round(won / finished.length * 100) : null,
+        winRate: pct(won, finished.length),
+        winRateAlone: pct(wins(alone), alone.length),
+        winRateWithOthers: pct(wins(together), together.length),
+        firstRate: pct(row?.firsts ?? 0, row?.shared ?? 0),
+        scenarios,
         alone: played.filter((g) => g.people <= 1).length,
         withOthers: played.filter((g) => g.people > 1).length,
         firsts: row?.firsts ?? 0,
@@ -73,10 +87,10 @@ export function statsOf(games, row = null) {
 }
 
 // The leaderboard sorted by a column the person chose (leaderboard.js): `rows` as the server ranks them, `key` one of rank,
-// username, games, shared, firsts, averagePlace, victories, and `dir` "asc" or "desc" (DEFAULT_DIR, when a column is first
+// username, games, shared, firsts, averagePlace, victories, winRate, and `dir` "asc" or "desc" (DEFAULT_DIR, when a column is first
 // clicked: the most first, but the best — the lowest — average place first, and names from A). Each row keeps its overall
-// rank; ties go by it, and a player with no average place comes last whichever way it is sorted.
-export const DEFAULT_DIR = { rank: "asc", username: "asc", games: "desc", shared: "desc", firsts: "desc", averagePlace: "asc", victories: "desc" };
+// rank; ties go by it, and a player with no average place (or no win rate: no game finished) comes last whichever way it is sorted.
+export const DEFAULT_DIR = { rank: "asc", username: "asc", games: "desc", shared: "desc", firsts: "desc", averagePlace: "asc", victories: "desc", winRate: "desc" };
 export function sortBoard(rows, key = "rank", dir = DEFAULT_DIR[key] ?? "asc") {
     const ranked = rows.map((r, i) => ({ ...r, rank: i + 1 }));
     const sign = dir === "desc" ? -1 : 1;
