@@ -6,7 +6,7 @@ import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, scores } from
 import { requireUser } from "./auth.js";
 import { countryLabels, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
-import { canvasFor, createMapCanvas, download, framePlan, frameOf, record, videoType } from "./mapcanvas.js";
+import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoType } from "./mapcanvas.js";
 import { buildLegs } from "./mirror.js";
 import { createReplayer } from "./replayer.js";
 
@@ -144,10 +144,13 @@ if (!type) { $("ex-video").disabled = true; $("ex-status").textContent = "This b
 let stop = false;
 $("ex-stop").addEventListener("click", () => { stop = true; });
 $("ex-video").addEventListener("click", async () => {
-    const from = Math.max(0, (Number($("ex-from").value) - START_YEAR) * YEAR_DAYS);
-    const to = Math.min(data.endDay, Math.max(from + 1, (Number($("ex-to").value) - START_YEAR + 1) * YEAR_DAYS));
-    const fps = 30, days = framePlan(from, to, Number($("ex-speed").value), fps);
+    // the years asked for, made sense of: whole years within the game, the earlier first (mapcanvas.js, exportSpan)
+    const span = exportSpan($("ex-from").value, $("ex-to").value, data.endDay);
+    [$("ex-from").value, $("ex-to").value] = [span.fromYear, span.toYear];
+    const fps = 30, days = framePlan(span.from, span.to, Number($("ex-speed").value), fps);
     stop = false;
+    // the replay on screen stops: it would take time from the recording, which must keep pace with the clock
+    if (playing) $("play").click();
     $("ex-video").disabled = true;
     $("ex-stop").hidden = false;
     try {
@@ -155,7 +158,7 @@ $("ex-video").addEventListener("click", async () => {
         const game = createReplayer(scenario, data), frames = [];
         for (const day of days) {
             while (game.day < day && !game.done) {
-                game.seek(day, 400);
+                game.seek(day, document.hidden ? 20000 : 400);     // a hidden tab gets a timer a second: more days each
                 $("ex-status").textContent = `Playing the game over: ${longDate(game.day)}…`;
                 await new Promise((r) => setTimeout(r, 0));
                 if (stop) throw new Error("stopped");
@@ -168,7 +171,7 @@ $("ex-video").addEventListener("click", async () => {
             fps, type, stopped: () => stop,
             progress: (i) => { if (i % fps === 0) $("ex-status").textContent = `Recording: ${Math.min(100, Math.round(i / (frames.length + hold) * 100))}% — keep this tab in front`; },
         });
-        download(blob, `lorconquest-${id}-${$("ex-from").value}-${$("ex-to").value}.${type.includes("mp4") ? "mp4" : "webm"}`);
+        download(blob, `lorconquest-${id}-${span.fromYear}-${span.toYear}.${type.includes("mp4") ? "mp4" : "webm"}`);
         $("ex-status").textContent = `Saved: ${(blob.size / 1e6).toFixed(1)} MB${stop ? " (stopped early)" : ""}.`;
     } catch (err) {
         $("ex-status").textContent = err.message === "stopped" ? "Stopped." : `Could not make the video: ${err.message}`;

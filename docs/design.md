@@ -418,12 +418,15 @@ map's own shapes, read from the SVG the page has loaded (lands as `Path2D`s, bor
 as the screen does — owners' colours, a subject's stripes (`landFill`), the countries' codes (`countryLabels`), a dot a
 settlement — with the date, the game's name and the five with the most settlements on top. A timelapse plays the game over
 once on its own replayer (`replayer.js`), keeping of each frame only what the picture needs (`frameOf`: owners, subjects,
-leaders; a whole game's frames are a few MB), then draws the frames into a canvas recorded by the browser's `MediaRecorder`
+leaders, with only the countries that are not as they began; `stateOf` expands one for drawing: a whole historical game at a
+year a second is 6,400 frames and about 11 MB), then draws the frames into a canvas recorded by the browser's `MediaRecorder`
 at 30 frames a second, the last held two seconds: MP4 where the browser records it (Chrome and Edge from 126, Safari), else WebM
 (Firefox). The recording
 runs in real time — 210 years at 5 years a second take 42 seconds — and can be stopped, keeping what was recorded. It pauses
 while the tab is hidden (the browser slows a hidden page's timers to one a second, which would make the video jerk). A WebM
-is given the Duration browsers leave out of it (`withDuration`), or players show no length and cannot seek.
+is given the Duration browsers leave out of it (`withDuration`), or players show no length and cannot seek. The years typed are made
+sense of (`exportSpan`: whole years within the game, the earlier first); the replay on screen stops while a video is made, and
+an error of the browser's recorder ends the export with a message, not a wait.
 
 ### Achievements
 

@@ -7,7 +7,7 @@ import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "
 
 register("./loader.mjs", import.meta.url);
 const { Game, scores } = await import("../../src/engine/index.js");
-const { framePlan, frameOf } = await import("../../public/js/mapcanvas.js");
+const { exportSpan, framePlan, frameOf, stateOf } = await import("../../public/js/mapcanvas.js");
 const { countryLabels, landFill } = await import("../../public/js/mapdraw.js");
 
 test("a timelapse shows a frame every so many days, the last day always among them", () => {
@@ -18,19 +18,32 @@ test("a timelapse shows a frame every so many days, the last day always among th
     assert.deepEqual(framePlan(50, 50, 5), [50]);
 });
 
-test("a frame keeps who holds what, who is whose subject and the leaders — and the map draws from it as from the state", () => {
+test("a frame keeps who holds what, who is whose subject and the leaders — small — and the map draws from it as from the state", () => {
     const game = Game.create(scenario, { seed: 1 });
     Object.assign(game.state.countries.BOH, { overlord: "AUS", subjectKind: "vassal" });
+    game.state.settlements[30].owner = "AUS";
     const frame = frameOf(game.state, scores(game.state));
     assert.equal(frame.day, 0);
-    assert.equal(Object.keys(frame.settlements).length, scenario.settlements.length);
-    assert.deepEqual(frame.countries.BOH, { code: "BOH", name: "Bohemia", overlord: "AUS", subjectKind: "vassal", rebel: false, out: null });
+    assert.equal(frame.owners.length, scenario.settlements.length);
+    assert.deepEqual(Object.keys(frame.changed), ["BOH"], "only the countries that are not as they began");
     assert.equal(frame.top.length, 5);
     assert.ok(frame.top.every((t, i) => i === 0 || frame.top[i - 1].settlements >= t.settlements));
-    assert.deepEqual(countryLabels(frame, scenario), countryLabels(game.state, scenario));
+    const st = stateOf(frame, scenario);
+    assert.equal(st.settlements[30].owner, "AUS");
+    assert.deepEqual(st.countries.BOH, { code: "BOH", name: "Bohemia", overlord: "AUS", subjectKind: "vassal", rebel: false, out: null });
+    assert.deepEqual(countryLabels(st, scenario), countryLabels(game.state, scenario));
     const colourOf = (c) => c;
-    assert.deepEqual(landFill(frame, colourOf)("BOH"), landFill(game.state, colourOf)("BOH"));
-    assert.ok(JSON.stringify(frame).length < 20000, "small: a whole game's frames stay in memory");
+    for (const code of ["BOH", "AUS", "BAV"]) assert.deepEqual(landFill(st, colourOf)(code), landFill(game.state, colourOf)(code));
+    assert.ok(JSON.stringify(frame).length < 1500, "a few thousand of them stay in memory");
+});
+
+test("a timelapse's years, made sense of: whole years within the game, the earlier first, a blank the first or last", () => {
+    const end = 100 * 365 + 40;                                                                    // the game ended early in 1540
+    assert.deepEqual(exportSpan("1440", "1540", end), { fromYear: 1440, toYear: 1540, from: 0, to: end });
+    assert.deepEqual(exportSpan("1500", "1450", end), { fromYear: 1450, toYear: 1500, from: 10 * 365, to: 61 * 365 });
+    assert.deepEqual(exportSpan("", "abc", end), { fromYear: 1440, toYear: 1540, from: 0, to: end });
+    assert.deepEqual(exportSpan("1300", "1900", end), { fromYear: 1440, toYear: 1540, from: 0, to: end });
+    assert.deepEqual(exportSpan("1460.6", "1460", end), { fromYear: 1460, toYear: 1461, from: 20 * 365, to: 22 * 365 });
 });
 
 test("a video is MP4 wherever the browser records it, WebM only where it records nothing else (Firefox)", async () => {

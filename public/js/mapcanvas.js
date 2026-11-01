@@ -19,18 +19,39 @@ export function framePlan(from, to, yearsPerSecond, fps = 30) {
     return days;
 }
 
-// what a frame needs of a state: the owner of each settlement, each country's name and whether it is a subject (and of whom),
-// a rebel or out of the game, and the five with the most settlements — a few hundred values, not the whole state
+// the span a timelapse covers, from what was typed: whole years within the game (START_YEAR to the year of `endDay`), the
+// earlier first, a blank or nonsense the game's first or last year. { from, to } in days (to the end of the last year, or the
+// game's end), { fromYear, toYear } as shown
+export function exportSpan(fromText, toText, endDay, startYear = 1440, yearDays = 365) {
+    const last = startYear + Math.floor(endDay / yearDays), year = (t, dflt) => {
+        const n = Math.round(Number(String(t).trim() || NaN));
+        return Number.isFinite(n) ? Math.min(last, Math.max(startYear, n)) : dflt;
+    };
+    let fromYear = year(fromText, startYear), toYear = year(toText, last);
+    if (fromYear > toYear) [fromYear, toYear] = [toYear, fromYear];
+    return { fromYear, toYear, from: Math.min(endDay, (fromYear - startYear) * yearDays), to: Math.min(endDay, (toYear - startYear + 1) * yearDays) };
+}
+
+// what a frame needs of a state, kept small — a whole game at a year a second is thousands of frames: the owner of each
+// settlement (in the order of the state's settlements), only the countries that differ from how they began (a subject, a
+// rebel band, one out of the game), and the five with the most settlements. stateOf turns it back into what the map's
+// drawing reads (mapdraw.js: landFill, countryLabels).
 export function frameOf(state, scores, day = state.day) {
-    const settlements = {}, countries = {};
-    for (const s of Object.values(state.settlements)) settlements[s.id] = { id: s.id, owner: s.owner };
+    const owners = Object.values(state.settlements).map((s) => s.owner), changed = {};
     for (const c of Object.values(state.countries)) {
-        countries[c.code] = { code: c.code, name: c.name, overlord: c.overlord ?? null, subjectKind: c.subjectKind ?? null, rebel: Boolean(c.rebel), out: c.out ?? null };
+        if (c.overlord || c.rebel || (c.out ?? null) !== null) changed[c.code] = { name: c.name, overlord: c.overlord ?? null, subjectKind: c.subjectKind ?? null, rebel: Boolean(c.rebel), out: c.out ?? null };
     }
-    const top = Object.entries(scores).filter(([code]) => countries[code] && !countries[code].rebel)
+    const top = Object.entries(scores).filter(([code]) => state.countries[code] && !state.countries[code].rebel)
         .sort((a, b) => b[1].settlements - a[1].settlements || b[1].pop - a[1].pop || (a[0] < b[0] ? -1 : 1)).slice(0, 5)
-        .map(([code, s]) => ({ code, name: countries[code].name, settlements: s.settlements }));
-    return { day, settlements, countries, top };
+        .map(([code, s]) => ({ code, name: state.countries[code].name, settlements: s.settlements }));
+    return { day, owners, changed, top };
+}
+export function stateOf(frame, scenario) {
+    const settlements = {}, countries = {};
+    [...scenario.settlements].sort((a, b) => a.id - b.id).forEach((s, i) => { settlements[s.id] = { id: s.id, owner: frame.owners[i] }; });   // the state's order: by id
+    for (const c of scenario.countries) countries[c.code] = { code: c.code, name: c.name, overlord: null, subjectKind: null, rebel: false, out: null };
+    for (const [code, c] of Object.entries(frame.changed)) countries[code] = { code, ...c };
+    return { day: frame.day, settlements, countries };
 }
 
 // a painter for the map in `svg` (the page's, as mapview.js loaded it): { width, height, draw(ctx, frame, opts) } in map units
@@ -67,8 +88,9 @@ export function createMapCanvas(svg, scenario) {
     // the frame drawn into a canvas of `size` pixels ([w, h]); `title` goes under the date
     function draw(ctx, frame, { size = [ctx.canvas.width, ctx.canvas.height], title = "" } = {}) {
         const [w, h] = size, k = Math.min(w / width, h / height), ox = (w - width * k) / 2, oy = (h - height * k) / 2;
-        const colourOf = (code) => (frame.countries[code]?.rebel ? "#8c3a3a" : colour(code));
-        const fillOf = landFill(frame, colourOf), owner = (key) => frame.settlements[key]?.owner;
+        const st = stateOf(frame, scenario);
+        const colourOf = (code) => (st.countries[code]?.rebel ? "#8c3a3a" : colour(code));
+        const fillOf = landFill(st, colourOf), owner = (key) => st.settlements[key]?.owner;
         ctx.save();
         ctx.fillStyle = "#99d9ea";
         ctx.fillRect(0, 0, w, h);
@@ -100,7 +122,7 @@ export function createMapCanvas(svg, scenario) {
         ctx.lineWidth = 3;
         ctx.strokeStyle = "rgba(255,255,255,0.75)";
         ctx.fillStyle = "#333";
-        for (const l of countryLabels(frame, scenario)) {
+        for (const l of countryLabels(st, scenario)) {
             ctx.font = `bold ${l.size}px Arial, Helvetica, sans-serif`;
             ctx.strokeText(l.text ?? l.code, l.x, l.y);
             ctx.fillText(l.text ?? l.code, l.x, l.y);
@@ -166,7 +188,7 @@ export function download(blob, name) {
     document.body.append(a);
     a.click();
     a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+    setTimeout(() => URL.revokeObjectURL(a.href), 120000);    // a large video may take a while to save
 }
 
 // the kind of video this browser records: MP4 where it can (Chrome and Edge from version 126, Safari), the format every player
@@ -187,14 +209,21 @@ export async function record(canvas, count, paint, { fps = 30, type = videoType(
     const stream = canvas.captureStream(byFrame ? 0 : fps), track = stream.getVideoTracks()[0];
     const chunks = [], recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6e6 });
     recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
-    const done = new Promise((resolve) => { recorder.onstop = resolve; });
+    let failed = null;
+    const done = new Promise((resolve) => {
+        recorder.onstop = resolve;
+        recorder.onerror = (e) => { failed = e.error ?? new Error("the browser's recorder failed"); };      // a stop follows an error
+    });
+    // hidden: paused at once, not a frame later (that frame would be held a second in the video)
+    const onHide = () => { if (hidden() && recorder.state === "recording") recorder.pause(); };
+    document.addEventListener("visibilitychange", onHide);
     const frameMs = 1000 / fps;
     paint(0);                                               // something on the canvas before the first frame is taken
     recorder.start(1000);
     let clock = performance.now(), shown = 0, i = 0;
-    for (; i < count && !stopped(); i++) {
+    for (; i < count && !stopped() && !failed; i++) {
         if (hidden()) {
-            recorder.pause();
+            if (recorder.state === "recording") recorder.pause();
             await new Promise((r) => { const back = () => { if (!hidden()) { document.removeEventListener("visibilitychange", back); r(); } }; document.addEventListener("visibilitychange", back); });
             recorder.resume();
             clock = performance.now();
@@ -208,9 +237,11 @@ export async function record(canvas, count, paint, { fps = 30, type = videoType(
         const wait = clock + shown * frameMs - performance.now();
         await new Promise((r) => setTimeout(r, Math.max(0, wait)));
     }
-    recorder.stop();
+    document.removeEventListener("visibilitychange", onHide);
+    if (recorder.state !== "inactive") recorder.stop();
     await done;
     track.stop();
+    if (failed) throw failed;
     const blob = new Blob(chunks, { type: type.split(";")[0] });
     if (!type.startsWith("video/webm")) return blob;
     return new Blob([withDuration(new Uint8Array(await blob.arrayBuffer()), i * frameMs)], { type: "video/webm" });
