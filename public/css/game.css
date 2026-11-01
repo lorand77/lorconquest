@@ -192,6 +192,10 @@ body.shell > .page { max-width: 860px; margin: 0 auto; }
 .stat.lead { grid-column: span 2; border-color: var(--accent); }
 .stat.lead b { font-size: 30px; }
 .stat-table { margin-top: 12px; max-width: 520px; }
+/* the replay's Export (replay.js) */
+.export { padding: 0 12px 8px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.export .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.export input[type=number] { width: 5.5em; }
 /* the profile's Achievements tab (profile.js), as LorCiv's */
 .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
 .ach-group h3 .count { color: var(--text-muted); font-weight: normal; font-size: 13px; }

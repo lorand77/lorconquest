@@ -65,7 +65,7 @@ dependencies.
   `profile.html` (`js/profile.js`: Stats and My Games) and `customize.html` (`js/customize.js`: the colours), which with the leaderboard
   have LorCiv's shell (`js/shell.js`: a top bar and a rail of sections on the left), and
   `login.html` the sign-in page (`js/login.js`, `js/auth.js`); `replay.html` plays a finished game over (`js/replay.js`, with
-  `js/replayer.js` — the pure part, tested against real games — and `js/mapdraw.js`, which the game page shares); `leaderboard.html`;
+  `js/replayer.js` — the pure part, tested against real games — and `js/mapdraw.js`, which the game page shares; `js/mapcanvas.js` paints the map onto a canvas for a picture of it and a timelapse video); `leaderboard.html`;
   `terms.html` and `privacy.html`, which must stay true of what the code does. `js/theme.js` (a plain script, not a module, in every
   page's head) applies the dark or light colours and keeps the choice in local storage, the one thing stored in the browser
   besides the sign-in cookie.

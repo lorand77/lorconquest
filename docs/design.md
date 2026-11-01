@@ -409,6 +409,19 @@ quitter first. (An abandoned game has no result.)
 - **The map** is drawn by the same code on the game page and the replay page (`public/js/mapdraw.js`, pure functions of a state
   and a day, tested in Node).
 
+### Pictures and timelapses
+
+A picture of the map (PNG) from the game page and the replay page (📷 by the zoom buttons), and a timelapse video of any span
+of a finished game from the replay page (*Export*: from and to a year, 1 to 10 years a second, 720p or 1080p). Both are made
+in the browser and saved there; the server stores nothing. `public/js/mapcanvas.js` paints a state onto a canvas from the
+map's own shapes, read from the SVG the page has loaded (lands as `Path2D`s, borders where owners differ, rivers, the coast),
+as the screen does — owners' colours, a subject's stripes (`landFill`), the countries' codes (`countryLabels`), a dot a
+settlement — with the date, the game's name and the five with the most settlements on top. A timelapse plays the game over
+once on its own replayer (`replayer.js`), keeping of each frame only what the picture needs (`frameOf`: owners, subjects,
+leaders; a whole game's frames are a few MB), then draws the frames into a canvas recorded by the browser's `MediaRecorder`
+at 30 frames a second, the last held two seconds: WebM, or MP4 where that is what the browser records (Safari). The recording
+runs in real time — 210 years at 5 years a second take 42 seconds — and can be stopped, keeping what was recorded.
+
 ### Achievements
 
 As in LorCiv (`src/achievements/`). The **catalogue** (`catalogue.js`) holds the regular ones, the same in every scenario:

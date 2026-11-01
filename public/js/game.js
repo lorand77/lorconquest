@@ -5,6 +5,7 @@
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
 import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
+import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
@@ -94,6 +95,7 @@ async function start() {
     legs = buildLegs(scenario);
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
+    $("snapshot").addEventListener("click", snapshot);
     $("pause").addEventListener("click", togglePause);
     $("pause").hidden = multi || !me;
     if (multi || !me) startPeople(joined);
@@ -183,6 +185,16 @@ function prune() {
     if (sel?.kind === "country" && !state.countries[sel.code]) sel = null;
     if (plan && !state.armies[plan.army]) plan = null;
 }
+
+// a picture of the whole map as it stands, 1080 pixels tall (mapcanvas.js)
+let painter = null;
+function snapshot() {
+    painter ??= createMapCanvas($("map").querySelector("svg"), scenario);
+    const canvas = canvasFor(painter, 1080);
+    painter.draw(canvas.getContext("2d"), frameOf(state, scores(state)), { title: me ? `${country(me).name} · game ${gameId}` : `Game ${gameId}` });
+    canvas.toBlob((blob) => download(blob, `lorconquest-${gameId}-${formatDateFile(state.day)}.png`), "image/png");
+}
+const formatDateFile = (day) => longDate(day).replace(/\s+/g, "-");
 
 // ---------- helpers ----------
 const country = (code) => state.countries[code];

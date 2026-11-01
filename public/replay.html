@@ -15,6 +15,7 @@
             <div class="zoom">
                 <button id="zoom-in" title="Zoom in">+</button>
                 <button id="zoom-out" title="Zoom out">−</button>
+                <button id="snapshot" title="Save a picture of the map on this day (PNG)">📷</button>
             </div>
             <div id="toasts" class="toasts"></div>
         </section>
@@ -37,6 +38,30 @@
                     </select></label>
                 </div>
                 <span id="verdict" class="verdict"></span>
+            </div>
+            <h3>Export</h3>
+            <div class="export">
+                <div class="row">
+                    <label>From <input id="ex-from" type="number" step="1"></label>
+                    <label>to <input id="ex-to" type="number" step="1"></label>
+                </div>
+                <div class="row">
+                    <label>Speed <select id="ex-speed">
+                        <option value="1">1 year a second</option>
+                        <option value="2">2 years</option>
+                        <option value="5" selected>5 years</option>
+                        <option value="10">10 years</option>
+                    </select></label>
+                    <label>Size <select id="ex-size">
+                        <option value="720" selected>720p</option>
+                        <option value="1080">1080p</option>
+                    </select></label>
+                </div>
+                <div class="row">
+                    <button id="ex-video" class="primary">🎬 Make a timelapse video</button>
+                    <button id="ex-stop" hidden>Stop</button>
+                </div>
+                <p id="ex-status" class="hint">The borders year by year, with the date and who leads. It records in real time: 210 years at 5 years a second take 42 seconds, after the game has been played over once.</p>
             </div>
             <h3>Standing</h3>
             <ol id="standing" class="standing"></ol>

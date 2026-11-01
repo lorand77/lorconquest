@@ -1,10 +1,12 @@
 // The replay page (design.md, "Replays"): a finished game played over in the browser by the engine, from its seed and its
 // command log, with a speed, a slider to go to any day, who is ahead, the events that mattered — and, at the end, whether
-// this replay came out exactly as the game did. Everything is drawn by the same code as the game page (mapdraw.js).
-import { buildMap, describeEvent, longDate, scores } from "/engine/index.js";
+// this replay came out exactly as the game did. Everything is drawn by the same code as the game page (mapdraw.js). A picture of
+// the day shown, and a timelapse video of any span of the game (mapcanvas.js), are a click away.
+import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, scores } from "/engine/index.js";
 import { requireUser } from "./auth.js";
 import { countryLabels, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
+import { canvasFor, createMapCanvas, download, framePlan, frameOf, record, videoType } from "./mapcanvas.js";
 import { buildLegs } from "./mirror.js";
 import { createReplayer } from "./replayer.js";
 
@@ -122,3 +124,56 @@ $("seek").addEventListener("change", async () => {
 
 draw();
 requestAnimationFrame(frame);
+
+// ---------- a picture, a timelapse ----------
+const painter = createMapCanvas($("map").querySelector("svg"), scenario);
+const title = `${scenarioName} · game ${id}`;
+const yearOf = (day) => START_YEAR + Math.floor(day / YEAR_DAYS);
+$("snapshot").addEventListener("click", () => {
+    const canvas = canvasFor(painter, 1080);
+    painter.draw(canvas.getContext("2d"), frameOf(replayer.state, scores(replayer.state)), { title });
+    canvas.toBlob((blob) => download(blob, `lorconquest-${id}-${longDate(replayer.day).replace(/\s+/g, "-")}.png`), "image/png");
+});
+
+$("ex-from").value = START_YEAR;
+$("ex-to").value = yearOf(data.endDay);
+$("ex-from").min = $("ex-to").min = START_YEAR;
+$("ex-from").max = $("ex-to").max = yearOf(data.endDay);
+const type = videoType();
+if (!type) { $("ex-video").disabled = true; $("ex-status").textContent = "This browser cannot record video."; }
+let stop = false;
+$("ex-stop").addEventListener("click", () => { stop = true; });
+$("ex-video").addEventListener("click", async () => {
+    const from = Math.max(0, (Number($("ex-from").value) - START_YEAR) * YEAR_DAYS);
+    const to = Math.min(data.endDay, Math.max(from + 1, (Number($("ex-to").value) - START_YEAR + 1) * YEAR_DAYS));
+    const fps = 30, days = framePlan(from, to, Number($("ex-speed").value), fps);
+    stop = false;
+    $("ex-video").disabled = true;
+    $("ex-stop").hidden = false;
+    try {
+        // first the game is played over once, apart from the replay on screen, keeping what each frame shows
+        const game = createReplayer(scenario, data), frames = [];
+        for (const day of days) {
+            while (game.day < day && !game.done) {
+                game.seek(day, 400);
+                $("ex-status").textContent = `Playing the game over: ${longDate(game.day)}…`;
+                await new Promise((r) => setTimeout(r, 0));
+                if (stop) throw new Error("stopped");
+            }
+            frames.push(frameOf(game.state, scores(game.state), day));
+        }
+        // then each frame drawn and recorded, the last held for two seconds
+        const canvas = canvasFor(painter, Number($("ex-size").value)), ctx = canvas.getContext("2d"), hold = 2 * fps;
+        const blob = await record(canvas, frames.length + hold, (i) => painter.draw(ctx, frames[Math.min(i, frames.length - 1)], { title }), {
+            fps, type, stopped: () => stop,
+            progress: (i) => { if (i % fps === 0) $("ex-status").textContent = `Recording: ${Math.min(100, Math.round(i / (frames.length + hold) * 100))}%`; },
+        });
+        download(blob, `lorconquest-${id}-${$("ex-from").value}-${$("ex-to").value}.${type.includes("mp4") ? "mp4" : "webm"}`);
+        $("ex-status").textContent = `Saved: ${(blob.size / 1e6).toFixed(1)} MB${stop ? " (stopped early)" : ""}.`;
+    } catch (err) {
+        $("ex-status").textContent = err.message === "stopped" ? "Stopped." : `Could not make the video: ${err.message}`;
+    } finally {
+        $("ex-video").disabled = false;
+        $("ex-stop").hidden = true;
+    }
+});

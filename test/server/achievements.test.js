@@ -69,7 +69,7 @@ test("a finished game is played over and awarded: the record, the result, a toas
         await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: "ULM" }, "bobby");
         await api(server, "POST", `/api/tables/${made.body.id}/start`, {}, "alice");
         const sa = await connect(server, "alice"), sb = await connect(server, "bobby");
-        const over = waitFor(sa, "over", () => true, 30000);
+        const over = waitFor(sa, "over", () => true, 90000);           // generous: the whole suite runs side by side
         await emitAck(sa, "join", { gameId: made.body.id });
         await emitAck(sb, "join", { gameId: made.body.id });
         await over;

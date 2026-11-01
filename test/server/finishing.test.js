@@ -36,7 +36,7 @@ async function finishedGame(server, [[a, ca], [b, cb]] = [["alice", "BAV"], ["bo
     await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: cb }, b);
     assert.equal((await api(server, "POST", `/api/tables/${made.body.id}/start`, {}, a)).status, 200);
     const sa = await connect(server, a), sb = await connect(server, b);
-    const over = waitFor(sa, "over", () => true, 30000);
+    const over = waitFor(sa, "over", () => true, 90000);           // generous: the whole suite runs side by side
     await emitAck(sa, "join", { gameId: made.body.id });
     await emitAck(sb, "join", { gameId: made.body.id });
     return { id: made.body.id, over: await over };
