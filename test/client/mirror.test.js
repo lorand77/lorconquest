@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -237,4 +237,14 @@ test("compliance: the share of 20 years held, ready at 100%; nothing for a settl
     assert.deepEqual(compliance(s, 100 + 5 * 365, years), { core: false, pct: 25, daysLeft: 15 * 365, ready: false });
     assert.deepEqual(compliance(s, 100 + years + 50, years), { core: false, pct: 100, daysLeft: 0, ready: true });
     assert.deepEqual(compliance({ ...s, cores: ["AAA"] }, 5000, years), { core: true });
+});
+
+test("the panel as a sheet on a phone: a tap steps it up and round, a swipe one step, picking something or a tab shows at least half", () => {
+    assert.deepEqual(["collapsed", "half", "full"].map((s) => sheetAfter(s, "tap")), ["half", "full", "collapsed"]);
+    assert.deepEqual(["collapsed", "half", "full"].map((s) => sheetAfter(s, "up")), ["half", "full", "full"]);
+    assert.deepEqual(["collapsed", "half", "full"].map((s) => sheetAfter(s, "down")), ["collapsed", "collapsed", "half"]);
+    assert.deepEqual(["collapsed", "half", "full"].map((s) => sheetAfter(s, "select")), ["half", "half", "full"]);
+    assert.equal(sheetAfter("collapsed", "tab"), "half");
+    assert.equal(sheetAfter("full", "deselect"), "full");
+    assert.equal(sheetAfter(undefined, "tap"), "half");
 });

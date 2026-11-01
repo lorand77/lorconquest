@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, landFill, ownersKey, paintMap } from "./mapdraw.js";
@@ -99,7 +99,10 @@ async function start() {
     $("pause").addEventListener("click", togglePause);
     $("pause").hidden = multi || !me;
     if (multi || !me) startPeople(joined);
-    for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => setTab(b.dataset.tab));
+    for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => { setSheet(sheetAfter(sheet, "tab")); setTab(b.dataset.tab); });
+    sheetGestures();
+    // on a phone the scores start folded: the map has little room to spare
+    if (matchMedia("(max-width: 700px), (max-height: 500px)").matches) { $("scoreboard").classList.add("folded"); $("sb-fold").textContent = "+"; }
     // a click is a press and a release on the same element: a panel rebuilt between them (ten times a second while numbers in
     // it change) would swallow it, so it waits until the click is done
     // what a click in the panel asks to redraw (the Split… form, a route's Cancel) is redrawn at once; the days' rebuilds wait
@@ -196,6 +199,28 @@ function snapshot() {
 }
 const formatDateFile = (day) => longDate(day).replace(/\s+/g, "-");
 
+// ---------- the panel as a sheet, on a phone held upright ----------
+// (game.css, body[data-sheet]; mirror.js, sheetAfter). Elsewhere the stylesheet ignores it. A tap on the handle steps it up and
+// round; a swipe on it, up or down, one step.
+let sheet = "collapsed";
+function setSheet(next) {
+    sheet = next;
+    document.body.dataset.sheet = next;
+}
+function sheetGestures() {
+    setSheet(sheet);
+    const handle = $("sheet-handle");
+    let from = null;
+    handle.addEventListener("pointerdown", (e) => { from = e.clientY; handle.setPointerCapture(e.pointerId); });
+    handle.addEventListener("pointerup", (e) => {
+        if (from === null) return;
+        const dy = e.clientY - from;
+        from = null;
+        setSheet(sheetAfter(sheet, dy < -24 ? "up" : dy > 24 ? "down" : "tap"));
+    });
+    handle.addEventListener("pointercancel", () => { from = null; });
+}
+
 // ---------- helpers ----------
 const country = (code) => state.countries[code];
 const colourOf = (code) => (state.countries[code]?.rebel ? "#8c3a3a" : scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd");
@@ -228,6 +253,7 @@ function onPick(hit) {
 
 // what is selected opens the tab that deals with it (mirror.js, tabForSelection); a country's land picks it in Diplomacy
 function select(s) {
+    if (s) setSheet(sheetAfter(sheet, "select"));          // on a phone: the sheet up far enough to show what was picked
     sel = s;
     plan = null;
     splitOpen = false;

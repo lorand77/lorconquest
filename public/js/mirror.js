@@ -135,6 +135,20 @@ export function fleetPoints(state, nodes, zones, day) {
 // player's own settlements the Shop (to build there), anyone else's settlement or a pass the Map tab, the player's own land the
 // Country tab, another country's land the Diplomacy tab (to deal with it) — peasant rebels', with whom there is no dealing,
 // the Map tab. Nothing selected (a click on the sea) keeps the tab there is. `place` is the clicked place's map node, if any.
+// The panel as a sheet over the map on a phone held upright (design.md, "The game screen"; game.css, body[data-sheet]): collapsed
+// to the tabs and a line of status, half the screen, or nearly all of it. What a gesture or a click makes of it:
+//   "tap" the handle: collapsed → half → full → collapsed;  "up" / "down": a swipe on the handle, one step, no further;
+//   "select" something on the map, or "tab" a tab: at least half, to show it;  "deselect": as it is.
+export const SHEETS = ["collapsed", "half", "full"];
+export function sheetAfter(sheet, action) {
+    const i = Math.max(0, SHEETS.indexOf(sheet));
+    if (action === "tap") return SHEETS[(i + 1) % SHEETS.length];
+    if (action === "up") return SHEETS[Math.min(SHEETS.length - 1, i + 1)];
+    if (action === "down") return SHEETS[Math.max(0, i - 1)];
+    if (action === "select" || action === "tab") return i === 0 ? "half" : SHEETS[i];
+    return SHEETS[i];
+}
+
 export function tabForSelection(sel, me, { place = null, owner = null, rebel = false } = {}) {
     if (!sel) return null;
     if (sel.kind === "army" || sel.kind === "fleet") return "selection";

@@ -721,6 +721,13 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   over the map. Space pauses.
 - **The development page** (`public/index.html`) starts a single-player game on any scenario as any
   country, or reopens one, until accounts and the lobby (milestone 6).
+- **Small screens:** a tablet's panel is 300px. On a phone held upright (700px wide or less) the map fills the screen and the
+  panel is a **sheet** over its foot (`game.css`, `body[data-sheet]`; `mirror.js`, `sheetAfter`): collapsed to a grab handle,
+  a line of status (country, date, play, treasury) and the tabs; half the screen; or nearly all of it, with the brand and the
+  lobby link. A tap on the handle steps it up and round, a swipe on it one step; picking something on the map or a tab brings
+  it to at least half. The zoom buttons, the scores and the chat float just above it. Held sideways (500px tall or less), a
+  280px panel at the side. On a phone either way: tighter spacing, smaller tabs and banners, and the scores start folded. The
+  replay page, which has no tabs, gets a half-height panel at the foot.
 
 **Country colours** are picked by `tools/map.js` and written into `scenario.json`: each country gets
 one, chosen so that countries sharing a border never look alike. A Colour column in SCENARIO.md's
