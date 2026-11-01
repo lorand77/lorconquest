@@ -177,24 +177,126 @@ export function videoType(supported = (t) => typeof MediaRecorder !== "undefined
 }
 
 // record `count` frames drawn by `paint(i)` into `canvas` at `fps`, at an even pace; resolves to the video as a Blob.
-// `progress(i)` is told how far it has got; `stopped()` true ends it early (what is recorded so far is kept)
-export async function record(canvas, count, paint, { fps = 30, type = videoType(), progress = () => {}, stopped = () => false } = {}) {
-    const stream = canvas.captureStream(0), track = stream.getVideoTracks()[0];
+// `progress(i)` is told how far it has got; `stopped()` true ends it early (what is recorded so far is kept).
+// The video's clock is the wall clock, so while the page is hidden — another tab in front, where the browser slows its timers to
+// one a second — the recording pauses, and goes on when the page is back. A browser whose canvas stream cannot be given its
+// frames one by one (requestFrame) streams the canvas at `fps` instead. A WebM is given the duration browsers leave out of it.
+export async function record(canvas, count, paint, { fps = 30, type = videoType(), progress = () => {}, stopped = () => false,
+    hidden = () => document.hidden } = {}) {
+    const byFrame = typeof CanvasCaptureMediaStreamTrack !== "undefined" && "requestFrame" in CanvasCaptureMediaStreamTrack.prototype;
+    const stream = canvas.captureStream(byFrame ? 0 : fps), track = stream.getVideoTracks()[0];
     const chunks = [], recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6e6 });
     recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
     const done = new Promise((resolve) => { recorder.onstop = resolve; });
+    const frameMs = 1000 / fps;
+    paint(0);                                               // something on the canvas before the first frame is taken
     recorder.start(1000);
-    const frameMs = 1000 / fps, start = performance.now();
-    for (let i = 0; i < count && !stopped(); i++) {
+    let clock = performance.now(), shown = 0, i = 0;
+    for (; i < count && !stopped(); i++) {
+        if (hidden()) {
+            recorder.pause();
+            await new Promise((r) => { const back = () => { if (!hidden()) { document.removeEventListener("visibilitychange", back); r(); } }; document.addEventListener("visibilitychange", back); });
+            recorder.resume();
+            clock = performance.now();
+            shown = 0;
+        }
         paint(i);
-        track.requestFrame?.();
+        if (byFrame) track.requestFrame();
         progress(i);
-        // the frame stays on screen until its time is up: the video's clock is the wall clock
-        const wait = start + (i + 1) * frameMs - performance.now();
+        // the frame stays on screen until its time is up
+        shown++;
+        const wait = clock + shown * frameMs - performance.now();
         await new Promise((r) => setTimeout(r, Math.max(0, wait)));
     }
     recorder.stop();
     await done;
     track.stop();
-    return new Blob(chunks, { type: type.split(";")[0] });
+    const blob = new Blob(chunks, { type: type.split(";")[0] });
+    if (!type.startsWith("video/webm")) return blob;
+    return new Blob([withDuration(new Uint8Array(await blob.arrayBuffer()), i * frameMs)], { type: "video/webm" });
+}
+
+// ---------- a WebM's duration ----------
+// Browsers' recorders write a WebM as it streams, so its Segment Info has no Duration: players show no length and cannot seek.
+// We know the length, so it is written in: the Duration (in the file's own time units, TimecodeScale) put in place of one that is
+// there, or added to the Info — unless a SeekHead before it would point past the bytes added, when the file is left as it was.
+// EBML: an element is an id, a size (both variable-length integers), then its body; the Segment's size is usually "unknown".
+const SEGMENT = 0x18538067, INFO = 0x1549a966, DURATION = 0x4489, TIMECODE_SCALE = 0x2ad7b1, SEEK_HEAD = 0x114d9b74, CLUSTER = 0x1f43b675;
+function readId(b, at) {
+    const len = Math.clz32(b[at]) - 23;                     // 1 to 4 bytes, the length marked by the first byte's leading zeros
+    if (len < 1 || len > 4) return null;
+    let id = 0;
+    for (let k = 0; k < len; k++) id = id * 256 + b[at + k];
+    return { id, len };
+}
+function readSize(b, at) {
+    const len = Math.clz32(b[at]) - 23;
+    if (len < 1 || len > 8) return null;
+    let size = b[at] & (0xff >> len), unknown = size === (0xff >> len);
+    for (let k = 1; k < len; k++) { size = size * 256 + b[at + k]; unknown &&= b[at + k] === 0xff; }
+    return { size: unknown ? Infinity : size, len };
+}
+const element = (b, at) => {
+    const id = readId(b, at); if (!id) return null;
+    const sz = readSize(b, at + id.len); if (!sz) return null;
+    return { id: id.id, start: at, body: at + id.len + sz.len, end: sz.size === Infinity ? Infinity : at + id.len + sz.len + sz.size, sizeAt: at + id.len, sizeLen: sz.len };
+};
+export function withDuration(bytes, ms) {
+    const b = bytes;
+    let at = 0, segment = null;
+    while (at < b.length) {                                 // the EBML header, then the Segment
+        const e = element(b, at);
+        if (!e) return b;
+        if (e.id === SEGMENT) { segment = e; break; }
+        if (e.end === Infinity) return b;
+        at = e.end;
+    }
+    if (!segment) return b;
+    let info = null, seekHead = false;
+    for (at = segment.body; at < b.length;) {
+        const e = element(b, at);
+        if (!e || e.id === CLUSTER) break;
+        if (e.id === SEEK_HEAD) seekHead = true;
+        if (e.id === INFO) { info = e; break; }
+        if (e.end === Infinity) break;
+        at = e.end;
+    }
+    if (!info || info.end > b.length) return b;
+    let scale = 1e6, duration = null;
+    for (at = info.body; at < info.end;) {
+        const e = element(b, at);
+        if (!e || e.end > info.end) return b;
+        if (e.id === TIMECODE_SCALE) { scale = 0; for (let k = e.body; k < e.end; k++) scale = scale * 256 + b[k]; }
+        if (e.id === DURATION) duration = { e };
+        at = e.end;
+    }
+    const units = ms * 1e6 / scale;
+    if (duration) {                                         // one is there already: written over, in its own width
+        const out = b.slice(), view = new DataView(out.buffer, out.byteOffset + duration.e.body, duration.e.end - duration.e.body);
+        if (view.byteLength === 8) view.setFloat64(0, units); else if (view.byteLength === 4) view.setFloat32(0, units); else return b;
+        return out;
+    }
+    if (seekHead) return b;                                 // positions after the Info would be off by the bytes added
+    // the Info written again with a Duration (id 0x4489, size 8, a float64) at its end, its size as an 8-byte integer
+    const body = b.subarray(info.body, info.end), add = new Uint8Array(11);
+    add.set([0x44, 0x89, 0x88]);
+    new DataView(add.buffer).setFloat64(3, units);
+    const size = body.length + add.length, head = new Uint8Array(4 + 8);
+    head.set(b.subarray(info.start, info.sizeAt));            // the Info's id, 4 bytes
+    head[4] = 0x01;
+    for (let k = 0, v = size; k < 7; k++, v = Math.floor(v / 256)) head[11 - k] = v % 256;
+    const grow = head.length + size - (info.end - info.start);
+    const out = new Uint8Array(b.length + grow);
+    out.set(b.subarray(0, info.start), 0);
+    out.set(head, info.start);
+    out.set(body, info.start + head.length);
+    out.set(add, info.start + head.length + body.length);
+    out.set(b.subarray(info.end), info.start + head.length + size);
+    // a Segment of known size grows by as much, its size kept in the same width
+    if (segment.end !== Infinity) {
+        let v = segment.end - segment.body + grow;
+        for (let k = segment.sizeLen - 1; k >= 1; k--, v = Math.floor(v / 256)) out[segment.sizeAt + k] = v % 256;
+        out[segment.sizeAt] = (0x80 >> (segment.sizeLen - 1)) | v;
+    }
+    return out;
 }

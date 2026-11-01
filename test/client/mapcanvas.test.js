@@ -40,3 +40,35 @@ test("a video is MP4 wherever the browser records it, WebM only where it records
     assert.equal(videoType((t) => t.startsWith("video/webm")), "video/webm;codecs=vp9");             // Firefox
     assert.equal(videoType(() => false), null);
 });
+
+// a WebM as a browser records it: the EBML header, a Segment of unknown size, an Info with no Duration, a Cluster
+const webm = ({ seekHead = false, segmentSize = null } = {}) => {
+    const info = [0x15, 0x49, 0xa9, 0x66, 0x87, 0x2a, 0xd7, 0xb1, 0x83, 0x0f, 0x42, 0x40];          // TimecodeScale 1,000,000 ns
+    const cluster = [0x1f, 0x43, 0xb6, 0x75, 0x82, 0xe7, 0x80];
+    const seek = seekHead ? [0x11, 0x4d, 0x9b, 0x74, 0x80] : [];
+    const body = [...seek, ...info, ...cluster];
+    const size = segmentSize === null ? [0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff] : [0x40 | (body.length >> 8), body.length & 0xff];
+    return new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, 0x84, 0x42, 0x86, 0x81, 0x01, 0x18, 0x53, 0x80, 0x67, ...size, ...body]);
+};
+const durationIn = (b) => {
+    for (let i = 0; i + 11 <= b.length; i++) if (b[i] === 0x44 && b[i + 1] === 0x89 && b[i + 2] === 0x88) return new DataView(b.buffer, b.byteOffset + i + 3, 8).getFloat64(0);
+    return null;
+};
+
+test("a WebM is given the duration browsers leave out: added to its Info, or written over one that is there", async () => {
+    const { withDuration } = await import("../../public/js/mapcanvas.js");
+    const plain = webm(), timed = withDuration(plain, 42000);
+    assert.equal(durationIn(plain), null);
+    assert.equal(durationIn(timed), 42000);                                                       // milliseconds, at a scale of 1 ms
+    assert.deepEqual([...timed.subarray(timed.length - 7)], [0x1f, 0x43, 0xb6, 0x75, 0x82, 0xe7, 0x80], "the clusters follow untouched");
+    const again = withDuration(timed, 9000);
+    assert.equal(again.length, timed.length, "one already there is written over in place");
+    assert.equal(durationIn(again), 9000);
+    // a Segment of known size grows by the bytes added; a SeekHead before the Info leaves the file as it was
+    const known = webm({ segmentSize: true }), grown = withDuration(known, 1000);
+    const sizeOf = (b) => ((b[13] & 0x3f) << 8) | b[14];
+    assert.equal(sizeOf(grown) - sizeOf(known), grown.length - known.length);
+    const sought = webm({ seekHead: true });
+    assert.equal(withDuration(sought, 1000), sought);
+    assert.equal(withDuration(new Uint8Array([1, 2, 3]), 1000).length, 3, "not a WebM: left alone");
+});

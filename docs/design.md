@@ -421,7 +421,9 @@ once on its own replayer (`replayer.js`), keeping of each frame only what the pi
 leaders; a whole game's frames are a few MB), then draws the frames into a canvas recorded by the browser's `MediaRecorder`
 at 30 frames a second, the last held two seconds: MP4 where the browser records it (Chrome and Edge from 126, Safari), else WebM
 (Firefox). The recording
-runs in real time — 210 years at 5 years a second take 42 seconds — and can be stopped, keeping what was recorded.
+runs in real time — 210 years at 5 years a second take 42 seconds — and can be stopped, keeping what was recorded. It pauses
+while the tab is hidden (the browser slows a hidden page's timers to one a second, which would make the video jerk). A WebM
+is given the Duration browsers leave out of it (`withDuration`), or players show no length and cannot seek.
 
 ### Achievements
 

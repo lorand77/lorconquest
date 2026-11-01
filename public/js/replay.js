@@ -166,7 +166,7 @@ $("ex-video").addEventListener("click", async () => {
         const canvas = canvasFor(painter, Number($("ex-size").value)), ctx = canvas.getContext("2d"), hold = 2 * fps;
         const blob = await record(canvas, frames.length + hold, (i) => painter.draw(ctx, frames[Math.min(i, frames.length - 1)], { title }), {
             fps, type, stopped: () => stop,
-            progress: (i) => { if (i % fps === 0) $("ex-status").textContent = `Recording: ${Math.min(100, Math.round(i / (frames.length + hold) * 100))}%`; },
+            progress: (i) => { if (i % fps === 0) $("ex-status").textContent = `Recording: ${Math.min(100, Math.round(i / (frames.length + hold) * 100))}% — keep this tab in front`; },
         });
         download(blob, `lorconquest-${id}-${$("ex-from").value}-${$("ex-to").value}.${type.includes("mp4") ? "mp4" : "webm"}`);
         $("ex-status").textContent = `Saved: ${(blob.size / 1e6).toFixed(1)} MB${stop ? " (stopped early)" : ""}.`;
