@@ -494,6 +494,11 @@ function armyPanel(a) {
     if (a.mercs) kinds.push(`(${formatNumber(a.mercs)} mercenaries)`);
     out.push(make("p", { class: "men" }, kinds.join(" · ") || "nobody"));
     out.push(make("p", {}, armyStatus(a)));
+    // the settlement it stands in — a garrison's marker sits on its town, so a click on your own town often lands on the army:
+    // its people and buildings are here too, and the settlement's own panel a click away
+    const node = a.at ? game.map.nodes.get(a.at) : null, town = node?.kind === "settlement" ? state.settlements[node.id] : null;
+    if (town) out.push(make("p", { class: "town" }, swatch(town.owner), ` ${name(a.at)}: ${formatNumber(town.pop)} people${town.cores.includes(town.owner) ? ", core" : ""}${town.walls ? ", walls" : ""}. `,
+        make("button", { class: "link", onclick: () => select({ kind: "place", key: a.at }) }, "Settlement…")));
     if (a.owner !== me) return out;
     if (plan && plan.army === a.id) {
         const s = state.settlements[game.map.nodes.get(plan.to).land];

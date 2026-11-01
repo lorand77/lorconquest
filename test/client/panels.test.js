@@ -90,6 +90,7 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     const nodes = shopTab(ctx);
     const text = nodes.map((n) => n.text).join(" | ");
     assert.match(text, /Buildings in place 37/);
+    assert.match(text, new RegExp(`${Math.round(ctx.state.settlements[37].pop).toLocaleString("en-GB")} people, core`), "its people, as for anyone else's");
     assert.match(text, /Raise soldiers/);
     assert.match(text, /muskets: 0 in reserve\s+not unlocked/);
     await button(nodes, "walls").handlers.click();
