@@ -3,7 +3,7 @@
 // and paints them as the screen does: each land in its owner's colour, a subject's striped with its overlord's (mapdraw.js,
 // landFill), borders where owners differ, the countries' codes (countryLabels), a dot for each settlement — and on top the date,
 // the five countries with the most settlements, and the game's name. No library: the browser's canvas, and its MediaRecorder
-// for the video (WebM, or MP4 where that is what the browser records).
+// for the video (MP4 where the browser records it, else WebM).
 //
 // A timelapse is made in two steps: the game is played over once, keeping only what the picture needs of each frame (frameOf:
 // who holds what, who is whose subject, the leaders), then the frames are drawn and recorded at an even pace. framePlan and
@@ -169,10 +169,11 @@ export function download(blob, name) {
     setTimeout(() => URL.revokeObjectURL(a.href), 10000);
 }
 
-// the kind of video this browser records: WebM where it can, else MP4 (Safari); null where it records none
-export function videoType() {
-    if (typeof MediaRecorder === "undefined") return null;
-    return ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm", "video/mp4"].find((t) => MediaRecorder.isTypeSupported(t)) ?? null;
+// the kind of video this browser records: MP4 where it can (Chrome and Edge from version 126, Safari), the format every player
+// and site takes; else WebM (Firefox records nothing else); null where it records none
+export const VIDEO_TYPES = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"];
+export function videoType(supported = (t) => typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(t)) {
+    return VIDEO_TYPES.find(supported) ?? null;
 }
 
 // record `count` frames drawn by `paint(i)` into `canvas` at `fps`, at an even pace; resolves to the video as a Blob.

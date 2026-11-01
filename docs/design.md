@@ -419,7 +419,8 @@ as the screen does — owners' colours, a subject's stripes (`landFill`), the co
 settlement — with the date, the game's name and the five with the most settlements on top. A timelapse plays the game over
 once on its own replayer (`replayer.js`), keeping of each frame only what the picture needs (`frameOf`: owners, subjects,
 leaders; a whole game's frames are a few MB), then draws the frames into a canvas recorded by the browser's `MediaRecorder`
-at 30 frames a second, the last held two seconds: WebM, or MP4 where that is what the browser records (Safari). The recording
+at 30 frames a second, the last held two seconds: MP4 where the browser records it (Chrome and Edge from 126, Safari), else WebM
+(Firefox). The recording
 runs in real time — 210 years at 5 years a second take 42 seconds — and can be stopped, keeping what was recorded.
 
 ### Achievements

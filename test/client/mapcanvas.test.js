@@ -32,3 +32,11 @@ test("a frame keeps who holds what, who is whose subject and the leaders — and
     assert.deepEqual(landFill(frame, colourOf)("BOH"), landFill(game.state, colourOf)("BOH"));
     assert.ok(JSON.stringify(frame).length < 20000, "small: a whole game's frames stay in memory");
 });
+
+test("a video is MP4 wherever the browser records it, WebM only where it records nothing else (Firefox)", async () => {
+    const { videoType } = await import("../../public/js/mapcanvas.js");
+    assert.equal(videoType((t) => true), "video/mp4;codecs=avc1");                                   // Chrome 126+
+    assert.equal(videoType((t) => t === "video/mp4"), "video/mp4");                                  // Safari
+    assert.equal(videoType((t) => t.startsWith("video/webm")), "video/webm;codecs=vp9");             // Firefox
+    assert.equal(videoType(() => false), null);
+});
