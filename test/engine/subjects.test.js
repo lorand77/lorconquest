@@ -356,3 +356,30 @@ test("found by review: a vassal's own wars end and none is declared on it; peace
     order(game, cmd("BBB", "answerOffer", { id: game.state.offers.find((o) => o.kind === "demand").id, accept: true }));
     assert.ok(atWar(game.state, "AAA", "BBB") && game.state.countries.BBB.overlord === null, "a yes is no way out of a war");
 });
+
+test("winning with subjects: a chain counts to the top; a subject and its overlord reaching it the same day — the most settlements wins", () => {
+    const strong = (g, army) => setArmy(g, army, { swords: 50000 });          // or the subject breaks free first
+    const make = (target) => tinyGame(1, (sc) => { sc.victory = { settlements: target, endYear: 1500 }; });
+    const sub = (g, c, o, kind) => Object.assign(g.state.countries[c], { overlord: o, subjectKind: kind });
+    // CCC vassal of BBB, BBB vassal of AAA: AAA counts 3 + 2 + 1
+    let g = make(6);
+    strong(g, 1);
+    sub(g, "BBB", "AAA", "vassal");
+    sub(g, "CCC", "BBB", "vassal");
+    assert.deepEqual([scores(g.state).AAA.settlements, scores(g.state).BBB.settlements], [6, 3]);
+    assert.equal(ofType(g.advance(), "victory")[0]?.country, "AAA");
+    // a protectorate's vassal counts ½ for the top
+    g = make(99);
+    sub(g, "BBB", "AAA", "protectorate");
+    sub(g, "CCC", "BBB", "vassal");
+    assert.equal(scores(g.state).AAA.settlements, 3 + 1 + 0.5);
+    // AAA (3) protectorate of CCC (1 + 1½): both have 2 — the protectorate, with more, wins; a vassal never beats its overlord
+    g = make(2);
+    strong(g, 6);
+    sub(g, "AAA", "CCC", "protectorate");
+    assert.equal(ofType(g.advance(), "victory")[0]?.country, "AAA");
+    g = make(2);
+    strong(g, 6);
+    sub(g, "AAA", "CCC", "vassal");
+    assert.equal(ofType(g.advance(), "victory")[0]?.country, "CCC");
+});

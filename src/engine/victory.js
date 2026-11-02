@@ -1,6 +1,10 @@
 // Winning (SCENARIO.md, Victory): a country wins by controlling or vassalizing the scenario's number of settlements —
-// its own and its vassals' count 1 each, its protectorates' ½ — or, at the start of the end year, by having the most;
-// a tie goes to the larger total population, its own and its subjects'. A computer country may win.
+// its own and its vassals' count 1 each, its protectorates' ½, and so on up a chain of subjects (a vassal's vassal counts 1
+// for the top, a protectorate's vassal ½) — or, at the start of the end year, by having the most; a tie goes to the larger
+// total population, its own and its subjects'. Several reaching the number on the same day — a subject and its overlord
+// both count the subject's settlements — are ranked the same way: the most settlements, then people, then the lower code.
+// A vassal never beats its overlord (who counts all its settlements and has its own); a protectorate may. A computer
+// country may win.
 import { dayOf } from "./calendar.js";
 import { isRebel } from "./state.js";
 
@@ -13,9 +17,13 @@ export function scores(state) {
         if (!owner || owner.rebel) continue;
         out[s.owner].settlements += 1;
         out[s.owner].pop += s.pop;
-        if (owner.overlord && out[owner.overlord]) {
-            out[owner.overlord].settlements += owner.subjectKind === "vassal" ? 1 : 0.5;
-            out[owner.overlord].pop += s.pop;
+        // up the chain of overlords, each step a vassal's (×1) or a protectorate's (×½); a chain is never a ring (relations.js)
+        let c = owner, share = 1;
+        for (let guard = 0; c.overlord && out[c.overlord] && guard < 16; guard++) {
+            share *= c.subjectKind === "vassal" ? 1 : 0.5;
+            out[c.overlord].settlements += share;
+            out[c.overlord].pop += s.pop;
+            c = state.countries[c.overlord];
         }
     }
     return out;

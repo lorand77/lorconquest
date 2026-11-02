@@ -892,7 +892,11 @@ and a member that has since become a vassal or gone out of the game (a human ref
 proposal. (The historical scenario's Emperor, Imperial Authority, elections, ban and reforms are not built.)
 
 **Winning** is checked every day: a country with the scenario's number of settlements — its own and its vassals' count 1, its
-protectorates' ½ — wins at once; otherwise at the start of the end year the most settlements win, then the most people (its
+protectorates' ½, and so on up a chain of subjects (a vassal's vassal counts 1 for the top, a protectorate's vassal ½) — wins
+at once. A subject's settlements count for it and for its overlords alike, so several may reach the number on the same day:
+the one with the most settlements wins, then the most people, then the lower code. A vassal never beats its overlord, who
+counts all of its settlements besides its own; a protectorate may — it keeps its own diplomacy, and wins as itself.
+Otherwise, at the start of the end year, the most settlements win, then the most people (its
 own and its subjects'), then the lower code. When the game is won it stops: nothing more happens and nothing is accepted. A
 computer country may win, and then every human has lost.
 
