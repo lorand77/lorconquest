@@ -6,7 +6,7 @@ import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, scores } from
 import { requireUser } from "./auth.js";
 import { countryLabels, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
-import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoType } from "./mapcanvas.js";
+import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoName, videoType } from "./mapcanvas.js";
 import { buildLegs } from "./mirror.js";
 import { createReplayer } from "./replayer.js";
 
@@ -27,7 +27,7 @@ const WORTHY = new Set(["war", "peace", "capture", "victory", "empire", "integra
 
 // the requests run side by side, not one after another
 const id = Number(new URLSearchParams(location.search).get("id"));
-const [, res] = await Promise.all([requireUser(), fetch(`/api/games/${id}/replay`)]);
+const [me, res] = await Promise.all([requireUser(), fetch(`/api/games/${id}/replay`)]);
 const data = await res.json();
 if (!res.ok) { $("title").textContent = data.error ?? "No such replay."; throw new Error(data.error); }
 
@@ -171,7 +171,9 @@ $("ex-video").addEventListener("click", async () => {
             fps, type, stopped: () => stop,
             progress: (i) => { if (i % fps === 0) $("ex-status").textContent = `Recording: ${Math.min(100, Math.round(i / (frames.length + hold) * 100))}% — keep this tab in front`; },
         });
-        download(blob, `lorconquest-${id}-${span.fromYear}-${span.toYear}.${type.includes("mp4") ? "mp4" : "webm"}`);
+        // the file is named for the country you played in this game, or else every person's
+        const mine = data.humans.filter((h) => h.username === me.username), named = (mine.length ? mine : data.humans).map((h) => nameOf(h.country));
+        download(blob, videoName({ id, countries: named, fromYear: span.fromYear, toYear: span.toYear, ext: type.includes("mp4") ? "mp4" : "webm" }));
         $("ex-status").textContent = `Saved: ${(blob.size / 1e6).toFixed(1)} MB${stop ? " (stopped early)" : ""}.`;
     } catch (err) {
         $("ex-status").textContent = err.message === "stopped" ? "Stopped." : `Could not make the video: ${err.message}`;

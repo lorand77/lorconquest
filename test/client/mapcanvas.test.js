@@ -85,3 +85,10 @@ test("a WebM is given the duration browsers leave out: added to its Info, or wri
     assert.equal(withDuration(sought, 1000), sought);
     assert.equal(withDuration(new Uint8Array([1, 2, 3]), 1000).length, 3, "not a WebM: left alone");
 });
+
+test("a timelapse is named for the game, the country played in it (as a file may name it) and the years", async () => {
+    const { videoName } = await import("../../public/js/mapcanvas.js");
+    assert.equal(videoName({ id: 12, countries: ["Brunswick-Lüneburg"], fromYear: 1440, toYear: 1650, ext: "mp4" }), "lorconquest-12-brunswick-luneburg-1440-1650.mp4");
+    assert.equal(videoName({ id: 7, countries: ["Bavaria", "Polish–Lithuanian Commonwealth"], fromYear: 1500, toYear: 1520, ext: "webm" }), "lorconquest-7-bavaria-polish-lithuanian-commonwealth-1500-1520.webm");
+    assert.equal(videoName({ id: 3, countries: [], fromYear: 1440, toYear: 1441, ext: "mp4" }), "lorconquest-3-1440-1441.mp4");
+});

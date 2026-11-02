@@ -180,6 +180,13 @@ export function canvasFor(painter, heightPx) {
     return canvas;
 }
 
+// a timelapse's file name: the game, the country of it named (as a file may name it: no accents, no spaces), the years —
+// "lorconquest-12-brunswick-luneburg-1440-1650.mp4"; with several countries, each; with none (a game of the computer's), none
+export function videoName({ id, countries = [], fromYear, toYear, ext }) {
+    const safe = (s) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    return ["lorconquest", id, ...countries.map(safe).filter(Boolean), fromYear, toYear].join("-") + `.${ext}`;
+}
+
 // hand a file to the browser to save
 export function download(blob, name) {
     const a = document.createElement("a");
