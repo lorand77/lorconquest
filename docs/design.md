@@ -725,6 +725,12 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   over the map. Space pauses.
 - **The development page** (`public/index.html`) starts a single-player game on any scenario as any
   country, or reopens one, until accounts and the lobby (milestone 6).
+- **Notices** over the map (`public/js/notices.js`): every event of the player's is in the Events tab; what also pops up is
+  the player's choice, by kind — war (a siege of theirs, a settlement lost, peasants rising; a war declared on them has its
+  own banner), questions waiting for them, refused orders, research, diplomacy, armies, their country — all on by default on
+  a computer, the first four only on a phone. The choice is kept in the browser (`lorconquest.notices`, the privacy page says
+  so) and edited on the Customize page and behind ⚙ by the zoom buttons. At most 3 notices at once, 2 on a phone; the same one
+  again counts up ("×3") rather than stacking; each goes after 6 seconds, 3 on a phone. Messages about the connection always show.
 - **Small screens:** a tablet's panel is 300px. On a phone held upright (700px wide or less) the map fills the screen and the
   panel is a **sheet** over its foot (`game.css`, `body[data-sheet]`; `mirror.js`, `sheetAfter`): collapsed to a grab handle,
   the tabs (at the top, under the handle: never on the screen's bottom edge, where an iPhone's browser keeps taps for its

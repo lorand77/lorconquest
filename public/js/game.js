@@ -6,6 +6,7 @@ import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, men
 import { sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
+import { isPhone, kindOf, loadNotices, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
@@ -96,6 +97,8 @@ async function start() {
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("snapshot").addEventListener("click", snapshot);
+    $("notice-settings").addEventListener("click", noticeMenu);
+    window.addEventListener("storage", (e) => { if (e.key === null || e.key === "lorconquest.notices") prefs = loadNotices(); });     // changed in another tab
     $("pause").addEventListener("click", togglePause);
     $("pause").hidden = multi || !me;
     if (multi || !me) startPeople(joined);
@@ -129,14 +132,14 @@ async function start() {
     $("ask-tab").addEventListener("click", () => setTab("research"));
     $("war-diplomacy").addEventListener("click", () => { ui.target = war?.attackers[0] ?? ui.target; closeWar(); setTab("diplomacy"); });
     $("results").addEventListener("click", () => { $("end").hidden = false; });
-    socket.on("failed", (m) => toast(`The game stopped: ${m.error}`));
-    socket.on("disconnect", () => toast("Lost the connection to the server; trying again…"));
+    socket.on("failed", (m) => notice(`The game stopped: ${m.error}`));
+    socket.on("disconnect", () => notice("Lost the connection to the server; trying again…"));
     // a reconnect joins again: in a game with others the country is ours at once; the page catches up from the view
     socket.on("connect", () => {
         if (!state) return;
         loading = true;
         ask(watching ? "watch" : "join", { gameId }).then((j) => {
-            if (!j.ok) { loading = false; early.length = 0; toast(j.error, 600000); return; }
+            if (!j.ok) { loading = false; early.length = 0; notice(j.error, "system", 600000); return; }
             state = Object.assign(state, j.view);
             paused = j.paused;
             seats = j.seats;
@@ -173,11 +176,10 @@ function news(events) {
         const who = eventCountries(e);
         // the player's news and their enemies'; a watcher's, the news of the people's countries
         if (me ? who.includes(me) || who.some((c) => enemies().includes(c)) : who.some((c) => seats.some((s) => s.country === c))) feed(e);
-        const mine = who.includes(me);
-        if (mine && e.type === "tech") askLater = false;    // a tech done: a new one to choose, the banner again
-        if ((e.type === "siegeStart" && state.settlements[e.settlement].owner === me) || (e.type === "capture" && e.from === me)
-            || (mine && ["uprising", "bankruptcy", "desertion", "tech", "ready", "cancelled", "plague", "default", "crossFailed", "postLost", "scattered",
-                "offer", "answer", "joins", "peace", "subject", "freedom", "agreement", "ended", "expired", "lapsed", "refused", "empire", "integrated", "broke", "fleetPaidOff"].includes(e.type))) toast(describeEvent(game.map, e));
+        if (who.includes(me) && e.type === "tech") askLater = false;    // a tech done: a new one to choose, the banner again
+        // a notice over the map, if it is of a kind the player has on (notices.js); the Events tab has it anyway
+        const kind = kindOf(e, me, who, state);
+        if (kind) notice(describeEvent(game.map, e), kind);
     }
 }
 
@@ -244,7 +246,7 @@ const swatch = (code) => make("span", { class: "swatch", style: `background:${co
 
 async function send(cmd) {
     const r = await ask("command", { cmd });
-    if (!r.ok) toast(r.error);
+    if (!r.ok) notice(r.error, "refused");
     return r;
 }
 
@@ -284,7 +286,7 @@ function setTab(t) {
 function planMove(army, to) {
     if (army.at === to) { plan = null; renderAll(); return; }
     const found = routeFor(game, army, to);
-    if (!found) { plan = null; toast(`No way to ${name(to)} through land army ${army.id} may enter.`); renderAll(); return; }
+    if (!found) { plan = null; notice(`No way to ${name(to)} through land army ${army.id} may enter.`, "refused"); renderAll(); return; }
     plan = { army: army.id, to, path: found.path, days: found.days };
     renderAll();
 }
@@ -437,7 +439,7 @@ function startPeople(joined) {
     $("quit").addEventListener("click", async () => {
         if (!confirm("Leave this game? The computer will play your country for good and you cannot come back.")) return;
         const r = await ask("quit", {});
-        if (r.ok) location.href = "/"; else toast(r.error);
+        if (r.ok) location.href = "/"; else notice(r.error);
     });
     $("chat-toggle").addEventListener("click", () => {
         $("chat").hidden = !$("chat").hidden;
@@ -452,7 +454,7 @@ function startPeople(joined) {
         const text = $("chat-text").value;
         if (!text.trim()) return;
         const r = await ask("chat", { text });
-        if (r.ok) $("chat-text").value = ""; else toast(r.error);
+        if (r.ok) $("chat-text").value = ""; else notice(r.error);
     });
 }
 
@@ -671,10 +673,34 @@ function feed(e) {
 
 const renderEventsTab = () => { $("events-label").textContent = unseen ? `Events (${unseen})` : "Events"; };
 
-function toast(text, ms = 6000) {
-    const t = make("div", { class: "toast" }, text);
-    $("toasts").append(t);
-    setTimeout(() => t.remove(), ms);
+// ---------- notices over the map (notices.js) ----------
+// `kind`: one of the kinds the player may switch off, or "system" (the connection, the game stopping), which always shows.
+// At most 3 at once (2 on a phone), the same one counted up rather than repeated, gone after 6 seconds (3 on a phone).
+let prefs = loadNotices(), notices = [], noticeTimer = null;
+function notice(text, kind = "system", ms) {
+    if (kind !== "system" && !prefs[kind]) return;
+    const phone = isPhone();
+    notices = pushNotice(notices, text, kind, Date.now(), { max: phone ? 2 : 3, ms: ms ?? (phone ? 3000 : 6000) });
+    drawNotices();
+}
+function drawNotices() {
+    const now = Date.now();
+    notices = notices.filter((n) => n.until > now);
+    $("toasts").replaceChildren(...notices.map((n) => make("div", { class: "toast" }, n.text, n.count > 1 ? make("b", { class: "toast-count" }, ` ×${n.count}`) : "")));
+    clearTimeout(noticeTimer);
+    if (notices.length) noticeTimer = setTimeout(drawNotices, Math.min(...notices.map((n) => n.until)) - now + 20);
+}
+// the game's ⚙: the same checklist as the Customize page, by the zoom buttons
+function noticeMenu() {
+    const menu = $("notice-menu");
+    if (!menu.hidden) { menu.hidden = true; return; }
+    const draw = () => menu.replaceChildren(make("h3", {}, "Notices over the map"), noticeChecklist(make, prefs),
+        make("div", { class: "row" },
+            make("button", { onclick: () => { resetNotices(); prefs = loadNotices(); draw(); } }, "Defaults for this screen"),
+            make("button", { class: "primary", onclick: () => { menu.hidden = true; } }, "Done")),
+        make("p", { class: "hint" }, "Everything is in the Events tab whatever is chosen. Kept in this browser; also on the Customize page."));
+    draw();
+    menu.hidden = false;
 }
 
 start();

@@ -378,12 +378,15 @@ test("what the privacy page says is what the server does: no password or chat te
         const page = fs.readFileSync(path.join(import.meta.dirname, "..", "..", "public", "privacy.html"), "utf8");
         assert.equal(config.CHAT_RETENTION_DAYS, 30);
         assert.match(page, /deleted 30 days after the game ends/);
-        // and what it says is kept in the browser: the sign-in cookie, and the colour scheme alone in local storage
+        // and what it says is kept in the browser: the sign-in cookie, and in local storage the colour scheme and the notices chosen
         const js = path.join(import.meta.dirname, "..", "..", "public", "js");
         const storing = fs.readdirSync(js).filter((x) => /localStorage|sessionStorage|indexedDB|document\.cookie/.test(fs.readFileSync(path.join(js, x), "utf8")));
-        assert.deepEqual(storing, ["theme.js"], "only theme.js keeps anything in the browser");
-        assert.deepEqual([...new Set([...fs.readFileSync(path.join(js, "theme.js"), "utf8").matchAll(/"(lorconquest\.[\w.]+)"/g)].map((m) => m[1]))], ["lorconquest.scheme"]);
+        assert.deepEqual(storing, ["notices.js", "theme.js"], "only theme.js and notices.js keep anything in the browser");
+        const keys = (file) => [...new Set([...fs.readFileSync(path.join(js, file), "utf8").matchAll(/"(lorconquest\.[\w.]+)"/g)].map((m) => m[1]))];
+        assert.deepEqual(keys("theme.js"), ["lorconquest.scheme"]);
+        assert.deepEqual(keys("notices.js"), ["lorconquest.notices"]);
         assert.match(page, /light or the dark colours, in its local\s+storage/);
+        assert.match(page, /which notices pop up in the game[\s\S]*local storage too/);
         assert.equal((await fetch(server.baseUrl + "/privacy.html")).status, 200);
         assert.equal((await fetch(server.baseUrl + "/terms.html")).status, 200);
     } finally {
