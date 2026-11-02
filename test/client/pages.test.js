@@ -155,3 +155,12 @@ test("every page's make() leaves out an attribute given as undefined, null or fa
         assert.match(src, /else if \(v !== undefined && v !== null && v !== false\) e\.setAttribute\(k, v\);/, `${file}'s make() sets every attribute it is given`);
     }
 });
+
+test("on a phone the shell's rail is a row across the page at its own width — not the sidebar's width, which is 0 there", () => {
+    const css = read("css/game.css");
+    const phone = css.slice(css.indexOf("@media (max-width: 700px) {\n    :root { --rail-w: 0px; }"));
+    const rail = /\.app-rail \{([^}]*)\}/.exec(phone)?.[1] ?? "";
+    assert.match(rail, /width: auto/, "a rail as wide as --rail-w (0px on a phone) is a sliver");
+    assert.match(rail, /flex-direction: row/);
+    assert.match(rail, /overflow-x: auto/);
+});

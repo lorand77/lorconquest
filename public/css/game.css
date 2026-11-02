@@ -227,8 +227,8 @@ body.shell > .page { max-width: 860px; margin: 0 auto; }
     :root { --rail-w: 0px; }
     body.shell { padding: 8px 12px 24px; }
     .app-topbar { position: static; margin: -8px -12px 0; }
-    .app-rail { position: static; flex-direction: row; overflow-x: auto; margin: 0 -12px 12px; padding: 8px 10px; border-right: none; border-bottom: 1px solid var(--border); }
-    .app-rail .rail-item { white-space: nowrap; }
+    .app-rail { position: static; width: auto; flex-direction: row; overflow-x: auto; margin: 0 -12px 12px; padding: 8px 10px; border-right: none; border-bottom: 1px solid var(--border); }
+    .app-rail .rail-item { white-space: nowrap; flex: none; }          /* each its own width: the row scrolls rather than squeezes them */
     .app-rail .rail-sub { display: none; }
     .rail-legal { display: none; }
 }
