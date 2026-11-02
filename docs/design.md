@@ -502,6 +502,8 @@ How it is run is in [setup.md](setup.md); the program's parts for it are:
   only to the countries concerned — never to the other players or to watchers.
 - **Never a gap:** the page listens for days before it joins, holds what comes while it loads (or joins again after a
   reconnect), and applies only the days newer than the view it was given.
+- **Caching:** every page, script, stylesheet and engine file is sent `Cache-Control: no-cache` — checked with the server each
+  time, a 304 when unchanged — so a browser never runs an old copy of one module beside a new copy of another after a change.
 - **Limits:** a command is at most 8,000 characters as JSON (it is kept in the log as it came), a socket message 64 KB, and
   a person may have 3 rooms waiting and 6 games running at once (each is a thread). Chat's burst limit is per person. A
   finished game's worker stops once none of its players has it open; a page closed while its game was being brought back
@@ -723,7 +725,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   country, or reopens one, until accounts and the lobby (milestone 6).
 - **Small screens:** a tablet's panel is 300px. On a phone held upright (700px wide or less) the map fills the screen and the
   panel is a **sheet** over its foot (`game.css`, `body[data-sheet]`; `mirror.js`, `sheetAfter`): collapsed to a grab handle,
-  a line of status (country, date, play, treasury) and the tabs — as tall as those really are, measured as they change (the
+  the tabs (at the top, under the handle: never on the screen's bottom edge, where an iPhone's browser keeps taps for its
+  toolbar) and a line of status (country, date, play, treasury) — as tall as those really are, measured as they change (the
   status wraps on a narrow phone), and clear of an iPhone's home indicator (`viewport-fit=cover`, `env(safe-area-inset-*)`); half the screen; or nearly all of it, with the brand and the
   lobby link. A tap on the handle steps it up and round, a swipe on it one step; picking something on the map or a tab brings
   it to at least half. The zoom buttons, the scores and the chat float just above it. Held sideways (500px tall or less), a

@@ -96,7 +96,10 @@ export function createApp({
     app.use("/api", achievementRoutes({ db, achievements }));
 
     // the engine, for the browser's previews: the very files the server runs
-    app.use("/engine", express.static(path.join(root, "src", "engine")));
+    // every page, script and stylesheet is checked with the server each time (a 304 when it has not changed): a phone that kept an
+    // old copy of one module and fetched a new copy of another would run neither
+    const fresh = { setHeaders: (res) => res.setHeader("Cache-Control", "no-cache") };
+    app.use("/engine", express.static(path.join(root, "src", "engine"), fresh));
     // each scenario's map and data
     app.get("/scenario/:id/:file", (req, res) => {
         const s = scenarios.get(req.params.id);
@@ -105,7 +108,7 @@ export function createApp({
     });
     // the pages, each with every module its script needs to load at once (preload.js); then the rest of public/
     app.use(preloadPages(root, production));
-    app.use(express.static(path.join(root, "public")));
+    app.use(express.static(path.join(root, "public"), fresh));
 
     // errors no handler dealt with: logged with their stack, answered with neither
     app.use((err, req, res, next) => {

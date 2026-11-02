@@ -46,3 +46,16 @@ test("one who quits a game with others gives no orders and writes no chat from a
         await server.close();
     }
 });
+
+test("pages, scripts and the engine are checked with the server each time: no phone keeps an old module beside a new one", async () => {
+    const server = await startServer({ dbPath: tempDb() });
+    try {
+        for (const url of ["/game.html", "/js/game.js", "/js/mirror.js", "/engine/index.js", "/css/game.css"]) {
+            const res = await fetch(server.baseUrl + url);
+            assert.equal(res.status, 200, url);
+            assert.equal(res.headers.get("cache-control"), "no-cache", url);
+        }
+    } finally {
+        await server.close();
+    }
+});

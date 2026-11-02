@@ -48,6 +48,6 @@ export function preloadPages(root, production) {
             html = withPreloads(root, page);
             if (production) cache.set(page, html);
         }
-        res.type("html").send(html);
+        res.set("Cache-Control", "no-cache").type("html").send(html);
     };
 }
