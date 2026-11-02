@@ -134,13 +134,19 @@ test("agreements you hold can be broken or cancelled; a vassal is not dealt with
     assert.deepEqual(sent, [{ type: "breakAgreement", with: "TYR", kind: "defensive" }, { type: "cancelAccess", with: "AUS" }]);
     // the Empire is a section of its own, whoever is picked — even a vassal
     const emp = diplomacyTab(ctx), ui = ctx.ui;
-    assert.match(textOf(emp), /You hold 4\./);
-    assert.match(textOf(emp), /6 more settlements inside the Empire needed/);
-    assert.match(textOf(emp), /If you demanded it now: about \d+ of \d+ computer states would join/);
-    assert.equal(button(emp, "Demand the Empire").attrs.disabled, "disabled");
-    button(emp, "Show the Empire on the map").handlers.click();
+    // one line while a demand is out of reach — no estimate, no button that can only be refused
+    assert.match(textOf(emp), /You hold 4 of its 55 settlements; a demand needs 10\./);
+    assert.doesNotMatch(textOf(emp), /would join/);
+    assert.equal(button(emp, "Demand the Empire"), undefined);
+    button(emp, "Show on map").handlers.click();
     assert.equal(ui.empire, true);
-    assert.ok(button(diplomacyTab(ctx), "Show the whole map"));
+    assert.ok(button(diplomacyTab(ctx), "Whole map"));
+    // with enough of it held: what the German states would do, and the button
+    const others = ctx.game.map.scenario.settlements.filter((x) => x.hre && ctx.state.settlements[x.id].owner !== "BAV");
+    for (const x of others.slice(0, 6)) ctx.state.settlements[x.id].owner = "BAV";                       // 4 + 6 = the 10 needed
+    const able = diplomacyTab(ctx);
+    assert.match(textOf(able), /Now: about \d+ of \d+ computer states would join/);
+    assert.equal(button(able, "Demand the Empire").attrs.disabled, undefined);
     // once demanded: what came of it, and no button
     ctx.state.memory.empire.BAV = { league: ["SAX"] };
     ctx.state.countries.ULM.overlord = "BAV";

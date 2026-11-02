@@ -542,12 +542,12 @@ function armyPanel(a) {
     if (a.crew) kinds.push(`${formatNumber(a.crew)} crew`);
     if (a.mercs) kinds.push(`(${formatNumber(a.mercs)} mercenaries)`);
     out.push(make("p", { class: "men" }, kinds.join(" · ") || "nobody"));
-    out.push(make("p", {}, armyStatus(a)));
-    // the settlement it stands in — a garrison's marker sits on its town, so a click on your own town often lands on the army:
-    // its people and buildings are here too, and the settlement's own panel a click away
+    // where it is — and for your own army resting in your own settlement (its marker sits on the town, so a click on the town
+    // often lands on it) the town's people, with its own panel a click away; not while a march is being planned, nor for others'
     const node = a.at ? game.map.nodes.get(a.at) : null, town = node?.kind === "settlement" ? state.settlements[node.id] : null;
-    if (town) out.push(make("p", { class: "town" }, swatch(town.owner), ` ${name(a.at)}: ${formatNumber(town.pop)} people${town.cores.includes(town.owner) ? ", core" : ""}${town.walls ? ", walls" : ""}. `,
-        make("button", { class: "link", onclick: () => select({ kind: "place", key: a.at }) }, "Settlement…")));
+    const home = town && a.owner === me && town.owner === me && !town.siege && !(plan && plan.army === a.id);
+    out.push(home ? make("p", { class: "town" }, `At ${name(a.at)}: ${formatNumber(town.pop)} people${town.cores.includes(me) ? "" : ", not core"}${town.walls ? ", walls" : ""}. `,
+        make("button", { class: "link", onclick: () => select({ kind: "place", key: a.at }) }, "Settlement…")) : make("p", {}, armyStatus(a)));
     if (a.owner !== me) return out;
     if (plan && plan.army === a.id) {
         const s = state.settlements[game.map.nodes.get(plan.to).land];

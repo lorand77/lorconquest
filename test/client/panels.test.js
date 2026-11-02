@@ -52,7 +52,8 @@ test("the Country tab shows the engine's numbers and its controls send commands"
     const nodes = countryTab(ctx);
     const text = nodes.map((n) => n.text).join(" | ");
     assert.match(text, /Settlement money a year\s+\S+/);
-    assert.match(text, /Treasury\s+100,000/);
+    assert.doesNotMatch(text, /Treasury/, "the treasury is in the top bar, not repeated here");
+    assert.doesNotMatch(text, /Civilians|Navy cap|Mercenaries/, "nothing said of what is people less soldiers, or of none");
     assert.match(text, /Soldiers\s+2,000 of 2,500 allowed/);                  // 50,000 people: 5% is 2,500
     const [taxInput] = find(nodes, (e) => e.attrs.type === "range" && e.attrs.max === 30);
     taxInput.value = "27";
@@ -90,9 +91,9 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     const nodes = shopTab(ctx);
     const text = nodes.map((n) => n.text).join(" | ");
     assert.match(text, /Buildings in place 37/);
-    assert.match(text, new RegExp(`${Math.round(ctx.state.settlements[37].pop).toLocaleString("en-GB")} people, core`), "its people, as for anyone else's");
+    assert.doesNotMatch(text, /Treasury| people, core/, "neither the treasury (top bar) nor the town's people (nothing to do with building)");
     assert.match(text, /Raise soldiers/);
-    assert.match(text, /muskets: 0 in reserve\s+not unlocked/);
+    assert.doesNotMatch(text, /muskets|not unlocked/, "only the weapons that can be bought");
     await button(nodes, "walls").handlers.click();
     assert.equal(button(nodes, "Raise").text, "Raise · 60,000 for weapons");     // the best weapon its 100,000 pays for: cavalry
     await button(nodes, "Raise").handlers.click();
@@ -246,7 +247,7 @@ test("a fleet sent on its way is let go of (ctx.dispatch); merging it keeps it s
 test("the Research tab says when nothing is being researched and offers the cheapest open tech at one click", async () => {
     const { ctx, sent } = setup();
     let nodes = researchTab(ctx);
-    assert.match(nodes.map((n) => n.text).join(" | "), /Nothing is being researched\.\s+Your 0 R in store and [\d,.KM]+ a year are waiting/);
+    assert.match(nodes.map((n) => n.text).join(" | "), /Nothing is being researched\.\s+R piles up meanwhile/);
     await button(nodes, "Research Hand cannons · 1.50M R").handlers.click();           // cheaper than carracks (3M)
     assert.deepEqual(sent, [{ type: "research", tech: "handCannons" }]);
     ctx.state.countries.BAV.target = "handCannons";                                   // something chosen: no notice

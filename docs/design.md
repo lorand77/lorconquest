@@ -716,8 +716,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   the chance of a demand, for its own vassal an Integrate button (with why not, until it may), and a **peace form**: tick the settlements to take or give, money, a subject —
   and the computer's own answer shown as you edit. The Empire has a section of its own, whoever is picked: how much of
   it the player holds, a button that dims every land outside it on the map, each demand made and what came of it (the
-  proposer's protectorates in it now, the League as it stands), and the player's own demand with how many computer
-  states would join if made now. A settlement in the Empire says so. A game that is won shows who won and stops.
+  proposer's protectorates in it now, the League as it stands), and — once they hold enough of it — the player's own
+  demand with how many computer states would join if made now; until then a single line. A settlement in the Empire says so. A game that is won shows who won and stops.
 - **Looking:** a settlement shows its owner, people, any siege and the armies there; a country's
   land shows the country, its wars and — until diplomacy in milestone 4 — a [Declare war] button.
 - **Events:** the player's own and their wars', newest first (and every diplomatic event that concerns them); clicking one shows its place. A war

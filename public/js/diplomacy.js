@@ -98,12 +98,10 @@ function empireSection(ctx) {
     const needed = game.map.scenario.empire?.needed, inside = game.map.scenario.settlements.filter((s) => s.hre).length;
     const german = germanStates(game), held = hreSettlementsOf(game, me);
     const list = (codes) => (codes.length ? codes.map(name).join(", ") : "none");
-    const out = [mk("p", {}, `${inside} settlements are inside the Empire, held by ${german.length} German states. You hold ${held}.`),
-        row(ctx, mk("button", { onclick: () => { ctx.ui.empire = !ctx.ui.empire; ctx.redraw(); } }, ctx.ui.empire ? "Show the whole map" : "Show the Empire on the map"))];
-    if (!needed) {
-        out.push(mk("p", { class: "hint" }, "Two German states think 10 better of each other. This scenario has no demand of the Empire."));
-        return section(ctx, "The Holy Roman Empire", ...out);
-    }
+    // one line and the map button, and more only where there is more to say: demands made, and yours once you could make it
+    const out = [row(ctx, mk("span", { class: "w" }, `You hold ${held} of its ${inside} settlements${needed && !state.memory.empire[me] ? `; a demand needs ${needed}` : ""}.`),
+        mk("button", { onclick: () => { ctx.ui.empire = !ctx.ui.empire; ctx.redraw(); } }, ctx.ui.empire ? "Whole map" : "Show on map"))];
+    if (!needed) return section(ctx, "The Holy Roman Empire", ...out);
     // the demands made so far: the proposer's protectorates inside the Empire now, and the League as it stands
     for (const p of Object.keys(state.memory.empire)) {
         const joined = german.filter((x) => state.countries[x].overlord === p && state.countries[x].subjectKind === "protectorate");
@@ -111,19 +109,15 @@ function empireSection(ctx) {
         out.push(mk("p", {}, `${p === me ? "You" : name(p)} demanded the Empire. Its protectorates in the Empire: ${list(joined)}. The League against it: ${list(league)}.`));
     }
     if (state.memory.empire[me]) return section(ctx, "The Holy Roman Empire", ...out);
-    if (isVassal(state, me)) {
-        out.push(mk("p", { class: "hint" }, "A vassal cannot demand the Empire: its overlord speaks for it."));
-        return section(ctx, "The Holy Roman Empire", ...out);
-    }
+    if (isVassal(state, me) || held < needed) return section(ctx, "The Holy Roman Empire", ...out);
     // how the German states would answer now: one at war with you refuses; the rest roll like a protectorate demand, a person is asked
     const eligible = german.filter((x) => x !== me && !state.countries[x].overlord && !wouldCycle(state, x, me));
     const foes = eligible.filter((x) => state.wars.includes(pairKey(me, x))), asked = eligible.filter((x) => !foes.includes(x));
     const people = asked.filter((x) => state.humans.includes(x)), rolled = asked.filter((x) => !state.humans.includes(x));
     const expect = rolled.reduce((k, x) => k + demandChance(game, x, me, "protectorate").chance / 100, 0);
-    out.push(mk("p", { class: "hint" }, `Demand that every German state become your protectorate: once, ever, with at least ${needed} settlements inside the Empire. The states that refuse form the League, a defensive alliance against you.`),
-        mk("p", {}, `If you demanded it now: about ${Math.round(expect)} of ${rolled.length} computer states would join${people.length ? `, and ${list(people)} would be asked` : ""}${foes.length ? `; ${list(foes)}, at war with you, would refuse` : ""}.`),
-        row(ctx, mk("button", { disabled: held < needed ? "disabled" : undefined, class: "danger", onclick: async () => { if (confirm("Demand the Empire? You may do this only once, ever.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand the Empire"),
-            held < needed ? mk("span", { class: "hint" }, `${needed - held} more settlements inside the Empire needed`) : ""));
+    out.push(mk("p", { class: "hint" }, "Every German state becomes your protectorate or joins the League against you: once, ever."),
+        mk("p", {}, `Now: about ${Math.round(expect)} of ${rolled.length} computer states would join${people.length ? `, and ${list(people)} would be asked` : ""}${foes.length ? `; ${list(foes)}, at war with you, would refuse` : ""}.`),
+        row(ctx, mk("button", { class: "danger", onclick: async () => { if (confirm("Demand the Empire? You may do this only once, ever.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand the Empire")));
     return section(ctx, "The Holy Roman Empire", ...out);
 }
 

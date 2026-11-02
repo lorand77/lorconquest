@@ -50,7 +50,6 @@ export function countryTab(ctx) {
         e.mercenaryUpkeep ? line(ctx, "Mercenaries' upkeep", `−${money(e.mercenaryUpkeep)}`) : "",
         e.interest ? line(ctx, "Loan interest", `−${money(e.interest)}`) : "",
         line(ctx, "Money a year", `${e.moneyPerYear >= 0 ? "+" : "−"}${money(Math.abs(e.moneyPerYear))}`, e.moneyPerYear < 0 ? "bad" : "good"),
-        line(ctx, "Treasury", money(c.treasury), c.treasury < 0 ? "bad" : ""),
         c.bank ? line(ctx, "In the bank", money(c.bank)) : "",
         c.loans ? line(ctx, "Loans", `${money(c.loans)} of ${money(e.loanLimit)}`) : "",
         c.debtSince !== null ? make("p", { class: "bad" }, `In debt since ${longDate(c.debtSince)}: bankruptcy 10 years on if it is over ${money(e.pop * 10)}.`) : "",
@@ -66,10 +65,9 @@ export function countryTab(ctx) {
     out.push(section(ctx, "People and law",
         line(ctx, "People", n(e.pop)),
         line(ctx, "Soldiers", `${n(e.armySoldiers)} of ${n(e.armyCap)} allowed`, e.armySoldiers > e.armyCap ? "bad" : ""),
-        e.crewAtSea ? line(ctx, "Ship crew at sea", `${n(e.crewAtSea)} of ${n(e.navyCap)} allowed`) : line(ctx, "Navy cap", n(e.navyCap)),
-        line(ctx, "Mercenaries", `${n(e.mercenaries)} (at most ${n(e.armyCap)})`),
+        e.crewAtSea ? line(ctx, "Ship crew at sea", `${n(e.crewAtSea)} of ${n(e.navyCap)} allowed`) : "",
+        e.mercenaries ? line(ctx, "Mercenaries", `${n(e.mercenaries)} (at most ${n(e.armyCap)})`) : "",
         e.rebels ? line(ctx, "Rebels under arms", n(e.rebels), "bad") : "",
-        line(ctx, "Civilians", n(e.civilians)),
         row(ctx, law), wait ? make("p", { class: "hint" }, wait) : ""));
 
     // the bank and loans
@@ -124,7 +122,7 @@ export function complianceBlock(ctx, s) {
 export function shopTab(ctx) {
     const { state, game, me, make } = ctx;
     const c = state.countries[me], e = economyOf(game, me), x = game.map.x;
-    const out = [line(ctx, "Treasury", money(c.treasury), c.treasury < 0 ? "bad" : "")];
+    const out = [];                                          // (the treasury is in the top bar)
     const own = Object.values(state.settlements).filter((s) => s.owner === me);
     const core = own.filter((s) => isCore(state, s, me));
     const settlementOptions = (list) => list.map((s) => [s.id, ctx.name(String(s.id))]);
@@ -135,7 +133,7 @@ export function shopTab(ctx) {
     if (sel && sel.owner === me) {
         // (no courthouse where the settlement is core already, where it would do nothing, nor before its people are compliant)
         const ready = compliance(sel, state.day, CORING_DAYS).ready;
-        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}`, make("p", { class: "hint" }, `${n(sel.pop)} people${sel.cores.includes(me) ? ", core" : ""}.`), complianceBlock(ctx, sel), make("div", { class: "buttons" },
+        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}`, complianceBlock(ctx, sel), make("div", { class: "buttons" },
             ...Object.keys(BUILDING_PRICE).filter((b) => b !== "courthouse" || sel.courthouse || !sel.cores.includes(me)).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${b}`)
                 : b === "courthouse" && !ready ? make("span", { class: "hint" }, "courthouse: once compliant")
                     : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
@@ -158,25 +156,23 @@ export function shopTab(ctx) {
     rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
         row(ctx, rs, rl, make("span", {}, "× 1000"), rw),
-        make("p", { class: "hint" }, `Trained in a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere; they arrive carrying their weapons — or, with cannons, manning one for every 10 of them — taken from the reserve now and what is missing bought. Soldiers now ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
+        make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere; weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
         raise));
 
     // mercenaries
     const ms = select(ctx, settlementOptions(core), capital ?? core[0]?.id), ml = numberInput(ctx, 1, 1, 50);
     out.push(section(ctx, "Hire mercenaries",
-        row(ctx, ms, ml, make("span", {}, `× 1000, ${money(MERCENARY_PRICE)} each; they arrive in a month with pikes; 15 upkeep a man`)),
+        row(ctx, ms, ml, make("span", {}, `× 1000 · ${money(MERCENARY_PRICE)}`)), make("p", { class: "hint" }, "In a month, with pikes; 15 a man a year."),
         make("button", { onclick: act(ctx, () => ({ type: "hireMercenaries", settlement: Number(ms.value), lots: Number(ml.value) })) }, "Hire")));
 
     // weapons into the reserve, as many lots at once as asked
     const wl = numberInput(ctx, 1, 1, 50);
-    const weaponRows = Object.keys(WEAPON_PRICE).map((w) => {
-        const have = c.techs.includes(w);
-        return row(ctx, make("span", { class: "w" }, `${WEAPON_NAMES[w]}: ${n(c.reserve[w])} in reserve`),
-            have ? make("button", { onclick: act(ctx, () => ({ type: "buyWeapons", weapon: w, lots: Number(wl.value) })) }, `Buy · ${money(WEAPON_PRICE[w])} a lot`) : make("span", { class: "hint" }, "not unlocked"));
-    });
+    // only what can be bought (the Research tab shows what is still to unlock)
+    const weaponRows = Object.keys(WEAPON_PRICE).filter((w) => c.techs.includes(w)).map((w) => row(ctx, make("span", { class: "w" }, `${WEAPON_NAMES[w]}: ${n(c.reserve[w])} in reserve`),
+        make("button", { onclick: act(ctx, () => ({ type: "buyWeapons", weapon: w, lots: Number(wl.value) })) }, `Buy · ${money(WEAPON_PRICE[w])} a lot`)));
     weaponRows.push(row(ctx, make("span", { class: "w" }, `cannons: ${n(c.reserve.cannons)} in reserve`), make("button", { onclick: act(ctx, () => ({ type: "buyWeapons", weapon: "cannons", lots: Number(wl.value) })) }, `Buy · ${money(CANNON_PRICE)} a lot`)));
     out.push(section(ctx, "Weapons", row(ctx, make("span", {}, "Lots to buy"), wl, make("span", { class: "hint" }, "a lot is 1000 weapons, or 100 cannons")),
-        ...weaponRows, make("p", { class: "hint" }, "Equip an army from the reserve in its own panel. Each cannon is manned by 10 of the army's soldiers.")));
+        ...weaponRows, make("p", { class: "hint" }, "Equip an army from the reserve in its own panel.")));
 
     out.push(section(ctx, "People", row(ctx, make("button", { onclick: act(ctx, () => ({ type: "buyPeople", lots: 1 })) }, `Buy 1000 people · ${money(PEOPLE_PRICE)}`))));
 
@@ -220,7 +216,7 @@ export function researchTab(ctx) {
         const next = cheapestOpenTech(TECHS, c.techs, (id) => techCost(game, id)), open = next && [next];
         out.unshift(open
             ? make("div", { class: "notice" },
-                make("p", {}, make("b", {}, "Nothing is being researched."), ` Your ${money(c.r)} R in store and ${money(e.rPerYear)} a year are waiting for a tech.`),
+                make("p", {}, make("b", {}, "Nothing is being researched."), " R piles up meanwhile."),
                 make("button", { class: "primary", onclick: act(ctx, () => ({ type: "research", tech: open[0] })) }, `Research ${TECH_NAMES[open[0]]} · ${money(techCost(game, open[0]))} R`))
             : make("div", { class: "notice done" }, make("p", {}, make("b", {}, "Every technology is researched."), " R still banks, for nothing.")));
     }
