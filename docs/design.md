@@ -607,7 +607,9 @@ the map drawn for 1440, a few small countries on a crowded map find no room (58 
 
 A subject's land keeps its own colour, striped at 45° with its overlord's (`mapdraw.js`, `landFill`; `mapview.js` makes one SVG
 pattern per pair of colours, in map units so the stripes zoom with the land): broad stripes for a vassal, thin ones for a
-protectorate. Its label names the overlord, "ULM▸BAV", where that fits, and its own code alone where it does not. The lands
+protectorate. The scenarios reuse colours (dozens of pairs of countries share one), so a subject coloured like its
+overlord — or nearly (`alike`: a redmean distance under 30) — gets its stripes in a darker shade of the overlord's colour, a
+lighter one on a dark colour (`shade`). Its label names the overlord, "ULM▸BAV", where that fits, and its own code alone where it does not. The lands
 and labels are redrawn when a settlement changes hands or a country becomes, or stops being, a subject (`ownersKey`).
 
 ### The game screen

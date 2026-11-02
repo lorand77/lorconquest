@@ -56,12 +56,39 @@ export const ownersKey = (state) => Object.values(state.settlements).map((s) => 
     + "|" + Object.values(state.countries).filter((c) => c.overlord).map((c) => `${c.code}>${c.overlord}:${c.subjectKind}`).join();
 
 // how a country's land is filled: its own colour, or — for a subject — its own colour striped with its overlord's, broad
-// stripes for a vassal and thin ones for a protectorate (mapview.js, colourLands, draws them)
+// stripes for a vassal and thin ones for a protectorate (mapview.js, colourLands, and mapcanvas.js draw them). Where the two
+// colours are the same or nearly, the stripes would not show: they are a darker shade of the overlord's then (a lighter one
+// on a dark colour), still the overlord's, now to be seen.
 export const landFill = (state, colourOf) => (code) => {
     const c = state.countries[code];
     if (!c?.overlord || c.rebel || !state.countries[c.overlord]) return colourOf(code);
-    return { colour: colourOf(code), stripe: colourOf(c.overlord), kind: c.subjectKind };
+    const colour = colourOf(code), stripe = colourOf(c.overlord);
+    return { colour, stripe: alike(colour, stripe) ? shade(stripe) : stripe, kind: c.subjectKind };
 };
+
+// colours as "#rgb" or "#rrggbb"; anything else counts as unlike everything
+const rgbOf = (hex) => {
+    const m = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex));
+    if (!m) return null;
+    const h = m[1].length === 3 ? [...m[1]].map((x) => x + x).join("") : m[1];
+    return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+};
+// too near to tell apart as stripes: within 30 of each other by the "redmean" distance, a cheap fit to how the eye weighs red,
+// green and blue (0 for the same colour, about 765 for black and white). The scenarios reuse colours: dozens of pairs of
+// countries share one exactly, and those (and near copies) are what this catches
+export function alike(a, b) {
+    const x = rgbOf(a), y = rgbOf(b);
+    if (!x || !y) return false;
+    const r = (x[0] + y[0]) / 2, [dr, dg, db] = [0, 1, 2].map((i) => x[i] - y[i]);
+    return Math.sqrt((2 + r / 256) * dr * dr + 4 * dg * dg + (2 + (255 - r) / 256) * db * db) < 30;
+}
+// the same colour 45% of the way to black — or, for a dark one, to white
+export function shade(hex) {
+    const c = rgbOf(hex);
+    if (!c) return hex;
+    const light = 0.3 * c[0] + 0.59 * c[1] + 0.11 * c[2] > 110;
+    return "#" + c.map((v) => Math.round(light ? v * 0.55 : v + (255 - v) * 0.45).toString(16).padStart(2, "0")).join("");
+}
 
 // Countries' codes on the map, where their land is now (the map's own, drawn in 1440, are hidden by the game): each country
 // still in the game gets its code on the clearest spot (tools/map.js worked them out, land by land) of the land it holds that

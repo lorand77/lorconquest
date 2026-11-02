@@ -64,3 +64,18 @@ test("a subject's land is striped with its overlord's colour — broad for a vas
     assert.equal(labels.find((l) => l.code === "AUS")?.text, "AUS");
     assert.ok(["SAL▸AUS", "SAL", undefined].includes(labels.find((l) => l.code === "SAL")?.text), "a small subject's code alone, where the long one has no room");
 });
+
+test("a subject coloured like its overlord gets a darker shade of the overlord's colour as stripes (a lighter one on a dark colour)", async () => {
+    const { alike, landFill, shade } = await import("../../public/js/mapdraw.js");
+    assert.ok(alike("#c6e3a4", "#c6e3a4") && alike("#c6e3a4", "#c0dda0"));
+    assert.ok(!alike("#c6e3a4", "#3060c0"));
+    assert.equal(shade("#c6e3a4"), "#6d7d5a");                                                     // light: towards black
+    assert.equal(shade("#203040"), "#848d96");                                                     // dark: towards white
+    assert.ok(!alike("#cdcda4", "#a7b9f0"), "a pale yellow and a pale blue are told apart");
+    const st = Game.create(mitteleuropa, { seed: 1 }).state;
+    Object.assign(st.countries.BOH, { overlord: "AUS", subjectKind: "vassal" });
+    const same = landFill(st, () => "#c6e3a4")("BOH");
+    assert.deepEqual(same, { colour: "#c6e3a4", stripe: "#6d7d5a", kind: "vassal" });
+    const colourOf = (c) => ({ AUS: "#ff0000", BOH: "#0000ff" })[c];
+    assert.equal(landFill(st, colourOf)("BOH").stripe, "#ff0000", "unlike colours: the overlord's own");
+});
