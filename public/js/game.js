@@ -210,6 +210,15 @@ function setSheet(next) {
 function sheetGestures() {
     setSheet(sheet);
     const handle = $("sheet-handle");
+    // collapsed, the sheet shows the handle, the status and the tabs whole: their height, measured whenever it changes (the
+    // status wraps on a narrow phone, the setup minute adds a line)
+    const fit = () => {
+        const h = handle.offsetHeight + document.querySelector(".side > .status").offsetHeight + $("tabs").offsetHeight;
+        if (h > 0) document.body.style.setProperty("--sheet-min", `${Math.ceil(h) + 2}px`);
+    };
+    new ResizeObserver(fit).observe(document.querySelector(".side > .status"));
+    new ResizeObserver(fit).observe($("tabs"));
+    fit();
     let from = null;
     handle.addEventListener("pointerdown", (e) => { from = e.clientY; handle.setPointerCapture(e.pointerId); });
     handle.addEventListener("pointerup", (e) => {

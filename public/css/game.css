@@ -346,13 +346,19 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
     .ask-text { font-size: 13px; }
 }
 @media (max-height: 500px) and (min-width: 701px) { .side { width: 280px; } .side > .head { display: none; } }
+/* a phone with a notch, held sideways: nothing under it (the page may reach under it: viewport-fit=cover) */
+.zoom { left: max(10px, env(safe-area-inset-left, 0px)); }
+.side { padding-right: env(safe-area-inset-right, 0px); }
 @media (max-width: 700px) {
+    /* collapsed, the sheet is as tall as its handle, status and tabs really are (game.js measures them: --sheet-min, the status
+       line often wraps), and every height leaves room for an iPhone's home indicator below the tabs */
     body.game { --sheet-h: 46dvh; }
-    body.game[data-sheet="collapsed"] { --sheet-h: 104px; }
+    body.game[data-sheet="collapsed"] { --sheet-h: calc(var(--sheet-min, 130px) + env(safe-area-inset-bottom, 0px)); }
     body.game[data-sheet="full"] { --sheet-h: calc(100dvh - 44px); }
     .board { position: relative; display: block; }
     .mapbox { position: absolute; inset: 0; }
-    .side { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; width: auto; height: var(--sheet-h); border-left: none;
+    .side { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; width: auto; height: var(--sheet-h); border-left: none; overflow: hidden;
+        padding-bottom: env(safe-area-inset-bottom, 0px); box-sizing: border-box;
         border-top: 1px solid var(--border); border-radius: 12px 12px 0 0; box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.35); transition: height 0.2s ease; }
     .sheet-handle { display: flex; justify-content: center; align-items: center; flex: 0 0 auto; width: 100%; height: 18px; padding: 0; border: none;
         border-radius: 12px 12px 0 0; background: none; cursor: grab; touch-action: none; }
@@ -366,6 +372,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
     body.game[data-sheet]:not([data-sheet="full"]) .side > .head { display: none; }
     body.game[data-sheet="collapsed"] .side > :is(.panel, .events, .foot, h3), body.game[data-sheet="collapsed"] .status .people { display: none; }
     /* what floats on the map stays above the sheet */
+    .side > .tabs, .side > .status, .sheet-handle { flex-shrink: 0; }
+    .panel { min-height: 0; }
     .zoom { bottom: calc(var(--sheet-h) + 8px); }
     .scoreboard { bottom: calc(var(--sheet-h) + 8px); right: 8px; }
     .chat { left: 50px; right: 8px; width: auto; max-width: none; bottom: calc(var(--sheet-h) + 8px); }
