@@ -1,6 +1,7 @@
 // The browser's state copy and map geometry (public/js/mirror.js), run in Node.
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
 import { sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
@@ -272,4 +273,30 @@ test("the keys: arrows pan, W A S D are letters with jobs of their own, nothing 
     assert.equal(k("r", { metaKey: true }), null);
     assert.equal(k("x"), null);
     assert.ok(HOTKEYS.length >= 15 && HOTKEYS.every(([keys, does]) => keys && does));
+});
+
+test("a fleet sailing between two sea zones is drawn along the lane between them (through the water), every neighbour having one", async () => {
+    const { fleetPoints } = await import("../../public/js/mirror.js");
+    for (const sc of [JSON.parse(fs.readFileSync(new URL("../../scenarios/mitteleuropa/scenario.json", import.meta.url))),
+        JSON.parse(fs.readFileSync(new URL("../../scenarios/historical-1440/scenario.json", import.meta.url)))]) {
+        const zones = new Map(sc.seaZones.map((z) => [z.id, z]));
+        for (const z of sc.seaZones) for (const o of z.next) {
+            const lane = z.lanes[o];
+            assert.ok(lane?.length >= 2, `${z.id} to ${o}`);
+            assert.deepEqual(lane[0], [z.label.x, z.label.y + 14], "from the one zone's fleet mark");
+            assert.deepEqual(lane.at(-1), [zones.get(o).label.x, zones.get(o).label.y + 14], "to the other's");
+            assert.deepEqual(zones.get(o).lanes[z.id], [...lane].reverse(), "the same water both ways");
+        }
+    }
+    // halfway along a bent lane, the fleet is on the lane, not on the straight line between its ends
+    const sc = JSON.parse(fs.readFileSync(new URL("../../scenarios/historical-1440/scenario.json", import.meta.url)));
+    const zones = new Map(sc.seaZones.map((z) => [z.id, z]));
+    const lane = zones.get("kattegat").lanes["baltic-sea"];
+    const state = { fleets: { 1: { id: 1, zone: "kattegat", moving: { to: "baltic-sea", start: 0, end: 100 }, port: null } } };
+    const [x, y] = fleetPoints(state, new Map(), zones, 50).get(1);
+    const onSegment = lane.slice(1).some((b, i) => {
+        const a = lane[i], len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        return Math.abs(Math.hypot(x - a[0], y - a[1]) + Math.hypot(b[0] - x, b[1] - y) - len) < 1e-6;
+    });
+    assert.ok(lane.length > 2 && onSegment, "on the lane's bends");
 });

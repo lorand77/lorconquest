@@ -609,6 +609,10 @@ over another code. `tools/map.js` works out each land's spots in advance (`label
 clearest spot for a large code, a small one, and near its settlement). A country that is out of the game has no code. As on
 the map drawn for 1440, a few small countries on a crowded map find no room (58 of the historical scenario's 74).
 
+A fleet sailing from one sea zone to the next is drawn along the zones' **sea lane** (`scenario.json`, `seaZones[].lanes`):
+`tools/map.js` finds, for each pair of neighbouring zones, a way through their water between the two fleet marks — kept off the
+coast, pulled as straight as the water allows — so that no fleet is ever drawn across land (`mirror.js`, `fleetPoints`).
+
 A subject's land keeps its own colour, striped at 45° with its overlord's (`mapdraw.js`, `landFill`; `mapview.js` makes one SVG
 pattern per pair of colours, in map units so the stripes zoom with the land): broad stripes for a vassal, thin ones for a
 protectorate. The scenarios reuse colours (dozens of pairs of countries share one), so a subject coloured like its

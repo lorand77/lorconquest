@@ -8581,7 +8581,19 @@
    "straits": [],
    "next": [
     "skagerrak"
-   ]
+   ],
+   "lanes": {
+    "skagerrak": [
+     [
+      100,
+      344
+     ],
+     [
+      330,
+      164
+     ]
+    ]
+   }
   },
   {
    "id": "skagerrak",
@@ -8600,7 +8612,29 @@
    "next": [
     "north-sea",
     "oslofjord"
-   ]
+   ],
+   "lanes": {
+    "north-sea": [
+     [
+      330,
+      164
+     ],
+     [
+      100,
+      344
+     ]
+    ],
+    "oslofjord": [
+     [
+      330,
+      164
+     ],
+     [
+      416,
+      139
+     ]
+    ]
+   }
   },
   {
    "id": "oslofjord",
@@ -8619,7 +8653,33 @@
    "next": [
     "skagerrak",
     "kattegat"
-   ]
+   ],
+   "lanes": {
+    "skagerrak": [
+     [
+      416,
+      139
+     ],
+     [
+      330,
+      164
+     ]
+    ],
+    "kattegat": [
+     [
+      416,
+      139
+     ],
+     [
+      473.5,
+      174.5
+     ],
+     [
+      500,
+      359
+     ]
+    ]
+   }
   },
   {
    "id": "kattegat",
@@ -8641,7 +8701,33 @@
    "next": [
     "oslofjord",
     "baltic-sea"
-   ]
+   ],
+   "lanes": {
+    "oslofjord": [
+     [
+      500,
+      359
+     ],
+     [
+      473.5,
+      174.5
+     ],
+     [
+      416,
+      139
+     ]
+    ],
+    "baltic-sea": [
+     [
+      500,
+      359
+     ],
+     [
+      860,
+      234
+     ]
+    ]
+   }
   },
   {
    "id": "baltic-sea",
@@ -8662,7 +8748,29 @@
    "next": [
     "kattegat",
     "curonian-sea"
-   ]
+   ],
+   "lanes": {
+    "kattegat": [
+     [
+      860,
+      234
+     ],
+     [
+      500,
+      359
+     ]
+    ],
+    "curonian-sea": [
+     [
+      860,
+      234
+     ],
+     [
+      1066,
+      124
+     ]
+    ]
+   }
   },
   {
    "id": "curonian-sea",
@@ -8679,7 +8787,19 @@
    "straits": [],
    "next": [
     "baltic-sea"
-   ]
+   ],
+   "lanes": {
+    "baltic-sea": [
+     [
+      1066,
+      124
+     ],
+     [
+      860,
+      234
+     ]
+    ]
+   }
   }
  ]
 }
