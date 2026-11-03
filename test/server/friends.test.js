@@ -3,7 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { deleteAccount } from "../../src/accounts.js";
-import { api, startServer, tempDb } from "./helpers.js";
+import { api, connect, emitAck, startServer, tempDb } from "./helpers.js";
 
 test("friends: asked and accepted, asked back, declined, withdrawn, ended; seen only by the two, and gone with an account", async () => {
     const server = await startServer({ dbPath: tempDb() });
@@ -33,6 +33,37 @@ test("friends: asked and accepted, asked back, declined, withdrawn, ended; seen 
         assert.equal(deleteAccount(server.app.db, "bobby").ok, true);
         assert.deepEqual((await api(server, "GET", "/api/friends", null, "alice")).body, { friends: [], incoming: [], outgoing: [] });
         assert.equal((await api(server, "GET", "/api/friends", null, null)).status, 401);
+    } finally {
+        await server.close();
+    }
+});
+
+test("a room for the host's friends: only they see it, take a seat and watch its game; anyone else is refused, and the replay stays public", async () => {
+    const server = await startServer({ dbPath: tempDb(), setupMs: 0 });
+    try {
+        // alice and bobby are friends; carol is not
+        for (const who of ["alice", "bobby", "carol"]) await api(server, "GET", "/api/me", null, who);
+        await api(server, "POST", "/api/friends/requests", { username: "bobby" }, "alice");
+        const asked = (await api(server, "GET", "/api/friends", null, "bobby")).body.incoming[0];
+        await api(server, "POST", `/api/friends/requests/${asked.id}/accept`, {}, "bobby");
+        const made = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV", seed: 5, visibility: "friends" }, "alice");
+        assert.equal(made.status, 201);
+        const tables = async (who) => (await api(server, "GET", "/api/tables", null, who)).body.map((t) => t.id);
+        assert.deepEqual([await tables("alice"), await tables("bobby"), await tables("carol")], [[made.body.id], [made.body.id], []]);
+        assert.match((await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: "SAX" }, "carol")).body.error, /host's friends/);
+        assert.equal((await api(server, "POST", `/api/tables/${made.body.id}/join`, { country: "ULM" }, "bobby")).status, 200);
+        assert.match((await api(server, "POST", `/api/tables/${made.body.id}/visibility`, { visibility: "public" }, "bobby")).body.error, /only the host/);
+        // started: in the live games and watchable for the friends, not for carol
+        await api(server, "POST", `/api/tables/${made.body.id}/start`, {}, "alice");
+        const live = async (who) => (await api(server, "GET", "/api/live", null, who)).body.map((g) => g.id);
+        assert.deepEqual([await live("bobby"), await live("carol")], [[made.body.id], []]);
+        const c = await connect(server, "carol");
+        assert.match((await emitAck(c, "watch", { gameId: made.body.id })).error, /host's friends/);
+        // a public room, made friends-only by its host while it waits, disappears for carol
+        const open = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "AUS", seed: 6 }, "bobby");
+        assert.ok((await tables("carol")).includes(open.body.id));
+        await api(server, "POST", `/api/tables/${open.body.id}/visibility`, { visibility: "friends" }, "bobby");
+        assert.ok(!(await tables("carol")).includes(open.body.id));
     } finally {
         await server.close();
     }

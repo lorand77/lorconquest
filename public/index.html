@@ -19,13 +19,18 @@
             <form id="start" class="start">
                 <label>Scenario <select id="scenario"></select></label>
                 <label>Country <select id="country"></select></label>
+                <label>Who can see it <select id="visibility">
+                    <option value="public">Everyone</option>
+                    <option value="friends">My friends only</option>
+                </select></label>
                 <button class="primary" type="submit" data-solo="1">Play alone</button>
                 <button type="submit" data-solo="">Open a room</button>
                 <span id="error" class="error"></span>
             </form>
             <p class="hint">Alone, you can pause whenever you like and the game waits for you. A room waits here for up to three
                 more people to take a country each; when you start it the computer plays every other country, the clock stands
-                still for a minute, and then nobody can pause.</p>
+                still for a minute, and then nobody can pause. "My friends only": only your friends see the room, take a seat
+                and watch the game; its replay, once it is over, is public.</p>
         </section>
 
         <section class="page-section">

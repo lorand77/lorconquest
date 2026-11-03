@@ -115,6 +115,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
         on("watch", async (msg, ack) => {
             const r = rooms.get(msg?.gameId);
             if (!r || r.over || r.ending || r.unloading) return reply(ack, { ok: false, error: "that game is not being played now" });
+            if (!rooms.mayWatch(r, user.id)) return reply(ack, { ok: false, error: "that game is for the host's friends" });
             try { await r.ready; } catch { return reply(ack, { ok: false, error: "that game is not being played now" }); }
             if (socket.disconnected) return;
             if (room) leave();

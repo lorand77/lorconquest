@@ -1,9 +1,11 @@
 // The game's REST routes, under /api. Everything but the scenarios needs a signed-in user (src/auth).
 //
 //   GET  /api/scenarios          the scenarios to play: [{ id, name, countries: [{ code, name, pop }] }]
-//   GET  /api/tables             the tables waiting for people: [{ id, scenario, host, hostId, seats: [{ country, username }] }]
-//   POST /api/tables             { scenario, country, seed?, solo? } -> { id }   a table with you in the seat of `country`;
-//                                with solo, started at once as a single-player game
+//   GET  /api/tables             the tables waiting for people you may see: [{ id, scenario, host, hostId, visibility, seats }]
+//   POST /api/tables             { scenario, country, seed?, solo?, visibility? } -> { id }   a table with you in the seat of
+//                                `country`; with solo, started at once as a single-player game. visibility "public" (anyone sees
+//                                it, joins it and watches its game) or "friends" (the host's friends only); a replay is public
+//   POST /api/tables/:id/visibility  { visibility } -> { ok }   the host changes it while the room waits
 //   POST /api/tables/:id/join    { country } -> { ok }     take a free country at a table
 //   POST /api/tables/:id/leave   -> { ok }                 give your seat up (the host cancels instead)
 //   POST /api/tables/:id/cancel  -> { ok }                 the host takes the table down
@@ -32,14 +34,14 @@ export function gameRoutes(rooms, scenarios) {
 
     router.use(requireAuth);
 
-    router.get("/tables", (req, res) => res.json(rooms.tables()));
+    router.get("/tables", (req, res) => res.json(rooms.tables(req.user.id)));
 
     router.post("/tables", async (req, res) => {
         const { scenario, country, solo } = req.body ?? {};
         let seed = req.body?.seed;
         if (seed === undefined || seed === null || seed === "") seed = crypto.randomInt(0, 2 ** 32);
         if (!Number.isInteger(seed) || seed < 0 || seed >= 2 ** 32) return fail(res, "the seed must be a whole number from 0 to 4294967295");
-        const made = rooms.createTable({ userId: req.user.id, scenario, country, seed });
+        const made = rooms.createTable({ userId: req.user.id, scenario, country, seed, visibility: req.body?.visibility ?? "public" });
         if (made.error) return fail(res, made.error);
         if (solo) {
             const started = await rooms.startTable(made.id, req.user.id);
@@ -50,6 +52,12 @@ export function gameRoutes(rooms, scenarios) {
 
     router.post("/tables/:id/join", (req, res) => {
         const r = rooms.joinTable(req.params.id, req.user.id, req.body?.country);
+        if (r.error) return fail(res, r.error);
+        res.json({ ok: true });
+    });
+
+    router.post("/tables/:id/visibility", (req, res) => {
+        const r = rooms.setVisibility(req.params.id, req.user.id, req.body?.visibility);
         if (r.error) return fail(res, r.error);
         res.json({ ok: true });
     });

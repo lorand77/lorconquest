@@ -682,6 +682,11 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   private part, no questions waiting), the days, pauses, presence and the end — never the chat or a player's private changes
   (they go to `game:<id>` and `game:<id>:<country>`, a watcher is in `watch:<id>`) — the Map and Events tabs only (the news of
   the people's countries), no orders, and at the end Game over with who won. Watching counts as online, not playing.
+- **Rooms for friends:** a room (and the game it becomes) is public or the host's friends' (`games.visibility`, chosen in the
+  New game form — "Who can see it" — and switched by the host while the room waits). A friends' room is seen in the lobby, joined
+  and its game watched only by the host, the host's friends and whoever has a seat — the server refuses anyone else, not only the
+  list (`rooms.js`, `mayFollow`, `mayWatch`); a friendship ended since takes no seat away. The replay, once the game is over, is
+  public, as every replay is.
 - **Friends** (`src/friends/routes.js`, `public/js/friends.js`), as in LorCiv: one `friendships` row a pair, a request until the
   one asked accepts; asking someone who asked you accepts their request. Only the two people see or touch a row (the one asked
   accepts or declines, the one who asked withdraws, either ends a friendship; anyone else gets a 404); someone else's accepted

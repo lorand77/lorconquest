@@ -134,6 +134,8 @@ export function openDb(file) {
     // achievements (src/achievements/service.js): which version of the awarding a finished game has had, and what each seat
     // did in it (from playing it over; null when it could not be)
     addColumnIfMissing("games", "awards_version", "INTEGER NOT NULL DEFAULT 0");
+    // who may see a room, join it and watch its game: everyone, or the host's friends ("friends"); a replay stays public
+    addColumnIfMissing("games", "visibility", "TEXT NOT NULL DEFAULT 'public'");
     addColumnIfMissing("game_seats", "captures", "INTEGER");
     addColumnIfMissing("game_seats", "battles", "INTEGER");
     // the default scenario lived in docs/ and had the id "docs" until it moved to scenarios/mitteleuropa
@@ -176,10 +178,13 @@ export function openDb(file) {
                 (SELECT COUNT(*) FROM chat_messages WHERE user_id = ?1) AS chat`),
         deleteExpiredSessions: db.prepare("DELETE FROM sessions WHERE expires_at <= ?"),
 
-        insertGame: db.prepare("INSERT INTO games (scenario, seed, rules_version, human, status, host_id) VALUES (?, ?, ?, ?, ?, ?)"),
+        insertGame: db.prepare("INSERT INTO games (scenario, seed, rules_version, human, status, host_id, visibility) VALUES (?, ?, ?, ?, ?, ?, ?)"),
+        setVisibility: db.prepare("UPDATE games SET visibility = ? WHERE id = ? AND status = 'lobby'"),
+        // are two people friends (an accepted friendship either way)
+        areFriends: db.prepare("SELECT 1 FROM friendships WHERE status = 'accepted' AND ((requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?))"),
         game: db.prepare("SELECT * FROM games WHERE id = ?"),
         // the tables waiting for people, each with its host's name and how many seats are taken
-        tables: db.prepare(`SELECT g.id, g.scenario, g.host_id, h.username AS host, g.created_at,
+        tables: db.prepare(`SELECT g.id, g.scenario, g.host_id, h.username AS host, g.created_at, g.visibility,
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN users h ON h.id = g.host_id WHERE g.status = 'lobby' ORDER BY g.id DESC`),
         // every game a person has a seat in

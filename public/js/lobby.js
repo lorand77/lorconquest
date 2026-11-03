@@ -47,7 +47,7 @@ for (const b of document.querySelectorAll("#start button[data-solo]")) b.addEven
 $("start").addEventListener("submit", async (e) => {
     e.preventDefault();
     $("error").textContent = "";
-    const body = { scenario: $("scenario").value, country: $("country").value, solo };
+    const body = { scenario: $("scenario").value, country: $("country").value, solo, visibility: $("visibility").value };
     const r = await post("/api/tables", body);
     if (!r.ok) { $("error").textContent = r.error; return; }
     if (r.started) location.href = `/game.html?id=${r.id}`;
@@ -60,7 +60,7 @@ function tableItem(t) {
     if (!scenario) return make("li", { class: "table" }, `${t.host}'s room, on a scenario this server no longer has`);
     const a = tableActions(t, me, scenario);
     const li = make("li", { class: "table" });
-    li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} ${popOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
+    li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), t.visibility === "friends" ? make("span", { class: "tag friend", title: "only the host's friends see it and may join" }, " 👥 friends only ") : "", ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} ${popOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
     const row = make("div", { class: "row" });
     const err = make("span", { class: "error" });
     const act = async (url, body) => { const r = await post(url, body); if (!r.ok) err.textContent = r.error; else if (r.id !== undefined && url.endsWith("/start")) location.href = `/game.html?id=${r.id}`; else refresh(); };
@@ -70,6 +70,11 @@ function tableItem(t) {
     }
     if (a.canLeave) row.append(make("button", { onclick: () => act(`/api/tables/${t.id}/leave`) }, "Give up my seat"));
     if (a.canStart) row.append(make("button", { class: "primary", onclick: () => act(`/api/tables/${t.id}/start`) }, `Start now (the computer plays ${a.computerCountries} countries)`));
+    if (a.host) {
+        // the host decides who sees the room, while it waits
+        const friendsOnly = t.visibility === "friends";
+        row.append(make("button", { onclick: () => act(`/api/tables/${t.id}/visibility`, { visibility: friendsOnly ? "public" : "friends" }) }, friendsOnly ? "Open it to everyone" : "My friends only"));
+    }
     if (a.canCancel) row.append(make("button", { class: "danger", onclick: () => act(`/api/tables/${t.id}/cancel`) }, "Cancel the room"));
     row.append(err);
     li.append(row);

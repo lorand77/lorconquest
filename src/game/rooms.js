@@ -54,7 +54,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             },
         });
         const room = {
-            id: row.id, host: row.host_id, scenario: row.scenario, worker, paused: true, day: row.day, multi,
+            id: row.id, host: row.host_id, scenario: row.scenario, visibility: row.visibility ?? "public", worker, paused: true, day: row.day, multi,
             seq: db.q.lastSeq.get(row.id).seq, savedDay: row.day, pending: new Map(), nextReq: 1,
             seats: new Map(seatRows.map((s) => [s.country, { country: s.country, userId: s.user_id, username: s.username, sockets: new Set(), state: multi ? "away" : "idle", timer: null }])),
             setupUntil: 0, timers: new Set(), lastTick: performance.now(),
@@ -342,6 +342,11 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         return row && row.status === "lobby" ? row : null;
     };
     const tellLobby = () => io.to("lobby").emit("lobby:changed");
+    // who may see a room, take a seat at it and watch its game: anyone if it is public; if it is the host's friends', the host,
+    // the host's friends and whoever has a seat (a friendship ended since does not take a seat away)
+    const friends = (a, b) => Boolean(db.q.areFriends.get(a, b, b, a));
+    const mayFollow = (visibility, hostId, userId, seated = false) => visibility !== "friends" || userId === hostId || seated || friends(hostId, userId);
+    const mayWatch = (room, userId) => mayFollow(room.visibility, room.host, userId, [...room.seats.values()].some((s) => s.userId === userId));
 
     function seatsOf(id) {
         return db.q.seats.all(id).map((s) => ({ country: s.country, username: s.username, userId: s.user_id }));
@@ -353,9 +358,11 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
     return {
         get: (id) => live.get(Number(id)),
+        mayWatch: (room, userId) => mayWatch(room, userId),
 
         // a new table, the host in the seat of `country`
-        createTable({ userId, scenario, country, seed }) {
+        createTable({ userId, scenario, country, seed, visibility = "public" }) {
+            if (!["public", "friends"].includes(visibility)) return { error: "a room is public or for your friends" };
             if (!scenarios.has(scenario)) return { error: `no scenario ${scenario}` };
             // every game started is a thread: one person cannot open them without end
             if (db.q.tablesHostedBy.all(userId).length >= MAX_TABLES) return { error: `you have ${MAX_TABLES} rooms open already: start or cancel one` };
@@ -363,22 +370,36 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             if (running >= MAX_RUNNING) return { error: `you have ${MAX_RUNNING} games running: finish or leave one first` };
             if (!validCountry(scenario, country)) return { error: `no country ${country} in ${scenario}` };
             const id = db.tx(() => {
-                const { lastInsertRowid } = db.q.insertGame.run(scenario, seed, RULES_VERSION, country, "lobby", userId);
+                const { lastInsertRowid } = db.q.insertGame.run(scenario, seed, RULES_VERSION, country, "lobby", userId, visibility);
                 db.q.insertSeat.run(lastInsertRowid, country, userId);
                 return Number(lastInsertRowid);
             });
-            log.info("table.created", { game: id, scenario, host: userId, country });
+            log.info("table.created", { game: id, scenario, host: userId, country, visibility });
             tellLobby();
             return { id };
         },
 
         // the tables waiting for people, each with who sits where
-        tables: () => db.q.tables.all().map((t) => ({ id: t.id, scenario: t.scenario, host: t.host, hostId: t.host_id, createdAt: t.created_at, seats: seatsOf(t.id).map(({ country, username }) => ({ country, username })) })),
+        tables: (userId) => db.q.tables.all().map((t) => ({ t, seats: seatsOf(t.id) }))
+            .filter(({ t, seats }) => mayFollow(t.visibility, t.host_id, userId, seats.some((s) => s.userId === userId)))
+            .map(({ t, seats }) => ({ id: t.id, scenario: t.scenario, host: t.host, hostId: t.host_id, createdAt: t.created_at, visibility: t.visibility, seats: seats.map(({ country, username }) => ({ country, username })) })),
+
+        // the host makes a waiting room public or their friends' (seats already taken stay taken)
+        setVisibility(id, userId, visibility) {
+            const row = table(id);
+            if (!row) return { error: "that room is gone or its game has started" };
+            if (row.host_id !== userId) return { error: "only the host decides who may join" };
+            if (!["public", "friends"].includes(visibility)) return { error: "a room is public or for your friends" };
+            db.q.setVisibility.run(visibility, row.id);
+            tellLobby();
+            return { ok: true };
+        },
 
         joinTable(id, userId, country) {
             const row = table(id);
             if (!row) return { error: "that room is gone or its game has started" };
             if (!validCountry(row.scenario, country)) return { error: `no country ${country} in ${row.scenario}` };
+            if (!mayFollow(row.visibility, row.host_id, userId)) return { error: "that room is for the host's friends" };
             const seats = seatsOf(row.id);
             if (seats.some((s) => s.userId === userId)) return { error: "you already have a seat in this room" };
             if (seats.length >= maxHumans) return { error: `a game has at most ${maxHumans} people` };
@@ -507,7 +528,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
         // the games being played now that anyone signed in may watch (socket.js, watch): live, going, not ending; with their
         // people and whether `userId` has a seat in one (then it plays it rather than watches)
-        liveGames: (userId) => [...live.values()].filter((r) => !r.over && !r.ending && !r.unloading).map((r) => ({
+        liveGames: (userId) => [...live.values()].filter((r) => !r.over && !r.ending && !r.unloading && mayWatch(r, userId)).map((r) => ({
             id: r.id, scenario: r.scenario, day: r.day, multi: r.multi, paused: r.paused,
             people: [...r.seats.values()].map((s) => ({ country: s.country, username: s.username.startsWith("deleted-") ? "deleted" : s.username, state: s.state })),
             mine: [...r.seats.values()].some((s) => s.userId === userId),
