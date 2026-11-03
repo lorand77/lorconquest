@@ -182,3 +182,21 @@ $("ex-video").addEventListener("click", async () => {
         $("ex-stop").hidden = true;
     }
 });
+
+// ---------- keys ----------
+// Space plays or pauses; ← → go back or on a year (with Shift, ten); 1 – 4 choose the speed. Not while typing in a box, and
+// not with Ctrl, Alt or ⌘ (the browser's)
+document.addEventListener("keydown", (e) => {
+    if (e.target.closest("input, textarea, select") || e.ctrlKey || e.altKey || e.metaKey) return;
+    if (e.key === " " && !e.target.closest("button, a")) { e.preventDefault(); $("play").click(); }
+    else if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        const step = (e.shiftKey ? 10 : 1) * YEAR_DAYS * (e.key === "ArrowLeft" ? -1 : 1);
+        $("seek").value = String(Math.max(0, Math.min(data.endDay, replayer.day + step)));
+        $("seek").dispatchEvent(new Event("change"));
+    } else if (/^[1-4]$/.test(e.key)) {
+        const speed = $("speed");
+        speed.selectedIndex = Math.min(speed.options.length - 1, Number(e.key) - 1);
+        speed.dispatchEvent(new Event("change"));
+    }
+});

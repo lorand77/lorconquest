@@ -729,6 +729,11 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   over the map. Space pauses.
 - **The development page** (`public/index.html`) starts a single-player game on any scenario as any
   country, or reopens one, until accounts and the lobby (milestone 6).
+- **Keys** (`mirror.js`, `hotkey`, `HOTKEYS`; none while typing in a box, none with Ctrl, Alt or ⌘): Space play/pause, 1–6 the
+  tabs (D Diplomacy), + − zoom, the arrows pan (W A S D are plain letters), W the whole map, A or Tab the next army of one's
+  own (Shift: the one before; the map is brought to it), F the next fleet, Enter march and Shift+Enter march and storm, T storm,
+  B sortie, S split, M merge, C chat, N the notices menu, P a picture of the map, ? a card of every key (also a ? button where
+  there is a mouse), Escape closes, cancels a march, lets go. The replay page: Space, ← → a year (Shift: ten), 1–4 the speed.
 - **Notices** over the map (`public/js/notices.js`): every event of the player's is in the Events tab; what also pops up is
   the player's choice, by kind — war (a siege of theirs, a settlement lost, peasants rising; a war declared on them has its
   own banner), questions waiting for them, refused orders, research, diplomacy, armies, their country — all on by default on

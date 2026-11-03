@@ -152,6 +152,16 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     return {
         zoom: (factor) => zoomAt(factor, view.x + view.w / 2, view.y + view.h / 2),
 
+        // move the view by a share of its width (the arrow keys: a fifth), and show the whole map
+        pan(dx, dy, share = 0.2) {
+            view = { x: view.x + dx * view.w * share, y: view.y + dy * view.w * share, w: view.w };
+            setView();
+        },
+        whole() {
+            view = { x: 0, y: 0, w: W };
+            setView();
+        },
+
         // bring a point of the map to the middle of the view, at the same zoom (as near as the map's edges allow)
         centerOn(x, y) {
             view = { x: x - view.w / 2, y: y - view.h / 2, w: view.w };

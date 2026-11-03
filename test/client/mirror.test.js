@@ -256,3 +256,20 @@ test("a phone's slim bar: money and the date in few characters", async () => {
     assert.equal(shortDate("3 March 1452"), "3 Mar 1452");
     assert.equal(shortDate("1 May 1500"), "1 May 1500");
 });
+
+test("the keys: arrows pan, W A S D are letters with jobs of their own, nothing with Ctrl, Alt or ⌘", async () => {
+    const { hotkey, HOTKEYS } = await import("../../public/js/mirror.js");
+    const k = (key, mods = {}) => hotkey({ key, ...mods });
+    assert.deepEqual(["1", "3", "6", "d", "D"].map((x) => k(x)), ["tab:selection", "tab:shop", "tab:events", "tab:diplomacy", "tab:diplomacy"]);
+    assert.deepEqual(["ArrowLeft", "ArrowDown"].map((x) => k(x)), ["pan:-1,0", "pan:0,1"]);
+    assert.deepEqual(["w", "a", "s"].map((x) => k(x)), ["whole", "army:1", "split"]);
+    assert.equal(k("Tab", { shiftKey: true }), "army:-1");
+    assert.equal(k("A", { shiftKey: true }), "army:-1");
+    assert.deepEqual([k("Enter"), k("Enter", { shiftKey: true })], ["march", "marchStorm"]);
+    assert.deepEqual([k(" "), k("+"), k("="), k("-"), k("?"), k("Escape"), k("t"), k("b"), k("m"), k("f"), k("c"), k("n"), k("p")],
+        ["pause", "zoomIn", "zoomIn", "zoomOut", "help", "escape", "storm", "sortie", "merge", "fleet", "chat", "notices", "picture"]);
+    assert.equal(k("s", { ctrlKey: true }), null, "Ctrl+S is the browser's");
+    assert.equal(k("r", { metaKey: true }), null);
+    assert.equal(k("x"), null);
+    assert.ok(HOTKEYS.length >= 15 && HOTKEYS.every(([keys, does]) => keys && does));
+});

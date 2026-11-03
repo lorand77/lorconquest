@@ -146,6 +146,48 @@ export function fleetPoints(state, nodes, zones, day) {
 // player's own settlements the Shop (to build there), anyone else's settlement or a pass the Map tab, the player's own land the
 // Country tab, another country's land the Diplomacy tab (to deal with it) — peasant rebels', with whom there is no dealing,
 // the Map tab. Nothing selected (a click on the sea) keeps the tab there is. `place` is the clicked place's map node, if any.
+// The game page's keys (design.md, "The game screen"): the table the ? card shows, and what a key press asks for (hotkey).
+// Arrow keys pan; W A S D are plain letters. A key with Ctrl, Alt or ⌘ is the browser's, never the game's.
+export const HOTKEYS = [
+    ["Space", "play / pause (alone)"], ["1 – 6", "the tabs: Map, Country, Shop, Research, Diplomacy, Events"], ["D", "the Diplomacy tab"],
+    ["+  −", "zoom in / out"], ["arrows", "pan the map"], ["W", "the whole map"],
+    ["A or Tab", "your next army (Shift: the one before)"], ["F", "your next fleet"],
+    ["Enter", "march, once a destination is picked"], ["Shift+Enter", "march and storm"], ["T", "storm"], ["B", "sortie"],
+    ["S", "split the army…"], ["M", "merge it into another of yours there"],
+    ["C", "chat (with other people)"], ["N", "which notices pop up"], ["P", "save a picture of the map"],
+    ["?", "this card"], ["Escape", "close, cancel a march, let go of what is selected"],
+];
+const TABS = ["selection", "country", "shop", "research", "diplomacy", "events"];
+// what a key press asks for, or null: "pause", "tab:<tab>", "zoomIn", "zoomOut", "pan:<dx>,<dy>", "whole", "army:<±1>",
+// "fleet", "march", "marchStorm", "storm", "sortie", "split", "merge", "chat", "notices", "picture", "help", "escape"
+export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false, metaKey = false }) {
+    if (ctrlKey || altKey || metaKey) return null;
+    const k = key.length === 1 ? key.toLowerCase() : key;
+    if (/^[1-6]$/.test(k)) return `tab:${TABS[Number(k) - 1]}`;
+    const arrows = { ArrowLeft: "pan:-1,0", ArrowRight: "pan:1,0", ArrowUp: "pan:0,-1", ArrowDown: "pan:0,1" };
+    if (arrows[k]) return arrows[k];
+    switch (k) {
+        case " ": return "pause";
+        case "+": case "=": return "zoomIn";
+        case "-": case "_": return "zoomOut";
+        case "w": return "whole";
+        case "a": case "Tab": return shiftKey ? "army:-1" : "army:1";
+        case "f": return "fleet";
+        case "Enter": return shiftKey ? "marchStorm" : "march";
+        case "t": return "storm";
+        case "b": return "sortie";
+        case "s": return "split";
+        case "m": return "merge";
+        case "d": return "tab:diplomacy";
+        case "c": return "chat";
+        case "n": return "notices";
+        case "p": return "picture";
+        case "?": return "help";
+        case "Escape": return "escape";
+        default: return null;
+    }
+}
+
 // The panel as a sheet over the map on a phone held upright (design.md, "The game screen"; game.css, body[data-sheet]): collapsed
 // to the tabs and a line of status, half the screen, or nearly all of it. What a gesture or a click makes of it:
 //   "tap" the handle: collapsed → half → full → collapsed;  "up" / "down": a swipe on the handle, one step, no further;

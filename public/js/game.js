@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, armyPoint, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadNotices, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -98,6 +98,9 @@ async function start() {
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("snapshot").addEventListener("click", snapshot);
     $("notice-settings").addEventListener("click", noticeMenu);
+    drawHelp();
+    $("keys").addEventListener("click", () => { $("help").hidden = false; });
+    $("help-close").addEventListener("click", () => { $("help").hidden = true; });
     window.addEventListener("storage", (e) => { if (e.key === null || e.key === "lorconquest.notices") prefs = loadNotices(); });     // changed in another tab
     $("pause").addEventListener("click", togglePause);
     $("pause").hidden = $("pb-pause").hidden = multi || !me;
@@ -316,12 +319,64 @@ function togglePause() {
     ask("pause", { paused: !paused });
 }
 
+// the keys (mirror.js, hotkey, HOTKEYS — the ? card shows them): none while typing in a box, none with Ctrl, Alt or ⌘
 function onKey(e) {
     if (e.target.closest("input, textarea, select")) return;
-    if (e.key === "Escape" && !$("end").hidden) { $("end").hidden = true; return; }      // the end screen first, then the map
-    if (e.key === " ") { e.preventDefault(); togglePause(); }
-    else if (e.key === "Enter" && plan) { e.preventDefault(); march(false); }
-    else if (e.key === "Escape") { if (plan) { plan = null; renderAll(); } else select(null); }
+    const action = hotkey(e);
+    if (!action) return;
+    // a button in focus answers Space and Enter itself (a click): the keys leave it to
+    if ((action === "pause" || action.startsWith("march")) && e.target.closest("button, a")) return;
+    const mine = sel?.kind === "army" && state.armies[sel.id]?.owner === me ? state.armies[sel.id] : null;
+    const [name, arg] = action.split(":");
+    const done = () => e.preventDefault();
+    switch (name) {
+        case "escape":
+            if (!$("help").hidden) $("help").hidden = true;                      // the card, the menu, the end screen, then the map
+            else if (!$("notice-menu").hidden) $("notice-menu").hidden = true;
+            else if (!$("end").hidden) $("end").hidden = true;
+            else if (plan) { plan = null; renderAll(); }
+            else select(null);
+            return done();
+        case "help": $("help").hidden = !$("help").hidden; return done();
+        case "pause": if (!$("pause").hidden) togglePause(); return done();
+        case "tab": if (me || ["selection", "events"].includes(arg)) { setSheet(sheetAfter(sheet, "tab")); setTab(arg); } return done();
+        case "zoomIn": map.zoom(1 / 1.4); return done();
+        case "zoomOut": map.zoom(1.4); return done();
+        case "pan": { const [dx, dy] = arg.split(",").map(Number); map.pan(dx, dy); return done(); }
+        case "whole": map.whole(); return done();
+        case "army": stepThrough("army", Number(arg)); return done();
+        case "fleet": stepThrough("fleet", 1); return done();
+        case "march": if (plan) march(false); return done();
+        case "marchStorm": if (plan) march(true); return done();
+        case "storm": if (mine) dispatch({ type: "storm", army: mine.id }); return done();
+        case "sortie": if (mine) dispatch({ type: "sortie", army: mine.id }); return done();
+        case "split": if (mine && mine.at) { splitOpen = !splitOpen; renderPanel(true); } return done();
+        case "merge": {
+            const into = mine?.at && armiesAt(mine.at).find((x) => x.owner === me && x.id !== mine.id && x.relief === mine.relief && !x.retreating);
+            if (into) send({ type: "merge", army: mine.id, into: into.id });
+            return done();
+        }
+        case "chat": if (!$("chat-toggle").hidden) $("chat-toggle").click(); return done();
+        case "notices": noticeMenu(); return done();
+        case "picture": snapshot(); return done();
+    }
+}
+
+// Tab, A, F: your next army (or fleet) by number — the one before with Shift — selected, and the map brought to it
+function stepThrough(kind, dir) {
+    const list = Object.values(kind === "army" ? state.armies : state.fleets).filter((x) => x.owner === me).sort((a, b) => a.id - b.id);
+    if (!list.length) return;
+    const i = list.findIndex((x) => sel?.kind === kind && x.id === sel.id);
+    const next = list[(i + dir + list.length) % list.length] ?? list[0];
+    select({ kind, id: next.id });
+    const at = kind === "army" ? armyPoint(next, displayDay(), legs, game.map.nodes)
+        : next.port ? [game.map.nodes.get(String(next.port)).x, game.map.nodes.get(String(next.port)).y] : [game.map.zones.get(next.zone).label.x, game.map.zones.get(next.zone).label.y];
+    map.centerOn(at[0], at[1]);
+}
+
+// the ? card: every key
+function drawHelp() {
+    $("help-rows").replaceChildren(...HOTKEYS.map(([keys, does]) => make("tr", {}, make("td", {}, make("kbd", {}, keys)), make("td", {}, does))));
 }
 
 // the context the panels in panels.js draw with

@@ -303,6 +303,14 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .notice-kind span { display: flex; flex-direction: column; }
 .notice-kind small { color: var(--text-muted); font-size: 12px; }
 .toast-count { color: var(--gold); margin-left: 4px; }
+/* the keys (?): a card over everything; its button only where there is a keyboard to speak of */
+.help { position: fixed; inset: 0; z-index: 250; display: flex; background: rgba(0, 0, 0, 0.55); overflow: auto; }
+.help-card { margin: auto; padding: 16px 22px; max-width: min(520px, calc(100vw - 24px)); background: var(--side-bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5); }
+.help-card h2 { margin: 0 0 8px; font-size: 17px; color: var(--gold); }
+.help-table { border-collapse: collapse; font-size: 13px; }
+.help-table td { padding: 3px 10px 3px 0; vertical-align: top; }
+.help-table kbd { display: inline-block; min-width: 1.6em; padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--surface); font: 12px/1.4 ui-monospace, monospace; text-align: center; white-space: nowrap; }
+@media (pointer: coarse) { .keys-button { display: none; } }
 .toast { background: var(--overlay); color: var(--text-strong); border: 1px solid var(--border); padding: 6px 12px; border-radius: 4px; max-width: 520px; }
 
 .side { width: 360px; flex-shrink: 0; display: flex; flex-direction: column; min-height: 0; background: var(--side-bg); border-left: 1px solid var(--border); }

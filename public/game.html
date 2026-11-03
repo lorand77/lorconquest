@@ -34,6 +34,7 @@
                 <button id="zoom-out" title="Zoom out">−</button>
                 <button id="snapshot" title="Save a picture of the map (PNG)">📷</button>
                 <button id="notice-settings" title="Which notices pop up over the map">⚙</button>
+                <button id="keys" class="keys-button" title="Keyboard keys (?)">?</button>
             </div>
             <!-- which notices pop up (notices.js), opened by ⚙ -->
             <div id="notice-menu" class="notice-menu" hidden>
@@ -111,6 +112,15 @@
             </div>
         </aside>
     </main>
+    <!-- the keys (mirror.js, HOTKEYS), opened by ? -->
+    <div id="help" class="help" hidden>
+        <div class="help-card" role="dialog" aria-labelledby="help-title">
+            <h2 id="help-title">Keys</h2>
+            <table id="help-rows" class="help-table"></table>
+            <p class="hint">Not while typing in a box. Escape or ? closes this.</p>
+            <button id="help-close" class="primary">Close</button>
+        </div>
+    </div>
     <!-- the end: victory, defeat or game over (mirror.js, endScreen) -->
     <div id="end" class="end" hidden>
         <div class="end-card" role="dialog" aria-labelledby="end-title">
