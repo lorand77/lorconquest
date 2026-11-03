@@ -66,6 +66,9 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         setView();
     }
     window.addEventListener("resize", setView);
+    // the box itself may change size without the window doing so — on a phone the map's box ends where the panel's sheet begins,
+    // and the sheet is raised and lowered: the view is fitted to it again, so every edge of the map can still be reached
+    if (typeof ResizeObserver === "function") new ResizeObserver(() => setView()).observe(container);
     setView();
     requestAnimationFrame(setView);                         // again once the page is laid out and the box has its size
     svg.addEventListener("wheel", (e) => {

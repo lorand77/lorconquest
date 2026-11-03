@@ -366,17 +366,19 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
     .pb-date { color: var(--text-strong); font-variant-numeric: tabular-nums; }
     .pb-grip { flex: 1; display: flex; justify-content: center; }
     .pb-money { font-variant-numeric: tabular-nums; }
-    .pb-money.bad { color: var(--bad); }
+    .pb-money.bad, .pb-year.bad { color: var(--bad); }
+    .pb-year { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .pb-year.good { color: var(--good); }
     /* (the game page only: the replay page's status block holds its slider and its play button, and it has no bar) */
     body.game:not(.replay) .side > .status > :not(.people) { display: none; }
     body.game:not(.replay) .side > .status { padding: 0 10px; border-bottom: none; }
     body.game:not(.replay) .side > .status:not(:has(.people:not(:empty))) { display: none; }
 }
-@media (max-height: 500px) and (min-width: 701px) { .side { width: 280px; } .side > .head { display: none; } }
+@media (max-height: 500px) { .side { width: 280px; } body.game:not(.replay) .side > .head { display: none; } }   /* (the replay keeps its lobby link) */
 /* a phone with a notch, held sideways: nothing under it (the page may reach under it: viewport-fit=cover) */
 .zoom { left: max(10px, env(safe-area-inset-left, 0px)); }
 .side { padding-right: env(safe-area-inset-right, 0px); }
-@media (max-width: 700px) {
+@media (max-width: 700px) and (min-height: 501px) {
     /* collapsed, the sheet is as tall as its bar and tabs really are (game.js measures them: --sheet-min), and every height leaves
        room for an iPhone's home indicator below the tabs */
     body.game { --sheet-h: 46dvh; }
@@ -388,7 +390,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
         body.game[data-sheet="full"] { --sheet-h: calc(100vh - 44px); }
     }
     .board { position: relative; display: block; }
-    .mapbox { position: absolute; inset: 0; }
+    .mapbox { position: absolute; top: 0; left: 0; right: 0; bottom: calc(var(--sheet-h) - 12px); transition: bottom 0.2s ease; }
+    .board { background: #99d9ea; }                       /* the sea behind the sheet's rounded corners */
     .side { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; width: auto; height: var(--sheet-h); border-left: none; overflow: hidden;
         padding-bottom: env(safe-area-inset-bottom, 0px); box-sizing: border-box;
         border-top: 1px solid var(--border); border-radius: 12px 12px 0 0; box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.35); transition: height 0.2s ease; }
@@ -408,10 +411,10 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
     /* what floats on the map stays above the sheet */
     .side > .tabs, .side > .status, .phone-bar { flex-shrink: 0; }
     .panel { min-height: 0; }
-    .zoom { bottom: calc(var(--sheet-h) + 8px); }
-    .scoreboard { bottom: calc(var(--sheet-h) + 8px); right: 8px; }
-    .chat { left: 50px; right: 8px; width: auto; max-width: none; bottom: calc(var(--sheet-h) + 8px); }
-    .notice-menu { left: 50px; right: 8px; width: auto; bottom: calc(var(--sheet-h) + 8px); max-height: calc(100% - var(--sheet-h) - 24px); }
+    .zoom, .scoreboard, .chat, .notice-menu { bottom: 20px; }                 /* above the 12px the sheet's corners overlap */
+    .scoreboard { right: 8px; }
+    .chat { left: 50px; right: 8px; width: auto; max-width: none; }
+    .notice-menu { left: 50px; right: 8px; width: auto; max-height: calc(100% - 40px); }
     .banners { max-width: calc(100% - 16px); }
 }
 

@@ -495,6 +495,11 @@ function renderPhoneBar() {
     const t = me ? country(me).treasury : undefined;
     $("pb-money").textContent = t === undefined ? "" : `💰 ${shortMoney(t)}`;
     $("pb-money").classList.toggle("bad", t !== undefined && t < 0);
+    // and what a year brings, or takes
+    const year = t === undefined ? null : economyOf(game, me).moneyPerYear;
+    $("pb-year").textContent = year === null ? "" : `${year >= 0 ? "+" : ""}${shortMoney(year)}`;
+    $("pb-year").classList.toggle("bad", year !== null && year < 0);
+    $("pb-year").classList.toggle("good", year !== null && year > 0);
 }
 
 const markerOptions = () => ({ me, selected: sel });
