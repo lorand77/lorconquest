@@ -248,3 +248,11 @@ test("the panel as a sheet on a phone: a tap steps it up and round, a swipe one 
     assert.equal(sheetAfter("full", "deselect"), "full");
     assert.equal(sheetAfter(undefined, "tap"), "half");
 });
+
+test("a phone's slim bar: money and the date in few characters", async () => {
+    const { shortMoney, shortDate } = await import("../../public/js/mirror.js");
+    assert.deepEqual([980, 1234, 12345, 123456, 1234567, 12345678, -45678].map(shortMoney), ["980", "1.2K", "12K", "123K", "1.2M", "12M", "−45K"]);
+    assert.equal(shortMoney(999999), "999K", "rounded down, never up into the next unit");
+    assert.equal(shortDate("3 March 1452"), "3 Mar 1452");
+    assert.equal(shortDate("1 May 1500"), "1 May 1500");
+});

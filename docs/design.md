@@ -731,15 +731,18 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   a computer, the first four only on a phone. The choice is kept in the browser (`lorconquest.notices`, the privacy page says
   so) and edited on the Customize page and behind ⚙ by the zoom buttons. At most 3 notices at once, 2 on a phone; the same one
   again counts up ("×3") rather than stacking; each goes after 6 seconds, 3 on a phone. Messages about the connection always show.
-- **Small screens:** a tablet's panel is 300px. On a phone held upright (700px wide or less) the map fills the screen and the
-  panel is a **sheet** over its foot (`game.css`, `body[data-sheet]`; `mirror.js`, `sheetAfter`): collapsed to a grab handle,
-  the tabs (at the top, under the handle: never on the screen's bottom edge, where an iPhone's browser keeps taps for its
-  toolbar) and a line of status (country, date, play, treasury) — as tall as those really are, measured as they change (the
-  status wraps on a narrow phone), and clear of an iPhone's home indicator (`viewport-fit=cover`, `env(safe-area-inset-*)`); half the screen; or nearly all of it, with the brand and the
-  lobby link. A tap on the handle steps it up and round, a swipe on it one step; picking something on the map or a tab brings
-  it to at least half. The zoom buttons, the scores and the chat float just above it. Held sideways (500px tall or less), a
-  280px panel at the side. On a phone either way: tighter spacing, smaller tabs and banners, and the scores start folded. The
-  replay page, which has no tabs, gets a half-height panel at the foot.
+- **Small screens:** a tablet's panel is 300px. On a phone, either way it is held, the status block gives way to one slim
+  **bar** (`renderPhoneBar`): ▶/⏸ (not in a game with others), the country's colour and code (👁 for a watcher), the date short
+  (the setup minute's countdown while it runs), the treasury short (`mirror.js`, `shortMoney`, `shortDate`); of the status
+  block only the list of the people in a game with others stays. Held upright (700px wide or less) the map fills the screen and
+  the panel is a **sheet** over its foot (`game.css`, `body[data-sheet]`; `mirror.js`, `sheetAfter`) with the bar as its handle
+  (a grip at its middle) and the tabs below it — never on the screen's bottom edge, where an iPhone's browser keeps taps for its
+  toolbar: collapsed to those two rows (as tall as they really are, measured, and clear of an iPhone's home indicator:
+  `viewport-fit=cover`, `env(safe-area-inset-*)`); half the screen; or nearly all of it, with the brand and the lobby link. A
+  tap on the bar steps the sheet up and round, a swipe on it one step (the ▶ in it is only a button); picking something on the
+  map or a tab brings it to at least half. The zoom buttons, the scores and the chat float just above it. Held sideways (500px
+  tall or less) the bar tops a 280px panel at the side. On a phone either way: tighter spacing, smaller tabs and banners, and
+  the scores start folded. The replay page, which has no tabs or bar, gets a half-height panel at the foot.
 
 **Country colours** are picked by `tools/map.js` and written into `scenario.json`: each country gets
 one, chosen so that countries sharing a border never look alike. A Colour column in SCENARIO.md's

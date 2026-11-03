@@ -337,7 +337,7 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
    a tablet: a narrower panel. A phone held upright: the map fills the screen and the panel is a sheet over its foot, collapsed
    to the tabs and a line of status, at half the screen, or nearly all of it (body[data-sheet], game.js; mirror.js, sheetAfter);
    held sideways: a narrow panel at the side. On a phone either way everything is a little more compact. */
-.sheet-handle { display: none; }
+.phone-bar { display: none; }
 @media (max-width: 1100px) { .side { width: 300px; } }
 @media (max-width: 700px), (max-height: 500px) {
     body.game { font-size: 13px; }
@@ -355,13 +355,30 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
     .ask-title { font-size: 16px; }
     .ask-text { font-size: 13px; }
 }
+/* a phone, either way it is held: one slim bar in place of the status block — play, the country, the date, the treasury
+   (game.js, renderPhoneBar); of the status block only the list of the people in the game stays, when there is one */
+@media (max-width: 700px), (max-height: 500px) {
+    .phone-bar { display: flex; align-items: center; gap: 8px; flex-shrink: 0; height: 34px; padding: 0 8px; box-sizing: border-box;
+        border-bottom: 1px solid var(--line); font-size: 13px; white-space: nowrap; touch-action: none; user-select: none; }
+    .pb-pause { width: 28px; height: 26px; padding: 0; border-radius: 50%; font-size: 12px; flex-shrink: 0; }
+    .pb-pause.paused { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn); }
+    .pb-who { font-weight: 700; color: var(--gold); }
+    .pb-date { color: var(--text-strong); font-variant-numeric: tabular-nums; }
+    .pb-grip { flex: 1; display: flex; justify-content: center; }
+    .pb-money { font-variant-numeric: tabular-nums; }
+    .pb-money.bad { color: var(--bad); }
+    /* (the game page only: the replay page's status block holds its slider and its play button, and it has no bar) */
+    body.game:not(.replay) .side > .status > :not(.people) { display: none; }
+    body.game:not(.replay) .side > .status { padding: 0 10px; border-bottom: none; }
+    body.game:not(.replay) .side > .status:not(:has(.people:not(:empty))) { display: none; }
+}
 @media (max-height: 500px) and (min-width: 701px) { .side { width: 280px; } .side > .head { display: none; } }
 /* a phone with a notch, held sideways: nothing under it (the page may reach under it: viewport-fit=cover) */
 .zoom { left: max(10px, env(safe-area-inset-left, 0px)); }
 .side { padding-right: env(safe-area-inset-right, 0px); }
 @media (max-width: 700px) {
-    /* collapsed, the sheet is as tall as its handle, status and tabs really are (game.js measures them: --sheet-min, the status
-       line often wraps), and every height leaves room for an iPhone's home indicator below the tabs */
+    /* collapsed, the sheet is as tall as its bar and tabs really are (game.js measures them: --sheet-min), and every height leaves
+       room for an iPhone's home indicator below the tabs */
     body.game { --sheet-h: 46dvh; }
     body.game[data-sheet="collapsed"] { --sheet-h: calc(var(--sheet-min, 130px) + env(safe-area-inset-bottom, 0px)); }
     body.game[data-sheet="full"] { --sheet-h: calc(100dvh - 44px); }
@@ -375,27 +392,21 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
     .side { position: absolute; left: 0; right: 0; bottom: 0; z-index: 30; width: auto; height: var(--sheet-h); border-left: none; overflow: hidden;
         padding-bottom: env(safe-area-inset-bottom, 0px); box-sizing: border-box;
         border-top: 1px solid var(--border); border-radius: 12px 12px 0 0; box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.35); transition: height 0.2s ease; }
-    .sheet-handle { display: flex; justify-content: center; align-items: center; flex: 0 0 auto; width: 100%; height: 18px; padding: 0; border: none;
-        border-radius: 12px 12px 0 0; background: none; cursor: grab; touch-action: none; }
-    .sheet-handle span { width: 40px; height: 4px; border-radius: 2px; background: var(--text-muted); }
-    /* the tabs at the top of the sheet, under its handle: never on the screen's bottom edge, where an iPhone's browser keeps taps
-       for its own toolbar; then the line of status, the brand and lobby link, the panel */
-    .sheet-handle { order: 0; }
+    .phone-bar { cursor: grab; border-radius: 12px 12px 0 0; }
+    .pb-grip i { width: 36px; height: 4px; border-radius: 2px; background: var(--text-muted); }
+    /* the bar (the sheet's handle) and the tabs at the top of the sheet: never on the screen's bottom edge, where an iPhone's
+       browser keeps taps for its own toolbar; then the people in the game, the brand and lobby link, the panel */
+    .phone-bar { order: 0; }
     .side > .tabs { order: 1; border-top: none; }
     .side > .status { order: 2; border-bottom: 1px solid var(--line); }
     .side > .head { order: 3; }
     .side > .panel, .side > .events { order: 4; }
     .side > .foot { order: 5; }
-    /* a line of status: who, the date, play and the treasury side by side */
-    .side > .status { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; }
-    .status .me, .status .date { display: inline; margin: 0; }
-    .status .row { gap: 8px; }
-    .status .pause { min-width: 0; padding: 2px 10px; }
     /* the brand and the lobby link only with the sheet full; collapsed, nothing below the tabs */
     body.game[data-sheet]:not([data-sheet="full"]) .side > .head { display: none; }
     body.game[data-sheet="collapsed"] .side > :is(.panel, .events, .foot, h3), body.game[data-sheet="collapsed"] .status .people { display: none; }
     /* what floats on the map stays above the sheet */
-    .side > .tabs, .side > .status, .sheet-handle { flex-shrink: 0; }
+    .side > .tabs, .side > .status, .phone-bar { flex-shrink: 0; }
     .panel { min-height: 0; }
     .zoom { bottom: calc(var(--sheet-h) + 8px); }
     .scoreboard { bottom: calc(var(--sheet-h) + 8px); right: 8px; }

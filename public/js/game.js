@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadNotices, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -100,7 +100,8 @@ async function start() {
     $("notice-settings").addEventListener("click", noticeMenu);
     window.addEventListener("storage", (e) => { if (e.key === null || e.key === "lorconquest.notices") prefs = loadNotices(); });     // changed in another tab
     $("pause").addEventListener("click", togglePause);
-    $("pause").hidden = multi || !me;
+    $("pause").hidden = $("pb-pause").hidden = multi || !me;
+    $("pb-pause").addEventListener("click", togglePause);
     if (multi || !me) startPeople(joined);
     for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => { setSheet(sheetAfter(sheet, "tab")); setTab(b.dataset.tab); });
     sheetGestures();
@@ -211,18 +212,21 @@ function setSheet(next) {
 }
 function sheetGestures() {
     setSheet(sheet);
-    const handle = $("sheet-handle");
-    // collapsed, the sheet shows the handle, the status and the tabs whole: their height, measured whenever it changes (the
-    // status wraps on a narrow phone, the setup minute adds a line)
+    const handle = $("phone-bar");
+    // collapsed, the sheet shows the bar and the tabs whole: their height, measured whenever it changes
     const fit = () => {
-        const h = handle.offsetHeight + document.querySelector(".side > .status").offsetHeight + $("tabs").offsetHeight;
+        const h = handle.offsetHeight + $("tabs").offsetHeight;
         if (h > 0) document.body.style.setProperty("--sheet-min", `${Math.ceil(h) + 2}px`);
     };
-    new ResizeObserver(fit).observe(document.querySelector(".side > .status"));
+    new ResizeObserver(fit).observe(handle);
     new ResizeObserver(fit).observe($("tabs"));
     fit();
     let from = null;
-    handle.addEventListener("pointerdown", (e) => { from = e.clientY; handle.setPointerCapture(e.pointerId); });
+    handle.addEventListener("pointerdown", (e) => {
+        if (e.target.closest("button")) return;             // the pause button is a button, not the handle
+        from = e.clientY;
+        handle.setPointerCapture(e.pointerId);
+    });
     handle.addEventListener("pointerup", (e) => {
         if (from === null) return;
         const dy = e.clientY - from;
@@ -346,6 +350,7 @@ function renderTop() {
         $("treasury").classList.toggle("bad", country(me).treasury < 0);
     }
     for (const b of document.querySelectorAll("#tabs button")) b.classList.toggle("active", b.dataset.tab === tab);
+    renderPhoneBar();
     renderAsk();
     renderScores();
 }
@@ -476,6 +481,20 @@ function renderSetup() {
     const left = setupEnds - performance.now();
     $("setup").hidden = !(multi && setupEnds && left > 0);
     if (!$("setup").hidden) $("setup").textContent = "The clock starts in " + formatCountdown(left) + ": look around and give your first orders";
+    if (!$("setup").hidden) $("pb-date").textContent = `⏳ ${formatCountdown(left)}`;
+}
+
+// a phone's slim bar (game.css): play, the country's colour and code (or 👁 for a watcher), the date short, the treasury short
+function renderPhoneBar() {
+    $("pb-pause").textContent = paused ? "▶" : "⏸";
+    $("pb-pause").disabled = Boolean(state.winner);
+    $("pb-pause").classList.toggle("paused", paused);
+    if (me) $("pb-who").replaceChildren(swatch(me), ` ${me}`); else $("pb-who").textContent = "👁";
+    $("pb-who").title = me ? country(me).name : "Watching";
+    if ($("setup").hidden) $("pb-date").textContent = shortDate(longDate(state.day));      // (the setup minute's countdown: renderSetup)
+    const t = me ? country(me).treasury : undefined;
+    $("pb-money").textContent = t === undefined ? "" : `💰 ${shortMoney(t)}`;
+    $("pb-money").classList.toggle("bad", t !== undefined && t < 0);
 }
 
 const markerOptions = () => ({ me, selected: sel });

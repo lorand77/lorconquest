@@ -113,6 +113,17 @@ export function formatMen(n) {
 // a whole number with thousands separated: "1,060,000"
 export const formatNumber = (n) => Math.round(n).toLocaleString("en-GB");
 
+// money in a few characters, for a phone's slim bar: 980, 12K, 123K, 1.2M, 12M — a minus sign before a debt
+export function shortMoney(n) {
+    const a = Math.abs(n), sign = n < 0 ? "−" : "";
+    if (a < 1000) return sign + Math.round(a);
+    if (a < 1e6) return sign + (a < 1e4 ? (Math.floor(a / 100) / 10).toFixed(1).replace(/\.0$/, "") : Math.floor(a / 1000)) + "K";
+    return sign + (a < 1e7 ? (Math.floor(a / 1e5) / 10).toFixed(1).replace(/\.0$/, "") : Math.floor(a / 1e6)) + "M";
+}
+
+// a date in few characters: "3 Mar 1452"
+export const shortDate = (longText) => longText.replace(/^(\d+) (\w{3})\w* (\d+)$/, "$1 $2 $3");
+
 // where each fleet is drawn on `day`: in a port, a column below the settlement's marker; at sea, a column below its
 // zone's name; on its way, between the two zones' names — a Map from fleet id to [x, y]
 export function fleetPoints(state, nodes, zones, day) {
