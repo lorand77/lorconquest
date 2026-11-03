@@ -220,6 +220,8 @@ export function endScreen({ me, end, table, names, players = {}, target, endYear
         : `holding ${table[c]?.settlements ?? 0} settlements of the ${target} needed`);
     const who = (c) => `${name(c)}${players[c] && c !== me ? ` (${players[c]})` : ""}`;
     if (end.abandoned) return { kind: "over", title: "Game over", subtitle: "Everyone has left the game.", final: true, rows };
+    // every person gone, some eliminated before: finished, the people ranked by how long they lasted (rooms.js, checkEnd)
+    if (end.why === "left") return { kind: "over", title: "Game over", subtitle: "Everyone has left. The people are ranked by how long they lasted; nobody won.", final: true, rows };
     // someone watching (no country): who won, neither a victory nor a defeat of theirs
     if (!me) return { kind: "over", title: "Game over", subtitle: end.winner ? `${who(end.winner)} wins, ${how(end.winner)}.` : "Every player's country has fallen.", final: true, rows };
     if (end.out) return { kind: "defeat", title: "Defeat", subtitle: `${name(me)} is no more: its last settlement has fallen. The others play on; you may watch to the end.`, final: false, rows };

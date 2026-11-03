@@ -46,7 +46,10 @@ export function gameLine(game, scenarioName, countryName, dateText, winnerName =
     const people = game.people > 1 ? `, ${game.people} people` : "";
     const where = `${scenarioName}, ${countryName}${people}, ${dateText}`;
     // a finished or abandoned game is not opened but watched, as a replay
-    if (game.status === "finished") return { text: game.winner ? `${where} — won by ${winnerName}` : `${where} — lost: every player's country fell`, open: false, replay: true };
+    // finished with no winner: every player's country fell, or everyone left after some had been eliminated — the place says how
+    // this person did, with others in the game
+    const noWinner = game.people > 1 && game.place ? `no winner — placed ${game.place} of ${game.people}` : "lost: every player's country fell";
+    if (game.status === "finished") return { text: game.winner ? `${where} — won by ${winnerName}` : `${where} — ${noWinner}`, open: false, replay: true };
     if (game.status === "abandoned") return { text: `${where} — abandoned: nobody was left`, open: false, replay: true };
     // a game that is going can always be opened: one let go from memory is brought back
     return { text: where, open: true, replay: false };

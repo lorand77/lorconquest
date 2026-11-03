@@ -10,6 +10,7 @@
 //
 // In:  { type: "command", reqId, country, source, cmd }  { type: "pause", paused }  { type: "view", reqId, country }
 //      { type: "caretaker", country, mode }  (mode "caretaker", "full" or null: who plays a human's country while away)  { type: "stop" }
+//      { type: "end" }   every person gone, some eliminated: finished here, as a game that is won is
 // Out: { type: "ready", day }  { type: "tick", day, events, privEvents, pub, priv, commands, snapshot }   (events public, privEvents by country: view.js)
 //      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
 //      { type: "stats", days, mean, max }  { type: "over", day, winner, why, defeated, scores, hash }  { type: "stopped", day, commands }
@@ -57,12 +58,13 @@ function publish(events) {
 
 // the end: who won (or that every person lost), how every country stands, and the fingerprint of the final state a replay
 // must come to (design.md, "Replays")
-function finish(events) {
+function finish(events, ended = null) {
     snap = { day: game.day, state: game.snapshot() };
     const hash = fingerprint(snap.state);
     publish(events);
-    // how it was won, for the victory screen: by reaching the scenario's number of settlements, or on time
-    const why = events.find((e) => e.type === "victory")?.why ?? null;
+    // how it was won, for the victory screen: by reaching the scenario's number of settlements, or on time — or "left": every
+    // person gone, some of them eliminated (rooms.js, checkEnd)
+    const why = ended ?? events.find((e) => e.type === "victory")?.why ?? null;
     post({ type: "over", day: game.day, winner: game.state.winner ?? null, why, defeated: !game.state.winner, scores: scores(game.state), hash });
     stopping = finished = true;
 }
@@ -132,6 +134,15 @@ parentPort.on("message", (m) => {
         case "view":
             post({ type: "view", reqId: m.reqId, view: viewFor(game.state, m.country) });
             break;
+        // every person has gone from a game in which some were eliminated: it ends here, finished, and is ranked (rooms.js)
+        case "end": {
+            if (finished) break;
+            if (timer) clearTimeout(timer);
+            const events = [];
+            applyQueue(events);
+            finish(events, "left");
+            break;
+        }
         case "stop": {
             stopping = true;
             if (timer) clearTimeout(timer);

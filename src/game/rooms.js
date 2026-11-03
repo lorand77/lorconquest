@@ -11,7 +11,8 @@
 //   * a player who is away — no socket in the game — has a caretaker at once, and the full computer player after AWAY_MS;
 //   * one who comes back has their country back at once, whichever of the two had it;
 //   * one who quits gives it to the full computer player for good;
-//   * when every player has quit or been away over AWAY_MS the game is over: abandoned;
+//   * when every player has quit or been away over AWAY_MS the game is over: finished and ranked if any of them had been
+//     eliminated (the last to leave counts as still in: results.js), abandoned otherwise;
 //   * a player whose country is eliminated (RULES.md §10) is out: they may watch to the end, but give no orders, and are placed
 //     after everyone still in. When every player's country is out the worker ends the game as a defeat, as it ends a
 //     single-player game when its player's country falls.
@@ -204,14 +205,20 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         checkEnd(room);
     }
 
-    // a multiplayer game with nobody left playing in it ends: abandoned — unless every country is out, when the worker ends
-    // it as a defeat
+    // a multiplayer game with nobody left playing in it ends: finished and ranked if some of its people were eliminated (they
+    // keep their places, and the last to leave ranks as still in: results.js) — otherwise abandoned. Every country out: the
+    // worker ends it as a defeat
     function checkEnd(room) {
         if (!room.multi || room.over || room.ending) return;
         const seats = [...room.seats.values()];
         if (seats.every((s) => s.state === "out")) return;
         if (seats.some((s) => s.state === "present" || s.state === "away")) return;
         room.ending = true;
+        if (seats.some((s) => s.state === "out")) {
+            log.info("game.left", { game: room.id, day: room.day });
+            room.worker.postMessage({ type: "end" });          // finished in the worker, which answers "over" (saved as any end)
+            return;
+        }
         db.q.abandonGame.run(room.day, room.id);
         everyone(room).emit("over", { day: room.day, winner: null, abandoned: true });
         log.info("game.abandoned", { game: room.id, day: room.day });
@@ -494,7 +501,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             if (!u || u.username.startsWith("deleted-")) return null;
             const row = db.q.leaderboard.all().find((r) => r.username === u.username);
             const games = db.q.gamesOf.all(u.id).filter((g) => g.status === "finished" || g.status === "abandoned")
-                .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated }));
+                .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated, place: g.place }));
             return { username: u.username, joined: u.created_at, row: row ? boardRow(row) : null, games };
         },
 
@@ -509,7 +516,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         // the games a person has a seat in
         gamesOf: (userId) => db.q.gamesOf.all(userId).map((g) => ({
             id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated,
-            live: live.has(g.id), paused: Boolean(g.paused),
+            place: g.place, live: live.has(g.id), paused: Boolean(g.paused),
         })),
 
         seatOf: (id, userId) => db.q.seatOfUser.get(Number(id), userId)?.country ?? null,

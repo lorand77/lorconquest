@@ -72,7 +72,7 @@ async function play(server, players) {
     return { id: made.body.id, out };
 }
 
-test("with others in the game, a player whose country falls is out: watches, gives no orders, and ranks after the rest", async () => {
+test("with others in the game, a player whose country falls is out: watches, gives no orders, ranks after the rest — and the game everyone left is finished", async () => {
     const { root } = doomedRoot();
     const server = await startServer({ dbPath: tempDb(), root, setupMs: 0 });
     try {
@@ -89,12 +89,20 @@ test("with others in the game, a player whose country falls is out: watches, giv
         await until(() => ticks.length > 10, "the game to run on for the watcher");
         assert.equal(server.app.db.q.game.get(id).status, "active");
         assert.ok(server.app.db.db.prepare("SELECT out_day FROM game_seats WHERE game_id = ? AND country = 'ULM'").get(id).out_day >= 1);
-        // her leaving does not make her "away", and bobby leaving for good, with nobody else playing, ends it: abandoned
+        // her leaving does not make her "away"; bobby leaving for good, with nobody else playing, ends it — finished, not abandoned,
+        // since a player was eliminated: bobby outlasted her and places first, nobody won, and the replay ends exactly as the game did
         a.socket.close();
         await wait(50);
         assert.equal(server.app.rooms.get(id).seats.get("ULM").state, "out");
         await emitAck(b.socket, "quit", {});
-        await until(() => server.app.db.q.game.get(id).status === "abandoned", "the game to end with nobody playing");
+        await until(() => server.app.db.q.game.get(id).status === "finished", "the game to end with nobody playing");
+        const game = server.app.db.q.game.get(id);
+        assert.equal(game.winner, null);
+        const places = server.app.db.db.prepare("SELECT country, place FROM game_seats WHERE game_id = ? ORDER BY place").all(id);
+        assert.deepEqual(places.map((p) => [p.country, p.place]), [["BAV", 1], ["ULM", 2]]);
+        const log = server.app.db.q.allCommands.all(id).map((c) => ({ day: c.day, cmd: JSON.parse(c.cmd) }));
+        const rebuilt = replay(JSON.parse(fs.readFileSync(path.join(root, "scenarios", "mitteleuropa", "scenario.json"), "utf8")), game.seed, log, game.day, ["ULM", "BAV"]);
+        assert.equal(fingerprint(rebuilt.snapshot()), game.result_hash);
     } finally {
         await server.close();
         fs.rmSync(root, { recursive: true, force: true });

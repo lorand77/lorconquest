@@ -59,3 +59,14 @@ test("pages, scripts and the engine are checked with the server each time: no ph
         await server.close();
     }
 });
+
+test("the last to leave a game the others were eliminated from (or left) ranks as still in: they outlasted everyone", async () => {
+    const { rankHumans } = await import("../../src/game/results.js");
+    const table = { AAA: { settlements: 9, pop: 9 }, BBB: { settlements: 1, pop: 1 }, CCC: { settlements: 3, pop: 3 } };
+    // BBB out on day 100, CCC quit on day 150, AAA — the last — quit on day 200: AAA first, then the eliminated, then the earlier quitter
+    const left = rankHumans([{ country: "AAA", quitDay: 200 }, { country: "BBB", outDay: 100 }, { country: "CCC", quitDay: 150 }], table);
+    assert.deepEqual(left.map((r) => [r.country, r.place]), [["AAA", 1], ["BBB", 2], ["CCC", 3]]);
+    // but one who quit while another was still in is a quitter: last
+    const early = rankHumans([{ country: "AAA", quitDay: 200 }, { country: "BBB", outDay: 100 }, { country: "CCC", quitDay: null }], table);
+    assert.deepEqual(early.map((r) => [r.country, r.place]), [["CCC", 1], ["BBB", 2], ["AAA", 3]]);
+});

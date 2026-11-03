@@ -183,7 +183,7 @@ export function openDb(file) {
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN users h ON h.id = g.host_id WHERE g.status = 'lobby' ORDER BY g.id DESC`),
         // every game a person has a seat in
-        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, s.country, g.updated_at,
+        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, s.country, s.place, g.updated_at,
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN game_seats s ON s.game_id = g.id WHERE s.user_id = ? AND g.status != 'aborted' ORDER BY g.updated_at DESC, g.id DESC`),
         activeGames: db.prepare("SELECT * FROM games WHERE status = 'active' ORDER BY id"),

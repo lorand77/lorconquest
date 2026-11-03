@@ -164,3 +164,9 @@ test("on a phone the shell's rail is a row across the page at its own width — 
     assert.match(rail, /flex-direction: row/);
     assert.match(rail, /overflow-x: auto/);
 });
+
+test("a game that ended with no winner says how this person placed among the people, not that their country fell", () => {
+    const g = { status: "finished", winner: null, people: 2, place: 1 };
+    assert.match(gameLine(g, "Mitteleuropa", "Bavaria", "1 January 1450").text, /no winner — placed 1 of 2$/);
+    assert.match(gameLine({ ...g, people: 1, place: 1 }, "M", "B", "d").text, /lost: every player's country fell$/);
+});

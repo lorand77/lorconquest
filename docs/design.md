@@ -387,7 +387,10 @@ A game that ends — won, or the end date — tells the server three things in i
 stands (`scores`: settlements, a subject counting for its overlord, then people), and a **fingerprint** of the final state
 (FNV-1a over the snapshot's text, `src/engine/hash.js`). The server stores the fingerprint with the game and ranks the people
 in it (`src/game/results.js`): by how their country stood, with anyone who quit placed after everyone who stayed, the later
-quitter first. (An abandoned game has no result.)
+quitter first — except one who quit when no other person was still in: the last to leave counts as still in. A game with
+several people that everyone has left ends finished and ranked (with no winner) if any of them had been eliminated — the
+worker ends it, so that its final state has a fingerprint a replay must reach — and abandoned otherwise. (An abandoned game
+has no result.)
 
 - **The leaderboard** (`GET /api/leaderboard`, `public/leaderboard.html`) counts, per person and over finished games: the games,
   those with other people in them, how often they came first among those people, their average place there, and their

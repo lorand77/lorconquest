@@ -1,10 +1,13 @@
 // How a finished game ranks its people (docs/design.md, "Replays and results"; plan.md, milestone 7): among themselves, first
 // those whose country was still in the game at the end, by how it stood — settlements (a subject counts for its overlord, as in
 // the victory table), then people; then those whose country was eliminated, the later first; last those who quit and gave
-// their country to the computer, the later quitter first. Pure, so it is tested without a server.
+// their country to the computer, the later quitter first. One who quit when no other person was still in — the last to leave a
+// game the others had been eliminated from or left — counts as still in: they outlasted everyone. Pure, tested without a server.
 export function rankHumans(seats, table) {
     const standing = (s) => table[s.country] ?? { settlements: 0, pop: 0 };
-    const group = (s) => (s.quitDay != null ? 2 : s.outDay != null ? 1 : 0);
+    const gone = (s) => s.quitDay ?? s.outDay;
+    const last = (s) => s.quitDay != null && seats.every((o) => o === s || (gone(o) != null && gone(o) <= s.quitDay));
+    const group = (s) => (last(s) ? 0 : s.quitDay != null ? 2 : s.outDay != null ? 1 : 0);
     const ordered = [...seats].sort((a, b) => {
         if (group(a) !== group(b)) return group(a) - group(b);
         if (group(a) === 2) return b.quitDay - a.quitDay || (a.country < b.country ? -1 : 1);

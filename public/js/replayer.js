@@ -15,6 +15,18 @@ export function createReplayer(scenario, data, { keyEvery = 730 } = {}) {
     const firstFrom = (day) => { let i = 0; while (i < log.length && log[i].day < day) i++; return i; };
 
     // one day: the commands logged for today, then the day itself; returns the day's events
+    // the commands logged for the last day, applied without the day advancing: a game ended by a command (a peace that put the
+    // last person out) or told to end applied them before it stopped
+    function lastDay() {
+        const events = [];
+        for (; next < log.length && log[next].day === game.day; next++) {
+            const r = game.command(log[next].cmd);
+            if (!r.ok) throw new Error(`replay: day ${game.day}: ${r.error}`);
+            events.push(...r.events);
+        }
+        return events;
+    }
+
     function stepDay() {
         const events = [];
         for (; next < log.length && log[next].day === game.day; next++) {
@@ -38,6 +50,7 @@ export function createReplayer(scenario, data, { keyEvery = 730 } = {}) {
         advance(days) {
             const events = [];
             for (let i = 0; i < days && !replayer.done; i++) events.push(...stepDay());
+            if (replayer.done) events.push(...lastDay());
             return events;
         },
 
@@ -51,6 +64,7 @@ export function createReplayer(scenario, data, { keyEvery = 730 } = {}) {
             }
             const events = [];
             for (let i = 0; i < chunk && game.day < day; i++) events.push(...stepDay());
+            if (replayer.done) events.push(...lastDay());
             return events;
         },
 
