@@ -257,3 +257,22 @@ test("the Research tab says when nothing is being researched and offers the chea
     nodes = researchTab(ctx);
     assert.match(nodes.map((n) => n.text).join(" | "), /Every technology is researched/);
 });
+
+test("where soldiers are raised and mercenaries hired stays as the player chose it, until changed — while it is still a core of theirs", async () => {
+    const { ctx, sent } = setup();
+    ctx.ui = { target: null, raiseWeapon: null, raiseAt: null, hireAt: null };
+    const places = (nodes) => find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "37"));
+    let [raiseAt, hireAt] = places(shopTab(ctx));
+    const capital = raiseAt.value, other = raiseAt.children.map((o) => o.attrs.value).find((v) => v !== capital);
+    raiseAt.value = other;
+    raiseAt.handlers.change();
+    hireAt.value = other;
+    hireAt.handlers.change();
+    const nodes = shopTab(ctx);                                                // rebuilt as the days go by
+    [raiseAt, hireAt] = places(nodes);
+    assert.deepEqual([raiseAt.value, hireAt.value], [other, other]);
+    await button(nodes, "Raise").handlers.click();
+    assert.equal(sent[0].settlement, Number(other));
+    ctx.state.settlements[other].owner = "AUS";                                // lost: back to the capital
+    assert.equal(places(shopTab(ctx))[0].value, capital);
+});

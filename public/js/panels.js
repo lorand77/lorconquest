@@ -141,7 +141,11 @@ export function shopTab(ctx) {
 
     // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: with the weapon the
     // player chose last (kept in ctx.ui while the page is open), or else the best the treasury can pay for, the reserve's first
-    const rs = select(ctx, settlementOptions(core), capital ?? core[0]?.id), rl = numberInput(ctx, 1, 1, 50);
+    // where to raise and to hire: the settlement chosen last (kept in ctx.ui while the page is open) while it is still a core of
+    // ours, or else the capital, or the first core settlement
+    const kept = (key) => (core.some((s) => s.id === ctx.ui?.[key]) ? ctx.ui[key] : capital ?? core[0]?.id);
+    const rs = select(ctx, settlementOptions(core), kept("raiseAt")), rl = numberInput(ctx, 1, 1, 50);
+    rs.addEventListener("change", () => { if (ctx.ui) ctx.ui.raiseAt = Number(rs.value); });
     const armable = [...WEAPONS, "cannons"].filter((w) => w === "unarmed" || c.techs.includes(w));
     const price = (w) => (w === "cannons" ? CANNON_PRICE : WEAPON_PRICE[w]);
     const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed"
@@ -160,7 +164,8 @@ export function shopTab(ctx) {
         raise));
 
     // mercenaries
-    const ms = select(ctx, settlementOptions(core), capital ?? core[0]?.id), ml = numberInput(ctx, 1, 1, 50);
+    const ms = select(ctx, settlementOptions(core), kept("hireAt")), ml = numberInput(ctx, 1, 1, 50);
+    ms.addEventListener("change", () => { if (ctx.ui) ctx.ui.hireAt = Number(ms.value); });
     out.push(section(ctx, "Hire mercenaries",
         row(ctx, ms, ml, make("span", {}, `× 1000 · ${money(MERCENARY_PRICE)}`)), make("p", { class: "hint" }, "In a month, with pikes; 15 a man a year."),
         make("button", { onclick: act(ctx, () => ({ type: "hireMercenaries", settlement: Number(ms.value), lots: Number(ml.value) })) }, "Hire")));
