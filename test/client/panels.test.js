@@ -56,6 +56,14 @@ test("the Country tab shows the engine's numbers and its controls send commands"
     assert.doesNotMatch(text, /Civilians|Navy cap|Mercenaries/, "nothing said of what is people less soldiers, or of none");
     assert.match(text, /Soldiers\s+2,000 of 2,500 allowed/);                  // 50,000 people: 5% is 2,500
     const [taxInput] = find(nodes, (e) => e.attrs.type === "range" && e.attrs.max === 30);
+    // a new tax is asked about first: refused, nothing is sent and the slider goes back; agreed, it is sent
+    const asked = [];
+    globalThis.confirm = (q) => { asked.push(q); return false; };
+    taxInput.value = "27";
+    await taxInput.handlers.change();
+    assert.equal(taxInput.value, "20");
+    assert.match(asked[0], /Change the tax from 2\.0 to 2\.7\? More money, and the chance of peasants rising each year, at this tax kept all year, becomes 12% \(now 0%\)/);
+    globalThis.confirm = () => true;
     taxInput.value = "27";
     await taxInput.handlers.change();
     const [slider] = find(nodes, (e) => e.attrs.type === "range" && e.attrs.max === 100);

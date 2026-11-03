@@ -38,7 +38,15 @@ export function countryTab(ctx) {
     const taxLabel = make("b", {}, c.tax.toFixed(1));
     const tax = make("input", { type: "range", min: 20, max: 30, step: 1, value: Math.round(c.tax * 10) });
     tax.addEventListener("input", () => { taxLabel.textContent = (tax.value / 10).toFixed(1); });
-    tax.addEventListener("change", act(ctx, () => ({ type: "setTax", tax: Number(tax.value) / 10 })));
+    // a new tax is asked about first, with what it does to the risk of a rising; cancelled, the slider goes back
+    tax.addEventListener("change", async () => {
+        const to = Number(tax.value) / 10;
+        if (to === c.tax) return;
+        const ok = confirm(`Change the tax from ${c.tax.toFixed(1)} to ${to.toFixed(1)}? ${to > c.tax ? "More money," : "Less money,"} and the chance of peasants rising each year, at this tax kept all year, becomes ${pct((to - 2) ** 2 * 0.25)} (now ${pct((c.tax - 2) ** 2 * 0.25)}).`);
+        if (!ok) { tax.value = String(Math.round(c.tax * 10)); taxLabel.textContent = c.tax.toFixed(1); return; }
+        await ctx.send({ type: "setTax", tax: to });
+        ctx.redraw();
+    });
     const slider = make("input", { type: "range", min: 0, max: 100, step: 10, value: c.slider });
     const sliderLabel = make("b", {}, `${c.slider}%`);
     slider.addEventListener("input", () => { sliderLabel.textContent = `${slider.value}%`; });
