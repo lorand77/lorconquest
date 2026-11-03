@@ -92,10 +92,10 @@ test("My Profile's stats: games played, going, finished and won, alone or with p
         { status: "lobby", country: "POL", winner: null, people: 2 },               // a room not started: no game yet
     ];
     assert.deepEqual(statsOf(games, { firsts: 1, shared: 2, averagePlace: 1.5 }), {
-        games: 5, going: 1, finished: 3, abandoned: 1, won: 2, winRate: 67, winRateAlone: 100, winRateWithOthers: 50, firstRate: 50,
+        games: 5, going: 1, finished: 3, abandoned: 1, won: 2, winRate: 67, counted: 3, winRateAlone: 100, winRateWithOthers: 50, firstRate: 50,
         scenarios: [{ scenario: "mitteleuropa", finished: 2, won: 1, winRate: 50 }, { scenario: "historical-1440", finished: 1, won: 1, winRate: 100 }],
         alone: 2, withOthers: 3, firsts: 1, averagePlace: 1.5 });
-    assert.deepEqual(statsOf([]), { games: 0, going: 0, finished: 0, abandoned: 0, won: 0, winRate: null, winRateAlone: null, winRateWithOthers: null, firstRate: null,
+    assert.deepEqual(statsOf([]), { games: 0, going: 0, finished: 0, abandoned: 0, won: 0, winRate: null, counted: 0, winRateAlone: null, winRateWithOthers: null, firstRate: null,
         scenarios: [], alone: 0, withOthers: 0, firsts: 0, averagePlace: null });
 });
 
@@ -169,4 +169,12 @@ test("a game that ended with no winner says how this person placed among the peo
     const g = { status: "finished", winner: null, people: 2, place: 1 };
     assert.match(gameLine(g, "Mitteleuropa", "Bavaria", "1 January 1450").text, /no winner — placed 1 of 2$/);
     assert.match(gameLine({ ...g, people: 1, place: 1 }, "M", "B", "d").text, /lost: every player's country fell$/);
+});
+
+test("a game everyone left with no winner, this person last (placed 1st, never eliminated), is in no win rate — others' such games are", () => {
+    const g = (o) => ({ status: "finished", country: "BAV", scenario: "mitteleuropa", people: 2, ...o });
+    const games = [g({ winner: "BAV", place: 1 }), g({ winner: null, place: 1, out: false }), g({ winner: null, place: 2, out: true }), g({ winner: null, place: 1, out: true })];
+    const s = statsOf(games, null);
+    assert.deepEqual([s.finished, s.counted, s.won, s.winRate, s.winRateWithOthers], [4, 3, 1, 33, 33]);    // the second left out
+    assert.equal(s.scenarios[0].winRate, 33);
 });

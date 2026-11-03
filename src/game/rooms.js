@@ -501,7 +501,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             if (!u || u.username.startsWith("deleted-")) return null;
             const row = db.q.leaderboard.all().find((r) => r.username === u.username);
             const games = db.q.gamesOf.all(u.id).filter((g) => g.status === "finished" || g.status === "abandoned")
-                .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated, place: g.place }));
+                .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated, place: g.place, out: g.out_day !== null }));
             return { username: u.username, joined: u.created_at, row: row ? boardRow(row) : null, games };
         },
 
@@ -516,7 +516,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         // the games a person has a seat in
         gamesOf: (userId) => db.q.gamesOf.all(userId).map((g) => ({
             id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated,
-            place: g.place, live: live.has(g.id), paused: Boolean(g.paused),
+            place: g.place, out: g.out_day !== null, live: live.has(g.id), paused: Boolean(g.paused),
         })),
 
         seatOf: (id, userId) => db.q.seatOfUser.get(Number(id), userId)?.country ?? null,
@@ -559,6 +559,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 const boardRow = (r) => ({
     username: r.username, games: r.games, shared: r.shared, firsts: r.firsts, victories: r.victories,
     averagePlace: r.shared ? Math.round(r.place_sum / r.shared * 100) / 100 : null,
-    winRate: r.games ? Math.round(r.victories / r.games * 100) : null,              // victories in % of the finished games
+    // victories in % of the finished games — not counting those everyone left with nobody winning, which this person left last
+    winRate: r.games - (r.unrated ?? 0) ? Math.round(r.victories / (r.games - (r.unrated ?? 0)) * 100) : null,
 });
 const chatView = (m) => ({ id: m.id, userId: m.user_id, username: m.username, text: m.text, at: m.created_at });

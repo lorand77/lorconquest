@@ -63,13 +63,16 @@ const pct = (part, whole) => (whole ? Math.round(part / whole * 100) : null);
 export function statsOf(games, row = null) {
     const played = games.filter((g) => g.status !== "lobby");              // a room not yet started is no game yet
     const finished = played.filter((g) => g.status === "finished");
+    // a game everyone left with nobody winning, this person the last to leave (placed 1st, never eliminated): finished, but in
+    // no win rate — they neither won nor lost it
+    const rated = finished.filter((g) => !(g.winner === null && g.people > 1 && g.place === 1 && !g.out));
     const wins = (list) => list.filter((g) => g.winner === g.country).length;
     const won = wins(finished);
-    const alone = finished.filter((g) => g.people <= 1), together = finished.filter((g) => g.people > 1);
+    const alone = rated.filter((g) => g.people <= 1), together = rated.filter((g) => g.people > 1);
     // the win rate scenario by scenario, the most played first
     const scenarios = [...new Set(finished.map((g) => g.scenario))].map((id) => {
-        const list = finished.filter((g) => g.scenario === id);
-        return { scenario: id, finished: list.length, won: wins(list), winRate: pct(wins(list), list.length) };
+        const list = finished.filter((g) => g.scenario === id), counted = rated.filter((g) => g.scenario === id);
+        return { scenario: id, finished: list.length, won: wins(list), winRate: pct(wins(counted), counted.length) };
     }).sort((a, b) => b.finished - a.finished || (a.scenario < b.scenario ? -1 : 1));
     return {
         games: played.length,
@@ -77,7 +80,8 @@ export function statsOf(games, row = null) {
         finished: finished.length,
         abandoned: played.filter((g) => g.status === "abandoned").length,
         won,
-        winRate: pct(won, finished.length),
+        winRate: pct(won, rated.length),
+        counted: rated.length,                                            // the finished games the win rate is of
         winRateAlone: pct(wins(alone), alone.length),
         winRateWithOthers: pct(wins(together), together.length),
         firstRate: pct(row?.firsts ?? 0, row?.shared ?? 0),

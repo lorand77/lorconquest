@@ -100,6 +100,11 @@ test("with others in the game, a player whose country falls is out: watches, giv
         assert.equal(game.winner, null);
         const places = server.app.db.db.prepare("SELECT country, place FROM game_seats WHERE game_id = ? ORDER BY place").all(id);
         assert.deepEqual(places.map((p) => [p.country, p.place]), [["BAV", 1], ["ULM", 2]]);
+        // the last to leave neither won nor lost it: in no win rate; the eliminated lost it
+        const board = (await api(server, "GET", "/api/leaderboard", null, "bobby")).body;
+        const row = (name) => board.find((r) => r.username === name);
+        assert.deepEqual([row("bobby").games, row("bobby").firsts, row("bobby").victories, row("bobby").winRate], [1, 1, 0, null]);
+        assert.deepEqual([row("alice").games, row("alice").winRate], [1, 0]);
         const log = server.app.db.q.allCommands.all(id).map((c) => ({ day: c.day, cmd: JSON.parse(c.cmd) }));
         const rebuilt = replay(JSON.parse(fs.readFileSync(path.join(root, "scenarios", "mitteleuropa", "scenario.json"), "utf8")), game.seed, log, game.day, ["ULM", "BAV"]);
         assert.equal(fingerprint(rebuilt.snapshot()), game.result_hash);

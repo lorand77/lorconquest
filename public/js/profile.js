@@ -81,7 +81,7 @@ const s = statsOf(games, row);
 const stat = (value, label, cls = "stat") => make("div", { class: cls }, make("b", {}, String(value)), make("span", {}, label));
 const rate = (r) => (r === null ? "—" : `${r}%`);
 $("stat-grid").replaceChildren(...[
-    stat(rate(s.winRate), `win rate: ${s.won} of ${s.finished} finished games won`, "stat lead"),
+    stat(rate(s.winRate), `win rate: ${s.won} of ${s.counted} games won${s.finished > s.counted ? ` (and ${s.finished - s.counted} everyone left with no winner, you last: not counted)` : ""}`, "stat lead"),
     stat(rate(s.winRateAlone), "win rate alone against the computer"),
     stat(rate(s.winRateWithOthers), "win rate with other people"),
     stat(rate(s.firstRate), "first among the people at the table"),

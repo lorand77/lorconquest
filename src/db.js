@@ -183,7 +183,7 @@ export function openDb(file) {
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN users h ON h.id = g.host_id WHERE g.status = 'lobby' ORDER BY g.id DESC`),
         // every game a person has a seat in
-        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, s.country, s.place, g.updated_at,
+        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, s.country, s.place, s.out_day, g.updated_at,
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN game_seats s ON s.game_id = g.id WHERE s.user_id = ? AND g.status != 'aborted' ORDER BY g.updated_at DESC, g.id DESC`),
         activeGames: db.prepare("SELECT * FROM games WHERE status = 'active' ORDER BY id"),
@@ -196,14 +196,18 @@ export function openDb(file) {
         // the leaderboard: every account, with what it did over the finished games it played (none for one that has finished
         // none). A game counts for "firsts" and the average place only with two or more people in it; a "victory" is their
         // country winning the whole game while they still played it (one who quit and left it to the computer has no victory).
+        // "unrated": games everyone left with nobody winning, where this person was the last to leave (placed 1st, never
+        // eliminated) — left out of their win rate, which they neither won nor lost
         leaderboard: db.prepare(`SELECT u.username,
                 COUNT(f.game_id) AS games,
                 COALESCE(SUM(f.many), 0) AS shared,
                 COALESCE(SUM(f.many AND f.place = 1), 0) AS firsts,
                 COALESCE(SUM(CASE WHEN f.many THEN f.place ELSE 0 END), 0) AS place_sum,
-                COALESCE(SUM(f.won), 0) AS victories
+                COALESCE(SUM(f.won), 0) AS victories,
+                COALESCE(SUM(f.many AND f.lastLeft), 0) AS unrated
             FROM users u LEFT JOIN (
-                SELECT s.user_id, s.game_id, s.place, (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 AS many, g.winner = s.country AND s.quit_day IS NULL AS won
+                SELECT s.user_id, s.game_id, s.place, (SELECT COUNT(*) FROM game_seats x WHERE x.game_id = g.id) > 1 AS many, g.winner = s.country AND s.quit_day IS NULL AS won,
+                    g.winner IS NULL AND s.place = 1 AND s.out_day IS NULL AS lastLeft
                 FROM game_seats s JOIN games g ON g.id = s.game_id
                 WHERE g.status = 'finished' AND s.place IS NOT NULL
             ) f ON f.user_id = u.id
