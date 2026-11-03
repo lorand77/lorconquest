@@ -679,8 +679,9 @@ agreement. Raising unarmed men never frees a subject — it has to arm them, and
 better weapons stays ahead with fewer men.
 
 **Integration.** A country that has been your **vassal for 10 years** (counted from when it became your vassal; a
-protectorate made a vassal counts from then) may be **integrated** into yours, while **neither of you is at war** —
-peasant rebels included. It costs the price of a **courthouse for each of its settlements** (0.05M each). Its settlements
+protectorate made a vassal counts from then) may be **integrated** into yours, while **neither of you is at war** — with
+a country, or with your own peasants or its own (the peasants of another country, at war with you only because you are at war
+with that country, do not count). It costs the price of a **courthouse for each of its settlements** (0.05M each). Its settlements
 become yours and **core** for you at once; its armies, fleets, sharpshooters, soldiers and mercenaries being raised, weapons,
 treasury, bank deposit, loans and research pool become yours, and its own subjects become your subjects (a vassal among them
 counting its 10 years afresh). It is then out of the game — integrated, not defeated: nothing of it vanishes. Your warmonger

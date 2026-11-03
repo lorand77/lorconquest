@@ -293,6 +293,18 @@ test("integration: a vassal of 10 years, neither at war, for a courthouse a sett
     game.state.day = INTEGRATE_DAYS;
     order(game, cmd("AAA", "declareWar", { target: "CCC" }));
     assert.match(refused(game, cmd("AAA", "integrate", { target: "BBB" })), /not while either of you is at war/);
+    // the peasants of another country do not count; one's own, or the vassal's, do
+    const peasants = (of) => {
+        const g = make();
+        g.state.day = INTEGRATE_DAYS;
+        g.state.countries.AAA.treasury = 200000;
+        g.state.countries.R1 = { code: "R1", name: `Rebels of ${of}`, capital: null, rebel: true, of, treasury: 0, overlord: null, subjectKind: null, out: null };
+        g.state.wars.push("AAA|R1");
+        return g;
+    };
+    assert.equal(peasants("CCC").command(cmd("AAA", "integrate", { target: "BBB" })).ok, true, "CCC's peasants, at war with AAA, are no bar");
+    assert.match(refused(peasants("AAA"), cmd("AAA", "integrate", { target: "BBB" })), /your own peasants are up in arms/);
+    assert.match(refused(peasants("BBB"), cmd("AAA", "integrate", { target: "BBB" })), /your own peasants are up in arms/);
     // a person's vassal is asked, and their yes integrates them
     game = make(["BBB"]);
     game.state.day = INTEGRATE_DAYS;

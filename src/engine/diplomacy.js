@@ -326,7 +326,7 @@ export function proposeEmpire(game, proposer, events) {
 // ---------- integrating a vassal ----------
 
 // a vassal of 10 years may be made part of its overlord's country, for the price of a courthouse a settlement, while neither
-// is at war (peasants included); a person's country is asked first (RULES.md §10, Integration)
+// is at war — with a country, or with its own peasants; a person's country is asked first (RULES.md §10, Integration)
 export const INTEGRATE_DAYS = 10 * YEAR_DAYS;
 export const integratePrice = (game, subject) => Object.values(game.state.settlements).filter((s) => s.owner === subject).length * BUILDING_PRICE.courthouse;
 
@@ -336,8 +336,11 @@ export function integrateError(game, overlord, subject) {
     if (!c || c.overlord !== overlord || c.subjectKind !== "vassal") return `${subject} is not your vassal`;
     const from = (c.vassalSince ?? 0) + INTEGRATE_DAYS;
     if (st.day < from) return `a vassal may be integrated after 10 years: ${subject} on ${longDate(from)}`;
-    const fighting = (code) => st.wars.some((w) => w.split("|").includes(code));
-    if (fighting(overlord) || fighting(subject)) return "not while either of you is at war";
+    // at war with a country, or with the peasants of either of the two; the peasants of another country (at war with anyone at
+    // war with it: rebelWars) do not count
+    const blocks = (other) => !st.countries[other]?.rebel || [overlord, subject].includes(st.countries[other].of);
+    const fighting = (code) => st.wars.some((w) => { const [x, y] = w.split("|"); return (x === code || y === code) && blocks(x === code ? y : x); });
+    if (fighting(overlord) || fighting(subject)) return "not while either of you is at war (or your own peasants are up in arms)";
     const price = integratePrice(game, subject);
     if (st.countries[overlord].treasury < price) return `integrating ${subject} costs ${money(price)}, and the treasury holds ${money(st.countries[overlord].treasury)}`;
     return null;
