@@ -1,5 +1,5 @@
 // The notices over the game's map (design.md, "The game screen"): which kinds pop up, chosen by the player and kept in this
-// browser (the only thing kept there besides the colours: public/privacy.html), and how many at once. Every notice is in the
+// browser (with the march click below, the only things kept there besides the colours: public/privacy.html), and how many at once. Every notice is in the
 // Events tab whatever is chosen; this is only what interrupts. The Customize page and the game's ⚙ edit the same choice.
 //
 // A notice belongs to a kind (kindOf); a kind is on or off, by default as the screen suits — a phone shows fewer. At most 3
@@ -7,6 +7,33 @@
 // (pushNotice). Everything but the storage is pure, tested in Node.
 
 export const STORAGE_KEY = "lorconquest.notices";
+
+// What a click on a destination does with an army selected, kept in this browser too: "ask" (the route, with March and March
+// and storm), "march" at once, or "storm": march and storm at once — at an enemy settlement; anywhere else it just marches.
+export const MARCH_KEY = "lorconquest.march";
+export const MARCH_CHOICES = [
+    ["ask", "Ask: show the route, with March and March and storm"],
+    ["march", "March at once"],
+    ["storm", "March and storm at once (at an enemy settlement; elsewhere, march)"],
+];
+export function loadMarch(storage = globalThis.localStorage) {
+    let v = null;
+    try { v = storage?.getItem(MARCH_KEY); } catch { v = null; }
+    return MARCH_CHOICES.some(([k]) => k === v) ? v : "ask";
+}
+export function saveMarch(v, storage = globalThis.localStorage) {
+    try { storage?.setItem(MARCH_KEY, v); } catch { /* private browsing: kept for this page only */ }
+}
+// the three choices as radio buttons: each change saved at once, `changed(choice)` told
+export function marchChoice(make, current, changed = () => {}) {
+    return make("div", { class: "notice-kinds" }, ...MARCH_CHOICES.map(([k, label]) => {
+        const r = make("input", { type: "radio", name: "march-click", value: k, checked: k === current ? "checked" : undefined });
+        r.addEventListener("change", () => { if (r.checked) { saveMarch(k); changed(k); } });
+        return make("label", { class: "notice-kind" }, r, make("span", {}, label));
+    }));
+}
+// what a click on `to` does with the choice made: "ask", or march with storm true or false
+export const marchFor = (choice, enemyTown) => (choice === "ask" ? "ask" : { storm: choice === "storm" && enemyTown });
 
 // each kind, what it covers, and whether it is on unless chosen otherwise, on a computer and on a phone
 export const NOTICE_KINDS = [

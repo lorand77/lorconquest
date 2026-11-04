@@ -743,6 +743,10 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   own (Shift: the one before; the map is brought to it), F the next fleet, Enter march and Shift+Enter march and storm, T storm,
   B sortie, S split, M merge, C chat, N the notices menu, P a picture of the map, ? a card of every key (also a ? button where
   there is a mouse), Escape closes, cancels a march, lets go. The replay page: Space, ← → a year (Shift: ten), 1–4 the speed.
+- **A click with an army** on a destination does what the player chose (`notices.js`, `marchFor`; kept in the browser,
+  `lorconquest.march`, edited on the Customize page and behind ⚙): **ask** — the route, with March and March and storm (the
+  default) — or **march** at once, or **march and storm** at once (storming only an enemy settlement; elsewhere it marches).
+  The same on a computer and a phone.
 - **Notices** over the map (`public/js/notices.js`): every event of the player's is in the Events tab; what also pops up is
   the player's choice, by kind — war (a siege of theirs, a settlement lost, peasants rising; a war declared on them has its
   own banner), questions waiting for them, refused orders, research, diplomacy, armies, their country — all on by default on

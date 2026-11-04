@@ -6,7 +6,7 @@ import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, men
 import { HOTKEYS, armyPoint, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
-import { isPhone, kindOf, loadNotices, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
+import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
 import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
@@ -101,7 +101,10 @@ async function start() {
     drawHelp();
     $("keys").addEventListener("click", () => { $("help").hidden = false; });
     $("help-close").addEventListener("click", () => { $("help").hidden = true; });
-    window.addEventListener("storage", (e) => { if (e.key === null || e.key === "lorconquest.notices") prefs = loadNotices(); });     // changed in another tab
+    window.addEventListener("storage", (e) => {                                                     // changed in another tab
+        if (e.key === null || e.key === "lorconquest.notices") prefs = loadNotices();
+        if (e.key === null || e.key === "lorconquest.march") marchClick = loadMarch();
+    });
     $("pause").addEventListener("click", togglePause);
     $("pause").hidden = $("pb-pause").hidden = multi || !me;
     $("pb-pause").addEventListener("click", togglePause);
@@ -295,6 +298,10 @@ function planMove(army, to) {
     const found = routeFor(game, army, to);
     if (!found) { plan = null; notice(`No way to ${name(to)} through land army ${army.id} may enter.`, "refused"); renderAll(); return; }
     plan = { army: army.id, to, path: found.path, days: found.days };
+    // what the player chose a click to do (notices.js, marchFor): show the route and ask, or march — and storm — at once
+    const node = game.map.nodes.get(to), enemyTown = node.kind === "settlement" && atWar(me, state.settlements[node.id].owner);
+    const go = marchFor(marchClick, enemyTown);
+    if (go !== "ask") { march(go.storm); return; }
     renderAll();
 }
 
@@ -755,7 +762,7 @@ const renderEventsTab = () => { $("events-label").textContent = unseen ? `Events
 // ---------- notices over the map (notices.js) ----------
 // `kind`: one of the kinds the player may switch off, or "system" (the connection, the game stopping), which always shows.
 // At most 3 at once (2 on a phone), the same one counted up rather than repeated, gone after 6 seconds (3 on a phone).
-let prefs = loadNotices(), notices = [], noticeTimer = null;
+let prefs = loadNotices(), notices = [], noticeTimer = null, marchClick = loadMarch();
 function notice(text, kind = "system", ms) {
     if (kind !== "system" && !prefs[kind]) return;
     const phone = isPhone();
@@ -773,7 +780,8 @@ function drawNotices() {
 function noticeMenu() {
     const menu = $("notice-menu");
     if (!menu.hidden) { menu.hidden = true; return; }
-    const draw = () => menu.replaceChildren(make("h3", {}, "Notices over the map"), noticeChecklist(make, prefs),
+    const draw = () => menu.replaceChildren(make("h3", {}, "A click on a destination, with an army selected"), marchChoice(make, marchClick, (v) => { marchClick = v; }),
+        make("h3", {}, "Notices over the map"), noticeChecklist(make, prefs),
         make("div", { class: "row" },
             make("button", { onclick: () => { resetNotices(); prefs = loadNotices(); draw(); } }, "Defaults for this screen"),
             make("button", { class: "primary", onclick: () => { menu.hidden = true; } }, "Done")),

@@ -1,9 +1,10 @@
 // Customize (a section of the shell, shell.js): the colours, dark or light — theme.js's choice, which keeps it in the browser
-// and applies it on every page — and which notices pop up in the game (notices.js), kept in the browser too. This page only
+// and applies it on every page — what a click with an army does and which notices pop up in the game (notices.js), kept in the
+// browser too. This page only
 // shows the two choices and changes them.
 import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
-import { loadNotices, noticeChecklist, resetNotices } from "./notices.js";
+import { loadMarch, loadNotices, marchChoice, noticeChecklist, resetNotices } from "./notices.js";
 
 const $ = (id) => document.getElementById(id);
 mountShell(await requireUser());
@@ -26,6 +27,9 @@ const make = (tag, props = {}, ...children) => {
     return e;
 };
 const drawNotices = () => $("notice-list").replaceChildren(noticeChecklist(make, loadNotices()));
+const drawMarch = () => $("march-choice").replaceChildren(marchChoice(make, loadMarch()));
+drawMarch();
+window.addEventListener("storage", (e) => { if (e.key === null || e.key === "lorconquest.march") drawMarch(); });
 $("notice-reset").addEventListener("click", () => { resetNotices(); drawNotices(); });
 window.addEventListener("storage", (e) => { if (e.key === null || e.key === "lorconquest.notices") drawNotices(); });
 drawNotices();

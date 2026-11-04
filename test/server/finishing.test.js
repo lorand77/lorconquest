@@ -384,9 +384,9 @@ test("what the privacy page says is what the server does: no password or chat te
         assert.deepEqual(storing, ["notices.js", "theme.js"], "only theme.js and notices.js keep anything in the browser");
         const keys = (file) => [...new Set([...fs.readFileSync(path.join(js, file), "utf8").matchAll(/"(lorconquest\.[\w.]+)"/g)].map((m) => m[1]))];
         assert.deepEqual(keys("theme.js"), ["lorconquest.scheme"]);
-        assert.deepEqual(keys("notices.js"), ["lorconquest.notices"]);
+        assert.deepEqual(keys("notices.js"), ["lorconquest.notices", "lorconquest.march"]);
         assert.match(page, /light or the dark colours, in its local\s+storage/);
-        assert.match(page, /which notices pop up in the game[\s\S]*local storage too/);
+        assert.match(page, /which notices pop up in the game, or what a click with an army does[\s\S]*local storage too/);
         assert.equal((await fetch(server.baseUrl + "/privacy.html")).status, 200);
         assert.equal((await fetch(server.baseUrl + "/terms.html")).status, 200);
     } finally {

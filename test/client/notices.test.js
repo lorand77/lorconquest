@@ -48,3 +48,15 @@ test("at most a few notices at once, newest last; the same one again counts up a
     assert.deepEqual(list.map((n) => n.text), ["plague in Bavaria", "Saxony accepts"], "past the cap the oldest go");
     assert.deepEqual(pushNotice(list, "later", "war", 9000, { max: 2, ms: 3000 }).map((n) => n.text), ["later"], "the ones out of time are gone");
 });
+
+test("a click on a destination with an army: ask, march at once, or march and storm at once — storming only an enemy town", async () => {
+    const { MARCH_KEY, loadMarch, saveMarch, marchFor } = await import("../../public/js/notices.js");
+    const store = new Map(), storage = { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) };
+    assert.equal(loadMarch(storage), "ask", "unless chosen, it asks");
+    saveMarch("storm", storage);
+    assert.deepEqual([store.get(MARCH_KEY), loadMarch(storage)], ["storm", "storm"]);
+    store.set(MARCH_KEY, "nonsense");
+    assert.equal(loadMarch(storage), "ask");
+    assert.equal(marchFor("ask", true), "ask");
+    assert.deepEqual([marchFor("march", true), marchFor("storm", true), marchFor("storm", false)], [{ storm: false }, { storm: true }, { storm: false }]);
+});
