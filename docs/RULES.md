@@ -159,7 +159,8 @@ interest, research or debt — whatever its treasury or loans stood at when its 
 | Cores | **every starting settlement is core** |
 
 **Capital.** Each country starts with the capital its scenario names — a city if it owns one. If
-the capital is lost, name a new one from any city you own; if you own no city, any settlement.
+the capital is lost, name a new one from any city you own; if you own no city, any settlement. Take back the capital you
+began with — by storm, siege or peace — and it is your capital again at once.
 The capital trains soldiers twice as fast as other settlements (§8).
 
 **Ships** start as cogs, in one fleet, in the capital's port — or, if the capital is not a port, in the

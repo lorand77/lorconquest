@@ -213,3 +213,16 @@ test("the historical scenario opens with its four wars and thirteen agreements",
     assert.equal(Object.values(game.state.countries).every((c) => c.warmonger === 0), true);
     assert.equal(isCore(game.state, game.state.settlements[1], "NOR"), true);
 });
+
+test("the capital a country began with, taken back, is its capital again at once — after another was named meanwhile", () => {
+    const game = tinyGame(), st = game.state;
+    order(game, cmd("BBB", "declareWar", { target: "AAA" }));
+    capture(game, st.settlements[1], "BBB", [], "storm");                       // AAA's capital, One, falls
+    assert.equal(st.countries.BBB.capital, 4, "not BBB's: its own stays");
+    order(game, cmd("AAA", "setCapital", { settlement: 2 }));
+    assert.equal(st.countries.AAA.capital, 2);
+    const events = [];
+    capture(game, st.settlements[1], "AAA", events, "storm");                   // taken back
+    assert.equal(st.countries.AAA.capital, 1);
+    assert.deepEqual(ofType(events, "capital").map((e) => [e.country, e.settlement]), [["AAA", 1]]);
+});
