@@ -36,6 +36,8 @@ export default {
     // a player away this long has their country played by the full computer player (a caretaker until then)
     SETUP_MS: intEnv("SETUP_MS", 60 * 1000),
     AWAY_MS: intEnv("AWAY_MS", 2 * 60 * 1000),
+    // a game with several people that has nobody in it pauses, and waits this long for one of them to come back before it ends
+    EMPTY_MS: intEnv("EMPTY_MS", 10 * 60 * 1000),
     // a single-player game whose player has gone is let go from memory after this long, and brought back when they return
     IDLE_MS: intEnv("IDLE_MS", 10 * 60 * 1000),
     // the proxy in front of the server (Caddy): how many hops to trust for the client's address, which the login throttle

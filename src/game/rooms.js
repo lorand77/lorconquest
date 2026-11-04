@@ -11,7 +11,8 @@
 //   * a player who is away — no socket in the game — has a caretaker at once, and the full computer player after AWAY_MS;
 //   * one who comes back has their country back at once, whichever of the two had it;
 //   * one who quits gives it to the full computer player for good;
-//   * when every player has quit or been away over AWAY_MS the game is over: finished and ranked if any of them had been
+//   * when nobody is in it (all away, or a restart) it pauses and waits EMPTY_MS (10 minutes) for one of them: the first back
+//     sets it going; nobody back in time, or every player quit, and it is over: finished and ranked if any of them had been
 //     eliminated (the last to leave counts as still in: results.js), abandoned otherwise;
 //   * a player whose country is eliminated (RULES.md §10) is out: they may watch to the end, but give no orders, and are placed
 //     after everyone still in. When every player's country is out the worker ends the game as a defeat, as it ends a
@@ -32,7 +33,7 @@ const CHAT_MAX = 300;
 // what one person may have at once: rooms waiting in the lobby, and games running (each is a worker thread)
 const MAX_TABLES = 3, MAX_RUNNING = 6;
 
-export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, maxHumans, idleMs, achievements }) {
+export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, emptyMs = 10 * 60 * 1000, maxHumans, idleMs, achievements }) {
     // a game's players ("game:<id>") and those watching it ("watch:<id>", socket.js): both hear the days, pauses, presence and
     // the end; only the players hear the chat, and each player alone their country's private part ("game:<id>:<country>")
     const everyone = (room) => io.to([`game:${room.id}`, `watch:${room.id}`]);
@@ -212,7 +213,39 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         if (!room.multi || room.over || room.ending) return;
         const seats = [...room.seats.values()];
         if (seats.every((s) => s.state === "out")) return;
-        if (seats.some((s) => s.state === "present" || s.state === "away")) return;
+        if (seats.some((s) => s.state === "present")) return;
+        // nobody in it, but some may come back (away, or played by the computer meanwhile): it pauses and waits EMPTY_MS
+        if (seats.some((s) => s.state === "away" || s.state === "full")) { waitForPlayers(room); return; }
+        endGame(room);
+    }
+
+    // a game with nobody in it stands still and waits for one of its players; the first back sets it going (attach)
+    function waitForPlayers(room) {
+        if (room.emptyTimer) return;
+        setPaused(room, true);
+        room.emptyUntil = Date.now() + emptyMs;
+        room.emptyTimer = later(room, emptyMs, () => {
+            room.emptyTimer = null;
+            room.emptyUntil = 0;
+            if (![...room.seats.values()].some((s) => s.state === "present")) endGame(room);
+        });
+        log.info("game.empty", { game: room.id, day: room.day, wait_ms: emptyMs });
+        tellLobby();
+    }
+    function stopWaiting(room) {
+        if (!room.emptyTimer) return;
+        clearTimeout(room.emptyTimer);
+        room.timers.delete(room.emptyTimer);
+        room.emptyTimer = null;
+        room.emptyUntil = 0;
+        if (!room.setupUntil || room.setupUntil <= Date.now()) setPaused(room, false);         // (the setup minute keeps its own clock)
+        tellLobby();
+    }
+
+    // no player left to come back: finished and ranked if some were eliminated, abandoned otherwise
+    function endGame(room) {
+        if (room.over || room.ending) return;
+        const seats = [...room.seats.values()];
         room.ending = true;
         if (seats.some((s) => s.state === "out")) {
             log.info("game.left", { game: room.id, day: room.day });
@@ -268,6 +301,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             seat.state = "present";
             tell(room, seat);
             log.info("game.seat_back", { game: room.id, country: seat.country });
+            if (room.multi) stopWaiting(room);
         }
         return { seat };
     }
@@ -297,6 +331,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         seat.timer = later(room, awayMs, () => becomeFull(room, seat));
         tell(room, seat);
         log.info("game.seat_away", { game: room.id, country: seat.country });
+        checkEnd(room);                                             // the last one here gone: the game waits for them
     }
 
     // a player gives their country to the computer for good
@@ -323,10 +358,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             const snap = db.q.snapshot.get(row.id);
             const commands = db.q.commandsFrom.all(row.id, snap ? snap.day : 0).map((c) => ({ day: c.day, cmd: JSON.parse(c.cmd) }));
             const room = launch(row, { snapshot: snap ? snap.state : null, commands });
-            // a multiplayer game does not pause: it runs on at once, and its players are away until they are back
+            // a multiplayer game comes back with every player away: it waits for them (EMPTY_MS), and runs again when one is back
             room.ready.then(() => {
                 log.info("game.resumed", { game: row.id, day: row.day, from: snap ? snap.day : 0, commands: commands.length });
-                if (room.multi) setPaused(room, false);
+                if (room.multi) checkEnd(room);
             }, () => {});
             return room;
         } catch (err) {
@@ -448,7 +483,12 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             // two or more people: the clock stands still for a minute (RULES.md §1), then runs for good
             if (room.multi) {
                 room.setupUntil = Date.now() + setupMs;
-                later(room, setupMs, () => { room.setupUntil = 0; if (!room.over && !room.ending) setPaused(room, false); });
+                later(room, setupMs, () => {
+                    room.setupUntil = 0;
+                    if (room.over || room.ending) return;
+                    if ([...room.seats.values()].some((s) => s.state === "present")) setPaused(room, false);
+                    else checkEnd(room);                            // nobody has opened it yet: it waits for them
+                });
             }
             log.info("game.started", { game: row.id, scenario: row.scenario, humans: [...room.seats.keys()], multi: room.multi });
             for (const s of room.seats.values()) io.to(`user:${s.userId}`).emit("table:started", { id: row.id });
@@ -538,6 +578,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         gamesOf: (userId) => db.q.gamesOf.all(userId).map((g) => ({
             id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated,
             place: g.place, out: g.out_day !== null, live: live.has(g.id), paused: Boolean(g.paused),
+            // a game with nobody in it, waiting for its players: the milliseconds left before it ends
+            waiting: live.get(g.id)?.emptyUntil ? Math.max(0, live.get(g.id).emptyUntil - Date.now()) : null,
         })),
 
         seatOf: (id, userId) => db.q.seatOfUser.get(Number(id), userId)?.country ?? null,

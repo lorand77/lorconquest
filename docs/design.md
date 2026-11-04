@@ -688,6 +688,10 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   private part, no questions waiting), the days, pauses, presence and the end — never the chat or a player's private changes
   (they go to `game:<id>` and `game:<id>:<country>`, a watcher is in `watch:<id>`) — the Map and Events tabs only (the news of
   the people's countries), no orders, and at the end Game over with who won. Watching counts as online, not playing.
+- **Rejoining:** a player may come back to a game going on at any time (the caretaker, then the full computer player, has
+  their country meanwhile). A game with nobody in it — every player away, or just resumed after a restart — pauses and waits
+  `EMPTY_MS` (10 minutes); the first back sets it going. The lobby shows each game of several people one is in at the top of
+  Play, with **Rejoin**, and for one that waits, how long it has left (`/api/games`, `waiting`; `lobby.js`, `drawRejoin`).
 - **Rooms for friends:** a room (and the game it becomes) is public or the host's friends' (`games.visibility`, chosen in the
   New game form — "Who can see it" — and switched by the host while the room waits). A friends' room is seen in the lobby, joined
   and its game watched only by the host, the host's friends and whoever has a seat — the server refuses anyone else, not only the

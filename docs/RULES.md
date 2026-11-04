@@ -33,8 +33,10 @@ there are no pauses.
   armies the country already has and joins wars its allies call it into, but buys nothing,
   declares no war, makes no peace and signs no agreement. After **2 minutes** away the full
   computer player takes over. A player who comes back takes their country back at once.
-- **The game ends when no human player is left** — every one has quit, or been away longer
-  than 2 minutes. If any of them had been eliminated, it ends **finished**, with no winner, and the people are placed by how
+- **A game nobody is in waits.** When every player is away (lost connection, closed the page, a restart of the server),
+  the clock stops and the game waits **10 minutes** for one of them; the first back sets it going again, and the others can
+  still come back later. A player may rejoin a game going on at any time, and has their country back at once.
+- **The game ends when no human player is left** — every one has quit, or nobody came back within those 10 minutes. If any of them had been eliminated, it ends **finished**, with no winner, and the people are placed by how
   long they lasted: the last to leave as still in (first among them), then the eliminated, the later to fall first, then any
   who quit earlier. Otherwise it is **abandoned**: no winner and no places.
 

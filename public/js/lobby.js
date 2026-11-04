@@ -8,7 +8,7 @@ import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
 import * as Friends from "./friends.js";
 import { toast as achievementToast } from "./achievements.js";
-import { gameLine, tableActions } from "./lobbylogic.js";
+import { formatCountdown, gameLine, tableActions } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
@@ -29,6 +29,7 @@ const post = async (url, body = {}) => {
 const [me, scenarios] = await Promise.all([requireUser(), fetch("/api/scenarios").then((r) => r.json())]);
 mountShell(me);
 const scenarioOf = (id) => scenarios.find((s) => s.id === id);
+let rejoinTimer = null;                                  // the countdown of a game waiting for its players (drawRejoin)
 const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === code)?.name ?? code;
 // a country's people at the start, as the lists show them: "50K"
 const popOf = (id, code) => `${(scenarioOf(id)?.countries.find((c) => c.code === code)?.pop ?? 0) / 1000}K`;
@@ -93,6 +94,7 @@ async function refresh() {
     if (!live.length) $("live").textContent = "None right now.";
     $("tables").replaceChildren(...tables.map(tableItem));
     if (!tables.length) $("tables").textContent = "None. Open one above.";
+    drawRejoin(games);
     const going = games.filter((g) => g.status === "active");                 // a room not yet started is under Rooms
     $("games").replaceChildren(...going.map((g) => {
         const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day), nameOf(g.scenario, g.winner));
@@ -124,3 +126,24 @@ socket.on("table:started", (m) => { location.href = `/game.html?id=${m.id}`; });
 socket.on("table:cancelled", refresh);
 socket.on("connect_error", (e) => { if (e.message === "sign in first") location.href = "/login.html"; });
 refresh();
+
+// ---------- your games with other people, going on now ----------
+// each a card at the top of the page with Rejoin — and, for one that has nobody in it and is waiting for its players, how long
+// it waits before it ends (rooms.js, EMPTY_MS), counted down here
+function drawRejoin(games) {
+    const mine = games.filter((g) => g.status === "active" && g.people > 1);
+    const fetched = performance.now();
+    const draw = () => $("rejoin").replaceChildren(...mine.map((g) => {
+        const left = g.waiting === null || g.waiting === undefined ? null : g.waiting - (performance.now() - fetched);
+        const where = `${nameOf(g.scenario, g.country)} · ${scenarioOf(g.scenario)?.name ?? g.scenario} · ${g.people} people · ${longDate(g.day)}`;
+        return make("div", { class: `rejoin${left !== null ? " waiting" : ""}` },
+            make("div", { class: "rejoin-text" },
+                make("b", {}, left !== null ? "⏸ Your game is waiting for its players" : "⚔ Your game is going on"),
+                make("span", {}, where),
+                left !== null ? make("span", { class: "rejoin-wait" }, left > 0 ? `Nobody is in it: back within ${formatCountdown(left)}, or it ends.` : "Nobody came back: it is ending.") : ""),
+            make("a", { class: "button-link primary", href: `/game.html?id=${g.id}` }, "Rejoin"));
+    }));
+    draw();
+    clearInterval(rejoinTimer);
+    if (mine.some((g) => g.waiting !== null && g.waiting !== undefined)) rejoinTimer = setInterval(draw, 1000);
+}

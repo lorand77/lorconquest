@@ -218,7 +218,7 @@ test("a player who quits gives the country to the computer for good", async () =
 });
 
 test("the game ends when no player is left: all quit, or all away too long", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 0, awayMs: 1000 });
+    const server = await startServer({ dbPath: tempDb(), setupMs: 0, awayMs: 1000, emptyMs: 300 });
     try {
         // one quits, the other is away too long
         let id = await makeTable(server, ALICE_BOB);
@@ -248,7 +248,7 @@ test("the game ends when no player is left: all quit, or all away too long", asy
     }
 });
 
-test("a game of several people survives a restart: it runs on at once, every player away until they are back", async () => {
+test("a game of several people survives a restart: it waits, every player away, and runs again as soon as one is back", async () => {
     const dbPath = tempDb();
     let server = await startServer({ dbPath, setupMs: 0, awayMs: 100000 });
     let id, dayBefore;
@@ -268,13 +268,15 @@ test("a game of several people survives a restart: it runs on at once, every pla
     try {
         await until(() => server.app.rooms.get(id), "the game to come back");
         assert.equal(status(server, id), "active");
+        await until(() => server.app.rooms.get(id).emptyUntil > 0, "the game to wait for its players");
+        await until(() => server.app.rooms.get(id).paused, "nobody in it: it stands still");
         const a = await connect(server, "alice");
         const joined = await emitAck(a, "join", { gameId: id });
         assert.deepEqual([joined.ok, joined.me, joined.multi, joined.view.countries.BAV.tax], [true, "BAV", true, 2.5]);
         assert.deepEqual(joined.seats.map((s) => [s.country, s.state]), [["BAV", "present"], ["ULM", "away"]]);
         const ticks = [];
         a.on("tick", (t) => ticks.push(t.day));
-        await until(() => ticks.length > 30, "the game to run without anyone pressing play");
+        await until(() => ticks.length > 30, "the game to run again with one player back, without anyone pressing play");
         assert.ok(ticks[0] >= dayBefore - 5, "from where it stood");
         const b = await connect(server, "bobby");
         assert.equal((await emitAck(b, "join", { gameId: id })).me, "ULM");
@@ -327,6 +329,28 @@ test("someone watching a game with people in it sees who plays and how they stan
         const seen = waitFor(lobby, "online", (list) => list.some((p) => p.username === "carol"));
         await emitAck(lobby, "lobby:enter", {});
         assert.equal((await seen).find((p) => p.username === "carol").playing, false);
+    } finally {
+        await server.close();
+    }
+});
+
+test("a game everyone has left for now waits for them, paused, and is in the lobby with how long; the first back sets it going", async () => {
+    const server = await startServer({ dbPath: tempDb(), setupMs: 0, awayMs: 100000, emptyMs: 100000 });
+    try {
+        const id = await makeTable(server, ALICE_BOB);
+        const [a, b] = await play(server, id, ALICE_BOB);
+        a.socket.close();
+        b.socket.close();
+        await until(() => server.app.rooms.get(id)?.emptyUntil > 0, "the game to wait");
+        await until(() => server.app.rooms.get(id).paused, "the game to stand still");
+        const listed = (await api(server, "GET", "/api/games", null, "alice")).body.find((g) => g.id === id);
+        assert.ok(listed.status === "active" && listed.waiting > 90000 && listed.waiting <= 100000, `waiting ${listed.waiting}`);
+        // bobby is back: it runs again, and waits no more
+        const socket = await connect(server, "bobby");
+        assert.equal((await emitAck(socket, "join", { gameId: id })).ok, true);
+        await until(() => !server.app.rooms.get(id).paused, "the game to run again");
+        assert.equal(server.app.rooms.get(id).emptyUntil, 0);
+        assert.equal((await api(server, "GET", "/api/games", null, "bobby")).body.find((g) => g.id === id).waiting, null);
     } finally {
         await server.close();
     }
