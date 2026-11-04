@@ -50,6 +50,20 @@ export function rivalsOf(game, code) {
 export const forcePower = (armies) => (armies.length ? power(combine(armies), 1.4) : 0);
 export const armyPower = (army) => forcePower([army]);
 
+// the chance that power `a` beats power `b` (defence and walls already in it) on the rules' dice: each side's power × 2d6+4
+// (RULES.md §5), `tieToA` deciding equal power — every pair of throws weighed, nothing drawn from the game's dice
+const ROLLS = (() => { const n = new Map(); for (let x = 1; x <= 6; x++) for (let y = 1; y <= 6; y++) n.set(x + y + 4, (n.get(x + y + 4) ?? 0) + 1); return [...n]; })();
+export function winChance(a, b, tieToA = false) {
+    if (a <= 0) return 0;
+    if (b <= 0) return 1;
+    let won = 0;
+    for (const [ra, wa] of ROLLS) for (const [rb, wb] of ROLLS) {
+        const pa = a * ra, pb = b * rb;
+        if (pa > pb || (pa === pb && tieToA)) won += wa * wb;
+    }
+    return won / 1296;
+}
+
 // a front-runner, racing for the win (design.md, "The computer players"): one that holds 60% of the scenario's settlements to
 // win, or, in the last 30 years before its end year, one of the two ahead (as victory counts them: SCENARIO.md, Victory)
 export function racing(game, code) {

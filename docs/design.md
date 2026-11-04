@@ -294,7 +294,13 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   much weaker neighbours, the Empire proposed once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
   come home) are merged at the end of each think, the smallest into the largest, down to three — none given another order that
   think (`forces.js`, `tidyOrders`). A settlement every route from which leads to its own land (or a subject's or its overlord's) keeps no garrison — not
-  the capital, nor while its own peasants are up — and its idle armies march to the staging settlement (`util.js`, `inland`). To a human it asks once a year, and
+  the capital, nor while its own peasants are up — and its idle armies march to the staging settlement (`util.js`, `inland`).
+  A host on the march re-weighs its odds at every think and look: the enemy armies where it is going, those that get there
+  first, and for a storm the garrison behind its walls, against its own — and turns back, to the town it came from or its
+  staging settlement, once they are clearly worse than any it would set out at (`war.js`, `turnBacks`: under 0.5–0.7 of the
+  enemy's power, by character). And every day, a besieged town of its that falls tomorrow makes a last sortie if the dice give
+  its garrison a fair chance, at least 25% (`lastSorties`; `util.js`, `winChance`, which weighs every throw of the rules' dice
+  and draws none). To a human it asks once a year, and
   not while a question stands.
 - **Reflexes:** the country looks at its war again on the tick after a siege begins or a war is declared or joined
   or a battle is fought involving it.

@@ -8,7 +8,7 @@
 import { mayFight } from "../engine/battle.js";
 import { CREW_PER_CANNON, armyList, besiegedIn, isFriend, isRebel, routeFor, situation, siegeDays, wallDefence } from "../engine/index.js";
 import { WEAPONS } from "../engine/army.js";
-import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf } from "./util.js";
+import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf, winChance } from "./util.js";
 
 // a garrison's defence in a storm against `guns` cannons (RULES.md §5): ×1.2, or behind walls ×1.8 less 0.3 a hundred × x
 const wallsFactor = (game, s, guns = 0) => wallDefence(s.walls, guns, game.map.x);
@@ -50,6 +50,52 @@ export function sorties(game, code, out) {
     }
 }
 
+// the day before a siege of ours ends — the town would fall, and its garrison be sent home — a last sortie, if the dice give it a
+// fair chance (LAST_SORTIE): won, the besiegers are driven off; lost, the men fall back inside with their losses, and the town
+// falls as it was going to. Checked every day (index.js), for the day matters.
+const LAST_SORTIE = 0.25;
+export function lastSorties(game, code, out) {
+    const st = game.state;
+    for (const b of besiegedOwn(game, code)) {
+        if (b.s.siege.end - st.day !== 1 || !b.garrison.length || !b.hostile.length) continue;
+        const mine = b.garrison.filter((a) => a.owner === code);
+        if (!mine.length || !mayFight(st, mine, b.hostile)) continue;
+        // a sortie is fought in the open, no walls; the garrison wins a tie
+        if (winChance(forcePower(b.garrison), forcePower(b.hostile), true) >= LAST_SORTIE) out.push({ type: "sortie", country: code, army: mine[0].id });
+    }
+}
+
+// A host on the march re-weighs its odds as it goes: what it will meet where it is going — the enemy armies there, those on
+// their way that get there first, and for a storm the garrison behind its walls — against what goes with it. Badly outmatched
+// (TURN_BACK, by its character: worse odds than any it would set out at, so it does not turn back and forth), it turns back
+// to the town of its own or a friend's it came from, or else to its staging settlement.
+const TURN_BACK = (fl) => 0.5 + 0.2 * (1 - fl.aggression);
+export function turnBacks(game, code, fl, out) {
+    const st = game.state, staging = stagingSettlement(game, code);
+    const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.march?.to ?? a.at);
+    const friendlyTown = (k) => st.settlements[game.map.nodes.get(k)?.kind === "settlement" ? game.map.nodes.get(k).id : -1] && isFriend(st, code, st.settlements[game.map.nodes.get(k).id].owner);
+    for (const a of ownArmies(st, code)) {
+        if (!a.march || a.retreating || out.some((o) => o.army === a.id)) continue;            // (one order an army a think)
+        const dest = destinationOf(a);
+        if (!dest || friendlyTown(dest) && !situation(game, dest).hostile.length) continue;      // going home, or to a quiet town of ours
+        const route = routeFor(game, a, dest);
+        if (!route) continue;
+        const arrive = st.day + route.days;
+        const enemyThere = (e) => enemiesOf(st, code).includes(e.owner) && (e.at === dest || (destinationOf(e) === dest && e.march && e.march.end <= arrive + 5));
+        const theirs = armyList(st).filter(enemyThere);
+        const ours = ownArmies(st, code).filter((x) => x === a || (destinationOf(x) === dest && !x.retreating));
+        const node = game.map.nodes.get(dest), s = node.kind === "settlement" ? st.settlements[node.id] : null;
+        // a storm meets the garrison behind its walls; a siege, only the armies in the field (relief) and a sortie's worth of it
+        const garrison = s && enemiesOf(st, code).includes(s.owner) ? theirs.filter((e) => e.at === dest && e.owner === s.owner && !e.relief) : [];
+        const field = theirs.filter((e) => !garrison.includes(e));
+        const against = forcePower(field) + forcePower(garrison) * (a.storm ? wallsFactor(game, s, ours.reduce((n, x) => n + x.cannons, 0)) : 1);
+        if (against <= 0 || forcePower(ours) >= TURN_BACK(fl) * against) continue;
+        const from = a.march?.from && friendlyTown(a.march.from) ? a.march.from : null;
+        const home = from ?? (staging ? String(staging.id) : null);
+        if (home && home !== dest) out.push({ type: "move", country: code, army: a.id, to: home, storm: false });
+    }
+}
+
 // idle armies of ours outside the garrisons, grouped by the place they stand in; one shut in a besieged settlement may only sortie
 function hostsOf(game, code) {
     const st = game.state;
@@ -68,6 +114,7 @@ function hostsOf(game, code) {
 export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false, thinned = new Set() } = {}) {
     const st = game.state, out = [], foes = new Set(enemiesOf(st, code));
     sorties(game, code, out);
+    if (!defend) turnBacks(game, code, fl, out);               // marches against odds that have turned hopeless
     // an army marching into the land of a country it is no longer at war with, nor friendly with (a peace made on the way),
     // stops at the next place
     if (!defend) for (const a of ownArmies(st, code)) {

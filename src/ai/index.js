@@ -23,7 +23,7 @@ function holdsSmallLead(game, code) {
     const table = scores(game.state), second = order[1] ? table[order[1]].settlements : 0;
     return table[code].settlements < 1.25 * second;
 }
-import { warOrders } from "./war.js";
+import { lastSorties, warOrders } from "./war.js";
 
 // what, from a day's events, a country should look at again at once
 function touched(game, events) {
@@ -91,8 +91,13 @@ export function createAI({ seed, humans = [] }) {
                 if (!mode) continue;
                 const source = human ? "caretaker" : "computer";
                 const give = (cmds) => { for (const cmd of cmds) out.push({ country: code, source, cmd }); };
+                const before = out.length;
                 if (thinksOn(code, st.day)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : think(game, code));
                 else if (wake.has(code) || followUp.has(code)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) }));
+                // every day, whether it thinks or not: a besieged town of its about to fall makes a last sortie (war.js, lastSorties)
+                const last = [];
+                lastSorties(game, code, last);
+                give(last.filter((o) => !out.slice(before).some((x) => x.cmd.army === o.army)));
             }
             return out;
         },

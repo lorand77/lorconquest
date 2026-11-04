@@ -14,7 +14,8 @@ import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
 import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
 import { economyOrders } from "../../src/ai/economy.js";
 import { fleetsHome, forceOrders, tidyOrders, MAX_AT_ONCE } from "../../src/ai/forces.js";
-import { garrisonFloor, inland } from "../../src/ai/util.js";
+import { garrisonFloor, inland, winChance } from "../../src/ai/util.js";
+import { lastSorties, turnBacks } from "../../src/ai/war.js";
 import { THINK_DAYS, dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 import { check } from "../helpers/invariants.js";
@@ -568,4 +569,46 @@ test("a settlement every route from which leads to the country's own land keeps 
     st.wars.push("AAA|R1");
     assert.equal(inland(game, "AAA", one), false);
     assert.ok(garrisonFloor(game, "AAA", one) > 0);
+});
+
+test("the chance of winning a battle is worked out on the rules' dice, never rolled", () => {
+    assert.equal(winChance(100, 100, true) > 0.5 && winChance(100, 100, false) < 0.5, true, "even powers: the tie decides");
+    assert.ok(Math.abs(winChance(100, 100, true) + winChance(100, 100, false) - 1) < 1e-12);
+    assert.ok(winChance(200, 100) > 0.9 && winChance(100, 300) === 0, "16 × 100 never beats 6 × 300");
+    assert.deepEqual([winChance(0, 5), winChance(5, 0)], [0, 1]);
+});
+
+test("a garrison whose town falls tomorrow makes a last sortie if the dice give it a fair chance, and not if they do not", () => {
+    const setUp = (garrison) => {
+        const game = tinyGame(), st = game.state;
+        game.command({ type: "declareWar", country: "BBB", target: "AAA" });
+        setArmy(game, 2, { swords: garrison });                               // AAA's garrison at Two
+        Object.assign(st.armies[4], { at: "2", arrived: st.day });            // BBB's 800 outside it
+        st.settlements[2].siege = { by: "BBB", end: st.day + 1 };
+        return game;
+    };
+    const out = (game) => { const o = []; lastSorties(game, "AAA", o); return o; };
+    assert.deepEqual(out(setUp(700)), [{ type: "sortie", country: "AAA", army: 2 }], "700 against 800: about even");
+    assert.deepEqual(out(setUp(150)), [], "150 against 800: hopeless — they go home when it falls");
+    const early = setUp(700);
+    early.state.settlements[2].siege.end += 30;
+    assert.deepEqual(out(early), [], "not yet: the town does not fall tomorrow");
+});
+
+test("a host marching against odds that have turned hopeless turns back to the town it came from", () => {
+    const game = tinyGame(), st = game.state;
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+    setArmy(game, 2, { swords: 2000 });
+    game.command({ type: "move", country: "AAA", army: 2, to: "4" });           // Two to Four, 110 days
+    for (let i = 0; i < 10; i++) game.advance();
+    const fl = { aggression: 0.5 };
+    let out = [];
+    turnBacks(game, "AAA", fl, out);
+    assert.deepEqual(out, [], "800 in Four: worth going on");
+    setArmy(game, 4, { swords: 20000 });                                       // Four is reinforced
+    out = [];
+    turnBacks(game, "AAA", fl, out);
+    assert.deepEqual(out, [{ type: "move", country: "AAA", army: 2, to: "2", storm: false }]);
+    assert.equal(game.command(out[0]).ok, true);
+    assert.equal(st.armies[2].march.to, "2", "turned round on the road");
 });
