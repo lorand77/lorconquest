@@ -211,12 +211,17 @@ function peaceForm(ctx, t) {
         return [s.id, box, mk("label", { class: "check" }, box, ` ${label(s)}`)];
     });
     const takes = checks(theirs, (s) => `${town(ctx, s.id)} (${n(s.pop)})`, draft.take), gives = checks(mine, (s) => `${town(ctx, s.id)} (${n(s.pop)})`, draft.give);
-    const money = mk("input", { type: "number", step: 1000, value: draft.money });
+    // money either way: who pays, and how much (a positive amount; the terms keep it signed, + they pay you)
+    const payer = mk("select", {}, mk("option", { value: "they", selected: draft.money >= 0 ? "selected" : undefined }, "They pay you"),
+        mk("option", { value: "you", selected: draft.money < 0 ? "selected" : undefined }, "You pay them"));
+    const money = mk("input", { type: "number", min: 0, step: 1000, value: Math.abs(draft.money) });
+    const treasury = state.countries[me].treasury ?? 0;
+    const offer = (share) => () => { payer.value = "you"; money.value = String(Math.floor(Math.max(0, treasury) * share / 1000) * 1000); update(); };
     const subject = mk("select", {}, ...[["", "no subject"], ["makeSubject:vassal", `${them.name} becomes your vassal`], ["makeSubject:protectorate", `${them.name} becomes your protectorate`],
         ["becomeSubject:vassal", `you become ${them.name}'s vassal`], ["becomeSubject:protectorate", `you become ${them.name}'s protectorate`]].map(([v, l]) => mk("option", { value: v, selected: v === draft.subject ? "selected" : undefined }, l)));
     const preview = mk("p", { class: "preview" }, "");
     const terms = () => {
-        const t2 = { take: takes.filter(([, b]) => b.checked).map(([id]) => id), give: gives.filter(([, b]) => b.checked).map(([id]) => id), money: Number(money.value) || 0 };
+        const t2 = { take: takes.filter(([, b]) => b.checked).map(([id]) => id), give: gives.filter(([, b]) => b.checked).map(([id]) => id), money: (payer.value === "you" ? -1 : 1) * Math.max(0, Number(money.value) || 0) };
         if (subject.value) { const [k, v] = subject.value.split(":"); t2[k] = v; }
         return t2;
     };
@@ -233,6 +238,7 @@ function peaceForm(ctx, t) {
     };
     for (const [, b] of [...takes, ...gives]) b.addEventListener("change", update);
     money.addEventListener("input", update);
+    payer.addEventListener("change", update);
     subject.addEventListener("change", update);
     update();
     const giveBox = mk("details", { open: draft.giveOpen ? "open" : undefined }, mk("summary", {}, "Give to them"), mk("div", { class: "checks" }, ...gives.map((x) => x[2])));
@@ -240,7 +246,9 @@ function peaceForm(ctx, t) {
     return [section(ctx, `Peace with ${them.name}`,
         mk("details", { open: "open" }, mk("summary", {}, `Take from ${them.name}`), mk("div", { class: "checks" }, ...takes.map((x) => x[2]))),
         giveBox,
-        row(ctx, mk("label", {}, "Money (+ they pay you) "), money),
+        row(ctx, payer, money),
+        row(ctx, mk("span", { class: "hint" }, `Your treasury: ${n(treasury)}. Offer `),
+            mk("button", { onclick: offer(0.25) }, "¼"), mk("button", { onclick: offer(0.5) }, "½"), mk("button", { onclick: offer(1) }, "all")),
         row(ctx, subject),
         preview,
         mk("button", { class: "primary", onclick: async () => { const r = await ctx.send({ type: "proposePeace", with: t, terms: terms() }); if (r.ok) { ctx.ui.peace = null; ctx.redraw(); } } }, "Propose peace"),

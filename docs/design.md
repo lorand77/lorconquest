@@ -733,7 +733,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   war scores, the agreements held (with Break and Cancel), the player's subjects and overlord, and a country to deal
   with, picked from a list or by clicking its land. For it the tab shows who it is at war with and since when, its opinion of the player, who would join each
   side of a war and what a declaration breaks, each agreement with whether the computer is likely to accept and why,
-  the chance of a demand, for its own vassal an Integrate button (with why not, until it may), and a **peace form**: tick the settlements to take or give, money, a subject —
+  the chance of a demand, for its own vassal an Integrate button (with why not, until it may), and a **peace form**: tick the settlements to take or give, money either way (who pays — they or you — and how much, with a quarter, half or all of
+  the treasury at a click), a subject —
   and the computer's own answer shown as you edit. The Empire has a section of its own, whoever is picked: how much of
   it the player holds, a button that dims every land outside it on the map, each demand made and what came of it (the
   proposer's protectorates in it now, the League as it stands), and — once they hold enough of it — the player's own

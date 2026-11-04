@@ -116,6 +116,23 @@ test("at war: the war score, and a peace form whose preview is the computer's ow
     assert.match(textOf(find(nodes, (e) => e.tag === "section" && e.text.includes("Agreements"))), /Not while at war/);
 });
 
+test("a peace can give money as well as ask it: who pays, how much — and a quarter, half or all of the treasury at a click", async () => {
+    const { ctx, sent } = setup((game) => { game.command({ type: "declareWar", country: "BAV", target: "ULM" }); });
+    const nodes = diplomacyTab({ ...ctx, ui: { target: "ULM" } });
+    const payer = find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "you"))[0];
+    const money = find(nodes, (e) => e.attrs.type === "number")[0];
+    assert.match(textOf(nodes), /Your treasury: 100,000\. Offer/);
+    payer.value = "you";
+    money.value = "5000";
+    await payer.handlers.change();
+    await button(nodes, "Propose peace").handlers.click();
+    assert.deepEqual(sent.at(-1).terms.money, -5000, "you pay them: the terms' money is negative");
+    await button(nodes, "½").handlers.click();
+    assert.deepEqual([payer.value, money.value], ["you", "50000"]);
+    await button(nodes, "Propose peace").handlers.click();
+    assert.equal(sent.at(-1).terms.money, -50000);
+});
+
 test("agreements you hold can be broken or cancelled; a vassal is not dealt with; the Empire asks for enough settlements", async () => {
     const { ctx, sent } = setup((game) => {
         game.state.agreements.push({ kind: "defensive", a: "BAV", b: "TYR", since: 0, until: null }, { kind: "access", a: "BAV", b: "AUS", since: 0, until: null },
