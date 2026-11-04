@@ -8,7 +8,7 @@
 import { mayFight } from "../engine/battle.js";
 import { CREW_PER_CANNON, armyList, besiegedIn, isFriend, isRebel, routeFor, situation, siegeDays, wallDefence } from "../engine/index.js";
 import { WEAPONS } from "../engine/army.js";
-import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf } from "./util.js";
+import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf } from "./util.js";
 
 // a garrison's defence in a storm against `guns` cannons (RULES.md §5): ×1.2, or behind walls ×1.8 less 0.3 a hundred × x
 const wallsFactor = (game, s, guns = 0) => wallDefence(s.walls, guns, game.map.x);
@@ -182,7 +182,8 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     if (muster && baseKey && !defend && !fl.defending) {            // a first holding its lead in the endgame keeps its men home
         for (const [key, g] of [...garrisons(st, code)].sort((x, y) => (x[0] < y[0] ? -1 : 1))) {
             const s = st.settlements[key];
-            if (!s || s.owner !== code || s.siege || g.march || thinned.has(g.id)) continue;
+            // (an inland settlement keeps nobody: its whole army marches to the staging settlement instead, forces.js, tidyOrders)
+            if (!s || s.owner !== code || s.siege || g.march || thinned.has(g.id) || inland(game, code, s)) continue;
             // only armed men leave, so only armed men count towards the floor that stays: never a garrison of unarmed men alone
             const armed = armedIn(g), excess = armed - garrisonFloor(game, code, s);
             if (excess < Math.max(400, 0.2 * armed)) continue;

@@ -14,6 +14,7 @@ import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
 import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
 import { economyOrders } from "../../src/ai/economy.js";
 import { fleetsHome, forceOrders, tidyOrders, MAX_AT_ONCE } from "../../src/ai/forces.js";
+import { garrisonFloor, inland } from "../../src/ai/util.js";
 import { THINK_DAYS, dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 import { check } from "../helpers/invariants.js";
@@ -550,4 +551,21 @@ test("armies piled up in a settlement are merged, the smallest into the largest,
     assert.equal(Object.values(st.armies).filter((a) => a.owner === "AAA" && a.at === "1").length, MAX_AT_ONCE);
     // an army given an order this think is left alone
     assert.deepEqual(tidyOrders(game, "AAA", new Set(Object.keys(st.armies).map(Number))), []);
+});
+
+test("a settlement every route from which leads to the country's own land keeps no garrison: its army marches to the staging settlement", () => {
+    const game = tinyGame(), st = game.state;
+    st.countries.AAA.capital = 2;                                              // One, AAA's own all round, is not the capital now
+    const one = st.settlements[1];
+    assert.equal(inland(game, "AAA", one), true);
+    assert.equal(garrisonFloor(game, "AAA", one), 0);
+    assert.equal(inland(game, "AAA", st.settlements[2]), false, "the capital keeps its garrison");
+    const orders = tidyOrders(game, "AAA");
+    assert.deepEqual(orders.filter((o) => o.army === 1).map((o) => o.type), ["move"]);
+    assert.notEqual(orders.find((o) => o.army === 1).to, "1");
+    // with its own peasants up, it keeps a garrison
+    st.countries.R1 = { code: "R1", name: "Rebels of AAA", capital: null, rebel: true, of: "AAA", treasury: 0, overlord: null, subjectKind: null, out: null };
+    st.wars.push("AAA|R1");
+    assert.equal(inland(game, "AAA", one), false);
+    assert.ok(garrisonFloor(game, "AAA", one) > 0);
 });

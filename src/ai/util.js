@@ -141,9 +141,19 @@ export function exposed(game, code, key) {
     });
 }
 
-// the men a settlement's garrison should keep: its starting 4% where an enemy could come from, 1.5% inland
+// a settlement that needs no garrison: every route from it leads to the country's own land (or a subject's or overlord's), it
+// is not the capital (where risings form), and no peasants of the country are up in arms (they make for undefended towns)
+export function inland(game, code, s) {
+    const st = game.state;
+    if (st.countries[code].capital === s.id || exposed(game, code, String(s.id))) return false;
+    return !enemiesOf(st, code).some((c) => st.countries[c].rebel && st.countries[c].of === code);
+}
+
+// the men a settlement's garrison should keep: its starting 4% where an enemy could come from, 1.5% at the capital or with
+// peasants up, none inland (inland)
 export function garrisonFloor(game, code, s) {
-    return (exposed(game, code, String(s.id)) ? 0.04 : 0.015) * s.pop;
+    if (exposed(game, code, String(s.id))) return 0.04 * s.pop;
+    return inland(game, code, s) ? 0 : 0.015 * s.pop;
 }
 
 // each own settlement's garrison army: the lowest-numbered army of the country standing in it (not outside its walls)

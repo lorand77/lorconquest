@@ -8,7 +8,8 @@
 import { menOf } from "../engine/army.js";
 import { CANNON_PRICE, MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
 import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf } from "../engine/index.js";
-import { exposed, ownArmies, ownSettlements, stagingSettlement, threatsOf } from "./util.js";
+import { exposed, inland, ownArmies, ownSettlements, stagingSettlement, threatsOf } from "./util.js";
+import { routeFor } from "../engine/index.js";
 import { threatRatio } from "./economy.js";
 
 const SHOT = ["muskets", "arquebuses", "handCannons"];
@@ -173,14 +174,21 @@ export function forceOrders(game, code, fl, ctx) {
     return out;
 }
 
-// Wherever more than MAX_AT_ONCE of the country's idle armies stand in one of its own settlements, the smallest are merged into
+// Armies idle in an inland settlement of the country (util.js, inland: no route from it leads to anyone else's land) march to
+// its staging settlement, where they are of use; then, wherever more than MAX_AT_ONCE of the country's idle armies stand in
+// one of its own settlements, the smallest are merged into
 // the largest until MAX_AT_ONCE are left: a garrison, a host and a raiding party, not a dozen bands. Only armies standing still,
 // on the same side of the walls, and given no other order this think (`busy`: their ids) — a merge after a move is refused.
 export const MAX_AT_ONCE = 3;
 export function tidyOrders(game, code, busy = new Set()) {
-    const st = game.state, out = [], places = new Map();
+    const st = game.state, out = [], places = new Map(), staging = stagingSettlement(game, code);
     for (const a of ownArmies(st, code)) {
         if (!a.at || a.retreating || a.march || a.path.length || busy.has(a.id) || st.settlements[a.at]?.owner !== code) continue;
+        const s = st.settlements[a.at];
+        if (staging && String(staging.id) !== a.at && !s.siege && !a.relief && inland(game, code, s) && routeFor(game, a, String(staging.id))) {
+            out.push({ type: "move", country: code, army: a.id, to: String(staging.id), storm: false });
+            continue;
+        }
         const key = `${a.at}|${a.relief ? 1 : 0}`;
         if (!places.has(key)) places.set(key, []);
         places.get(key).push(a);
