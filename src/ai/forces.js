@@ -2,7 +2,9 @@
 // (all of it at war or under threat, most of it otherwise), arms the unarmed with pikes and the best shot it has
 // researched — a third pikes, for pike and shot — and hires mercenaries when a war is going badly, sending them home in
 // peace, and buys cannons for its sieges in a war. What it spends comes out of `ctx.budget`, which the economy then shares. Its fleets stay in port — it fights
-// no war at sea — and one that ends up at sea, put out of a port that fell, sails home (fleetsHome).
+// no war at sea — and one that ends up at sea, put out of a port that fell, sails home (fleetsHome). Armies piling up in one
+// of its settlements — soldiers raised and mercenaries hired come as armies of their own, raiders come home — are merged
+// (tidyOrders).
 import { menOf } from "../engine/army.js";
 import { CANNON_PRICE, MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
 import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf } from "../engine/index.js";
@@ -168,5 +170,26 @@ export function forceOrders(game, code, fl, ctx) {
     const reserve = 0.3 * e.settlementMoney;
     const peopleLots = Math.min(3, Math.floor((ctx.budget - 4 * reserve) / PEOPLE_PRICE));
     if (peopleLots > 0 && c.treasury > 0) { cmd("buyPeople", { lots: peopleLots }); ctx.budget -= peopleLots * PEOPLE_PRICE; }
+    return out;
+}
+
+// Wherever more than MAX_AT_ONCE of the country's idle armies stand in one of its own settlements, the smallest are merged into
+// the largest until MAX_AT_ONCE are left: a garrison, a host and a raiding party, not a dozen bands. Only armies standing still,
+// on the same side of the walls, and given no other order this think (`busy`: their ids) — a merge after a move is refused.
+export const MAX_AT_ONCE = 3;
+export function tidyOrders(game, code, busy = new Set()) {
+    const st = game.state, out = [], places = new Map();
+    for (const a of ownArmies(st, code)) {
+        if (!a.at || a.retreating || a.march || a.path.length || busy.has(a.id) || st.settlements[a.at]?.owner !== code) continue;
+        const key = `${a.at}|${a.relief ? 1 : 0}`;
+        if (!places.has(key)) places.set(key, []);
+        places.get(key).push(a);
+    }
+    for (const [, armies] of [...places].sort((x, y) => (x[0] < y[0] ? -1 : 1))) {
+        if (armies.length <= MAX_AT_ONCE) continue;
+        armies.sort((x, y) => menOf(y) + y.cannons - (menOf(x) + x.cannons) || x.id - y.id);       // the largest first
+        const into = armies[0];
+        for (const a of armies.slice(MAX_AT_ONCE).reverse()) out.push({ type: "merge", country: code, army: a.id, into: into.id });
+    }
     return out;
 }

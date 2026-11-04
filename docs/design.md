@@ -291,7 +291,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   pacts with neighbours, a defensive alliance only when it feels threatened (need over 15) and only with a neighbour at
   least 80% as strong, military alliances against a common enemy — no alliance of either kind once it or the other holds
   two (`ALLIANCE_CAP`; experiments/README.md, 6), subjects demanded of
-  much weaker neighbours, the Empire proposed once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). To a human it asks once a year, and
+  much weaker neighbours, the Empire proposed once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
+  come home) are merged at the end of each think, the smallest into the largest, down to three — none given another order that
+  think (`forces.js`, `tidyOrders`). To a human it asks once a year, and
   not while a question stands.
 - **Reflexes:** the country looks at its war again on the tick after a siege begins or a war is declared or joined
   or a battle is fought involving it.

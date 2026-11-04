@@ -10,7 +10,7 @@ import { economyOf, isVassal } from "../engine/index.js";
 import { caretakerOrders, answerOffers } from "./caretaker.js";
 import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
-import { forceOrders } from "./forces.js";
+import { forceOrders, tidyOrders } from "./forces.js";
 import { navyOrders } from "./navy.js";
 import { endgame, flavorOf, racing, reserveOf, standings, thinksOn, threatsOf } from "./util.js";
 import { scores } from "../engine/index.js";
@@ -66,6 +66,9 @@ export function createAI({ seed, humans = [] }) {
         // numbers would be the ones from before
         const thinned = new Set(out.filter((o) => o.type === "disband" || o.type === "dismissMercenaries").map((o) => o.army));
         out.push(...orders, ...warOrders(game, code, fl, { prepare, thinned }), ...navyOrders(game, code, ctx));
+        // armies piled up in a settlement, merged — those this think left alone (forces.js, tidyOrders)
+        const busy = new Set(out.filter((o) => o.army !== undefined).flatMap((o) => [o.army, o.into]).filter((x) => x !== undefined));
+        out.push(...tidyOrders(game, code, busy));
         if (out.some((o) => ["split", "merge", "equip", "raise"].includes(o.type))) again.add(code);
         return out;
     }

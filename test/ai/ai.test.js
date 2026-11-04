@@ -13,7 +13,7 @@ import { bestTarget, diplomacyOrders } from "../../src/ai/diplomacy.js";
 import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
 import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
 import { economyOrders } from "../../src/ai/economy.js";
-import { fleetsHome, forceOrders } from "../../src/ai/forces.js";
+import { fleetsHome, forceOrders, tidyOrders, MAX_AT_ONCE } from "../../src/ai/forces.js";
 import { THINK_DAYS, dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 import { check } from "../helpers/invariants.js";
@@ -532,4 +532,22 @@ test("the endgame: the second to the fifth go for the first, which holds its lea
     st.countries.AAA.treasury = 5000000;
     const walls = economyOrders(game, "AAA", fl, { budget: 4000000 }).filter((o) => o.type === "buyBuilding" && o.building === "walls");
     assert.ok(walls.length > 0, "walls on its borders");
+});
+
+test("armies piled up in a settlement are merged, the smallest into the largest, down to three — none with an order this think", () => {
+    const game = tinyGame();
+    const st = game.state;
+    // AAA's garrison at 1 (army 1) and five more bands there of different sizes
+    const sizes = [300, 2000, 150, 900, 50];
+    const ids = sizes.map((n) => { const id = st.nextId++; st.armies[id] = { ...structuredClone(st.armies[1]), id, men: { ...st.armies[1].men, swords: n } }; return id; });
+    const orders = tidyOrders(game, "AAA");
+    // six there: the three smallest go into the largest (the garrison of 800, or the band of 2,000)
+    assert.equal(orders.length, 6 - MAX_AT_ONCE);
+    const into = new Set(orders.map((o) => o.into));
+    assert.deepEqual([...into], [ids[1]], "into the largest");
+    assert.deepEqual(orders.map((o) => o.army).sort((a, b) => a - b), [ids[0], ids[2], ids[4]].sort((a, b) => a - b), "the smallest go");
+    for (const o of orders) assert.equal(game.command(o).ok, true);
+    assert.equal(Object.values(st.armies).filter((a) => a.owner === "AAA" && a.at === "1").length, MAX_AT_ONCE);
+    // an army given an order this think is left alone
+    assert.deepEqual(tidyOrders(game, "AAA", new Set(Object.keys(st.armies).map(Number))), []);
 });
