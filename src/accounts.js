@@ -25,8 +25,33 @@ export function planDeletion(db, username) {
     if (!user) return { error: "no such user: " + username };
     const going = db.q.activeSeatsOf.all(user.id);
     const shared = going.filter((g) => g.seated > 1);
-    if (shared.length) return { error: user.username + " is in game(s) " + shared.map((g) => "#" + g.id).join(", ") + " with other people, which are still going; nothing deleted" };
+    if (shared.length) return { error: user.username + " is in game(s) " + shared.map((g) => "#" + g.id).join(", ") + " with other people, which are still going; nothing deleted (deactivate the account now, and delete it once they are over)" };
     return { user, solo: going.map((g) => g.id), summary: db.q.deletionSummary.get(user.id) };
+}
+
+// take an account out of the site, or bring it back. Deactivated, it cannot sign in, its sessions end (the server closes its
+// open sockets within half a minute: socket.js), and it is shown nowhere — not on the leaderboard, in friends lists, as a
+// profile or online; the tables it hosts are cancelled and its seats at others' released. Nothing else changes: its games,
+// friendships and achievements stay, and come back with it. In a game with others going on, the computer plays its country
+// as for anyone away.
+export function deactivateAccount(db, username) {
+    const user = db.q.userByNameLoose.get(username);
+    if (!user || /^deleted-\d+$/.test(user.username)) return { error: "no such user: " + username };
+    if (user.deactivated_at) return { error: user.username + " is deactivated already" };
+    db.tx(() => {
+        db.q.deactivateUser.run(user.id);
+        db.q.deleteSessionsOf.run(user.id);
+        for (const { id } of db.q.tablesHostedBy.all(user.id)) db.q.setStatus.run("aborted", id);
+        db.q.releaseLobbySeats.run(user.id);
+    });
+    return { ok: true, user };
+}
+export function reactivateAccount(db, username) {
+    const user = db.q.userByNameLoose.get(username);
+    if (!user || /^deleted-\d+$/.test(user.username)) return { error: "no such user: " + username };
+    if (!user.deactivated_at) return { error: user.username + " is not deactivated" };
+    db.q.reactivateUser.run(user.id);
+    return { ok: true, user };
 }
 
 export function deleteAccount(db, username) {

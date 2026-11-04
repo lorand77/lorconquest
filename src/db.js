@@ -134,6 +134,8 @@ export function openDb(file) {
     // achievements (src/achievements/service.js): which version of the awarding a finished game has had, and what each seat
     // did in it (from playing it over; null when it could not be)
     addColumnIfMissing("games", "awards_version", "INTEGER NOT NULL DEFAULT 0");
+    // an account taken out of the site by hand (tools/user.js deactivate): no sign-in, shown nowhere, nothing deleted; NULL = active
+    addColumnIfMissing("users", "deactivated_at", "TEXT");
     // who may see a room, join it and watch its game: everyone, or the host's friends ("friends"); a replay stays public
     addColumnIfMissing("games", "visibility", "TEXT NOT NULL DEFAULT 'public'");
     addColumnIfMissing("game_seats", "captures", "INTEGER");
@@ -145,14 +147,18 @@ export function openDb(file) {
 
     const q = {
         insertUser: db.prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)"),
-        userByName: db.prepare("SELECT id, username, password_hash FROM users WHERE username = ?"),
+        userByName: db.prepare("SELECT id, username, password_hash, deactivated_at FROM users WHERE username = ?"),
         userByNameNoCase: db.prepare("SELECT id FROM users WHERE username = ? COLLATE NOCASE"),
         userById: db.prepare("SELECT id, username, created_at FROM users WHERE id = ?"),
         insertSession: db.prepare("INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)"),
-        sessionUser: db.prepare("SELECT u.id, u.username, u.created_at AS joined FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ?"),
+        sessionUser: db.prepare("SELECT u.id, u.username, u.created_at AS joined FROM sessions s JOIN users u ON u.id = s.user_id WHERE s.token_hash = ? AND s.expires_at > ? AND u.deactivated_at IS NULL"),
         deleteSession: db.prepare("DELETE FROM sessions WHERE token_hash = ?"),
         // what an account deletion needs (src/accounts.js)
-        userByNameLoose: db.prepare("SELECT id, username, created_at FROM users WHERE username = ? COLLATE NOCASE"),
+        userByNameLoose: db.prepare("SELECT id, username, created_at, deactivated_at FROM users WHERE username = ? COLLATE NOCASE"),
+        // a person others may see (a profile, friends, achievements): neither deleted nor deactivated
+        visibleUserByName: db.prepare("SELECT id, username, created_at FROM users WHERE username = ? COLLATE NOCASE AND username NOT LIKE 'deleted-%' AND deactivated_at IS NULL"),
+        deactivateUser: db.prepare("UPDATE users SET deactivated_at = datetime('now') WHERE id = ? AND deactivated_at IS NULL"),
+        reactivateUser: db.prepare("UPDATE users SET deactivated_at = NULL WHERE id = ? AND deactivated_at IS NOT NULL"),
         setPassword: db.prepare("UPDATE users SET password_hash = ? WHERE id = ?"),
         activeSeatsOf: db.prepare("SELECT g.id, (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated FROM games g JOIN game_seats s ON s.game_id = g.id WHERE s.user_id = ? AND g.status = 'active'"),
         tablesHostedBy: db.prepare("SELECT id FROM games WHERE status = 'lobby' AND host_id = ?"),
@@ -168,7 +174,7 @@ export function openDb(file) {
         // every friendship and request of a person, with the other: friends first, then by name; a deleted account left out
         friendshipsOf: db.prepare(`SELECT f.id, f.status, f.created_at, f.responded_at, f.requester_id, f.addressee_id, u.username AS other
             FROM friendships f JOIN users u ON u.id = CASE WHEN f.requester_id = ? THEN f.addressee_id ELSE f.requester_id END
-            WHERE (f.requester_id = ? OR f.addressee_id = ?) AND u.username NOT LIKE 'deleted-%'
+            WHERE (f.requester_id = ? OR f.addressee_id = ?) AND u.username NOT LIKE 'deleted-%' AND u.deactivated_at IS NULL
             ORDER BY f.status = 'accepted' DESC, u.username COLLATE NOCASE`),
         deleteSessionsOf: db.prepare("DELETE FROM sessions WHERE user_id = ?"),
         scrubUser: db.prepare("UPDATE users SET username = 'deleted-' || id, password_hash = '' WHERE id = ?"),
@@ -216,7 +222,7 @@ export function openDb(file) {
                 FROM game_seats s JOIN games g ON g.id = s.game_id
                 WHERE g.status = 'finished' AND s.place IS NOT NULL
             ) f ON f.user_id = u.id
-            WHERE u.username NOT LIKE 'deleted-%'
+            WHERE u.username NOT LIKE 'deleted-%' AND u.deactivated_at IS NULL
             GROUP BY u.id`),
         replayGame: db.prepare("SELECT id, scenario, seed, rules_version, status, winner, day, result_hash FROM games WHERE id = ?"),
         allCommands: db.prepare("SELECT day, country, source, cmd FROM commands WHERE game_id = ? ORDER BY seq"),

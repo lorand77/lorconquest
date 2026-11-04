@@ -21,8 +21,7 @@ export function friendRoutes({ db, io }) {
 
     // a person by name (any case), not a deleted account
     const person = (name) => {
-        const u = typeof name === "string" ? db.q.userByNameLoose.get(name) : null;
-        return u && !u.username.startsWith("deleted-") ? u : null;
+        return typeof name === "string" ? db.q.visibleUserByName.get(name) ?? null : null;          // not a deleted or deactivated account
     };
     const view = (row) => ({ id: row.id, username: row.other, since: row.responded_at ?? row.created_at });
     function listFor(userId) {

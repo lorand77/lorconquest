@@ -196,3 +196,44 @@ test("the sign-in of a solo game: the game is the user's, and no one else may op
         await server.close();
     }
 });
+
+test("a deactivated account cannot sign in, is logged out and shown nowhere, loses nothing — and comes back as it was", async () => {
+    const { deactivateAccount, reactivateAccount } = await import("../../src/accounts.js");
+    const server = await startServer({ dbPath: tempDb() });
+    const db = server.app.db;
+    try {
+        await signIn(server, "alice", "secret-pass");
+        await signIn(server, "bobby");
+        await api(server, "POST", "/api/friends/requests", { username: "bobby" }, "alice");
+        const asked = (await api(server, "GET", "/api/friends", null, "bobby")).body.incoming[0];
+        await api(server, "POST", `/api/friends/requests/${asked.id}/accept`, {}, "bobby");
+        const table = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV" }, "alice");
+        const s = await connect(server, "alice");
+        const done = deactivateAccount(db, "ALICE");                              // any case
+        assert.deepEqual([done.ok, done.user.username], [true, "alice"]);
+        assert.ok(db.q.userByNameLoose.get("alice").deactivated_at);
+        assert.match(deactivateAccount(db, "alice").error, /deactivated already/);
+        // logged out: the old cookie is no one's, a socket message ends the socket, and the password no longer signs in
+        assert.equal((await api(server, "GET", "/api/me", null, "alice")).status, 401);
+        const closed = new Promise((r) => s.once("disconnect", r));
+        s.emit("lobby:enter", {}, () => {});
+        await closed;
+        const login = await fetch(server.baseUrl + "/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: "alice", password: "secret-pass" }) });
+        assert.deepEqual([login.status, (await login.json()).error], [403, "This account has been deactivated."]);
+        // shown nowhere, and its waiting room gone
+        assert.ok(!(await api(server, "GET", "/api/leaderboard", null, "bobby")).body.some((r) => r.username === "alice"));
+        assert.equal((await api(server, "GET", "/api/players/alice", null, "bobby")).status, 404);
+        assert.equal((await api(server, "GET", "/api/achievements/user/alice", null, "bobby")).status, 404);
+        assert.deepEqual((await api(server, "GET", "/api/friends", null, "bobby")).body.friends, []);
+        assert.equal(db.q.game.get(table.body.id).status, "aborted");
+        // back: signs in, and the friendship is still there
+        assert.equal(reactivateAccount(db, "alice").ok, true);
+        assert.match(reactivateAccount(db, "alice").error, /not deactivated/);
+        server.cookies.delete("alice");
+        await signIn(server, "alice", "secret-pass");
+        assert.equal((await api(server, "GET", "/api/me", null, "alice")).status, 200);
+        assert.deepEqual((await api(server, "GET", "/api/friends", null, "bobby")).body.friends.map((f) => f.username), ["alice"]);
+    } finally {
+        await server.close();
+    }
+});

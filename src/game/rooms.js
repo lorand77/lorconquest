@@ -558,8 +558,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         // games of theirs that are over (finished or abandoned, whose replays anyone may watch) — not the ones still going.
         // Null for no such account, or one deleted.
         player(name) {
-            const u = typeof name === "string" ? db.q.userByNameLoose.get(name) : null;
-            if (!u || u.username.startsWith("deleted-")) return null;
+            const u = typeof name === "string" ? db.q.visibleUserByName.get(name) : null;
+            if (!u) return null;                                    // no such account, or a deleted or deactivated one
             const row = db.q.leaderboard.all().find((r) => r.username === u.username);
             const games = db.q.gamesOf.all(u.id).filter((g) => g.status === "finished" || g.status === "abandoned")
                 .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated, place: g.place, out: g.out_day !== null }));

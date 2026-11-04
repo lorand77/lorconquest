@@ -473,9 +473,10 @@ How it is run is in [setup.md](setup.md); the program's parts for it are:
   `TABLE_HOURS` (24), and the chat of games that ended is deleted `CHAT_RETENTION_DAYS` (30) after they did — the privacy page
   says so. Expired sessions are swept hourly too.
 - **The owner's tools:** `tools/backup.js` (a consistent copy of the database with `VACUUM INTO`, taken while the server runs;
-  `scripts/backup.sh` sends it to Backblaze B2 and prunes), and `tools/user.js` (set a password; delete an account — which
-  empties and renames it `deleted-<id>`, deletes its chat and sessions, puts away its single-player games and tables, and
-  refuses while a game with other people is going). The logic is `src/accounts.js`, tested.
+  `scripts/backup.sh` sends it to Backblaze B2 and prunes), and `tools/user.js` (set a password; deactivate or reactivate an account —
+  `users.deactivated_at`: no sign-in, its sessions ended, shown nowhere, nothing deleted; `socket.js` closes the sockets of
+  ended sessions every half minute — or delete one — which empties and renames it `deleted-<id>`, deletes its chat and sessions,
+  puts away its single-player games and tables, and refuses while a game with other people is going). The logic is `src/accounts.js`, tested.
 - **Behind the proxy** the client's address is the one Caddy forwards (`TRUST_PROXY=1` in production), which the login throttle
   counts; port 3002 must therefore stay closed to the world, or anyone could forge it.
 - **The terms and privacy pages** (`public/terms.html`, `public/privacy.html`) state what the code does, and a test holds the

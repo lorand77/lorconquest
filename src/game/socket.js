@@ -25,8 +25,17 @@ const reply = (ack, value) => { if (typeof ack === "function") ack(value); };
 const CHAT_BURST = 5, CHAT_WINDOW_MS = 5000;
 // the longest command a client may send, as JSON: a peace naming every settlement of the larger map is well under it
 const COMMAND_MAX = 8000;
+// how often sockets whose session has ended are closed (attachSockets)
+const SWEEP_MS = 30 * 1000;
 
 export function attachSockets({ io, rooms, sessions, log, tickMs }) {
+    // every half minute, sockets whose session has ended are closed: an account deactivated or deleted by hand (tools/user.js,
+    // another process, which cannot reach them) is logged out of the pages it has open, and leaves its games and the lobby
+    const sweep = setInterval(() => {
+        for (const socket of io.of("/").sockets.values()) if (!sessions.userOf(socket.request.headers)) socket.disconnect(true);
+    }, SWEEP_MS);
+    sweep.unref();
+    io.on("close", () => clearInterval(sweep));
     // who is online — has the lobby or a game open — for the lobby's list: per person, what each of their sockets has open.
     // Kept in memory only; a person is online while any of their sockets is in the lobby or a game, and playing while one
     // is in a game.

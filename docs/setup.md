@@ -212,8 +212,16 @@ server, in the project folder, as `lorconquest`; both are safe while the app run
 
 ```
 node tools/user.js password <name>     # asks twice, with echo off; or, with no terminal, reads one line of stdin
+node tools/user.js deactivate <name>   # no sign-in, shown nowhere, nothing deleted
+node tools/user.js reactivate <name>   # back as it was
 node tools/user.js delete <name>       # shows what it will do, asks for the name back; no undo
 ```
+
+Deactivating takes an account out of the site without deleting anything: it cannot sign in, its sessions end and the server
+closes its open pages within half a minute, and it is shown nowhere (leaderboard, friends lists, profiles, online); tables it
+hosts are cancelled and its seats at others' released. Its games, friendships and achievements stay, and reactivating brings
+it all back. In a game with other people it is away, so the computer plays its country. It is also the first step for deleting
+someone who is still in a game with others: deactivate now, delete once those games are over.
 
 A password change leaves the person's sessions signed in. A deletion (the privacy page promises one on request) empties and
 renames the account `deleted-<id>`, deletes its chat and sessions, puts away its single-player games and any table it started,

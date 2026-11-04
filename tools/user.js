@@ -1,17 +1,20 @@
-// Accounts, by hand, on the server (docs/setup.md): set a password, or delete an account for good. Safe to run while the
+// Accounts, by hand, on the server (docs/setup.md): set a password, take an account out of the site and bring it back, or
+// delete it for good. Safe to run while the
 // server is up (the database is in WAL mode). The password is never an argument, so it is not in shell history or `ps`: it
 // is typed twice with echo off, or, with no terminal, the first line of stdin.
 //
 //   node tools/user.js password <name>
+//   node tools/user.js deactivate <name>    no sign-in, shown nowhere, nothing deleted (src/accounts.js)
+//   node tools/user.js reactivate <name>    back as it was
 //   node tools/user.js delete <name>        shows what it will do and asks for the name to be typed back; no undo
 import readline from "node:readline";
 import config from "../src/config.js";
 import { openDb } from "../src/db.js";
-import { MAX_PASSWORD, MIN_PASSWORD, changePassword, deleteAccount, planDeletion } from "../src/accounts.js";
+import { MAX_PASSWORD, MIN_PASSWORD, changePassword, deactivateAccount, deleteAccount, planDeletion, reactivateAccount } from "../src/accounts.js";
 
 function usage(message) {
     if (message) console.error("error:", message);
-    console.error("usage: node tools/user.js password <name> | delete <name>");
+    console.error("usage: node tools/user.js password <name> | deactivate <name> | reactivate <name> | delete <name>");
     process.exit(2);
 }
 
@@ -39,7 +42,7 @@ async function readPassword() {
 }
 
 const [command, name] = process.argv.slice(2);
-if (!["password", "delete"].includes(command) || !name) usage();
+if (!["password", "deactivate", "reactivate", "delete"].includes(command) || !name) usage();
 const db = openDb(config.DB_PATH);
 
 if (command === "password") {
@@ -47,6 +50,12 @@ if (command === "password") {
     const r = await changePassword(db, name, password);
     if (r.error) { console.error("error:", r.error.replace(/a password is .*/, "a password is " + MIN_PASSWORD + "–" + MAX_PASSWORD + " characters")); process.exit(1); }
     console.log("password updated for " + r.user.username + " (id " + r.user.id + ") in " + config.DB_PATH + "; its sessions stay signed in");
+} else if (command === "deactivate" || command === "reactivate") {
+    const r = (command === "deactivate" ? deactivateAccount : reactivateAccount)(db, name);
+    if (r.error) { console.error("error:", r.error); process.exit(1); }
+    console.log(command === "deactivate"
+        ? `deactivated ${r.user.username} (id ${r.user.id}) in ${config.DB_PATH}: no sign-in, shown nowhere, its sessions ended (open pages are closed within half a minute); nothing deleted`
+        : `reactivated ${r.user.username} (id ${r.user.id}) in ${config.DB_PATH}: it may sign in again`);
 } else {
     const plan = planDeletion(db, name);
     if (plan.error) { console.error("error:", plan.error); process.exit(1); }

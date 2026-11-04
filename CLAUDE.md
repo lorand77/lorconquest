@@ -26,7 +26,8 @@ dependencies.
 - `node tools/simulate.js [--games N --years N --seed N --scenario mitteleuropa --jobs N]` — AI-only games, headless, in parallel: wins by
   country, wars, peaces, refused commands, timing. `SIM_DEBUG=1` prints every refused command. What it showed: `experiments/`.
 - `AI_SEEDS=6 AI_YEARS=60 AI_SCENARIO=historical-1440 node --test test/ai/ai.test.js` — the AI games of the suite, bigger.
-- `node tools/user.js password|delete <name>` — set a password, or delete an account for good; `node tools/backup.js [folder]` — a
+- `node tools/user.js password|deactivate|reactivate|delete <name>` — set a password, take an account out of the site (nothing
+  deleted) and bring it back, or delete it for good; `node tools/backup.js [folder]` — a
   consistent copy of the database while the server runs (`scripts/backup.sh` is the nightly job). See docs/setup.md.
 - `node tools/run.js <script>` — play a scripted game in the terminal; the format is at the top of
   `tools/run.js`, examples in `test/wars/`.

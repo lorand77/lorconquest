@@ -83,6 +83,11 @@ export function authRoutes({ db, sessions, throttles, io }) {
                 req.log.info("auth.login_failed", { user: user?.id, reason: user ? "wrong_password" : "unknown_user" });
                 return res.status(401).json({ error: "Invalid username or password." });
             }
+            // a deactivated account (tools/user.js deactivate) may not sign in, whatever its password
+            if (user.deactivated_at) {
+                req.log.warn("auth.login_refused", { user: user.id, reason: "deactivated" });
+                return res.status(403).json({ error: "This account has been deactivated." });
+            }
             // a new session each time: whatever session the request came with is ended
             if (req.user) { db.q.deleteSession.run(req.user.hash); dropSockets(req.user.hash); }
             sessions.start(res, user);

@@ -12,8 +12,8 @@ export function achievementRoutes({ db, achievements }) {
     router.use(requireAuth);
     router.get("/achievements", (req, res) => res.json(achievements.listFor(req.user.id)));
     router.get("/achievements/user/:name", (req, res) => {
-        const u = db.q.userByNameLoose.get(String(req.params.name));
-        if (!u || u.username.startsWith("deleted-")) return res.status(404).json({ error: "no such player" });
+        const u = db.q.visibleUserByName.get(String(req.params.name));
+        if (!u) return res.status(404).json({ error: "no such player" });
         res.json(achievements.listFor(u.id));
     });
     return router;
