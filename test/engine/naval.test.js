@@ -5,6 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { economyOf, fleetList, shipsIn } from "../../src/engine/index.js";
 import { capture } from "../../src/engine/fighting.js";
+import { crossStrait } from "../../src/engine/naval.js";
 import { tinyGame, setArmy, runTo, order, refused, rig, giveFleet } from "../helpers/tiny.js";
 
 const cmd = (type, rest = {}) => ({ type, country: "AAA", ...rest });
@@ -203,40 +204,39 @@ test("an army crosses a strait in 3 months, only where its country has 10 ships 
     assert.deepEqual(ofType(events, "siegeStart").map((e) => [e.settlement, e.by]), [[6, "AAA"]]);
 });
 
-test("an enemy fleet holding the strait must be beaten first; lose and the crossing fails", () => {
-    const game = tinyGame();
-    order(game, cmd("declareWar", { target: "CCC" }));
-    const mine = giveFleet(game, "AAA", { cogs: 10 });
-    const foe = giveFleet(game, "CCC", { cogs: 20 }, null, "north");
-    rig(game, 1, 1, 6, 6);                                                     // 6 against 16
-    const events = order(game, cmd("move", { army: 3, to: 6 }));
-    assert.deepEqual(ofType(events, "battle").map((e) => [e.kind, e.winner]), [["strait", "b"]]);
-    assert.deepEqual(ofType(events, "crossFailed").map((e) => e.why), ["lost the naval battle"]);
-    assert.equal(game.state.armies[3].at, "3");                                // it stays
-    assert.equal(game.state.fleets[mine.id], undefined);                       // 10 against 20 at 6:16: wiped out
-    assert.ok(foe.ships.cogs >= 19);
+test("an enemy fleet at sea in the zone closes the strait: no battle is fought for it, no army crosses", () => {
+    for (const [port, zone] of [[null, "north"]]) {                            // at sea in the zone
+        const game = tinyGame();
+        order(game, cmd("declareWar", { target: "CCC" }));
+        giveFleet(game, "AAA", { cogs: 30 });
+        const foe = giveFleet(game, "CCC", { cogs: 1 }, port, zone);
+        // the route goes no way through a strait not wholly its own; a march already set on it stops at the water
+        assert.match(refused(game, cmd("move", { army: 3, to: 6 })), /no way/);
+        const events = [];
+        assert.equal(crossStrait(game, game.state.armies[3], "north", events), false);
+        assert.deepEqual(ofType(events, "crossFailed").map((e) => e.why), ["an enemy fleet is at sea in the zone"]);
+        assert.equal(ofType(events, "battle").length, 0, "no battle for the strait");
+        // the sea cleared, the army crosses
+        delete game.state.fleets[foe.id];
+        order(game, cmd("move", { army: 3, to: 6 }));
+        assert.equal(game.state.armies[3].march.to, "6");
+    }
 });
 
-test("beating the fleet that holds the strait lets the army cross", () => {
-    const game = tinyGame();
-    order(game, cmd("declareWar", { target: "CCC" }));
-    giveFleet(game, "AAA", { cogs: 30 });
-    giveFleet(game, "CCC", { cogs: 5 }, null, "north");
-    rig(game, 6, 6, 1, 1);
-    const events = order(game, cmd("move", { army: 3, to: 6 }));
-    assert.deepEqual(ofType(events, "battle").map((e) => [e.kind, e.winner]), [["strait", "a"]]);
-    assert.equal(game.state.armies[3].march.to, "6");
-});
-
-test("armies on a strait are at sea: they pass each other", () => {
+test("an enemy fleet in port, or only sailing through the zone, does not close the strait", () => {
+    const inPort = tinyGame();
+    order(inPort, cmd("declareWar", { target: "CCC" }));
+    giveFleet(inPort, "AAA", { cogs: 10 });
+    giveFleet(inPort, "CCC", { cogs: 10 }, 1, "north");
+    order(inPort, cmd("move", { army: 3, to: 6 }));
+    assert.equal(inPort.state.armies[3].march.to, "6");
     const game = tinyGame();
     order(game, cmd("declareWar", { target: "CCC" }));
     giveFleet(game, "AAA", { cogs: 10 });
-    giveFleet(game, "CCC", { cogs: 10 }, null, "north");
-    game.state.cooldowns = {};
-    setArmy(game, 3, { swords: 400 });
+    const foe = giveFleet(game, "CCC", { cogs: 10 }, null, "north");
+    foe.moving = { to: "south", start: 0, end: 60 };
     order(game, cmd("move", { army: 3, to: 6 }));
-    assert.equal(fleetList(game.state).length, 2);
+    assert.equal(game.state.armies[3].march.to, "6");
 });
 
 test("a fleet split off, or merged into another, keeps the 3 months since its last battle", () => {

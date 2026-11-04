@@ -41,6 +41,12 @@ export function blockaded(game) {
 // armies may cross a strait if their country has at least 10 × x ships in its zone (RULES.md §8)
 export const crossable = (game, country, zone) => shipsIn(game.state, country, zone) >= game.map.scenario.straitShips;
 
+// is an enemy fleet at sea in the zone — not in one of its ports, nor on its way somewhere (RULES.md §8): then the zone is not
+// the country's to cross, however many ships it has there
+export const contested = (state, country, zone) => fleetList(state).some((f) => f.zone === zone && atSea(f) && atWar(state, country, f.owner));
+// may an army of the country set out across a strait in the zone: enough ships of its own there, and no enemy's
+export const straitClear = (game, country, zone) => crossable(game, country, zone) && !contested(game.state, country, zone);
+
 // one naval battle between two sides' fleets (RULES.md §7): power (cogs + carracks × 3 + galleons × 5 + men-of-war
 // × 8) × (2d6 + 4), losses as on land applied to ships in whole numbers; the crew of sunk ships die. `tie` is the
 // side that wins equal power. Fleets with no ships left are removed.
@@ -155,16 +161,8 @@ export function crossStrait(game, army, zone, events) {
         return false;
     };
     if (!crossable(game, owner, zone)) return fail("too few ships");
-    const foes = fleetList(st).filter((f) => f.zone === zone && atSea(f) && atWar(st, owner, f.owner));
-    if (!foes.length) return true;
-    const mine = fleetList(st).filter((f) => f.owner === owner && f.zone === zone && !f.moving);
-    if (!mayFight(st, mine, foes)) return fail("an enemy fleet holds the strait");
-    const ev = fleetBattle(game, { kind: "strait", zone, a: mine, b: foes, tie: "b" });
-    events.push(ev);
-    if (ev.winner !== "a") {
-        runForPort(game, mine, zone, events);
-        return fail("lost the naval battle");
-    }
-    runForPort(game, foes, zone, events);
-    return crossable(game, owner, zone) || fail("too few ships left");
+    // the zone's sea must be wholly the country's: an enemy fleet at sea in it, and the army does not set out (no battle is
+    // fought for it — the fleets must clear the sea first)
+    if (contested(st, owner, zone)) return fail("an enemy fleet is at sea in the zone");
+    return true;
 }

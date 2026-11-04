@@ -5,7 +5,7 @@
 // (docs/design.md, "The computer players"): the AI's commands are logged and a replay applies them without running it.
 import { combine } from "../engine/army.js";
 import { findRoute } from "../engine/map.js";
-import { crossable } from "../engine/naval.js";
+import { straitClear } from "../engine/naval.js";
 import { YEAR_DAYS, armyList, atWar, canEnter, dayOf, isRebel, power, scores } from "../engine/index.js";
 import { CHARACTERS, NOISE } from "./characters.js";
 
@@ -111,7 +111,7 @@ export const reserveOf = (e) => 0.3 * e.settlementMoney;
 export function daysFn(game, country) {
     const cache = new Map();
     const ok = (k) => canEnter(game, country, k);
-    const edgeOk = (from, e) => !e.strait || crossable(game, country, e.strait);
+    const edgeOk = (from, e) => !e.strait || straitClear(game, country, e.strait);
     return (from, to) => {
         if (from === to) return 0;
         const key = `${from}>${to}`;
@@ -179,7 +179,7 @@ export function reachFrom(game, country, from) {
         if (best === null) return dist;
         done.add(best);
         for (const e of game.map.adj.get(best)) {
-            if (done.has(e.to) || !ok(e.to) || (e.strait && !crossable(game, country, e.strait))) continue;
+            if (done.has(e.to) || !ok(e.to) || (e.strait && !straitClear(game, country, e.strait))) continue;
             const d = dist.get(best) + e.days;
             if (!dist.has(e.to) || d < dist.get(e.to)) dist.set(e.to, d);
         }

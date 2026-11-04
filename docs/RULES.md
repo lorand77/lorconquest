@@ -578,14 +578,15 @@ other on a route while on cooldown have passed. An army **split off** from anoth
 and an army **merged** into another passes its cooldowns on (the longer of the two counts): the same troops, the same wait.
 Fleets likewise.
 
-**Straits (dashed lines).** An army may cross if you control **≥10 × x ships** in that sea zone (see
-[Sea zones](../scenarios/mitteleuropa/SCENARIO.md#sea-zones)) and no enemy fleet contests it. Crossing takes
-**3 months**. If an enemy fleet is present, fight a naval battle first — lose and the crossing fails.
+**Straits (dashed lines).** An army may cross only if you **control the sea zone completely** (see
+[Sea zones](../scenarios/mitteleuropa/SCENARIO.md#sea-zones)): **≥10 × x ships** of yours in it, and **no enemy ship at sea** in it
+when the crossing starts. Crossing takes **3 months**.
 
 **Counting the ships.** All the country's ships in the zone count — in port or at sea, not sailing. An
-army sets out only if they are at least **10 × x**; if enemy fleets are at sea in the zone, the country's
-fleets there fight them first, and a defeat — or too few ships left — means the army does not cross and
-stays where it is. The crossing takes 3 months whatever the length of the dashed line, and armies on a
+army sets out only if they are at least **10 × x** and no fleet of a country at war with it is at sea in the zone (one in
+port, or only on its way through, sailing, does not count). No battle is fought for a strait: the enemy's fleets at sea must
+be beaten first (§7), or the army stays where it is — and no route is found through a strait whose sea is not wholly the
+country's. The crossing takes 3 months whatever the length of the dashed line, and armies on a
 strait are at sea: they do not meet one another.
 
 ---

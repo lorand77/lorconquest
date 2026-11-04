@@ -4,7 +4,7 @@
 
 import { menOf, peopleLost } from "./army.js";
 import { findNearest, findRoute, legKey } from "./map.js";
-import { crossStrait, crossable } from "./naval.js";
+import { crossStrait, straitClear } from "./naval.js";
 import { atWar, canEnter, isFriend, isRebel, killPeople, removeArmy } from "./state.js";
 
 // how far along its leg a march is on `day`: 0 at the start, 1 on arrival (not clamped)
@@ -23,8 +23,8 @@ export function startLeg(game, army, from, to, start) {
     army.march = { from, to, start, end: start + game.map.legDays.get(legKey(from, to)) };
 }
 
-// a strait is open to an army only where its country has the ships (RULES.md §8)
-const straitOpen = (game, country) => (from, edge) => !edge.strait || crossable(game, country, edge.strait);
+// a strait is open to an army only where its country has the ships and no enemy has any (RULES.md §8)
+const straitOpen = (game, country) => (from, edge) => !edge.strait || straitClear(game, country, edge.strait);
 
 // may the army pass through `key`? Land it may enter — and an army sent home (retreating "home": land closed to it by a peace,
 // the end of an agreement, a capture) may also cross land that is not an enemy's on its way out, or it could never leave

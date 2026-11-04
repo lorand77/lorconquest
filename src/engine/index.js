@@ -10,7 +10,7 @@ export { BAR, agreementAnswer, bordering, demandChance, militaryPowerOf, need, n
 export { OFFER_DAYS, PACT_DAYS, PROPOSAL_DAYS, TRUCE_DAYS, germanStates, hreSettlementsOf, INTEGRATE_DAYS, integrateError, integratePrice, mayPropose, validateTerms, warJoiners } from "./diplomacy.js";
 export { checkVictory, scores } from "./victory.js";
 export { TRIBUTE, armyCapOf, armySoldiersOf, economyOf, manpowerOf, mercenariesOf, navyCapOf, ownedBy, popOf, rebelsOf, soldiersOf, techCost } from "./economy.js";
-export { blockaded, crossable, crewAtSea, fleetPower, shipCount, shipsIn } from "./naval.js";
+export { blockaded, contested, crossable, crewAtSea, fleetPower, shipCount, shipsIn, straitClear } from "./naval.js";
 export * from "./costs.js";
 export { CREW_PER_CANNON, WEAPONS, MULTIPLIER, menOf, militaryPower, power } from "./army.js";
 export { COOLDOWN_DAYS } from "./battle.js";
