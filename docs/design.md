@@ -218,7 +218,7 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   war (`war.js`). The forces and the economy share one budget (the treasury less a reserve of a third of a year's
   money, or a tenth at war), so a think never orders what it cannot pay.
 - **Economy:** tax 2, a little more at war and 2.5 when in the red (3 when it is also losing money); the research slider by what the treasury
-  allows; the research order (guns, sharpshooters, then ships for a country that has them); the law by
+  allows, and 0 once there is nothing left it wants to research (under 50% the slider adds to the money); the research order (guns, sharpshooters, then ships for a country that has them); the law by
   threat, at most once in 5 years; loans only in war, repaid when fat. **In distress** — in the red *and* losing money, as a
   country is that borrowed in a war and then lost its land — it sends home the soldiers above its law's cap and, after a
   year in debt, defaults on its loans (the rule that allows it once in 20 years), rather than sit in debt until interest eats it; courthouses, then libraries, workshops,
@@ -667,7 +667,11 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   settlement, [Cancel] (or Escape) drops it. The selected army's panel has Stop, Storm, Sortie,
   Split and Merge where they apply, and, when it has unarmed men, one button that arms them all with the best weapon
   the treasury can buy the missing lots of (`mirror.js`, `bestArming`: a `buyWeapons` and an `equip`, sent one after the
-  other); its equipment form starts with every man of the kind chosen.
+  other), and, when it carries swords or guns older than the best one researched, Modernise (`modernising`: those men
+  given the best gun, the worst-armed first, as many as the reserve and whole lots the treasury pays for allow — never pikes
+  or cavalry, which do what guns cannot). Researching a gun arms nobody, so the notice of it says how many men still carry
+  older weapons (`outdatedMen`), and with every tech done the Country tab says the slider only costs money now. Its
+  equipment form starts with every man of the kind chosen.
 - **Letting go of a selection:** an order that sends the army or fleet on its way, once accepted (`game.js`, `dispatch`: March,
   March and storm, Storm, Sortie, Storm the post; Put to sea, Enter port, Sail, Patrol, Blockade — not Stop, Split, Merge,
   Hold or equipping, after which one usually goes on with it); a second click on the selected army or fleet (`mirror.js`, `isSelected`), a right-click

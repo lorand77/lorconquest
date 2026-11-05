@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -299,4 +299,19 @@ test("a fleet sailing between two sea zones is drawn along the lane between them
         return Math.abs(Math.hypot(x - a[0], y - a[1]) + Math.hypot(b[0] - x, b[1] - y) - len) < 1e-6;
     });
     assert.ok(lane.length > 2 && onSegment, "on the lane's bends");
+});
+
+test("modernising: swords and older guns given the best gun, the worst first, as the reserve and treasury allow — never pikes or cavalry", () => {
+    const prices = { muskets: 100000, arquebuses: 70000, handCannons: 50000 };
+    const men = { unarmed: 50, swords: 1200, pikes: 900, cavalry: 300, handCannons: 600, arquebuses: 400, muskets: 100 };
+    const country = (techs, treasury, reserve = {}) => ({ techs, treasury, reserve });
+    assert.equal(modernising(country(["swords", "pikes"], 1e6), men, prices), null, "no gun researched: nothing to modernise to");
+    assert.deepEqual(modernising(country(["handCannons", "arquebuses", "muskets"], 1e6, { muskets: 200 }), men, prices),
+        { weapon: "muskets", want: 2200, n: 2200, lots: 2, cost: 200000, jobs: [{ from: "swords", n: 1200 }, { from: "handCannons", n: 600 }, { from: "arquebuses", n: 400 }] });
+    // a treasury for one lot: 200 from the reserve and 1000 bought, the swords first
+    assert.deepEqual(modernising(country(["muskets"], 150000, { muskets: 200 }), men, prices), { weapon: "muskets", want: 2200, n: 1200, lots: 1, cost: 100000, jobs: [{ from: "swords", n: 1200 }] });
+    assert.deepEqual(modernising(country(["handCannons"], 0), men, prices), { weapon: "handCannons", want: 1200, n: 0, lots: 0, cost: 0, jobs: [] }, "nothing to pay with");
+    assert.equal(modernising(country(["handCannons"], 1e6), { ...men, swords: 0 }, prices), null, "only pikes, cavalry and guns as good");
+    const state = { armies: { 1: { owner: "BAV", men }, 2: { owner: "BAV", men: { ...men, swords: 0 } }, 3: { owner: "AUS", men } } };
+    assert.deepEqual([outdatedMen(state, "BAV", "muskets"), outdatedMen(state, "BAV", "arquebuses"), outdatedMen(state, "BAV", "sharpshooters")], [2200 + 1000, 1800 + 600, 0]);
 });

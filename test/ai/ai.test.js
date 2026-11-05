@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import docsScenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
-import { Game, armyCapOf, armyList, armySoldiersOf, atWar, economyOf, replay, scores } from "../../src/engine/index.js";
+import { Game, TECHS, armyCapOf, armyList, armySoldiersOf, atWar, economyOf, replay, scores } from "../../src/engine/index.js";
 import { warKey } from "../../src/engine/state.js";
 import { createAI } from "../../src/ai/index.js";
 import { answerOffers, callAnswers } from "../../src/ai/caretaker.js";
@@ -119,6 +119,19 @@ test("every country thinks every 15 days, the same for all, each on days of its 
     const perDay = [...Array(THINK_DAYS).keys()].map((d) => codes.filter((c) => thinksOn(c, d)).length);
     assert.equal(perDay.reduce((n, k) => n + k, 0), codes.length);
     assert.ok(Math.max(...perDay) <= 8, `the busiest day has ${Math.max(...perDay)} countries thinking: ${perDay}`);
+});
+
+test("research: with nothing left it wants, the slider goes to 0 — under 50% it adds to the money — and back up once there is", () => {
+    const game = tinyGame(1), c = game.state.countries.AAA;
+    c.treasury = 2e6;
+    c.techs = Object.keys(TECHS);
+    c.target = null;
+    let orders = economyOrders(game, "AAA", fl, { budget: 0 });
+    assert.deepEqual(orders.filter((o) => o.type === "setSlider" || o.type === "research").map((o) => [o.type, o.slider]), [["setSlider", 0]]);
+    applyAll(game, orders);
+    c.techs = c.techs.filter((t) => t !== "muskets");
+    orders = economyOrders(game, "AAA", fl, { budget: 0 });
+    assert.deepEqual(orders.filter((o) => o.type === "setSlider" || o.type === "research").map((o) => [o.type, o.slider ?? o.tech]), [["setSlider", 100], ["research", "muskets"]]);
 });
 
 test("economy: light tax in peace, heavier in war, loans only when poor at war, buildings bought from the surplus", () => {

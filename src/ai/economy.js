@@ -59,14 +59,17 @@ export function economyOrders(game, code, fl, ctx) {
     else if (atWarNow && c.treasury < 0.5 * reserve) tax = 2.4;
     if (tax !== c.tax) cmd("setTax", { tax });
 
-    // research: less when poor and at war, more when rich (the bank counts) and at peace
+    // research: less when poor and at war, more when rich (the bank counts) and at peace — and none once there is nothing left
+    // it wants: under 50% the slider adds to the money (RULES.md §4), so research with no tech to reach is money thrown away
     const wealth = c.treasury + (c.bank ?? 0);
+    const tech = c.target ?? nextTech(game, code);
     let slider = 50;
-    if (c.treasury < 0 || (atWarNow && c.treasury < reserve)) slider = 20;
+    if (!tech) slider = 0;
+    else if (c.treasury < 0 || (atWarNow && c.treasury < reserve)) slider = 20;
     else if (wealth > 6 * reserve) slider = 100;
     else if (!atWarNow && wealth > 3 * reserve) slider = 70;
     if (slider !== c.slider) cmd("setSlider", { slider });
-    if (!c.target) { const t = nextTech(game, code); if (t) cmd("research", { tech: t }); }
+    if (!c.target && tech) cmd("research", { tech });
 
     // the law: more soldiers when at war or when a neighbour is strong; more again against a stronger enemy or two
     const mine = Math.max(1, militaryPowerOf(st, code)), strongestEnemy = Math.max(0, ...enemies.filter((x) => !st.countries[x].rebel).map((x) => militaryPowerOf(st, x)));

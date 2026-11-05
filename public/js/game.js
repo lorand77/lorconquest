@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, armyPoint, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, armyPoint, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -186,7 +186,9 @@ function news(events) {
         if (who.includes(me) && e.type === "tech") askLater = false;    // a tech done: a new one to choose, the banner again
         // a notice over the map, if it is of a kind the player has on (notices.js); the Events tab has it anyway
         const kind = kindOf(e, me, who, state);
-        if (kind) notice(describeEvent(game.map, e), kind);
+        // a gun researched arms nobody: the notice says how many still carry older weapons
+        const old = kind && e.type === "tech" && e.country === me ? outdatedMen(state, me, e.tech) : 0;
+        if (kind) notice(describeEvent(game.map, e) + (old ? ` — ${formatNumber(old)} of your men still carry older weapons: Modernise in an army's panel` : ""), kind);
     }
 }
 

@@ -5,7 +5,7 @@
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
 import { BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, LAWS, LAW_DAYS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, longDate, techCost } from "/engine/index.js";
-import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber } from "./mirror.js";
+import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising } from "./mirror.js";
 
 const n = formatNumber;
 export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
@@ -64,7 +64,9 @@ export function countryTab(ctx) {
         row(ctx, make("label", {}, "Tax ", taxLabel), tax),
         make("p", { class: "hint" }, `The chance of peasants rising each year, at this tax kept all year: ${pct((c.tax - 2) ** 2 * 0.25)}.`),
         row(ctx, make("label", {}, "Research ", sliderLabel), slider),
-        line(ctx, "Research a year", `${money(e.rPerYear)} R${e.libraries ? ` (${e.libraries} libraries: +${e.libraries * 5}%)` : ""}`)));
+        line(ctx, "Research a year", `${money(e.rPerYear)} R${e.libraries ? ` (${e.libraries} libraries: +${e.libraries * 5}%)` : ""}`),
+        // with every tech done the slider only costs money: under 50% it adds to it instead (RULES.md §4)
+        !c.target && c.slider > 0 && !cheapestOpenTech(TECHS, c.techs, (t) => techCost(game, t)) ? make("p", { class: "bad" }, "Nothing is left to research: at 0% the slider adds to your money instead.") : ""));
 
     // the law: caps and the income it costs
     const law = select(ctx, Object.entries(LAWS).map(([k, l]) => [k, `${l.name}: army ${pct(l.army)}, navy ${pct(l.navy)}, income −${pct(l.penalty)}`]), c.law);
@@ -320,6 +322,15 @@ export function armyEquipment(ctx, a) {
             ctx.redraw();
         } }, `Arm ${n(arming.n)} unarmed with ${WEAPON_NAMES[arming.weapon]}${arming.cost ? ` · ${money(arming.cost)}` : ""}`));
     }
+    // swords and older guns given the best gun at one click, as many as the reserve and the treasury allow (mirror.js, modernising)
+    const mod = modernising(c, a.men, WEAPON_PRICE);
+    if (mod?.n) {
+        out.push(make("button", { onclick: async () => {
+            const bought = mod.lots ? await ctx.send({ type: "buyWeapons", weapon: mod.weapon, lots: mod.lots }) : { ok: true };
+            if (bought?.ok) for (const j of mod.jobs) if (!(await ctx.send({ type: "equip", army: a.id, from: j.from, to: mod.weapon, n: j.n }))?.ok) break;
+            ctx.redraw();
+        } }, `Modernise ${n(mod.n)}${mod.n < mod.want ? ` of ${n(mod.want)}` : ""} with ${WEAPON_NAMES[mod.weapon]}${mod.cost ? ` · ${money(mod.cost)}` : ""}`));
+    } else if (mod) out.push(make("p", { class: "hint" }, `${n(mod.want)} men carry older weapons than ${WEAPON_NAMES[mod.weapon]}: the treasury cannot buy a lot of them.`));
     out.push(make("details", { class: "equip" }, make("summary", {}, "Equip, disband, dismiss…"),
         make("p", { class: "hint" }, `Reserve: ${reserve.join(", ") || "empty"}.`),
         row(ctx, make("span", {}, "Change"), count, from, make("span", {}, "to"), to,

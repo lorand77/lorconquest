@@ -245,6 +245,34 @@ export function bestArming(country, n, prices) {
     return null;
 }
 
+// Researching a gun arms nobody (RULES.md §4): the men keep what they carry until re-equipped. Modernising is that re-equipping
+// at one click: the swords and the older guns an army carries — never its pikes, which make guns stronger in pike and shot, nor
+// its cavalry, which does what guns cannot (§5) — given the best gun `country` has unlocked, the worst-armed first, as many as
+// the reserve and the treasury (in whole lots of 1000) allow. Their old weapons go to the reserve. Null if there is nothing to do.
+export const GUNS = ["muskets", "arquebuses", "handCannons"];
+const BY_RANK = ["swords", "handCannons", "arquebuses", "muskets"];     // worst first
+export function modernising(country, men, prices) {
+    const best = GUNS.find((w) => country.techs.includes(w));
+    if (!best) return null;
+    const old = BY_RANK.slice(0, BY_RANK.indexOf(best)).filter((w) => men[w] > 0);
+    const want = old.reduce((n, w) => n + men[w], 0);
+    if (!want) return null;
+    const have = country.reserve[best] ?? 0, price = prices[best];
+    const lots = Math.max(0, Math.min(Math.ceil(Math.max(0, want - have) / 1000), Math.floor(Math.max(0, country.treasury) / price)));
+    let left = Math.min(want, have + lots * 1000);
+    if (left < 1) return { weapon: best, want, n: 0, lots: 0, cost: 0, jobs: [] };
+    const jobs = [];
+    for (const w of old) { const k = Math.min(men[w], left); if (k > 0) { jobs.push({ from: w, n: k }); left -= k; } }
+    return { weapon: best, want, n: jobs.reduce((n, j) => n + j.n, 0), lots, cost: lots * price, jobs };
+}
+
+// the men of `me`'s armies carrying weapons older than `weapon`, just researched — what a notice says modernising would reach
+export function outdatedMen(state, me, weapon) {
+    if (!GUNS.includes(weapon)) return 0;
+    const country = { techs: [weapon], reserve: {}, treasury: 0 };
+    return Object.values(state.armies).filter((a) => a.owner === me).reduce((n, a) => n + (modernising(country, a.men, { [weapon]: 1 })?.want ?? 0), 0);
+}
+
 // is the click on the army or fleet that is selected already? Then it deselects it (design.md, "The game screen")
 export const isSelected = (sel, hit) => Boolean(sel) && (hit.kind === "army" || hit.kind === "fleet") && sel.kind === hit.kind && sel.id === hit.id;
 

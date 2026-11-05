@@ -6,7 +6,7 @@ import { register } from "node:module";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 
 register("./loader.mjs", import.meta.url);
-const { Game, buildMap, economyOf } = await import("../../src/engine/index.js");
+const { Game, TECHS, buildMap, economyOf } = await import("../../src/engine/index.js");
 const { viewFor } = await import("../../src/game/view.js");
 const { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } = await import("../../public/js/panels.js");
 
@@ -224,6 +224,26 @@ test("an army's unarmed are armed at one click, with the best weapon the treasur
     assert.deepEqual(sent, [{ type: "buyWeapons", weapon: "pikes", lots: 2 }, { type: "equip", army: 37, from: "unarmed", to: "pikes", n: 1500 }]);
     a.men.unarmed = 0;
     assert.equal(button(armyEquipment(ctx, a), "Arm "), undefined);           // nobody to arm
+});
+
+test("an army's swords and older guns are modernised at one click; with every tech done, the slider is said to cost money", async () => {
+    const { ctx, sent } = setup((game) => {
+        const c = game.state.countries.BAV;
+        c.techs.push("handCannons", "arquebuses");
+        Object.assign(game.state.armies[37].men, { swords: 900, handCannons: 300 });
+        c.reserve.arquebuses = 500;
+    });
+    const a = ctx.state.armies[37];
+    // 1,200 to arm: 500 in the reserve, a lot of 1000 bought for 70,000
+    await button(armyEquipment(ctx, a), "Modernise 1,200 with arquebuses · 70,000").handlers.click();
+    assert.deepEqual(sent, [{ type: "buyWeapons", weapon: "arquebuses", lots: 1 }, { type: "equip", army: 37, from: "swords", to: "arquebuses", n: 900 },
+        { type: "equip", army: 37, from: "handCannons", to: "arquebuses", n: 300 }]);
+    ctx.state.countries.BAV.treasury = 0;
+    ctx.state.countries.BAV.reserve.arquebuses = 0;
+    assert.match(armyEquipment(ctx, a).map((x) => x.text).join(" "), /1,200 men carry older weapons than arquebuses: the treasury cannot buy a lot of them/);
+    assert.doesNotMatch(countryTab(ctx).map((x) => x.text).join(" "), /Nothing is left to research/);
+    Object.assign(ctx.state.countries.BAV, { techs: Object.keys(TECHS), target: null, slider: 50 });
+    assert.match(countryTab(ctx).map((x) => x.text).join(" "), /Nothing is left to research: at 0% the slider adds to your money instead/);
 });
 
 test("the weapon soldiers are raised with stays as the player chose it, redraw after redraw, until changed", async () => {
