@@ -6,7 +6,7 @@ import { register } from "node:module";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 
 register("./loader.mjs", import.meta.url);
-const { Game, buildMap } = await import("../../src/engine/index.js");
+const { Game, buildMap, economyOf } = await import("../../src/engine/index.js");
 const { viewFor } = await import("../../src/game/view.js");
 const { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } = await import("../../public/js/panels.js");
 
@@ -112,7 +112,7 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     await button(nodes, "Buy 1000 people").handlers.click();
     assert.deepEqual(sent, [
         { type: "buyBuilding", building: "walls", settlement: 37 },
-        { type: "raise", settlement: 37, kind: "soldiers", lots: 1, weapon: "cavalry" },
+        { type: "raise", settlement: 37, kind: "soldiers", hundreds: 5, weapon: "cavalry" },   // room for 500 under feudal law
         { type: "hireMercenaries", settlement: 37, lots: 1 },
         { type: "buyWeapons", weapon: "swords", lots: 3 },
         { type: "buyPeople", lots: 1 },
@@ -128,6 +128,20 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     const built = setup((game) => { Object.assign(game.state.settlements[37], { walls: true }); });
     built.ctx.sel = { kind: "place", key: "37" };
     assert.match(shopTab(built.ctx).map((n) => n.text).join(" | "), /✓ walls/);
+});
+
+test("the Shop tab raises by the hundred once there is room for fewer than 1000 more", async () => {
+    const { ctx, sent } = setup((game) => {
+        const e = economyOf(game, "BAV");
+        game.state.countries.BAV.training.push({ settlement: 37, kind: "soldiers", weapon: "unarmed", n: e.armyCap - e.armySoldiers - 700, ready: 999 });
+    });
+    const nodes = shopTab(ctx);
+    assert.match(nodes.map((n) => n.text).join(" | "), /× 100(?!0)/);
+    const [count] = find(nodes, (e) => e.attrs.type === "number" && e.attrs.max === 9);
+    assert.equal(count.attrs.value, 7, "as many hundreds as there is room for");
+    await button(nodes, "Raise").handlers.click();
+    assert.equal(sent[0].hundreds, 7);
+    assert.equal(sent[0].lots, undefined);
 });
 
 test("the Shop tab stations sharpshooters at a pass of yours", async () => {

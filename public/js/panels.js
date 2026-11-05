@@ -152,22 +152,24 @@ export function shopTab(ctx) {
     // where to raise and to hire: the settlement chosen last (kept in ctx.ui while the page is open) while it is still a core of
     // ours, or else the capital, or the first core settlement
     const kept = (key) => (core.some((s) => s.id === ctx.ui?.[key]) ? ctx.ui[key] : capital ?? core[0]?.id);
-    const rs = select(ctx, settlementOptions(core), kept("raiseAt")), rl = numberInput(ctx, 1, 1, 50);
+    // by the thousand, or by the hundred while there is room for fewer than 1000 more (RULES.md §8)
+    const few = e.raiseRoom < 1000, per = few ? 100 : 1000;
+    const rs = select(ctx, settlementOptions(core), kept("raiseAt")), rl = numberInput(ctx, few ? Math.max(1, Math.floor(e.raiseRoom / 100)) : 1, 1, few ? 9 : 50);
     rs.addEventListener("change", () => { if (ctx.ui) ctx.ui.raiseAt = Number(rs.value); });
     const armable = [...WEAPONS, "cannons"].filter((w) => w === "unarmed" || c.techs.includes(w));
     const price = (w) => (w === "cannons" ? CANNON_PRICE : WEAPON_PRICE[w]);
     const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed"
         : w === "cannons" ? `with cannons, 1 to 10 men as its crew (${n(c.reserve.cannons)} in reserve)` : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), armable.includes(ctx.ui?.raiseWeapon) ? ctx.ui.raiseWeapon : bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
     const raiseLabel = () => {
-        const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * 1000, price(rw.value));
+        const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * per, price(rw.value));
         return cost ? `Raise · ${money(cost)} for weapons` : "Raise";
     };
-    const raise = make("button", { class: "primary", onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", lots: Number(rl.value), weapon: rw.value })) }, raiseLabel());
+    const raise = make("button", { class: "primary", onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", [few ? "hundreds" : "lots"]: Number(rl.value), weapon: rw.value })) }, raiseLabel());
     const relabel = () => { raise.textContent = raiseLabel(); };
     rw.addEventListener("change", () => { if (ctx.ui) ctx.ui.raiseWeapon = rw.value; relabel(); });
     rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
-        row(ctx, rs, rl, make("span", {}, "× 1000"), rw),
+        row(ctx, rs, rl, make("span", {}, `× ${per}`), rw),
         make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere; weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
         raise));
 

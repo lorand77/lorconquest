@@ -76,12 +76,13 @@ function economyBase(game, code) {
     const upkeep = soldiers * SOLDIER_UPKEEP, mercenaryUpkeep = mercenaries * MERCENARY_UPKEEP, interest = c.loans * LOAN_RATE;
     const moneyPerYear = settlementMoney - upkeep - mercenaryUpkeep - interest;
     const investable = Math.max(0, moneyPerYear);
-    const libraries = librariesOf(st, code);
+    const libraries = librariesOf(st, code), armyCap = armyCapOf(st, code), armySoldiers = soldiers - crewAtSea(st, code);
     const rPerYear = (2 * (c.slider / 100) * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * libraries);
     return {
-        pop, soldiers, armySoldiers: soldiers - crewAtSea(st, code), crewAtSea: crewAtSea(st, code), mercenaries, rebels, civilians,
+        pop, soldiers, armySoldiers, crewAtSea: crewAtSea(st, code), mercenaries, rebels, civilians,
         settlementMoney, upkeep, mercenaryUpkeep, interest, moneyPerYear, investable, rPerYear, libraries,
-        armyCap: armyCapOf(st, code), navyCap: navyCapOf(st, code), loanLimit: 2 * settlementMoney,
+        // how many men may still be raised: room under the army cap, and civilians to raise them from (RULES.md §8)
+        armyCap, raiseRoom: Math.max(0, Math.min(armyCap - armySoldiers, civilians)), navyCap: navyCapOf(st, code), loanLimit: 2 * settlementMoney,
     };
 }
 

@@ -460,7 +460,8 @@ fleet takes on one order at a time: patrol, blockade or none.
 time to appear:
 
 A country may only raise or hire up to its **army cap**, counting men in training, soldiers, crew and
-sharpshooters, and may not raise more men than it has civilians. The men appear in their settlement and
+sharpshooters, and may not raise more men than it has civilians. Soldiers are raised by the thousand; while there is
+room for fewer than 1000 more (under the cap, or in civilians), by the hundred instead. The men appear in their settlement and
 join an army of the country there that is not retreating and not outside the walls, or form a new one.
 
 | Trained in | Time |

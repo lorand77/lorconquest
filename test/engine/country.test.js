@@ -195,6 +195,21 @@ test("soldiers are trained for free in a core settlement: 3 months in the capita
     assert.deepEqual(events.filter((e) => e.type === "ready").map((e) => [e.what, e.n, e.army]), [["soldiers", 1000, 2]]);
 });
 
+test("soldiers are raised by the hundred only while there is room for fewer than 1000 more", () => {
+    const game = tinyGame(), c = AAA(game);                                    // feudal: 1,600 of 2,000
+    assert.equal(economyOf(game, "AAA").raiseRoom, 400);
+    assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 5 })), /more soldiers than your law allows/);
+    assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 10 })), /100 to 900/);
+    assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 0 })), /100 to 900/);
+    order(game, cmd("raise", { settlement: 1, hundreds: 4, weapon: "swords" }));
+    assert.deepEqual(c.training.map((t) => [t.n, t.weapon]), [[400, "swords"]]);
+    assert.equal(c.reserve.swords, 600, "a lot of swords bought, the rest to the reserve");
+    assert.equal(economyOf(game, "AAA").raiseRoom, 0);
+    order(game, cmd("setLaw", { law: "mass" }));                               // cap 6,000: room for 1000 again
+    assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 3 })), /raise by the thousand/);
+    order(game, cmd("raise", { settlement: 1, lots: 1 }));
+});
+
 test("training in a settlement that falls is cancelled", () => {
     const game = tinyGame();
     order(game, cmd("setLaw", { law: "standing" }));

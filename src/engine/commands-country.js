@@ -6,7 +6,7 @@
 //   deposit { amount }  withdraw { amount }  borrow { chunks }  repay { chunks }  defaultOnLoans {}
 //   buyBuilding { building, settlement }  buyWeapons { weapon, lots }  buyPeople { lots }
 //   buySharpshooters { pass, lots }  buyShips { kind, port, lots }
-//   raise { settlement, kind: "soldiers", lots, weapon }  hireMercenaries { settlement, lots }
+//   raise { settlement, kind: "soldiers", lots | hundreds, weapon }  hireMercenaries { settlement, lots }
 //   equip { army, from, to, n }  equipCannons { army, n }  (n < 0 returns them)  disband { army, men, cannons, crew }
 //   dismissMercenaries { army, n }  proclaim { region }
 import { CREW_PER_CANNON, WEAPONS, menOf, takeMen } from "./army.js";
@@ -224,17 +224,19 @@ export const countryCommands = {
     // soldiers, free, trained in a core settlement: 3 months in the capital, 6 elsewhere (RULES.md §8). Cannon crew are not
     // raised: an army's own soldiers man its cannons (equipCannons). Raised with a weapon, the men are set aside its
     // weapons now — from the reserve, the lots missing bought — and arrive carrying them; raised with cannons, one cannon
-    // for every 10 men, and they arrive as its crew.
+    // for every 10 men, and they arrive as its crew. By the thousand; by the hundred only while fewer than 1000 can be raised.
     raise(game, cmd) {
         const st = game.state, c = mine(game, cmd), weapon = cmd.weapon ?? "unarmed";
         if ((cmd.kind ?? "soldiers") !== "soldiers") return refuse("only soldiers are raised: they man cannons themselves");
-        if (!positive(cmd.lots)) return refuse("raise a whole number of lots of 1000");
+        const hundreds = cmd.hundreds !== undefined;
+        if (hundreds ? !positive(cmd.hundreds) || cmd.hundreds > 9 : !positive(cmd.lots)) return refuse(hundreds ? "raise 100 to 900 men" : "raise a whole number of lots of 1000");
         if (!WEAPONS.includes(weapon) && weapon !== "cannons") return refuse(`no weapon ${weapon}`);
         if (weapon !== "unarmed" && !unlocked(c, weapon)) return refuse(`${weapon} is not unlocked yet`);
         const { s, error } = ownSettlement(game, cmd);
         if (error) return refuse(error);
         if (!isCore(st, s, c.code)) return refuse(`${s.id} is not core: men are trained only in core settlements`);
-        const n = cmd.lots * 1000;
+        const n = hundreds ? cmd.hundreds * 100 : cmd.lots * 1000;
+        if (hundreds && economyOf(game, c.code).raiseRoom >= 1000) return refuse("there is room for 1000: raise by the thousand");
         if (armySoldiersOf(st, c.code) + n > armyCapOf(st, c.code)) return refuse("that is more soldiers than your law allows");
         if (economyOf(game, c.code).civilians < n) return refuse("not enough civilians");
         if (weapon !== "unarmed") {
