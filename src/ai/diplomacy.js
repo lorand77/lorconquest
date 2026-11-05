@@ -9,11 +9,16 @@
 // that turned every war between rivals into one between alliances (experiments/, 5). They are the AI's preferences, not
 // rules: a rival's proposal is still answered by the engine's formula, like anyone's.
 import { YEAR_DAYS, agreementAnswer, bordering, need, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
-    peaceAnswer, sizeOf, subjectChance, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
+    peaceAnswer, scores, sizeOf, subjectChance, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
 import { agreementsBetween, alliesOf, friendly } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
 import { dice, enemiesOf, hash, leaderFor, ownSettlements, reachFrom, rivalsOf, stagingSettlement, thinksOn } from "./util.js";
 
+// the most subjects a computer country asks for on demand (it may have more, from its peace terms): 3, one more for every 10
+// settlements it counts toward victory (its subjects' too), and two more for a diplomat, which gains by demand more than by war
+export function subjectCap(game, code, fl) {
+    return 3 + Math.floor((scores(game.state)[code]?.settlements ?? 0) / 10) + (fl.character === "diplomat" ? 2 : 0);
+}
 // the most alliances (defensive and military together) a computer country seeks, or helps another to
 export const ALLIANCE_CAP = 2;
 
@@ -224,18 +229,28 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
         }
     }
 
-    // a subject from a much weaker neighbour
-    if (!foes.length && fl.aggression > 0.4 && subjectsOf(st, code).length < 3 && r() < 0.15) {
-        for (const n of neighbours) {
-            if (overlordOf(st, n) || sizeOf(st, code) < 2 * sizeOf(st, n) || militaryPowerOf(st, code) < 2.5 * militaryPowerOf(st, n)) continue;
-            const kind = ["vassal", "protectorate"].find((k) => subjectChance(game, n, code, k).chance >= 35 && mayAsk(n, `demand-${k}`));
-            if (kind) { ask("demandSubject", n, `demand-${kind}`, { target: n, kind }); break; }
+    // a subject from a much weaker neighbour, up to its subjectCap — or first one of its own protectorates made a vassal
+    // (a vassal counts whole for victory and pays 40%, a protectorate half and 10%: RULES.md §10), which is no new subject.
+    // Asked only where a yes is likely, for a refusal is a grudge for 10 years
+    // — by an aggressive country, or a diplomat whatever its mood; not on a think that has just begun a war (not yet in the state)
+    const declaring = out.some((o) => o.type === "declareWar" || o.type === "breakAgreement");
+    if (!foes.length && !declaring && (fl.aggression > 0.4 || fl.character === "diplomat") && r() < 0.3) {
+        const mine = subjectsOf(st, code);
+        const weak = (n) => sizeOf(st, code) >= 2 * sizeOf(st, n) && militaryPowerOf(st, code) >= 2.5 * militaryPowerOf(st, n);
+        const likely = (n, k) => subjectChance(game, n, code, k).chance >= 35 && mayAsk(n, `demand-${k}`);
+        const upgrade = mine.find((n) => st.countries[n].subjectKind === "protectorate" && weak(n) && likely(n, "vassal"));
+        if (upgrade) ask("demandSubject", upgrade, "demand-vassal", { target: upgrade, kind: "vassal" });
+        else if (mine.length < subjectCap(game, code, fl)) {
+            for (const n of neighbours) {
+                if (overlordOf(st, n) || !weak(n)) continue;
+                const kind = ["vassal", "protectorate"].find((k) => likely(n, k));
+                if (kind) { ask("demandSubject", n, `demand-${kind}`, { target: n, kind }); break; }
+            }
         }
     }
 
     // the Empire, once — at peace, since every German state at war with it would refuse and join the League
     const needed = game.map.scenario.empire?.needed;
-    const warring = out.some((o) => o.type === "declareWar" || o.type === "breakAgreement");          // a war begun this very think
-    if (needed && !foes.length && !warring && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
+    if (needed && !foes.length && !declaring && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
     return { orders: out, prepare: plans.has(code) };
 }

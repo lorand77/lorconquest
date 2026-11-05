@@ -285,13 +285,15 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
 - **Diplomacy:** peace is asked for when a war has run its course — dictating terms (settlements next to its land,
   its own cores first) when far ahead and the war gains something, a white peace after two years of stalemate,
   money and then settlements to buy it when losing; the computer asks only what the other side's formula (the
-  engine's pure `peaceAnswer`, `agreementAnswer`, `demandChance`) would accept, since the same proposal may be
+  engine's pure `peaceAnswer`, `agreementAnswer`, `subjectChance`) would accept, since the same proposal may be
   made once in 5 years. Wars are *planned*: a neighbour it outmatches, with nothing binding them, gets a 40-day
   muster before the declaration, dropped if it stops being a good idea; a warlike country seeks no pacts. Also
   pacts with neighbours, a defensive alliance only when it feels threatened (need over 15) and only with a neighbour at
   least 80% as strong, military alliances against a common enemy — no alliance of either kind once it or the other holds
   two (`ALLIANCE_CAP`; experiments/README.md, 6), subjects demanded of
-  much weaker neighbours, the Empire proposed once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
+  much weaker neighbours (at peace, on 30% of its thinks, where a yes is 35% likely or more; its own protectorates made vassals
+  first; up to `subjectCap`: 3, one more per 10 settlements it counts toward victory, two more for a diplomat, which asks
+  whatever its aggression), the Empire proposed once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
   come home) are merged at the end of each think, the smallest into the largest, down to three — none given another order that
   think (`forces.js`, `tidyOrders`). A settlement every route from which leads to its own land (or a subject's or its overlord's) keeps no garrison — not
   the capital, nor while its own peasants are up — and its idle armies march to the staging settlement (`util.js`, `inland`).

@@ -9,7 +9,7 @@ import { warKey } from "../../src/engine/state.js";
 import { createAI } from "../../src/ai/index.js";
 import { answerOffers, callAnswers } from "../../src/ai/caretaker.js";
 import { addAgreement } from "../../src/engine/diplomacy.js";
-import { bestTarget, diplomacyOrders } from "../../src/ai/diplomacy.js";
+import { bestTarget, diplomacyOrders, subjectCap } from "../../src/ai/diplomacy.js";
 import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
 import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
 import { economyOrders } from "../../src/ai/economy.js";
@@ -132,6 +132,30 @@ test("research: with nothing left it wants, the slider goes to 0 — under 50% i
     c.techs = c.techs.filter((t) => t !== "muskets");
     orders = economyOrders(game, "AAA", fl, { budget: 0 });
     assert.deepEqual(orders.filter((o) => o.type === "setSlider" || o.type === "research").map((o) => [o.type, o.slider ?? o.tech]), [["setSlider", 100], ["research", "muskets"]]);
+});
+
+test("subjects on demand: its own protectorate made a vassal first, then a much weaker neighbour, up to its subjectCap", () => {
+    const demands = (prepare, flavour = fl) => {
+        const game = tinyGame(1), st = game.state;
+        st.settlements[1].pop = 1e6;                                            // AAA a giant: a yes is likely from anyone
+        setArmy(game, 1, { swords: 20000 });
+        prepare(st);
+        const mem = { plans: new Map(), asked: new Map() }, out = [];
+        for (let d = 0; d < 200; d++) { st.day++; out.push(...diplomacyOrders(game, "AAA", flavour, mem).orders.filter((o) => o.type === "demandSubject")); }
+        return out.map((o) => [o.target, o.kind]);
+    };
+    const subject = (st, c, kind) => Object.assign(st.countries[c], { overlord: "AAA", subjectKind: kind });
+    assert.deepEqual(demands((st) => subject(st, "CCC", "protectorate"))[0], ["CCC", "vassal"], "CCC is far away, but it is AAA's");
+    assert.deepEqual(demands((st) => { subject(st, "CCC", "vassal"); subject(st, "DDD", "vassal"); })[0], ["BBB", "vassal"], "a neighbour, BBB");
+    const three = (st) => { subject(st, "CCC", "vassal"); subject(st, "DDD", "vassal"); subject(st, "EEE", "vassal"); };
+    assert.deepEqual(demands(three), [], "three subjects and 6 settlements: enough");
+    assert.deepEqual(demands(three, { ...fl, aggression: 0.35, character: "diplomat" })[0], ["BBB", "vassal"], "a diplomat asks for two more, however mild");
+    // 3, and one more for every 10 settlements counted toward victory
+    const game = tinyGame(1);
+    assert.equal(subjectCap(game, "AAA", fl), 3);
+    for (const id of [4, 5, 6, 7, 8]) game.state.settlements[id].owner = "AAA";
+    for (let id = 9; id <= 10; id++) game.state.settlements[id] = { ...game.state.settlements[1], id, owner: "AAA" };
+    assert.deepEqual([subjectCap(game, "AAA", fl), subjectCap(game, "AAA", { ...fl, character: "diplomat" })], [4, 6]);
 });
 
 test("economy: light tax in peace, heavier in war, loans only when poor at war, buildings bought from the surplus", () => {

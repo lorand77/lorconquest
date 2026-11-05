@@ -228,3 +228,30 @@ a subject after the first was signed.
 
 **Timing.** The AI's day is dearer again: on the historical map the mean is 5.2 ms (p99 17.5 ms), and the slowest day 170 ms, over
 the tick's budget once or twice in 1,379,700 days. Section 8 suggested where it goes; worth looking at before more is added.
+
+## 10. Subjects by demand (2026-11-05)
+
+The computer asked for subjects about 3 times a century, and never turned its own protectorate into a vassal (design.md,
+*The computer players*). Now it upgrades its protectorates first, asks on 30% of its thinks instead of 15% (still only at
+peace and where a yes is 35% likely or more), and may have up to `subjectCap` subjects by demand: 3, one more for every 10
+settlements it counts toward victory, two more for a diplomat, which now asks whatever its aggression. The rules around it
+had changed just before: a yes adds warmonger score, a rival never agrees, and nobody agrees to a country at 75% of victory
+(RULES.md §10). Balanced only, 24 games of 210 years, against the commit before, side by side (16 and 18 minutes).
+
+| | New, 24 games | Before, 24 games |
+|---|---|---|
+| Winners | BAV 7, BRB 6, AUS 5, POZ 2, WAR 2, SCH 2 | BRB 5, HUN 3, GDA 3, BAV 3, AUS 2, POZ 2, six once |
+| Won by the target / on time | **7** / 17 (1505, 1507, 1515, 1520, 1528, 1537, 1641) | 1 / 23 (1593) |
+| Winner's settlements, mean (least–most); runner-up | **36.4** (10–47.2); 14.6 | 22.6 (11–45); 12.3 |
+| Subjects made a game | **45.5** | 30.0 |
+| Countries left at the end | **20.7** | 32.2 |
+| Captures, battles a game | 107, 125 | 99, 115 |
+| Wars declared (+ joined) | 41.7 (+20.3) | 46.4 (+15.5) |
+| AI a day: mean, p99, slowest | 2.0, 8.7, 50 ms | 2.1, 8.6, 62 ms |
+
+**What it did.** Demands are now a real way to grow: subjects made rise by half, and the vassals of ten years are integrated,
+so fewer countries are left. The leaders pull away — the winner ends with 36 settlements on average rather than 23 — and 7
+games in 24 end early with a winner at the target (one did before). Wars and captures barely move; the growth is
+the diplomacy's. **The cost is variety:** six countries win, all among the largest at the start (Bavaria, Brandenburg, Austria at
+50K), where twelve did; the rest of the field is swallowed sooner. Refusals are as rare as before; the demand refused for
+being made on the think that declared war on the same country is gone.
