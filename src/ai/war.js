@@ -8,6 +8,7 @@
 import { mayFight } from "../engine/battle.js";
 import { CREW_PER_CANNON, armyList, besiegedIn, isFriend, isRebel, routeFor, situation, siegeDays, wallDefence } from "../engine/index.js";
 import { WEAPONS } from "../engine/army.js";
+import { legKey } from "../engine/map.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf, winChance } from "./util.js";
 
 // a garrison's defence in a storm against `guns` cannons (RULES.md §5): ×1.2, or behind walls ×1.8 less 0.3 a hundred × x
@@ -72,21 +73,23 @@ export function lastSorties(game, code, out) {
 const TURN_BACK = (fl) => 0.5 + 0.2 * (1 - fl.aggression);
 export function turnBacks(game, code, fl, out) {
     const st = game.state, staging = stagingSettlement(game, code);
+    const marching = ownArmies(st, code).filter((a) => a.march && !a.retreating && !out.some((o) => o.army === a.id));   // (one order an army a think)
+    if (!marching.length) return;
     const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.march?.to ?? a.at);
     const friendlyTown = (k) => st.settlements[game.map.nodes.get(k)?.kind === "settlement" ? game.map.nodes.get(k).id : -1] && isFriend(st, code, st.settlements[game.map.nodes.get(k).id].owner);
-    for (const a of ownArmies(st, code)) {
-        if (!a.march || a.retreating || out.some((o) => o.army === a.id)) continue;            // (one order an army a think)
+    // when an army gets where it is going: the end of its leg, then the days of the legs after it (no route to find again)
+    const legDays = (from, to) => game.map.legDays.get(legKey(from, to)) ?? 0;
+    const arrival = (a) => { let d = a.march.end, at = a.march.to; for (const k of a.path) { d += legDays(at, k); at = k; } return d; };
+    const foes = new Set(enemiesOf(st, code)), enemyArmies = armyList(st).filter((e) => foes.has(e.owner));
+    for (const a of marching) {
         const dest = destinationOf(a);
         if (!dest || friendlyTown(dest) && !situation(game, dest).hostile.length) continue;      // going home, or to a quiet town of ours
-        const route = routeFor(game, a, dest);
-        if (!route) continue;
-        const arrive = st.day + route.days;
-        const enemyThere = (e) => enemiesOf(st, code).includes(e.owner) && (e.at === dest || (destinationOf(e) === dest && e.march && e.march.end <= arrive + 5));
-        const theirs = armyList(st).filter(enemyThere);
+        const arrive = arrival(a);
+        const theirs = enemyArmies.filter((e) => e.at === dest || (e.march && destinationOf(e) === dest && e.march.end <= arrive + 5));
         const ours = ownArmies(st, code).filter((x) => x === a || (destinationOf(x) === dest && !x.retreating));
         const node = game.map.nodes.get(dest), s = node.kind === "settlement" ? st.settlements[node.id] : null;
         // a storm meets the garrison behind its walls; a siege, only the armies in the field (relief) and a sortie's worth of it
-        const garrison = s && enemiesOf(st, code).includes(s.owner) ? theirs.filter((e) => e.at === dest && e.owner === s.owner && !e.relief) : [];
+        const garrison = s && foes.has(s.owner) ? theirs.filter((e) => e.at === dest && e.owner === s.owner && !e.relief) : [];
         const field = theirs.filter((e) => !garrison.includes(e));
         const against = forcePower(field) + forcePower(garrison) * (a.storm ? wallsFactor(game, s, ours.reduce((n, x) => n + x.cannons, 0)) : 1);
         if (against <= 0 || forcePower(ours) >= TURN_BACK(fl) * against) continue;
