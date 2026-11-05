@@ -481,7 +481,8 @@ home.
 aside for them when you raise them — taken from the reserve, and the lots of 1000 the reserve lacks
 bought then and there at the shop price (§3), the rest of a lot going to the reserve — and the men
 appear carrying them. Raised **with cannons**, they are set aside one cannon for every 10 of them (lots of 100) and appear
-as its crew (§3). If the training is cancelled, those weapons go back to the reserve.
+as its crew (§3). Men raised **by the hundred** have what the reserve lacks bought by the hundred instead (cannons by the ten),
+at a tenth of a lot's price. If the training is cancelled, those weapons go back to the reserve.
 
 You may upgrade weapons in an army instantly. You may also **remove men or crew from an army** —
 they come home and their weapons and cannons go to a reserve for later use; men and crew raised

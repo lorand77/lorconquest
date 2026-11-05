@@ -110,7 +110,7 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     assert.match(text, /Raise soldiers/);
     assert.doesNotMatch(text, /muskets|not unlocked/, "only the weapons that can be bought");
     await button(nodes, "walls").handlers.click();
-    assert.equal(button(nodes, "Raise").text, "Raise · 60,000 for weapons");     // the best weapon its 100,000 pays for: cavalry
+    assert.equal(button(nodes, "Raise").text, "Raise · 30,000 for weapons");     // the best weapon its 100,000 pays for, cavalry: 500, by the hundred
     await button(nodes, "Raise").handlers.click();
     await button(nodes, "Hire").handlers.click();
     const [lots] = find(nodes, (e) => e.attrs.type === "number" && e.attrs.max === 50 && e.attrs.value === 1).slice(-1);
@@ -257,7 +257,7 @@ test("the weapon soldiers are raised with stays as the player chose it, redraw a
     assert.equal(ctx.ui.raiseWeapon, "pikes");
     nodes = shopTab(ctx);                                                      // the panel is rebuilt as the days go by
     assert.equal(weaponOf(nodes).value, "pikes");
-    assert.equal(button(nodes, "Raise").text, "Raise · 30,000 for weapons");
+    assert.equal(button(nodes, "Raise").text, "Raise · 15,000 for weapons");     // 500 pikes, by the hundred
     await button(nodes, "Raise").handlers.click();
     assert.equal(sent[0].weapon, "pikes");
     weaponOf(nodes).value = "unarmed";                                         // unarmed is a choice too
@@ -273,7 +273,7 @@ test("soldiers can be raised with cannons, one to every 10 of them", async () =>
     assert.match(weapon.text, /with cannons, 1 to 10 men as its crew/);
     weapon.value = "cannons";
     weapon.handlers.change();
-    assert.equal(button(nodes, "Raise").text, "Raise · 100,000 for weapons");    // 100 cannons for 1,000 men: one lot
+    assert.equal(button(nodes, "Raise").text, "Raise · 50,000 for weapons");     // 50 cannons for 500 men: by the ten, 5 tenths of a lot
     await button(nodes, "Raise").handlers.click();
     assert.equal(sent[0].weapon, "cannons");
 });

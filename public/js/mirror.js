@@ -226,12 +226,14 @@ export function fitView(view, W, H, aspect) {
 export const BEST_FIRST = ["muskets", "arquebuses", "cavalry", "handCannons", "pikes", "swords"];
 
 // what arming `n` men with `weapon` costs (RULES.md §8, Raising forces): the reserve first, then whole lots of 1000 at `price` a
-// lot — or, for cannons, one for every 10 men, in lots of 100
-export function armingCost(reserve, weapon, n, price) {
+// lot — or, for cannons, one for every 10 men, in lots of 100; raising by the hundred (`hundreds`), in lots a tenth of those,
+// at a tenth of the price
+export function armingCost(reserve, weapon, n, price, hundreds = false) {
     if (weapon === "unarmed" || n <= 0) return { lots: 0, cost: 0 };
-    const [need, lot] = weapon === "cannons" ? [n / 10, 100] : [n, 1000];
+    const part = hundreds ? 10 : 1;
+    const [need, lot] = weapon === "cannons" ? [n / 10, 100 / part] : [n, 1000 / part];
     const lots = Math.ceil(Math.max(0, need - (reserve[weapon] ?? 0)) / lot);
-    return { lots, cost: lots * price };
+    return { lots, cost: lots * price / part };
 }
 
 // the one-click arming of `n` men: the best weapon `country` has unlocked whose missing lots its treasury can pay, or null

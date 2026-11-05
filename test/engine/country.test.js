@@ -201,9 +201,12 @@ test("soldiers are raised by the hundred only while there is room for fewer than
     assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 5 })), /more soldiers than your law allows/);
     assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 10 })), /100 to 900/);
     assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 0 })), /100 to 900/);
+    c.reserve.swords = 50;
+    const before = c.treasury;
     order(game, cmd("raise", { settlement: 1, hundreds: 4, weapon: "swords" }));
     assert.deepEqual(c.training.map((t) => [t.n, t.weapon]), [[400, "swords"]]);
-    assert.equal(c.reserve.swords, 600, "a lot of swords bought, the rest to the reserve");
+    // 350 missing: bought by the hundred, 4 of them at a tenth of a lot's 25,000 each; the 50 over go to the reserve
+    assert.deepEqual([before - c.treasury, c.reserve.swords], [10000, 50]);
     assert.equal(economyOf(game, "AAA").raiseRoom, 0);
     order(game, cmd("setLaw", { law: "mass" }));                               // cap 6,000: room for 1000 again
     assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 3 })), /raise by the thousand/);

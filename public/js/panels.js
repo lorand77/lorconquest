@@ -165,7 +165,7 @@ export function shopTab(ctx) {
     const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed"
         : w === "cannons" ? `with cannons, 1 to 10 men as its crew (${n(c.reserve.cannons)} in reserve)` : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), armable.includes(ctx.ui?.raiseWeapon) ? ctx.ui.raiseWeapon : bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
     const raiseLabel = () => {
-        const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * per, price(rw.value));
+        const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * per, price(rw.value), few);
         return cost ? `Raise · ${money(cost)} for weapons` : "Raise";
     };
     const raise = make("button", { class: "primary", onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", [few ? "hundreds" : "lots"]: Number(rl.value), weapon: rw.value })) }, raiseLabel());

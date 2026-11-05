@@ -240,12 +240,13 @@ export const countryCommands = {
         if (armySoldiersOf(st, c.code) + n > armyCapOf(st, c.code)) return refuse("that is more soldiers than your law allows");
         if (economyOf(game, c.code).civilians < n) return refuse("not enough civilians");
         if (weapon !== "unarmed") {
-            const k = weapon === "cannons" ? n / CREW_PER_CANNON : n;
-            const lots = Math.ceil(Math.max(0, k - c.reserve[weapon]) / LOT(weapon)), cost = lots * PRICE(weapon);
+            // raised by the hundred, the weapons missing are bought by the hundred too (cannons by the ten), at a tenth of a lot
+            const k = weapon === "cannons" ? n / CREW_PER_CANNON : n, part = hundreds ? 10 : 1;
+            const lot = LOT(weapon) / part, lots = Math.ceil(Math.max(0, k - c.reserve[weapon]) / lot), cost = lots * PRICE(weapon) / part;
             const why = cost ? afford(c, cost) : null;
             if (why) return refuse(why);
             c.treasury -= cost;
-            c.reserve[weapon] += lots * LOT(weapon) - k;
+            c.reserve[weapon] += lots * lot - k;
         }
         const capital = st.settlements[c.capital]?.owner === c.code && c.capital === s.id;
         c.training.push({ settlement: s.id, kind: "soldiers", weapon, n, ready: st.day + (capital ? TRAIN_CAPITAL_DAYS : TRAIN_OTHER_DAYS) });
