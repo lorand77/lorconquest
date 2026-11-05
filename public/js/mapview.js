@@ -270,7 +270,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
             }));
         },
 
-        // the capitals: [{ id, mine }] — each one's marker with a thick dark border, the player's own a gold one (game.css);
+        // the capitals: [{ id, mine }] — each one's marker with a gold border (game.css; "mine" is there to style the player's own);
         // the classes are changed only when the capitals do
         setCapitals(list) {
             const key = list.map((c) => `${c.id}${c.mine ? "*" : ""}`).join();

@@ -473,9 +473,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .lc-army.retreating rect { stroke-dasharray: 2 2; }
 .lc-siege-track { fill: none; stroke: rgba(0, 0, 0, 0.15); stroke-width: 3; pointer-events: none; }
 .lc-siege { fill: none; stroke: #c9161f; stroke-width: 3; pointer-events: none; }
-/* a capital's marker: red as any other, with a thick dark border — the player's own a gold one (mapview.js, setCapitals) */
-.map .settlement.capital .marker { stroke: #2a2a2a; stroke-width: 1.8px; }
-.map .settlement.capital.mine .marker { stroke: #e8b000; stroke-width: 2.2px; }
+/* a capital's marker: red as any other, with a gold border — everyone's alike (mapview.js, setCapitals) */
+.map .settlement.capital .marker { stroke: #e8b000; stroke-width: 2.2px; }
 #lands .lc-dim { opacity: 0.3; }
 .lc-route { fill: none; stroke: #222; stroke-width: 2; stroke-dasharray: 6 4; pointer-events: none; }
 .lc-fleet rect { stroke: #234; stroke-width: 1; }
