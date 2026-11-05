@@ -32,10 +32,9 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     const layer = (id) => { const g = el("g", { id }); svg.appendChild(g); return g; };
     const labelLayer = layer("lc-labels");               // countries' codes where their land is now (mapdraw.js); the map's own are hidden
     svg.querySelector("#labels")?.setAttribute("display", "none");
-    const capitalLayer = layer("lc-capitals");          // a star at the corner of each capital's marker (mapdraw.js, capitalMarks)
     const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");
     const markers = new Map(), ships = new Map();                    // army id -> <g>, fleet id -> <g>
-    let capitalKey = null;
+    let capitalKey = null, capitalsShown = [];                       // the settlement groups marked as capitals now
 
     // a subject's stripes: one pattern for each pair of colours and kind, made the first time it is needed. In map units, so
     // they zoom with the land: broad for a vassal, thin for a protectorate, at 45°
@@ -271,18 +270,20 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
             }));
         },
 
-        // the capitals: [{ id, mine }] — a star at the top left corner of each one's marker, redrawn only when they change
+        // the capitals: [{ id, mine }] — each one's marker dark instead of red, the player's own with a gold edge (game.css);
+        // the classes are changed only when the capitals do
         setCapitals(list) {
             const key = list.map((c) => `${c.id}${c.mine ? "*" : ""}`).join();
             if (key === capitalKey) return;
             capitalKey = key;
-            capitalLayer.replaceChildren(...list.flatMap((c) => {
-                const m = svg.querySelector(`#settlement-${c.id} .marker`);
-                if (!m) return [];
-                const t = el("text", { class: `lc-capital${c.mine ? " mine" : ""}`, x: Number(m.getAttribute("x")) + 1, y: Number(m.getAttribute("y")) + 2.5 });
-                t.textContent = "★";
-                return [t];
-            }));
+            for (const g of capitalsShown) g.classList.remove("capital", "mine");
+            capitalsShown = list.flatMap((c) => {
+                const g = svg.querySelector(`#settlement-${c.id}`);
+                if (!g) return [];
+                g.classList.add("capital");
+                if (c.mine) g.classList.add("mine");
+                return [g];
+            });
         },
 
         // the countries' codes: [{ code, x, y, size }]

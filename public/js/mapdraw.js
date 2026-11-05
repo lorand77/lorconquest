@@ -42,8 +42,8 @@ export const postMarks = (state, nodes) => Object.entries(state.posts).map(([key
     return { x: n.x, y: n.y, n: p.n, colour: "#222" };
 });
 
-// every country's capital, while it holds it (a lost capital is no capital: RULES.md §2) — a star on its marker, gold for
-// `me`'s own: [{ id, code, mine }] by settlement id
+// every country's capital, while it holds it (a lost capital is no capital: RULES.md §2) — its marker dark, `me`'s own edged
+// in gold: [{ id, code, mine }] by settlement id
 export function capitalMarks(state, me = null) {
     const out = [];
     for (const c of Object.values(state.countries)) {

@@ -64,7 +64,7 @@ test("a country that proclaimed a new state shows its code and colour; its subje
     assert.equal(countryColour(st, sc, "BAV"), "#8c3a3a", "peasants in arms are dark red whatever they were");
 });
 
-test("a capital gets a star while its country holds it — gold for your own; a frame of a timelapse keeps them", async () => {
+test("a capital is marked while its country holds it — your own apart; a frame of a timelapse keeps them", async () => {
     const { capitalMarks } = await import("../../public/js/mapdraw.js");
     const { frameOf } = await import("../../public/js/mapcanvas.js");
     const { scores } = await import("../../src/engine/index.js");

@@ -106,27 +106,16 @@ export function createMapCanvas(svg, scenario) {
         ctx.strokeStyle = "#7f7f7f";
         for (const e of edges) if (owner(e.ends[0]) !== owner(e.ends[1])) ctx.stroke(e.p);
         if (coast) { ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.stroke(coast); }
-        // settlements: a dot each, a larger one for a city, and a star for a capital
+        // settlements: a dot each, a larger one for a city — white, or dark for a capital, as the map's markers are
         const capitals = new Set(frame.capitals ?? []);
         for (const s of scenario.settlements) {
-            if (capitals.has(s.id)) {
-                ctx.font = "bold 14px Arial, Helvetica, sans-serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                ctx.lineWidth = 2.5;
-                ctx.strokeStyle = "#fff";
-                ctx.strokeText("★", s.x, s.y);
-                ctx.fillStyle = "#333";
-                ctx.fillText("★", s.x, s.y);
-                ctx.textBaseline = "alphabetic";
-                continue;
-            }
+            const capital = capitals.has(s.id);
             ctx.beginPath();
-            ctx.arc(s.x, s.y, s.type === "city" ? 4 : 2.8, 0, 2 * Math.PI);
-            ctx.fillStyle = "#fff";
+            ctx.arc(s.x, s.y, s.type === "city" || capital ? 4 : 2.8, 0, 2 * Math.PI);
+            ctx.fillStyle = capital ? "#2a2a2a" : "#fff";
             ctx.fill();
             ctx.lineWidth = 1.2;
-            ctx.strokeStyle = "#333";
+            ctx.strokeStyle = capital ? "#fff" : "#333";
             ctx.stroke();
         }
         // the countries' codes, with a light halo so they read on any colour
