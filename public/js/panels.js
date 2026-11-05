@@ -137,7 +137,7 @@ export function shopTab(ctx) {
     const out = [];                                          // (the treasury is in the top bar)
     const own = Object.values(state.settlements).filter((s) => s.owner === me);
     const core = own.filter((s) => isCore(state, s, me));
-    const settlementOptions = (list) => list.map((s) => [s.id, ctx.name(String(s.id))]);
+    const settlementOptions = (list) => list.map((s) => [s.id, `${ctx.name(String(s.id))}${s.id === capital ? " ★ capital" : ""}`]);
     const capital = state.settlements[c.capital]?.owner === me ? c.capital : null;
 
     // buildings, in the settlement selected on the map
@@ -146,7 +146,7 @@ export function shopTab(ctx) {
         // (no courthouse where the settlement is core already, where it would do nothing, nor before its people are compliant)
         const ready = compliance(sel, state.day, CORING_DAYS).ready;
         // its people first: the settlement selected is the player's own, and this is the panel it opens (mirror.js, tabForSelection)
-        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}`, make("p", {}, `${n(sel.pop)} people${sel.cores.includes(me) ? ", core" : ", not core"}.`),
+        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}${sel.id === capital ? " ★ capital" : ""}`, make("p", {}, `${n(sel.pop)} people${sel.cores.includes(me) ? ", core" : ", not core"}.`),
             complianceBlock(ctx, sel), make("div", { class: "buttons" },
             ...Object.keys(BUILDING_PRICE).filter((b) => b !== "courthouse" || sel.courthouse || !sel.cores.includes(me)).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${b}`)
                 : b === "courthouse" && !ready ? make("span", { class: "hint" }, "courthouse: once compliant")

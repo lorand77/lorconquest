@@ -659,7 +659,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 - **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
   as a marker in its owner's colour with its men on it — a column of them beside a place with
   several; marching armies glide along the roads between ticks; a ring round each besieged
-  settlement fills as the siege runs. Drag to pan, wheel, +/- or two fingers to zoom (`mirror.js`, `pinchView`); a finger may
+  settlement fills as the siege runs; a star on the corner of each capital's marker while its country holds it, gold for the
+  player's own (`mapdraw.js`, `capitalMarks`: capitals move, so the map's file cannot hold them), and in the panels "★ capital"
+  by its name. Drag to pan, wheel, +/- or two fingers to zoom (`mirror.js`, `pinchView`); a finger may
   stray 10 pixels in a tap, a mouse 5.
 - **Orders:** click an army to select it; with one of your own selected, click a settlement, a
   pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in

@@ -9,7 +9,7 @@
 // who holds what, who is whose subject, the leaders), then the frames are drawn and recorded at an even pace. framePlan and
 // frameOf are pure, tested in Node; the rest needs a browser.
 import { longDate } from "/engine/calendar.js";
-import { countryColour, countryLabels, landFill } from "./mapdraw.js";
+import { capitalMarks, countryColour, countryLabels, landFill } from "./mapdraw.js";
 
 // the days a timelapse shows: one frame every `yearsPerSecond × 365 ÷ fps` days from `from` to `to`, the last day always among them
 export function framePlan(from, to, yearsPerSecond, fps = 30) {
@@ -34,17 +34,17 @@ export function exportSpan(fromText, toText, endDay, startYear = 1440, yearDays 
 
 // what a frame needs of a state, kept small — a whole game at a year a second is thousands of frames: the owner of each
 // settlement (in the order of the state's settlements), only the countries that differ from how they began (a subject, a
-// rebel band, one out of the game, a new state proclaimed), and the five with the most settlements. stateOf turns it back into what the map's
+// rebel band, one out of the game, a new state proclaimed), the capitals held, and the five with the most settlements. stateOf turns it back into what the map's
 // drawing reads (mapdraw.js: landFill, countryLabels).
 export function frameOf(state, scores, day = state.day) {
-    const owners = Object.values(state.settlements).map((s) => s.owner), changed = {};
+    const owners = Object.values(state.settlements).map((s) => s.owner), changed = {}, capitals = capitalMarks(state).map((c) => c.id);
     for (const c of Object.values(state.countries)) {
         if (c.overlord || c.rebel || (c.out ?? null) !== null || c.formed) changed[c.code] = { name: c.name, overlord: c.overlord ?? null, subjectKind: c.subjectKind ?? null, rebel: Boolean(c.rebel), out: c.out ?? null, formed: c.formed ?? null };
     }
     const top = Object.entries(scores).filter(([code]) => state.countries[code] && !state.countries[code].rebel)
         .sort((a, b) => b[1].settlements - a[1].settlements || b[1].pop - a[1].pop || (a[0] < b[0] ? -1 : 1)).slice(0, 5)
         .map(([code, s]) => ({ code, name: state.countries[code].name, settlements: s.settlements }));
-    return { day, owners, changed, top };
+    return { day, owners, changed, capitals, top };
 }
 export function stateOf(frame, scenario) {
     const settlements = {}, countries = {};
@@ -106,8 +106,21 @@ export function createMapCanvas(svg, scenario) {
         ctx.strokeStyle = "#7f7f7f";
         for (const e of edges) if (owner(e.ends[0]) !== owner(e.ends[1])) ctx.stroke(e.p);
         if (coast) { ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.stroke(coast); }
-        // settlements: a dot each, a larger one for a city
+        // settlements: a dot each, a larger one for a city, and a star for a capital
+        const capitals = new Set(frame.capitals ?? []);
         for (const s of scenario.settlements) {
+            if (capitals.has(s.id)) {
+                ctx.font = "bold 14px Arial, Helvetica, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = "#fff";
+                ctx.strokeText("★", s.x, s.y);
+                ctx.fillStyle = "#333";
+                ctx.fillText("★", s.x, s.y);
+                ctx.textBaseline = "alphabetic";
+                continue;
+            }
             ctx.beginPath();
             ctx.arc(s.x, s.y, s.type === "city" ? 4 : 2.8, 0, 2 * Math.PI);
             ctx.fillStyle = "#fff";

@@ -64,6 +64,20 @@ test("a country that proclaimed a new state shows its code and colour; its subje
     assert.equal(countryColour(st, sc, "BAV"), "#8c3a3a", "peasants in arms are dark red whatever they were");
 });
 
+test("a capital gets a star while its country holds it — gold for your own; a frame of a timelapse keeps them", async () => {
+    const { capitalMarks } = await import("../../public/js/mapdraw.js");
+    const { frameOf } = await import("../../public/js/mapcanvas.js");
+    const { scores } = await import("../../src/engine/index.js");
+    const sc = mitteleuropa, st = Game.create(sc, { seed: 1 }).state;
+    const marks = capitalMarks(st, "BAV");
+    assert.equal(marks.length, sc.countries.length, "every country starts in its capital");
+    assert.deepEqual(marks.find((m) => m.code === "BAV"), { id: 37, code: "BAV", mine: true });
+    assert.ok(marks.filter((m) => m.mine).length === 1 && marks.every((m, i) => i === 0 || marks[i - 1].id < m.id));
+    st.settlements[37].owner = "AUS";                                         // Munich lost: no capital of anyone's
+    assert.equal(capitalMarks(st, "BAV").some((m) => m.id === 37), false);
+    assert.deepEqual(frameOf(st, scores(st)).capitals, capitalMarks(st).map((m) => m.id));
+});
+
 test("a subject's land is striped with its overlord's colour — broad for a vassal, thin for a protectorate — and its label names the overlord", async () => {
     const { landFill, ownersKey } = await import("../../public/js/mapdraw.js");
     const st = Game.create(mitteleuropa, { seed: 1 }).state;

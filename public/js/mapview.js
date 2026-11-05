@@ -32,8 +32,10 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     const layer = (id) => { const g = el("g", { id }); svg.appendChild(g); return g; };
     const labelLayer = layer("lc-labels");               // countries' codes where their land is now (mapdraw.js); the map's own are hidden
     svg.querySelector("#labels")?.setAttribute("display", "none");
+    const capitalLayer = layer("lc-capitals");          // a star at the corner of each capital's marker (mapdraw.js, capitalMarks)
     const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");
     const markers = new Map(), ships = new Map();                    // army id -> <g>, fleet id -> <g>
+    let capitalKey = null;
 
     // a subject's stripes: one pattern for each pair of colours and kind, made the first time it is needed. In map units, so
     // they zoom with the land: broad for a vassal, thin for a protectorate, at 45°
@@ -266,6 +268,20 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
                     el("circle", { class: "lc-siege-track", cx: s.x, cy: s.y, r }),
                     el("circle", { class: "lc-siege", cx: s.x, cy: s.y, r, "stroke-dasharray": `${(c * s.frac).toFixed(1)} ${c.toFixed(1)}`, transform: `rotate(-90 ${s.x} ${s.y})` }),
                 ];
+            }));
+        },
+
+        // the capitals: [{ id, mine }] — a star at the top left corner of each one's marker, redrawn only when they change
+        setCapitals(list) {
+            const key = list.map((c) => `${c.id}${c.mine ? "*" : ""}`).join();
+            if (key === capitalKey) return;
+            capitalKey = key;
+            capitalLayer.replaceChildren(...list.flatMap((c) => {
+                const m = svg.querySelector(`#settlement-${c.id} .marker`);
+                if (!m) return [];
+                const t = el("text", { class: `lc-capital${c.mine ? " mine" : ""}`, x: Number(m.getAttribute("x")) + 1, y: Number(m.getAttribute("y")) + 2.5 });
+                t.textContent = "★";
+                return [t];
             }));
         },
 

@@ -107,7 +107,8 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     const text = nodes.map((n) => n.text).join(" | ");
     assert.match(text, /Buildings in place 37/);
     assert.doesNotMatch(text, /Treasury/, "not the treasury: the top bar has it");
-    assert.match(text, /Buildings in place 37 [\d,]+ people, core\./, "the town's own people, as this is the panel it opens");
+    assert.match(text, /Buildings in place 37 ★ capital [\d,]+ people, core\./, "the town's own people, as this is the panel it opens; Munich is the capital");
+    assert.match(text, /place 36 place 37 ★ capital place 38/, "and the capital is marked where soldiers are raised");
     assert.match(text, /Raise soldiers/);
     assert.doesNotMatch(text, /muskets|not unlocked/, "only the weapons that can be bought");
     await button(nodes, "walls").handlers.click();

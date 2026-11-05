@@ -724,8 +724,9 @@ function placePanel(key) {
         return [make("h2", {}, `Pass ${node.id}`), make("p", {}, `In the land of ${name(String(node.land))}: `, swatch(owner), ` ${country(owner).name}.`), ...(here.length ? [armyList(here)] : [])];
     }
     const s = state.settlements[node.id];
-    const out = [make("h2", {}, swatch(s.owner), ` ${name(key)}`),
-        make("p", {}, `${country(s.owner).name}. ${formatNumber(s.pop)} people.${s.cores.includes(s.owner) ? " Core." : ""}${s.walls ? " Walls." : ""}${scenario.settlements.find((x) => x.id === s.id)?.hre ? " In the Holy Roman Empire." : ""}`)];
+    const capital = country(s.owner)?.capital === s.id;            // its owner's capital (a lost one is no capital)
+    const out = [make("h2", {}, swatch(s.owner), ` ${name(key)}${capital ? " ★" : ""}`),
+        make("p", {}, `${country(s.owner).name}${capital ? ": its capital" : ""}. ${formatNumber(s.pop)} people.${s.cores.includes(s.owner) ? " Core." : ""}${s.walls ? " Walls." : ""}${scenario.settlements.find((x) => x.id === s.id)?.hre ? " In the Holy Roman Empire." : ""}`)];
     if (s.siege) out.push(make("p", { class: "siege" }, `Besieged by ${country(s.siege.by).name}: it falls ${longDate(s.siege.end)} unless relieved.`));
     const comply = complianceBlock(ctx, s);                   // a settlement not core for its owner: how far its people comply
     if (comply) out.push(comply);

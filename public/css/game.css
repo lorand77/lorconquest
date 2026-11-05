@@ -473,6 +473,9 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .lc-army.retreating rect { stroke-dasharray: 2 2; }
 .lc-siege-track { fill: none; stroke: rgba(0, 0, 0, 0.15); stroke-width: 3; pointer-events: none; }
 .lc-siege { fill: none; stroke: #c9161f; stroke-width: 3; pointer-events: none; }
+/* a capital's star on its marker's corner: dark for others', gold for your own */
+.lc-capital { font-size: 9px; text-anchor: middle; fill: #333; stroke: #fff; stroke-width: 1.5px; paint-order: stroke; pointer-events: none; }
+.lc-capital.mine { fill: #e8b000; stroke: #333; stroke-width: 1px; font-size: 11px; }
 #lands .lc-dim { opacity: 0.3; }
 .lc-route { fill: none; stroke: #222; stroke-width: 2; stroke-dasharray: 6 4; pointer-events: none; }
 .lc-fleet rect { stroke: #234; stroke-width: 1; }

@@ -42,12 +42,24 @@ export const postMarks = (state, nodes) => Object.entries(state.posts).map(([key
     return { x: n.x, y: n.y, n: p.n, colour: "#222" };
 });
 
+// every country's capital, while it holds it (a lost capital is no capital: RULES.md §2) — a star on its marker, gold for
+// `me`'s own: [{ id, code, mine }] by settlement id
+export function capitalMarks(state, me = null) {
+    const out = [];
+    for (const c of Object.values(state.countries)) {
+        if (c.rebel || (c.out ?? null) !== null || c.capital === null || c.capital === undefined) continue;
+        if (state.settlements[c.capital]?.owner === c.code) out.push({ id: c.capital, code: c.code, mine: c.code === me });
+    }
+    return out.sort((a, b) => a.id - b.id);
+}
+
 // the whole map, but for the lands' colours (which the caller repaints when ownership changes) and the planned route
 export function paintMap(map, state, nodes, zones, legs, day, colourOf, options) {
     map.setArmies(armyMarkers(state, nodes, legs, day, colourOf, options));
     map.setFleets(fleetMarkers(state, nodes, zones, day, colourOf, options));
     map.setPosts(postMarks(state, nodes));
     map.setSieges(siegeRings(state, nodes));
+    map.setCapitals(capitalMarks(state, options?.me ?? null));
 }
 
 // a country as the map shows it: in the colour and under the code of the new state it proclaimed, if it did (SCENARIO.md,
