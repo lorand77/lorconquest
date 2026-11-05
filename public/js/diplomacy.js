@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { BAR, agreementAnswer, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { ALLIANCE_YEARS, BAR, agreementAnswer, isAlliance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -22,7 +22,7 @@ const act = (ctx, cmd) => async () => { await ctx.send(cmd()); ctx.redraw(); };
 function offerText(ctx, o) {
     const who = (c) => ctx.state.countries[c].name;
     if (o.kind === "call") return `${who(o.from)} calls you to arms against ${who(o.enemy)} (${o.side === "att" ? "their attack" : "their defence"}). Refusing ends the alliance; no answer by ${longDate(o.deadline)} is a yes.`;
-    if (o.kind === "agreement") return `${who(o.from)} proposes a ${AGREEMENT_NAMES[o.agreement]}.`;
+    if (o.kind === "agreement") return `${who(o.from)} proposes a ${AGREEMENT_NAMES[o.agreement]}${o.years ? ` for ${o.years} years` : ""}.`;
     if (o.kind === "demand") return `${who(o.from)} demands that you become its ${o.subject}.`;
     if (o.kind === "empire") return `${who(o.from)} demands the Empire: join as its protectorate, or join the League against it.`;
     if (o.kind === "integrate") return `${who(o.from)} asks to integrate you: your land, armies and treasury become its own, and you are out of the game.`;
@@ -62,7 +62,8 @@ export function diplomacyTab(ctx) {
     // agreements
     const mine = state.agreements.filter((x) => x.a === me || x.b === me);
     const line = (x) => {
-        const other = x.a === me ? x.b : x.a, until = x.until !== null ? ` until ${longDate(x.until)}` : "";
+        // an alliance whose term is up while the two fight a common enemy lasts until that war is over (RULES.md §10)
+        const other = x.a === me ? x.b : x.a, until = x.until === null ? "" : x.until <= state.day ? " until the war is over" : ` until ${longDate(x.until)}`;
         if (x.kind === "guarantee") return [x.a === me ? `You guarantee ${name(other)}` : `${name(other)} guarantees you`, x.a === me ? { type: "breakAgreement", with: other, kind: "guarantee" } : null, "Break"];
         if (x.kind === "access") return [x.a === me ? `You give ${name(other)} military access` : `${name(other)} gives you military access`, x.a === me ? { type: "cancelAccess", with: other } : null, "Cancel"];
         return [`${AGREEMENT_NAMES[x.kind] ?? x.kind} with ${name(other)}${until}`, { type: "breakAgreement", with: other, kind: x.kind }, "Break"];
@@ -179,9 +180,15 @@ function dealWith(ctx, t) {
         const [a, b] = kind === "access" ? [t, me] : [me, t];
         return !state.agreements.some((x) => x.kind === kind && (kind === "guarantee" || kind === "access" ? x.a === a && x.b === b : [x.a, x.b].includes(me) && [x.a, x.b].includes(t)));
     }).map((kind) => {
-        const ans = human ? null : agreementAnswer(game, t, me, kind);
-        const hint = ans ? `${ans.accept ? "likely" : "unlikely"}: opinion ${Math.round(ans.opinion)} + need ${Math.round(ans.need)} against ${ans.bar}` : "a person will answer";
-        return row(ctx, mk("button", { disabled: atWar ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "proposeAgreement", with: t, kind })) }, ASK_LABEL[kind]), mk("span", { class: `hint ${ans?.accept ? "good" : ""}` }, hint));
+        // an alliance for 10 or 20 years, the longer asking more: a button for each
+        const terms = isAlliance(kind) ? ALLIANCE_YEARS : [undefined];
+        const answers = human ? [] : terms.map((y) => agreementAnswer(game, t, me, kind, y)), [ans] = answers;
+        const likely = (a) => (a.accept ? "likely" : "unlikely");
+        const hint = !ans ? "a person will answer"
+            : `${terms.length > 1 ? terms.map((y, i) => `${y} years ${likely(answers[i])}`).join(", ") : likely(ans)}: opinion ${Math.round(ans.opinion)} + need ${Math.round(ans.need)} against ${answers.map((a) => a.bar).join(" or ")}`;
+        const buttons = terms.map((y, i) => mk("button", { disabled: atWar ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "proposeAgreement", with: t, kind, ...(y ? { years: y } : {}) })) },
+            i === 0 ? `${ASK_LABEL[kind]}${y ? `: ${y} years` : ""}` : `${y} years`));
+        return row(ctx, ...buttons, mk("span", { class: `hint ${answers.some((a) => a.accept) ? "good" : ""}` }, hint));
     });
     out.push(section(ctx, "Agreements", ...(atWar ? [mk("p", { class: "hint" }, "Not while at war.")] : rows), mk("p", { class: "hint" }, "The same proposal to the same country once in 5 years.")));
 

@@ -4,16 +4,17 @@
 //
 //   declareWar { target }
 //   proposePeace { with, terms: { take, give, money, makeSubject, becomeSubject, release } }
-//   proposeAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "access" }
-//       guarantee: you guarantee them; access: they give you military access
+//   proposeAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "access", years }
+//       guarantee: you guarantee them; access: they give you military access; an alliance for years 10 (the default) or 20
 //   breakAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "truce" }   cancelAccess { with }
 //   demandSubject { target, kind: "vassal" | "protectorate" }   proposeEmpire {}   integrate { target }   a vassal of 10 years
 //   answerOffer { id, accept }       a call to arms, or anything a human was asked
+import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
 import { OFFER_DAYS, addAgreement, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, validateTerms, joinWar, PACT_DAYS } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
-import { agreementAnswer, peaceAnswer } from "./opinion.js";
+import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
 import { hasAgreement, isVassal, overlordOf, wouldCycle } from "./relations.js";
 import { atWar, isRebel } from "./state.js";
 
@@ -52,12 +53,12 @@ function agreementError(game, cmd, to, kind) {
     return null;
 }
 
-// the agreement signed
-function sign(game, kind, from, to, events) {
+// the agreement signed: a pact for 10 years, an alliance for the years proposed
+function sign(game, kind, from, to, events, years = 10) {
     const st = game.state;
     const [a, b] = kind === "access" ? [to, from] : [from, to];
-    addAgreement(game, kind, a, b, kind === "pact" ? PACT_DAYS : null);
-    events.push({ type: "agreement", day: st.day, kind, a, b });
+    addAgreement(game, kind, a, b, kind === "pact" ? PACT_DAYS : isAlliance(kind) ? years * YEAR_DAYS : null);
+    events.push({ type: "agreement", day: st.day, kind, a, b, ...(isAlliance(kind) ? { years } : {}) });
 }
 
 export const diplomacyCommands = {
@@ -95,12 +96,15 @@ export const diplomacyCommands = {
         if (error) return refuse(error);
         const bad = agreementError(game, cmd, c, cmd.kind);
         if (bad) return refuse(bad);
-        if (isHuman(st, c)) return asking(game, "agreement", cmd.country, c, { agreement: cmd.kind }, { agreement: cmd.kind });
+        const years = isAlliance(cmd.kind) ? cmd.years ?? 10 : undefined;
+        if (years !== undefined && !ALLIANCE_YEARS.includes(years)) return refuse("an alliance is for 10 or 20 years");
+        const term = years !== undefined ? { years } : {};
+        if (isHuman(st, c)) return asking(game, "agreement", cmd.country, c, { agreement: cmd.kind, ...term }, { agreement: cmd.kind });
         if (!mayPropose(game, cmd.country, c, cmd.kind)) return refuse(`you proposed that to ${c} less than 5 years ago`);
         notePropose(game, cmd.country, c, cmd.kind);
-        const a = agreementAnswer(game, c, cmd.country, cmd.kind), events = [];
-        events.push({ type: "answer", day: st.day, country: c, from: cmd.country, what: cmd.kind, accepted: a.accept, opinion: a.opinion, need: a.need, bar: a.bar });
-        if (a.accept) sign(game, cmd.kind, cmd.country, c, events);
+        const a = agreementAnswer(game, c, cmd.country, cmd.kind, years), events = [];
+        events.push({ type: "answer", day: st.day, country: c, from: cmd.country, what: cmd.kind, ...term, accepted: a.accept, opinion: a.opinion, need: a.need, bar: a.bar });
+        if (a.accept) sign(game, cmd.kind, cmd.country, c, events, years);
         return done(events);
     },
 
@@ -189,7 +193,7 @@ export const diplomacyCommands = {
                 evictClosed(game, events);
             }
         } else if (offer.kind === "agreement") {
-            if (accept && !isVassal(st, offer.from) && !agreementError(game, { country: offer.from }, offer.to, offer.agreement)) sign(game, offer.agreement, offer.from, offer.to, events);
+            if (accept && !isVassal(st, offer.from) && !agreementError(game, { country: offer.from }, offer.to, offer.agreement)) sign(game, offer.agreement, offer.from, offer.to, events, offer.years);
         } else if (offer.kind === "peace") {
             if (accept && atWar(st, offer.from, offer.to) && !isVassal(st, offer.from) && !isVassal(st, offer.to) && !validateTerms(game, offer.from, offer.to, offer.terms)) makePeace(game, offer.from, offer.to, offer.terms, events);
         } else if (offer.kind === "demand") {

@@ -55,12 +55,17 @@ test("the tab shows your standing, a neighbour to deal with, and what each propo
     assert.match(text, /At peace\./);
     assert.match(text, /Switzerland/);
     assert.match(text, /Its opinion of you: [+-]?\d+/);
-    assert.match(text, /(likely|unlikely): opinion -?\d+ \+ need \d+ against 20/);                   // a defensive alliance: the bar is 20
+    // a defensive alliance: the bar is 20 for 10 years, 30 for 20
+    assert.match(text, /10 years (likely|unlikely), 20 years (likely|unlikely): opinion -?\d+ \+ need \d+ against 20 or 30/);
     await button(nodes, "Guarantee them").handlers.click();
-    await button(nodes, "Propose a defensive alliance").handlers.click();
+    await button(nodes, "Propose a defensive alliance: 10 years").handlers.click();
+    const twenty = find(nodes, (e) => e.tag === "button" && e.text === "20 years");
+    assert.equal(twenty.length, 2, "a defensive and a military alliance, each for 10 or 20 years");
+    await twenty[0].handlers.click();
     await button(nodes, "Ask for military access").handlers.click();
     await button(nodes, "Demand a vassal").handlers.click();
-    assert.deepEqual(sent, [{ type: "proposeAgreement", with: "SWI", kind: "guarantee" }, { type: "proposeAgreement", with: "SWI", kind: "defensive" },
+    assert.deepEqual(sent, [{ type: "proposeAgreement", with: "SWI", kind: "guarantee" }, { type: "proposeAgreement", with: "SWI", kind: "defensive", years: 10 },
+        { type: "proposeAgreement", with: "SWI", kind: "defensive", years: 20 },
         { type: "proposeAgreement", with: "SWI", kind: "access" }, { type: "demandSubject", target: "SWI", kind: "vassal" }]);
     assert.match(text, /\d+% chance/);
 });

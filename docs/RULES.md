@@ -655,12 +655,18 @@ When you declare war:
 ### Agreements
 | Agreement | Effect | Lasts |
 |---|---|---|
-| **Defensive alliance** | If either side is declared on, the other joins the war automatically | until broken |
-| **Military alliance** | Each side is called into every war the other fights, attacking or defending; it may refuse (above) | until broken |
+| **Defensive alliance** | If either side is declared on, the other joins the war automatically | 10 or 20 years, as proposed |
+| **Military alliance** | Each side is called into every war the other fights, attacking or defending; it may refuse (above) | 10 or 20 years, as proposed |
 | **Guarantee** | One-way: if the guaranteed country is declared on, the guarantor joins automatically | until broken |
 | **Military access** | One-way: your armies may enter and march through its land and use its passes and straits. It never joins your wars and you may not capture anything there. It may cancel at any time — that is not breaking an agreement | until cancelled |
 | **Non-aggression pact** | Neither side may declare war on the other | 10 years |
 | **Truce** | Starts when a peace is signed; neither side may declare war on the other | 5 years |
+
+An alliance is proposed **for 10 years or for 20**; the longer one asks 10 more of a computer country (*Alliances, guarantees
+and pacts* below). An alliance whose term ends while the two are at war with a common enemy lasts until they no longer are —
+the shared war is fought out together — and then runs out. When it runs out, each one's armies in land now closed to them go
+home. Not for a term are a coalition's alliances, which end as *Coalitions* below says, and the League's (below), which
+stand until broken.
 
 A **military ally** (§5) is any country allied with you, by either kind of alliance, that is
 fighting the same war on your side.
@@ -802,8 +808,8 @@ neighbours into each other's arms, not into its own.
 | You guarantee it | −20 |
 | Non-aggression pact | 0 |
 | It gives you military access | +10 |
-| Defensive alliance | +20 |
-| Military alliance | +40 |
+| Defensive alliance | +20 (+30 for 20 years) |
+| Military alliance | +40 (+50 for 20 years) |
 
 A neighbour is any country whose settlements share a land route with its settlements.
 
@@ -911,7 +917,8 @@ own and its subjects'), then the lower code. When the game is won it stops: noth
 computer country may win, and then every human has lost.
 
 **Starting wars and agreements** of a scenario count as if declared and signed in play: the wars are on from the first day,
-the agreements are in force, a pact has the years it has left, and every warmonger score is 0.
+the agreements are in force, a pact has the years it has left, an alliance 20 years (or the years the scenario says it has left),
+and every warmonger score is 0.
 
 ## 11. RANDOM EVENTS
 

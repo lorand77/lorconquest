@@ -21,6 +21,7 @@ import { armyList, atWar, canEnter, isRebel, warKey } from "./state.js";
 export const OFFER_DAYS = Math.round(6 * 365 / 12);     // a human has 6 months to answer
 export const TRUCE_DAYS = 5 * YEAR_DAYS;
 export const PACT_DAYS = 10 * YEAR_DAYS;
+export const START_ALLIANCE_DAYS = 20 * YEAR_DAYS;        // an alliance a scenario opens with
 export const PROPOSAL_DAYS = 5 * YEAR_DAYS;             // the same proposal to the same country once in 5 years
 
 const isHuman = (st, c) => st.humans.includes(c);
@@ -407,11 +408,13 @@ export function demandSubject(game, demander, target, kind, events) {
 
 // ---------- the start of a game ----------
 
-// the wars and agreements a scenario opens with count as if declared and signed in play, with no warmonger score
+// the wars and agreements a scenario opens with count as if declared and signed in play, with no warmonger score; its
+// alliances for 20 years
 export function applyStart(game) {
     const start = game.map.scenario.start ?? { wars: [], agreements: [] };
     for (const w of start.wars) for (const a of w.attackers) for (const d of w.defenders) openWar(game, a, d, a);
-    for (const x of start.agreements) addAgreement(game, x.kind, x.a, x.b, x.yearsLeft ? x.yearsLeft * YEAR_DAYS : x.kind === "pact" ? PACT_DAYS : null);
+    const days = (x) => (x.yearsLeft ? x.yearsLeft * YEAR_DAYS : x.kind === "pact" ? PACT_DAYS : x.kind === "defensive" || x.kind === "military" ? START_ALLIANCE_DAYS : null);
+    for (const x of start.agreements) addAgreement(game, x.kind, x.a, x.b, days(x));
 }
 
 // ---------- answering ----------

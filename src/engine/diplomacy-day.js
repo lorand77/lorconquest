@@ -2,17 +2,22 @@
 // that grow strong enough to break free, and on 1 January the warmonger score falling and coalitions forming
 // (RULES.md §10).
 import { YEAR_DAYS } from "./calendar.js";
-import { callStands, coalitions, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
+import { callStands, coalitions, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
 import { militaryPowerOf } from "./opinion.js";
-import { isRebel } from "./state.js";
+import { atWar, isRebel } from "./state.js";
+
+const commonEnemy = (st, a, b) => Object.keys(st.countries).some((c) => atWar(st, a, c) && atWar(st, b, c));
 
 export function diplomacyDay(game, events) {
     const st = game.state;
-    // pacts and truces run out
-    const ended = st.agreements.filter((x) => x.until !== null && x.until <= st.day);
+    // pacts, truces and alliances run out — an alliance only once the two are no longer at war with a common enemy: one whose
+    // term ends in a shared war lasts until that war is over (RULES.md §10). Allies' armies in land now closed go home.
+    const fighting = (x) => (x.kind === "defensive" || x.kind === "military") && commonEnemy(st, x.a, x.b);
+    const ended = st.agreements.filter((x) => x.until !== null && x.until <= st.day && !fighting(x));
     if (ended.length) {
         removeAgreements(game, (x) => ended.includes(x));
         for (const x of ended) events.push({ type: "expired", day: st.day, kind: x.kind, a: x.a, b: x.b });
+        if (ended.some((x) => x.kind === "defensive" || x.kind === "military")) evictClosed(game, events);
     }
     // a question a human did not answer: a call to arms is answered with a yes; the rest lapse (and a refused Empire is
     // a refusal)

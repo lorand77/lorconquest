@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { agreementAnswer, need, opinion, peaceAnswer, peaceCost, warScore, demandChance } from "../../src/engine/opinion.js";
-import { addAgreement, openWar, recordCapture, setSubject } from "../../src/engine/diplomacy.js";
+import { addAgreement, closeWar, openWar, recordCapture, setSubject } from "../../src/engine/diplomacy.js";
 import { economyOf, hasAgreement, isFriend, longDate } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused, rigRoll } from "../helpers/tiny.js";
 
@@ -181,6 +181,43 @@ test("proposing an agreement: answered at once, the same proposal to the same co
     order(game, cmd("AAA", "declareWar", { target: "EEE" }));
     assert.match(refused(game, cmd("AAA", "proposeAgreement", { with: "EEE", kind: "pact" })), /at war/);
     assert.match(refused(game, cmd("AAA", "proposeAgreement", { with: "DDD", kind: "treaty" })), /no agreement/);
+});
+
+test("an alliance is for 10 years or 20, the longer asking 10 more; a person is asked for the term proposed", () => {
+    const game = tinyGame(1, () => {}, ["DDD"]);
+    assert.deepEqual([agreementAnswer(game, "CCC", "AAA", "defensive").bar, agreementAnswer(game, "CCC", "AAA", "defensive", 20).bar, agreementAnswer(game, "CCC", "AAA", "pact", 20).bar], [20, 30, 0]);
+    assert.match(refused(game, cmd("AAA", "proposeAgreement", { with: "CCC", kind: "defensive", years: 15 })), /10 or 20 years/);
+    let events = order(game, cmd("AAA", "proposeAgreement", { with: "CCC", kind: "defensive", years: 20 }));
+    assert.deepEqual(ofType(events, "answer").map((e) => [e.years, e.accepted, e.bar]), [[20, false, 30]]);   // opinion 0 + need 20 is short of 30
+    events = order(game, cmd("AAA", "proposeAgreement", { with: "CCC", kind: "military" }));     // 10 years unless said
+    assert.deepEqual(ofType(events, "answer").map((e) => [e.years, e.bar]), [[10, 40]]);
+    order(game, cmd("AAA", "proposeAgreement", { with: "DDD", kind: "military", years: 20 }));
+    assert.equal(game.state.offers[0].years, 20);
+    events = order(game, cmd("DDD", "answerOffer", { id: game.state.offers[0].id, accept: true }));
+    assert.deepEqual(ofType(events, "agreement").map((e) => [e.kind, e.years]), [["military", 20]]);
+    assert.equal(game.state.agreements.find((x) => x.kind === "military").until, 20 * 365);
+});
+
+test("an alliance runs out at its term — but not during a war the two fight together: then when that war is over", () => {
+    const game = tinyGame(), st = game.state;
+    agree(game, "defensive", "AAA", "BBB", 100);
+    agree(game, "defensive", "AAA", "CCC", 100);
+    st.armies[2].at = "4";                                                       // AAA's army in BBB's land, as an ally may be
+    openWar(game, "AAA", "DDD", "AAA");
+    openWar(game, "BBB", "DDD", "DDD");
+    let events = runTo(game, 101);
+    assert.deepEqual(ofType(events, "expired").map((e) => [e.kind, e.a, e.b]), [["defensive", "AAA", "CCC"]], "CCC is not in the war");
+    assert.ok(hasAgreement(st, "defensive", "AAA", "BBB"), "AAA and BBB fight DDD: their alliance stands");
+    closeWar(game, "AAA", "DDD");
+    closeWar(game, "BBB", "DDD");
+    events = runTo(game, 103);
+    assert.deepEqual(ofType(events, "expired").map((e) => [e.kind, e.a, e.b]), [["defensive", "AAA", "BBB"]]);
+    assert.ok(st.armies[2].retreating, "and AAA's army, in land now closed to it, goes home");
+});
+
+test("the alliances a scenario opens with are for 20 years; a pact keeps the years it has left", () => {
+    const game = tinyGame(1, (sc) => { sc.start = { wars: [], agreements: [{ kind: "military", a: "AAA", b: "CCC" }, { kind: "pact", a: "AAA", b: "DDD", yearsLeft: 5 }] }; });
+    assert.deepEqual(game.state.agreements.map((x) => [x.kind, x.until]), [["military", 20 * 365], ["pact", 5 * 365]]);
 });
 
 test("a human is asked instead, and answers", () => {

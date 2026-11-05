@@ -567,7 +567,9 @@ would break that.
   settlement left is out of the game, checked at the end of every day and command), `day`, `command-util`,
   `commands` (war and armies), `commands-country`, `commands-naval`, `commands-diplomacy`, `text` (events in
   English), `game`.
-- **Diplomacy in the state:** `agreements` (kind, the two countries, since, until); each country's `warmonger`,
+- **Diplomacy in the state:** `agreements` (kind, the two countries, since, until — null for ever: a guarantee, access, a
+  coalition's or the League's alliance; an alliance past its `until` stays while the two share an enemy, and `diplomacyDay`
+  ends it the first day they do not); each country's `warmonger`,
   `overlord` and `subjectKind`; `wars` (pairs, as before) with `warInfo` — each pair's attacking side, the people
   each had at the start and has taken since; `memory` (when each pair last fought, who broke an agreement, who
   refused whom, which proposal was made when, who has demanded the Empire); `offers`, the questions waiting for a

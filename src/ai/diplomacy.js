@@ -200,7 +200,9 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
         if (hasAgreement(st, kind, code, n) || hasAgreement(st, kind, n, code) || !mayAsk(n, kind)) continue;
         if (n < code && thinksOn(n, day) && kind !== "military") continue;              // it asks us today, and its question is put first
         if (!agreementAnswer(game, n, code, kind).accept) continue;
-        ask("proposeAgreement", n, kind, { with: n, kind });
+        // an alliance for 20 years from a friendly country, where the other would take that; else for 10 (RULES.md §10)
+        const long = (kind === "defensive" || kind === "military") && fl.friendliness > 0.5 && agreementAnswer(game, n, code, kind, 20).accept;
+        ask("proposeAgreement", n, kind, { with: n, kind, ...(kind === "defensive" || kind === "military" ? { years: long ? 20 : 10 } : {}) });
         break;
     }
 

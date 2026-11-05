@@ -86,10 +86,15 @@ export function need(game, holder, excluded) {
 // the bar `opinion + need` must reach for an agreement, by kind (RULES.md §10): the proposer guarantees the
 // holder; a non-aggression pact; the holder gives the proposer military access; a defensive or military alliance
 export const BAR = { guarantee: -20, pact: 0, access: 10, defensive: 20, military: 40 };
+// an alliance is signed for 10 or 20 years; the longer one asks 10 more
+export const ALLIANCE_YEARS = [10, 20];
+export const LONG_ALLIANCE_BAR = 10;
+export const isAlliance = (kind) => kind === "defensive" || kind === "military";
 
-export function agreementAnswer(game, holder, proposer, kind) {
+export function agreementAnswer(game, holder, proposer, kind, years = 10) {
     const op = opinion(game, holder, proposer), nd = need(game, holder, proposer);
-    return { accept: op + nd >= BAR[kind], opinion: op, need: nd, bar: BAR[kind] };
+    const bar = BAR[kind] + (isAlliance(kind) && years === 20 ? LONG_ALLIANCE_BAR : 0);
+    return { accept: op + nd >= bar, opinion: op, need: nd, bar };
 }
 
 // the war between two countries and how it stands for `winner`, against `other`: % of its people taken, less the %

@@ -65,12 +65,12 @@ export function describeEvent(map, e) {
         case "lapsed": return `${e.from}'s ${e.kind === "call" ? "call to arms" : e.kind} to ${e.country} lapses${e.kind === "call" ? ": it joins" : ""}`;
         case "answer": {
             const why = e.what === "peace" ? ` (war score ${e.score}, price ${e.cost})` : e.bar !== undefined ? ` (opinion ${e.opinion} + need ${Math.round(e.need)} against ${e.bar})` : "";
-            return `${e.country} ${e.accepted ? "accepts" : "refuses"} ${e.from}'s proposal: ${e.what}${why}`;
+            return `${e.country} ${e.accepted ? "accepts" : "refuses"} ${e.from}'s proposal: ${e.what}${e.years ? ` for ${e.years} years` : ""}${why}`;
         }
-        case "agreement": return `${e.a} and ${e.b} sign a ${e.kind === "guarantee" ? `guarantee (${e.a} guarantees ${e.b})` : e.kind === "access" ? `military access (${e.a} gives it to ${e.b})` : e.kind === "pact" ? "non-aggression pact" : `${e.kind} alliance`}${e.why ? ` ${e.why}` : ""}`;
+        case "agreement": return `${e.a} and ${e.b} sign a ${e.kind === "guarantee" ? `guarantee (${e.a} guarantees ${e.b})` : e.kind === "access" ? `military access (${e.a} gives it to ${e.b})` : e.kind === "pact" ? "non-aggression pact" : `${e.kind} alliance${e.years ? ` for ${e.years} years` : ""}`}${e.why ? ` ${e.why}` : ""}`;
         case "ended": return `${e.country} ends its ${e.kind} with ${e.with}`;
         case "expired": return e.against ? `the alliance of ${e.a} and ${e.b} against ${e.against} lapses: the threat is past`
-            : `the ${e.kind === "pact" ? "non-aggression pact" : e.kind} between ${e.a} and ${e.b} runs out`;
+            : `the ${e.kind === "pact" ? "non-aggression pact" : e.kind === "defensive" || e.kind === "military" ? `${e.kind} alliance` : e.kind} between ${e.a} and ${e.b} runs out`;
         case "broke": return `${e.country} breaks an agreement: its alliances end, and the world remembers`;
         case "peace": return `${e.country} and ${e.with} make peace${[e.terms?.take?.length && `, ${e.country} takes ${e.terms.take.map(town).join(", ")}`, e.terms?.give?.length && `, ${e.country} gives ${e.terms.give.map(town).join(", ")}`, e.terms?.money && `, ${fmt(Math.abs(e.terms.money))} paid`, e.terms?.makeSubject && `, ${e.with} becomes its ${e.terms.makeSubject}`, e.terms?.becomeSubject && `, ${e.country} becomes its ${e.terms.becomeSubject}`].filter(Boolean).join("")}`;
         case "subject": return `${e.country} becomes a ${e.kind} of ${e.overlord}`;
