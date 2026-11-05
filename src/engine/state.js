@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 33;
+export const RULES_VERSION = 34;
 // bump when the shape of the state changes
-export const FORMAT = 7;
+export const FORMAT = 8;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -36,6 +36,8 @@ export function initialState(map, seed, humans = []) {
             warmonger: 0, overlord: null, subjectKind: null, vassalSince: null,
             // the day it lost its last settlement and was out of the game (elimination.js), or null
             out: null,
+            // the region it proclaimed that made it a new state (its name, code and colour: SCENARIO.md, Special coring), or null
+            formed: null,
         };
     }
     for (const s of sc.settlements) {

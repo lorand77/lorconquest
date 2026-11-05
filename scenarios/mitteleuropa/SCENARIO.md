@@ -279,19 +279,23 @@ You may proclaim a region when **both** are true:
 Every settlement in the region becomes your core immediately, your vassals' too (they stay theirs, core for you should
 they ever be yours). If you later lose one and retake it, it is core again on capture.
 
-| Formable | Settlements | Count |
-|---|---|---|
-| **Unite Austria** | 32, 33, 34, 35, 39 | 5 |
-| **Unite Czechoslovakia** | 26, 28, 29, 30, 31 | 5 |
-| **Unite the Benelux** | 53, 54, 55, 56, 57, 58 | 6 |
-| **Unite French-speaking people** | 41, 42, 43, 44, 45, 53, 54, 55 | 8 |
-| **Unite Scandinavia** | 1–9 | 9 |
-| **Old Poland** | 22, 23, 80, 81, 83, 84, 85, 86, 87, 88 | 10 |
-| **AustroHungary** | 23, 24, 26, 28–35, 39, 86 | 13 |
-| **Modern Poland** | 14, 15, 16, 20, 22, 23, 79–88 | 16 |
-| **Polish–Lithuanian Commonwealth** | Modern Poland + 17, 18, 19, 21, 24, 89 | 22 |
-| **Germany** (1990) | 10–13, 36–38, 47–52, 59–78 | 33 |
-| **Post Germany** (1930) | Germany + 14, 17, 20, 79, 85 | 38 |
+A region with a **Becomes** makes a new state: proclaiming it, your country takes that name, and on the map that code and
+colour (RULES.md §2). *Becomes is data: the name, a code of three capitals that is no country's, and a colour unlike every
+country's — `tools/map.js` checks them.*
+
+| Formable | Settlements | Count | Becomes |
+|---|---|---|---|
+| **Unite Austria** | 32, 33, 34, 35, 39 | 5 | — |
+| **Unite Czechoslovakia** | 26, 28, 29, 30, 31 | 5 | Czechoslovakia, CSK, #6cc0b0 |
+| **Unite the Benelux** | 53, 54, 55, 56, 57, 58 | 6 | Benelux, BNX, #f08030 |
+| **Unite French-speaking people** | 41, 42, 43, 44, 45, 53, 54, 55 | 8 | — |
+| **Unite Scandinavia** | 1–9 | 9 | Scandinavia, SCA, #6fa3e0 |
+| **Old Poland** | 22, 23, 80, 81, 83, 84, 85, 86, 87, 88 | 10 | — |
+| **AustroHungary** | 23, 24, 26, 28–35, 39, 86 | 13 | Austria-Hungary, AUH, #f6e65a |
+| **Modern Poland** | 14, 15, 16, 20, 22, 23, 79–88 | 16 | — |
+| **Polish–Lithuanian Commonwealth** | Modern Poland + 17, 18, 19, 21, 24, 89 | 22 | Poland-Lithuania, PLC, #d9707f |
+| **Germany** (1990) | 10–13, 36–38, 47–52, 59–78 | 33 | Germany, GER, #e0b040 |
+| **Post Germany** (1930) | Germany + 14, 17, 20, 79, 85 | 38 | Germany, GER, #e0b040 |
 
 No region is as large as victory (45, *Victory*): one held whole would already have won, and its coring be worth nothing.
 

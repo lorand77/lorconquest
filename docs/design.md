@@ -787,6 +787,15 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 one, chosen so that countries sharing a border never look alike. A Colour column in SCENARIO.md's
 Countries table overrides it for any country.
 
+**New states.** A region that makes a new state when proclaimed (SCENARIO.md, Special coring: *Becomes* — a name, a code and a
+colour, only for the regions that were a new state, like Germany or the Kalmar Union, not a reunion like Bavaria's) is written
+into `scenario.json` as the formable's `becomes`. Proclaiming it changes the country's `name` in the state, which every
+screen already reads, and sets its `formed` to the region; the map's colour and code for it come from that region
+(`mapdraw.js`: `countryColour`, `mapCode`), so the state holds one id, not a second copy of the scenario's colours. The country
+keeps its own code everywhere else — commands, events, saved games — so nothing that names countries by code breaks; only
+the map shows the new one. `tools/map.js` checks that the code is no country's and that the colour is clear of every
+country's (and of the other new states'), since a new state should never be taken for one already on the map.
+
 ### Reuse from LorCiv
 
 Copied when a milestone needs it, not up front:

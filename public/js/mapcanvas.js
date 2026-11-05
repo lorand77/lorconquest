@@ -9,7 +9,7 @@
 // who holds what, who is whose subject, the leaders), then the frames are drawn and recorded at an even pace. framePlan and
 // frameOf are pure, tested in Node; the rest needs a browser.
 import { longDate } from "/engine/calendar.js";
-import { countryLabels, landFill } from "./mapdraw.js";
+import { countryColour, countryLabels, landFill } from "./mapdraw.js";
 
 // the days a timelapse shows: one frame every `yearsPerSecond × 365 ÷ fps` days from `from` to `to`, the last day always among them
 export function framePlan(from, to, yearsPerSecond, fps = 30) {
@@ -34,12 +34,12 @@ export function exportSpan(fromText, toText, endDay, startYear = 1440, yearDays 
 
 // what a frame needs of a state, kept small — a whole game at a year a second is thousands of frames: the owner of each
 // settlement (in the order of the state's settlements), only the countries that differ from how they began (a subject, a
-// rebel band, one out of the game), and the five with the most settlements. stateOf turns it back into what the map's
+// rebel band, one out of the game, a new state proclaimed), and the five with the most settlements. stateOf turns it back into what the map's
 // drawing reads (mapdraw.js: landFill, countryLabels).
 export function frameOf(state, scores, day = state.day) {
     const owners = Object.values(state.settlements).map((s) => s.owner), changed = {};
     for (const c of Object.values(state.countries)) {
-        if (c.overlord || c.rebel || (c.out ?? null) !== null) changed[c.code] = { name: c.name, overlord: c.overlord ?? null, subjectKind: c.subjectKind ?? null, rebel: Boolean(c.rebel), out: c.out ?? null };
+        if (c.overlord || c.rebel || (c.out ?? null) !== null || c.formed) changed[c.code] = { name: c.name, overlord: c.overlord ?? null, subjectKind: c.subjectKind ?? null, rebel: Boolean(c.rebel), out: c.out ?? null, formed: c.formed ?? null };
     }
     const top = Object.entries(scores).filter(([code]) => state.countries[code] && !state.countries[code].rebel)
         .sort((a, b) => b[1].settlements - a[1].settlements || b[1].pop - a[1].pop || (a[0] < b[0] ? -1 : 1)).slice(0, 5)
@@ -49,7 +49,7 @@ export function frameOf(state, scores, day = state.day) {
 export function stateOf(frame, scenario) {
     const settlements = {}, countries = {};
     [...scenario.settlements].sort((a, b) => a.id - b.id).forEach((s, i) => { settlements[s.id] = { id: s.id, owner: frame.owners[i] }; });   // the state's order: by id
-    for (const c of scenario.countries) countries[c.code] = { code: c.code, name: c.name, overlord: null, subjectKind: null, rebel: false, out: null };
+    for (const c of scenario.countries) countries[c.code] = { code: c.code, name: c.name, overlord: null, subjectKind: null, rebel: false, out: null, formed: null };
     for (const [code, c] of Object.entries(frame.changed)) countries[code] = { code, ...c };
     return { day: frame.day, settlements, countries };
 }
@@ -64,7 +64,6 @@ export function createMapCanvas(svg, scenario) {
     const edges = [...svg.querySelectorAll("#edges [id^='edge-']")].map((el) => ({ ends: el.id.slice(5).split("-"), p: path(el) }));
     const rivers = [...svg.querySelectorAll("#rivers path")].map(path);
     const coast = svg.querySelector("#coast") ? path(svg.querySelector("#coast")) : null;
-    const colour = (code) => scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd";
     const stripes = new Map();
 
     // a subject's stripes, as a pattern 10 map units across turned 45°: broad for a vassal, thin for a protectorate
@@ -89,7 +88,7 @@ export function createMapCanvas(svg, scenario) {
     function draw(ctx, frame, { size = [ctx.canvas.width, ctx.canvas.height], title = "" } = {}) {
         const [w, h] = size, k = Math.min(w / width, h / height), ox = (w - width * k) / 2, oy = (h - height * k) / 2;
         const st = stateOf(frame, scenario);
-        const colourOf = (code) => (st.countries[code]?.rebel ? "#8c3a3a" : colour(code));
+        const colourOf = (code) => countryColour(st, scenario, code);
         const fillOf = landFill(st, colourOf), owner = (key) => st.settlements[key]?.owner;
         ctx.save();
         ctx.fillStyle = "#99d9ea";

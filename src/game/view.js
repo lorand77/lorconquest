@@ -24,7 +24,7 @@ export function splitEvents(events) {
 
 // the public part of a country
 const publicCountry = (c) => ({ code: c.code, name: c.name, capital: c.capital, rebel: c.rebel, of: c.of, warmonger: c.warmonger, overlord: c.overlord, subjectKind: c.subjectKind,
-    vassalSince: c.vassalSince ?? null, out: c.out ?? null });
+    vassalSince: c.vassalSince ?? null, out: c.out ?? null, formed: c.formed ?? null });
 // the private part, for its own player
 const PRIVATE = ["treasury", "bank", "loans", "noBorrowUntil", "debtSince", "tax", "taxSum", "harvest", "slider", "law", "lawDay", "techs", "target", "r", "reserve", "training", "hires"];
 const privateCountry = (c, state) => ({

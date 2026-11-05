@@ -93,6 +93,13 @@ test("the Country tab shows the debt clock, rebels, a lost capital and regions r
     assert.match(text, /Capital lost/);
 });
 
+test("the Country tab says what a region proclaimed would become, until the country is it", () => {
+    const { ctx } = setup();
+    assert.match(countryTab(ctx).map((n) => n.text).join(" | "), /Germany \(1990\): \d+ of 33 held\s+— becomes\s+Germany/);
+    Object.assign(ctx.state.countries.BAV, { name: "Germany", formed: "germany" });
+    assert.doesNotMatch(countryTab(ctx).map((n) => n.text).join(" | "), /becomes\s+Germany/);
+});
+
 test("the Shop tab: buildings for the selected settlement, forces, weapons — and each button's command", async () => {
     const { ctx, sent } = setup();
     ctx.sel = { kind: "place", key: "37" };

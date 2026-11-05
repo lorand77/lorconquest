@@ -3,7 +3,7 @@
 // treasury 80,000, 1,600 soldiers, an army cap of 2,000.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { economyOf, longDate } from "../../src/engine/index.js";
+import { describeEvent, economyOf, longDate } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused } from "../helpers/tiny.js";
 
 const cmd = (type, rest = {}) => ({ type, country: "AAA", ...rest });
@@ -288,6 +288,19 @@ test("special coring: the capital in the region, all of it held, and every settl
     assert.deepEqual([1, 2, 3].map((id) => game.state.settlements[id].cores), [["AAA"], ["AAA"], ["AAA"]]);
     assert.match(refused(game, cmd("proclaim", { region: "aaa-lands" })), /already core/);
     assert.match(refused(game, { type: "proclaim", country: "BBB", region: "aaa-lands" }), /capital must lie/);
+});
+
+test("a region that makes a new state renames the country, for good; one that does not leaves the name", () => {
+    const game = tinyGame(), st = game.state, c = AAA(game);
+    for (const id of [1, 2, 3]) st.settlements[id].cores = [];
+    game.map.scenario.formables.push({ id: "aaa-empire", name: "AAA empire", settlements: [1, 2], becomes: { name: "Empire of AAA", code: "EAA", colour: "#e0b040" } });
+    const was = c.name;
+    assert.equal(c.formed, null);
+    const [ev] = order(game, cmd("proclaim", { region: "aaa-empire" }));
+    assert.deepEqual([ev.was, ev.becomes, c.name, c.formed, c.code], [was, "Empire of AAA", "Empire of AAA", "aaa-empire", "AAA"], "the same country, renamed");
+    assert.equal(describeEvent(game.map, ev), `AAA proclaims aaa-empire: 2 settlements become core; ${was} is now Empire of AAA`);
+    order(game, cmd("proclaim", { region: "aaa-lands" }));                      // no new state: the name stays
+    assert.deepEqual([c.name, c.formed], ["Empire of AAA", "aaa-empire"]);
 });
 
 test("special coring counts a vassal's settlements as held, and makes them core too; a protectorate's do not count", () => {

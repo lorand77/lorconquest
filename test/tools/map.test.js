@@ -56,6 +56,11 @@ function refuses(edit, message) {
     }
 }
 
+test("a new state's code is no country's, and its colour unlike every country's", () => {
+    refuses((d) => d.replace("Czechoslovakia, CSK, #6cc0b0", "Czechoslovakia, BAV, #6cc0b0").replace("Benelux, BNX, #f08030", "Benelux, BNX, #a9c8e9"),
+        /(?=[\s\S]*Unite Czechoslovakia becomes BAV, which is a country's code)(?=[\s\S]*Unite the Benelux's colour #a9c8e9 is too like)/);
+});
+
 test("characters and rivalries: every country has one of the characters, the spread is varied, rivals are two real countries", () => {
     const { json } = build();
     assert.ok(json.countries.every((c) => c.character), "every country has a character");

@@ -50,10 +50,21 @@ export function paintMap(map, state, nodes, zones, legs, day, colourOf, options)
     map.setSieges(siegeRings(state, nodes));
 }
 
-// who owns what, as one string: when it changes, the lands are repainted
-// what the lands' colours and the labels depend on: who holds each settlement, and who is whose subject
+// a country as the map shows it: in the colour and under the code of the new state it proclaimed, if it did (SCENARIO.md,
+// Special coring: Becomes), else its own; peasants in arms in dark red
+const becameOf = (state, scenario, code) => {
+    const f = state.countries[code]?.formed;
+    return f ? scenario.formables?.find((x) => x.id === f)?.becomes ?? null : null;
+};
+export const countryColour = (state, scenario, code) => (state.countries[code]?.rebel ? "#8c3a3a"
+    : becameOf(state, scenario, code)?.colour ?? scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd");
+export const mapCode = (state, scenario, code) => becameOf(state, scenario, code)?.code ?? code;
+
+// what the lands' colours and the labels depend on, as one string — when it changes, the lands are repainted: who holds each
+// settlement, who is whose subject, and who has become a new state
 export const ownersKey = (state) => Object.values(state.settlements).map((s) => s.owner).join()
-    + "|" + Object.values(state.countries).filter((c) => c.overlord).map((c) => `${c.code}>${c.overlord}:${c.subjectKind}`).join();
+    + "|" + Object.values(state.countries).filter((c) => c.overlord).map((c) => `${c.code}>${c.overlord}:${c.subjectKind}`).join()
+    + "|" + Object.values(state.countries).filter((c) => c.formed).map((c) => `${c.code}=${c.formed}`).join();
 
 // how a country's land is filled: its own colour, or — for a subject — its own colour striped with its overlord's, broad
 // stripes for a vassal and thin ones for a protectorate (mapview.js, colourLands, and mapcanvas.js draw them). Where the two
@@ -116,7 +127,8 @@ export function countryLabels(state, scenario) {
         const my = g.list.reduce((n, s) => n + at(s)[1] * (s.label.area || 1), 0) / weight;
         let chosen = null;
         const overlord = state.countries[g.code].overlord;
-        for (const text of overlord ? [`${g.code}▸${overlord}`, g.code] : [g.code]) {
+        const short = mapCode(state, scenario, g.code);
+        for (const text of overlord ? [`${short}▸${mapCode(state, scenario, overlord)}`, short] : [short]) {
             for (const [size, key] of [[15, "big"], [10, "small"], [10, "near"]]) {
                 const tw = CHAR_W * size * text.length, th = CHAR_W * size, m = size / 5;
                 const spots = g.list.map((s) => s.label[key]).filter(Boolean).sort((p, q) => (p[0] - mx) ** 2 + (p[1] - my) ** 2 - ((q[0] - mx) ** 2 + (q[1] - my) ** 2));

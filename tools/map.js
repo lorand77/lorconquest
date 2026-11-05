@@ -260,7 +260,14 @@ const FORMABLES = [];
         }
         for (const i of ids) if (!S.has(i)) err(`Special coring line ${r._line}: no settlement ${i}`);
         if (r.Count && Number(r.Count) !== ids.size) err(`Special coring line ${r._line}: ${name} lists ${ids.size} settlements, but Count says ${r.Count}`);
-        FORMABLES.push({ id: slug(name), name, settlements: [...ids].sort(num) });
+        // a new state, if the region makes one: "Becomes" is its name, the code on the map and its colour ("Germany, GER, #e0b040")
+        let becomes;
+        if (r.Becomes && r.Becomes !== "—") {
+            const [title, code, colour] = r.Becomes.split(",").map((t) => t.trim());
+            if (!title || !/^[A-Z]{3}$/.test(code ?? "") || !/^#[0-9a-f]{6}$/.test(colour ?? "")) err(`Special coring line ${r._line}: Becomes must be like "Germany, GER, #e0b040"`);
+            else becomes = { name: title, code, colour };
+        }
+        FORMABLES.push({ id: slug(name), name, settlements: [...ids].sort(num), ...(becomes ? { becomes } : {}) });
     }
     if (new Set(FORMABLES.map((f) => f.id)).size !== FORMABLES.length) err("Special coring: two regions have the same name");
 }
@@ -1269,6 +1276,24 @@ for (const k of [...PAIR.keys(), ...LAND, ...STRAIT]) {
         uses.set(pick, uses.get(pick) + 1);
     }
 }
+// a new state's colour stands out from every country's (at least 40 apart, red, green and blue as a distance) and from the other
+// new states' (30), and its code is no country's: a state formed is never mistaken for another
+{
+    const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const apart = (a, b) => Math.hypot(...rgb(a).map((x, i) => x - rgb(b)[i]));
+    const made = FORMABLES.filter((f) => f.becomes);
+    for (const f of made) {
+        const { code, colour } = f.becomes;
+        if (C.has(code)) err(`Special coring: ${f.name} becomes ${code}, which is a country's code`);
+        for (const [c, col] of COLOUR) if (apart(colour, col) < 40) err(`Special coring: ${f.name}'s colour ${colour} is too like ${cname(c)}'s ${col}`);
+        for (const g of made) {
+            if (g === f) continue;
+            if (g.becomes.code === code && (g.becomes.name !== f.becomes.name || g.becomes.colour !== colour)) err(`Special coring: ${f.name} and ${g.name} become ${code} with different names or colours`);
+            if (g.becomes.code !== code && apart(colour, g.becomes.colour) < 30) err(`Special coring: ${f.name} and ${g.name} have colours too alike`);
+        }
+    }
+}
+check("SCENARIO.md");
 const zonePorts = (z) => SIDS.filter((id) => S.get(id).zone === z);
 const zoneStraits = (z) => [...SZ.keys()].filter((e) => SZ.get(e) === z).sort(byKey);
 const zoneNext = (z) => ZONES.filter((x) => z.next.has(x.name));

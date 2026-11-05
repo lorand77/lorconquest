@@ -8168,7 +8168,12 @@
     29,
     30,
     31
-   ]
+   ],
+   "becomes": {
+    "name": "Czechoslovakia",
+    "code": "CSK",
+    "colour": "#6cc0b0"
+   }
   },
   {
    "id": "unite-the-benelux",
@@ -8180,7 +8185,12 @@
     56,
     57,
     58
-   ]
+   ],
+   "becomes": {
+    "name": "Benelux",
+    "code": "BNX",
+    "colour": "#f08030"
+   }
   },
   {
    "id": "unite-french-speaking-people",
@@ -8209,7 +8219,12 @@
     7,
     8,
     9
-   ]
+   ],
+   "becomes": {
+    "name": "Scandinavia",
+    "code": "SCA",
+    "colour": "#6fa3e0"
+   }
   },
   {
    "id": "old-poland",
@@ -8244,7 +8259,12 @@
     35,
     39,
     86
-   ]
+   ],
+   "becomes": {
+    "name": "Austria-Hungary",
+    "code": "AUH",
+    "colour": "#f6e65a"
+   }
   },
   {
    "id": "modern-poland",
@@ -8294,7 +8314,12 @@
     87,
     88,
     89
-   ]
+   ],
+   "becomes": {
+    "name": "Poland-Lithuania",
+    "code": "PLC",
+    "colour": "#d9707f"
+   }
   },
   {
    "id": "germany",
@@ -8333,7 +8358,12 @@
     76,
     77,
     78
-   ]
+   ],
+   "becomes": {
+    "name": "Germany",
+    "code": "GER",
+    "colour": "#e0b040"
+   }
   },
   {
    "id": "post-germany",
@@ -8377,7 +8407,12 @@
     78,
     79,
     85
-   ]
+   ],
+   "becomes": {
+    "name": "Germany",
+    "code": "GER",
+    "colour": "#e0b040"
+   }
   }
  ],
  "rivalries": [

@@ -353,7 +353,8 @@ export const countryCommands = {
     },
 
     // special coring (SCENARIO.md): the capital lies in the region and the country holds all of it; every settlement
-    // in it becomes core at once, with no courthouse and no wait
+    // in it becomes core at once, with no courthouse and no wait. A region that makes a new state renames the country, and
+    // gives it the new state's code and colour on the map (RULES.md §2)
     proclaim(game, cmd) {
         const st = game.state, c = mine(game, cmd);
         const region = (game.map.scenario.formables ?? []).find((f) => f.id === cmd.region);
@@ -366,6 +367,8 @@ export const countryCommands = {
         const fresh = region.settlements.filter((id) => !st.settlements[id].cores.includes(c.code));
         if (!fresh.length) return refuse(`${region.name} is already core`);
         for (const id of fresh) st.settlements[id].cores.push(c.code);
-        return done([{ type: "proclaimed", day: st.day, country: c.code, region: region.id, settlements: fresh.length }]);
+        const was = c.name;
+        if (region.becomes) Object.assign(c, { name: region.becomes.name, formed: region.id });
+        return done([{ type: "proclaimed", day: st.day, country: c.code, region: region.id, settlements: fresh.length, ...(region.becomes ? { was, becomes: region.becomes.name } : {}) }]);
     },
 };

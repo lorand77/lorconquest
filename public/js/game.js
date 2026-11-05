@@ -7,7 +7,7 @@ import { HOTKEYS, armyPoint, hotkey, shortDate, shortMoney, sheetAfter, applyCha
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
-import { armyMarkers as drawArmies, countryLabels, fleetMarkers as drawFleets, landFill, ownersKey, paintMap } from "./mapdraw.js";
+import { armyMarkers as drawArmies, countryColour, countryLabels, fleetMarkers as drawFleets, landFill, mapCode, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { toast as achievementToast } from "./achievements.js";
@@ -244,7 +244,7 @@ function sheetGestures() {
 
 // ---------- helpers ----------
 const country = (code) => state.countries[code];
-const colourOf = (code) => (state.countries[code]?.rebel ? "#8c3a3a" : scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd");
+const colourOf = (code) => countryColour(state, scenario, code);
 const ownerOfLand = (id) => state.settlements[id]?.owner;
 const atWar = (a, b) => state.wars.includes(a < b ? `${a}|${b}` : `${b}|${a}`);
 const enemies = () => Object.keys(state.countries).filter((c) => atWar(me, c));
@@ -551,7 +551,7 @@ function renderPhoneBar() {
     $("pb-pause").textContent = paused ? "▶" : "⏸";
     $("pb-pause").disabled = Boolean(state.winner);
     $("pb-pause").classList.toggle("paused", paused);
-    if (me) $("pb-who").replaceChildren(swatch(me), ` ${me}`); else $("pb-who").textContent = "👁";
+    if (me) $("pb-who").replaceChildren(swatch(me), ` ${mapCode(state, scenario, me)}`); else $("pb-who").textContent = "👁";
     $("pb-who").title = me ? country(me).name : "Watching";
     if ($("setup").hidden) $("pb-date").textContent = shortDate(longDate(state.day));      // (the setup minute's countdown: renderSetup)
     const t = me ? country(me).treasury : undefined;

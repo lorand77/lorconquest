@@ -99,7 +99,9 @@ export function countryTab(ctx) {
             ...regions.map((f) => {
                 const held = f.settlements.filter((id) => ours(state.settlements[id]?.owner)), core = f.settlements.filter((id) => state.settlements[id]?.cores.includes(me));
                 const ready = held.length === f.settlements.length && core.length < f.settlements.length;
-                return row(ctx, make("span", {}, `${f.name}: ${held.length} of ${f.settlements.length} held${core.length === f.settlements.length ? ", all core" : ""}`),
+                // a region that makes a new state says so, in its colour (SCENARIO.md, Special coring: Becomes)
+                const becomes = f.becomes && f.becomes.name !== c.name ? [" — becomes ", make("span", { class: "swatch", style: `background:${f.becomes.colour}` }), ` ${f.becomes.name}`] : [];
+                return row(ctx, make("span", {}, `${f.name}: ${held.length} of ${f.settlements.length} held${core.length === f.settlements.length ? ", all core" : ""}`, ...becomes),
                     ready ? make("button", { class: "primary", onclick: act(ctx, () => ({ type: "proclaim", region: f.id })) }, "Proclaim") : "");
             })));
     }

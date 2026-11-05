@@ -44,7 +44,7 @@ export function describeEvent(map, e) {
         case "desertion": return `${fmt(e.men)} mercenaries of ${e.country} desert`;
         case "bankruptcy": return `${e.country} goes bankrupt: ${e.buildings} buildings and ${fmt(e.weapons)} weapons sold`;
         case "cored": return `${place(String(e.settlement))} becomes core for ${e.country}`;
-        case "proclaimed": return `${e.country} proclaims ${e.region}: ${e.settlements} settlements become core`;
+        case "proclaimed": return `${e.country} proclaims ${e.region}: ${e.settlements} settlements become core${e.becomes ? `; ${e.was} is now ${e.becomes}` : ""}`;
         case "capital": return `${e.country} names ${place(String(e.settlement))} its capital`;
         case "ready": return `${fmt(e.n)} ${e.what} of ${e.country} are ready at ${place(String(e.settlement))} (army ${e.army})`;
         case "cancelled": return `${e.what === "hire" ? "the hire of" : "the training of"} ${fmt(e.n)} men of ${e.country} at ${place(String(e.settlement))} is cancelled`;

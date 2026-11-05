@@ -8,7 +8,7 @@ import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "
 register("./loader.mjs", import.meta.url);
 const { Game, scores } = await import("../../src/engine/index.js");
 const { exportSpan, framePlan, frameOf, stateOf } = await import("../../public/js/mapcanvas.js");
-const { countryLabels, landFill } = await import("../../public/js/mapdraw.js");
+const { countryColour, countryLabels, landFill } = await import("../../public/js/mapdraw.js");
 
 test("a timelapse shows a frame every so many days, the last day always among them", () => {
     assert.deepEqual(framePlan(0, 100, 1, 30), [0, 12, 24, 36, 48, 60, 72, 84, 96, 100]);         // a year a second: 12 days a frame
@@ -21,16 +21,18 @@ test("a timelapse shows a frame every so many days, the last day always among th
 test("a frame keeps who holds what, who is whose subject and the leaders — small — and the map draws from it as from the state", () => {
     const game = Game.create(scenario, { seed: 1 });
     Object.assign(game.state.countries.BOH, { overlord: "AUS", subjectKind: "vassal" });
+    Object.assign(game.state.countries.BAV, { name: "Germany", formed: "germany" });
     game.state.settlements[30].owner = "AUS";
     const frame = frameOf(game.state, scores(game.state));
     assert.equal(frame.day, 0);
     assert.equal(frame.owners.length, scenario.settlements.length);
-    assert.deepEqual(Object.keys(frame.changed), ["BOH"], "only the countries that are not as they began");
+    assert.deepEqual(Object.keys(frame.changed).sort(), ["BAV", "BOH"], "only the countries that are not as they began");
     assert.equal(frame.top.length, 5);
     assert.ok(frame.top.every((t, i) => i === 0 || frame.top[i - 1].settlements >= t.settlements));
     const st = stateOf(frame, scenario);
     assert.equal(st.settlements[30].owner, "AUS");
-    assert.deepEqual(st.countries.BOH, { code: "BOH", name: "Bohemia", overlord: "AUS", subjectKind: "vassal", rebel: false, out: null });
+    assert.deepEqual(st.countries.BOH, { code: "BOH", name: "Bohemia", overlord: "AUS", subjectKind: "vassal", rebel: false, out: null, formed: null });
+    assert.deepEqual([st.countries.BAV.name, countryColour(st, scenario, "BAV")], ["Germany", "#e0b040"], "a new state proclaimed, in its colour");
     assert.deepEqual(countryLabels(st, scenario), countryLabels(game.state, scenario));
     const colourOf = (c) => c;
     for (const code of ["BOH", "AUS", "BAV"]) assert.deepEqual(landFill(st, colourOf)(code), landFill(game.state, colourOf)(code));

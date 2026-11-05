@@ -47,6 +47,23 @@ test("a code follows the land: a country that takes another's gets it, and one t
     assert.ok(!countryLabels({ ...st, countries: { ...st.countries, HUN: { ...st.countries.HUN, rebel: true } } }, sc).some((l) => l.code === "HUN"), "peasant rebels get none");
 });
 
+test("a country that proclaimed a new state shows its code and colour; its subjects' labels name it so; the lands are repainted", async () => {
+    const { countryColour, mapCode, ownersKey } = await import("../../public/js/mapdraw.js");
+    const sc = mitteleuropa, st = Game.create(sc, { seed: 1 }).state, germany = sc.formables.find((f) => f.id === "germany");
+    assert.deepEqual(germany.becomes, { name: "Germany", code: "GER", colour: "#e0b040" });
+    const key = ownersKey(st), own = countryColour(st, sc, "BAV");
+    assert.deepEqual([mapCode(st, sc, "BAV"), own], ["BAV", sc.countries.find((c) => c.code === "BAV").colour]);
+    Object.assign(st.countries.BAV, { name: "Germany", formed: "germany" });
+    Object.assign(st.countries.ULM, { overlord: "BAV", subjectKind: "vassal" });
+    assert.deepEqual([mapCode(st, sc, "BAV"), countryColour(st, sc, "BAV")], ["GER", "#e0b040"]);
+    assert.notEqual(ownersKey(st), key, "the lands are repainted");
+    const labels = countryLabels(st, sc);
+    assert.equal(labels.find((l) => l.code === "BAV")?.text, "GER");
+    assert.match(labels.find((l) => l.code === "ULM")?.text ?? "", /^(ULM▸GER|ULM)$/);
+    st.countries.BAV.rebel = true;
+    assert.equal(countryColour(st, sc, "BAV"), "#8c3a3a", "peasants in arms are dark red whatever they were");
+});
+
 test("a subject's land is striped with its overlord's colour — broad for a vassal, thin for a protectorate — and its label names the overlord", async () => {
     const { landFill, ownersKey } = await import("../../public/js/mapdraw.js");
     const st = Game.create(mitteleuropa, { seed: 1 }).state;

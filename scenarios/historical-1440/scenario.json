@@ -16354,7 +16354,12 @@
     13,
     14,
     15
-   ]
+   ],
+   "becomes": {
+    "name": "Kalmar Union",
+    "code": "KAL",
+    "colour": "#6fa3e0"
+   }
   },
   {
    "id": "wettin-saxony",
@@ -16402,7 +16407,12 @@
     55,
     107,
     108
-   ]
+   ],
+   "becomes": {
+    "name": "Brandenburg-Prussia",
+    "code": "BPR",
+    "colour": "#a0a0a0"
+   }
   },
   {
    "id": "burgundian-netherlands",
@@ -16448,7 +16458,12 @@
     149,
     166,
     167
-   ]
+   ],
+   "becomes": {
+    "name": "Kingdom of Burgundy",
+    "code": "KBG",
+    "colour": "#c7799f"
+   }
   },
   {
    "id": "hanseatic-league",
@@ -16464,7 +16479,12 @@
     38,
     45,
     83
-   ]
+   ],
+   "becomes": {
+    "name": "Hanseatic League",
+    "code": "HSL",
+    "colour": "#d0a070"
+   }
   },
   {
    "id": "polish-lithuanian-commonwealth",
@@ -16496,7 +16516,12 @@
     64,
     65,
     66
-   ]
+   ],
+   "becomes": {
+    "name": "Poland-Lithuania",
+    "code": "PLC",
+    "colour": "#d9707f"
+   }
   },
   {
    "id": "united-duchies",
@@ -16506,7 +16531,12 @@
     77,
     81,
     82
-   ]
+   ],
+   "becomes": {
+    "name": "Jülich-Cleves-Berg",
+    "code": "JCB",
+    "colour": "#9bd16a"
+   }
   },
   {
    "id": "franconian-circle",
@@ -16641,7 +16671,12 @@
     158,
     159,
     160
-   ]
+   ],
+   "becomes": {
+    "name": "Habsburg Monarchy",
+    "code": "HAB",
+    "colour": "#f6e65a"
+   }
   },
   {
    "id": "germany",
@@ -16709,7 +16744,12 @@
     134,
     149,
     151
-   ]
+   ],
+   "becomes": {
+    "name": "Germany",
+    "code": "GER",
+    "colour": "#e0b040"
+   }
   }
  ],
  "rivalries": [

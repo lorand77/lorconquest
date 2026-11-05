@@ -406,31 +406,35 @@ You may proclaim a region when **both** are true:
 Every settlement in the region becomes your core immediately, your vassals' too (they stay theirs, core for you should
 they ever be yours). If you later lose one and retake it, it is core again on capture.
 
-| Formable | What it was | Settlements | Count |
-|---|---|---|---|
-| **Unite the Swiss** | the Confederacy with Zürich and Basel (1501) | 150, 152–154 | 4 |
-| **Reunite Bavaria** | the Wittelsbach duchies, one again from 1505 | 128–133 | 6 |
-| **Habsburg Austria** | the hereditary lands of the house of Habsburg | 135–138, 149, 155, 156, 158–160 | 10 |
-| **Kingdom of Hungary** | the crown of St Stephen | 139–147 | 9 |
-| **Lands of the Bohemian Crown** | Bohemia, Moravia, Silesia and Lusatia | 93–99, 112–118 | 14 |
-| **Kalmar Union** | the three northern crowns under one king | 1–15 | 15 |
-| **Wettin Saxony** | Saxony, Thuringia and Meissen | 87–92 | 6 |
-| **Crown of Poland** | Poland, Masovia (1526) and Royal Prussia (1466) | 28–30, 56–66 | 14 |
-| **Brandenburg-Prussia** | the Hohenzollern lands of 1618 | 26, 27, 31, 51–55, 107, 108 | 10 |
-| **Burgundian Netherlands** | the Seventeen Provinces of 1549 | 42, 67–75, 84, 100, 166, 167 | 14 |
-| **Kingdom of Burgundy** | the realm Charles the Bold wanted, Frisia to the Alps | 42, 67–75, 84, 100, 119–121, 125, 148, 149, 166, 167 | 20 |
-| **Hanseatic League** | its leading towns, under Lübeck | 15, 16, 18, 28, 34, 35, 37, 38, 45, 83 | 10 |
-| **Polish-Lithuanian Commonwealth** | Poland and Lithuania joined at Lublin (1569) | 16–30, 56–66 | 26 |
-| **United Duchies** | Jülich, Berg, Cleves and Mark under one duke (1521) | 76, 77, 81, 82 | 4 |
-| **Franconian Circle** | the Imperial Circle of 1500: the bishops, the Hohenzollern margraves and Nuremberg | 105–109 | 5 |
-| **Swabian League** | Württemberg, Baden and the Swabian cities, allied against the Swiss and Bavaria (1488) | 123, 124, 126, 127, 151 | 5 |
-| **Electoral Rhine** | the Electoral Rhenish Circle (1512): the three archbishops and the Count Palatine | 79, 80, 101–103, 110 | 6 |
-| **Lower Saxon Circle** | the Guelph duchies, Magdeburg, Bremen and Mecklenburg (1512) | 36, 37, 45–50 | 8 |
-| **Treaty of Ribe** | the king of Denmark made duke of Schleswig and count of Holstein (1460) | 9–14, 32, 33 | 8 |
-| **Bavarian Circle** | the Imperial Circle of 1500: the duchies, the Upper Palatinate, Regensburg, Passau and Salzburg | Reunite Bavaria + 111, 134, 157 | 9 |
-| **Swedish Empire** | Sweden at its height after Westphalia (1648): Gotland, Livonia, Pomerania and Bremen | 4–8, 15–19, 38, 39, 45 | 13 |
-| **Danubian Monarchy** | the three crowns Ferdinand of Habsburg gathered in 1526 | Habsburg Austria + Kingdom of Hungary + Lands of the Bohemian Crown | 33 |
-| **Germany** (1990) | the Federal Republic within its borders of today, four and a half centuries early: no Silesia, Pomerania east of the Oder, Alsace or Lorraine | 32–38, 43–55, 76–83, 85–94, 101–111, 123, 124, 126–134, 149, 151 | 62 |
+A region with a **Becomes** makes a new state: proclaiming it, your country takes that name, and on the map that code and
+colour (RULES.md §2). *Becomes is data: the name, a code of three capitals that is no country's, and a colour unlike every
+country's — `tools/map.js` checks them.*
+
+| Formable | What it was | Settlements | Count | Becomes |
+|---|---|---|---|---|
+| **Unite the Swiss** | the Confederacy with Zürich and Basel (1501) | 150, 152–154 | 4 | — |
+| **Reunite Bavaria** | the Wittelsbach duchies, one again from 1505 | 128–133 | 6 | — |
+| **Habsburg Austria** | the hereditary lands of the house of Habsburg | 135–138, 149, 155, 156, 158–160 | 10 | — |
+| **Kingdom of Hungary** | the crown of St Stephen | 139–147 | 9 | — |
+| **Lands of the Bohemian Crown** | Bohemia, Moravia, Silesia and Lusatia | 93–99, 112–118 | 14 | — |
+| **Kalmar Union** | the three northern crowns under one king | 1–15 | 15 | Kalmar Union, KAL, #6fa3e0 |
+| **Wettin Saxony** | Saxony, Thuringia and Meissen | 87–92 | 6 | — |
+| **Crown of Poland** | Poland, Masovia (1526) and Royal Prussia (1466) | 28–30, 56–66 | 14 | — |
+| **Brandenburg-Prussia** | the Hohenzollern lands of 1618 | 26, 27, 31, 51–55, 107, 108 | 10 | Brandenburg-Prussia, BPR, #a0a0a0 |
+| **Burgundian Netherlands** | the Seventeen Provinces of 1549 | 42, 67–75, 84, 100, 166, 167 | 14 | — |
+| **Kingdom of Burgundy** | the realm Charles the Bold wanted, Frisia to the Alps | 42, 67–75, 84, 100, 119–121, 125, 148, 149, 166, 167 | 20 | Kingdom of Burgundy, KBG, #c7799f |
+| **Hanseatic League** | its leading towns, under Lübeck | 15, 16, 18, 28, 34, 35, 37, 38, 45, 83 | 10 | Hanseatic League, HSL, #d0a070 |
+| **Polish-Lithuanian Commonwealth** | Poland and Lithuania joined at Lublin (1569) | 16–30, 56–66 | 26 | Poland-Lithuania, PLC, #d9707f |
+| **United Duchies** | Jülich, Berg, Cleves and Mark under one duke (1521) | 76, 77, 81, 82 | 4 | Jülich-Cleves-Berg, JCB, #9bd16a |
+| **Franconian Circle** | the Imperial Circle of 1500: the bishops, the Hohenzollern margraves and Nuremberg | 105–109 | 5 | — |
+| **Swabian League** | Württemberg, Baden and the Swabian cities, allied against the Swiss and Bavaria (1488) | 123, 124, 126, 127, 151 | 5 | — |
+| **Electoral Rhine** | the Electoral Rhenish Circle (1512): the three archbishops and the Count Palatine | 79, 80, 101–103, 110 | 6 | — |
+| **Lower Saxon Circle** | the Guelph duchies, Magdeburg, Bremen and Mecklenburg (1512) | 36, 37, 45–50 | 8 | — |
+| **Treaty of Ribe** | the king of Denmark made duke of Schleswig and count of Holstein (1460) | 9–14, 32, 33 | 8 | — |
+| **Bavarian Circle** | the Imperial Circle of 1500: the duchies, the Upper Palatinate, Regensburg, Passau and Salzburg | Reunite Bavaria + 111, 134, 157 | 9 | — |
+| **Swedish Empire** | Sweden at its height after Westphalia (1648): Gotland, Livonia, Pomerania and Bremen | 4–8, 15–19, 38, 39, 45 | 13 | — |
+| **Danubian Monarchy** | the three crowns Ferdinand of Habsburg gathered in 1526 | Habsburg Austria + Kingdom of Hungary + Lands of the Bohemian Crown | 33 | Habsburg Monarchy, HAB, #f6e65a |
+| **Germany** (1990) | the Federal Republic within its borders of today, four and a half centuries early: no Silesia, Pomerania east of the Oder, Alsace or Lorraine | 32–38, 43–55, 76–83, 85–94, 101–111, 123, 124, 126–134, 149, 151 | 62 | Germany, GER, #e0b040 |
 
 ## Sea zones
 

@@ -4,7 +4,7 @@
 // the day shown, and a timelapse video of any span of the game (mapcanvas.js), are a click away.
 import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, scores } from "/engine/index.js";
 import { requireUser } from "./auth.js";
-import { countryLabels, landFill, ownersKey, paintMap } from "./mapdraw.js";
+import { countryColour, countryLabels, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoName, videoType } from "./mapcanvas.js";
 import { buildLegs } from "./mirror.js";
@@ -38,7 +38,7 @@ const scenarioName = scenarios.find((s) => s.id === data.scenario)?.name ?? data
 const replayer = createReplayer(scenario, data);
 const built = buildMap(scenario), nodes = built.nodes, zones = built.zones, legs = buildLegs(scenario);
 const player = new Map(data.humans.map((h) => [h.country, h.username]));
-const colourOf = (code) => (replayer.state.countries[code]?.rebel ? "#8c3a3a" : scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd");
+const colourOf = (code) => countryColour(replayer.state, scenario, code);
 const ownerOfLand = (key) => replayer.state.settlements[key]?.owner;
 const nameOf = (code) => replayer.state.countries[code]?.name ?? code;
 
