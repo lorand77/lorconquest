@@ -13,7 +13,7 @@ import { BUILDING_PRICE } from "./costs.js";
 import { popOf } from "./economy.js";
 import { capture } from "./fighting.js";
 import { retreat } from "./movement.js";
-import { agreementAnswer, demandChance, neighboursOf } from "./opinion.js";
+import { agreementAnswer, demandChance, neighboursOf, subjectChance } from "./opinion.js";
 import { random } from "./random.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
 import { armyList, atWar, canEnter, isRebel, warKey } from "./state.js";
@@ -397,13 +397,21 @@ export function integrate(game, overlord, subject, events) {
 // a computer rolls; a refusal is remembered for 10 years
 export function demandSubject(game, demander, target, kind, events) {
     const st = game.state;
-    if (random(st) * 100 < demandChance(game, target, demander, kind).chance) {
-        setSubject(game, target, demander, kind, events);
+    if (random(st) * 100 < subjectChance(game, target, demander, kind).chance) {
+        takeSubject(game, target, demander, kind, events);
         return true;
     }
     st.memory.refused[`${target}>${demander}`] = st.day;
     events.push({ type: "refused", day: st.day, country: target, from: demander, what: `to become its ${kind}` });
     return false;
+}
+
+// a subject agreed to on demand: the world takes note — +2.5 warmonger score for a protectorate, +5 for a vassal, +2.5 for
+// a protectorate made a vassal (half what a peace's terms give an attacker: RULES.md §10)
+export function takeSubject(game, target, demander, kind, events) {
+    const st = game.state, upgrade = st.countries[target].overlord === demander;
+    st.countries[demander].warmonger += kind === "vassal" && !upgrade ? 5 : 2.5;
+    setSubject(game, target, demander, kind, events);
 }
 
 // ---------- the start of a game ----------

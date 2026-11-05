@@ -729,8 +729,9 @@ for no more than 30%. Each game varies a character a little, so a country keeps 
 ### Rivalries
 
 *Pairs the computer holds a grudge between: of the neighbours it is strong enough to attack, it goes for a rival first, and it
-never proposes anything to one. A rivalry goes both ways. It is the computer's preference, not a rule: a person playing either
-country is free of it, and a rival's proposals are still answered by the game's formulas, like anyone's.*
+never proposes anything to one. A rivalry goes both ways. Mostly it is the computer's preference: a person playing either
+country is free of it, and a rival's proposals are answered by the game's formulas, like anyone's — but for one rule: a computer
+country never agrees to become its rival's subject on demand (RULES.md §10). The Diplomacy tab shows a country's rivals.*
 
 | Rivals | Why |
 |---|---|

@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { ALLIANCE_YEARS, BAR, agreementAnswer, isAlliance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -145,6 +145,7 @@ function dealWith(ctx, t) {
         mk("p", {}, `${n(Object.values(state.settlements).filter((s) => s.owner === t).reduce((k, s) => k + s.pop, 0))} people, military power ${n(power)} against your ${n(mypower)}${bordering(game, me, t) ? ", a neighbour" : ""}.`),
         human ? mk("p", { class: "hint" }, "A person plays this country: proposals wait for its answer.") : mk("p", {}, `Its opinion of you: ${op > 0 ? "+" : ""}${Math.round(op)}. Warmonger score ${Math.round(them.warmonger ?? 0)}.`),
         them.overlord ? mk("p", {}, `A ${them.subjectKind} of ${state.countries[them.overlord].name}${vassal ? ": it has no diplomacy of its own — speak to its overlord" : ""}.`) : "",
+        rivalsLine(ctx, t),
         warsOf(ctx, t)));
     // your vassal of 10 years may become part of your country (RULES.md §10, Integration)
     if (vassal && them.overlord === me) {
@@ -195,14 +196,26 @@ function dealWith(ctx, t) {
     // demands
     if (!atWar && (!them.overlord || (them.overlord === me && them.subjectKind === "protectorate"))) {
         const kinds = them.overlord === me ? ["vassal"] : ["vassal", "protectorate"];
+        // a rival never agrees, nor anyone to a country near victory; one that does adds to the asker's warmonger score (RULES.md §10)
+        const upgrade = them.overlord === me;
         out.push(section(ctx, "Demand", ...kinds.map((kind) => {
-            const ch = human ? null : demandChance(game, t, me, kind);
-            return row(ctx, mk("button", { onclick: async () => { if (confirm(`Demand that ${them.name} become your ${kind}? A refusal makes it hostile for 10 years.`)) { await ctx.send({ type: "demandSubject", target: t, kind }); ctx.redraw(); } } }, `Demand a ${kind}`),
-                mk("span", { class: "hint" }, ch ? `${ch.chance.toFixed(0)}% chance` : "a person will answer"));
-        })));
+            const ch = human ? null : subjectChance(game, t, me, kind), score = kind === "vassal" && !upgrade ? 5 : 2.5;
+            const odds = !ch ? "a person will answer" : ch.why === "rival" ? "never: your rival" : ch.why === "victory" ? `refused: you hold ${n(ch.count)} of the ${ch.target} that win${ch.count >= NEAR_VICTORY * ch.target ? "" : ", and this would take you there"}` : `${ch.chance.toFixed(0)}% chance`;
+            return row(ctx, mk("button", { onclick: async () => { if (confirm(`Demand that ${them.name} become your ${kind}? A refusal makes it hostile for 10 years; a yes adds ${score} to your warmonger score.`)) { await ctx.send({ type: "demandSubject", target: t, kind }); ctx.redraw(); } } }, `Demand a ${kind}`),
+                mk("span", { class: `hint ${ch && !ch.chance ? "bad" : ""}` }, `${odds} · +${score} warmonger if it agrees`));
+        }), human ? "" : mk("p", { class: "hint" }, `No country agrees to become the subject of one at ${NEAR_VICTORY * 100}% of victory, or that it would carry past it.`)));
     }
 
     return out;
+}
+
+// the scenario's rivalries of a country (SCENARIO.md, Rivalries): a rival of yours never agrees to become your subject
+function rivalsLine(ctx, t) {
+    const { state, game, me, make: mk } = ctx;
+    const rivals = Object.keys(state.countries).filter((c) => c !== t && areRivals(game, t, c)).sort();
+    if (!rivals.length) return "";
+    const yours = rivals.includes(me);
+    return mk("p", { class: yours ? "bad" : "" }, `Rivals: ${rivals.map((c) => (c === me ? "you" : state.countries[c].name)).join(", ")}${yours ? " — it will never agree to become your subject" : ""}.`);
 }
 
 // a peace with terms: what to take and give, money, a subject — and what the other side makes of it

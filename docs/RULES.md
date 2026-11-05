@@ -718,6 +718,8 @@ go to war for gain:
 | End a war holding a settlement you took in it — captured, or given to you in the peace | +1 per 1,000 of its pop (a town ≈ +10, a city ≈ +20) | **half**: +1 per 2,000 (a town ≈ +5, a city ≈ +10) |
 | Make a country your vassal in a peace | +10 | +5 |
 | Make a country your protectorate in a peace | +5 | +2.5 |
+| Make a country your vassal on demand (or your protectorate a vassal) | +5 (+2.5) | — |
+| Make a country your protectorate on demand | +2.5 | — |
 
 **The defending side** is the country that was declared on and everyone who joined the war on its
 side — defensive allies, guarantors and military allies it called in. The world sees it as the
@@ -725,7 +727,8 @@ victim, so it is forgiven half of what it takes from the aggressor. Everyone els
 attacking side: the country that declared and everyone who joined it.
 
 Retaking a settlement that was **your core when the war began** adds nothing, on either side.
-Subjects gained by demand or through the HRE add nothing either — they agreed. The score falls
+Subjects gained through the HRE add nothing either — they agreed; one gained on demand agreed too, but the world sees a
+country gathering subjects, at half what a peace would cost. The score falls
 by **2 every year**, down to 0.
 
 *Example:* Bavaria declares war on Bohemia and keeps all three of its settlements (40K) at the
@@ -828,7 +831,12 @@ protectorate chance = size × 10 % + opinion ÷ 10 %
 vassal chance       = size × 5 %  + opinion ÷ 10 %      also to turn your protectorate into a vassal
 at most 75%
 0% if your pop is not larger than theirs, or if their opinion of you is below −50
+0% if you are its rival (SCENARIO.md, Rivalries)
+0% if you hold 75% of the settlements that win (counted as for victory, subjects and all), or this
+   subject would carry you to them — the HRE vote does not ask this, nor whether you are rivals
 ```
+Near victory, nobody bows: what is left must be taken. A subject gained on demand adds to your warmonger score
+(*Warmongers*).
 **Refusing makes it hostile:** a country that refuses gets the −30 opinion above for 10 years,
 so asking again in 5 years is much less likely to work.
 

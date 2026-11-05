@@ -8,8 +8,8 @@
 // the target of choice, and it is never proposed anything. They do not make it attack at worse odds or fight longer — tried,
 // that turned every war between rivals into one between alliances (experiments/, 5). They are the AI's preferences, not
 // rules: a rival's proposal is still answered by the engine's formula, like anyone's.
-import { YEAR_DAYS, agreementAnswer, bordering, need, demandChance, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
-    peaceAnswer, sizeOf, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
+import { YEAR_DAYS, agreementAnswer, bordering, need, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
+    peaceAnswer, sizeOf, subjectChance, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
 import { agreementsBetween, alliesOf, friendly } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
 import { dice, enemiesOf, hash, leaderFor, ownSettlements, reachFrom, rivalsOf, stagingSettlement, thinksOn } from "./util.js";
@@ -228,7 +228,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     if (!foes.length && fl.aggression > 0.4 && subjectsOf(st, code).length < 3 && r() < 0.15) {
         for (const n of neighbours) {
             if (overlordOf(st, n) || sizeOf(st, code) < 2 * sizeOf(st, n) || militaryPowerOf(st, code) < 2.5 * militaryPowerOf(st, n)) continue;
-            const kind = ["vassal", "protectorate"].find((k) => demandChance(game, n, code, k).chance >= 35 && mayAsk(n, `demand-${k}`));
+            const kind = ["vassal", "protectorate"].find((k) => subjectChance(game, n, code, k).chance >= 35 && mayAsk(n, `demand-${k}`));
             if (kind) { ask("demandSubject", n, `demand-${kind}`, { target: n, kind }); break; }
         }
     }

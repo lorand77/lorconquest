@@ -219,3 +219,15 @@ test("your own vassal shows Integrate: why not until it may, then the button", a
     await button(nodes, "Integrate").handlers.click();
     assert.deepEqual(sent, [{ type: "integrate", target: "ULM" }]);
 });
+
+test("a rival is shown as one, and never agrees to become your subject; every demand says what a yes adds to your warmonger score", () => {
+    const { ctx } = setup(() => {}, "AUS");                                   // Bavaria and Austria are rivals in the scenario
+    const text = textOf(diplomacyTab(ctx));
+    assert.match(text, /Rivals: (.+, )?you(, .+)? — it will never agree to become your subject/);
+    assert.match(text, /Demand a vassal\s*never: your rival · \+5 warmonger if it agrees/);
+    assert.match(text, /Demand a protectorate\s*never: your rival · \+2.5 warmonger if it agrees/);
+    const other = textOf(diplomacyTab(setup(() => {}, "SWI").ctx));
+    assert.doesNotMatch(other, /never: your rival/);
+    assert.match(other, /Rivals: .*Tyrol/);
+    assert.match(other, /No country agrees to become the subject of one at 75% of victory/);
+});

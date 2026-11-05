@@ -12,7 +12,7 @@
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
 import { OFFER_DAYS, addAgreement, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
-    setSubject, validateTerms, joinWar, PACT_DAYS } from "./diplomacy.js";
+    setSubject, takeSubject, validateTerms, joinWar, PACT_DAYS } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
 import { hasAgreement, isVassal, overlordOf, wouldCycle } from "./relations.js";
@@ -199,7 +199,7 @@ export const diplomacyCommands = {
         } else if (offer.kind === "demand") {
             // at war with the demander by now: a yes would end the war with no peace — it counts as a refusal
             if (accept && atWar(st, offer.to, offer.from)) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
-            else if (accept && !(overlordOf(st, offer.to) && offer.subject === "protectorate")) setSubject(game, offer.to, offer.from, offer.subject, events);
+            else if (accept && !(overlordOf(st, offer.to) && offer.subject === "protectorate")) takeSubject(game, offer.to, offer.from, offer.subject, events);
             else if (!accept) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
         } else if (offer.kind === "integrate") {
             if (accept && !integrateError(game, offer.from, offer.to)) integrate(game, offer.from, offer.to, events);

@@ -8,6 +8,7 @@ import { YEAR_DAYS } from "./calendar.js";
 import { economyOf, popOf } from "./economy.js";
 import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
 import { armyList, atWar, isRebel, warKey } from "./state.js";
+import { scores } from "./victory.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
 
@@ -137,4 +138,25 @@ export function demandChance(game, holder, demander, kind, bonus = 0) {
     if (sizeOf(st, demander) <= sizeOf(st, holder) || op < -50) return { chance: 0, opinion: op };
     const size = sizeRatio(st, demander, holder);
     return { chance: Math.min(75, Math.max(0, size * (kind === "vassal" ? 5 : 10) + op / 10 + bonus)), opinion: op };
+}
+
+// two countries the scenario makes rivals (SCENARIO.md, Rivalries)
+export const areRivals = (game, a, b) => (game.map.scenario.rivalries ?? []).some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+// how close a country is to winning, from 0, as a share of the scenario's number (SCENARIO.md, Victory)
+export const NEAR_VICTORY = 0.75;
+
+// the chance that `holder` agrees to a demand to become `demander`'s subject (RULES.md §10): demandChance — but none for a
+// rival, and none for a country at three quarters of victory or that this subject would carry past it (`why` says which;
+// `count` and `target`, how near). The Empire's vote keeps demandChance alone.
+export function subjectChance(game, holder, demander, kind) {
+    const st = game.state, base = demandChance(game, holder, demander, kind), target = game.map.scenario.victory?.settlements;
+    if (areRivals(game, holder, demander)) return { ...base, chance: 0, why: "rival" };
+    if (!target) return base;
+    const table = scores(st), count = table[demander]?.settlements ?? 0;
+    // what it would gain: the holder's settlements and its subjects', at a vassal's share or a protectorate's — less the half a
+    // protectorate of its own already gives it, if it is to become a vassal
+    const was = st.countries[holder].overlord === demander ? (st.countries[holder].subjectKind === "vassal" ? 1 : 0.5) : 0;
+    const gain = (table[holder]?.settlements ?? 0) * ((kind === "vassal" ? 1 : 0.5) - was);
+    if (count >= NEAR_VICTORY * target || count + gain >= target) return { ...base, chance: 0, why: "victory", count, target };
+    return base;
 }

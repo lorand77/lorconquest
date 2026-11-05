@@ -426,7 +426,8 @@ function renderScores() {
     const rows = scoreboard({ table: scores(state), power, alive, me, key: scoreKey });
     const player = (c) => (multi ? seats.find((s) => s.country === c)?.username : null);    // names only with other people
     const show = (r) => (scoreKey === "settlements" ? (Number.isInteger(r.value) ? String(r.value) : r.value.toFixed(1)) : formatMen(Math.round(r.value)));
-    const key = scoreKey + "|" + rows.map((r) => `${r.code}:${show(r)}`).join(",");
+    // redrawn when a row changes: its value, or its name and colour — a country that proclaims a new state takes both
+    const key = scoreKey + "|" + rows.map((r) => `${r.code}:${show(r)}:${country(r.code)?.name}:${colourOf(r.code)}`).join(",");
     if (key === scored) return;
     scored = key;
     for (const b of document.querySelectorAll(".sb-tabs button")) b.classList.toggle("on", b.dataset.score === scoreKey);

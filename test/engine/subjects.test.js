@@ -4,7 +4,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { addAgreement, formLeague, setSubject } from "../../src/engine/diplomacy.js";
-import { INTEGRATE_DAYS, atWar, demandChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
+import { INTEGRATE_DAYS, atWar, demandChance, subjectChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused, rigRoll } from "../helpers/tiny.js";
 
 const cmd = (country, type, rest = {}) => ({ type, country, ...rest });
@@ -86,6 +86,29 @@ test("what a demand is worth: mostly size, a little opinion, at most 75%, none f
     // a giant against a dwarf is held to 75%
     game.state.settlements[1].pop = 1e6;
     assert.equal(demandChance(game, "CCC", "AAA", "protectorate").chance, 75);
+});
+
+test("a rival never agrees to be your subject, nor anyone to one at 75% of victory or whom it would carry there; a yes adds warmonger", () => {
+    const game = tinyGame(1, (sc) => { sc.rivalries = [["AAA", "DDD"]]; sc.victory.settlements = 5; }), st = game.state;
+    assert.deepEqual(subjectChance(game, "DDD", "AAA", "protectorate"), { chance: 0, opinion: opinion(game, "DDD", "AAA"), why: "rival" });
+    assert.ok(demandChance(game, "DDD", "AAA", "protectorate").chance > 0, "which the plain formula (the Empire's vote) does not ask");
+    // AAA holds 3 of the 5 that win (60%): CCC as a vassal makes 4, BBB's 2 as a vassal would make 5, as a protectorate 4
+    assert.equal(subjectChance(game, "CCC", "AAA", "vassal").chance, demandChance(game, "CCC", "AAA", "vassal").chance);
+    assert.deepEqual(["why", "count", "target"].map((k) => subjectChance(game, "BBB", "AAA", "vassal")[k]), ["victory", 3, 5]);
+    assert.ok(subjectChance(game, "BBB", "AAA", "protectorate").chance > 0);
+    rigRoll(game, 1, true);
+    order(game, cmd("AAA", "demandSubject", { target: "CCC", kind: "vassal" }));
+    assert.deepEqual([st.countries.CCC.overlord, st.countries.AAA.warmonger], ["AAA", 5], "a vassal on demand: +5");
+    // now 4 of 5: at 75%, nobody agrees
+    assert.deepEqual(["chance", "why", "count"].map((k) => subjectChance(game, "BBB", "AAA", "protectorate")[k]), [0, "victory", 4]);
+    rigRoll(game, 1, true);
+    order(game, cmd("AAA", "demandSubject", { target: "BBB", kind: "protectorate" }));
+    assert.equal(st.countries.BBB.overlord, null);
+    // a person asked answers for itself; a yes adds to the warmonger score all the same
+    const human = tinyGame(1, () => {}, ["CCC"]);
+    order(human, cmd("AAA", "demandSubject", { target: "CCC", kind: "protectorate" }));
+    order(human, cmd("CCC", "answerOffer", { id: human.state.offers[0].id, accept: true }));
+    assert.deepEqual([human.state.countries.CCC.subjectKind, human.state.countries.AAA.warmonger], ["protectorate", 2.5]);
 });
 
 test("a demand to a computer is rolled once; a refusal is remembered 10 years and cannot be repeated for 5", () => {
