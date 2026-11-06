@@ -57,7 +57,7 @@ test("men on a marker", () => {
     assert.deepEqual([0, 750, 1000, 1234, 9999, 12400].map(formatMen), ["0", "750", "1k", "1.2k", "10k", "12k"]);
 });
 
-test("where fleets are drawn: in a port, at sea in their zone, or between zones", async () => {
+test("where fleets are drawn: in a port out in the water it faces, at sea in their zone, or between zones — never on land", async () => {
     const { fleetPoints } = await import("../../public/js/mirror.js");
     const map = buildMap(scenario);
     const state = { fleets: {
@@ -67,11 +67,20 @@ test("where fleets are drawn: in a port, at sea in their zone, or between zones"
         4: { id: 4, port: null, zone: "oslofjord", moving: { to: "skagerrak", start: 0, end: 61 } },
     } };
     const pts = fleetPoints(state, map.nodes, map.zones, 30.5);
-    const oslo = map.nodes.get("2"), sk = map.zones.get("skagerrak").label, of = map.zones.get("oslofjord").label;
-    assert.deepEqual(pts.get(1), [oslo.x - 8, oslo.y + 20]);
-    assert.deepEqual(pts.get(2), [oslo.x - 8, oslo.y + 36]);                  // a second fleet in the same port sits below
-    assert.deepEqual(pts.get(3), [sk.x, sk.y + 14]);
-    assert.deepEqual(pts.get(4), [(of.x + sk.x) / 2, (of.y + sk.y) / 2 + 14]); // halfway between the zones
+    const harbour = map.zones.get("oslofjord").harbours["2"], sk = map.zones.get("skagerrak");
+    assert.equal(harbour.length, 4, "tools/map.js gives a port four spots in clear water");
+    assert.deepEqual([pts.get(1), pts.get(2)], [harbour[0], harbour[1]], "a second fleet in the same port sits further out");
+    assert.deepEqual(pts.get(3), sk.fleets[0]);
+    assert.deepEqual(pts.get(4), along(map.zones.get("oslofjord").lanes.skagerrak, 30.5 / 61).at, "halfway along the lane");
+    assert.deepEqual(map.zones.get("oslofjord").lanes.skagerrak[0], map.zones.get("oslofjord").fleets[0], "which starts where a fleet at sea is drawn");
+    // more fleets than spots go on along the column's line
+    const many = { fleets: Object.fromEntries([1, 2, 3, 4, 5].map((id) => [id, { id, port: 2, zone: "oslofjord", moving: null }])) };
+    const [x3, y3] = harbour[3], [x2, y2] = harbour[2];
+    assert.deepEqual(fleetPoints(many, map.nodes, map.zones, 0).get(5), [2 * x3 - x2, 2 * y3 - y2]);
+    // a map without the spots: below the port's marker and the zone's name, as before
+    const bare = new Map([...map.zones].map(([id, z]) => [id, { ...z, fleets: undefined, harbours: undefined }]));
+    const oslo = map.nodes.get("2"), old = fleetPoints(state, map.nodes, bare, 30.5);
+    assert.deepEqual([old.get(1), old.get(2), old.get(3)], [[oslo.x - 8, oslo.y + 20], [oslo.x - 8, oslo.y + 36], [sk.label.x, sk.label.y + 14]]);
 });
 
 test("what is selected on the map opens the tab that deals with it", () => {

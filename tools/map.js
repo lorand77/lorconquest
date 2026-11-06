@@ -1370,10 +1370,64 @@ function seaPath(a, b, stretches) {
     }
     return out;
 }
+// where fleets standing still are drawn (public/js/mirror.js, fleetPoints) — never on land: in a port, a column out into the
+// water it faces, from the nearest water of its zone clear of the coast (the marker below the town's, as before, falls inland on
+// a southern coast); at sea, the column below the zone's name, a spot that falls on land or by the coast moved to the nearest
+// clear water of the zone. FLEET_SPOTS a place; more fleets than that are drawn on the last spot's line, beyond.
+const FLEET_SPOTS = 4, FLEET_GAP = 16, CLEAR = 6;
+// the nearest water of sea stretch `stretch` at least `clear` from land and FLEET_GAP from every spot in `taken`, within 80
+function wetNear(x, y, stretch, taken = [], clear = CLEAR) {
+    const sx = Math.trunc(x), sy = Math.trunc(y), ok = (u, v) => {
+        if (!inb(u, v)) return false;
+        const k = v * W + u;
+        return !REG[k] && ZG[k] === stretch && LANDD[k] >= clear && taken.every((q) => Math.hypot(q[0] - u - 0.5, q[1] - v - 0.5) >= FLEET_GAP);
+    };
+    for (let r = 0; r <= 80; r++) {
+        let best = null, bd = Infinity;
+        for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+            if (Math.max(Math.abs(dx), Math.abs(dy)) !== r || !ok(sx + dx, sy + dy)) continue;
+            const d = dx * dx + dy * dy;
+            if (d < bd) { bd = d; best = [sx + dx + 0.5, sy + dy + 0.5]; }
+        }
+        if (best) return best;
+    }
+    return null;
+}
+const spot = (q) => q.map((v) => Number(n(v)));
+const ZONE_SPOTS = new Map(), HARBOURS = new Map(ZONES.map((z) => [z.name, {}]));
+for (const z of ZONES) {
+    const c = STRETCH.get(z.name), out = [];
+    if (c === undefined) continue;
+    for (let i = 0; i < FLEET_SPOTS; i++) {
+        const want = [z.x, z.y + 14 + i * FLEET_GAP], k = Math.trunc(want[1]) * W + Math.trunc(want[0]);
+        const clearHere = inb(Math.trunc(want[0]), Math.trunc(want[1])) && !REG[k] && ZG[k] === c && LANDD[k] >= CLEAR && out.every((q) => Math.hypot(q[0] - want[0], q[1] - want[1]) >= FLEET_GAP);
+        const at = clearHere ? want : wetNear(want[0], want[1], c, out);
+        if (at) out.push(at);
+    }
+    if (!out.length) warn(`sea zone ${z.name}: no clear water below its name for its fleets`);
+    ZONE_SPOTS.set(z.name, out.map(spot));
+}
+for (const id of SIDS) {
+    const st = S.get(id);
+    if (!st.zone) continue;
+    const c = STRETCH.get(st.zone.name), first = c === undefined ? null : wetNear(st.x, st.y, c);
+    if (!first) { warn(`port ${id} ${st.name}: no clear water of ${st.zone.name} near it for its fleets`); continue; }
+    // outward from the town: each next spot a gap further along the line from the town through the first, or the nearest clear water
+    const len = Math.hypot(first[0] - st.x, first[1] - st.y) || 1, dir = [(first[0] - st.x) / len, (first[1] - st.y) / len], out = [first];
+    for (let i = 1; i < FLEET_SPOTS; i++) {
+        const want = [first[0] + dir[0] * FLEET_GAP * i, first[1] + dir[1] * FLEET_GAP * i];
+        const at = wetNear(want[0], want[1], c, out, 3);
+        if (at) out.push(at);
+    }
+    HARBOURS.get(st.zone.name)[id] = out.map(spot);
+}
+
 const LANES = new Map(ZONES.map((z) => [z.name, {}]));
 for (const z of ZONES) for (const o of zoneNext(z)) {
     if (LANES.get(z.name)[o.id] || !STRETCH.has(z.name) || !STRETCH.has(o.name)) continue;
-    const path = seaPath([z.x, z.y + 14], [o.x, o.y + 14], new Set([STRETCH.get(z.name), STRETCH.get(o.name)]));
+    // from the one zone's first fleet spot to the other's: where a fleet at sea in each is drawn
+    const from = ZONE_SPOTS.get(z.name)?.[0] ?? [z.x, z.y + 14], to = ZONE_SPOTS.get(o.name)?.[0] ?? [o.x, o.y + 14];
+    const path = seaPath(from, to, new Set([STRETCH.get(z.name), STRETCH.get(o.name)]));
     if (!path) { warn(`no way by sea from ${z.name} to ${o.name}: a fleet between them is drawn in a straight line`); continue; }
     const pts = path.map((q) => q.map((v) => Number(n(v))));
     LANES.get(z.name)[o.id] = pts;
@@ -1407,7 +1461,8 @@ const json = {
     rivalries: RIVALRIES,
     achievements: ACHIEVEMENTS,
     victory: VICTORY, empire: EMPIRE, start: START,
-    seaZones: ZONES.map((z) => ({ id: z.id, name: z.name, label: { x: z.x, y: z.y }, ports: zonePorts(z), straits: zoneStraits(z), next: zoneNext(z).map((x) => x.id), lanes: LANES.get(z.name) })),
+    seaZones: ZONES.map((z) => ({ id: z.id, name: z.name, label: { x: z.x, y: z.y }, ports: zonePorts(z), straits: zoneStraits(z), next: zoneNext(z).map((x) => x.id), lanes: LANES.get(z.name),
+        fleets: ZONE_SPOTS.get(z.name) ?? [], harbours: HARBOURS.get(z.name) })),
 };
 fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");
 

@@ -124,12 +124,22 @@ export function shortMoney(n) {
 // a date in few characters: "3 Mar 1452"
 export const shortDate = (longText) => longText.replace(/^(\d+) (\w{3})\w* (\d+)$/, "$1 $2 $3");
 
-// where each fleet is drawn on `day`: in a port, a column below the settlement's marker; at sea, a column below its
-// zone's name; on its way, along the sea lane between the two zones' names (scenario.json, seaZones[].lanes) — a Map from fleet id to [x, y]
+// where each fleet is drawn on `day`: in a port, a column out into the water it faces (scenario.json, seaZones[].harbours); at
+// sea, a column below its zone's name, kept off land (seaZones[].fleets); on its way, along the sea lane between the two zones'
+// first spots (seaZones[].lanes) — a Map from fleet id to [x, y]. tools/map.js finds the spots in clear water; a map without them
+// gets the old ones, below the port's marker and the zone's name. More fleets than spots go on along the column's line.
+const column = (spots, i) => {
+    if (i < spots.length) return spots[i];
+    const last = spots[spots.length - 1], prev = spots[spots.length - 2] ?? [last[0], last[1] - 16], k = i - spots.length + 1;
+    return [last[0] + (last[0] - prev[0]) * k, last[1] + (last[1] - prev[1]) * k];
+};
 export function fleetPoints(state, nodes, zones, day) {
     const out = new Map(), slots = new Map();
     const slot = (key) => { const i = slots.get(key) ?? 0; slots.set(key, i + 1); return i; };
-    const zoneAt = (id, i) => [zones.get(id).label.x, zones.get(id).label.y + 14 + i * 16];
+    const zoneAt = (id, i) => {
+        const z = zones.get(id);
+        return z.fleets?.length ? column(z.fleets, i) : [z.label.x, z.label.y + 14 + i * 16];
+    };
     for (const f of Object.values(state.fleets)) {
         if (f.moving) {
             // along the sea lane between the two zones (tools/map.js: through the water, never across land), or straight
@@ -137,8 +147,8 @@ export function fleetPoints(state, nodes, zones, day) {
             const lane = zones.get(f.zone).lanes?.[f.moving.to];
             out.set(f.id, lane?.length >= 2 ? along(lane, t).at : [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]);
         } else if (f.port) {
-            const n = nodes.get(String(f.port));
-            out.set(f.id, [n.x - 8, n.y + 20 + slot(`p${f.port}`) * 16]);
+            const n = nodes.get(String(f.port)), spots = zones.get(n.zone)?.harbours?.[f.port], i = slot(`p${f.port}`);
+            out.set(f.id, spots?.length ? column(spots, i) : [n.x - 8, n.y + 20 + i * 16]);
         } else out.set(f.id, zoneAt(f.zone, slot(`z${f.zone}`)));
     }
     return out;

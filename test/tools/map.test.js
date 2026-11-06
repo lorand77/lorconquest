@@ -85,3 +85,32 @@ test("the map shows no settlement numbers: each marker holds its short form, and
     }
     assert.match(svg, /\.name\{display:none;/, "names are hidden unless the game shows them");
 });
+
+test("no fleet is drawn on land: every port's spots, every zone's column and every lane between zones lie in the water", () => {
+    for (const name of ["mitteleuropa", "historical-1440"]) {
+        const dir = path.join(ROOT, "scenarios", name), sc = JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8"));
+        const d = /id="landmass"[^>]*?d="([^"]+)"/.exec(fs.readFileSync(path.join(dir, "map.svg"), "utf8"))[1];
+        const polys = d.split("Z").map((p) => [...p.matchAll(/(-?[\d.]+) (-?[\d.]+)/g)].map((m) => [Number(m[1]), Number(m[2])])).filter((p) => p.length > 2);
+        // even-odd: an island is land, a lake in it water
+        const onLand = ([x, y]) => {
+            let inside = false;
+            for (const p of polys) for (let i = 0, k = p.length - 1; i < p.length; k = i++) {
+                const [xi, yi] = p[i], [xk, yk] = p[k];
+                if ((yi > y) !== (yk > y) && x < (xk - xi) * (y - yi) / (yk - yi) + xi) inside = !inside;
+            }
+            return inside;
+        };
+        for (const s of sc.settlements.filter((x) => x.port)) {
+            const spots = sc.seaZones.find((z) => z.id === s.seaZone).harbours[s.id];
+            assert.equal(spots?.length, 4, `${name}: ${s.name} has its four spots`);
+            for (const q of spots) assert.ok(!onLand(q), `${name}: a fleet in ${s.name} at ${q} is on land`);
+        }
+        for (const z of sc.seaZones) {
+            for (const q of z.fleets) assert.ok(!onLand(q), `${name}: a fleet at sea in ${z.name} at ${q} is on land`);
+            for (const [to, lane] of Object.entries(z.lanes)) for (let i = 1; i < lane.length; i++) {
+                const [a, b] = [lane[i - 1], lane[i]], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+                for (let t = 0; t <= L; t++) assert.ok(!onLand([a[0] + (b[0] - a[0]) * t / (L || 1), a[1] + (b[1] - a[1]) * t / (L || 1)]), `${name}: the lane ${z.id} → ${to} crosses land`);
+            }
+        }
+    }
+});

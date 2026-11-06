@@ -625,7 +625,11 @@ the map drawn for 1440, a few small countries on a crowded map find no room (58 
 
 A fleet sailing from one sea zone to the next is drawn along the zones' **sea lane** (`scenario.json`, `seaZones[].lanes`):
 `tools/map.js` finds, for each pair of neighbouring zones, a way through their water between the two fleet marks — kept off the
-coast, pulled as straight as the water allows — so that no fleet is ever drawn across land (`mirror.js`, `fleetPoints`).
+coast, pulled as straight as the water allows — so that no fleet is ever drawn across land (`mirror.js`, `fleetPoints`). Fleets
+standing still are kept off land too: a port's fleets in a column out into the water it faces, from the nearest water of its zone
+clear of the coast (`seaZones[].harbours`: the spot below the town's marker fell inland on most of the southern coasts), and a
+zone's at sea in the column below its name, any spot of it on land or by the coast moved into clear water (`seaZones[].fleets`,
+where the lanes start). `test/tools/map.test.js` checks every spot and lane of both maps against the land.
 
 A subject's land keeps its own colour, striped at 45° with its overlord's (`mapdraw.js`, `landFill`; `mapview.js` makes one SVG
 pattern per pair of colours, in map units so the stripes zoom with the land): broad stripes for a vassal, thin ones for a
