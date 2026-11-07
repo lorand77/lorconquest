@@ -25,7 +25,7 @@ dependencies.
   database is `data/lorconquest.sqlite`.
 - `node tools/simulate.js [--games N --years N --seed N --scenario mitteleuropa --jobs N]` — AI-only games, headless, in parallel: wins by
   country, wars, peaces, refused commands, timing. `SIM_DEBUG=1` prints every refused command. What it showed: `experiments/`.
-- `node tools/strength.js [--baseline HEAD --candidate working --seeds 10 --years 210 --salt S]` — how strong the computer
+- `node tools/strength.js [--baseline HEAD --candidate working --seeds 20 --years 210 --salt S]` — how strong the computer
   players are: the working copy's `src/ai` against a commit's, on today's engine, in matched games (each test country alone on
   the candidate, against its seed's control game). `--candidate HEAD --salt aa` is the A/A test, the noise. Fresh seeds from
   101; results in `experiments/strength/`.

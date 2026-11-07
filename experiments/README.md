@@ -293,3 +293,31 @@ The settlements' interval holds 0; the count of wins by half is not a measure wi
 **So:** the one-country mode is the measure, and the tool now plays nothing else: the halves, and a hook for a scripted player
 against both versions, were taken out after this run to keep it simple. To see smaller effects, more seeds (the interval narrows with their square root:
 40 seeds for ±1.8) or shorter games, whose noise would need an A/A test of its own.
+
+## 12. The subjects by demand, measured (2026-11-07)
+
+Section 10's change (d40e132, "major AI improvement") against the commit before it (9a84479), with `tools/strength.js`: each of
+the nine test countries alone on the new AI, against its seed's control game on the old. Seeds 101–110, 210 years, 100 games in
+43 minutes.
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old |
+|---|---|---|---|
+| Bavaria | **+15.5** [+1.1, +29.8] | 5 / 3 | 10 / 8 |
+| Austria | +6.9 [−4.3, +18.2] | 2 / 1 | 9 / 7 |
+| Brandenburg | −0.6 [−13.5, +12.4] | 1 / 2 | 6 / 5 |
+| Saxony, Prussia, Gdańsk | −1.0, −0.8, +0.3 (each interval holds 0) | 1 / 2 | 15 / 16 |
+| Elsass-Lothringen, Jena, Hamburg | exactly 0: the same games | — | — |
+| All | +2.3 [−0.6, +5.1] | 9 / 8 of 90 | |
+
+**What it showed.** The change helps the large: Bavaria ends 15 settlements up and survives every game, Austria likely gains,
+both lose a few more cores (more land, more fronts). The small play the very same games — a demand needs a country twice its
+neighbour's size, which they never are — so three rows of zeros pull the average under the noise of section 11 (±3.7): +2.3,
+likely real, not shown. Refused orders the same (0.27 and 0.29 a game).
+
+**The cost line misleads:** the candidate's 107 µs a country-day against the baseline's 52 is each version's fixed daily work
+(reading the whole state) spread over one country against forty-four. Whole-AI time is `simulate.js`'s: 2.0 ms a day new, 2.1
+old (section 10).
+
+**For next time** the tool's defaults are the six countries a change of play can reach — Bavaria, Brandenburg, Austria, Saxony,
+Prussia, Gdańsk — and 20 seeds (101–120): 140 games, about an hour. Section 11's noise was for nine countries and ten seeds; the
+new defaults' would need an A/A test of their own.

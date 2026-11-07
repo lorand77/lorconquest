@@ -5,7 +5,7 @@
 // candidate less on the baseline, paired by seed and country. It asks "does the candidate make a country stronger?" with every
 // opponent unchanged.
 //
-//   node tools/strength.js [--baseline HEAD] [--candidate working|<commit>] [--seeds 10] [--seed 101] [--years 210]
+//   node tools/strength.js [--baseline HEAD] [--candidate working|<commit>] [--seeds 20] [--seed 101] [--years 210]
 //       [--countries BAV,BRB,...] [--salt S] [--scenario mitteleuropa] [--jobs N] [--label x]
 //
 // --salt S changes the candidate's dice (its diplomacy's: util.js) and nothing else: with --candidate equal to the baseline it
@@ -26,8 +26,10 @@ import { Game, fingerprint, scores } from "../src/engine/index.js";
 
 const root = path.join(import.meta.dirname, "..");
 
-// the fixed test countries (Balanced): large, medium, small, inland and coastal, every character among them
-export const COUNTRIES = ["BAV", "BRB", "AUS", "SAX", "PRU", "ELS", "JEN", "GDA", "HAM"];
+// the fixed test countries (Balanced): the large and medium, inland and coastal — the small ones (Elsass-Lothringen, Jena,
+// Hamburg) were dropped after section 12 of experiments/README.md: what changes the AI's play seldom reaches them, and their
+// rows of zeros only pulled the average toward nothing
+export const COUNTRIES = ["BAV", "BRB", "AUS", "SAX", "PRU", "GDA"];
 
 // a version of src/ai: the working copy's, or a commit's, unpacked beside a link to the working copy's engine (Node follows the
 // link to the real files, so both versions and the game share one engine)
@@ -155,7 +157,7 @@ if (isMainThread && import.meta.filename === process.argv[1]) {
     const arg = (name, dflt) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1] : dflt; };
     const scenarioName = arg("scenario", "mitteleuropa"), scenario = loadScenario(scenarioName);
     const years = Number(arg("years", 210)), salt = arg("salt", "");
-    const seed0 = Number(arg("seed", 101)), seeds = Array.from({ length: Number(arg("seeds", 10)) }, (_, i) => seed0 + i);
+    const seed0 = Number(arg("seed", 101)), seeds = Array.from({ length: Number(arg("seeds", 20)) }, (_, i) => seed0 + i);
     const countries = arg("countries", COUNTRIES.join(",")).split(",");
     for (const c of countries) if (!scenario.countries.some((x) => x.code === c)) throw new Error(`no country ${c} in ${scenarioName}`);
     const base = aiAt(arg("baseline", "HEAD")), cand = aiAt(arg("candidate", "working"));
