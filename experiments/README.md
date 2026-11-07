@@ -255,3 +255,41 @@ games in 24 end early with a winner at the target (one did before). Wars and cap
 the diplomacy's. **The cost is variety:** six countries win, all among the largest at the start (Bavaria, Brandenburg, Austria at
 50K), where twelve did; the rest of the field is swallowed sooner. Refusals are as rare as before; the demand refused for
 being made on the think that declared war on the same country is gone.
+
+## 11. How strong the computer players are: the A/A test (2026-11-06)
+
+Averages (wars, captures, winners) show what the computer players do, not whether one version plays better than another. A
+review of the AI suggested matched games against a frozen opponent; `tools/strength.js` plays them: the working copy's `src/ai`
+(the candidate) against a commit's (the baseline), both on today's engine, in two ways — **one**: for each seed a control game,
+every country on the baseline, then one game for each of nine test countries with that country alone on the candidate
+(Bavaria, Brandenburg, Austria, Saxony, Prussia, Elsass-Lothringen, Jena, Gdańsk, Hamburg: large to small, inland and coastal,
+every character); **halves**: the 45 countries dealt into two halves of like size, the candidate playing one, then the other.
+Seeds 101 to 110, never used for tuning; Balanced, 210 years. Before any change of the AI, the **A/A test**: the commit against
+itself, the candidate's diplomacy dice salted — the same play, a little other luck. 120 games, 42 minutes.
+
+| | A/A: the same AI, other dice |
+|---|---|
+| One country, settlements at the end, candidate less baseline (mean of 10 seeds, 95%) | **−0.03** [−3.71, +3.65] |
+| — the same, the peak / held at the end | −0.79 [−4.18, +2.61] / 0.00 [−2.94, +2.94] |
+| — by country (half-width of the interval) | ±19 Bavaria, ±16 Brandenburg, ±11 Austria, ±7 Saxony, ±5 Prussia, ±4 Gdańsk, ±1 the small |
+| One country, wins (candidate / baseline) | 9 / 9 of 90 |
+| Halves, settlements held, the candidate's half less the baseline's | −9.35 [−23.66, +4.96] |
+| Halves, games won (candidate's half / baseline's) | 4 / 16 of 20 |
+| Refused orders a game, the test country | 0.32 / 0.32 |
+| Thinking a country-day (µs) | 69.5 salted / 47.5 — the salt's proxy, not the play |
+
+**No bias:** the same computer players come out level, as they should — the mean is 0 to a hundredth, the wins 9 and 9. Unsalted,
+they play the very same games to the last coin (test/tools/strength.test.js).
+
+**The noise is large.** One country's luck changes who wins the whole game — in one seed the control's winner was Schleswig and
+the salted games' Hungary, Austria and Schleswig — so a single country's result swings by up to ±19 settlements. Over the nine
+countries and ten seeds the interval is ±3.7 settlements a country: **a change must move the average test country by about 4
+settlements at the end to show** with this run; anything less is not measured by it. The halves are noisier still (±14).
+
+**The halves' wins are luck.** With the original dice, Bavaria and Austria — both in half A — won 8 of the 10 control games;
+salting half B left A that luck (A won all 10), salting A took it away (4 of 10, their usual share: 12 of 24 in section 10).
+The settlements' interval holds 0; the count of wins by half is not a measure with 10 seeds, and the report says so.
+
+**So:** the one-country mode is the measure, and the tool now plays nothing else: the halves, and a hook for a scripted player
+against both versions, were taken out after this run to keep it simple. To see smaller effects, more seeds (the interval narrows with their square root:
+40 seeds for ±1.8) or shorter games, whose noise would need an A/A test of its own.
