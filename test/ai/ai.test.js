@@ -209,6 +209,27 @@ test("distress: in the red and losing money, a country taxes to the limit, sends
     assert.ok(!quiet.some((o) => ["defaultOnLoans", "disband"].includes(o.type)) && !quiet.some((o) => o.type === "setTax" && o.tax === 3));
 });
 
+test("forces: the last of the law's allowance raised by the hundred; old guns given the best gun when rich, pikes kept", () => {
+    const game = tinyGame(1), c = game.state.countries.AAA;
+    c.treasury = 1e6;
+    game.command({ type: "declareWar", country: "AAA", target: "BBB" });        // at war: all the law allows
+    assert.equal(economyOf(game, "AAA").raiseRoom, 400, "feudal: 1,600 of 2,000");
+    const raise = forceOrders(game, "AAA", fl, { budget: 1e6 }).find((o) => o.type === "raise");
+    assert.deepEqual([raise.hundreds, raise.lots], [4, undefined]);
+    applyAll(game, [raise]);
+    assert.equal(game.state.countries.AAA.training[0].n, 400, "and the engine takes it");
+    // muskets researched: hand cannons and arquebuses become muskets, the pikes stay; nothing of the kind when not rich
+    c.techs.push("handCannons", "arquebuses", "muskets");
+    setArmy(game, 1, { pikes: 600, handCannons: 500, arquebuses: 700 });
+    const orders = forceOrders(game, "AAA", fl, { budget: 1e6 });
+    assert.deepEqual(orders.filter((o) => o.type === "equip" && o.army === 1).map((o) => [o.from, o.to, o.n]), [["handCannons", "muskets", 500], ["arquebuses", "muskets", 700]]);
+    assert.ok(orders.some((o) => o.type === "buyWeapons" && o.weapon === "muskets" && o.lots === 2));
+    applyAll(game, orders);
+    assert.deepEqual(["pikes", "handCannons", "arquebuses", "muskets"].map((w) => game.state.armies[1].men[w]), [600, 0, 0, 1200]);
+    setArmy(game, 1, { pikes: 600, arquebuses: 700 });
+    assert.equal(forceOrders(game, "AAA", fl, { budget: 0 }).some((o) => o.type === "equip" && o.army === 1), false);
+});
+
 test("forces: soldiers raised up to the law, the unarmed armed with pikes, mercenaries dismissed in peace", () => {
     const game = tinyGame(1);
     const c = game.state.countries.AAA;

@@ -77,6 +77,11 @@ test("where fleets are drawn: in a port out in the water it faces, at sea in the
     const many = { fleets: Object.fromEntries([1, 2, 3, 4, 5].map((id) => [id, { id, port: 2, zone: "oslofjord", moving: null }])) };
     const [x3, y3] = harbour[3], [x2, y2] = harbour[2];
     assert.deepEqual(fleetPoints(many, map.nodes, map.zones, 0).get(5), [2 * x3 - x2, 2 * y3 - y2]);
+    // a fleet blockading a port is drawn off it, on the port's outer spots; a second one beyond it
+    const shut = { fleets: { 7: { id: 7, port: null, zone: "oslofjord", moving: null, order: { type: "blockade", port: 2 } },
+        8: { id: 8, port: null, zone: "oslofjord", moving: null, order: { type: "blockade", port: 2 } }, 9: { id: 9, port: null, zone: "oslofjord", moving: null, order: { type: "patrol" } } } };
+    const at = fleetPoints(shut, map.nodes, map.zones, 0);
+    assert.deepEqual([at.get(7), at.get(8), at.get(9)], [harbour[2], harbour[3], map.zones.get("oslofjord").fleets[0]], "a patrol stays in the zone's column");
     // a map without the spots: below the port's marker and the zone's name, as before
     const bare = new Map([...map.zones].map(([id, z]) => [id, { ...z, fleets: undefined, harbours: undefined }]));
     const oslo = map.nodes.get("2"), old = fleetPoints(state, map.nodes, bare, 30.5);

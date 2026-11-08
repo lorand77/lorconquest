@@ -125,7 +125,7 @@ export function shortMoney(n) {
 export const shortDate = (longText) => longText.replace(/^(\d+) (\w{3})\w* (\d+)$/, "$1 $2 $3");
 
 // where each fleet is drawn on `day`: in a port, a column out into the water it faces (scenario.json, seaZones[].harbours); at
-// sea, a column below its zone's name, kept off land (seaZones[].fleets); on its way, along the sea lane between the two zones'
+// sea, a column below its zone's name, kept off land (seaZones[].fleets) — or, blockading, off the port it shuts; on its way, along the sea lane between the two zones'
 // first spots (seaZones[].lanes) — a Map from fleet id to [x, y]. tools/map.js finds the spots in clear water; a map without them
 // gets the old ones, below the port's marker and the zone's name. More fleets than spots go on along the column's line.
 const column = (spots, i) => {
@@ -149,6 +149,9 @@ export function fleetPoints(state, nodes, zones, day) {
         } else if (f.port) {
             const n = nodes.get(String(f.port)), spots = zones.get(n.zone)?.harbours?.[f.port], i = slot(`p${f.port}`);
             out.set(f.id, spots?.length ? column(spots, i) : [n.x - 8, n.y + 20 + i * 16]);
+        } else if (f.order?.type === "blockade" && zones.get(f.zone).harbours?.[f.order.port]?.length) {
+            // blockading: off the port it shuts, on the outer spots of the port's column (its own fleets take the inner ones)
+            out.set(f.id, column(zones.get(f.zone).harbours[f.order.port].slice(2), slot(`b${f.order.port}`)));
         } else out.set(f.id, zoneAt(f.zone, slot(`z${f.zone}`)));
     }
     return out;

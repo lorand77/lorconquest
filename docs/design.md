@@ -223,8 +223,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   country is that borrowed in a war and then lost its land — it sends home the soldiers above its law's cap and, after a
   year in debt, defaults on its loans (the rule that allows it once in 20 years), rather than sit in debt until interest eats it; courthouses, then libraries, workshops,
   markets and walls from the surplus.
-- **Forces:** soldiers up to the law (most of it in peace, all of it at war or under threat); the unarmed armed
-  with pikes (a third of the armed) and the best shot researched; old swords replaced when rich; mercenaries — which
+- **Forces:** soldiers up to the law (most of it in peace, all of it at war or under threat), the last of it by the hundred
+  once there is room for fewer than 1000; the unarmed armed with pikes (a third of the armed) and the best shot researched; old
+  swords and old guns (hand cannons, arquebuses: the worst first) replaced with the best gun when rich, the pikes kept; mercenaries — which
   stand on top of the army cap — hired in a war as money allows and sent home in peace; sharpshooters at the
   passes facing others; and what is left of a hoard buys people, so money is used and not piled up.
 - **War:** every settlement keeps a garrison (4% of its people where an enemy could come from, 1.5% inland); the
@@ -629,7 +630,8 @@ coast, pulled as straight as the water allows — so that no fleet is ever drawn
 standing still are kept off land too: a port's fleets in a column out into the water it faces, from the nearest water of its zone
 clear of the coast (`seaZones[].harbours`: the spot below the town's marker fell inland on most of the southern coasts), and a
 zone's at sea in the column below its name, any spot of it on land or by the coast moved into clear water (`seaZones[].fleets`,
-where the lanes start). `test/tools/map.test.js` checks every spot and lane of both maps against the land.
+where the lanes start). A fleet blockading a port is drawn off it, on the outer spots of the port's column. `test/tools/map.test.js`
+checks every spot and lane of both maps against the land.
 
 A subject's land keeps its own colour, striped at 45° with its overlord's (`mapdraw.js`, `landFill`; `mapview.js` makes one SVG
 pattern per pair of colours, in map units so the stripes zoom with the land): broad stripes for a vassal, thin ones for a
