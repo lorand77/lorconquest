@@ -12,7 +12,7 @@ import { addAgreement } from "../../src/engine/diplomacy.js";
 import { bestTarget, diplomacyOrders, subjectCap } from "../../src/ai/diplomacy.js";
 import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
 import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
-import { economyOrders } from "../../src/ai/economy.js";
+import { economyOrders, lawFor } from "../../src/ai/economy.js";
 import { fleetsHome, forceOrders, tidyOrders, MAX_AT_ONCE } from "../../src/ai/forces.js";
 import { garrisonFloor, inland, winChance } from "../../src/ai/util.js";
 import { lastSorties, turnBacks, warOrders } from "../../src/ai/war.js";
@@ -728,4 +728,31 @@ test("a town an enemy force marches on: a host that gets there first and makes i
     assert.equal(hire?.settlement, 2);
     assert.ok(hire.lots >= 1 && none.command(hire).ok);
     assert.equal(warOrders(none, "AAA", fl).some((o) => o.type === "hireMercenaries" && o.lots >= hire.lots + 1), false, "the hired count: not hired again");
+});
+
+test("the harsh laws for a war fought for its life, if the money carries them; down from them when the danger passes, from the milder after a year's peace", () => {
+    const atWar = (prepare) => {
+        const game = tinyGame(), st = game.state, c = st.countries.AAA;
+        c.treasury = 5e6;
+        game.command({ type: "declareWar", country: "BBB", target: "AAA" });
+        prepare(game, st, c);
+        return { game, law: lawFor(game, "AAA", economyOf(game, "AAA"), ["BBB"]) };
+    };
+    assert.equal(atWar(() => {}).law, "standing", "an even war");
+    assert.equal(atWar((g) => setArmy(g, 4, { swords: 6000 })).law, "mass", "an enemy twice its strength");
+    assert.equal(atWar((g, st) => { setArmy(g, 4, { swords: 9000 }); st.settlements[1].siege = { by: "BBB", start: st.day, end: st.day + 100 }; }).law, "barrel", "its capital besieged by 2.5 times its strength");
+    assert.equal(atWar((g, st) => { st.settlements[2].siege = { by: "BBB", start: st.day, end: st.day + 100 }; }).law, "mass", "a core town besieged");
+    // the money check: nothing in the treasury, no loans left — a step down
+    assert.equal(atWar((g, st, c) => { setArmy(g, 4, { swords: 6000 }); c.treasury = 0; c.loans = 1e9; }).law, "militarized");
+    // stepping down: from Mass levy a year after the change, the danger gone; from Militarized only after a year of peace
+    const down = (law, warEnded) => {
+        const game = tinyGame(), st = game.state, c = st.countries.AAA;
+        game.state.day = 800;
+        Object.assign(c, { law, lawDay: 400 });
+        st.memory.lastWar["AAA|BBB"] = warEnded;
+        return economyOrders(game, "AAA", fl, { budget: 0 }).find((o) => o.type === "setLaw")?.law ?? null;
+    };
+    assert.equal(down("mass", 700), "feudal", "Mass levy, the war over: down at once (a year since the change)");
+    assert.equal(down("militarized", 700), null, "Militarized, peace for 100 days: kept, a war may come back");
+    assert.equal(down("militarized", 300), "feudal", "Militarized, peace for 500 days: down");
 });

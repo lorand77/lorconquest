@@ -220,7 +220,11 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   money, or a tenth at war), so a think never orders what it cannot pay.
 - **Economy:** tax 2, a little more at war and 2.5 when in the red (3 when it is also losing money); the research slider by what the treasury
   allows, and 0 once there is nothing left it wants to research (under 50% the slider adds to the money); the research order (guns, sharpshooters, then ships for a country that has them); the law by
-  threat, at most once in 5 years; loans only in war, repaid when fat. **In distress** — in the red *and* losing money, as a
+  threat (`lawFor`): Standing army at war or under threat, Militarized against a stronger enemy or two, Mass levy for a war
+  fought for its life (an enemy side twice its strength, a core town besieged, a quarter of its first towns lost) and Scrape the
+  barrel for a last stand (its capital besieged or lost, or half its cores gone, against 2.5 times its strength) — those two only
+  if two years of their cost are covered by its treasury and loan room; up when the rules allow, down from those two as soon as
+  the danger passes and the rules allow (a year), from the milder ones after a year of peace; loans only in war, repaid when fat. **In distress** — in the red *and* losing money, as a
   country is that borrowed in a war and then lost its land — it sends home the soldiers above its law's cap and, after a
   year in debt, defaults on its loans (the rule that allows it once in 20 years), rather than sit in debt until interest eats it; courthouses, then libraries, workshops,
   markets and walls from the surplus.

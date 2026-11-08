@@ -5,10 +5,47 @@
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it. A vassal of 10 years it
 // integrates when it can pay.
-import { BUILDING_PRICE, CORING_DAYS, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, isVassal, militaryPowerOf, neighboursOf,
-    overlordOf, subjectsOf } from "../engine/index.js";
+import { BUILDING_PRICE, CORING_DAYS, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, isVassal, lawChangeDay,
+    manpowerOf, militaryPowerOf, neighboursOf, overlordOf, subjectsOf } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
 import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
+
+// the day the country's last war with a real country ended (0 if it never fought one)
+function peaceSince(st, code) {
+    return Math.max(0, ...Object.entries(st.memory.lastWar).filter(([k]) => k.split("|").includes(code)).map(([, d]) => d));
+}
+
+// the law a country wants: Feudal levy in peace; Standing army at war or under threat; Militarized against a stronger enemy or
+// two; Mass levy for a war fought for its life — an enemy side twice its strength, a core town besieged, or a quarter of the
+// towns it began with lost; Scrape the barrel for a last stand — its capital besieged or lost, or half its cores in enemy hands,
+// against two and a half times its strength. Either only if the money will carry it: what the soldiers its new cap lets it raise
+// and the law's own cut of its money cost, beyond what it earns, covered two years over by its treasury and the loans it may
+// still take; else a step down
+export function lawFor(game, code, e, enemies) {
+    const st = game.state, c = st.countries[code], real = enemies.filter((x) => !st.countries[x].rebel);
+    const mine = Math.max(1, militaryPowerOf(st, code)), theirs = real.reduce((n, x) => n + militaryPowerOf(st, x), 0);
+    const strongest = Math.max(0, ...real.map((x) => militaryPowerOf(st, x)));
+    const own = Object.values(st.settlements).filter((s) => s.owner === code), cores = Object.values(st.settlements).filter((s) => s.cores.includes(code));
+    const started = game.map.scenario.countries.find((x) => x.code === code)?.settlements ?? [];
+    const lostStart = started.length ? started.filter((id) => st.settlements[id]?.owner !== code).length / started.length : 0;
+    const lostCores = cores.length ? cores.filter((s) => s.owner !== code).length / cores.length : 0;
+    const capital = st.settlements[c.capital];
+    const besiegedCore = own.some((s) => s.siege && s.cores.includes(code)), capitalInDanger = !capital || capital.owner !== code || Boolean(capital.siege);
+    const wanted = [];
+    if (real.length && (capitalInDanger || lostCores >= 0.5) && theirs >= 2.5 * mine) wanted.push("barrel");
+    if (real.length && (theirs >= 2 * mine || besiegedCore || lostStart >= 0.25)) wanted.push("mass");
+    if ((real.length && strongest > 1.5 * mine) || real.length >= 2) wanted.push("militarized");
+    if (enemies.length || threatRatio(game, code) > 1.3) wanted.push("standing");
+    // the money check, for the two harshest: the soldiers its new cap allows, at upkeep and the tax they no longer pay, and the
+    // law's cut of its settlement money — beyond what it earns, two years of it covered by the treasury and its loan room
+    const carries = (law) => {
+        const extra = Math.max(0, LAWS[law].army * manpowerOf(st, code) - e.armySoldiers);
+        const cost = extra * (SOLDIER_UPKEEP + (c.tax ?? 2)) + (LAWS[law].penalty - LAWS[c.law ?? "feudal"].penalty) * e.settlementMoney;
+        const short = Math.max(0, cost - e.moneyPerYear);
+        return short === 0 || c.treasury + Math.max(0, e.loanLimit - c.loans) >= 2 * short;
+    };
+    return wanted.find((law) => !LAWS[law].unrest || carries(law)) ?? "feudal";
+}
 
 // how much stronger than the country its strongest neighbour is (0 with no neighbour)
 export function threatRatio(game, code) {
@@ -71,12 +108,15 @@ export function economyOrders(game, code, fl, ctx) {
     if (slider !== c.slider) cmd("setSlider", { slider });
     if (!c.target && tech) cmd("research", { tech });
 
-    // the law: more soldiers when at war or when a neighbour is strong; more again against a stronger enemy or two
-    const mine = Math.max(1, militaryPowerOf(st, code)), strongestEnemy = Math.max(0, ...enemies.filter((x) => !st.countries[x].rebel).map((x) => militaryPowerOf(st, x)));
-    let law = "feudal";
-    if (atWarNow || threatRatio(game, code) > 1.3) law = "standing";
-    if ((atWarNow && strongestEnemy > 1.5 * mine) || enemies.filter((x) => !st.countries[x].rebel).length >= 2) law = "militarized";
-    if (law !== c.law && (c.lawDay === null || st.day - c.lawDay >= LAW_DAYS)) cmd("setLaw", { law });
+    // the law (RULES.md §9): more soldiers when at war or when a neighbour is strong; more again against a stronger enemy or two;
+    // and the two harshest only for a war fought for its life (lawFor) — if the money will carry them. Up when the rules allow
+    // (five years after the last change); down from those two as soon as the danger passes and the rules allow (a year), from the
+    // milder ones after a year of peace, so a war that comes back does not find it locked low for five years
+    const law = lawFor(game, code, e, enemies);
+    if (law !== c.law && st.day >= lawChangeDay(c, law)) {
+        const down = LAWS[law].army < LAWS[c.law ?? "feudal"].army, harsh = LAWS[c.law ?? "feudal"].unrest > 0;
+        if (!down || harsh || (!atWarNow && st.day - peaceSince(st, code) >= YEAR_DAYS)) cmd("setLaw", { law });
+    }
 
     // loans: borrow in war when the treasury is thin; repay when it is fat
     const spare = c.treasury - reserve;

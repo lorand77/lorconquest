@@ -387,3 +387,28 @@ the new defaults: 140 games, 56 minutes. (The rules were 38's: the harsh laws' g
 defending before the siege is for. Brandenburg, a conqueror at the centre of the map with neighbours on every side, gains most
 (+12.6); survival is a little better, within the noise. Refused orders 0.46 a game against the baseline's 1.80 (the baseline still
 had section 14's two bugs). Whole-AI cost is to be read from `simulate.js`: two games of seeds 105–106 took 0.8 ms a day.
+
+## 16. The computer uses the harsh laws (2026-11-08)
+
+Rules 38 made Mass levy and Scrape the barrel cost growth and peace at home, and stepping down cheap (RULES.md §9). The computer
+now climbs a ladder (`lawFor`): Mass levy for a war fought for its life — an enemy side twice its strength, a core town besieged,
+a quarter of its first towns lost — and Scrape the barrel for a last stand — its capital besieged or lost, or half its cores gone,
+against 2.5 times its strength — each only if two years of its cost are covered by its treasury and loan room; down from them as
+soon as the danger passes, from the milder laws after a year of peace (it waited five years either way). In three games of seeds
+101–103 every country together chose Mass levy 13 to 39 times and Scrape the barrel 2 to 7; it never had before. Against 5df8d60,
+the new defaults: 140 games, 49 minutes.
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old |
+|---|---|---|---|
+| Bavaria | −0.0 [−6.0, +5.9] | 6 / 5 | 19 / 18 |
+| Brandenburg | +4.3 [−4.5, +13.0] | 7 / 5 | 14 / 14 |
+| Austria | +1.7 [−1.8, +5.3] | 3 / 2 | 16 / 15 |
+| Saxony | −0.7 [−10.9, +9.6] | 5 / 4 | 14 / 10 |
+| Prussia | +6.5 [−1.2, +14.2] | 5 / 0 | 10 / 8 |
+| Gdańsk | −0.8 [−2.6, +1.0] | 0 / 0 | 15 / 15 |
+| **All** | **+1.8 [−1.3, +5.0]** | **26 / 16** of 120 | 88 / 80 |
+
+**What it showed: likely better, not shown.** The settlements lean up but the interval holds 0. The wins say more: paired by seed,
+the country won only on the new AI in 16 games and only on the old in 6 (sign test, p ≈ 0.05), and survived only on the new in 19
+against 11 (p ≈ 0.2). That fits what the laws are for — the last reserves turn a lost war into a held one, or a close race into a
+win — more than a steady gain in land. Cores lost the same (−0.3 [−1.8, +1.3]); refused orders 0.40 and 0.38 a game.
