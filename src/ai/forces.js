@@ -1,6 +1,7 @@
 // The computer player's forces (docs/design.md, "The computer players"): it raises soldiers up to what its law allows
 // (all of it at war or under threat, most of it otherwise), arms the unarmed with pikes and the best shot it has
-// researched — a third pikes, for pike and shot — replaces old swords and old guns with the best gun when rich, and hires mercenaries when a war is going badly, sending them home in
+// researched — a third pikes, for pike and shot, till it is rich and has muskets, then muskets alone — replaces old swords and old
+// guns with the best gun when rich, and hires mercenaries when a war is going badly, sending them home in
 // peace, and buys cannons for its sieges in a war. What it spends comes out of `ctx.budget`, which the economy then shares. Its fleets stay in port — it fights
 // no war at sea — and one that ends up at sea, put out of a port that fell, sails home (fleetsHome). Armies piling up in one
 // of its settlements — soldiers raised and mercenaries hired come as armies of their own, raiders come home — are merged
@@ -56,6 +57,11 @@ export function forceOrders(game, code, fl, ctx) {
         }
     }
 
+    // rich and with muskets, it gives up pike and shot for muskets alone: no stronger in battle — a third pikes and the rest muskets
+    // ties all muskets, man for man — but no weaker after losses or a split (under a third, the guns lose their +20%) and much
+    // the stronger on paper (military power counts pikes ×1.2, muskets ×2: RULES.md §5), which is what neighbours and subjects weigh
+    const musketsOnly = c.techs.includes("muskets") && ctx.budget > 3 * 0.3 * e.settlementMoney;
+
     // soldiers
     const wantShare = atWarNow || threatRatio(game, code) > 1 ? 1 : 0.6 + 0.2 * fl.aggression;
     let lots = Math.floor((wantShare * cap - have) / 1000);
@@ -79,7 +85,7 @@ export function forceOrders(game, code, fl, ctx) {
             let pikesNow = 0, armedNow = 0;
             for (const a of ownArmies(st, code)) { pikesNow += a.men.pikes; armedNow += menOf(a) - a.men.unarmed; }
             const best = SHOT.find((w) => c.techs.includes(w));
-            const weapon = !best || pikesNow < (armedNow + raising) / 3 ? "pikes" : best;
+            const weapon = musketsOnly ? "muskets" : !best || pikesNow < (armedNow + raising) / 3 ? "pikes" : best;
             // what the reserve lacks is bought by the lot of 1000, or raising by the hundred, by the hundred at a tenth of the price
             const lot = lots ? 1000 : 100, cost = Math.ceil(Math.max(0, raising - c.reserve[weapon]) / lot) * WEAPON_PRICE[weapon] * lot / 1000;
             const armed = cost <= ctx.budget - 0.3 * e.settlementMoney;
@@ -89,7 +95,8 @@ export function forceOrders(game, code, fl, ctx) {
     }
 
     // arms: the unarmed first, then old swords if there is money to spare, and old guns — hand cannons and arquebuses — given the
-    // best gun researched (researching a gun arms nobody: RULES.md §4); pikes stay, for pike and shot
+    // best gun researched (researching a gun arms nobody: RULES.md §4); pikes stay, for pike and shot — but for muskets alone
+    // (musketsOnly), when the money is there for every pikeman of an army at once
     const rich = ctx.budget > 3 * 0.3 * e.settlementMoney;
     const shot = SHOT.find((w) => c.techs.includes(w));
     const jobs = [];
@@ -97,12 +104,12 @@ export function forceOrders(game, code, fl, ctx) {
     for (const a of ownArmies(st, code)) { pikes += a.men.pikes; armed += menOf(a) - a.men.unarmed; }
     const want = (n) => {
         // pikes up to a third of the armed, then shot (or pikes if there is none)
-        const toPikes = shot ? Math.max(0, Math.min(n, Math.ceil((armed + n) / 3) - pikes)) : n;
+        const toPikes = musketsOnly ? 0 : shot ? Math.max(0, Math.min(n, Math.ceil((armed + n) / 3) - pikes)) : n;
         pikes += toPikes;
         armed += n;
         return shot ? { pikes: toPikes, [shot]: n - toPikes } : { pikes: n };
     };
-    const demand = {};
+    const demand = {}, pikemen = [];
     for (const a of ownArmies(st, code).sort((x, y) => x.id - y.id)) {
         if (a.retreating) continue;                       // a retreating army takes no orders
         for (const from of rich ? ["unarmed", "swords"] : ["unarmed"]) {
@@ -121,7 +128,13 @@ export function forceOrders(game, code, fl, ctx) {
             jobs.push({ army: a.id, from, to: shot, n });
             demand[shot] = (demand[shot] ?? 0) + n;
         }
+        // an army's pikes all at once or not at all: some of them only would leave it under a third, its guns without their +20%
+        if (rich && musketsOnly && a.men.pikes >= 1) {
+            pikemen.push({ army: a.id, from: "pikes", to: "muskets", n: a.men.pikes, whole: true });
+            demand.muskets = (demand.muskets ?? 0) + a.men.pikes;
+        }
     }
+    jobs.push(...pikemen);                                // last: what is left of the muskets once the rest are armed
     const bought = {};
     for (const [w, need] of Object.entries(demand)) {
         const short = Math.max(0, need - c.reserve[w]);
@@ -132,6 +145,7 @@ export function forceOrders(game, code, fl, ctx) {
         bought[w] = c.reserve[w] + lotsNeeded * 1000;
     }
     for (const j of jobs) {
+        if (j.whole && (bought[j.to] ?? 0) < j.n) continue;
         const n = Math.min(j.n, Math.floor(bought[j.to] ?? 0));
         if (n < 1) continue;
         bought[j.to] -= n;

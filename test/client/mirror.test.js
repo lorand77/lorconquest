@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -315,17 +315,26 @@ test("a fleet sailing between two sea zones is drawn along the lane between them
     assert.ok(lane.length > 2 && onSegment, "on the lane's bends");
 });
 
-test("modernising: swords and older guns given the best gun, the worst first, as the reserve and treasury allow — never pikes or cavalry", () => {
+test("modernising: swords, older guns and — with muskets — cavalry given the best gun, the worst first, as the money allows; never pikes", () => {
     const prices = { muskets: 100000, arquebuses: 70000, handCannons: 50000 };
     const men = { unarmed: 50, swords: 1200, pikes: 900, cavalry: 300, handCannons: 600, arquebuses: 400, muskets: 100 };
     const country = (techs, treasury, reserve = {}) => ({ techs, treasury, reserve });
     assert.equal(modernising(country(["swords", "pikes"], 1e6), men, prices), null, "no gun researched: nothing to modernise to");
     assert.deepEqual(modernising(country(["handCannons", "arquebuses", "muskets"], 1e6, { muskets: 200 }), men, prices),
-        { weapon: "muskets", want: 2200, n: 2200, lots: 2, cost: 200000, jobs: [{ from: "swords", n: 1200 }, { from: "handCannons", n: 600 }, { from: "arquebuses", n: 400 }] });
+        { weapon: "muskets", want: 2500, n: 2500, lots: 3, cost: 300000, jobs: [{ from: "swords", n: 1200 }, { from: "handCannons", n: 600 }, { from: "cavalry", n: 300 }, { from: "arquebuses", n: 400 }] });
+    assert.ok(!modernising(country(["arquebuses"], 1e6), men, prices).jobs.some((j) => j.from === "cavalry"), "before muskets the cavalry stays");
     // a treasury for one lot: 200 from the reserve and 1000 bought, the swords first
-    assert.deepEqual(modernising(country(["muskets"], 150000, { muskets: 200 }), men, prices), { weapon: "muskets", want: 2200, n: 1200, lots: 1, cost: 100000, jobs: [{ from: "swords", n: 1200 }] });
+    assert.deepEqual(modernising(country(["muskets"], 150000, { muskets: 200 }), men, prices), { weapon: "muskets", want: 2500, n: 1200, lots: 1, cost: 100000, jobs: [{ from: "swords", n: 1200 }] });
     assert.deepEqual(modernising(country(["handCannons"], 0), men, prices), { weapon: "handCannons", want: 1200, n: 0, lots: 0, cost: 0, jobs: [] }, "nothing to pay with");
     assert.equal(modernising(country(["handCannons"], 1e6), { ...men, swords: 0 }, prices), null, "only pikes, cavalry and guns as good");
     const state = { armies: { 1: { owner: "BAV", men }, 2: { owner: "BAV", men: { ...men, swords: 0 } }, 3: { owner: "AUS", men } } };
-    assert.deepEqual([outdatedMen(state, "BAV", "muskets"), outdatedMen(state, "BAV", "arquebuses"), outdatedMen(state, "BAV", "sharpshooters")], [2200 + 1000, 1800 + 600, 0]);
+    assert.deepEqual([outdatedMen(state, "BAV", "muskets"), outdatedMen(state, "BAV", "arquebuses"), outdatedMen(state, "BAV", "sharpshooters")], [2500 + 1300, 1800 + 600, 0]);
+});
+
+test("pikes to muskets: every pikeman of an army or none, once muskets are researched — the reserve first, whole lots bought", () => {
+    const prices = { muskets: 100000 }, men = { pikes: 2500, muskets: 5000 };
+    assert.equal(pikesToMuskets({ techs: ["arquebuses"], reserve: {}, treasury: 1e6 }, men, prices), null, "no muskets yet");
+    assert.equal(pikesToMuskets({ techs: ["muskets"], reserve: {}, treasury: 1e6 }, { ...men, pikes: 0 }, prices), null, "no pikes");
+    assert.deepEqual(pikesToMuskets({ techs: ["muskets"], reserve: { muskets: 600 }, treasury: 250000 }, men, prices), { n: 2500, lots: 2, cost: 200000, affordable: true });
+    assert.equal(pikesToMuskets({ techs: ["muskets"], reserve: {}, treasury: 250000 }, men, prices).affordable, false, "3 lots: 300,000");
 });

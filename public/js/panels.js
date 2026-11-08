@@ -5,7 +5,7 @@
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
 import { BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, LAWS, LAW_DAYS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, longDate, techCost } from "/engine/index.js";
-import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising } from "./mirror.js";
+import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
 const n = formatNumber;
 export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
@@ -333,6 +333,17 @@ export function armyEquipment(ctx, a) {
             ctx.redraw();
         } }, `Modernise ${n(mod.n)}${mod.n < mod.want ? ` of ${n(mod.want)}` : ""} with ${WEAPON_NAMES[mod.weapon]}${mod.cost ? ` · ${money(mod.cost)}` : ""}`));
     } else if (mod) out.push(make("p", { class: "hint" }, `${n(mod.want)} men carry older weapons than ${WEAPON_NAMES[mod.weapon]}: the treasury cannot buy a lot of them.`));
+    // pikes to muskets, the army's every pikeman at once (mirror.js, pikesToMuskets): the player's choice — a third pikes is as strong
+    // in battle, and cheaper
+    const pk = pikesToMuskets(c, a.men, WEAPON_PRICE);
+    if (pk?.affordable) {
+        out.push(make("button", { onclick: async () => {
+            const bought = pk.lots ? await ctx.send({ type: "buyWeapons", weapon: "muskets", lots: pk.lots }) : { ok: true };
+            if (bought?.ok) await ctx.send({ type: "equip", army: a.id, from: "pikes", to: "muskets", n: pk.n });
+            ctx.redraw();
+        } }, `Pikes to muskets: all ${n(pk.n)}${pk.cost ? ` · ${money(pk.cost)}` : ""}`),
+        make("p", { class: "hint" }, "A third pikes and the rest muskets is as strong in battle and cheaper; all muskets counts for more on paper and cannot drop under the third."));
+    } else if (pk) out.push(make("p", { class: "hint" }, `Muskets for all ${n(pk.n)} pikemen cost ${money(pk.cost)}: more than the treasury holds.`));
     out.push(make("details", { class: "equip" }, make("summary", {}, "Equip, disband, dismiss…"),
         make("p", { class: "hint" }, `Reserve: ${reserve.join(", ") || "empty"}.`),
         row(ctx, make("span", {}, "Change"), count, from, make("span", {}, "to"), to,

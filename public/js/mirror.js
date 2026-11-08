@@ -261,15 +261,16 @@ export function bestArming(country, n, prices) {
 }
 
 // Researching a gun arms nobody (RULES.md §4): the men keep what they carry until re-equipped. Modernising is that re-equipping
-// at one click: the swords and the older guns an army carries — never its pikes, which make guns stronger in pike and shot, nor
-// its cavalry, which does what guns cannot (§5) — given the best gun `country` has unlocked, the worst-armed first, as many as
-// the reserve and the treasury (in whole lots of 1000) allow. Their old weapons go to the reserve. Null if there is nothing to do.
+// at one click: the swords and the older guns an army carries, and once there are muskets its cavalry — ×1.4 in field battles
+// only, and none against an army half muskets (§5) — given the best gun `country` has unlocked, the worst-armed first, as many
+// as the reserve and the treasury (in whole lots of 1000) allow; never its pikes, which make guns stronger in pike and shot
+// (pikesToMuskets, below, does those). Their old weapons go to the reserve. Null if there is nothing to do.
 export const GUNS = ["muskets", "arquebuses", "handCannons"];
-const BY_RANK = ["swords", "handCannons", "arquebuses", "muskets"];     // worst first
+const BY_RANK = ["swords", "handCannons", "cavalry", "arquebuses", "muskets"];     // worst first
 export function modernising(country, men, prices) {
     const best = GUNS.find((w) => country.techs.includes(w));
     if (!best) return null;
-    const old = BY_RANK.slice(0, BY_RANK.indexOf(best)).filter((w) => men[w] > 0);
+    const old = BY_RANK.slice(0, BY_RANK.indexOf(best)).filter((w) => men[w] > 0 && (w !== "cavalry" || best === "muskets"));
     const want = old.reduce((n, w) => n + men[w], 0);
     if (!want) return null;
     const have = country.reserve[best] ?? 0, price = prices[best];
@@ -279,6 +280,16 @@ export function modernising(country, men, prices) {
     const jobs = [];
     for (const w of old) { const k = Math.min(men[w], left); if (k > 0) { jobs.push({ from: w, n: k }); left -= k; } }
     return { weapon: best, want, n: jobs.reduce((n, j) => n + j.n, 0), lots, cost: lots * price, jobs };
+}
+
+// An army's pikes made muskets, once muskets are researched: all of them or none — some only would leave the army under a third
+// pikes, its guns without their +20% (RULES.md §5). Man for man a third pikes ties all muskets in battle; all muskets cost more but
+// count more on paper (military power) and cannot fall under the third. { n, lots, cost, affordable } — the lots of 1000 muskets
+// the reserve lacks — or null with no muskets or no pikes.
+export function pikesToMuskets(country, men, prices) {
+    if (!country.techs.includes("muskets") || !(men.pikes >= 1)) return null;
+    const lots = Math.ceil(Math.max(0, men.pikes - (country.reserve.muskets ?? 0)) / 1000), cost = lots * prices.muskets;
+    return { n: men.pikes, lots, cost, affordable: cost <= Math.max(0, country.treasury) };
 }
 
 // the men of `me`'s armies carrying weapons older than `weapon`, just researched — what a notice says modernising would reach

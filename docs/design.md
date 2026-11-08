@@ -225,7 +225,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   markets and walls from the surplus.
 - **Forces:** soldiers up to the law (most of it in peace, all of it at war or under threat), the last of it by the hundred
   once there is room for fewer than 1000; the unarmed armed with pikes (a third of the armed) and the best shot researched; old
-  swords and old guns (hand cannons, arquebuses: the worst first) replaced with the best gun when rich, the pikes kept; mercenaries — which
+  swords and old guns (hand cannons, arquebuses: the worst first) replaced with the best gun when rich, the pikes kept — till it is
+  rich and has muskets: then muskets alone, raised with them, the unarmed armed with them, and an army's pikes all made muskets at
+  once when the money is there for every one (some only would leave it under a third: RULES.md §5); mercenaries — which
   stand on top of the army cap — hired in a war as money allows and sent home in peace; sharpshooters at the
   passes facing others; and what is left of a hoard buys people, so money is used and not piled up.
 - **War:** every settlement keeps a garrison (4% of its people where an enemy could come from, 1.5% inland); the
@@ -677,8 +679,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   Split and Merge where they apply, and, when it has unarmed men, one button that arms them all with the best weapon
   the treasury can buy the missing lots of (`mirror.js`, `bestArming`: a `buyWeapons` and an `equip`, sent one after the
   other), and, when it carries swords or guns older than the best one researched, Modernise (`modernising`: those men
-  given the best gun, the worst-armed first, as many as the reserve and whole lots the treasury pays for allow — never pikes
-  or cavalry, which do what guns cannot). Researching a gun arms nobody, so the notice of it says how many men still carry
+  given the best gun, the worst-armed first, as many as the reserve and whole lots the treasury pays for allow — once there
+  are muskets the cavalry too, which they leave no field battle to win; never pikes), and once muskets are researched Pikes to muskets (`pikesToMuskets`: every pikeman of the
+  army or none, the player's choice, as a third pikes is as strong in battle and cheaper). Researching a gun arms nobody, so the notice of it says how many men still carry
   older weapons (`outdatedMen`), and with every tech done the Country tab says the slider only costs money now. Its
   equipment form starts with every man of the kind chosen.
 - **Letting go of a selection:** an order that sends the army or fleet on its way, once accepted (`game.js`, `dispatch`: March,

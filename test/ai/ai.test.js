@@ -209,7 +209,7 @@ test("distress: in the red and losing money, a country taxes to the limit, sends
     assert.ok(!quiet.some((o) => ["defaultOnLoans", "disband"].includes(o.type)) && !quiet.some((o) => o.type === "setTax" && o.tax === 3));
 });
 
-test("forces: the last of the law's allowance raised by the hundred; old guns given the best gun when rich, pikes kept", () => {
+test("forces: the last of the law's allowance raised by the hundred; old guns given the best gun when rich, pikes kept before muskets", () => {
     const game = tinyGame(1), c = game.state.countries.AAA;
     c.treasury = 1e6;
     game.command({ type: "declareWar", country: "AAA", target: "BBB" });        // at war: all the law allows
@@ -218,16 +218,34 @@ test("forces: the last of the law's allowance raised by the hundred; old guns gi
     assert.deepEqual([raise.hundreds, raise.lots], [4, undefined]);
     applyAll(game, [raise]);
     assert.equal(game.state.countries.AAA.training[0].n, 400, "and the engine takes it");
-    // muskets researched: hand cannons and arquebuses become muskets, the pikes stay; nothing of the kind when not rich
-    c.techs.push("handCannons", "arquebuses", "muskets");
+    // arquebuses researched: hand cannons become arquebuses, the pikes stay; nothing of the kind when not rich
+    c.techs.push("handCannons", "arquebuses");
     setArmy(game, 1, { pikes: 600, handCannons: 500, arquebuses: 700 });
     const orders = forceOrders(game, "AAA", fl, { budget: 1e6 });
-    assert.deepEqual(orders.filter((o) => o.type === "equip" && o.army === 1).map((o) => [o.from, o.to, o.n]), [["handCannons", "muskets", 500], ["arquebuses", "muskets", 700]]);
-    assert.ok(orders.some((o) => o.type === "buyWeapons" && o.weapon === "muskets" && o.lots === 2));
+    assert.deepEqual(orders.filter((o) => o.type === "equip" && o.army === 1).map((o) => [o.from, o.to, o.n]), [["handCannons", "arquebuses", 500]]);
     applyAll(game, orders);
-    assert.deepEqual(["pikes", "handCannons", "arquebuses", "muskets"].map((w) => game.state.armies[1].men[w]), [600, 0, 0, 1200]);
-    setArmy(game, 1, { pikes: 600, arquebuses: 700 });
+    assert.deepEqual(["pikes", "handCannons", "arquebuses"].map((w) => game.state.armies[1].men[w]), [600, 0, 1200]);
+    setArmy(game, 1, { pikes: 600, handCannons: 700 });
     assert.equal(forceOrders(game, "AAA", fl, { budget: 0 }).some((o) => o.type === "equip" && o.army === 1), false);
+});
+
+test("forces: rich and with muskets, muskets alone — raised with them, the unarmed armed with them, an army's pikes all made muskets", () => {
+    const game = tinyGame(1), c = game.state.countries.AAA;
+    c.techs.push("handCannons", "arquebuses", "muskets");
+    c.treasury = 5e6;
+    c.law = "mass";
+    setArmy(game, 1, { pikes: 600, muskets: 1200, unarmed: 300 });
+    const orders = forceOrders(game, "AAA", fl, { budget: 5e6 });
+    assert.equal(orders.find((o) => o.type === "raise").weapon, "muskets");
+    assert.deepEqual(orders.filter((o) => o.type === "equip" && o.army === 1).map((o) => [o.from, o.to, o.n]), [["unarmed", "muskets", 300], ["pikes", "muskets", 600]]);
+    applyAll(game, orders);
+    assert.deepEqual([game.state.armies[1].men.pikes, game.state.armies[1].men.muskets], [0, 2100]);
+    // without the money: pike and shot as before — the unarmed partly pikes, no pikes given up
+    setArmy(game, 1, { pikes: 600, muskets: 1200, unarmed: 300 });
+    Object.assign(c, { treasury: 0, reserve: { ...c.reserve, muskets: 0, pikes: 1000 } });
+    const poor = forceOrders(game, "AAA", fl, { budget: 0 }).filter((o) => o.type === "equip" && o.army === 1);
+    assert.deepEqual(poor.map((o) => [o.from, o.to]), [["unarmed", "pikes"]], "pikes from the reserve for the unarmed, as pike and shot wants");
+    assert.equal(poor.some((o) => o.from === "pikes"), false);
 });
 
 test("forces: soldiers raised up to the law, the unarmed armed with pikes, mercenaries dismissed in peace", () => {

@@ -321,3 +321,27 @@ old (section 10).
 **For next time** the tool's defaults are the six countries a change of play can reach — Bavaria, Brandenburg, Austria, Saxony,
 Prussia, Gdańsk — and 20 seeds (101–120): 140 games, about an hour. Section 11's noise was for nine countries and ten seeds; the
 new defaults' would need an A/A test of their own.
+
+## 13. Raising by the hundred, modernising old guns (2026-11-08)
+
+The computer now raises the last of what its law allows by the hundred, once there is room for fewer than 1000 (it left that
+room empty), and when rich gives its hand cannons and arquebuses the best gun researched, the worst first (it re-armed only the
+unarmed and old swords). The working copy against 341acf3 with `tools/strength.js`'s new defaults: six countries, seeds
+101–120, 210 years — 140 games, 48 minutes.
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old |
+|---|---|---|---|
+| Bavaria | −6.3 [−18.1, +5.6] | 4 / 7 | 12 / 15 |
+| Brandenburg | +4.6 [−3.8, +13.1] | 5 / 2 | 13 / 12 |
+| Austria | −0.2 [−11.5, +11.2] | 5 / 4 | 14 / 14 |
+| Saxony | +2.6 [−2.8, +7.9] | 2 / 1 | 10 / 8 |
+| Prussia | −0.9 [−5.4, +3.6] | 1 / 1 | 8 / 9 |
+| Gdańsk | −1.9 [−4.7, +0.8] | 0 / 0 | 11 / 17 |
+| All | **−0.3 [−3.6, +2.9]** | 17 / 15 of 120 | |
+
+**What it showed: nothing measurable, as expected.** Both changes are small in a game: the hundreds fill a few hundred places in
+the first months, and old guns are replaced only late, by the rich. The interval (±3.3) is about the ±3.6 section 12 estimated
+for these defaults from section 11's A/A test. Every country's interval holds 0. Gdańsk's survival is the one thing to watch:
+paired by seed, it fell only on the new AI in 7 seeds and survived only on it in 1 (p ≈ 0.07 — one such among six countries and
+several measures is what chance gives). Refused orders a game 0.55 against 0.48. They are kept as what the computer should do
+anyway; they are not a gain in strength that ten or twenty seeds can see.

@@ -248,6 +248,20 @@ test("an army's swords and older guns are modernised at one click; with every te
     assert.match(countryTab(ctx).map((x) => x.text).join(" "), /Nothing is left to research: at 0% the slider adds to your money instead/);
 });
 
+test("an army's pikes become muskets at one click, every one of them, once muskets are researched — or it says what they would cost", async () => {
+    const { ctx, sent } = setup((game) => {
+        const c = game.state.countries.BAV;
+        c.techs.push("handCannons", "arquebuses", "muskets");
+        Object.assign(game.state.armies[37].men, { swords: 0, pikes: 1200, muskets: 2400 });
+        c.reserve.muskets = 400;
+    });
+    const a = ctx.state.armies[37];
+    await button(armyEquipment(ctx, a), "Pikes to muskets: all 1,200 · 100,000").handlers.click();      // 800 missing: one lot
+    assert.deepEqual(sent, [{ type: "buyWeapons", weapon: "muskets", lots: 1 }, { type: "equip", army: 37, from: "pikes", to: "muskets", n: 1200 }]);
+    ctx.state.countries.BAV.treasury = 50000;
+    assert.match(armyEquipment(ctx, a).map((x) => x.text).join(" "), /Muskets for all 1,200 pikemen cost 100,000: more than the treasury holds/);
+});
+
 test("the weapon soldiers are raised with stays as the player chose it, redraw after redraw, until changed", async () => {
     const { ctx, sent } = setup();
     ctx.ui = { target: null, raiseWeapon: null };
