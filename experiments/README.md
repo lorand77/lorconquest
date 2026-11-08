@@ -363,3 +363,27 @@ third and counts for more on paper). Against 65a53ee, the new defaults (six coun
 after the run: sharpshooters were bought with army-cap room the same think's raising by the hundred (section 13) had already
 taken (234 refusals in one game), and a muster split armies the same think had re-armed (it now waits a think, as for armies it
 disbanded men from). Two games of the same seeds then refused 10 orders between them, from more than 270.
+
+## 15. Looking at the war every 5 days, and defending before the siege (2026-11-08)
+
+At war a country now looks at its war every 5 days between its thinks (it looked every 15, and after events), and meets a march
+on a town of its before the siege: a host that gets there first and makes the town hold goes there — scored above relieving a
+siege already begun — one in such a town that would fall without it stays, and a core town no host can reach in time gets
+mercenaries, if they arrive first (design.md, *The computer players*). With them, the two fixes of section 14. Against d44a490,
+the new defaults: 140 games, 56 minutes. (The rules were 38's: the harsh laws' growth and unrest, which no computer country uses.)
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old | Cores lost |
+|---|---|---|---|---|
+| Bavaria | +0.9 [−8.5, +10.3] | 5 / 5 | 17 / 15 | −2.6 |
+| Brandenburg | **+12.6** [+5.1, +20.0] | 8 / 3 | 17 / 13 | −2.2 |
+| Austria | +0.9 [−6.8, +8.6] | 2 / 1 | 13 / 14 | −1.6 |
+| Saxony | −0.9 [−6.2, +4.3] | 1 / 2 | 9 / 11 | −4.4 |
+| Prussia | +3.3 [−3.4, +10.0] | 2 / 1 | 9 / 6 | −3.2 |
+| Gdańsk | +0.9 [−1.6, +3.3] | 0 / 1 | 13 / 16 | −1.0 |
+| **All** | **+2.9 [+0.1, +5.8]** | 18 / 13 of 120 | 78 / 75 | **−2.5 [−4.0, −0.9]** |
+
+**The first change the benchmark shows.** The candidate country ends nearly three settlements up on average, the interval clear of
+0, and **loses fewer of its core towns in every one of the six** — 2.5 a game fewer, the interval clear of 0 too: the very thing
+defending before the siege is for. Brandenburg, a conqueror at the centre of the map with neighbours on every side, gains most
+(+12.6); survival is a little better, within the noise. Refused orders 0.46 a game against the baseline's 1.80 (the baseline still
+had section 14's two bugs). Whole-AI cost is to be read from `simulate.js`: two games of seeds 105–106 took 0.8 ms a day.
