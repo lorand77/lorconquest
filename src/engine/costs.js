@@ -28,12 +28,14 @@ export const TECHS = {
 };
 export const START_TECHS = ["swords", "pikes", "cavalry", "cannons", "cogs"];
 
+// growth: the share of the people's growth a settlement keeps (the young men under arms raise no families); unrest: added to the
+// yearly chance of peasants rising (RULES.md §9) — what makes the two harshest laws a measure for a war, not a way of life
 export const LAWS = {
-    feudal: { name: "Feudal levy", army: 0.05, navy: 0.025, penalty: 0 },
-    standing: { name: "Standing army", army: 0.075, navy: 0.03, penalty: 0.03 },
-    militarized: { name: "Militarized", army: 0.10, navy: 0.04, penalty: 0.06 },
-    mass: { name: "Mass levy", army: 0.15, navy: 0.05, penalty: 0.15 },
-    barrel: { name: "Scrape the barrel", army: 0.22, navy: 0.07, penalty: 0.40 },
+    feudal: { name: "Feudal levy", army: 0.05, navy: 0.025, penalty: 0, growth: 1, unrest: 0 },
+    standing: { name: "Standing army", army: 0.075, navy: 0.03, penalty: 0.03, growth: 1, unrest: 0 },
+    militarized: { name: "Militarized", army: 0.10, navy: 0.04, penalty: 0.06, growth: 1, unrest: 0 },
+    mass: { name: "Mass levy", army: 0.15, navy: 0.05, penalty: 0.15, growth: 0.5, unrest: 0.05 },
+    barrel: { name: "Scrape the barrel", army: 0.22, navy: 0.07, penalty: 0.40, growth: 0, unrest: 0.15 },
 };
 
 export const REGIONS_NEEDED = 1;
@@ -52,7 +54,12 @@ const days = (months) => Math.round(months * MONTH);
 export const TRAIN_CAPITAL_DAYS = days(3);
 export const TRAIN_OTHER_DAYS = days(6);
 export const MERCENARY_DAYS = days(1);
-export const LAW_DAYS = 5 * YEAR_DAYS;
+export const LAW_DAYS = 5 * YEAR_DAYS;          // after a change, the next to a law allowing more soldiers
+export const LAW_DOWN_DAYS = YEAR_DAYS;         // … and to one allowing fewer: an emergency is cheap to leave (RULES.md §9)
+// the first day `country` may change its law to `to`: never sooner than LAW_DAYS after the last change for one allowing more
+// soldiers, LAW_DOWN_DAYS for one allowing fewer; 0 if it has never changed it
+export const lawChangeDay = (country, to) => (country.lawDay === null || country.lawDay === undefined ? 0
+    : country.lawDay + (LAWS[to].army < LAWS[country.law ?? "feudal"].army ? LAW_DOWN_DAYS : LAW_DAYS));
 export const DEFAULT_BAN_DAYS = 20 * YEAR_DAYS;
 export const DEBT_DAYS = 10 * YEAR_DAYS;
 export const CORING_DAYS = 20 * YEAR_DAYS;

@@ -12,7 +12,7 @@
 import { CREW_PER_CANNON, WEAPONS, menOf, takeMen } from "./army.js";
 import { longDate } from "./calendar.js";
 import { afford, done, money, ownArmy, positive, refuse, whole } from "./command-util.js";
-import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, DEFAULT_BAN_DAYS, LAWS, LAW_DAYS, LOAN_CHUNK, MAX_LIBRARIES, MERCENARY_DAYS,
+import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, DEFAULT_BAN_DAYS, LAWS, LOAN_CHUNK, lawChangeDay, MAX_LIBRARIES, MERCENARY_DAYS,
     MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTER_PRICE, SHARPSHOOTERS_PER_PASS, SHIPS, SHIP_PRICE, TECHS, TRAIN_CAPITAL_DAYS,
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
 import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, unlockTech } from "./economy.js";
@@ -54,7 +54,8 @@ export const countryCommands = {
         const c = mine(game, cmd), st = game.state;
         if (!Object.hasOwn(LAWS, cmd.law)) return refuse(`no law ${cmd.law}`);
         if (c.law === cmd.law) return refuse(`${LAWS[c.law].name} is already the law`);
-        if (c.lawDay !== null && st.day - c.lawDay < LAW_DAYS) return refuse(`the law cannot change again until ${longDate(c.lawDay + LAW_DAYS)}`);
+        // up after 5 years, down after 1 (RULES.md §9)
+        if (st.day < lawChangeDay(c, cmd.law)) return refuse(`the law cannot change to ${LAWS[cmd.law].name} until ${longDate(lawChangeDay(c, cmd.law))}`);
         c.law = cmd.law;
         c.lawDay = st.day;
         return done([{ type: "law", day: st.day, country: c.code, law: cmd.law }]);

@@ -25,7 +25,7 @@ function dice(seed) {
 function targetedCommand(game, r) {
     const st = game.state, pick = (list) => list[Math.floor(r() * list.length)], int = (lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
     const armies = Object.values(st.armies).filter((a) => a.at && !a.retreating);
-    const kind = pick(["equip", "break", "fleets", "peace", "peace", "answer", "answer", "attack", "attack", "attack", "besiege", "storm", "merge", "split", "equipCannons", "disband", "buySharpshooters", "stormPost", "sortie"]);
+    const kind = pick(["equip", "break", "fleets", "peace", "peace", "answer", "answer", "attack", "attack", "attack", "besiege", "storm", "merge", "split", "equipCannons", "disband", "buySharpshooters", "stormPost", "sortie", "patrol"]);
     if (kind === "peace") {                                           // a country at war asks its enemy for peace on some terms
         const w = pick(st.wars.filter((x) => !x.split("|").some((c) => st.countries[c].rebel)));
         if (!w) return null;
@@ -49,6 +49,12 @@ function targetedCommand(game, r) {
         const x = pick(st.agreements);
         if (!x) return null;
         return { type: "breakAgreement", country: x.kind === "guarantee" ? x.a : pick([x.a, x.b]), with: undefined, kind: x.kind, _x: x };
+    }
+    if (kind === "patrol") {                                          // a fleet at sea patrols: few are at sea, and random orders miss them
+        const atSea = Object.values(st.fleets).filter((f) => !f.port && !f.moving);
+        if (!atSea.length) return null;
+        const f = pick(atSea);
+        return { type: "patrol", country: f.owner, fleet: f.id };
     }
     if (kind === "fleets") {                                          // two fleets of one country in one place merge
         const fleets = Object.values(st.fleets);

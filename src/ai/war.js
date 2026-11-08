@@ -6,10 +6,10 @@
 // Everything is read from the state, nothing is remembered: a restarted game plays on as before. An army's id is only
 // known once its split has been applied, so musters take two thinks (the second a tick after the first, see index.js).
 import { mayFight } from "../engine/battle.js";
-import { CREW_PER_CANNON, armyList, besiegedIn, isFriend, isRebel, routeFor, situation, siegeDays, wallDefence } from "../engine/index.js";
-import { WEAPONS } from "../engine/army.js";
+import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, armyCapOf, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, wallDefence } from "../engine/index.js";
+import { WEAPONS, emptyMen } from "../engine/army.js";
 import { legKey } from "../engine/map.js";
-import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, stagingSettlement, threatsOf, winChance } from "./util.js";
+import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, reserveOf, stagingSettlement, threatsOf, winChance } from "./util.js";
 
 // a garrison's defence in a storm against `guns` cannons (RULES.md §5): ×1.2, or behind walls ×1.8 less 0.3 a hundred × x
 const wallsFactor = (game, s, guns = 0) => wallDefence(s.walls, guns, game.map.x);
@@ -28,6 +28,35 @@ const inTheOpen = (st, a) => !a.at || st.settlements[a.at]?.owner !== a.owner;
 
 // the place an army is, or is on its way to
 const placeOf = (a) => a.at ?? a.march?.to ?? null;
+// where a marching army is going, and the day it gets there: the end of its leg, then the days of the legs after it (no route
+// to find again)
+const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.march?.to ?? a.at);
+const arrivalOf = (game, a) => {
+    const legDays = (from, to) => game.map.legDays.get(legKey(from, to)) ?? 0;
+    let d = a.march.end, at = a.march.to;
+    for (const k of a.path) { d += legDays(at, k); at = k; }
+    return d;
+};
+// the strength of `n` mercenaries, who come with pikes
+const mercPower = (n) => forcePower([{ men: { ...emptyMen(), pikes: n }, cannons: 0 }]);
+
+// our towns an enemy force is marching on and would take: not besieged yet (a relief is for those), what is coming stronger than
+// its garrison behind its walls and the mercenaries already hired for it — { key, s, against, inside, arrives }, the soonest first
+function threatenedOwn(game, code, enemyArmies) {
+    const st = game.state, c = st.countries[code], out = [], garrison = garrisons(st, code);
+    for (const s of ownSettlements(st, code)) {
+        const key = String(s.id);
+        if (s.siege) continue;
+        const coming = enemyArmies.filter((a) => a.march && !a.retreating && destinationOf(a) === key);
+        if (!coming.length) continue;
+        const against = forcePower(coming), guns = coming.reduce((n, a) => n + a.cannons, 0);
+        const hired = c.hires.filter((h) => h.settlement === s.id).reduce((n, h) => n + h.n, 0);
+        // the garrison alone — a host standing in the town is weighed apart, as one that may stay to hold it (warOrders)
+        const g = garrison.get(key), inside = forcePower(g ? [g] : []) * wallsFactor(game, s, guns) + mercPower(hired);
+        if (against > inside) out.push({ key, s, against, inside, arrives: Math.min(...coming.map((a) => arrivalOf(game, a))) });
+    }
+    return out.sort((a, b) => a.arrives - b.arrives || a.s.id - b.s.id);
+}
 
 // our own settlements under siege, and the armies besieging them
 function besiegedOwn(game, code) {
@@ -75,11 +104,8 @@ export function turnBacks(game, code, fl, out) {
     const st = game.state, staging = stagingSettlement(game, code);
     const marching = ownArmies(st, code).filter((a) => a.march && !a.retreating && !out.some((o) => o.army === a.id));   // (one order an army a think)
     if (!marching.length) return;
-    const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.march?.to ?? a.at);
     const friendlyTown = (k) => st.settlements[game.map.nodes.get(k)?.kind === "settlement" ? game.map.nodes.get(k).id : -1] && isFriend(st, code, st.settlements[game.map.nodes.get(k).id].owner);
-    // when an army gets where it is going: the end of its leg, then the days of the legs after it (no route to find again)
-    const legDays = (from, to) => game.map.legDays.get(legKey(from, to)) ?? 0;
-    const arrival = (a) => { let d = a.march.end, at = a.march.to; for (const k of a.path) { d += legDays(at, k); at = k; } return d; };
+    const arrival = (a) => arrivalOf(game, a);
     const foes = new Set(enemiesOf(st, code)), enemyArmies = armyList(st).filter((e) => foes.has(e.owner));
     for (const a of marching) {
         const dest = destinationOf(a);
@@ -114,7 +140,8 @@ function hostsOf(game, code) {
 
 // `defend`: a caretaker's war — only the armies it has, only within its own and its friends' land: to relieve a besieged
 // settlement or meet an enemy army that has come in. It musters, merges, gathers and attacks nothing.
-export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false, thinned = new Set() } = {}) {
+// `cash` and `hired`: the treasury once this think's other orders are paid, and the mercenaries they hire (index.js, think)
+export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false, thinned = new Set(), cash = null, hired = 0 } = {}) {
     const st = game.state, out = [], foes = new Set(enemiesOf(st, code));
     sorties(game, code, out);
     if (!defend) turnBacks(game, code, fl, out);               // marches against odds that have turned hopeless
@@ -141,6 +168,9 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     const enemyPost = (k) => { const p = st.posts[k]; return p && p.n > 0 && foes.has(p.owner) ? p : null; };
 
     const garrisoning = new Set([...garrisons(st, code).values()].map((a) => a.id));
+    // towns of ours an enemy force is marching on: a host that gets there first and makes it hold goes (below); one standing in
+    // such a town, which would fall without it, stays; for a core town nobody can reach in time, mercenaries, if they can
+    const threatened = threatenedOwn(game, code, enemyArmies), covered = new Set();
     let raiders = ownArmies(st, code).filter((a) => isRaider(a) && !garrisoning.has(a.id) && !a.retreating).length;
     for (const [, group] of [...hostsOf(game, code)].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
         group.sort((a, b) => a.id - b.id);
@@ -148,6 +178,8 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
         if (defend && group.length > 1) continue;
         for (const other of group.slice(1)) if (!defend) out.push({ type: "merge", country: code, army: other.id, into: host.id });
         const reach = reachFrom(game, code, at), here = situation(game, at);
+        const keep = threatened.find((t) => t.key === at && !raider);
+        if (keep && keep.inside < keep.against * 1.2) { covered.add(at); continue; }        // it holds the town; it stays
 
         // siege guns: a host takes on the cannons in the reserve in whole hundreds × x — only full hundreds shorten a siege or
         // batter walls (RULES.md §6) — up to 40% of its men becoming their crew (10 a cannon)
@@ -184,6 +216,13 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             if (days === undefined || b.key === at) continue;
             const against = forcePower(b.hostile), inside = forcePower(b.garrison);
             if (ours + inside >= 1.2 * against) options.push({ key: b.key, score: (40 + b.s.pop / 1000) / (1 + days / 40), storm: false });
+        }
+        // a town of ours about to be marched on: there before the enemy, and enough with its garrison to hold it — better
+        // met there than relieved later
+        for (const t of threatened) {
+            const days = reach.get(t.key);
+            if (days === undefined || t.key === at || raider || st.day + days >= t.arrives) continue;
+            if (ours + t.inside >= 1.2 * t.against) options.push({ key: t.key, score: (50 + t.s.pop / 1000 + (st.countries[code].capital === t.s.id ? 20 : 0)) / (1 + days / 40), storm: false, defends: true });
         }
         if (!defend) for (const s of Object.values(st.settlements)) {
             if (!foes.has(s.owner)) continue;                                // peasants' towns too: theirs to take back, or anyone's
@@ -224,8 +263,28 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
         const way = options.length ? routeFor(game, host, options[0].key)?.path ?? [] : [];
         const stop = way.find((k) => k !== options[0]?.key && enemyPost(k) && ours >= 1.5 * postPower(enemyPost(k)));
         if (stop) out.push({ type: "move", country: code, army: host.id, to: stop, storm: false });
-        else if (options.length) out.push({ type: "move", country: code, army: host.id, to: options[0].key, storm: options[0].storm });
+        else if (options.length) {
+            out.push({ type: "move", country: code, army: host.id, to: options[0].key, storm: options[0].storm });
+            if (options[0].defends) covered.add(options[0].key);
+        }
         else if (!defend && baseKey && at !== baseKey && reach.has(baseKey)) out.push({ type: "move", country: code, army: host.id, to: baseKey, storm: false });
+    }
+
+    // a core town nobody marches to the defence of: mercenaries, if they arrive before the enemy (a month), as many as make it hold
+    // — what the money (above its reserve) and the army cap allow
+    if (!defend) {
+        const c = st.countries[code], e = economyOf(game, code);
+        let money = (cash ?? c.treasury) - reserveOf(e), room = armyCapOf(st, code) - mercenariesOf(st, code) - c.hires.reduce((n, h) => n + h.n, 0) - hired;
+        for (const t of threatened) {
+            if (covered.has(t.key) || !t.s.cores.includes(code) || t.arrives - st.day <= MERCENARY_DAYS) continue;
+            let lots = 1;
+            while (lots < 10 && t.inside + mercPower(lots * 1000) < 1.2 * t.against) lots++;
+            lots = Math.min(lots, Math.floor(money / MERCENARY_PRICE), Math.floor(room / 1000));
+            if (lots < 1) continue;
+            out.push({ type: "hireMercenaries", country: code, settlement: t.s.id, lots });
+            money -= lots * MERCENARY_PRICE;
+            room -= lots * 1000;
+        }
     }
 
     // muster: the armed men a garrison has over its floor split off as one more host, which gathers at the staging settlement

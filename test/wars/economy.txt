@@ -3,7 +3,7 @@
 seed 1
 1440-01-01 BAV borrow chunks=2
 1440-01-01 BAV set-tax tax=3
-1440-01-01 BAV set-law law=mass
+1440-01-01 BAV set-law law=militarized
 1440-01-01 BAV buy-building building=library settlement=37
 1440-01-01 BAV buy-weapons weapon=swords lots=2
 1440-01-01 BAV raise settlement=37 kind=soldiers lots=2

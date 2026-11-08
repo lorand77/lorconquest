@@ -72,7 +72,7 @@ non-core civilian half of it, so tax 3 brings in 50% more than tax 2 (a Workshop
 not change). Taxing above 2 risks a **peasant uprising** (§11), rolled each year on your
 **average tax over the past year** — lowering it just before the roll does not help:
 ```
-uprising chance per year = (average tax − 2)² × 25%
+uprising chance per year = (average tax − 2)² × 25%   + the law's unrest (§9): +5% Mass levy, +15% Scrape the barrel
 ```
 
 | Tax | Settlement money | Uprising chance per year |
@@ -92,7 +92,7 @@ above (men in training, cannon crew, ship crew at sea and sharpshooters too) is 
 `civilians`. A soldier therefore costs **7 a year** at tax 2 — 5 upkeep and 2 in lost tax. Only
 death (below) takes them out of the population.
 
-**Pop growth:** +1% per year, **+0.5%** more if on a river or coast.
+**Pop growth:** +1% per year, **+0.5%** more if on a river or coast — halved under Mass levy, none under Scrape the barrel (§9).
 
 **Casualties cost population.** Every soldier who dies is removed from your population, not
 just from the army — whether killed in battle, by sharpshooters, in a lost storm, by lack of
@@ -600,15 +600,21 @@ strait are at sea: they do not meet one another.
 
 ## 9. CONSCRIPTION LAWS
 
-You cannot change again for **5 years**. Every country starts at **Feudal levy**.
+After a change, a law allowing **more** soldiers may be chosen only after **5 years**; one allowing **fewer**, after **1
+year** — an emergency is cheap to leave. Every country starts at **Feudal levy**.
 
-| Law | Max army | Max navy | Total | Settlement money (§2) |
-|---|---|---|---|---|
-| Feudal levy | 5% | 2.5% | 7.5% | — |
-| Standing army | 7.5% | 3% | 10.5% | −3% |
-| Militarized | 10% | 4% | 14% | −6% |
-| Mass levy | 15% | 5% | 20% | −15% |
-| Scrape the barrel | 22% | 7% | 29% | −40% |
+| Law | Max army | Max navy | Total | Settlement money (§2) | Population growth (§2) | Uprising chance a year (§11) |
+|---|---|---|---|---|---|---|
+| Feudal levy | 5% | 2.5% | 7.5% | — | normal | — |
+| Standing army | 7.5% | 3% | 10.5% | −3% | normal | — |
+| Militarized | 10% | 4% | 14% | −6% | normal | — |
+| Mass levy | 15% | 5% | 20% | −15% | **halved** | **+5%** |
+| Scrape the barrel | 22% | 7% | 29% | −40% | **none** | **+15%** |
+
+The two harshest laws cost more than money: with the young men under arms the people grow at half the rate under Mass levy and
+not at all under Scrape the barrel, and the peasants, drafted and taxed, are likelier to rise — the law's unrest is added to the
+tax's chance (§11), rolled with the law in force on 1 January. A year or two of either for a war costs little; kept for a decade,
+a great deal.
 
 Men of fighting age were only about a fifth to a quarter of the people, so **Scrape the barrel**
 takes nearly all of them. The money penalty is the cost of the law itself — the disruption of
@@ -937,7 +943,7 @@ Rolled at the start of each year.
 |---|---|---|
 | Good harvest | 10% | +10% money that year |
 | Plague | 5% | −10% pop |
-| Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) | See below |
+| Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) — plus the law's unrest: +5% under Mass levy, +15% under Scrape the barrel (§9) | See below |
 
 **Peasant uprising.** Overtaxed peasants rise against you. A rebel country forms with soldiers
 equal to **3% of your total population** (every settlement you own, core and non-core), armed

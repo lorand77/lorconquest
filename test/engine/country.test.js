@@ -4,6 +4,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { describeEvent, economyOf, longDate } from "../../src/engine/index.js";
+import { random } from "../../src/engine/random.js";
+import { yearly } from "../../src/engine/events.js";
 import { tinyGame, setArmy, runTo, order, refused } from "../helpers/tiny.js";
 
 const cmd = (type, rest = {}) => ({ type, country: "AAA", ...rest });
@@ -29,7 +31,7 @@ test("the average tax over the year, not the tax on the day, decides the uprisin
     assert.ok(Math.abs(AAA(game).taxSum / 364 - (3 * 100 + 2 * 264) / 364) < 1e-9);
 });
 
-test("the law changes at most once in five years, and moves the caps", () => {
+test("the law changes to a harsher one once in five years, to a gentler one after one; and moves the caps", () => {
     const game = tinyGame();
     assert.match(refused(game, cmd("setLaw", { law: "feudal" })), /already/);
     assert.match(refused(game, cmd("setLaw", { law: "tyranny" })), /no law/);
@@ -40,6 +42,40 @@ test("the law changes at most once in five years, and moves the caps", () => {
     runTo(game, 1825);
     order(game, cmd("setLaw", { law: "mass" }));
     assert.equal(economyOf(game, "AAA").armyCap, 0.15 * game.state.settlements[1].pop + 0.15 * game.state.settlements[2].pop + 0.15 * game.state.settlements[3].pop);
+    // an emergency is cheap to leave: a gentler law after a year, a harsher one still after five
+    assert.match(refused(game, cmd("setLaw", { law: "feudal" })), new RegExp(`Feudal levy until ${longDate(1825 + 365)}`));
+    runTo(game, 1825 + 365);
+    assert.match(refused(game, cmd("setLaw", { law: "barrel" })), new RegExp(`Scrape the barrel until ${longDate(1825 + 5 * 365)}`));
+    order(game, cmd("setLaw", { law: "militarized" }));
+});
+
+test("Mass levy halves the people's growth and Scrape the barrel stops it; with the law's unrest added, peasants rise", () => {
+    const grown = (law) => {
+        const game = tinyGame();
+        AAA(game).law = law;
+        const before = game.state.settlements[2].pop;                          // Two: not on a river, not a port — 1% a year
+        runTo(game, 31);
+        return game.state.settlements[2].pop / before - 1;
+    };
+    const normal = grown("militarized");
+    assert.ok(Math.abs(normal - 0.01 / 12) < 1e-9);
+    assert.ok(Math.abs(grown("mass") - normal / 2) < 1e-9);
+    assert.equal(grown("barrel"), 0);
+    // the yearly roll: harvest, plague, then the rising — at tax 2 a rising roll of 0.10 raises peasants under Scrape the barrel
+    // (15%) and not under Mass levy (5%)
+    const rose = (law) => {
+        const game = tinyGame(), c = AAA(game);
+        c.law = law;
+        c.taxSum = 2 * 365;
+        for (let r = 0; r < 1e6; r++) {
+            const st = { rng: r }, draws = [random(st), random(st), random(st)];
+            if (draws[0] >= 0.1 && draws[1] >= 0.05 && Math.abs(draws[2] - 0.10) < 0.01) { game.state.rng = r; break; }
+        }
+        const events = [];
+        yearly(game, events);
+        return events.some((e) => e.type === "uprising" && e.country === "AAA");
+    };
+    assert.deepEqual([rose("barrel"), rose("mass"), rose("feudal")], [true, false, false]);
 });
 
 test("the bank: nothing that takes the treasury below zero; loans in chunks within two years of money", () => {

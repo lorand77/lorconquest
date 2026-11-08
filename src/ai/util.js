@@ -213,6 +213,14 @@ export function reachFrom(game, country, from) {
 // every country thinks this often, in game days (1.5 s)
 export const THINK_DAYS = 15;
 
+// at war, a country also looks at its war — its armies' marches, sieges, threats; not its economy or diplomacy — every LOOK_DAYS
+// days, on days of its own (its think days among them, LOOK_DAYS dividing THINK_DAYS): a march on a town of its is met while
+// there is time to meet it, not up to fifteen days late
+export const LOOK_DAYS = 5;
+export function looksOn(country, day) {
+    return (day + hash(`${country}*`) % THINK_DAYS) % LOOK_DAYS === 0;
+}
+
 // does `country` think on `day`? Every THINK_DAYS days, on a day of its own, so 45 countries never all think at once. The
 // period is the same for all: a country that thought twice as often would get twice the chances to plan a war, ask for
 // peace or answer a threat, and the stagger needs only different days, not different periods.

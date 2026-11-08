@@ -345,3 +345,21 @@ for these defaults from section 11's A/A test. Every country's interval holds 0.
 paired by seed, it fell only on the new AI in 7 seeds and survived only on it in 1 (p ≈ 0.07 — one such among six countries and
 several measures is what chance gives). Refused orders a game 0.55 against 0.48. They are kept as what the computer should do
 anyway; they are not a gain in strength that ten or twenty seeds can see.
+
+## 14. Muskets alone for the rich (2026-11-08)
+
+Rich and with muskets, the computer gives up pike and shot for muskets alone — raised with them, the unarmed armed with them, an
+army's pikes all made muskets at once (a third pikes ties all muskets in battle, man for man; all muskets cannot fall under the
+third and counts for more on paper). Against 65a53ee, the new defaults (six countries, seeds 101–120): 140 games, 48 minutes.
+
+| | Muskets alone |
+|---|---|
+| All, settlements at the end, new less old (95%) | −0.8 [−2.3, +0.7] |
+| By country | every interval holds 0; Austria −2.5, Brandenburg −1.6, Saxony +1.3 |
+| Wins new / old | 15 / 17 of 120 |
+| Refused orders a game | **2.80** against 0.55 |
+
+**Nothing measurable in strength** — it comes late, to the rich. **The refusals were two bugs**, found with `SIM_DEBUG=1` and fixed
+after the run: sharpshooters were bought with army-cap room the same think's raising by the hundred (section 13) had already
+taken (234 refusals in one game), and a muster split armies the same think had re-armed (it now waits a think, as for armies it
+disbanded men from). Two games of the same seeds then refused 10 orders between them, from more than 270.

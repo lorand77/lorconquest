@@ -91,6 +91,8 @@ test("the Country tab shows the debt clock, rebels, a lost capital and regions r
     assert.match(text, /In debt since/);
     assert.match(text, /Loans\s+100,000 of/);
     assert.match(text, /Capital lost/);
+    assert.match(text, /Mass levy: army 15%, navy 5%, income −15%, growth halved, uprisings \+5% a year/);
+    assert.match(text, /Scrape the barrel: army 22%, navy 7%, income −40%, no growth, uprisings \+15% a year/);
 });
 
 test("the Country tab says what a region proclaimed would become, until the country is it", () => {

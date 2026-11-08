@@ -156,10 +156,11 @@ function bankrupt(game, code, events) {
 // the monthly step, at the start of every month (day 1 of each; RULES.md §1, §2)
 export function monthly(game, events) {
     const st = game.state, x = game.map.x;
-    // population grows 1% a year, 0.5% more on a river or the coast
+    // population grows 1% a year, 0.5% more on a river or the coast — by the owner's law, halved under Mass levy, none under
+    // Scrape the barrel (RULES.md §9)
     for (const s of Object.values(st.settlements)) {
-        const n = game.map.nodes.get(String(s.id));
-        s.pop *= 1 + (0.01 + (n.river || n.port ? 0.005 : 0)) / 12;
+        const n = game.map.nodes.get(String(s.id)), law = LAWS[st.countries[s.owner]?.law ?? "feudal"] ?? LAWS.feudal;
+        s.pop *= 1 + (0.01 + (n.river || n.port ? 0.005 : 0)) * law.growth / 12;
     }
     for (const code of realCountries(st)) {
         const c = st.countries[code];

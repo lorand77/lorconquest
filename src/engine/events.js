@@ -1,5 +1,6 @@
 // Random events and peasant rebels (RULES.md §11). On 1 January every country rolls for a good harvest (10%,
-// +10% money that year), a plague (5%, −10% of its people) and an uprising ((average tax − 2)² × 25%). An uprising
+// +10% money that year), a plague (5%, −10% of its people) and an uprising ((average tax − 2)² × 25%, and the unrest of the law
+// in force: +5% under Mass levy, +15% under Scrape the barrel, RULES.md §9). An uprising
 // is a country of its own — "REB1", at war with the country it rose against for ever — with soldiers equal to 3% of
 // that country's people, armed with swords, outside its capital. They are its own people: they pay no tax while
 // under arms, their dead are lost from its population, and survivors with nowhere to fall back scatter home.
@@ -10,6 +11,7 @@
 
 import { emptyMen } from "./army.js";
 import { YEAR_DAYS } from "./calendar.js";
+import { LAWS } from "./costs.js";
 import { ownedBy, plague, popOf } from "./economy.js";
 import { evictClosed } from "./diplomacy.js";
 import { settle } from "./fighting.js";
@@ -31,7 +33,7 @@ export function yearly(game, events) {
         if (sick < 0.05) plague(game, code, 0.10, events);
         const average = c.taxSum / YEAR_DAYS;
         c.taxSum = 0;
-        if (rise < (average - 2) ** 2 * 0.25) uprising(game, code, events);
+        if (rise < (average - 2) ** 2 * 0.25 + (LAWS[c.law ?? "feudal"]?.unrest ?? 0)) uprising(game, code, events);
     }
 }
 

@@ -12,7 +12,7 @@ import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
 import { forceOrders, tidyOrders } from "./forces.js";
 import { navyOrders } from "./navy.js";
-import { endgame, flavorOf, racing, reserveOf, standings, thinksOn, threatsOf } from "./util.js";
+import { endgame, flavorOf, looksOn, racing, reserveOf, standings, thinksOn, threatsOf } from "./util.js";
 import { scores } from "../engine/index.js";
 
 // the first by settlements, ahead of the second by less than a quarter: it holds what it has in the endgame; a bigger lead it
@@ -62,10 +62,12 @@ export function createAI({ seed, humans = [] }) {
         // money offered for peace is what the treasury will hold once this think's spending is applied before it
         const cash = c.treasury - (start - ctx.budget);
         const { orders, prepare } = isVassal(st, code) && !atWarNow ? { orders: [], prepare: false } : diplomacyOrders(game, code, fl, memory, cash);
-        // armies this think's orders take men from already (disbanded, mercenaries dismissed) are not split by the muster: its
-        // numbers would be the ones from before
-        const thinned = new Set(out.filter((o) => o.type === "disband" || o.type === "dismissMercenaries").map((o) => o.army));
-        out.push(...orders, ...warOrders(game, code, fl, { prepare, thinned }), ...navyOrders(game, code, ctx));
+        // armies this think's orders change already (men disbanded, mercenaries dismissed, weapons changed) are not split by the
+        // muster: its numbers would be the ones from before — it splits them on the next think
+        const thinned = new Set(out.filter((o) => ["disband", "dismissMercenaries", "equip"].includes(o.type)).map((o) => o.army));
+        // the war's mercenaries for a threatened town come out of what is left, after this think's own hiring
+        const hired = out.filter((o) => o.type === "hireMercenaries").reduce((n, o) => n + o.lots * 1000, 0);
+        out.push(...orders, ...warOrders(game, code, fl, { prepare, thinned, cash, hired }), ...navyOrders(game, code, ctx));
         // armies piled up in a settlement, merged — those this think left alone (forces.js, tidyOrders)
         const busy = new Set(out.filter((o) => o.army !== undefined).flatMap((o) => [o.army, o.into]).filter((x) => x !== undefined));
         out.push(...tidyOrders(game, code, busy));
@@ -93,7 +95,7 @@ export function createAI({ seed, humans = [] }) {
                 const give = (cmds) => { for (const cmd of cmds) out.push({ country: code, source, cmd }); };
                 const before = out.length;
                 if (thinksOn(code, st.day)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : think(game, code));
-                else if (wake.has(code) || followUp.has(code)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) }));
+                else if (wake.has(code) || followUp.has(code) || (looksOn(code, st.day) && threatsOf(st, code).length)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) }));
                 // every day, whether it thinks or not: a besieged town of its about to fall makes a last sortie (war.js, lastSorties)
                 const last = [];
                 lastSorties(game, code, last);

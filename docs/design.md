@@ -196,6 +196,7 @@ for its player to come back.
 |---|---|---|
 | Strategy | about once a game year (~36 s), staggered | war targets, alliances, conscription law, tax, research, building plans, loans |
 | Operations | every 15 days (1.5 s) | where armies go, sieges, buying men and weapons, peace offers |
+| At war | every 5 days, on days of its own (`looksOn`) | its war alone, as a reflex sees it: marches, sieges, threats met in time |
 | Reflex | the tick after an event | war declared on it, an enemy army entering its land, a lost battle, a chance to sortie, a call to arms |
 
 - **Answering proposals is rules, not AI.** RULES.md §10 gives the formulas by which a computer
@@ -234,7 +235,10 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   armed men over that split off, gather at a staging settlement beside the front and merge into one host. The
   host marches on the settlement with the best value for its days — by storm if it outmatches the garrison
   ×1.2 (×1.8 behind walls) by a margin, else by siege — or on an enemy army it is much stronger than, or to the
-  relief of a besieged settlement of its own. Garrisons sortie when they outmatch the besiegers; an army shut in a
+  relief of a besieged settlement of its own — or, before any siege, to a town of its own an enemy force is marching on and would
+  take, if the host gets there first and makes it hold (a host standing in such a town, which would fall without it, stays; a core
+  town no host can reach in time gets mercenaries, if they arrive first and the money and the cap allow). Garrisons sortie when
+  they outmatch the besiegers; an army shut in a
   besieged settlement (`besiegedIn`) is never given a march, which the engine refuses. All of it is
   read from the state and nothing is remembered: a split gives an army its id only when applied, so the think
   that splits is followed by one on the next tick (the reflex layer) that moves what was made.

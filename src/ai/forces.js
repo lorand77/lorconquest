@@ -184,7 +184,7 @@ export function forceOrders(game, code, fl, ctx) {
 
     // sharpshooters at the passes of its land that face another country, while its law has room for them
     if (c.techs.includes("sharpshooters")) {
-        let room = armyCapOf(st, code) - armySoldiersOf(st, code) - lots * 1000;
+        let room = armyCapOf(st, code) - armySoldiersOf(st, code) - raising;          // what this think raises takes room too
         const most = SHARPSHOOTERS_PER_PASS * game.map.x;
         for (const [key, node] of game.map.nodes) {
             if (node.kind !== "pass" || st.settlements[node.land].owner !== code || room < 100) continue;

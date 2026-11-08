@@ -3,8 +3,8 @@
 // Research tab, the panel of a selected fleet, and an army's equipment. Every control sends a command to the server,
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
-import { BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, LAWS, LAW_DAYS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
-    TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, longDate, techCost } from "/engine/index.js";
+import { BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, LAWS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
+    TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
 import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
 const n = formatNumber;
@@ -62,15 +62,20 @@ export function countryTab(ctx) {
         c.loans ? line(ctx, "Loans", `${money(c.loans)} of ${money(e.loanLimit)}`) : "",
         c.debtSince !== null ? make("p", { class: "bad" }, `In debt since ${longDate(c.debtSince)}: bankruptcy 10 years on if it is over ${money(e.pop * 10)}.`) : "",
         row(ctx, make("label", {}, "Tax ", taxLabel), tax),
-        make("p", { class: "hint" }, `The chance of peasants rising each year, at this tax kept all year: ${pct((c.tax - 2) ** 2 * 0.25)}.`),
+        make("p", { class: "hint" }, `The chance of peasants rising each year, at this tax kept all year and this law: ${pct((c.tax - 2) ** 2 * 0.25 + (LAWS[c.law]?.unrest ?? 0))}.`),
         row(ctx, make("label", {}, "Research ", sliderLabel), slider),
         line(ctx, "Research a year", `${money(e.rPerYear)} R${e.libraries ? ` (${e.libraries} libraries: +${e.libraries * 5}%)` : ""}`),
         // with every tech done the slider only costs money: under 50% it adds to it instead (RULES.md §4)
         !c.target && c.slider > 0 && !cheapestOpenTech(TECHS, c.techs, (t) => techCost(game, t)) ? make("p", { class: "bad" }, "Nothing is left to research: at 0% the slider adds to your money instead.") : ""));
 
     // the law: caps and the income it costs
-    const law = select(ctx, Object.entries(LAWS).map(([k, l]) => [k, `${l.name}: army ${pct(l.army)}, navy ${pct(l.navy)}, income −${pct(l.penalty)}`]), c.law);
-    const wait = c.lawDay !== null && day - c.lawDay < LAW_DAYS ? `The law can change again on ${longDate(c.lawDay + LAW_DAYS)}.` : "";
+    // the harshest two cost growth and peace at home too (RULES.md §9)
+    const extra = (l) => `${l.growth < 1 ? (l.growth ? ", growth halved" : ", no growth") : ""}${l.unrest ? `, uprisings +${pct(l.unrest)} a year` : ""}`;
+    const law = select(ctx, Object.entries(LAWS).map(([k, l]) => [k, `${l.name}: army ${pct(l.army)}, navy ${pct(l.navy)}, income −${pct(l.penalty)}${extra(l)}`]), c.law);
+    // up after 5 years, down after 1: the first day each way, if it is still to come
+    const order = Object.keys(LAWS), at = order.indexOf(c.law), later = (k) => (lawChangeDay(c, k) > day ? lawChangeDay(c, k) : null);
+    const down = at > 0 ? later(order[at - 1]) : null, up = at < order.length - 1 ? later(order[at + 1]) : null;
+    const wait = [down && `a gentler law from ${longDate(down)}`, up && `a harsher one from ${longDate(up)}`].filter(Boolean).join("; ");
     law.addEventListener("change", act(ctx, () => ({ type: "setLaw", law: law.value })));
     out.push(section(ctx, "People and law",
         line(ctx, "People", n(e.pop)),
@@ -78,7 +83,7 @@ export function countryTab(ctx) {
         e.crewAtSea ? line(ctx, "Ship crew at sea", `${n(e.crewAtSea)} of ${n(e.navyCap)} allowed`) : "",
         e.mercenaries ? line(ctx, "Mercenaries", `${n(e.mercenaries)} (at most ${n(e.armyCap)})`) : "",
         e.rebels ? line(ctx, "Rebels under arms", n(e.rebels), "bad") : "",
-        row(ctx, law), wait ? make("p", { class: "hint" }, wait) : ""));
+        row(ctx, law), wait ? make("p", { class: "hint" }, `Changing the law: ${wait}.`) : ""));
 
     // the bank and loans
     const amount = numberInput(ctx, 10000, 1, 100000000, 1000);

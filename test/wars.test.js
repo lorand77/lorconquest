@@ -58,7 +58,7 @@ test("a country run for three years: loans, taxes, forces, research, a fleet at 
     assert.deepEqual(of("ready").map((e) => [e.country, e.what, e.n, e.day]), [["BAV", "mercenaries", 1000, 30], ["BAV", "soldiers", 2000, 91]]);
     assert.deepEqual(of("uprising").map((e) => [e.country, e.rebels, e.day]), [["BAV", "REB1", 1095]]);
     assert.deepEqual(of("battle").map((b) => [b.kind, b.winner]), [["sortie", "b"]]);
-    assert.equal(st.countries.BAV.law, "mass");
+    assert.equal(st.countries.BAV.law, "militarized");                       // (no unrest of its own, unlike Mass levy: RULES.md §9)
     assert.equal(st.settlements[37].library, true);
     assert.ok(st.countries.BAV.loans === 100000 && st.countries.NED.loans === 100000);
     assert.equal(st.fleets[101].port, null);                                   // still at sea, patrolling

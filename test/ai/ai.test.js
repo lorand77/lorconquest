@@ -15,8 +15,8 @@ import historical from "../../scenarios/historical-1440/scenario.json" with { ty
 import { economyOrders } from "../../src/ai/economy.js";
 import { fleetsHome, forceOrders, tidyOrders, MAX_AT_ONCE } from "../../src/ai/forces.js";
 import { garrisonFloor, inland, winChance } from "../../src/ai/util.js";
-import { lastSorties, turnBacks } from "../../src/ai/war.js";
-import { THINK_DAYS, dice, flavorOf, hash, thinksOn } from "../../src/ai/util.js";
+import { lastSorties, turnBacks, warOrders } from "../../src/ai/war.js";
+import { LOOK_DAYS, THINK_DAYS, dice, flavorOf, hash, looksOn, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 import { check } from "../helpers/invariants.js";
 import { giveFleet, setArmy, tinyGame } from "../helpers/tiny.js";
@@ -687,4 +687,45 @@ test("a host marching against odds that have turned hopeless turns back to the t
     assert.deepEqual(out, [{ type: "move", country: "AAA", army: 2, to: "2", storm: false }]);
     assert.equal(game.command(out[0]).ok, true);
     assert.equal(st.armies[2].march.to, "2", "turned round on the road");
+});
+
+test("at war a country looks at its war every 5 days, on days of its own, its think days among them", () => {
+    for (const code of ["AAA", "BAV", "GDA"]) {
+        const looks = Array.from({ length: 60 }, (_, d) => d).filter((d) => looksOn(code, d));
+        assert.equal(looks.length, 60 / LOOK_DAYS);
+        assert.ok(looks.every((d, i) => i === 0 || d - looks[i - 1] === LOOK_DAYS));
+        for (let d = 0; d < 60; d++) if (thinksOn(code, d)) assert.ok(looksOn(code, d), "a think day is a look day");
+    }
+    assert.equal(THINK_DAYS % LOOK_DAYS, 0);
+});
+
+test("a town an enemy force marches on: a host that gets there first and makes it hold goes; one in it stays; else mercenaries", () => {
+    const setUp = (host) => {
+        const game = tinyGame(), st = game.state;
+        st.countries.AAA.treasury = 1e6;
+        game.command({ type: "declareWar", country: "BBB", target: "AAA" });
+        setArmy(game, 2, { swords: 300 });                                        // Two's garrison
+        if (host) {
+            setArmy(game, host.from, { swords: 300 + host.men });
+            game.command({ type: "split", country: "AAA", army: host.from, men: { swords: host.men } });
+        }
+        setArmy(game, 4, { swords: 1500 });
+        game.command({ type: "move", country: "BBB", army: 4, to: "2" });          // Four to Two: 110 days
+        game.advance();
+        return game;
+    };
+    const hostOf = (game) => Object.values(game.state.armies).find((a) => a.owner === "AAA" && a.id > 8);
+    // a host at One (73 days to Two) gets there before them, and with the garrison holds it
+    const one = setUp({ from: 1, men: 2500 });
+    const moves = warOrders(one, "AAA", fl).filter((o) => o.type === "move" && o.army === hostOf(one).id);
+    assert.deepEqual(moves.map((o) => o.to), ["2"]);
+    // a host already in Two, without which it would fall, stays
+    const two = setUp({ from: 2, men: 2500 });
+    assert.equal(warOrders(two, "AAA", fl).some((o) => o.army === hostOf(two).id && o.type === "move"), false);
+    // no host: Two is a core of AAA's, they are three months off — mercenaries for it
+    const none = setUp(null);
+    const hire = warOrders(none, "AAA", fl).find((o) => o.type === "hireMercenaries");
+    assert.equal(hire?.settlement, 2);
+    assert.ok(hire.lots >= 1 && none.command(hire).ok);
+    assert.equal(warOrders(none, "AAA", fl).some((o) => o.type === "hireMercenaries" && o.lots >= hire.lots + 1), false, "the hired count: not hired again");
 });
