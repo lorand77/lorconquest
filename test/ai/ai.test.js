@@ -15,7 +15,7 @@ import historical from "../../scenarios/historical-1440/scenario.json" with { ty
 import { economyOrders, lawFor } from "../../src/ai/economy.js";
 import { fleetsHome, forceOrders, tidyOrders, MAX_AT_ONCE } from "../../src/ai/forces.js";
 import { garrisonFloor, inland, winChance } from "../../src/ai/util.js";
-import { lastSorties, turnBacks, warOrders } from "../../src/ai/war.js";
+import { garrisonNeed, lastSorties, turnBacks, warOrders } from "../../src/ai/war.js";
 import { LOOK_DAYS, THINK_DAYS, dice, flavorOf, hash, looksOn, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 import { check } from "../helpers/invariants.js";
@@ -756,3 +756,17 @@ test("the harsh laws for a war fought for its life, if the money carries them; d
     assert.equal(down("militarized", 700), null, "Militarized, peace for 100 days: kept, a war may come back");
     assert.equal(down("militarized", 300), "feudal", "Militarized, peace for 500 days: down");
 });
+
+test("a garrison is sized to the threat: the enemy within 60 days no stronger than it behind its walls, little with none near, the floor if hopeless", () => {
+    const game = tinyGame(), st = game.state;
+    game.command({ type: "declareWar", country: "BBB", target: "AAA" });
+    const one = st.settlements[1], g = setArmy(game, 1, { swords: 2000 });
+    const enemy = (n, at) => ({ ...st.armies[4], men: { ...st.armies[4].men, swords: n }, at, march: null });
+    const base = 0.015 * one.pop;                                                // One: the capital, no border of its own
+    assert.equal(garrisonNeed(game, "AAA", one, g, []), base, "no war in the field: the usual floor");
+    const need = garrisonNeed(game, "AAA", one, g, [enemy(3000, "3")]);         // 3,000 at Three, 37 days off
+    assert.ok(need > base && Math.abs(need - 3000 / 1.2) < 1, `as strong as 3,000 behind its 1.2: ${need}`);
+    assert.equal(garrisonNeed(game, "AAA", one, g, [enemy(3000, "4")]), base, "Four is 183 days off: nobody near");
+    assert.equal(garrisonNeed(game, "AAA", one, g, [enemy(20000, "3")]), base, "20,000 near: not even all of it would hold — the floor, no men thrown away");
+});
+

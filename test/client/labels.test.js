@@ -110,3 +110,17 @@ test("a subject coloured like its overlord gets a darker shade of the overlord's
     const colourOf = (c) => ({ AUS: "#ff0000", BOH: "#0000ff" })[c];
     assert.equal(landFill(st, colourOf)("BOH").stripe, "#ff0000", "unlike colours: the overlord's own");
 });
+
+test("an event's line names a country that proclaimed a new state by the map's code for it; the lists of finished games by its last name", async () => {
+    const { inMapCodes } = await import("../../public/js/mapdraw.js");
+    const { countryLabel } = await import("../../public/js/lobbylogic.js");
+    const sc = mitteleuropa, st = Game.create(sc, { seed: 1 }).state;
+    const line = "BAV takes 48 Ulm from ULM (storm); BAVARIA is no code";
+    assert.equal(inMapCodes(line, st, sc), line, "nobody has become anything: as it was");
+    Object.assign(st.countries.BAV, { name: "Germany", formed: "germany" });
+    assert.equal(inMapCodes(line, st, sc), "GER takes 48 Ulm from ULM (storm); BAVARIA is no code");
+    assert.equal(countryLabel(sc, "BAV"), "Bavaria");
+    assert.equal(countryLabel(sc, "BAV", { BAV: "Germany" }), "Germany (formerly Bavaria)");
+    assert.equal(countryLabel(sc, "ULM", { BAV: "Germany" }), "Ulm");
+    assert.equal(countryLabel(null, "XYZ"), "XYZ");
+});

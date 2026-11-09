@@ -71,6 +71,12 @@ const becameOf = (state, scenario, code) => {
 export const countryColour = (state, scenario, code) => (state.countries[code]?.rebel ? "#8c3a3a"
     : becameOf(state, scenario, code)?.colour ?? scenario.countries.find((c) => c.code === code)?.colour ?? "#ddd");
 export const mapCode = (state, scenario, code) => becameOf(state, scenario, code)?.code ?? code;
+// an event's line (the engine's describeEvent, which names countries by code) with each country that proclaimed a new state under
+// the code the map shows it by — "GER takes 48 Ulm", not the "BAV" it began as
+export function inMapCodes(text, state, scenario) {
+    const formed = Object.values(state.countries).filter((c) => c.formed && mapCode(state, scenario, c.code) !== c.code);
+    return formed.reduce((t, c) => t.replace(new RegExp(`\\b${c.code}\\b`, "g"), mapCode(state, scenario, c.code)), text);
+}
 
 // what the lands' colours and the labels depend on, as one string — when it changes, the lands are repainted: who holds each
 // settlement, who is whose subject, and who has become a new state

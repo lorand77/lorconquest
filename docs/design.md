@@ -235,7 +235,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   once when the money is there for every one (some only would leave it under a third: RULES.md §5); mercenaries — which
   stand on top of the army cap — hired in a war as money allows and sent home in peace; sharpshooters at the
   passes facing others; and what is left of a hoard buys people, so money is used and not piled up.
-- **War:** every settlement keeps a garrison (4% of its people where an enemy could come from, 1.5% inland); the
+- **War:** every settlement keeps a garrison — at war sized to the threat (`garrisonNeed`: the enemy forces within 60 days no
+  stronger than it behind its walls — a storm a coin flip at best for them, none from a computer player; 1.5% of its people with none near; the usual floor if even all it has could not hold it), else 4% of
+  its people where an enemy could come from and 1.5% inland; the
   armed men over that split off, gather at a staging settlement beside the front and merge into one host. The
   host marches on the settlement with the best value for its days — by storm if it outmatches the garrison
   ×1.2 (×1.8 behind walls) by a margin, else by siege — or on an enemy army it is much stronger than, or to the
@@ -819,8 +821,10 @@ colour, only for the regions that were a new state, like Germany or the Kalmar U
 into `scenario.json` as the formable's `becomes`. Proclaiming it changes the country's `name` in the state, which every
 screen already reads, and sets its `formed` to the region; the map's colour and code for it come from that region
 (`mapdraw.js`: `countryColour`, `mapCode`), so the state holds one id, not a second copy of the scenario's colours. The country
-keeps its own code everywhere else — commands, events, saved games — so nothing that names countries by code breaks; only
-the map shows the new one. `tools/map.js` checks that the code is no country's and that the colour is clear of every
+keeps its own code everywhere else — commands, events, saved games — so nothing that names countries by code breaks; the map
+shows the new one, and so do the event feed and notices, which swap it in as they show an event's line (`mapdraw.js`, `inMapCodes`).
+A finished game keeps the names its countries ended under (`games.final_names`, from the worker's last message), so its lists in
+the lobby, My Games and a profile say "Germany (formerly Bavaria)" (`lobbylogic.js`, `countryLabel`). `tools/map.js` checks that the code is no country's and that the colour is clear of every
 country's (and of the other new states'), since a new state should never be taken for one already on the map.
 
 ### Reuse from LorCiv

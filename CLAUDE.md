@@ -28,7 +28,8 @@ dependencies.
 - `node tools/strength.js [--baseline HEAD --candidate working --seeds 20 --years 210 --salt S]` — how strong the computer
   players are: the working copy's `src/ai` against a commit's, on today's engine, in matched games (each test country alone on
   the candidate, against its seed's control game). `--candidate HEAD --salt aa` is the A/A test, the noise. Fresh seeds from
-  101; results in `experiments/strength/`.
+  101; results in `experiments/strength/`. Each game is written down as it ends (`<label>.partial.jsonl`): run the same command
+  again to finish a run cut short, `--report` to see what the games so far say.
 - `AI_SEEDS=6 AI_YEARS=60 AI_SCENARIO=historical-1440 node --test test/ai/ai.test.js` — the AI games of the suite, bigger.
 - `node tools/user.js password|deactivate|reactivate|delete <name>` — set a password, take an account out of the site (nothing
   deleted) and bring it back, or delete it for good; `node tools/backup.js [folder]` — a

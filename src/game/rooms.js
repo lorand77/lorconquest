@@ -33,6 +33,9 @@ const CHAT_MAX = 300;
 // what one person may have at once: rooms waiting in the lobby, and games running (each is a worker thread)
 const MAX_TABLES = 3, MAX_RUNNING = 6;
 
+// the names a finished game's countries ended under, where a new state renamed them: { code: name }, empty if none
+const namesOf = (g) => (g.final_names ? JSON.parse(g.final_names) : {});
+
 export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, emptyMs = 10 * 60 * 1000, maxHumans, idleMs, achievements }) {
     // a game's players ("game:<id>") and those watching it ("watch:<id>", socket.js): both hear the days, pauses, presence and
     // the end; only the players hear the chat, and each player alone their country's private part ("game:<id>:<country>")
@@ -147,7 +150,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             case "over":
                 // the game is won (SCENARIO.md, Victory): saved as finished, and never resumed
                 // or every person's country is out: a defeat for all of them, finished with no winner
-                db.q.finishGame.run(m.day, m.winner, m.hash ?? null, room.id);
+                db.q.finishGame.run(m.day, m.winner, m.hash ?? null, m.names && Object.keys(m.names).length ? JSON.stringify(m.names) : null, room.id);
                 recordResult(room, m.scores);
                 achievements?.gameEnded(room.id);                 // played over in the achievements' worker (src/achievements/)
                 room.paused = true;
@@ -562,7 +565,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             if (!u) return null;                                    // no such account, or a deleted or deactivated one
             const row = db.q.leaderboard.all().find((r) => r.username === u.username);
             const games = db.q.gamesOf.all(u.id).filter((g) => g.status === "finished" || g.status === "abandoned")
-                .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated, place: g.place, out: g.out_day !== null }));
+                .map((g) => ({ id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated, place: g.place, out: g.out_day !== null, names: namesOf(g) }));
             return { username: u.username, joined: u.created_at, row: row ? boardRow(row) : null, games };
         },
 
@@ -577,7 +580,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         // the games a person has a seat in
         gamesOf: (userId) => db.q.gamesOf.all(userId).map((g) => ({
             id: g.id, scenario: g.scenario, status: g.status, winner: g.winner, day: g.day, country: g.country, people: g.seated,
-            place: g.place, out: g.out_day !== null, live: live.has(g.id), paused: Boolean(g.paused),
+            place: g.place, out: g.out_day !== null, live: live.has(g.id), paused: Boolean(g.paused), names: namesOf(g),
             // a game with nobody in it, waiting for its players: the milliseconds left before it ends
             waiting: live.get(g.id)?.emptyUntil ? Math.max(0, live.get(g.id).emptyUntil - Date.now()) : null,
         })),

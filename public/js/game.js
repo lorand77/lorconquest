@@ -7,7 +7,7 @@ import { HOTKEYS, armyPoint, hotkey, shortDate, shortMoney, sheetAfter, applyCha
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
-import { armyMarkers as drawArmies, countryColour, countryLabels, fleetMarkers as drawFleets, landFill, mapCode, ownersKey, paintMap } from "./mapdraw.js";
+import { armyMarkers as drawArmies, countryColour, countryLabels, fleetMarkers as drawFleets, inMapCodes, landFill, mapCode, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { toast as achievementToast } from "./achievements.js";
@@ -188,7 +188,7 @@ function news(events) {
         const kind = kindOf(e, me, who, state);
         // a gun researched arms nobody: the notice says how many still carry older weapons
         const old = kind && e.type === "tech" && e.country === me ? outdatedMen(state, me, e.tech) : 0;
-        if (kind) notice(describeEvent(game.map, e) + (old ? ` — ${formatNumber(old)} of your men still carry older weapons: Modernise in an army's panel` : ""), kind);
+        if (kind) notice(inMapCodes(describeEvent(game.map, e), state, scenario) + (old ? ` — ${formatNumber(old)} of your men still carry older weapons: Modernise in an army's panel` : ""), kind);
     }
 }
 
@@ -752,7 +752,7 @@ function countryPanel(code) {
 // the Events tab: newest first; a click on one brings its place to the middle of the map and leaves the list open
 function feed(e) {
     const list = $("events");
-    const item = make("li", {}, make("span", { class: "when" }, longDate(e.day)), " ", describeEvent(game.map, e));
+    const item = make("li", {}, make("span", { class: "when" }, longDate(e.day)), " ", inMapCodes(describeEvent(game.map, e), state, scenario));
     const where = e.settlement ?? e.place ?? e.at;
     const node = where !== undefined && !String(where).includes("|") ? game.map.nodes.get(String(where)) : null;
     if (node) item.addEventListener("click", () => map.centerOn(node.x, node.y));

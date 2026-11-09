@@ -8,7 +8,7 @@ import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
 import * as Friends from "./friends.js";
 import { toast as achievementToast } from "./achievements.js";
-import { formatCountdown, gameLine, tableActions } from "./lobbylogic.js";
+import { countryLabel, formatCountdown, gameLine, tableActions } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
@@ -97,7 +97,7 @@ async function refresh() {
     drawRejoin(games);
     const going = games.filter((g) => g.status === "active");                 // a room not yet started is under Rooms
     $("games").replaceChildren(...going.map((g) => {
-        const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day), nameOf(g.scenario, g.winner));
+        const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, countryLabel(scenarioOf(g.scenario), g.country, g.names), longDate(g.day), countryLabel(scenarioOf(g.scenario), g.winner, g.names));
         return make("li", {}, line.open ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text, line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
     }));
     if (!going.length) $("games").textContent = "None going.";

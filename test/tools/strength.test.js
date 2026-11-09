@@ -37,3 +37,17 @@ test("the 95% interval of a mean, by the t distribution", () => {
     assert.ok(Math.abs(c.hi - (2.5 + 3.18 * Math.sqrt(5 / 3) / 2)) < 1e-9);
     assert.ok(Number.isNaN(meanCI([5]).lo), "one is no interval");
 });
+
+test("a run is written down game by game: the same settings resume it, other settings are refused", async () => {
+    const { readPartial, startPartial, writeGame } = await import("../../tools/strength.js");
+    const fs = await import("node:fs"), os = await import("node:os");
+    const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "lc-partial-")), "x.partial.jsonl");
+    const settings = { scenario: "mitteleuropa", years: 1, seeds: [101], countries: ["BAV"], salt: "", candidate: "a", baseline: "b" };
+    assert.deepEqual(readPartial(file, settings), [], "nothing yet");
+    startPartial(file, settings);
+    writeGame(file, { seed: 101, country: null, day: 365 });
+    startPartial(file, settings);                                                  // starting again keeps what is there
+    assert.deepEqual(readPartial(file, settings), [{ seed: 101, country: null, day: 365 }]);
+    assert.throws(() => readPartial(file, { ...settings, candidate: "c" }), /another run's/);
+    fs.rmSync(path.dirname(file), { recursive: true, force: true });
+});

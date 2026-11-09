@@ -412,3 +412,26 @@ the new defaults: 140 games, 49 minutes.
 the country won only on the new AI in 16 games and only on the old in 6 (sign test, p ≈ 0.05), and survived only on the new in 19
 against 11 (p ≈ 0.2). That fits what the laws are for — the last reserves turn a lost war into a held one, or a close race into a
 win — more than a steady gain in land. Cores lost the same (−0.3 [−1.8, +1.3]); refused orders 0.40 and 0.38 a game.
+
+## 17. Garrisons sized to the threat, and towns given up (2026-11-09)
+
+Two changes measured together. **Garrisons to the threat:** at war, the men a garrison keeps when the rest muster are enough that
+the enemy forces within 60 days are no stronger than it behind its walls (a storm a coin flip at best for them, none from a
+computer, which storms at 1.35 times), 1.5% of its people with none near; it kept 4% at a border, 1.5% inside, whatever the enemy.
+**Towns given up:** a town marched on that nothing can save, whose garrison buys little — a storm it would lose (1.35 times), or a
+siege over within 90 days — sends its garrison to a safe town before the enemy comes, and falls empty. Against 3a2985c, the new
+defaults: 140 games, 54 minutes (run four times: a container restart cut the first three short, which is why the tool now writes
+each game down as it ends and resumes).
+
+| | Garrisons and towns given up |
+|---|---|
+| All, settlements at the end, new less old (95%) | +0.5 [−2.2, +3.2] |
+| By country | every interval holds 0: Austria +3.5, Saxony +3.3, Prussia −4.4 |
+| Wins new / old | 19 / 18 of 120 |
+| Survived, new less old | 0.00 [−0.08, +0.08] |
+| **Cores lost, new less old** | **+1.1 [+0.0, +2.1]** |
+| Refused orders a game | 0.45 / 0.37 |
+
+**What it showed: no gain, and more cores lost.** The towns given up fall without a fight, and are counted as lost — what saving
+their garrisons cost; the men saved did not win the land back. The short-siege clause (any siege under 90 days, which takes in most
+towns without walls) likely gives up towns that would have held long enough for help: to be measured apart, or dropped.

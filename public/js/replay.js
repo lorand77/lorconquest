@@ -4,7 +4,7 @@
 // the day shown, and a timelapse video of any span of the game (mapcanvas.js), are a click away.
 import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, scores } from "/engine/index.js";
 import { requireUser } from "./auth.js";
-import { countryColour, countryLabels, landFill, ownersKey, paintMap } from "./mapdraw.js";
+import { countryColour, countryLabels, inMapCodes, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoName, videoType } from "./mapcanvas.js";
 import { buildLegs } from "./mirror.js";
@@ -52,7 +52,7 @@ let playing = false, owners = "", lastDraw = -1, working = false;
 function feed(events) {
     for (const e of events) {
         if (!WORTHY.has(e.type)) continue;
-        $("events").prepend(make("li", {}, make("span", { class: "when" }, longDate(e.day)), " ", describeEvent(replayer.game.map, e)));
+        $("events").prepend(make("li", {}, make("span", { class: "when" }, longDate(e.day)), " ", inMapCodes(describeEvent(replayer.game.map, e), replayer.state, scenario)));
     }
     while ($("events").children.length > 150) $("events").lastChild.remove();
 }

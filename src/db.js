@@ -126,6 +126,7 @@ export function openDb(file) {
     addColumnIfMissing("games", "host_id", "INTEGER REFERENCES users (id)");
     // how a game ended: the fingerprint of its final state (src/engine/hash.js), and each seat's standing (src/game/results.js)
     addColumnIfMissing("games", "result_hash", "TEXT");
+    addColumnIfMissing("games", "final_names", "TEXT");                             // JSON { code: name }: countries renamed by a new state
     addColumnIfMissing("game_seats", "place", "INTEGER");
     addColumnIfMissing("game_seats", "settlements", "REAL");
     addColumnIfMissing("game_seats", "pop", "REAL");
@@ -194,12 +195,12 @@ export function openDb(file) {
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN users h ON h.id = g.host_id WHERE g.status = 'lobby' ORDER BY g.id DESC`),
         // every game a person has a seat in
-        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, s.country, s.place, s.out_day, g.updated_at,
+        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, s.country, s.place, s.out_day, g.updated_at, g.final_names,
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN game_seats s ON s.game_id = g.id WHERE s.user_id = ? AND g.status != 'aborted' ORDER BY g.updated_at DESC, g.id DESC`),
         activeGames: db.prepare("SELECT * FROM games WHERE status = 'active' ORDER BY id"),
         setStatus: db.prepare("UPDATE games SET status = ?, updated_at = datetime('now') WHERE id = ?"),
-        finishGame: db.prepare("UPDATE games SET status = 'finished', day = ?, paused = 1, winner = ?, result_hash = ?, updated_at = datetime('now') WHERE id = ?"),
+        finishGame: db.prepare("UPDATE games SET status = 'finished', day = ?, paused = 1, winner = ?, result_hash = ?, final_names = ?, updated_at = datetime('now') WHERE id = ?"),
         setResult: db.prepare("UPDATE game_seats SET place = ?, settlements = ?, pop = ? WHERE game_id = ? AND country = ?"),
         markQuit: db.prepare("UPDATE game_seats SET quit_day = ? WHERE game_id = ? AND user_id = ?"),
         seatQuits: db.prepare("SELECT country, quit_day, out_day FROM game_seats WHERE game_id = ?"),

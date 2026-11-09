@@ -6,7 +6,12 @@
 // opponent unchanged.
 //
 //   node tools/strength.js [--baseline HEAD] [--candidate working|<commit>] [--seeds 20] [--seed 101] [--years 210]
-//       [--countries BAV,BRB,...] [--salt S] [--scenario mitteleuropa] [--jobs N] [--label x]
+//       [--countries BAV,BRB,...] [--salt S] [--scenario mitteleuropa] [--jobs N] [--label x] [--report]
+//
+// Each game is written down as it ends, in experiments/strength/<label>.partial.jsonl — its first line the run's settings — so a
+// run cut short (a restart of the container) loses only the games then being played: the same command again plays only the rest,
+// and refuses if the settings (the versions, uncommitted changes and all) are not the same. --report prints what the games played
+// so far say, playing none. The finished run is written whole, as <date>-<label>.json, and its partial file removed.
 //
 // --salt S changes the candidate's dice (its diplomacy's: util.js) and nothing else: with --candidate equal to the baseline it
 // is the A/A test — the same computer players, a small difference in luck — whose spread is the noise any real difference must
@@ -147,6 +152,22 @@ export function report(results, countries) {
     return lines.join("\n");
 }
 
+// ---------- the games written down as they end ----------
+export const partialFile = (label) => path.join(root, "experiments", "strength", `${label}.partial.jsonl`);
+// the games already played for a run with these settings, from its partial file — none if there is no file; an error if it is
+// another run's
+export function readPartial(file, settings) {
+    if (!fs.existsSync(file)) return [];
+    const [head, ...lines] = fs.readFileSync(file, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    if (JSON.stringify(head) !== JSON.stringify(settings)) throw new Error(`${path.relative(root, file)} is another run's (${JSON.stringify(head)}): give this one another --label, or delete it`);
+    return lines;
+}
+export function startPartial(file, settings) {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify(settings) + "\n");
+}
+export const writeGame = (file, result) => fs.appendFileSync(file, JSON.stringify(result) + "\n");
+
 // ---------- the command line, and the workers ----------
 const loadVersions = async (dirs) => {
     const load = (dir) => import(pathToFileURL(path.join(dir, "index.js")).href);
@@ -162,10 +183,19 @@ if (isMainThread && import.meta.filename === process.argv[1]) {
     for (const c of countries) if (!scenario.countries.some((x) => x.code === c)) throw new Error(`no country ${c} in ${scenarioName}`);
     const base = aiAt(arg("baseline", "HEAD")), cand = aiAt(arg("candidate", "working"));
     const jobs = Number(arg("jobs", os.availableParallelism())), label = arg("label", salt ? "aa" : "run");
-    // for each seed the control game, then a game for each test country
-    const tasks = seeds.flatMap((seed) => [null, ...countries].map((country) => ({ seed, country })));
-    console.log(`${tasks.length} games of ${years} years on ${scenarioName}, ${jobs} at a time: candidate ${cand.label}, baseline ${base.label}${salt ? `, the candidate's dice salted "${salt}"` : ""}`);
-    const t0 = performance.now(), results = [];
+    // for each seed the control game, then a game for each test country — less those its partial file has played already
+    const all = seeds.flatMap((seed) => [null, ...countries].map((country) => ({ seed, country })));
+    const settings = { scenario: scenarioName, years, seeds, countries, salt, candidate: cand.label, baseline: base.label };
+    const partial = partialFile(label), done = readPartial(partial, settings);
+    const played = new Set(done.map((r) => `${r.seed}|${r.country}`)), tasks = all.filter((t) => !played.has(`${t.seed}|${t.country}`));
+    const order = (rs) => rs.sort((a, b) => a.seed - b.seed || (a.country ?? "").localeCompare(b.country ?? ""));
+    if (process.argv.includes("--report")) {
+        console.log(`${done.length} of ${all.length} games played (${path.relative(root, partial)}): candidate ${cand.label}, baseline ${base.label}\n\n${report(order([...done]), countries)}`);
+        process.exit(0);
+    }
+    startPartial(partial, settings);
+    console.log(`${tasks.length} games of ${years} years on ${scenarioName}${done.length ? ` (${done.length} played already)` : ""}, ${jobs} at a time: candidate ${cand.label}, baseline ${base.label}${salt ? `, the candidate's dice salted "${salt}"` : ""}`);
+    const t0 = performance.now(), results = [...done];
     const run = (task) => new Promise((resolve, reject) => {
         const w = new Worker(import.meta.filename, { workerData: { task, scenarioName, years, salt, dirs: { base: base.dir, cand: cand.dir } } });
         w.once("message", resolve);
@@ -174,18 +204,30 @@ if (isMainThread && import.meta.filename === process.argv[1]) {
     const queue = [...tasks];
     await Promise.all(Array.from({ length: Math.max(1, jobs) }, async () => {
         while (queue.length) {
-            const r = await run(queue.shift());
-            results.push(r);
-            console.log(`${String(results.length).padStart(3)}/${tasks.length} seed ${r.seed} ${r.country ?? "control"}: ${r.winner ? `${r.winner} won ${r.how === "time" ? "on time" : "by the target"}` : "no winner"}, day ${r.day}`);
+            const task = queue.shift();
+            let r;
+            try { r = await run(task); } catch (err) {
+                // one game failing loses that game, not the run: the next run of the same command plays it
+                console.log(`seed ${task.seed} ${task.country ?? "control"}: failed (${err.message}) — left for the next run`);
+                continue;
+            }
+            const { fingerprint: _, ...kept } = r;
+            writeGame(partial, kept);
+            results.push(kept);
+            console.log(`${String(results.length).padStart(3)}/${all.length} seed ${r.seed} ${r.country ?? "control"}: ${r.winner ? `${r.winner} won ${r.how === "time" ? "on time" : "by the target"}` : "no winner"}, day ${r.day}`);
         }
     }));
-    results.sort((a, b) => a.seed - b.seed || (a.country ?? "").localeCompare(b.country ?? ""));
+    order(results);
     const text = report(results, countries);
+    if (results.length < all.length) {
+        console.log(`\n${results.length} of ${all.length} games played: run the same command again for the rest\n\n${text}`);
+        process.exit(1);
+    }
     console.log(`\n${results.length} games in ${((performance.now() - t0) / 60000).toFixed(1)} minutes\n\n${text}`);
     const dir = path.join(root, "experiments", "strength"), file = path.join(dir, `${new Date().toISOString().slice(0, 10)}-${label}.json`);
     fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(file, JSON.stringify({ scenario: scenarioName, years, seeds, countries, salt, candidate: cand.label, baseline: base.label,
-        results: results.map(({ fingerprint: _, ...r }) => r), report: text }, null, 1) + "\n");
+    fs.writeFileSync(file, JSON.stringify({ ...settings, results, report: text }, null, 1) + "\n");
+    fs.rmSync(partial, { force: true });
     console.log(`\nwritten to ${path.relative(root, file)}`);
 } else if (!isMainThread) {
     const { task, scenarioName, years, salt, dirs } = workerData;

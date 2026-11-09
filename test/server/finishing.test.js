@@ -410,3 +410,18 @@ test("behind the proxy the throttle counts the address Caddy forwards; without o
         await direct.close();
     }
 });
+
+test("a finished game keeps the names its countries ended under, and a person's list of games gives them", async () => {
+    const { openDb } = await import("../../src/db.js");
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "lc-names-")), db = openDb(path.join(dir, "x.sqlite"));
+    try {
+        const user = db.q.insertUser.run("namer", "x").lastInsertRowid;
+        const game = db.q.insertGame.run("mitteleuropa", 1, 1, "BAV", "active", user, "public").lastInsertRowid;
+        db.q.insertSeat.run(game, "BAV", user);
+        db.q.finishGame.run(100, "BAV", "h", JSON.stringify({ BAV: "Germany" }), game);
+        assert.equal(db.q.gamesOf.all(user)[0].final_names, '{"BAV":"Germany"}');
+    } finally {
+        db.close();
+        fs.rmSync(dir, { recursive: true, force: true });
+    }
+});

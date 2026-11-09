@@ -7,7 +7,7 @@
 // first opened. The tab is the page's hash (#stats, #games, #achievements, #friends), so the rail's links open it.
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
-import { gameLine, statsOf } from "./lobbylogic.js";
+import { countryLabel, gameLine, statsOf } from "./lobbylogic.js";
 import { mountShell, profileTab } from "./shell.js";
 import * as Friends from "./friends.js";
 import { card } from "./achievements.js";
@@ -73,7 +73,6 @@ window.addEventListener("hashchange", showTab);
 showTab();
 
 const scenarioOf = (id) => scenarios.find((s) => s.id === id);
-const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === code)?.name ?? code;
 
 // ---------- Stats ----------
 // someone else's count only the games that are over: what is going on in theirs is theirs alone
@@ -101,7 +100,7 @@ $("stat-by-scenario").hidden = !s.scenarios.length;
 // ---------- Games ----------
 const played = games.filter((g) => g.status !== "lobby");
 $("game-list").replaceChildren(...played.map((g) => {
-    const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, nameOf(g.scenario, g.country), longDate(g.day), nameOf(g.scenario, g.winner));
+    const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, countryLabel(scenarioOf(g.scenario), g.country, g.names), longDate(g.day), countryLabel(scenarioOf(g.scenario), g.winner, g.names));
     return make("li", {}, line.open && own ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text,
         line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
 }));

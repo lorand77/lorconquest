@@ -37,6 +37,52 @@ const arrivalOf = (game, a) => {
     for (const k of a.path) { d += legDays(at, k); at = k; }
     return d;
 };
+// a garrison sized to the threat (garrisonNeed): the enemy forces within REACH days no stronger than the garrison behind its walls
+// (HOLD) — a storm then a coin flip at best for them (44%), and none at all from a computer player, who storms only at 1.35 times
+// it (82% to win): a siege, months long, time for help to come
+const REACH = 60, HOLD = 1.0;
+
+// the enemy forces that could come for a town: every army of theirs but the garrisons holding their own towns
+function fieldForces(st, foes) {
+    const out = [];
+    for (const f of [...foes].sort()) {
+        const held = new Set([...garrisons(st, f).values()].map((a) => a.id));
+        for (const a of ownArmies(st, f)) if (!held.has(a.id) && !a.retreating) out.push(a);
+    }
+    return out;
+}
+
+// the places within REACH days of a place, by the map's legs alone — who may enter where aside: an estimate of who could come
+function within(game, from) {
+    const dist = new Map([[from, 0]]), queue = [[0, from]];
+    while (queue.length) {
+        queue.sort((a, b) => a[0] - b[0] || (a[1] < b[1] ? -1 : 1));
+        const [d, k] = queue.shift();
+        if (d > dist.get(k)) continue;
+        for (const e of game.map.adj.get(k) ?? []) {
+            const nd = d + e.days;
+            if (nd > REACH || nd >= (dist.get(e.to) ?? Infinity)) continue;
+            dist.set(e.to, nd);
+            queue.push([nd, e.to]);
+        }
+    }
+    return dist;
+}
+
+// the armed men a garrison keeps when the rest muster: at war, enough that the enemy forces within REACH days are no stronger
+// — and with none of them near, only an inner town's share (1.5% of its people) whatever its border; if not even all it has
+// could hold it, the usual floor (util.js, garrisonFloor), not men thrown away. In peace, the usual floor.
+export function garrisonNeed(game, code, s, g, field) {
+    const base = garrisonFloor(game, code, s);
+    if (!field.length) return base;
+    const near = within(game, String(s.id)), coming = field.filter((a) => near.has(placeOf(a)));
+    if (!coming.length) return Math.min(base, 0.015 * s.pop);
+    const armed = armedIn(g), perMan = armed > 0 ? forcePower([g]) / armed : forcePower([{ men: { ...emptyMen(), pikes: 1 }, cannons: 0 }]);
+    const guns = coming.reduce((n, a) => n + a.cannons, 0);
+    const men = forcePower(coming) / (HOLD * wallsFactor(game, s, guns) * perMan);
+    return men > 2 * armed ? base : Math.max(Math.min(base, 0.015 * s.pop), men);
+}
+
 // the strength of `n` mercenaries, who come with pikes
 const mercPower = (n) => forcePower([{ men: { ...emptyMen(), pikes: n }, cannons: 0 }]);
 
@@ -287,14 +333,16 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
         }
     }
 
-    // muster: the armed men a garrison has over its floor split off as one more host, which gathers at the staging settlement
+    // muster: the armed men a garrison has over what it needs (garrisonNeed: to the threat) split off as one more host, which
+    // gathers at the staging settlement
     if (muster && baseKey && !defend && !fl.defending) {            // a first holding its lead in the endgame keeps its men home
+        const field = fieldForces(st, foes);                        // peasants too: they go for the poorly held first
         for (const [key, g] of [...garrisons(st, code)].sort((x, y) => (x[0] < y[0] ? -1 : 1))) {
             const s = st.settlements[key];
             // (an inland settlement keeps nobody: its whole army marches to the staging settlement instead, forces.js, tidyOrders)
             if (!s || s.owner !== code || s.siege || g.march || thinned.has(g.id) || inland(game, code, s)) continue;
             // only armed men leave, so only armed men count towards the floor that stays: never a garrison of unarmed men alone
-            const armed = armedIn(g), excess = armed - garrisonFloor(game, code, s);
+            const armed = armedIn(g), excess = armed - garrisonNeed(game, code, s, g, field);
             if (excess < Math.max(400, 0.2 * armed)) continue;
             const f = excess / armed, men = {};
             for (const w of WEAPONS) if (w !== "unarmed" && g.men[w]) men[w] = Math.floor(g.men[w] * f);

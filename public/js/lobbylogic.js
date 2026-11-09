@@ -42,6 +42,13 @@ export function tableActions(table, me, scenario, maxHumans = 4) {
 }
 
 // a line for one of a person's games: where it stands, and whether it can be opened
+// a country as a game's list names it: by the scenario's name, or — a finished game's country that proclaimed a new state — by the
+// name it ended under, with the one it began as ("Germany (formerly Bavaria)")
+export function countryLabel(scenario, code, names = {}) {
+    const start = scenario?.countries.find((c) => c.code === code)?.name ?? code;
+    return names[code] && names[code] !== start ? `${names[code]} (formerly ${start})` : start;
+}
+
 export function gameLine(game, scenarioName, countryName, dateText, winnerName = game.winner) {
     const people = game.people > 1 ? `, ${game.people} people` : "";
     const where = `${scenarioName}, ${countryName}${people}, ${dateText}`;
