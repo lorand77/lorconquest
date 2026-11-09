@@ -81,14 +81,17 @@ function draw() {
     } else $("verdict").textContent = "";
 }
 
-// as many days as the speed asks for since the last frame, within what a frame can spare
+// as many days as the speed asks for since the last frame, within what a frame can spare: 12 ms at the slower speeds, so the page
+// stays smooth; at 1000 days a second and up, 40 ms, as the days themselves take time — and "max" plays days for 40 ms of every
+// frame, however many that is, the map drawn once a frame
 let last = performance.now(), owed = 0;
 function frame(now) {
     if (playing && !working) {
-        owed += (now - last) / 1000 * Number($("speed").value);
-        const stop = performance.now() + 12;
+        const speed = $("speed").value, max = speed === "max";
+        owed += max ? Infinity : (now - last) / 1000 * Number(speed);
+        const stop = performance.now() + (max || Number(speed) >= 1000 ? 40 : 12);
         while (owed >= 1 && !replayer.done && performance.now() < stop) { feed(replayer.advance(1)); owed -= 1; }
-        if (owed > 1000) owed = 0;                     // a slow machine does not save up days
+        if (owed > 3000) owed = 0;                     // a slow machine does not save up days
         if (replayer.day !== lastDraw) draw();
     }
     last = now;
@@ -184,7 +187,7 @@ $("ex-video").addEventListener("click", async () => {
 });
 
 // ---------- keys ----------
-// Space plays or pauses; ← → go back or on a year (with Shift, ten); 1 – 4 choose the speed. Not while typing in a box, and
+// Space plays or pauses; ← → go back or on a year (with Shift, ten); 1 – 6 choose the speed. Not while typing in a box, and
 // not with Ctrl, Alt or ⌘ (the browser's)
 document.addEventListener("keydown", (e) => {
     if (e.target.closest("input, textarea, select") || e.ctrlKey || e.altKey || e.metaKey) return;
@@ -194,7 +197,7 @@ document.addEventListener("keydown", (e) => {
         const step = (e.shiftKey ? 10 : 1) * YEAR_DAYS * (e.key === "ArrowLeft" ? -1 : 1);
         $("seek").value = String(Math.max(0, Math.min(data.endDay, replayer.day + step)));
         $("seek").dispatchEvent(new Event("change"));
-    } else if (/^[1-4]$/.test(e.key)) {
+    } else if (/^[1-6]$/.test(e.key)) {
         const speed = $("speed");
         speed.selectedIndex = Math.min(speed.options.length - 1, Number(e.key) - 1);
         speed.dispatchEvent(new Event("change"));

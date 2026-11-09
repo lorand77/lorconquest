@@ -804,25 +804,42 @@ const NEARC = new Array(W * H);                       // pixels within ROUTE_MAR
         if (cs.size > 1) NEARC[i] = [...cs];
     }
 }
-// may a route pass this pixel? land at least `clear` from the sea, in an allowed country, and (with margin) not near any other country
-function pixOk(x, y, clear, allow, margin) {
+const NEARL = new Array(W * H);                       // pixels within ROUTE_MARGIN of another land: every land that close
+{
+    const disc = [];
+    for (let dy = -ROUTE_MARGIN; dy <= ROUTE_MARGIN; dy++) for (let dx = -ROUTE_MARGIN; dx <= ROUTE_MARGIN; dx++) if (dx ** 2 + dy ** 2 <= ROUTE_MARGIN ** 2) disc.push([dx, dy]);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const id = REG[y * W + x];
+        if (!id) continue;
+        let near = null;
+        for (const [dx, dy] of disc) {
+            const u = x + dx, v = y + dy, o = inb(u, v) ? REG[v * W + u] : 0;
+            if (o && o !== id) (near ??= new Set([id])).add(o);
+        }
+        if (near) NEARL[y * W + x] = [...near];
+    }
+}
+// may a route pass this pixel? land at least `clear` from the sea, in an allowed country — or, `byLand`, an allowed land — and
+// (with margin) not near any other country, or land
+function pixOk(x, y, clear, allow, margin, byLand = false) {
     if (!inb(x, y)) return false;
     const i = y * W + x;
-    if (SEAD[i] < clear || !allow.has(LC[REG[i]])) return false;
-    if (margin && NEARC[i] && NEARC[i].some((c) => !allow.has(c))) return false;
+    if (SEAD[i] < clear || !allow.has(byLand ? REG[i] : LC[REG[i]])) return false;
+    const near = byLand ? NEARL[i] : NEARC[i];
+    if (margin && near && near.some((c) => !allow.has(c))) return false;
     return true;
 }
 // does the straight leg a-b only pass such pixels? the part under a marker at either end does not count
-function legOk(a, b, clear, margin, allow, skipa, skipb) {
+function legOk(a, b, clear, margin, allow, skipa, skipb, byLand = false) {
     const L = Math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2);
     for (let i = 0; i <= Math.trunc(L); i++) {
         if ((skipa && i < 12) || (skipb && L - i < 12)) continue;
         const t = L ? i / L : 0;
-        if (!pixOk(Math.trunc(a[0] + (b[0] - a[0]) * t), Math.trunc(a[1] + (b[1] - a[1]) * t), clear, allow, margin)) return false;
+        if (!pixOk(Math.trunc(a[0] + (b[0] - a[0]) * t), Math.trunc(a[1] + (b[1] - a[1]) * t), clear, allow, margin, byLand)) return false;
     }
     return true;
 }
-function landPath(a, b, allow, margin) {
+function landPath(a, b, allow, margin, byLand = false) {
     const [sx, sy, tx, ty] = [a[0], a[1], b[0], b[1]].map(Math.trunc);
     const x0 = Math.min(sx, tx) - 200, x1 = Math.max(sx, tx) + 200, y0 = Math.min(sy, ty) - 200, y1 = Math.max(sy, ty) + 200;
     const start = sy * W + sx, target = ty * W + tx;
@@ -838,7 +855,7 @@ function landPath(a, b, allow, margin) {
                 const u = x + dx, v = y + dy;
                 if (u < x0 || u > x1 || v < y0 || v > y1 || !inb(u, v)) continue;
                 const under = (u - sx) ** 2 + (v - sy) ** 2 < 144 || (u - tx) ** 2 + (v - ty) ** 2 < 144;
-                if (!under && !pixOk(u, v, 1, allow, margin)) continue;
+                if (!under && !pixOk(u, v, 1, allow, margin, byLand)) continue;
                 const sd = SEAD[v * W + u];
                 const nc = c + step + (under || sd >= 11 ? 0 : (11 - sd) * 6);
                 const kk = v * W + u;
@@ -858,7 +875,7 @@ function landPath(a, b, allow, margin) {
     let i = 0;
     while (i < p.length - 1) {
         let j = p.length - 1;
-        while (j > i + 1 && !legOk(p[i], p[j], ROUTE_SHORE, margin, allow, i === 0, j === p.length - 1)) j--;
+        while (j > i + 1 && !legOk(p[i], p[j], ROUTE_SHORE, margin, allow, i === 0, j === p.length - 1, byLand)) j--;
         out.push(p[j]);
         i = j;
     }
@@ -893,8 +910,32 @@ for (const e of [...LAND].sort()) {
     for (let i = 1; i < pts.length; i++) if (!legOk(pts[i - 1], pts[i], 1, 0, allow, true, true)) warn(`route ${e} still leaves its countries near ${pts[i].map(Math.trunc).join(",")}`);
     RPATH.set(e, pts);
 }
+// the line a road is drawn along, and armies are drawn marching on (scenario.json, routes[].points): through the two settlements'
+// own lands only, and the pass's on the way — so whoever comes to own the lands about it, a road crosses only the two it joins.
+// Its length, and so its days and whether it crosses a river (the rules), come from the line above, through the two countries'
+// land, as they always have: the drawn line only shows the way. A bend point (Route bends) outside the two lands is left out of it.
+const DPATH = new Map(), DRAWN = { bent: new Set(), tight: new Set() };
+for (const e of [...LAND].sort()) {
+    const [a, b] = e.split("-").map(Number);
+    const via = VIA.get(e), sa = S.get(a), sb = S.get(b);
+    const lands = new Set([a, b, ...(via ? [via.owner] : [])]);
+    const bends = (BEND.get(e) ?? []).filter((bp) => lands.has(landAt(bp[0], bp[1])));
+    const stops = [[sa.x, sa.y], ...(via ? [[via.x, via.y]] : []), ...bends, [sb.x, sb.y]];
+    const pts = [stops[0]];
+    for (let i = 1; i < stops.length; i++) {
+        const p = stops[i - 1], q = stops[i];
+        if (legOk(p, q, 1, 0, lands, true, true, true)) { pts.push(q); continue; }
+        let bent = landPath(p, q, lands, ROUTE_MARGIN, true);
+        if (!bent && (bent = landPath(p, q, lands, 0, true))) DRAWN.tight.add(e);
+        if (!bent) { warn(`route ${e}: no way over its two lands only; drawn as measured`); pts.length = 0; break; }
+        pts.push(...bent.slice(1));
+        DRAWN.bent.add(e);
+    }
+    DPATH.set(e, pts.length ? pts : RPATH.get(e));
+}
 check("SCENARIO.md");
 for (const e of STRAIT) RPATH.set(e, e.split("-").map((id) => [S.get(Number(id)).x, S.get(Number(id)).y]));
+for (const e of STRAIT) DPATH.set(e, RPATH.get(e));
 // route segments: [x1, y1, x2, y2, key, strait]
 const ROUTESEG = [];
 for (const e of [...RPATH.keys()].sort()) { const p = RPATH.get(e); for (let i = 1; i < p.length; i++) ROUTESEG.push([p[i - 1][0], p[i - 1][1], p[i][0], p[i][1], e, STRAIT.has(e)]); }
@@ -915,7 +956,7 @@ for (const [e, p] of RPATH) {
 for (const c of chains(COAST)) occLine(c, 1.0);
 for (const [k, segs] of PAIR) { const [a, b] = k.split("-").map(Number); if (LC[a] !== LC[b]) for (const c of chains(segs)) occLine(c, 1.25); }
 for (const r of RIVERS) occLine(r, 1.25);
-for (const s of ROUTESEG) occSeg(s[0], s[1], s[2], s[3], 1.0);
+for (const [, p] of DPATH) for (let i = 1; i < p.length; i++) occSeg(p[i - 1][0], p[i - 1][1], p[i][0], p[i][1], 1.0);
 for (const r of DIVIDERS) occLine(r, 1.0);
 for (const z of ZONES) occBox(...seaLabelBox(z));
 for (const s of S.values()) occBox(s.x - 11, s.y - 11, s.x + 10, s.y + 10);
@@ -1101,7 +1142,7 @@ for (const k of [...PAIR.keys()].sort(byKey)) {
 o.push("</g>", '<g id="rivers">', ...RIVERS.map((r) => `  <path class="river" d="${dLine(r)}"/>`), "</g>", '<g id="sea-zones">',
     ...DIVIDERS.map((r) => `  <path class="sea-divider" d="${dLine(r)}"/>`),
     ...ZONES.map((z) => `  <text id="sea-${z.id}" class="sea-label" x="${z.x}" y="${z.y}">${esc(z.name)}</text>`), "</g>", '<g id="routes">');
-for (const e of [...LAND, ...STRAIT].sort(byKey)) o.push(`  <path id="route-${e}" class="route${STRAIT.has(e) ? " strait" : ""}" d="${dLine(RPATH.get(e))}"/>`);
+for (const e of [...LAND, ...STRAIT].sort(byKey)) o.push(`  <path id="route-${e}" class="route${STRAIT.has(e) ? " strait" : ""}" d="${dLine(DPATH.get(e))}"/>`);
 o.push("</g>", '<g id="mountains">');
 for (const [ax, ay] of placed) {
     const hw = MTN_W / 2, h = MTN_H, sx = ax + MTN_W * 0.06, sy = ay + h * 0.34, sw = hw * 0.34;
@@ -1454,7 +1495,7 @@ const json = {
             years: strait ? null : Number(YEARS.get(e).toFixed(2)),
             legs: legs ? [0, 1].map((i) => ({ length: Number(n(legs[i])), years: Number(LEGYEARS.get(e)[i].toFixed(2)) })) : null,
             pass: VIA.has(e) ? VIA.get(e).id : null, seaZone: SZ.has(e) ? SZ.get(e).id : null, crossesRiver: Boolean(CROSS.get(e)),
-            points: RPATH.get(e).map((p) => p.map((v) => Number(n(v)))) };
+            points: DPATH.get(e).map((p) => p.map((v) => Number(n(v)))) };
     }),
     passes: PASSES.map((p) => ({ id: p.id, x: p.x, y: p.y, land: p.owner, routes: p.routes })),
     formables: FORMABLES,
@@ -1576,6 +1617,7 @@ console.log(`names: ${SIDS.length - CROWDED.length} placed clear of everything${
 if (BENT.sea.size) console.log(`bent around the sea: ${[...BENT.sea].sort(byKey).join(", ")}`);
 if (BENT.country.size) console.log(`bent around other countries: ${[...BENT.country].sort(byKey).join(", ")}`);
 if (BENT.tight.size) console.log(`squeezed through a point where the lands barely touch: ${[...BENT.tight].sort(byKey).join(", ")}`);
+if (DRAWN.bent.size) console.log(`drawn around third lands: ${DRAWN.bent.size} roads${DRAWN.tight.size ? `, ${DRAWN.tight.size} squeezed through a narrow point` : ""}`);
 if (touching.length) warn(`${touching.length} mountain(s) touch something: ${touching.map((p) => `${p[0]},${p[1]}`).join(" ")} -- run \`node tools/map.js ${DIR === DEFAULT_DIR ? "" : DIR + " "}mountains\``);
 if (MODE === "mountains") {
     const moved = placed.filter((q) => !PEAKS.some((p) => p[0] === q[0] && p[1] === q[1])).length;

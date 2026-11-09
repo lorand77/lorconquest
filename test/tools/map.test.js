@@ -114,3 +114,45 @@ test("no fleet is drawn on land: every port's spots, every zone's column and eve
         }
     }
 });
+
+test("every road is drawn through its own two lands only (and its pass's): whoever comes to own the lands about it, it crosses no other", () => {
+    for (const name of ["mitteleuropa", "historical-1440"]) {
+        const dir = path.join(ROOT, "scenarios", name), sc = JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8"));
+        const svg = fs.readFileSync(path.join(dir, "map.svg"), "utf8"), lands = new Map();
+        for (const m of svg.matchAll(/<path id="land-(\d+)"[^>]*? d="([^"]+)"/g)) {
+            lands.set(Number(m[1]), m[2].split("Z").map((p) => [...p.matchAll(/(-?[\d.]+) (-?[\d.]+)/g)].map((q) => [Number(q[1]), Number(q[2])])).filter((p) => p.length > 2));
+        }
+        const inside = (polys, [x, y]) => {
+            let c = false;
+            for (const p of polys) for (let i = 0, k = p.length - 1; i < p.length; k = i++) {
+                const [xi, yi] = p[i], [xk, yk] = p[k];
+                if ((yi > y) !== (yk > y) && x < (xk - xi) * (y - yi) / (yk - yi) + xi) c = !c;
+            }
+            return c;
+        };
+        // how far a point is from a land's edge: a road may graze a border by a pixel or two, as the map's pixels are not its lines
+        const edge = (polys, [x, y]) => Math.min(...polys.flatMap((p) => p.map((a, i) => {
+            const b = p[(i + 1) % p.length], dx = b[0] - a[0], dy = b[1] - a[1], t = Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy || 1)));
+            return Math.hypot(x - a[0] - t * dx, y - a[1] - t * dy);
+        })));
+        const passes = new Map(sc.passes.map((p) => [p.id, p]));
+        // a road between lands that do not touch has no line through them alone: drawn as measured, with tools/map.js's warning
+        // (Balanced's 58-59, Utrecht–Düsseldorf: SCENARIO.md, Notes to check)
+        const apart = new Set(name === "mitteleuropa" ? ["route-58-59"] : []);
+        for (const r of sc.routes.filter((x) => x.type === "land" && !apart.has(x.id))) {
+            const own = new Set([r.from, r.to, ...(r.pass ? [passes.get(r.pass).land] : [])]);
+            const ends = [r.points[0], r.points[r.points.length - 1], ...(r.pass ? [[passes.get(r.pass).x, passes.get(r.pass).y]] : [])];
+            for (let i = 1; i < r.points.length; i++) {
+                const [a, b] = [r.points[i - 1], r.points[i]], L = Math.hypot(b[0] - a[0], b[1] - a[1]);
+                for (let t = 0; t <= L; t += 2) {
+                    const q = [a[0] + (b[0] - a[0]) * t / (L || 1), a[1] + (b[1] - a[1]) * t / (L || 1)];
+                    if (ends.some((e) => Math.hypot(q[0] - e[0], q[1] - e[1]) < 12)) continue;      // under a marker
+                    for (const [id, polys] of lands) {
+                        if (own.has(id) || !inside(polys, q)) continue;
+                        assert.ok(edge(polys, q) <= 2, `${name}: road ${r.id} crosses land-${id} near ${q.map(Math.round)}`);
+                    }
+                }
+            }
+        }
+    }
+});

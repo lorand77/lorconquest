@@ -636,6 +636,11 @@ over another code. `tools/map.js` works out each land's spots in advance (`label
 clearest spot for a large code, a small one, and near its settlement). A country that is out of the game has no code. As on
 the map drawn for 1440, a few small countries on a crowded map find no room (58 of the historical scenario's 74).
 
+A **road** is drawn — and an army marching on it — through the two settlements' own lands only, and the pass's on the way
+(`tools/map.js`: `routes[].points`), so whoever comes to own the lands about it, it never seems to cross a third party's; its
+length, days and river crossing, which are the rules, still come from the line through the two countries' land it was
+measured on. A road between lands that do not touch (Balanced's 58-59) keeps that line, and the tool warns of it.
+
 A fleet sailing from one sea zone to the next is drawn along the zones' **sea lane** (`scenario.json`, `seaZones[].lanes`):
 `tools/map.js` finds, for each pair of neighbouring zones, a way through their water between the two fleet marks — kept off the
 coast, pulled as straight as the water allows — so that no fleet is ever drawn across land (`mirror.js`, `fleetPoints`). Fleets

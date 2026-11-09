@@ -174,6 +174,22 @@ test("the Shop tab builds ships for a coastal country and lists what is queued",
     assert.match(nodes.map((n) => n.text).join(" | "), /1,000 soldiers with pikes at place 57, ready 20 February 1440[\s\S]*1,000 mercenaries at place 58, arriving 21 January 1440/);
 });
 
+test("the port ships are built in stays as the player chose it, redraw after redraw — while it is still theirs", async () => {
+    const { ctx, sent } = setup((game) => { game.state.settlements[65].owner = "NED"; }, "NED");      // Bremen, a second port
+    ctx.ui = { target: null };
+    const portOf = (nodes) => find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "65"))[0];
+    let nodes = shopTab(ctx);
+    assert.equal(String(portOf(nodes).value), "57", "nothing chosen yet: the capital's port");
+    portOf(nodes).value = "65";
+    portOf(nodes).handlers.change();
+    nodes = shopTab(ctx);                                                      // the panel is rebuilt as the days go by
+    assert.equal(String(portOf(nodes).value), "65");
+    await button(nodes, "Build").handlers.click();
+    assert.equal(sent[0].port, 65);
+    ctx.state.settlements[65].owner = "BRE";                                   // Bremen lost: back to the capital's port
+    assert.equal(String(find(shopTab(ctx), (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "57"))[0].value), "57");
+});
+
 test("the Research tab lists the tree and researches an open tech", async () => {
     const { ctx, sent } = setup();
     const nodes = researchTab(ctx);

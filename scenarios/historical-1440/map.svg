@@ -667,7 +667,7 @@
   <path id="route-1-7" class="route" d="M484 45 L535 253"/>
   <path id="route-2-3" class="route" d="M427 107 L241 113"/>
   <path id="route-4-5" class="route" d="M807 48 L829 97"/>
-  <path id="route-4-6" class="route" d="M807 48 L715 187"/>
+  <path id="route-4-6" class="route" d="M807 48 L755.5 96.5 L742.5 109.5 L715 187"/>
   <path id="route-5-6" class="route" d="M829 97 L715 187"/>
   <path id="route-6-7" class="route" d="M715 187 L535 253"/>
   <path id="route-6-8" class="route" d="M715 187 L754 348"/>
@@ -675,7 +675,7 @@
   <path id="route-8-14" class="route" d="M754 348 L594 438"/>
   <path id="route-8-15" class="route strait" d="M754 348 L854 255"/>
   <path id="route-9-10" class="route" d="M431 308 L440 390"/>
-  <path id="route-9-11" class="route" d="M431 308 L361 463"/>
+  <path id="route-9-11" class="route" d="M431 308 L344.5 357.5 L341.5 365.5 L361 463"/>
   <path id="route-10-11" class="route" d="M440 390 L361 463"/>
   <path id="route-11-12" class="route strait" d="M361 463 L447 462"/>
   <path id="route-11-32" class="route" d="M361 463 L398 540"/>
@@ -685,15 +685,15 @@
   <path id="route-17-18" class="route" d="M1146 153 L1157.5 168.5 L1164.5 269.5 L1146 287"/>
   <path id="route-18-19" class="route" d="M1146 287 L1111.5 297.5 L1016 264"/>
   <path id="route-18-20" class="route" d="M1146 287 L1071 409"/>
-  <path id="route-18-21" class="route" d="M1146 287 L1160 477"/>
-  <path id="route-18-22" class="route" d="M1146 287 L1236 485"/>
+  <path id="route-18-21" class="route" d="M1146 287 L1164.5 383.5 L1160 477"/>
+  <path id="route-18-22" class="route" d="M1146 287 L1214.5 377.5 L1236 485"/>
   <path id="route-19-20" class="route" d="M1016 264 L1071 409"/>
   <path id="route-20-21" class="route" d="M1071 409 L1160 477"/>
   <path id="route-20-26" class="route" d="M1071 409 L1012 419"/>
-  <path id="route-20-27" class="route" d="M1071 409 L1012.5 490.5 L983 515"/>
+  <path id="route-20-27" class="route" d="M1071 409 L1061.5 487.5 L983 515"/>
   <path id="route-21-22" class="route" d="M1160 477 L1236 485"/>
   <path id="route-21-23" class="route" d="M1160 477 L1172 589"/>
-  <path id="route-21-27" class="route" d="M1160 477 L983 515"/>
+  <path id="route-21-27" class="route" d="M1160 477 L1074.5 510.5 L983 515"/>
   <path id="route-22-23" class="route" d="M1236 485 L1172 589"/>
   <path id="route-23-24" class="route" d="M1172 589 L1184 735"/>
   <path id="route-23-29" class="route" d="M1172 589 L990 600"/>
@@ -704,28 +704,28 @@
   <path id="route-25-62" class="route" d="M1296 844 L1130 820"/>
   <path id="route-25-66" class="route" d="M1296 844 L1232 939"/>
   <path id="route-26-27" class="route" d="M1012 419 L1027.5 436.5 L1026.5 476.5 L983 515"/>
-  <path id="route-27-28" class="route" d="M983 515 L970.5 539.5 L928.5 572.5 L894.5 562.5 L887 555"/>
+  <path id="route-27-28" class="route" d="M983 515 L970.5 539.5 L952.5 552.5 L944.5 554.5 L938.5 561.5 L921.5 573.5 L891.5 559.5 L887 555"/>
   <path id="route-27-29" class="route" d="M983 515 L990 600"/>
   <path id="route-28-29" class="route" d="M887 555 L990 600"/>
   <path id="route-28-30" class="route" d="M887 555 L892 679"/>
   <path id="route-28-31" class="route" d="M887 555 L706 712"/>
-  <path id="route-28-40" class="route" d="M887 555 L728 579"/>
+  <path id="route-28-40" class="route" d="M887 555 L785.5 616.5 L728 579"/>
   <path id="route-28-41" class="route" d="M887 555 L799 550"/>
-  <path id="route-28-56" class="route" d="M887 555 L874 700"/>
-  <path id="route-28-57" class="route" d="M887 555 L801 739"/>
+  <path id="route-28-56" class="route" d="M887 555 L831.5 644.5 L874 700"/>
+  <path id="route-28-57" class="route" d="M887 555 L800.5 650.5 L801 739"/>
   <path id="route-29-30" class="route" d="M990 600 L892 679"/>
   <path id="route-29-60" class="route" d="M990 600 L956 717"/>
-  <path id="route-29-61" class="route" d="M990 600 L1032 740"/>
+  <path id="route-29-61" class="route" d="M990 600 L1021.5 669.5 L1032 740"/>
   <path id="route-30-56" class="route" d="M892 679 L874 700"/>
   <path id="route-30-60" class="route" d="M892 679 L956 717"/>
   <path id="route-31-39" class="route" d="M706 712 L667 648"/>
   <path id="route-31-40" class="route" d="M706 712 L728 579"/>
-  <path id="route-31-52" class="route" d="M706 712 L659.5 702.5 L629 659"/>
+  <path id="route-31-52" class="route" d="M706 712 L662.5 697.5 L629 659"/>
   <path id="route-31-55" class="route" d="M706 712 L667 749"/>
   <path id="route-31-57" class="route" d="M706 712 L801 739"/>
   <path id="route-31-95" class="route" d="M706 712 L755 810"/>
   <path id="route-32-33" class="route" d="M398 540 L427 562"/>
-  <path id="route-32-35" class="route" d="M398 540 L416 631"/>
+  <path id="route-32-35" class="route" d="M398 540 L379.5 589.5 L416 631"/>
   <path id="route-33-34" class="route" d="M427 562 L456 604"/>
   <path id="route-33-35" class="route" d="M427 562 L416 631"/>
   <path id="route-34-35" class="route" d="M456 604 L416 631"/>
@@ -736,7 +736,7 @@
   <path id="route-36-37" class="route" d="M495 627 L535 586"/>
   <path id="route-36-46" class="route" d="M495 627 L438 660"/>
   <path id="route-36-51" class="route" d="M495 627 L516 723"/>
-  <path id="route-36-52" class="route" d="M495 627 L629 659"/>
+  <path id="route-36-52" class="route" d="M495 627 L559.5 656.5 L629 659"/>
   <path id="route-37-38" class="route" d="M535 586 L584 569"/>
   <path id="route-37-52" class="route" d="M535 586 L574.5 627.5 L629 659"/>
   <path id="route-38-52" class="route" d="M584 569 L629 659"/>
@@ -759,73 +759,73 @@
   <path id="route-47-49" class="route" d="M396 739 L403 817"/>
   <path id="route-47-78" class="route" d="M396 739 L274 768"/>
   <path id="route-47-80" class="route" d="M396 739 L295 822"/>
-  <path id="route-47-85" class="route" d="M396 739 L376 836"/>
+  <path id="route-47-85" class="route" d="M396 739 L356.5 784.5 L376 836"/>
   <path id="route-48-49" class="route" d="M440 751 L403 817"/>
   <path id="route-48-50" class="route" d="M440 751 L502 766"/>
   <path id="route-48-51" class="route" d="M440 751 L474.5 727.5 L516 723"/>
-  <path id="route-49-50" class="route" d="M403 817 L502 766"/>
+  <path id="route-49-50" class="route" d="M403 817 L466.5 802.5 L502 766"/>
   <path id="route-49-85" class="route" d="M403 817 L376 836"/>
   <path id="route-49-87" class="route" d="M403 817 L422 869"/>
   <path id="route-49-92" class="route" d="M403 817 L448.5 825.5 L464 871"/>
   <path id="route-50-51" class="route" d="M502 766 L516 723"/>
   <path id="route-50-53" class="route" d="M502 766 L555 742"/>
   <path id="route-50-88" class="route" d="M502 766 L559 792"/>
-  <path id="route-50-89" class="route" d="M502 766 L542 840"/>
+  <path id="route-50-89" class="route" d="M502 766 L516.5 814.5 L542 840"/>
   <path id="route-50-92" class="route" d="M502 766 L464 871"/>
-  <path id="route-51-52" class="route" d="M516 723 L629 659"/>
+  <path id="route-51-52" class="route" d="M516 723 L552.5 684.5 L564.5 672.5 L629 659"/>
   <path id="route-51-53" class="route" d="M516 723 L555 742"/>
   <path id="route-52-54" class="route" d="M629 659 L603 732"/>
   <path id="route-52-55" class="route" d="M629 659 L667 749"/>
   <path id="route-53-54" class="route" d="M555 742 L603 732"/>
   <path id="route-53-88" class="route" d="M555 742 L559 792"/>
   <path id="route-54-55" class="route" d="M603 732 L667 749"/>
-  <path id="route-54-88" class="route" d="M603 732 L559 792"/>
-  <path id="route-55-88" class="route" d="M667 749 L559 792"/>
+  <path id="route-54-88" class="route" d="M603 732 L590.5 766.5 L559 792"/>
+  <path id="route-55-88" class="route" d="M667 749 L622.5 793.5 L559 792"/>
   <path id="route-55-93" class="route" d="M667 749 L661 856"/>
-  <path id="route-55-94" class="route" d="M667 749 L694 859"/>
+  <path id="route-55-94" class="route" d="M667 749 L688.5 804.5 L694 859"/>
   <path id="route-55-95" class="route" d="M667 749 L755 810"/>
   <path id="route-56-57" class="route" d="M874 700 L801 739"/>
   <path id="route-56-58" class="route" d="M874 700 L870 796"/>
   <path id="route-56-59" class="route" d="M874 700 L931 764"/>
-  <path id="route-56-60" class="route" d="M874 700 L909.5 721.5 L956 717"/>
+  <path id="route-56-60" class="route" d="M874 700 L913.5 716.5 L956 717"/>
   <path id="route-57-58" class="route" d="M801 739 L870 796"/>
   <path id="route-57-95" class="route" d="M801 739 L755 810"/>
   <path id="route-58-59" class="route" d="M870 796 L931 764"/>
   <path id="route-58-97" class="route" d="M870 796 L812 859"/>
   <path id="route-58-98" class="route" d="M870 796 L866 897"/>
   <path id="route-59-60" class="route" d="M931 764 L956 717"/>
-  <path id="route-59-61" class="route" d="M931 764 L1032 740"/>
-  <path id="route-59-63" class="route" d="M931 764 L1004.5 837.5 L1089 878"/>
+  <path id="route-59-61" class="route" d="M931 764 L993.5 767.5 L1032 740"/>
+  <path id="route-59-63" class="route" d="M931 764 L1003.5 837.5 L1089 878"/>
   <path id="route-59-64" class="route" d="M931 764 L988 945"/>
-  <path id="route-59-98" class="route" d="M931 764 L866 897"/>
+  <path id="route-59-98" class="route" d="M931 764 L943.5 853.5 L866 897"/>
   <path id="route-60-61" class="route" d="M956 717 L1032 740"/>
   <path id="route-61-62" class="route" d="M1032 740 L1130 820"/>
-  <path id="route-61-63" class="route" d="M1032 740 L1089 878"/>
+  <path id="route-61-63" class="route" d="M1032 740 L1052.5 841.5 L1089 878"/>
   <path id="route-62-63" class="route" d="M1130 820 L1089 878"/>
-  <path id="route-62-65" class="route" d="M1130 820 L1158 954"/>
+  <path id="route-62-65" class="route" d="M1130 820 L1167.5 878.5 L1158 954"/>
   <path id="route-62-66" class="route" d="M1130 820 L1232 939"/>
   <path id="route-63-64" class="route" d="M1089 878 L988 945"/>
   <path id="route-63-65" class="route" d="M1089 878 L1158 954"/>
-  <path id="route-64-65" class="route" d="M988 945 L1158 954"/>
-  <path id="route-64-98" class="route" d="M988 945 L866 897"/>
+  <path id="route-64-65" class="route" d="M988 945 L1075.5 960.5 L1158 954"/>
+  <path id="route-64-98" class="route" d="M988 945 L939.5 895.5 L866 897"/>
   <path id="route-64-99" class="route" d="M988 945 L886 950"/>
   <path id="route-64-146" class="route" d="M988 945 L924 999 L950 1070"/>
   <path id="route-64-147" class="route" d="M988 945 L1099 996 L1078 1061"/>
   <path id="route-65-66" class="route" d="M1158 954 L1232 939"/>
-  <path id="route-65-145" class="route" d="M1158 954 L1210.5 1060.5 L1243 1224"/>
+  <path id="route-65-145" class="route" d="M1158 954 L1205.5 1063.5 L1243 1224"/>
   <path id="route-65-147" class="route" d="M1158 954 L1099 996 L1078 1061"/>
   <path id="route-66-145" class="route" d="M1232 939 L1190 1034 L1210.5 1060.5 L1243 1224"/>
-  <path id="route-67-68" class="route" d="M125 714 L106.5 730.5 L101.5 737.5 L105 764"/>
+  <path id="route-67-68" class="route" d="M125 714 L103.5 732.5 L105 764"/>
   <path id="route-67-72" class="route" d="M125 714 L134 741"/>
   <path id="route-68-69" class="route" d="M105 764 L83 816"/>
   <path id="route-68-72" class="route" d="M105 764 L134 741"/>
   <path id="route-68-74" class="route" d="M105 764 L135.5 783.5 L173 769"/>
-  <path id="route-68-75" class="route" d="M105 764 L174 830"/>
+  <path id="route-68-75" class="route" d="M105 764 L137.5 801.5 L174 830"/>
   <path id="route-69-70" class="route" d="M83 816 L75 849"/>
   <path id="route-69-75" class="route" d="M83 816 L174 830"/>
-  <path id="route-69-84" class="route" d="M83 816 L144 878"/>
+  <path id="route-69-84" class="route" d="M83 816 L118.5 843.5 L144 878"/>
   <path id="route-70-71" class="route" d="M75 849 L101 888"/>
-  <path id="route-70-84" class="route" d="M75 849 L144 878"/>
+  <path id="route-70-84" class="route" d="M75 849 L120.5 854.5 L144 878"/>
   <path id="route-71-84" class="route" d="M101 888 L144 878"/>
   <path id="route-71-100" class="route" d="M101 888 L166 976"/>
   <path id="route-71-120" class="route" d="M101 888 L79.5 968.5 L99 1046"/>
@@ -847,7 +847,7 @@
   <path id="route-77-79" class="route" d="M283 795 L247 798"/>
   <path id="route-77-80" class="route" d="M283 795 L295 822"/>
   <path id="route-78-79" class="route" d="M274 768 L247 798"/>
-  <path id="route-79-80" class="route" d="M247 798 L261.5 818.5 L269.5 824.5 L295 822"/>
+  <path id="route-79-80" class="route" d="M247 798 L262.5 820.5 L270.5 824.5 L295 822"/>
   <path id="route-79-81" class="route" d="M247 798 L220 831"/>
   <path id="route-80-83" class="route" d="M295 822 L227 858"/>
   <path id="route-80-85" class="route" d="M295 822 L376 836"/>
@@ -858,13 +858,13 @@
   <path id="route-82-83" class="route" d="M192 857 L227 858"/>
   <path id="route-82-84" class="route" d="M192 857 L144 878"/>
   <path id="route-82-101" class="route" d="M192 857 L198 966"/>
-  <path id="route-82-102" class="route" d="M192 857 L203.5 907.5 L211.5 911.5 L259 915"/>
+  <path id="route-82-102" class="route" d="M192 857 L208.5 904.5 L259 915"/>
   <path id="route-83-102" class="route" d="M227 858 L259 915"/>
   <path id="route-84-100" class="route" d="M144 878 L166 976"/>
   <path id="route-84-101" class="route" d="M144 878 L198 966"/>
   <path id="route-85-86" class="route" d="M376 836 L331 879"/>
   <path id="route-85-87" class="route" d="M376 836 L422 869"/>
-  <path id="route-86-87" class="route" d="M331 879 L422 869"/>
+  <path id="route-86-87" class="route" d="M331 879 L379.5 891.5 L422 869"/>
   <path id="route-86-102" class="route" d="M331 879 L259 915"/>
   <path id="route-86-104" class="route" d="M331 879 L321 943"/>
   <path id="route-86-105" class="route" d="M331 879 L376.5 924.5 L394 978"/>
@@ -891,7 +891,7 @@
   <path id="route-94-112" class="route" d="M694 859 L661 957"/>
   <path id="route-94-115" class="route" d="M694 859 L744 944"/>
   <path id="route-95-96" class="route" d="M755 810 L761 851"/>
-  <path id="route-95-97" class="route" d="M755 810 L812 859"/>
+  <path id="route-95-97" class="route" d="M755 810 L796.5 817.5 L812 859"/>
   <path id="route-96-97" class="route" d="M761 851 L812 859"/>
   <path id="route-96-115" class="route" d="M761 851 L766 924 L744 944"/>
   <path id="route-97-98" class="route" d="M812 859 L866 897"/>
@@ -908,7 +908,7 @@
   <path id="route-101-119" class="route" d="M198 966 L200.5 1003.5 L164 1021"/>
   <path id="route-102-103" class="route" d="M259 915 L296 952"/>
   <path id="route-102-104" class="route" d="M259 915 L297.5 915.5 L321 943"/>
-  <path id="route-102-110" class="route" d="M259 915 L248.5 960.5 L272.5 981.5 L317 1008"/>
+  <path id="route-102-110" class="route" d="M259 915 L254.5 959.5 L273.5 975.5 L317 1008"/>
   <path id="route-103-104" class="route" d="M296 952 L321 943"/>
   <path id="route-103-110" class="route" d="M296 952 L317 1008"/>
   <path id="route-104-105" class="route" d="M321 943 L394 978"/>
@@ -939,7 +939,7 @@
   <path id="route-111-129" class="route" d="M508 1015 L521 1054"/>
   <path id="route-112-113" class="route" d="M661 957 L599 988"/>
   <path id="route-112-114" class="route" d="M661 957 L712 969"/>
-  <path id="route-112-115" class="route" d="M661 957 L744 944"/>
+  <path id="route-112-115" class="route" d="M661 957 L700.5 921.5 L744 944"/>
   <path id="route-112-118" class="route" d="M661 957 L676 1019"/>
   <path id="route-113-118" class="route" d="M599 988 L676 1019"/>
   <path id="route-113-130" class="route" d="M599 988 L570 1027 L549 1068"/>
@@ -951,10 +951,10 @@
   <path id="route-115-117" class="route" d="M744 944 L831 999"/>
   <path id="route-116-117" class="route" d="M794 1036 L831 999"/>
   <path id="route-116-118" class="route" d="M794 1036 L676 1019"/>
-  <path id="route-116-136" class="route" d="M794 1036 L736 1130"/>
+  <path id="route-116-136" class="route" d="M794 1036 L751.5 1077.5 L736 1130"/>
   <path id="route-116-137" class="route" d="M794 1036 L782 1128"/>
   <path id="route-116-139" class="route" d="M794 1036 L818.5 1085.5 L828 1133"/>
-  <path id="route-117-139" class="route" d="M831 999 L828 1133"/>
+  <path id="route-117-139" class="route" d="M831 999 L861.5 1067.5 L828 1133"/>
   <path id="route-117-146" class="route" d="M831 999 L950 1070"/>
   <path id="route-118-134" class="route" d="M676 1019 L601 1097"/>
   <path id="route-118-135" class="route" d="M676 1019 L654 1121"/>
@@ -968,7 +968,7 @@
   <path id="route-121-125" class="route" d="M160 1060 L160.5 1146.5 L187 1173"/>
   <path id="route-121-148" class="route" d="M160 1060 L226 1124"/>
   <path id="route-121-166" class="route" d="M160 1060 L75 1178"/>
-  <path id="route-121-167" class="route" d="M160 1060 L130.5 1119.5 L135 1193"/>
+  <path id="route-121-167" class="route" d="M160 1060 L135.5 1123.5 L135 1193"/>
   <path id="route-122-123" class="route" d="M254 1080 L286 1066"/>
   <path id="route-122-148" class="route" d="M254 1080 L226 1124"/>
   <path id="route-122-149" class="route" d="M254 1080 L256 1135"/>
@@ -992,10 +992,10 @@
   <path id="route-129-130" class="route" d="M521 1054 L549 1068"/>
   <path id="route-129-132" class="route" d="M521 1054 L523 1099"/>
   <path id="route-130-132" class="route" d="M549 1068 L523 1099"/>
-  <path id="route-130-133" class="route" d="M549 1068 L564 1134"/>
+  <path id="route-130-133" class="route" d="M549 1068 L559.5 1101.5 L564 1134"/>
   <path id="route-130-134" class="route" d="M549 1068 L601 1097"/>
   <path id="route-131-132" class="route" d="M487 1135 L523 1099"/>
-  <path id="route-131-133" class="route" d="M487 1135 L564 1134"/>
+  <path id="route-131-133" class="route" d="M487 1135 L527.5 1144.5 L564 1134"/>
   <path id="route-131-155" class="route" d="M487 1135 L472 1215"/>
   <path id="route-131-157" class="route" d="M487 1135 L523.5 1173.5 L576.5 1169.5 L577 1168"/>
   <path id="route-132-133" class="route" d="M523 1099 L564 1134"/>
@@ -1005,15 +1005,15 @@
   <path id="route-134-157" class="route" d="M601 1097 L604.5 1141.5 L577 1168"/>
   <path id="route-135-136" class="route" d="M654 1121 L736 1130"/>
   <path id="route-135-157" class="route" d="M654 1121 L577 1168"/>
-  <path id="route-135-158" class="route" d="M654 1121 L727 1235"/>
+  <path id="route-135-158" class="route" d="M654 1121 L682.5 1190.5 L727 1235"/>
   <path id="route-135-159" class="route" d="M654 1121 L659 1264"/>
   <path id="route-136-137" class="route" d="M736 1130 L782 1128"/>
   <path id="route-136-138" class="route" d="M736 1130 L776 1165"/>
-  <path id="route-136-158" class="route" d="M736 1130 L727 1235"/>
+  <path id="route-136-158" class="route" d="M736 1130 L722.5 1183.5 L727 1235"/>
   <path id="route-137-138" class="route" d="M782 1128 L776 1165"/>
   <path id="route-137-139" class="route" d="M782 1128 L828 1133"/>
-  <path id="route-138-139" class="route" d="M776 1165 L828 1133"/>
-  <path id="route-138-140" class="route" d="M776 1165 L862 1173"/>
+  <path id="route-138-139" class="route" d="M776 1165 L806.5 1157.5 L827.5 1134.5 L828 1133"/>
+  <path id="route-138-140" class="route" d="M776 1165 L819.5 1180.5 L862 1173"/>
   <path id="route-138-158" class="route" d="M776 1165 L750 1183 L727 1235"/>
   <path id="route-139-140" class="route" d="M828 1133 L862 1173"/>
   <path id="route-139-146" class="route" d="M828 1133 L950 1070"/>
@@ -1024,15 +1024,15 @@
   <path id="route-141-142" class="route" d="M951 1185 L908 1321"/>
   <path id="route-141-144" class="route" d="M951 1185 L1112 1168"/>
   <path id="route-141-146" class="route" d="M951 1185 L950 1070"/>
-  <path id="route-141-147" class="route" d="M951 1185 L1078 1061"/>
+  <path id="route-141-147" class="route" d="M951 1185 L1019.5 1132.5 L1078 1061"/>
   <path id="route-142-143" class="route" d="M908 1321 L764 1351"/>
-  <path id="route-142-144" class="route" d="M908 1321 L1112 1168"/>
-  <path id="route-142-145" class="route" d="M908 1321 L1243 1224"/>
+  <path id="route-142-144" class="route" d="M908 1321 L1054.5 1304.5 L1112 1168"/>
+  <path id="route-142-145" class="route" d="M908 1321 L1096.5 1372.5 L1118.5 1352.5 L1243 1224"/>
   <path id="route-143-158" class="route" d="M764 1351 L727 1235"/>
   <path id="route-143-160" class="route" d="M764 1351 L669 1331"/>
   <path id="route-144-145" class="route" d="M1112 1168 L1243 1224"/>
   <path id="route-144-147" class="route" d="M1112 1168 L1078 1061"/>
-  <path id="route-145-147" class="route" d="M1243 1224 L1078 1061"/>
+  <path id="route-145-147" class="route" d="M1243 1224 L1200.5 1080.5 L1194.5 1074.5 L1078 1061"/>
   <path id="route-146-147" class="route" d="M950 1070 L1078 1061"/>
   <path id="route-148-149" class="route" d="M226 1124 L256 1135"/>
   <path id="route-148-150" class="route" d="M226 1124 L236 1173"/>
@@ -1052,20 +1052,20 @@
   <path id="route-154-161" class="route" d="M223 1229 L167 1263"/>
   <path id="route-155-156" class="route" d="M472 1215 L478 1240 L467 1286"/>
   <path id="route-155-157" class="route" d="M472 1215 L577 1168"/>
-  <path id="route-155-165" class="route" d="M472 1215 L587 1329"/>
+  <path id="route-155-165" class="route" d="M472 1215 L544.5 1256.5 L587 1329"/>
   <path id="route-157-159" class="route" d="M577 1168 L608 1219 L659 1264"/>
   <path id="route-157-165" class="route" d="M577 1168 L587 1329"/>
   <path id="route-158-159" class="route" d="M727 1235 L659 1264"/>
-  <path id="route-158-160" class="route" d="M727 1235 L669 1331"/>
+  <path id="route-158-160" class="route" d="M727 1235 L715.5 1290.5 L669 1331"/>
   <path id="route-159-160" class="route" d="M659 1264 L669 1331"/>
   <path id="route-159-165" class="route" d="M659 1264 L585 1284 L587 1329"/>
   <path id="route-160-165" class="route" d="M669 1331 L587 1329"/>
   <path id="route-161-162" class="route" d="M167 1263 L133 1289"/>
-  <path id="route-161-163" class="route" d="M167 1263 L112 1346"/>
+  <path id="route-161-163" class="route" d="M167 1263 L207.5 1343.5 L112 1346"/>
   <path id="route-161-167" class="route" d="M167 1263 L135 1193"/>
   <path id="route-162-163" class="route" d="M133 1289 L112 1346"/>
-  <path id="route-162-166" class="route" d="M133 1289 L75 1178"/>
-  <path id="route-162-167" class="route" d="M133 1289 L135 1193"/>
+  <path id="route-162-166" class="route" d="M133 1289 L86.5 1240.5 L75 1178"/>
+  <path id="route-162-167" class="route" d="M133 1289 L118.5 1240.5 L135 1193"/>
   <path id="route-162-168" class="route" d="M133 1289 L45 1320"/>
   <path id="route-163-168" class="route" d="M112 1346 L45 1320"/>
   <path id="route-166-167" class="route" d="M75 1178 L135 1193"/>
@@ -1106,13 +1106,6 @@
     <polygon class="mtn-snow" points="321,118 315.9,126.84 318.45,128.34 321.6,127.04"/>
     <polygon class="mtn-snow-shade" points="321,118 321.6,127.04 323.81,128.14 326.1,126.84"/>
     <polygon class="mtn-outline" points="321,118 306,144 336,144"/>
-  </g>
-  <g class="mountain">
-    <polygon class="mtn-lit" points="712,913 697,939 713.8,939"/>
-    <polygon class="mtn-shade" points="712,913 713.8,939 727,939"/>
-    <polygon class="mtn-snow" points="712,913 706.9,921.84 709.45,923.34 712.6,922.04"/>
-    <polygon class="mtn-snow-shade" points="712,913 712.6,922.04 714.8,923.14 717.1,921.84"/>
-    <polygon class="mtn-outline" points="712,913 697,939 727,939"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="798,934 783,960 799.8,960"/>
@@ -1248,18 +1241,11 @@
     <polygon class="mtn-outline" points="1318,1189 1303,1215 1333,1215"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="695,1197 680,1223 696.8,1223"/>
-    <polygon class="mtn-shade" points="695,1197 696.8,1223 710,1223"/>
-    <polygon class="mtn-snow" points="695,1197 689.9,1205.84 692.45,1207.34 695.6,1206.04"/>
-    <polygon class="mtn-snow-shade" points="695,1197 695.6,1206.04 697.8,1207.14 700.1,1205.84"/>
-    <polygon class="mtn-outline" points="695,1197 680,1223 710,1223"/>
-  </g>
-  <g class="mountain">
-    <polygon class="mtn-lit" points="513,1205 498,1231 514.8,1231"/>
-    <polygon class="mtn-shade" points="513,1205 514.8,1231 528,1231"/>
-    <polygon class="mtn-snow" points="513,1205 507.9,1213.84 510.45,1215.34 513.6,1214.04"/>
-    <polygon class="mtn-snow-shade" points="513,1205 513.6,1214.04 515.8,1215.14 518.1,1213.84"/>
-    <polygon class="mtn-outline" points="513,1205 498,1231 528,1231"/>
+    <polygon class="mtn-lit" points="687,1204 672,1230 688.8,1230"/>
+    <polygon class="mtn-shade" points="687,1204 688.8,1230 702,1230"/>
+    <polygon class="mtn-snow" points="687,1204 681.9,1212.84 684.45,1214.34 687.6,1213.04"/>
+    <polygon class="mtn-snow-shade" points="687,1204 687.6,1213.04 689.8,1214.14 692.1,1212.84"/>
+    <polygon class="mtn-outline" points="687,1204 672,1230 702,1230"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="444,1228 429,1254 445.8,1254"/>
@@ -1283,6 +1269,13 @@
     <polygon class="mtn-outline" points="403,1238 388,1264 418,1264"/>
   </g>
   <g class="mountain">
+    <polygon class="mtn-lit" points="500,1239 485,1265 501.8,1265"/>
+    <polygon class="mtn-shade" points="500,1239 501.8,1265 515,1265"/>
+    <polygon class="mtn-snow" points="500,1239 494.9,1247.84 497.45,1249.34 500.6,1248.04"/>
+    <polygon class="mtn-snow-shade" points="500,1239 500.6,1248.04 502.81,1249.14 505.1,1247.84"/>
+    <polygon class="mtn-outline" points="500,1239 485,1265 515,1265"/>
+  </g>
+  <g class="mountain">
     <polygon class="mtn-lit" points="369,1244 354,1270 370.8,1270"/>
     <polygon class="mtn-shade" points="369,1244 370.8,1270 384,1270"/>
     <polygon class="mtn-snow" points="369,1244 363.9,1252.84 366.45,1254.34 369.6,1253.04"/>
@@ -1290,11 +1283,11 @@
     <polygon class="mtn-outline" points="369,1244 354,1270 384,1270"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="1209,1249 1194,1275 1210.8,1275"/>
-    <polygon class="mtn-shade" points="1209,1249 1210.8,1275 1224,1275"/>
-    <polygon class="mtn-snow" points="1209,1249 1203.9,1257.84 1206.45,1259.34 1209.6,1258.04"/>
-    <polygon class="mtn-snow-shade" points="1209,1249 1209.6,1258.04 1211.81,1259.14 1214.1,1257.84"/>
-    <polygon class="mtn-outline" points="1209,1249 1194,1275 1224,1275"/>
+    <polygon class="mtn-lit" points="1218,1258 1203,1284 1219.8,1284"/>
+    <polygon class="mtn-shade" points="1218,1258 1219.8,1284 1233,1284"/>
+    <polygon class="mtn-snow" points="1218,1258 1212.9,1266.84 1215.45,1268.34 1218.6,1267.04"/>
+    <polygon class="mtn-snow-shade" points="1218,1258 1218.6,1267.04 1220.81,1268.14 1223.1,1266.84"/>
+    <polygon class="mtn-outline" points="1218,1258 1203,1284 1233,1284"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="241,1261 226,1287 242.8,1287"/>
@@ -1311,18 +1304,11 @@
     <polygon class="mtn-outline" points="435,1261 420,1287 450,1287"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="511,1262 496,1288 512.8,1288"/>
-    <polygon class="mtn-shade" points="511,1262 512.8,1288 526,1288"/>
-    <polygon class="mtn-snow" points="511,1262 505.9,1270.84 508.45,1272.34 511.6,1271.04"/>
-    <polygon class="mtn-snow-shade" points="511,1262 511.6,1271.04 513.8,1272.14 516.1,1270.84"/>
-    <polygon class="mtn-outline" points="511,1262 496,1288 526,1288"/>
-  </g>
-  <g class="mountain">
-    <polygon class="mtn-lit" points="1183,1269 1168,1295 1184.8,1295"/>
-    <polygon class="mtn-shade" points="1183,1269 1184.8,1295 1198,1295"/>
-    <polygon class="mtn-snow" points="1183,1269 1177.9,1277.84 1180.45,1279.34 1183.6,1278.04"/>
-    <polygon class="mtn-snow-shade" points="1183,1269 1183.6,1278.04 1185.81,1279.14 1188.1,1277.84"/>
-    <polygon class="mtn-outline" points="1183,1269 1168,1295 1198,1295"/>
+    <polygon class="mtn-lit" points="508,1272 493,1298 509.8,1298"/>
+    <polygon class="mtn-shade" points="508,1272 509.8,1298 523,1298"/>
+    <polygon class="mtn-snow" points="508,1272 502.9,1280.84 505.45,1282.34 508.6,1281.04"/>
+    <polygon class="mtn-snow-shade" points="508,1272 508.6,1281.04 510.81,1282.14 513.1,1280.84"/>
+    <polygon class="mtn-outline" points="508,1272 493,1298 523,1298"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="405,1274 390,1300 406.8,1300"/>
@@ -1332,25 +1318,18 @@
     <polygon class="mtn-outline" points="405,1274 390,1300 420,1300"/>
   </g>
   <g class="mountain">
+    <polygon class="mtn-lit" points="1194,1282 1179,1308 1195.8,1308"/>
+    <polygon class="mtn-shade" points="1194,1282 1195.8,1308 1209,1308"/>
+    <polygon class="mtn-snow" points="1194,1282 1188.9,1290.84 1191.45,1292.34 1194.6,1291.04"/>
+    <polygon class="mtn-snow-shade" points="1194,1282 1194.6,1291.04 1196.81,1292.14 1199.1,1290.84"/>
+    <polygon class="mtn-outline" points="1194,1282 1179,1308 1209,1308"/>
+  </g>
+  <g class="mountain">
     <polygon class="mtn-lit" points="328,1283 313,1309 329.8,1309"/>
     <polygon class="mtn-shade" points="328,1283 329.8,1309 343,1309"/>
     <polygon class="mtn-snow" points="328,1283 322.9,1291.84 325.45,1293.34 328.6,1292.04"/>
     <polygon class="mtn-snow-shade" points="328,1283 328.6,1292.04 330.81,1293.14 333.1,1291.84"/>
     <polygon class="mtn-outline" points="328,1283 313,1309 343,1309"/>
-  </g>
-  <g class="mountain">
-    <polygon class="mtn-lit" points="195,1286 180,1312 196.8,1312"/>
-    <polygon class="mtn-shade" points="195,1286 196.8,1312 210,1312"/>
-    <polygon class="mtn-snow" points="195,1286 189.9,1294.84 192.45,1296.34 195.6,1295.04"/>
-    <polygon class="mtn-snow-shade" points="195,1286 195.6,1295.04 197.81,1296.14 200.1,1294.84"/>
-    <polygon class="mtn-outline" points="195,1286 180,1312 210,1312"/>
-  </g>
-  <g class="mountain">
-    <polygon class="mtn-lit" points="488,1288 473,1314 489.8,1314"/>
-    <polygon class="mtn-shade" points="488,1288 489.8,1314 503,1314"/>
-    <polygon class="mtn-snow" points="488,1288 482.9,1296.84 485.45,1298.34 488.6,1297.04"/>
-    <polygon class="mtn-snow-shade" points="488,1288 488.6,1297.04 490.81,1298.14 493.1,1296.84"/>
-    <polygon class="mtn-outline" points="488,1288 473,1314 503,1314"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="358,1295 343,1321 359.8,1321"/>
@@ -1367,6 +1346,13 @@
     <polygon class="mtn-outline" points="286,1296 271,1322 301,1322"/>
   </g>
   <g class="mountain">
+    <polygon class="mtn-lit" points="484,1296 469,1322 485.8,1322"/>
+    <polygon class="mtn-shade" points="484,1296 485.8,1322 499,1322"/>
+    <polygon class="mtn-snow" points="484,1296 478.9,1304.84 481.45,1306.34 484.6,1305.04"/>
+    <polygon class="mtn-snow-shade" points="484,1296 484.6,1305.04 486.81,1306.14 489.1,1304.84"/>
+    <polygon class="mtn-outline" points="484,1296 469,1322 499,1322"/>
+  </g>
+  <g class="mountain">
     <polygon class="mtn-lit" points="545,1296 530,1322 546.8,1322"/>
     <polygon class="mtn-shade" points="545,1296 546.8,1322 560,1322"/>
     <polygon class="mtn-snow" points="545,1296 539.9,1304.84 542.45,1306.34 545.6,1305.04"/>
@@ -1374,11 +1360,11 @@
     <polygon class="mtn-outline" points="545,1296 530,1322 560,1322"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="164,1305 149,1331 165.8,1331"/>
-    <polygon class="mtn-shade" points="164,1305 165.8,1331 179,1331"/>
-    <polygon class="mtn-snow" points="164,1305 158.9,1313.84 161.45,1315.34 164.6,1314.04"/>
-    <polygon class="mtn-snow-shade" points="164,1305 164.6,1314.04 166.81,1315.14 169.1,1313.84"/>
-    <polygon class="mtn-outline" points="164,1305 149,1331 179,1331"/>
+    <polygon class="mtn-lit" points="175,1297 160,1323 176.8,1323"/>
+    <polygon class="mtn-shade" points="175,1297 176.8,1323 190,1323"/>
+    <polygon class="mtn-snow" points="175,1297 169.9,1305.84 172.45,1307.34 175.6,1306.04"/>
+    <polygon class="mtn-snow-shade" points="175,1297 175.6,1306.04 177.81,1307.14 180.1,1305.84"/>
+    <polygon class="mtn-outline" points="175,1297 160,1323 190,1323"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="254,1307 239,1333 255.8,1333"/>
@@ -1395,18 +1381,11 @@
     <polygon class="mtn-outline" points="418,1307 403,1333 433,1333"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="194,1319 179,1345 195.8,1345"/>
-    <polygon class="mtn-shade" points="194,1319 195.8,1345 209,1345"/>
-    <polygon class="mtn-snow" points="194,1319 188.9,1327.84 191.45,1329.34 194.6,1328.04"/>
-    <polygon class="mtn-snow-shade" points="194,1319 194.6,1328.04 196.81,1329.14 199.1,1327.84"/>
-    <polygon class="mtn-outline" points="194,1319 179,1345 209,1345"/>
-  </g>
-  <g class="mountain">
-    <polygon class="mtn-lit" points="495,1321 480,1347 496.8,1347"/>
-    <polygon class="mtn-shade" points="495,1321 496.8,1347 510,1347"/>
-    <polygon class="mtn-snow" points="495,1321 489.9,1329.84 492.45,1331.34 495.6,1330.04"/>
-    <polygon class="mtn-snow-shade" points="495,1321 495.6,1330.04 497.81,1331.14 500.1,1329.84"/>
-    <polygon class="mtn-outline" points="495,1321 480,1347 510,1347"/>
+    <polygon class="mtn-lit" points="145,1310 130,1336 146.8,1336"/>
+    <polygon class="mtn-shade" points="145,1310 146.8,1336 160,1336"/>
+    <polygon class="mtn-snow" points="145,1310 139.9,1318.84 142.45,1320.34 145.6,1319.04"/>
+    <polygon class="mtn-snow-shade" points="145,1310 145.6,1319.04 147.81,1320.14 150.1,1318.84"/>
+    <polygon class="mtn-outline" points="145,1310 130,1336 160,1336"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="365,1328 350,1354 366.8,1354"/>
@@ -1416,11 +1395,11 @@
     <polygon class="mtn-outline" points="365,1328 350,1354 380,1354"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="158,1338 143,1364 159.8,1364"/>
-    <polygon class="mtn-shade" points="158,1338 159.8,1364 173,1364"/>
-    <polygon class="mtn-snow" points="158,1338 152.9,1346.84 155.45,1348.34 158.6,1347.04"/>
-    <polygon class="mtn-snow-shade" points="158,1338 158.6,1347.04 160.81,1348.14 163.1,1346.84"/>
-    <polygon class="mtn-outline" points="158,1338 143,1364 173,1364"/>
+    <polygon class="mtn-lit" points="495,1329 480,1355 496.8,1355"/>
+    <polygon class="mtn-shade" points="495,1329 496.8,1355 510,1355"/>
+    <polygon class="mtn-snow" points="495,1329 489.9,1337.84 492.45,1339.34 495.6,1338.04"/>
+    <polygon class="mtn-snow-shade" points="495,1329 495.6,1338.04 497.81,1339.14 500.1,1337.84"/>
+    <polygon class="mtn-outline" points="495,1329 480,1355 510,1355"/>
   </g>
   <g class="mountain">
     <polygon class="mtn-lit" points="651,1339 636,1365 652.8,1365"/>
@@ -1430,11 +1409,18 @@
     <polygon class="mtn-outline" points="651,1339 636,1365 666,1365"/>
   </g>
   <g class="mountain">
-    <polygon class="mtn-lit" points="193,1352 178,1378 194.8,1378"/>
-    <polygon class="mtn-shade" points="193,1352 194.8,1378 208,1378"/>
-    <polygon class="mtn-snow" points="193,1352 187.9,1360.84 190.45,1362.34 193.6,1361.04"/>
-    <polygon class="mtn-snow-shade" points="193,1352 193.6,1361.04 195.81,1362.14 198.1,1360.84"/>
-    <polygon class="mtn-outline" points="193,1352 178,1378 208,1378"/>
+    <polygon class="mtn-lit" points="193,1351 178,1377 194.8,1377"/>
+    <polygon class="mtn-shade" points="193,1351 194.8,1377 208,1377"/>
+    <polygon class="mtn-snow" points="193,1351 187.9,1359.84 190.45,1361.34 193.6,1360.04"/>
+    <polygon class="mtn-snow-shade" points="193,1351 193.6,1360.04 195.81,1361.14 198.1,1359.84"/>
+    <polygon class="mtn-outline" points="193,1351 178,1377 208,1377"/>
+  </g>
+  <g class="mountain">
+    <polygon class="mtn-lit" points="156,1352 141,1378 157.8,1378"/>
+    <polygon class="mtn-shade" points="156,1352 157.8,1378 171,1378"/>
+    <polygon class="mtn-snow" points="156,1352 150.9,1360.84 153.45,1362.34 156.6,1361.04"/>
+    <polygon class="mtn-snow-shade" points="156,1352 156.6,1361.04 158.81,1362.14 161.1,1360.84"/>
+    <polygon class="mtn-outline" points="156,1352 141,1378 171,1378"/>
   </g>
 </g>
 <g id="passes">
@@ -1485,10 +1471,10 @@
   <g id="settlement-30" class="settlement town TEU"><rect class="marker" x="881.5" y="672" width="21" height="14" rx="7"/><text class="abbr" x="892" y="682">Tho</text><text class="name" x="892" y="670" text-anchor="middle">Thorn</text></g>
   <g id="settlement-31" class="settlement town TEU"><rect class="marker" x="695.5" y="705" width="21" height="14" rx="7"/><text class="abbr" x="706" y="715">Lan</text><text class="name" x="706" y="728" text-anchor="middle">Landsberg</text></g>
   <g id="settlement-32" class="settlement town SHO"><rect class="marker" x="387.5" y="533" width="21" height="14" rx="7"/><text class="abbr" x="398" y="543">Sch</text><text class="name" x="398" y="531" text-anchor="middle">Schleswig</text></g>
-  <g id="settlement-33" class="settlement town SHO"><rect class="marker" x="416.5" y="555" width="21" height="14" rx="7"/><text class="abbr" x="427" y="565">Kie</text><text class="name" x="427" y="578" text-anchor="middle">Kiel</text></g>
+  <g id="settlement-33" class="settlement town SHO"><rect class="marker" x="416.5" y="555" width="21" height="14" rx="7"/><text class="abbr" x="427" y="565">Kie</text><text class="name" x="427" y="553" text-anchor="middle">Kiel</text></g>
   <g id="settlement-34" class="settlement city LUB"><rect class="marker" x="445.5" y="596" width="21" height="16" rx="2"/><text class="abbr" x="456" y="607">Lüb</text><text class="name" x="456" y="621" text-anchor="middle">Lübeck</text></g>
   <g id="settlement-35" class="settlement city HAM"><rect class="marker" x="405.5" y="623" width="21" height="16" rx="2"/><text class="abbr" x="416" y="634">Ham</text><text class="name" x="416" y="648" text-anchor="middle">Hamburg</text></g>
-  <g id="settlement-36" class="settlement town MEC"><rect class="marker" x="484.5" y="620" width="21" height="14" rx="7"/><text class="abbr" x="495" y="630">Scw</text><text class="name" x="495" y="618" text-anchor="middle">Schwerin</text></g>
+  <g id="settlement-36" class="settlement town MEC"><rect class="marker" x="484.5" y="620" width="21" height="14" rx="7"/><text class="abbr" x="495" y="630">Scw</text><text class="name" x="495" y="643" text-anchor="middle">Schwerin</text></g>
   <g id="settlement-37" class="settlement town MEC"><rect class="marker" x="524.5" y="579" width="21" height="14" rx="7"/><text class="abbr" x="535" y="589">Ros</text><text class="name" x="535" y="602" text-anchor="middle">Rostock</text></g>
   <g id="settlement-38" class="settlement town POM"><rect class="marker" x="573.5" y="562" width="21" height="14" rx="7"/><text class="abbr" x="584" y="572">Stl</text><text class="name" x="584" y="585" text-anchor="middle">Stralsund</text></g>
   <g id="settlement-39" class="settlement town POM"><rect class="marker" x="656.5" y="641" width="21" height="14" rx="7"/><text class="abbr" x="667" y="651">Ste</text><text class="name" x="667" y="664" text-anchor="middle">Stettin</text></g>
@@ -1526,7 +1512,7 @@
   <g id="settlement-71" class="settlement town BUR"><rect class="marker" x="90.5" y="881" width="21" height="14" rx="7"/><text class="abbr" x="101" y="891">Nam</text><text class="name" x="101" y="904" text-anchor="middle">Namur</text></g>
   <g id="settlement-72" class="settlement town UTR"><rect class="marker" x="123.5" y="734" width="21" height="14" rx="7"/><text class="abbr" x="134" y="744">Utr</text><text class="name" x="134" y="757" text-anchor="middle">Utrecht</text></g>
   <g id="settlement-73" class="settlement town UTR"><rect class="marker" x="183.5" y="726" width="21" height="14" rx="7"/><text class="abbr" x="194" y="736">Dev</text><text class="name" x="194" y="749" text-anchor="middle">Deventer</text></g>
-  <g id="settlement-74" class="settlement town GEL"><rect class="marker" x="162.5" y="762" width="21" height="14" rx="7"/><text class="abbr" x="173" y="772">Nij</text><text class="name" x="173" y="760" text-anchor="middle">Nijmegen</text></g>
+  <g id="settlement-74" class="settlement town GEL"><rect class="marker" x="162.5" y="762" width="21" height="14" rx="7"/><text class="abbr" x="173" y="772">Nij</text><text class="name" x="173" y="785" text-anchor="middle">Nijmegen</text></g>
   <g id="settlement-75" class="settlement town GEL"><rect class="marker" x="163.5" y="823" width="21" height="14" rx="7"/><text class="abbr" x="174" y="833">Roe</text><text class="name" x="174" y="846" text-anchor="middle">Roermond</text></g>
   <g id="settlement-76" class="settlement town CLE"><rect class="marker" x="203.5" y="783" width="21" height="14" rx="7"/><text class="abbr" x="214" y="793">Wes</text><text class="name" x="214" y="806" text-anchor="middle">Wesel</text></g>
   <g id="settlement-77" class="settlement town CLE"><rect class="marker" x="272.5" y="788" width="21" height="14" rx="7"/><text class="abbr" x="283" y="798">Hmm</text><text class="name" x="283" y="811" text-anchor="middle">Hamm</text></g>
@@ -1540,7 +1526,7 @@
   <g id="settlement-85" class="settlement town HES"><rect class="marker" x="365.5" y="829" width="21" height="14" rx="7"/><text class="abbr" x="376" y="839">Kae</text><text class="name" x="376" y="852" text-anchor="middle">Kassel</text></g>
   <g id="settlement-86" class="settlement town HES"><rect class="marker" x="320.5" y="872" width="21" height="14" rx="7"/><text class="abbr" x="331" y="882">Mar</text><text class="name" x="331" y="895" text-anchor="middle">Marburg</text></g>
   <g id="settlement-87" class="settlement town SAX"><rect class="marker" x="411.5" y="862" width="21" height="14" rx="7"/><text class="abbr" x="422" y="872">Eis</text><text class="name" x="422" y="885" text-anchor="middle">Eisenach</text></g>
-  <g id="settlement-88" class="settlement town SAX"><rect class="marker" x="548.5" y="785" width="21" height="14" rx="7"/><text class="abbr" x="559" y="795">Wit</text><text class="name" x="559" y="783" text-anchor="middle">Wittenberg</text></g>
+  <g id="settlement-88" class="settlement town SAX"><rect class="marker" x="548.5" y="785" width="21" height="14" rx="7"/><text class="abbr" x="559" y="795">Wit</text><text class="name" x="559" y="808" text-anchor="middle">Wittenberg</text></g>
   <g id="settlement-89" class="settlement town SAX"><rect class="marker" x="531.5" y="833" width="21" height="14" rx="7"/><text class="abbr" x="542" y="843">Lei</text><text class="name" x="542" y="856" text-anchor="middle">Leipzig</text></g>
   <g id="settlement-90" class="settlement town SAX"><rect class="marker" x="610.5" y="861" width="21" height="14" rx="7"/><text class="abbr" x="621" y="871">Dre</text><text class="name" x="621" y="884" text-anchor="middle">Dresden</text></g>
   <g id="settlement-91" class="settlement town SAX"><rect class="marker" x="537.5" y="891" width="21" height="14" rx="7"/><text class="abbr" x="548" y="901">Zwi</text><text class="name" x="548" y="914" text-anchor="middle">Zwickau</text></g>
@@ -1588,10 +1574,10 @@
   <g id="settlement-133" class="settlement town BLA"><rect class="marker" x="553.5" y="1127" width="21" height="14" rx="7"/><text class="abbr" x="564" y="1137">Bur</text><text class="name" x="564" y="1150" text-anchor="middle">Burghausen</text></g>
   <g id="settlement-134" class="settlement town PAS"><rect class="marker" x="590.5" y="1090" width="21" height="14" rx="7"/><text class="abbr" x="601" y="1100">Pas</text><text class="name" x="601" y="1113" text-anchor="middle">Passau</text></g>
   <g id="settlement-135" class="settlement town AUS"><rect class="marker" x="643.5" y="1114" width="21" height="14" rx="7"/><text class="abbr" x="654" y="1124">Liz</text><text class="name" x="654" y="1137" text-anchor="middle">Linz</text></g>
-  <g id="settlement-136" class="settlement town AUS"><rect class="marker" x="725.5" y="1123" width="21" height="14" rx="7"/><text class="abbr" x="736" y="1133">SPö</text><text class="name" x="736" y="1146" text-anchor="middle">St. Pölten</text></g>
+  <g id="settlement-136" class="settlement town AUS"><rect class="marker" x="725.5" y="1123" width="21" height="14" rx="7"/><text class="abbr" x="736" y="1133">SPö</text><text class="name" x="736" y="1121" text-anchor="middle">St. Pölten</text></g>
   <g id="settlement-137" class="settlement city AUS"><rect class="marker" x="771.5" y="1120" width="21" height="16" rx="2"/><text class="abbr" x="782" y="1131">Vie</text><text class="name" x="782" y="1145" text-anchor="middle">Vienna</text></g>
-  <g id="settlement-138" class="settlement town AUS"><rect class="marker" x="765.5" y="1158" width="21" height="14" rx="7"/><text class="abbr" x="776" y="1168">Wie</text><text class="name" x="776" y="1156" text-anchor="middle">Wiener Neustadt</text></g>
-  <g id="settlement-139" class="settlement town HUN"><rect class="marker" x="817.5" y="1126" width="21" height="14" rx="7"/><text class="abbr" x="828" y="1136">Pos</text><text class="name" x="828" y="1124" text-anchor="middle">Pozsony</text></g>
+  <g id="settlement-138" class="settlement town AUS"><rect class="marker" x="765.5" y="1158" width="21" height="14" rx="7"/><text class="abbr" x="776" y="1168">Wie</text><text class="name" x="776" y="1181" text-anchor="middle">Wiener Neustadt</text></g>
+  <g id="settlement-139" class="settlement town HUN"><rect class="marker" x="817.5" y="1126" width="21" height="14" rx="7"/><text class="abbr" x="828" y="1136">Pos</text><text class="name" x="828" y="1149" text-anchor="middle">Pozsony</text></g>
   <g id="settlement-140" class="settlement town HUN"><rect class="marker" x="851.5" y="1166" width="21" height="14" rx="7"/><text class="abbr" x="862" y="1176">Győ</text><text class="name" x="862" y="1189" text-anchor="middle">Győr</text></g>
   <g id="settlement-141" class="settlement city HUN"><rect class="marker" x="940.5" y="1177" width="21" height="16" rx="2"/><text class="abbr" x="951" y="1188">Bud</text><text class="name" x="951" y="1202" text-anchor="middle">Buda</text></g>
   <g id="settlement-142" class="settlement town HUN"><rect class="marker" x="897.5" y="1314" width="21" height="14" rx="7"/><text class="abbr" x="908" y="1324">Péc</text><text class="name" x="908" y="1337" text-anchor="middle">Pécs</text></g>
@@ -1624,42 +1610,42 @@
 </g>
 <g id="labels">
   <text id="label-NOR" class="label" x="412" y="39.4">NOR</text>
-  <text id="label-SWE" class="label" x="698" y="95.4">SWE</text>
+  <text id="label-SWE" class="label" x="686" y="101.4">SWE</text>
   <text id="label-DEN" class="label" x="634" y="361.4">DEN</text>
   <text id="label-GOT" class="label" x="816" y="220.4">GOT</text>
   <text id="label-LIV" class="label" x="1236" y="91.4">LIV</text>
-  <text id="label-SHO" class="label" x="380" y="575.4">SHO</text>
+  <text id="label-SHO" class="label small" x="406" y="585.6">SHO</text>
   <text id="label-LUB" class="label small" x="496" y="569.6">LUB</text>
-  <text id="label-MEC" class="label" x="526" y="657.4">MEC</text>
-  <text id="label-POM" class="label" x="754" y="611.4">POM</text>
+  <text id="label-MEC" class="label" x="534" y="627.4">MEC</text>
+  <text id="label-POM" class="label" x="774" y="587.4">POM</text>
   <text id="label-TEU" class="label" x="1034" y="563.4">TEU</text>
   <text id="label-LIT" class="label" x="1280" y="565.4">LIT</text>
   <text id="label-FRI" class="label" x="190" y="663.4">FRI</text>
   <text id="label-EFR" class="label" x="224" y="600.4">EFR</text>
   <text id="label-OLD" class="label small" x="290" y="687.6">OLD</text>
   <text id="label-BRE" class="label small" x="358" y="649.6">BRE</text>
-  <text id="label-BRU" class="label small" x="422" y="733.6">BRU</text>
-  <text id="label-BRA" class="label" x="584" y="715.4">BRA</text>
+  <text id="label-BRU" class="label small" x="448" y="779.6">BRU</text>
+  <text id="label-BRA" class="label" x="580" y="707.4">BRA</text>
   <text id="label-POL" class="label" x="1284" y="995.4">POL</text>
-  <text id="label-MAZ" class="label" x="1046" y="687.4">MAZ</text>
+  <text id="label-MAZ" class="label" x="994" y="705.4">MAZ</text>
   <text id="label-BUR" class="label" x="44" y="903.4">BUR</text>
   <text id="label-UTR" class="label small" x="224" y="719.6">UTR</text>
-  <text id="label-GEL" class="label small" x="154" y="793.6">GEL</text>
+  <text id="label-GEL" class="label small" x="156" y="797.6">GEL</text>
   <text id="label-CLE" class="label small" x="312" y="785.6">CLE</text>
   <text id="label-KOL" class="label small" x="324" y="819.6">KOL</text>
   <text id="label-JUL" class="label small" x="252" y="864.6">JUL</text>
-  <text id="label-HES" class="label small" x="358" y="817.6">HES</text>
-  <text id="label-SAX" class="label" x="598" y="805.4">SAX</text>
+  <text id="label-HES" class="label small" x="366" y="873.6">HES</text>
+  <text id="label-SAX" class="label" x="568" y="873.4">SAX</text>
   <text id="label-ERF" class="label small" x="486" y="893.6">ERF</text>
   <text id="label-LUS" class="label small" x="644" y="817.6">LUS</text>
-  <text id="label-SIL" class="label" x="788" y="813.4">SIL</text>
-  <text id="label-OPP" class="label" x="908" y="887.4">OPP</text>
+  <text id="label-SIL" class="label small" x="782" y="805.6">SIL</text>
+  <text id="label-OPP" class="label" x="910" y="917.4">OPP</text>
   <text id="label-LUX" class="label" x="128" y="973.4">LUX</text>
-  <text id="label-TRI" class="label small" x="214" y="927.6">TRI</text>
+  <text id="label-TRI" class="label small" x="216" y="925.6">TRI</text>
   <text id="label-FFM" class="label small" x="350" y="935.6">FFM</text>
   <text id="label-ANS" class="label small" x="514" y="951.6">ANS</text>
   <text id="label-PAL" class="label" x="526" y="999.4">PAL</text>
-  <text id="label-BOH" class="label" x="856" y="1047.4">BOH</text>
+  <text id="label-BOH" class="label" x="754" y="1049.4">BOH</text>
   <text id="label-TAB" class="label small" x="710" y="1041.6">TAB</text>
   <text id="label-MET" class="label small" x="140" y="1011.6">MET</text>
   <text id="label-LOR" class="label" x="44" y="1035.4">LOR</text>
@@ -1667,9 +1653,9 @@
   <text id="label-WRT" class="label small" x="180" y="1193.6">WRT</text>
   <text id="label-BMU" class="label small" x="578" y="1049.6">BMU</text>
   <text id="label-PAS" class="label small" x="616" y="1061.6">PAS</text>
-  <text id="label-AUS" class="label" x="788" y="1195.4">AUS</text>
-  <text id="label-HUN" class="label" x="1260" y="1329.4">HUN</text>
-  <text id="label-JIS" class="label" x="1132" y="1069.4">JIS</text>
+  <text id="label-AUS" class="label" x="698" y="1155.4">AUS</text>
+  <text id="label-HUN" class="label" x="1270" y="1339.4">HUN</text>
+  <text id="label-JIS" class="label" x="1116" y="1089.4">JIS</text>
   <text id="label-DEC" class="label small" x="196" y="1119.6">DEC</text>
   <text id="label-BAS" class="label small" x="248" y="1216.6">BAS</text>
   <text id="label-KON" class="label small" x="366" y="1163.6">KON</text>
