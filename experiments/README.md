@@ -435,3 +435,26 @@ each game down as it ends and resumes).
 **What it showed: no gain, and more cores lost.** The towns given up fall without a fight, and are counted as lost — what saving
 their garrisons cost; the men saved did not win the land back. The short-siege clause (any siege under 90 days, which takes in most
 towns without walls) likely gives up towns that would have held long enough for help: to be measured apart, or dropped.
+
+## 18. Garrisons sized to the threat, alone (2026-11-09)
+
+Section 17's garrisons without the towns given up: at war, the men a garrison keeps when the rest muster are enough that the enemy
+forces within 60 days are no stronger than it behind its walls — 1.5% of its people with none near; it kept 4% at a border, 1.5%
+inside, whatever the enemy. Against 3a2985c, the new defaults: 140 games (21 of them before a restart, the rest resumed: section
+17's saving at work).
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old |
+|---|---|---|---|
+| Bavaria | +5.2 [−2.5, +12.9] | 8 / 6 | 20 / 16 |
+| Brandenburg | +6.0 [−3.4, +15.4] | 9 / 6 | 17 / 14 |
+| Austria | **+15.0** [+5.3, +24.7] | 7 / 1 | 17 / 10 |
+| Saxony | **+10.5** [+1.4, +19.5] | 7 / 2 | 12 / 16 |
+| Prussia | −3.7 [−10.9, +3.6] | 1 / 3 | 8 / 8 |
+| Gdańsk | +1.7 [−0.1, +3.4] | 0 / 0 | 16 / 13 |
+| **All** | **+5.8 [+3.3, +8.2]** | **32 / 18** of 120 | **90 / 77** |
+
+**The largest gain the benchmark has shown.** A country ends nearly six settlements up, the interval far from 0; it survives more
+often (+0.11 of a game [+0.04, +0.18]); and paired by seed it won only on the new AI in 22 games, only on the old in 8 (sign test,
+p ≈ 0.02). Cores lost are the same (−0.1 [−1.2, +1.1]): the gain is not in holding towns but in the men — a town far from any
+enemy now keeps 1.5% of its people and sends the rest to the host, which is bigger where the war is. So section 17's "no gain" was
+the towns given up cancelling this one. Refused orders 0.59 a game against 0.37.
