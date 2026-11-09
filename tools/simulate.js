@@ -2,9 +2,12 @@
 // computer players of src/ai, as in the live game (orders given at the end of a day are applied at the start of the next).
 // Prints for each game who won, when and how (reaching the scenario's number of settlements, or on time: the most at the end
 // year), and what happened, then the win rates by country, the commands the game refused, and
-// the time a game day took. What it shows goes into experiments/.
+// the time a game day took, and how much war and how armed the games were (warstats.js: five measures that do not depend on how
+// long a game lasts). What it shows goes into experiments/.
 //
-//   node tools/simulate.js [--games 8] [--years 210] [--seed 1] [--scenario mitteleuropa] [--jobs 4] [--quiet]
+//   node tools/simulate.js [--games 8] [--years 210] [--seed 1] [--scenario mitteleuropa] [--jobs 4] [--quiet] [--detail] [--by-era]
+//
+// --detail prints each game's war measures under its line; --by-era gives them for 1440–1499, 1500–1574 and 1575–1650 apart.
 //
 // --scenario is a folder of scenarios/ (or a path to one). For experiments, --without characters and/or --without rivalries
 // play the scenario as if it gave none (characters are then rolled at random, as for a scenario without them).
@@ -15,12 +18,13 @@ import path from "node:path";
 import { Worker, isMainThread, parentPort, workerData } from "node:worker_threads";
 import { Game, armyList, formatDate, isRebel, scores } from "../src/engine/index.js";
 import { createAI } from "../src/ai/index.js";
+import { warLine, warSampler, warSummary } from "./warstats.js";
 
 const root = path.join(import.meta.dirname, "..");
 
 // one game to its end; the figures worth keeping
 export function simulate(scenario, { seed, years }) {
-    const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] });
+    const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] }), wars = warSampler(game);
     const count = { war: 0, joins: 0, peace: 0, capture: 0, battle: 0, uprising: 0, agreement: 0, subject: 0, empire: 0, bankruptcy: 0, eliminated: 0 };
     const refused = {}, starts = {}, aiMs = [], dayMs = [];
     let lastWar = 0, how = null;
@@ -41,6 +45,7 @@ export function simulate(scenario, { seed, years }) {
         }
         events.push(...game.advance());
         const t1 = performance.now();
+        wars.day(events);
         for (const e of events) {
             if (e.type in count) count[e.type]++;
             if (e.type === "war") { starts[e.country] = (starts[e.country] ?? 0) + 1; lastWar = game.day; }
@@ -60,6 +65,7 @@ export function simulate(scenario, { seed, years }) {
         wars: st.wars.length, warsAtEnd: st.wars.filter((w) => !w.split("|").some((c) => isRebel(st, c))).length, armies: armies.length, lastWar,
         aiMean: aiMs.reduce((a, b) => a + b, 0) / aiMs.length, aiMax: Math.max(...aiMs), dayMean: dayMs.reduce((a, b) => a + b, 0) / dayMs.length,
         aiSamples: Float32Array.from(aiMs),                // every day's time, to pool across games for the percentiles
+        wars: wars.result(),
     };
 }
 
@@ -76,6 +82,7 @@ if (isMainThread) {
     if (import.meta.filename === process.argv[1]) {
         const games = Number(arg("games", 8)), years = Number(arg("years", 210)), seed0 = Number(arg("seed", 1)), jobs = Number(arg("jobs", 1));
         const scenarioName = arg("scenario", "mitteleuropa"), quiet = process.argv.includes("--quiet");
+        const detail = process.argv.includes("--detail"), byEra = process.argv.includes("--by-era");
         const without = process.argv.flatMap((a, i) => (process.argv[i - 1] === "--without" ? [a] : []));
         const seeds = Array.from({ length: games }, (_, i) => seed0 + i), results = [];
         const t0 = performance.now();
@@ -92,12 +99,14 @@ if (isMainThread) {
                         : simulate(loadScenario(scenarioName, without), { seed, years });
                     results.push(result);
                     if (!quiet) console.log(`seed ${result.seed}: ${result.over ? `${result.winner} won ${result.how === "time" ? "on time" : "by reaching the target"}` : "no winner"} ${result.date} | ${result.count.war} wars, ${result.count.peace} peaces, ${result.count.capture} captures | top ${result.top.slice(0, 3).map((t) => `${t.code} ${t.settlements}`).join(", ")} | ai ${result.aiMean.toFixed(2)} ms/day (max ${result.aiMax.toFixed(0)})`);
+                    if (detail) console.log(`    ${warLine(result.wars)}`);
                 }
             });
             await Promise.all(lanes);
         };
         await run();
         report(results.sort((a, b) => a.seed - b.seed), (performance.now() - t0) / 1000);
+        console.log(warSummary(results, { byEra }));
     }
 } else {
     parentPort.postMessage(simulate(loadScenario(workerData.scenarioName, workerData.without), workerData));
