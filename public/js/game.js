@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, armyPoint, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, armyPoint, fleetOrder, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -170,6 +170,7 @@ function onTick(m) {
     applyChanges(state, m.changes);
     lastTick = performance.now();
     news(m.events);
+    onwards(m.events);
     // a war declared on us: the banner, and anyone joining it since is added to it
     const alert = warAlert(m.events, me, war ?? undefined);
     if (alert) showWar(alert);
@@ -256,10 +257,37 @@ const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.marc
 const displayDay = () => (paused ? state.day : state.day + Math.min(1, (performance.now() - lastTick) / tickMs));
 const swatch = (code) => make("span", { class: "swatch", style: `background:${colourOf(code)}` });
 
-async function send(cmd) {
+async function send(cmd, { goal = false } = {}) {
+    // an order to a fleet from the player (its panel, a click) ends the way a click had it going (fleetGoals); one sent to go
+    // on with that way keeps it
+    if (cmd.fleet !== undefined && !goal) fleetGoals.delete(cmd.fleet);
     const r = await ask("command", { cmd });
     if (!r.ok) notice(r.error, "refused");
     return r;
+}
+
+// fleets by a click (mirror.js, fleetOrder): with a fleet of ours selected, a click on the sea sails it there, one on a port of
+// ours takes it in, one on an enemy's in its zone blockades it. A fleet sails one zone at a time: where a click sends it further,
+// the rest of the way is kept here (fleet id -> the target clicked) and its next order given as it arrives in each zone.
+const fleetGoals = new Map();
+async function orderFleet(f, target) {
+    const o = fleetOrder(state, game.map.zones, game.map.nodes, me, f, target);
+    if (o.error) { notice(o.error, "refused"); return; }
+    if (o.cmd) await dispatch(o.cmd);
+    if (o.goal) fleetGoals.set(f.id, o.goal);
+    else fleetGoals.delete(f.id);
+    renderAll();
+}
+function onwards(events) {
+    for (const e of events) {
+        if (e.type !== "fleetArrives" || e.owner !== me || !fleetGoals.has(e.fleet)) continue;
+        const f = state.fleets[e.fleet], goal = fleetGoals.get(e.fleet);
+        if (!f) { fleetGoals.delete(e.fleet); continue; }
+        const o = fleetOrder(state, game.map.zones, game.map.nodes, me, f, goal);
+        if (!o.goal) fleetGoals.delete(e.fleet);
+        if (o.error) { notice(`Fleet ${f.id}: ${o.error}`, "refused"); continue; }
+        if (o.cmd) send(o.cmd, { goal: true });
+    }
 }
 
 // ---------- clicks and keys ----------
@@ -268,6 +296,12 @@ function onPick(hit) {
     if (isSelected(sel, hit)) { select(null); return; }                  // a second click on it lets go
     if (hit.kind === "army") { select({ kind: "army", id: hit.id }); return; }
     if (hit.kind === "fleet") { select({ kind: "fleet", id: hit.id }); return; }
+    const fleet = sel?.kind === "fleet" && state.fleets[sel.id]?.owner === me ? state.fleets[sel.id] : null;
+    if (fleet && hit.kind === "sea") {
+        const zone = seaZoneAt(scenario, hit.x, hit.y);
+        if (zone) { orderFleet(fleet, { zone }); return; }
+    }
+    if (fleet && hit.kind === "place" && game.map.nodes.get(hit.key)?.port) { orderFleet(fleet, { port: Number(hit.key) }); return; }
     if (hit.kind === "sea") { select(null); return; }
     if (mine) { planMove(mine, hit.key); return; }
     if (hit.kind === "place") select({ kind: "place", key: hit.key });

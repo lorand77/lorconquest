@@ -210,6 +210,15 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     const field = enemyArmies.filter((a) => inTheOpen(st, a));
     const ratio = 1.5 - 0.4 * fl.aggression;
     const sieges = besiegedOwn(game, code);
+    // allies at war beside us (design.md, *The computer players*): their towns our enemies besiege are relieved as our own, a
+    // little after them; and an enemy town an ally besieges or marches on is worth more to us — one siege, not two
+    const alliedSieges = Object.values(st.settlements).filter((s) => s.siege && s.owner !== code && isFriend(st, code, s.owner)).map((s) => {
+        const sit = situation(game, String(s.id));
+        return { s, key: String(s.id), hostile: sit.hostile.filter((h) => foes.has(h.owner)), garrison: sit.garrison };
+    }).filter((b) => b.hostile.length);
+    const alliedAt = new Set(armyList(st).filter((a) => a.owner !== code && isFriend(st, code, a.owner) && !a.retreating)
+        .flatMap((a) => (a.march ? [destinationOf(a)] : a.at ? [a.at] : [])));
+    const alliedOn = (s) => (s.siege && s.siege.by !== code && isFriend(st, code, s.siege.by)) || alliedAt.has(String(s.id));
     let spareGuns = st.countries[code].reserve.cannons;            // cannons in the reserve, for the hosts to take on
     const enemyPost = (k) => { const p = st.posts[k]; return p && p.n > 0 && foes.has(p.owner) ? p : null; };
 
@@ -263,6 +272,12 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             const against = forcePower(b.hostile), inside = forcePower(b.garrison);
             if (ours + inside >= 1.2 * against) options.push({ key: b.key, score: (40 + b.s.pop / 1000) / (1 + days / 40), storm: false });
         }
+        for (const b of alliedSieges) {
+            const days = reach.get(b.key);
+            if (days === undefined || b.key === at || raider) continue;
+            const against = forcePower(b.hostile), inside = forcePower(b.garrison);
+            if (ours + inside >= 1.2 * against) options.push({ key: b.key, score: (30 + b.s.pop / 1000) / (1 + days / 40), storm: false });
+        }
         // a town of ours about to be marched on: there before the enemy, and enough with its garrison to hold it — better
         // met there than relieved later
         for (const t of threatened) {
@@ -276,7 +291,7 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             if (days === undefined) continue;
             const sit = situation(game, key), raw = forcePower(sit.garrison), def = raw * wallsFactor(game, s, guns);
             // its people in thousands, and 10 for being one more settlement towards victory (as a town's people: diplomacy.js, TOWN_WORTH)
-            const value = s.pop / 1000 + (st.countries[s.owner].capital === s.id ? 15 : 0) + (s.cores.includes(code) ? 10 : 0) + 10;
+            const value = (s.pop / 1000 + (st.countries[s.owner].capital === s.id ? 15 : 0) + (s.cores.includes(code) ? 10 : 0) + 10) * (alliedOn(s) ? 1.5 : 1);
             const danger = threat(days);
             if (ours < 1.1 * danger) continue;
             if (!sit.garrison.length) options.push({ key, score: value / (1 + days / 40), storm: false, open: !sit.relief.length, days });

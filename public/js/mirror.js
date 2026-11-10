@@ -398,3 +398,65 @@ export function compliance(s, day, coringDays) {
     const held = Math.max(0, day - (s.heldSince ?? 0));
     return { core: false, pct: Math.min(100, Math.floor(held / coringDays * 100)), daysLeft: Math.max(0, Math.ceil(coringDays - held)), ready: held >= coringDays };
 }
+
+// ---------- fleets by a click ----------
+// the sea zone at a point of the map, from scenario.json's seaGrid (tools/map.js: squares of a few pixels, as runs) — or null on
+// land or open water no zone names. Decoded once for each scenario.
+const seaGrids = new WeakMap();
+export function seaZoneAt(scenario, x, y) {
+    const g = scenario.seaGrid;
+    if (!g) return null;
+    let cells = seaGrids.get(scenario);
+    if (!cells) {
+        cells = new Uint8Array(g.cols * g.rows);
+        const runs = g.runs.split(",").map(Number);
+        for (let i = 0, at = 0; i < runs.length; i += 2) { cells.fill(runs[i], at, at + runs[i + 1]); at += runs[i + 1]; }
+        seaGrids.set(scenario, cells);
+    }
+    const c = Math.floor(x / g.cell), r = Math.floor(y / g.cell);
+    if (c < 0 || r < 0 || c >= g.cols || r >= g.rows) return null;
+    const z = cells[r * g.cols + c];
+    return z ? scenario.seaZones[z - 1].id : null;
+}
+
+// the zones a fleet sails through from one zone to another, the first hop first (the fewest hops; ties by the zones' order), or null
+export function zonePath(zones, from, to) {
+    if (from === to) return [];
+    const back = new Map([[from, null]]), queue = [from];
+    while (queue.length) {
+        const z = queue.shift();
+        for (const n of zones.get(z)?.next ?? []) {
+            if (back.has(n)) continue;
+            back.set(n, z);
+            if (n === to) { const path = [n]; for (let p = z; p !== from; p = back.get(p)) path.unshift(p); return path; }
+            queue.push(n);
+        }
+    }
+    return null;
+}
+
+// what a click on `target` — { zone } on the sea, or { port } on a port — asks of fleet `f` of `me`: { cmd } to send now, with
+// { goal } to go on with when it arrives (a fleet sails one zone at a time: RULES.md §7), or { error }. A zone: sail there (put to
+// sea, in its own); one of our ports: enter it; an enemy's: blockade it, from the sea in its zone. A fleet on its way gets the goal
+// only, and its next order when it arrives.
+export function fleetOrder(state, zones, nodes, me, f, target) {
+    let zone = target.zone, port = null, blockade = false;
+    if (target.port !== undefined) {
+        const s = state.settlements[target.port], owner = s?.owner, key = owner < me ? `${owner}|${me}` : `${me}|${owner}`;
+        zone = nodes.get(String(target.port))?.zone;
+        if (owner === me) port = target.port;
+        else if (owner && state.wars.includes(key)) blockade = true;
+        else return { error: "a port of yours to enter, or an enemy's to blockade" };
+    }
+    if (!zones.has(zone)) return { error: "no sea zone there" };
+    const name = zones.get(zone).name;
+    if (f.moving) return { cmd: null, goal: target };
+    if (zone === f.zone) {
+        if (port !== null) return f.port === port ? { error: `fleet ${f.id} is in that port already` } : { cmd: { type: "sail", fleet: f.id, port }, goal: null };
+        if (blockade) return f.port ? { cmd: { type: "sail", fleet: f.id, zone }, goal: target } : { cmd: { type: "blockade", fleet: f.id, port: target.port }, goal: null };
+        return f.port ? { cmd: { type: "sail", fleet: f.id, zone }, goal: null } : { error: `fleet ${f.id} is at sea in ${name} already` };
+    }
+    const path = zonePath(zones, f.zone, zone);
+    if (!path) return { error: `no way by sea to ${name}` };
+    return { cmd: { type: "sail", fleet: f.id, zone: path[0] }, goal: path.length > 1 || port !== null || blockade ? target : null };
+}

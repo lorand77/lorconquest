@@ -242,7 +242,8 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   armed men over that split off, gather at a staging settlement beside the front and merge into one host. The
   host marches on the settlement with the best value for its days — by storm if it outmatches the garrison
   ×1.2 (×1.8 behind walls) by a margin, else by siege — or on an enemy army it is much stronger than, or to the
-  relief of a besieged settlement of its own — or, before any siege, to a town of its own an enemy force is marching on and would
+  relief of a besieged settlement of its own (or an ally's our enemy besieges, a little after its own) — an enemy town an ally
+  besieges or marches on worth half as much again, so allies at war together fight one siege, not two — or, before any siege, to a town of its own an enemy force is marching on and would
   take, if the host gets there first and makes it hold (a host standing in such a town, which would fall without it, stays; a core
   town no host can reach in time gets mercenaries, if they arrive first and the money and the cap allow). Garrisons sortie when
   they outmatch the besiegers; an army shut in a
@@ -687,7 +688,10 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   several; marching armies glide along the roads between ticks; a ring round each besieged
   settlement fills as the siege runs; each capital's marker with a gold border while its country holds it (`mapdraw.js`, `capitalMarks`: capitals move, so the map's file cannot hold them), and in the panels "★ capital"
   by its name. Drag to pan, wheel, +/- or two fingers to zoom (`mirror.js`, `pinchView`); a finger may
-  stray 10 pixels in a tap, a mouse 5.
+  stray 10 pixels in a tap, a mouse 5. With a fleet of the player's selected, a click on the sea sails it there, one on a port
+  of theirs takes it in, one on an enemy's in its zone blockades it (`mirror.js`, `fleetOrder`; the zone a point is in from
+  scenario.json's `seaGrid`, `seaZoneAt`); a fleet sails one zone at a time, so a click further off sends it the first hop and
+  the screen gives the next as it arrives in each zone (`game.js`, `fleetGoals`, ended by any other order to it).
 - **Orders:** click an army to select it; with one of your own selected, click a settlement, a
   pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy

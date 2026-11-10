@@ -338,3 +338,28 @@ test("pikes to muskets: every pikeman of an army or none, once muskets are resea
     assert.deepEqual(pikesToMuskets({ techs: ["muskets"], reserve: { muskets: 600 }, treasury: 250000 }, men, prices), { n: 2500, lots: 2, cost: 200000, affordable: true });
     assert.equal(pikesToMuskets({ techs: ["muskets"], reserve: {}, treasury: 250000 }, men, prices).affordable, false, "3 lots: 300,000");
 });
+
+test("fleets by a click: the zone a point of the sea is in, the way between zones, and what a click asks of a fleet", async () => {
+    const { seaZoneAt, zonePath, fleetOrder } = await import("../../public/js/mirror.js");
+    const map = buildMap(scenario);
+    for (const z of scenario.seaZones) for (const [x, y] of z.fleets) assert.equal(seaZoneAt(scenario, x, y), z.id, `${z.id}'s own water`);
+    const one = scenario.settlements.find((s) => s.id === 37);
+    assert.equal(seaZoneAt(scenario, one.x, one.y), null, "Munich: land");
+    assert.equal(seaZoneAt(scenario, -5, 10), null, "off the map");
+    assert.deepEqual(zonePath(map.zones, "north-sea", "kattegat"), ["skagerrak", "oslofjord", "kattegat"]);
+    assert.deepEqual(zonePath(map.zones, "kattegat", "kattegat"), []);
+    // NED's fleet in Rotterdam (57, the North Sea); NED at war with HAM (66, a North Sea port) and BRE (65) at peace
+    const state = { settlements: { 57: { owner: "NED" }, 66: { owner: "HAM" }, 65: { owner: "BRE" }, 3: { owner: "NED" } }, wars: ["HAM|NED"] };
+    const order = (f, target) => fleetOrder(state, map.zones, map.nodes, "NED", f, target);
+    const inPort = { id: 9, zone: "north-sea", port: 57, moving: null }, atSea = { ...inPort, port: null };
+    assert.deepEqual(order(inPort, { zone: "north-sea" }), { cmd: { type: "sail", fleet: 9, zone: "north-sea" }, goal: null }, "out to sea");
+    assert.match(order(atSea, { zone: "north-sea" }).error, /at sea in North Sea already/);
+    assert.deepEqual(order(atSea, { zone: "skagerrak" }), { cmd: { type: "sail", fleet: 9, zone: "skagerrak" }, goal: null });
+    assert.deepEqual(order(atSea, { zone: "kattegat" }), { cmd: { type: "sail", fleet: 9, zone: "skagerrak" }, goal: { zone: "kattegat" } }, "the first hop, the rest kept");
+    assert.deepEqual(order(atSea, { port: 57 }), { cmd: { type: "sail", fleet: 9, port: 57 }, goal: null }, "into its own port");
+    assert.deepEqual(order(atSea, { port: 3 }).goal, { port: 3 }, "a port of ours in the Baltic: sailing for it");
+    assert.deepEqual(order(atSea, { port: 66 }), { cmd: { type: "blockade", fleet: 9, port: 66 }, goal: null }, "an enemy's port in its zone, from the sea");
+    assert.deepEqual(order(inPort, { port: 66 }), { cmd: { type: "sail", fleet: 9, zone: "north-sea" }, goal: { port: 66 } }, "from port: to sea first");
+    assert.match(order(atSea, { port: 65 }).error, /a port of yours to enter, or an enemy's/);
+    assert.deepEqual(order({ ...atSea, moving: { to: "skagerrak" } }, { zone: "kattegat" }), { cmd: null, goal: { zone: "kattegat" } }, "on its way: the goal only");
+});

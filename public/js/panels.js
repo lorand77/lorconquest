@@ -272,6 +272,8 @@ export function fleetPanel(ctx, f) {
         : f.port ? `In port at ${ctx.name(String(f.port))}.`
             : `At sea in ${zones.get(f.zone).name}.${f.order ? (f.order.type === "patrol" ? " On patrol." : ` Blockading ${ctx.name(String(f.order.port))}.`) : ""}`;
     out.push(make("p", {}, status));
+    // orders by a click on the map too (game.js, orderFleet): said here, where they are found
+    if (f.owner === me) out.push(make("p", { class: "hint" }, "Or click on the map: the sea to sail there (zone by zone), a port of yours to enter it, an enemy's to blockade it."));
     if (f.owner !== me || f.moving) return out;
 
     const buttons = [];

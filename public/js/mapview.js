@@ -122,7 +122,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         const d = drag;
         drag = null;
         svg.classList.remove("dragging");
-        if (!d.moved) onPick(pick(d.target));
+        if (!d.moved) onPick(pick(d.target, d.x, d.y));
     });
     svg.addEventListener("pointercancel", (e) => { lift(e); drag = null; svg.classList.remove("dragging"); });
     // a finger lifted off the map counts too, or a pinch could wait for it for ever
@@ -137,8 +137,8 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         onCancel();
     });
 
-    // what a click hit
-    function pick(target) {
+    // what a click hit — the sea with the map's point, for the zone it is in (mirror.js, seaZoneAt)
+    function pick(target, clientX, clientY) {
         const army = target.closest("[data-army]");
         if (army) return { kind: "army", id: Number(army.dataset.army) };
         const fleet = target.closest("[data-fleet]");
@@ -147,7 +147,8 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         if (place) return { kind: "place", key: place.id.replace(/^(settlement|pass)-/, "") };
         const land = target.closest("[id^='land-']");
         if (land) return { kind: "land", key: land.id.replace(/^land-/, "") };
-        return { kind: "sea" };
+        const at = toMap(clientX, clientY);
+        return { kind: "sea", x: at.x, y: at.y };
     }
 
     return {

@@ -783,3 +783,22 @@ test("forces: a war being prepared hires its mercenaries before it is declared, 
     assert.equal(orders({ target: "BBB", since: 0 }).some((o) => o.type === "dismissMercenaries"), false, "kept for the war to come");
     assert.ok(orders(null).some((o) => o.type === "dismissMercenaries" && o.army === 2), "the plan dropped: sent home, as in any peace");
 });
+
+test("a host relieves an ally's town our enemy besieges, if with its garrison it would hold it", () => {
+    const game = tinyGame(), st = game.state;
+    addAgreement(game, "defensive", "AAA", "CCC");
+    game.command({ type: "declareWar", country: "BBB", target: "AAA" });           // CCC, AAA's ally, is in it too
+    assert.ok(atWar(st, "CCC", "BBB"));
+    setArmy(game, 4, { swords: 21000 });                                          // BBB's towns too strong to attack
+    setArmy(game, 5, { swords: 20000 });
+    game.command({ type: "split", country: "BBB", army: 4, men: { swords: 1000 } });
+    const besiegers = Object.values(st.armies).find((a) => a.owner === "BBB" && a.id > 8);
+    Object.assign(besiegers, { at: "6" });
+    st.settlements[6].siege = { by: "BBB", start: st.day, end: st.day + 200 };
+    setArmy(game, 6, { swords: 300 });                                            // CCC's garrison, shut in
+    setArmy(game, 1, { swords: 2300 });
+    game.command({ type: "split", country: "AAA", army: 1, men: { swords: 2000 } });
+    const host = Object.values(st.armies).find((a) => a.owner === "AAA" && a.id > 8 && a.at === "1");
+    const moves = warOrders(game, "AAA", fl).filter((o) => o.type === "move" && o.army === host.id);
+    assert.deepEqual(moves.map((o) => o.to), ["6"], "2,000 with Six's 300 against 1,000: to Six");
+});
