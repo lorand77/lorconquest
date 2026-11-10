@@ -233,7 +233,8 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   swords and old guns (hand cannons, arquebuses: the worst first) replaced with the best gun when rich, the pikes kept — till it is
   rich and has muskets: then muskets alone, raised with them, the unarmed armed with them, and an army's pikes all made muskets at
   once when the money is there for every one (some only would leave it under a third: RULES.md §5); mercenaries — which
-  stand on top of the army cap — hired in a war as money allows and sent home in peace; sharpshooters at the
+  stand on top of the army cap — hired in a war as money allows, and already while a war is being prepared (on the
+  target's border: they come in a month, in time for its first battles), and sent home in peace; sharpshooters at the
   passes facing others; and what is left of a hoard buys people, so money is used and not piled up.
 - **War:** every settlement keeps a garrison — at war sized to the threat (`garrisonNeed`: the enemy forces within 60 days no
   stronger than it behind its walls — a storm a coin flip at best for them, none from a computer player; 1.5% of its people with none near; the usual floor if even all it has could not hold it), else 4% of

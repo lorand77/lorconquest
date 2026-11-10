@@ -167,18 +167,23 @@ export function forceOrders(game, code, fl, ctx) {
     }
 
     // mercenaries — they come on top of the army cap — in a war, as many as the money allows: more when it is going badly, and
-    // all of them sent home in peace
+    // all of them sent home in peace. A war being prepared (ctx.plan: declared some 40 days on) counts as one already, against
+    // its target: they come in a month, so those hired now are there for its first battles, and are not sent home meanwhile
+    const preparing = Boolean(ctx.plan && st.countries[ctx.plan.target]);
     const mine = Math.max(1, militaryPowerOf(st, code));
-    const strongest = Math.max(0, ...foes.filter((f) => !st.countries[f].rebel).map((f) => militaryPowerOf(st, f)));
+    const strongest = Math.max(0, ...foes.filter((f) => !st.countries[f].rebel).map((f) => militaryPowerOf(st, f)), ...(preparing ? [militaryPowerOf(st, ctx.plan.target)] : []));
     const hired = mercenariesOf(st, code) + c.hires.reduce((n, h) => n + h.n, 0);
-    if (atWarNow && hired + 1000 <= cap && e.moneyPerYear > 2 * MERCENARY_UPKEEP * 1000) {              // 1000 more cost 15 a year each: income must cover it twice over
+    if ((atWarNow || preparing) && hired + 1000 <= cap && e.moneyPerYear > 2 * MERCENARY_UPKEEP * 1000) {              // 1000 more cost 15 a year each: income must cover it twice over
         const rich = ctx.budget >= 3 * MERCENARY_PRICE, badly = strongest > 1.2 * mine && ctx.budget >= MERCENARY_PRICE;
-        const site = stagingSettlement(game, code);
+        // preparing, where the war will be: a core town of ours on the target's border, the largest; else the staging settlement
+        const border = preparing ? ownSettlements(st, code).filter((s) => s.cores.includes(code) && game.map.adj.get(String(s.id)).some((e) => st.settlements[game.map.nodes.get(e.to)?.land]?.owner === ctx.plan.target))
+            .sort((a, b) => b.pop - a.pop || a.id - b.id)[0] : null;
+        const site = border ?? stagingSettlement(game, code);
         if ((rich || badly) && site && site.cores.includes(code)) {
             const lotsToHire = Math.min(rich ? 2 : 1, Math.floor((cap - hired) / 1000), Math.floor(ctx.budget / MERCENARY_PRICE));
             if (lotsToHire > 0) { cmd("hireMercenaries", { settlement: site.id, lots: lotsToHire }); ctx.budget -= lotsToHire * MERCENARY_PRICE; }
         }
-    } else if (!atWarNow) {
+    } else if (!atWarNow && !preparing) {
         for (const a of ownArmies(st, code)) if (a.mercs > 0 && a.at && armiesAt(st, a.at).includes(a)) cmd("dismissMercenaries", { army: a.id, n: a.mercs });
     }
 

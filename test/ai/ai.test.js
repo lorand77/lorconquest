@@ -770,3 +770,16 @@ test("a garrison is sized to the threat: the enemy within 60 days no stronger th
     assert.equal(garrisonNeed(game, "AAA", one, g, [enemy(20000, "3")]), base, "20,000 near: not even all of it would hold — the floor, no men thrown away");
 });
 
+
+test("forces: a war being prepared hires its mercenaries before it is declared, on the target's border, and keeps them meanwhile", () => {
+    const game = tinyGame(1), st = game.state;
+    st.countries.AAA.treasury = 1e6;
+    const orders = (plan) => forceOrders(game, "AAA", fl, { budget: 1e6, plan });
+    assert.equal(orders(null).some((o) => o.type === "hireMercenaries"), false, "at peace with nothing planned: none");
+    const hire = orders({ target: "BBB", since: 0 }).find((o) => o.type === "hireMercenaries");
+    assert.equal(hire?.settlement, 2, "Two: the town of AAA's on BBB's border, where the war will be");
+    Object.assign(st.armies[2], { mercs: 500 });
+    st.armies[2].men.pikes += 500;
+    assert.equal(orders({ target: "BBB", since: 0 }).some((o) => o.type === "dismissMercenaries"), false, "kept for the war to come");
+    assert.ok(orders(null).some((o) => o.type === "dismissMercenaries" && o.army === 2), "the plan dropped: sent home, as in any peace");
+});

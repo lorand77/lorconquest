@@ -56,7 +56,8 @@ export function createAI({ seed, humans = [] }) {
         const fl = endgame(game) && holdsSmallLead(game, code) ? { ...base, aggression: Math.max(0, base.aggression - 0.3), defending: true }
             : racing(game, code) ? { ...base, aggression: Math.min(1, base.aggression + 0.3), racing: true } : base;
         const atWarNow = threatsOf(st, code).length > 0;
-        const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e), asked: memory.asked }, start = ctx.budget;
+        // `plan`: the war it is preparing, if any (diplomacy.js) — its forces arm for it before it is declared
+        const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e), asked: memory.asked, plan: memory.plans.get(code) ?? null }, start = ctx.budget;
         ctx.start = start;                                 // what was there to spend, so the economy knows what is left (the bank)
         const out = [...answerOffers(game, code), ...forceOrders(game, code, fl, ctx), ...economyOrders(game, code, fl, ctx)];
         // money offered for peace is what the treasury will hold once this think's spending is applied before it

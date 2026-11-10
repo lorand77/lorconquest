@@ -458,3 +458,25 @@ often (+0.11 of a game [+0.04, +0.18]); and paired by seed it won only on the ne
 p ≈ 0.02). Cores lost are the same (−0.1 [−1.2, +1.1]): the gain is not in holding towns but in the men — a town far from any
 enemy now keeps 1.5% of its people and sends the rest to the host, which is bigger where the war is. So section 17's "no gain" was
 the towns given up cancelling this one. Refused orders 0.59 a game against 0.37.
+
+## 19. Mercenaries hired while a war is prepared (2026-11-10)
+
+A war is planned some 40 days before it is declared (design.md, *The computer players*). Its mercenaries were hired only once it
+began, and arrived a month later; now a country preparing a war hires them already — as if at war, against the planned target's
+strength, at its largest core town on the target's border — and keeps them while the plan stands. Against eac20b5 (section 18's
+garrisons committed), the new defaults: 140 games (68, then a restart, then the other 72 resumed; 12 at a time, the other
+containers closed).
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old |
+|---|---|---|---|
+| Bavaria | +3.9 [−2.3, +10.0] | 4 / 3 | 12 / 12 |
+| Brandenburg | +2.3 [−6.7, +11.3] | 7 / 5 | 14 / 15 |
+| Austria | −0.3 [−2.0, +1.4] | 4 / 4 | 13 / 13 |
+| Saxony | −2.9 [−7.1, +1.4] | 3 / 4 | 12 / 12 |
+| Prussia | +1.8 [−2.5, +6.1] | 2 / 2 | 10 / 10 |
+| Gdańsk | exactly 0: it plans no wars | — | 11 / 11 |
+| **All** | **+0.8 [−1.4, +3.0]** | 20 / 18 of 120 | |
+
+**What it showed: nothing measurable.** The mercenaries hired are few — one or two thousand, and only by a country that is rich or
+facing a stronger target — against armies of tens of thousands, and a war's first weeks seldom decide it. Refused orders the same
+(0.33 and 0.34 a game). Harmless, and what a planner would do; not a gain these 20 seeds can see.
