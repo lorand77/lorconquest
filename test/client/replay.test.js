@@ -91,6 +91,13 @@ test("the map shows every army and fleet, each beside its place or on its road, 
     assert.equal(armyMarkers(st, nodes, legs, st.day, colour, { selected: { kind: "army", id: first.id } }).filter((m) => m.selected).length, 1);
     const fleets = fleetMarkers(st, nodes, game.map.zones, st.day, colour, {});
     assert.equal(fleets.length, Object.keys(st.fleets).length);
+    // the armies and fleets of a country at war with the player are marked; a watcher has no enemies
+    const enemyOf = (code) => st.wars.some((w) => w.split("|").includes("BAV") && w.split("|").includes(code)) && code !== "BAV";
+    assert.deepEqual(armies.map((m) => m.enemy), Object.values(st.armies).map((x) => enemyOf(x.owner)));
+    st.wars.push(["BAV", "NED"].sort().join("|"));
+    assert.ok(fleetMarkers(st, nodes, game.map.zones, st.day, colour, { me: "BAV" }).filter((m) => Object.values(st.fleets).find((f) => f.id === m.id).owner === "NED").every((m) => m.enemy));
+    assert.ok(armyMarkers(st, nodes, legs, st.day, colour, {}).every((m) => !m.enemy));
+    st.wars.pop();
     assert.ok(fleets.every((m) => Number.isFinite(m.x)));
     for (const ring of siegeRings(st, nodes)) assert.ok(ring.frac >= 0 && ring.frac <= 1);
     assert.equal(siegeRings(st, nodes).length, Object.values(st.settlements).filter((s) => s.siege).length);

@@ -2,7 +2,7 @@
 // round besieged settlements, the sharpshooter posts. Shared by the game page (which draws what its player may see, with
 // their own armies marked and one selected) and the replay page (which draws everything). Pure functions of a state and a
 // day, so they are tested in Node against real games.
-import { menOf } from "/engine/index.js";
+import { atWar, menOf } from "/engine/index.js";
 import { armyPoint, fleetPoints, formatMen } from "./mirror.js";
 
 // every army as a marker: armies standing at one place in a column beside it, marching ones where their march has them
@@ -16,7 +16,8 @@ export function armyMarkers(state, nodes, legs, day, colourOf, { me = null, sele
             x += 13;
             y += -7 + i * 16;
         } else y -= 12;
-        return { id: a.id, x, y, colour: colourOf(a.owner), label: formatMen(menOf(a)), mine: a.owner === me, selected: selected?.kind === "army" && selected.id === a.id, retreating: a.retreating };
+        return { id: a.id, x, y, colour: colourOf(a.owner), label: formatMen(menOf(a)), mine: a.owner === me, enemy: Boolean(me) && atWar(state, me, a.owner),
+            selected: selected?.kind === "army" && selected.id === a.id, retreating: a.retreating };
     });
 }
 
@@ -25,7 +26,8 @@ export function fleetMarkers(state, nodes, zones, day, colourOf, { me = null, se
     return Object.values(state.fleets).map((f) => {
         const [x, y] = points.get(f.id);
         const ships = Object.values(f.ships).reduce((k, v) => k + v, 0);
-        return { id: f.id, x, y, colour: colourOf(f.owner), label: String(ships), mine: f.owner === me, selected: selected?.kind === "fleet" && selected.id === f.id, sailing: Boolean(f.moving) };
+        return { id: f.id, x, y, colour: colourOf(f.owner), label: String(ships), mine: f.owner === me, enemy: Boolean(me) && atWar(state, me, f.owner),
+            selected: selected?.kind === "fleet" && selected.id === f.id, sailing: Boolean(f.moving) };
     });
 }
 

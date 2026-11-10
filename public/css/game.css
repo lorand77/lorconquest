@@ -468,6 +468,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .lc-army rect { stroke: #333; stroke-width: 1; }
 .lc-army text { font: bold 9px system-ui, sans-serif; text-anchor: middle; fill: #111; pointer-events: none; }
 .lc-army.mine rect { stroke: #000; stroke-width: 1.8; }
+/* an army or fleet of a country at war with the player (peasants in arms too): a red border (mapdraw.js, enemy) */
+.lc-army.enemy rect, .lc-fleet.enemy rect { stroke: #d0021b; stroke-width: 2.2; }
 .lc-army.selected rect { stroke: #ffd400; stroke-width: 3; }
 .lc-army.retreating { opacity: 0.6; }
 .lc-army.retreating rect { stroke-dasharray: 2 2; }

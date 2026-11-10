@@ -187,7 +187,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
             }
         },
 
-        // armies: [{ id, x, y, colour, label, mine, selected, retreating }]; markers are kept by id and moved
+        // armies: [{ id, x, y, colour, label, mine, enemy, selected, retreating }]; markers are kept by id and moved
         setArmies(armies) {
             const keep = new Set();
             for (const a of armies) {
@@ -206,6 +206,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
                 text.setAttribute("x", w / 2);
                 text.textContent = a.label;
                 g.classList.toggle("mine", a.mine);
+                g.classList.toggle("enemy", Boolean(a.enemy));
                 g.classList.toggle("selected", a.selected);
                 g.classList.toggle("retreating", a.retreating);
                 g.setAttribute("transform", `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`);
@@ -213,7 +214,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
             for (const [id, g] of markers) if (!keep.has(id)) { g.remove(); markers.delete(id); }
         },
 
-        // fleets: [{ id, x, y, colour, label, mine, selected, sailing }], drawn like armies, as ship chips
+        // fleets: [{ id, x, y, colour, label, mine, enemy, selected, sailing }], drawn like armies, as ship chips
         setFleets(fleets) {
             const keep = new Set();
             for (const f of fleets) {
@@ -232,6 +233,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
                 text.setAttribute("x", w / 2);
                 text.textContent = `⛵${f.label}`;
                 g.classList.toggle("mine", f.mine);
+                g.classList.toggle("enemy", Boolean(f.enemy));
                 g.classList.toggle("selected", f.selected);
                 g.classList.toggle("sailing", f.sailing);
                 g.setAttribute("transform", `translate(${f.x.toFixed(1)} ${f.y.toFixed(1)})`);

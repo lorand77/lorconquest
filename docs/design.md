@@ -684,7 +684,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   once, applies the choice and wires every Light/Dark switch; the choice is kept in the browser's local storage, the
   only thing the site keeps there besides the sign-in cookie (privacy.html; `test/server/finishing.test.js` holds it).
 - **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
-  as a marker in its owner's colour with its men on it — a column of them beside a place with
+  as a marker in its owner's colour with its men on it — edged in red, as is a fleet's, when its country is at war with the
+  player (peasants in arms too; `mapdraw.js`, `enemy`) — a column of them beside a place with
   several; marching armies glide along the roads between ticks; a ring round each besieged
   settlement fills as the siege runs; each capital's marker with a gold border while its country holds it (`mapdraw.js`, `capitalMarks`: capitals move, so the map's file cannot hold them), and in the panels "★ capital"
   by its name. Drag to pan, wheel, +/- or two fingers to zoom (`mirror.js`, `pinchView`); a finger may
