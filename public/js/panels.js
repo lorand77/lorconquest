@@ -159,7 +159,8 @@ export function shopTab(ctx) {
     } else out.push(make("p", { class: "hint" }, "Select one of your settlements on the map to build walls, a library, workshop, market or courthouse there."));
 
     // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: with the weapon the
-    // player chose last (kept in ctx.ui while the page is open), or else the best the treasury can pay for, the reserve's first
+    // player chose last (kept in ctx.ui while the page is open), or else pikes, or, should the treasury not pay for them, the best
+    // it can, the reserve's first
     // where to raise and to hire: the settlement chosen last (kept in ctx.ui while the page is open) while it is still a core of
     // ours, or else the capital, or the first core settlement
     const kept = (key) => (core.some((s) => s.id === ctx.ui?.[key]) ? ctx.ui[key] : capital ?? core[0]?.id);
@@ -170,7 +171,9 @@ export function shopTab(ctx) {
     const armable = [...WEAPONS, "cannons"].filter((w) => w === "unarmed" || c.techs.includes(w));
     const price = (w) => (w === "cannons" ? CANNON_PRICE : WEAPON_PRICE[w]);
     const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed"
-        : w === "cannons" ? `with cannons, 1 to 10 men as its crew (${n(c.reserve.cannons)} in reserve)` : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), armable.includes(ctx.ui?.raiseWeapon) ? ctx.ui.raiseWeapon : bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
+        : w === "cannons" ? `with cannons, 1 to 10 men as its crew (${n(c.reserve.cannons)} in reserve)` : `with ${WEAPON_NAMES[w]} (${n(c.reserve[w])} in reserve)`]), armable.includes(ctx.ui?.raiseWeapon) ? ctx.ui.raiseWeapon
+        : armable.includes("pikes") && armingCost(c.reserve, "pikes", Number(rl.value) * per, WEAPON_PRICE.pikes, few).cost <= c.treasury ? "pikes"
+        : bestArming(c, 1000, WEAPON_PRICE)?.weapon ?? "unarmed");
     const raiseLabel = () => {
         const { cost } = armingCost(c.reserve, rw.value, Number(rl.value) * per, price(rw.value), few);
         return cost ? `Raise · ${money(cost)} for weapons` : "Raise";

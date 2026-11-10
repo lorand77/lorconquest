@@ -114,7 +114,7 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     assert.match(text, /Raise soldiers/);
     assert.doesNotMatch(text, /muskets|not unlocked/, "only the weapons that can be bought");
     await button(nodes, "walls").handlers.click();
-    assert.equal(button(nodes, "Raise").text, "Raise · 30,000 for weapons");     // the best weapon its 100,000 pays for, cavalry: 500, by the hundred
+    assert.equal(button(nodes, "Raise").text, "Raise · 15,000 for weapons");     // pikes by default: 500, by the hundred
     await button(nodes, "Raise").handlers.click();
     await button(nodes, "Hire").handlers.click();
     const [lots] = find(nodes, (e) => e.attrs.type === "number" && e.attrs.max === 50 && e.attrs.value === 1).slice(-1);
@@ -123,7 +123,7 @@ test("the Shop tab: buildings for the selected settlement, forces, weapons — a
     await button(nodes, "Buy 1000 people").handlers.click();
     assert.deepEqual(sent, [
         { type: "buyBuilding", building: "walls", settlement: 37 },
-        { type: "raise", settlement: 37, kind: "soldiers", hundreds: 5, weapon: "cavalry" },   // room for 500 under feudal law
+        { type: "raise", settlement: 37, kind: "soldiers", hundreds: 5, weapon: "pikes" },   // room for 500 under feudal law
         { type: "hireMercenaries", settlement: 37, lots: 1 },
         { type: "buyWeapons", weapon: "swords", lots: 3 },
         { type: "buyPeople", lots: 1 },
@@ -285,10 +285,14 @@ test("the weapon soldiers are raised with stays as the player chose it, redraw a
     ctx.ui = { target: null, raiseWeapon: null };
     const weaponOf = (nodes) => find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "cavalry"))[0];
     let nodes = shopTab(ctx);
-    assert.equal(weaponOf(nodes).value, "cavalry");                           // nothing chosen yet: the best the treasury pays for
+    assert.equal(weaponOf(nodes).value, "pikes");                             // nothing chosen yet: pikes
+    weaponOf(nodes).value = "cavalry";
+    weaponOf(nodes).handlers.change();
+    assert.equal(ctx.ui.raiseWeapon, "cavalry");
+    nodes = shopTab(ctx);
+    assert.equal(weaponOf(nodes).value, "cavalry");
     weaponOf(nodes).value = "pikes";
     weaponOf(nodes).handlers.change();
-    assert.equal(ctx.ui.raiseWeapon, "pikes");
     nodes = shopTab(ctx);                                                      // the panel is rebuilt as the days go by
     assert.equal(weaponOf(nodes).value, "pikes");
     assert.equal(button(nodes, "Raise").text, "Raise · 15,000 for weapons");     // 500 pikes, by the hundred
