@@ -686,7 +686,7 @@ drops by **40 for 10 years** (see *Computer countries*).
 | | Vassal | Protectorate |
 |---|---|---|
 | Pays you | **40%** of its yearly money (§2), when positive | **10%** of its yearly money (§2), when positive |
-| Joins your wars | every war, automatically — it cannot refuse | never obliged |
+| Joins your wars | every war, automatically — it cannot refuse | never obliged — but may, by choice, as you may join its |
 | Its own diplomacy | none: it cannot declare war, make agreements or sign peace | keeps it |
 | Counts as your military ally (§5) | yes | only if it chooses to join the war |
 
@@ -864,6 +864,10 @@ countries, and **their allies make their own peace**. A vassal's wars end with i
   declarer; each side's military allies are **called**. A computer ally always joins; a human has 6 months and joins
   if it does not answer; refusing ends the alliance. A defensive ally of the attacker is not called: it was not
   attacked. A protectorate is never obliged.
+- *Joining by choice:* an overlord may join any war its protectorate fights, and a protectorate any war its overlord fights,
+  at any time — on that side, against the country fighting it, as an ally would: no warmonger score for declaring (the defending
+  side's share at a peace, if it was the one attacked), and a pact, truce, alliance or guarantee with that enemy is broken, as by
+  declaring war. A vassal has no choice to make: it is in its overlord's wars already.
 - *A country that would fight an ally* — called by both sides, or allied with both — joins one side only, and the
   alliance with the other ends. That is no break of faith.
 - *Declaring war* on a country you have a pact, a truce or an alliance with, or guarantee, breaks it (see below). You

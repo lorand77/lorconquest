@@ -136,6 +136,12 @@ function randomCommand(game, r) {
         case "demandSubject": return { ...a, target: pick(codes), kind: pick(["vassal", "protectorate"]) };
         case "proposeEmpire": return a;
         case "integrate": { const mine = Object.keys(st.countries).filter((c) => st.countries[c].overlord === country); return { ...a, target: mine.length && r() < 0.8 ? pick(mine) : pick(codes) }; }
+        case "joinWar": {                                                // mostly a subject (or the overlord) and one of its enemies
+            const kin = Object.keys(st.countries).filter((c) => st.countries[c].overlord === country || st.countries[country].overlord === c);
+            const ally = kin.length && r() < 0.8 ? pick(kin) : pick(codes);
+            const foes = st.wars.map((w) => w.split("|")).filter((w) => w.includes(ally)).map((w) => w.find((x) => x !== ally));
+            return { ...a, ally, enemy: foes.length && r() < 0.8 ? pick(foes) : pick(codes) };
+        }
         case "answerOffer": { const o = pick(st.offers); return { ...a, id: o?.id, accept: r() < 0.5 }; }
         case "move": return { ...a, army: army?.id, to: pick(nodeKeys), storm: r() < 0.3 };
         case "stop": case "besiege": case "storm": case "sortie": case "stormPost": return { ...a, army: army?.id };
@@ -205,5 +211,6 @@ test("random play: 45 countries giving every kind of command keep the state sane
     // the fuzz is only worth anything if it does things: nearly every kind of command was accepted at least once (integrate needs
     // a vassal of 10 years at peace, which random play, always at war, hardly ever leaves: subjects.test.js covers it)
     const never = COMMAND_TYPES.filter((t) => !accepted.has(t));
-    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire", "integrate"].includes(t)), [], "never accepted");
+    // (joinWar needs a protectorate at war, which random play seldom makes: subjects.test.js covers it)
+    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire", "integrate", "joinWar"].includes(t)), [], "never accepted");
 });

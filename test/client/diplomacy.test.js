@@ -240,3 +240,16 @@ test("Declare war says how many planned marches go with it", () => {
     ctx.planned = () => 1;
     assert.ok(find(diplomacyTab(ctx), (e) => e.tag === "button" && e.text === "Declare war — and send 1 planned march").length);
 });
+
+test("a protectorate's war can be joined from the Diplomacy tab, on its side", async () => {
+    const { ctx, sent } = setup((game) => {
+        Object.assign(game.state.countries.ULM, { overlord: "BAV", subjectKind: "protectorate" });
+        game.command({ type: "declareWar", country: "STU", target: "ULM" });
+    }, "ULM");
+    globalThis.confirm = () => true;
+    const join = find(diplomacyTab(ctx), (e) => e.tag === "button" && e.text.startsWith("Join its war against"))[0];
+    assert.ok(join, "Ulm, Bavaria's protectorate, at war with Stuttgart");
+    await join.handlers.click();
+    assert.deepEqual(sent.at(-1), { type: "joinWar", ally: "ULM", enemy: "STU" });
+    delete globalThis.confirm;
+});

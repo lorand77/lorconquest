@@ -206,6 +206,22 @@ export function declareWar(game, a, b, events) {
     evictClosed(game, events);
 }
 
+// a war joined by choice (RULES.md §10, Subjects): an overlord joins one its protectorate fights, or a protectorate its overlord's —
+// on that side, against the principal on the other, as an ally would (no declarer's warmonger score). Choosing to fight `enemy`
+// breaks a pact, a truce, an alliance or a guarantee with it, as declaring war does; access between the two ends.
+export function joinByChoice(game, joiner, ally, enemy, events) {
+    const st = game.state, side = st.warInfo[warKey(ally, enemy)]?.attacker === ally ? "att" : "def";
+    const bound = agreementsBetween(st, joiner, enemy).filter((x) => ["pact", "truce", "defensive", "military"].includes(x.kind))
+        .concat(st.agreements.filter((x) => x.kind === "guarantee" && x.a === joiner && x.b === enemy));
+    if (bound.length) {
+        removeAgreements(game, (x) => bound.includes(x));
+        punishBreak(game, joiner, events);
+    }
+    removeAgreements(game, (x) => x.kind === "access" && ((x.a === enemy && x.b === joiner) || (x.a === joiner && x.b === enemy)));
+    joinWar(game, joiner, side, ally, enemy, events);
+    evictClosed(game, events);
+}
+
 // ---------- peace ----------
 
 // peace terms: { take: [settlements of the other], give: [of mine], money: + to me, − to the other, makeSubject: the other

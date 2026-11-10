@@ -418,3 +418,29 @@ test("winning with subjects: a chain counts to the top; a subject and its overlo
     sub(g, "AAA", "CCC", "vassal");
     assert.equal(ofType(g.advance(), "victory")[0]?.country, "CCC");
 });
+
+test("a war joined by choice: an overlord joins its protectorate's, a protectorate its overlord's — on its side, a pact with the enemy broken", () => {
+    const game = tinyGame(), st = game.state;
+    Object.assign(st.countries.CCC, { overlord: "AAA", subjectKind: "protectorate" });
+    assert.match(refused(game, cmd("AAA", "joinWar", { ally: "CCC", enemy: "BBB" })), /CCC is not at war with BBB/);
+    order(game, cmd("BBB", "declareWar", { target: "CCC" }));
+    assert.equal(atWar(st, "AAA", "BBB"), false, "a protectorate's war is not its overlord's");
+    addAgreement(game, "pact", "AAA", "BBB", 3650);
+    const before = st.countries.AAA.warmonger;
+    const events = order(game, cmd("AAA", "joinWar", { ally: "CCC", enemy: "BBB" }));
+    assert.ok(atWar(st, "AAA", "BBB"));
+    assert.deepEqual(ofType(events, "joins").map((e) => [e.country, e.enemy, e.side]), [["AAA", "BBB", "def"]], "on the defending side: CCC was attacked");
+    assert.equal(st.countries.AAA.warmonger, before, "no declarer's score");
+    assert.equal(hasAgreement(st, "pact", "AAA", "BBB"), false);
+    assert.equal(st.memory.broke.AAA, st.day, "fighting one it had a pact with breaks the pact");
+    assert.match(refused(game, cmd("AAA", "joinWar", { ally: "CCC", enemy: "BBB" })), /at war with BBB already/);
+    assert.match(refused(game, cmd("AAA", "joinWar", { ally: "DDD", enemy: "BBB" })), /not your protectorate/);
+    // the other way: the protectorate joins a war its overlord began, on the attacking side
+    order(game, cmd("AAA", "declareWar", { target: "DDD" }));
+    order(game, cmd("CCC", "joinWar", { ally: "AAA", enemy: "DDD" }));
+    assert.ok(atWar(st, "CCC", "DDD"));
+    assert.equal(st.warInfo[["CCC", "DDD"].sort().join("|")].attacker, "CCC");
+    // a vassal has no such choice: it is in its overlord's wars already, and has no diplomacy
+    st.countries.CCC.subjectKind = "vassal";
+    assert.match(refused(game, cmd("CCC", "joinWar", { ally: "AAA", enemy: "EEE" })), /no diplomacy/);
+});

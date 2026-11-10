@@ -9,9 +9,10 @@
 //   breakAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "truce" }   cancelAccess { with }
 //   demandSubject { target, kind: "vassal" | "protectorate" }   proposeEmpire {}   integrate { target }   a vassal of 10 years
 //   answerOffer { id, accept }       a call to arms, or anything a human was asked
+//   joinWar { ally, enemy }          a war your protectorate fights (or, a protectorate, your overlord's), joined on its side
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
-import { OFFER_DAYS, addAgreement, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
+import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, takeSubject, validateTerms, joinWar, PACT_DAYS } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
@@ -70,6 +71,24 @@ export const diplomacyCommands = {
         if (isVassal(st, c)) return refuse(`${c} is a vassal of ${overlordOf(st, c)}: its overlord answers for it — declare war on ${overlordOf(st, c)}`);
         const events = [];
         declareWar(game, cmd.country, c, events);
+        return done(events);
+    },
+
+    joinWar(game, cmd) {
+        const st = game.state, me = cmd.country;
+        const a = other(game, cmd, cmd.ally);
+        if (a.error) return refuse(a.error);
+        const ally = a.c, ours = overlordOf(st, ally) === me && st.countries[ally].subjectKind === "protectorate";
+        const theirs = overlordOf(st, me) === ally && st.countries[me].subjectKind === "protectorate";
+        if (!ours && !theirs) return refuse(`${ally} is not your protectorate, nor you its protectorate: join its wars as an ally`);
+        const e = other(game, cmd, cmd.enemy);
+        if (e.error) return refuse(e.error);
+        const enemy = e.c;
+        if (!atWar(st, ally, enemy)) return refuse(`${ally} is not at war with ${enemy}`);
+        if (atWar(st, me, enemy)) return refuse(`you are at war with ${enemy} already`);
+        if (overlordOf(st, me) === enemy || overlordOf(st, enemy) === me) return refuse("a subject and its overlord do not make war on each other: it breaks free instead");
+        const events = [];
+        joinByChoice(game, me, ally, enemy, events);
         return done(events);
     },
 

@@ -147,6 +147,17 @@ function dealWith(ctx, t) {
         them.overlord ? mk("p", {}, `A ${them.subjectKind} of ${state.countries[them.overlord].name}${vassal ? ": it has no diplomacy of its own — speak to its overlord" : ""}.`) : "",
         rivalsLine(ctx, t),
         warsOf(ctx, t)));
+    // a war of our protectorate's — or, a protectorate, our overlord's — joined by choice, on its side (RULES.md §10, Subjects)
+    const ours = them.overlord === me && them.subjectKind === "protectorate", theirs = state.countries[me]?.overlord === t && state.countries[me]?.subjectKind === "protectorate";
+    if (ours || theirs) {
+        const joinable = state.wars.map((w) => w.split("|")).filter((w) => w.includes(t)).map((w) => w.find((x) => x !== t))
+            .filter((e) => e !== me && !state.countries[e]?.rebel && !state.wars.includes(pairKey(me, e)) && state.countries[e]?.overlord !== me && state.countries[me]?.overlord !== e).sort();
+        if (joinable.length) out.push(section(ctx, ours ? "Your protectorate's wars" : "Your overlord's wars",
+            ...joinable.map((e) => row(ctx, mk("button", { class: "danger", onclick: async () => {
+                if (confirm(`Join ${them.name}'s war against ${state.countries[e].name}? You fight ${state.countries[e].name} on ${them.name}'s side, as an ally would — no warmonger score for declaring; a pact or truce with ${state.countries[e].name} is broken.`)) { await ctx.send({ type: "joinWar", ally: t, enemy: e }); ctx.redraw(); }
+            } }, `Join its war against ${state.countries[e].name}`))),
+            mk("p", { class: "hint" }, ours ? "A protectorate's wars are not yours unless you join them." : "Your overlord's wars are not yours unless you join them.")));
+    }
     // your vassal of 10 years may become part of your country (RULES.md §10, Integration)
     if (vassal && them.overlord === me) {
         const why = integrateError(game, me, t), since = them.vassalSince ?? 0;

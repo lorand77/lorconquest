@@ -939,6 +939,7 @@ handlers are in `src/engine/commands*.js`, and each file lists its commands' arg
 | | `setTax` · `setSlider` (research) · `setLaw` | §2, §4, §9 |
 | | `deposit` · `withdraw` · `borrow` · `repay` · `defaultOnLoans` | §2 |
 | | `research` (choose the tech) · `setCapital` · `proclaim` (special coring) | §4, §2, SCENARIO |
+| | `joinWar` (an overlord into its protectorate's war, or a protectorate into its overlord's, by choice) | §10 |
 | Diplomacy | `declareWar` · `proposePeace` (with terms: take, give, money, a subject) | §10 |
 | | `proposeAgreement` (defensive, military, guarantee, pact, access) · `breakAgreement` · `cancelAccess` | §10 |
 | | `demandSubject` (vassal or protectorate) · `proposeEmpire` (once ever) | §10, SCENARIO |
