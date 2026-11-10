@@ -479,6 +479,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .map .settlement.capital .marker { stroke: #e8b000; stroke-width: 2.2px; }
 #lands .lc-dim { opacity: 0.3; }
 .lc-route { fill: none; stroke: #222; stroke-width: 2; stroke-dasharray: 6 4; pointer-events: none; }
+/* a march planned for a war to come, sent when it breaks out (game.js, premoves) */
+.lc-premove { fill: none; stroke: #d0021b; stroke-width: 1.8; stroke-dasharray: 3 4; pointer-events: none; opacity: 0.85; }
 .lc-fleet rect { stroke: #234; stroke-width: 1; }
 .lc-fleet text { font: bold 9px system-ui, sans-serif; text-anchor: middle; fill: #111; pointer-events: none; }
 .lc-fleet.mine rect { stroke: #000; stroke-width: 1.8; }

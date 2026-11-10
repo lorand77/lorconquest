@@ -363,3 +363,19 @@ test("fleets by a click: the zone a point of the sea is in, the way between zone
     assert.match(order(atSea, { port: 65 }).error, /a port of yours to enter, or an enemy's/);
     assert.deepEqual(order({ ...atSea, moving: { to: "skagerrak" } }, { zone: "kattegat" }), { cmd: null, goal: { zone: "kattegat" } }, "on its way: the goal only");
 });
+
+test("a march planned before a war: the way into a country at peace with us as if at war with it, others' land still closed; due once at war", async () => {
+    const { routeAsAtWar, premovesDue } = await import("../../public/js/mirror.js");
+    const { Game, routeFor } = await import("../../src/engine/index.js");
+    const game = Game.create(scenario, { seed: 1 }), st = game.state;
+    const munich = Object.values(st.armies).find((a) => a.owner === "BAV" && a.at === "37");
+    assert.equal(routeFor(game, munich, "35"), null, "Linz, Austria's: closed while at peace");
+    const then = routeAsAtWar(game, munich, "35", "AUS", routeFor);
+    assert.deepEqual(then.path.at(-1), "35");
+    assert.ok(then.days > 0);
+    assert.equal(st.wars.includes("AUS|BAV"), false, "the game itself is not touched");
+    assert.equal(routeAsAtWar(game, munich, "34", "SAL", routeFor), null, "Salzburg lies beyond Austria's land, still closed");
+    const plans = new Map([[1, { to: "35", storm: true, target: "AUS" }], [2, { to: "39", storm: false, target: "TYR" }]]);
+    assert.deepEqual(premovesDue(plans, st, "BAV"), []);
+    assert.deepEqual(premovesDue(plans, { ...st, wars: [...st.wars, "AUS|BAV"] }, "BAV"), [{ army: 1, to: "35", storm: true, target: "AUS" }]);
+});

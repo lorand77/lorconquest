@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, armyPoint, fleetOrder, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -257,13 +257,30 @@ const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.marc
 const displayDay = () => (paused ? state.day : state.day + Math.min(1, (performance.now() - lastTick) / tickMs));
 const swatch = (code) => make("span", { class: "swatch", style: `background:${colourOf(code)}` });
 
-async function send(cmd, { goal = false } = {}) {
+async function send(cmd, { goal = false, planned = false } = {}) {
     // an order to a fleet from the player (its panel, a click) ends the way a click had it going (fleetGoals); one sent to go
-    // on with that way keeps it
+    // on with that way keeps it. So with an army and the march planned for it (premoves).
     if (cmd.fleet !== undefined && !goal) fleetGoals.delete(cmd.fleet);
+    if (cmd.army !== undefined && !planned) premoves.delete(cmd.army);
     const r = await ask("command", { cmd });
     if (!r.ok) notice(r.error, "refused");
+    // a war declared: the marches planned for it go at once, in the same tick as the declaration
+    else if (cmd.type === "declareWar") sendPremoves((p) => p.target === cmd.target);
     return r;
+}
+
+// marches planned before a war (mirror.js, routeAsAtWar): an army ordered to a town of a country we are at peace with — land
+// closed to it — keeps the march here (army id -> { to, storm, target, path, days }), drawn dashed on the map, and sends it when
+// the war with that country breaks out: declared by us (send), on us, or by an ally's call (onwards). Kept while the page is open.
+const premoves = new Map();
+function sendPremoves(which) {
+    for (const [id, p] of [...premoves]) {
+        if (!which(p, id)) continue;
+        premoves.delete(id);
+        const a = state.armies[id];
+        if (a && a.owner === me && !a.retreating) send({ type: "move", army: id, to: p.to, storm: p.storm }, { planned: true });
+    }
+    renderAll();
 }
 
 // fleets by a click (mirror.js, fleetOrder): with a fleet of ours selected, a click on the sea sails it there, one on a port of
@@ -279,6 +296,9 @@ async function orderFleet(f, target) {
     renderAll();
 }
 function onwards(events) {
+    for (const [id] of [...premoves]) if (!state.armies[id] || state.armies[id].owner !== me) premoves.delete(id);
+    const due = new Set(premovesDue(premoves, state, me).map((p) => p.army));
+    if (due.size) sendPremoves((p, id) => due.has(id));
     for (const e of events) {
         if (e.type !== "fleetArrives" || e.owner !== me || !fleetGoals.has(e.fleet)) continue;
         const f = state.fleets[e.fleet], goal = fleetGoals.get(e.fleet);
@@ -332,7 +352,13 @@ function setTab(t) {
 function planMove(army, to) {
     if (army.at === to) { plan = null; renderAll(); return; }
     const found = routeFor(game, army, to);
-    if (!found) { plan = null; notice(`No way to ${name(to)} through land army ${army.id} may enter.`, "refused"); renderAll(); return; }
+    if (!found) {
+        // the land of a country we are at peace with: a march planned for the war, if there would be a way then
+        const target = state.settlements[game.map.nodes.get(to)?.land]?.owner;
+        const then = target && target !== me && !country(target)?.rebel && !atWar(me, target) ? routeAsAtWar(game, army, to, target, routeFor) : null;
+        if (then) { plan = { army: army.id, to, path: then.path, days: then.days, premove: target }; renderAll(); return; }
+        plan = null; notice(`No way to ${name(to)} through land army ${army.id} may enter.`, "refused"); renderAll(); return;
+    }
     plan = { army: army.id, to, path: found.path, days: found.days };
     // what the player chose a click to do (notices.js, marchFor): show the route and ask, or march — and storm — at once
     const node = game.map.nodes.get(to), enemyTown = node.kind === "settlement" && atWar(me, state.settlements[node.id].owner);
@@ -425,6 +451,7 @@ function drawHelp() {
 // the context the panels in panels.js draw with
 const ctx = {
     make, swatch, send, dispatch, redraw: () => renderAll(true), name: (key) => name(key), ui,
+    planned: (t) => [...premoves.values()].filter((p) => p.target === t).length,          // marches planned for a war on `t`
     get state() { return state; }, get game() { return game; }, get me() { return me; }, get sel() { return sel; },
 };
 
@@ -612,6 +639,7 @@ function renderMap() {
     paintMap(map, state, game.map.nodes, game.map.zones, legs, displayDay(), colourOf, markerOptions());
     const a = plan && state.armies[plan.army];
     map.setRoute(a ? routeLine(a, plan.path, displayDay(), legs, game.map.nodes) : null);
+    map.setPremoves([...premoves].filter(([id]) => state.armies[id]).map(([id, p]) => routeLine(state.armies[id], p.path, displayDay(), legs, game.map.nodes)));
 }
 
 // marching armies glide between ticks
@@ -672,6 +700,17 @@ function armyPanel(a) {
     out.push(home ? make("p", { class: "town" }, `At ${name(a.at)}: ${formatNumber(town.pop)} people${town.cores.includes(me) ? "" : ", not core"}${town.walls ? ", walls" : ""}. `,
         make("button", { class: "link", onclick: () => select({ kind: "place", key: a.at }) }, "Settlement…")) : make("p", {}, armyStatus(a)));
     if (a.owner !== me) return out;
+    if (plan && plan.army === a.id && plan.premove) {
+        // a march into a country we are at peace with: planned, to go when the war with it breaks out
+        const node = game.map.nodes.get(plan.to), town = node.kind === "settlement";
+        const keep = (storm) => { premoves.set(a.id, { to: plan.to, storm, target: plan.premove, path: plan.path, days: plan.days }); plan = null; renderAll(); };
+        out.push(make("div", { class: "plan" },
+            make("p", {}, `To ${name(plan.to)}, in ${country(plan.premove).name}'s land, closed while you are at peace: ${Math.ceil(plan.days)} days once at war. Planned now, the march goes the moment war with ${country(plan.premove).name} breaks out.`),
+            make("button", { class: "primary", onclick: () => keep(false) }, "Plan the march"),
+            ...(town ? [make("button", { onclick: () => keep(true) }, "Plan march and storm")] : []),
+            make("button", { onclick: () => { plan = null; renderAll(); } }, "Cancel")));
+        return out;
+    }
     if (plan && plan.army === a.id) {
         const s = state.settlements[game.map.nodes.get(plan.to).land];
         const enemyTown = game.map.nodes.get(plan.to).kind === "settlement" && atWar(me, s.owner);
@@ -683,6 +722,9 @@ function armyPanel(a) {
         return out;
     }
     if (a.retreating) return out;
+    const planned = premoves.get(a.id);
+    if (planned) out.push(make("p", { class: "plan" }, `Planned: to ${name(planned.to)}${planned.storm ? ", to storm it" : ""}, when war with ${country(planned.target).name} breaks out (${Math.ceil(planned.days)} days). `,
+        make("button", { class: "link", onclick: () => { premoves.delete(a.id); renderAll(); } }, "Cancel the plan")));
     const buttons = [];
     if (a.march) buttons.push(make("button", { onclick: () => send({ type: "stop", army: a.id }) }, "Stop at the next place"));
     if (a.at) {

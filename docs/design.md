@@ -693,6 +693,11 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   of theirs takes it in, one on an enemy's in its zone blockades it (`mirror.js`, `fleetOrder`; the zone a point is in from
   scenario.json's `seaGrid`, `seaZoneAt`); a fleet sails one zone at a time, so a click further off sends it the first hop and
   the screen gives the next as it arrives in each zone (`game.js`, `fleetGoals`, ended by any other order to it).
+  An army sent into the land of a country the player is at peace with — closed to it — may have the march **planned** instead:
+  worked out as if at war with that country (`mirror.js`, `routeAsAtWar`; anyone else's closed land stays closed), drawn dashed in
+  red, and sent the moment war with it breaks out — right after the player's own declaration, in the same tick (Declare war says how
+  many go with it), or when that country declares or an ally's call brings the war (`game.js`, `premoves`; `premovesDue`). Plans are
+  kept by the page while it is open; any other order to the army ends its plan.
 - **Orders:** click an army to select it; with one of your own selected, click a settlement, a
   pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy

@@ -231,3 +231,12 @@ test("a rival is shown as one, and never agrees to become your subject; every de
     assert.match(other, /Rivals: .*Tyrol/);
     assert.match(other, /No country agrees to become the subject of one at 75% of victory/);
 });
+
+test("Declare war says how many planned marches go with it", () => {
+    const { ctx } = setup(() => {}, "AUS");
+    assert.ok(find(diplomacyTab(ctx), (e) => e.tag === "button" && e.text === "Declare war").length, "none planned: as before");
+    ctx.planned = (t) => (t === "AUS" ? 2 : 0);
+    assert.ok(find(diplomacyTab(ctx), (e) => e.tag === "button" && e.text === "Declare war — and send 2 planned marches").length);
+    ctx.planned = () => 1;
+    assert.ok(find(diplomacyTab(ctx), (e) => e.tag === "button" && e.text === "Declare war — and send 1 planned march").length);
+});

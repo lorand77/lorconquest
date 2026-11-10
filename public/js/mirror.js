@@ -460,3 +460,19 @@ export function fleetOrder(state, zones, nodes, me, f, target) {
     if (!path) return { error: `no way by sea to ${name}` };
     return { cmd: { type: "sail", fleet: f.id, zone: path[0] }, goal: path.length > 1 || port !== null || blockade ? target : null };
 }
+
+// ---------- marches planned before a war ----------
+// the way `army` would march to `to` were its country at war with `target` — the land of a country it is at peace with is closed
+// (RULES.md §10), so the march is planned now and sent when the war breaks out (game.js, premoves). Anyone else's closed land stays
+// closed. `routeFor` is the engine's; the game is given as at war, all else itself.
+export function routeAsAtWar(game, army, to, target, routeFor) {
+    const st = game.state, key = army.owner < target ? `${army.owner}|${target}` : `${target}|${army.owner}`;
+    const asIf = Object.create(game, { state: { value: { ...st, wars: st.wars.includes(key) ? st.wars : [...st.wars, key] } } });
+    return routeFor(asIf, army, to);
+}
+
+// the planned marches (army id -> { to, storm, target }) whose war has come: those against a country `me` is now at war with
+export function premovesDue(premoves, state, me) {
+    const war = (t) => state.wars.includes(me < t ? `${me}|${t}` : `${t}|${me}`);
+    return [...premoves].filter(([, p]) => war(p.target)).map(([id, p]) => ({ army: id, ...p }));
+}

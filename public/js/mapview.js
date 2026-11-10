@@ -32,6 +32,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     const layer = (id) => { const g = el("g", { id }); svg.appendChild(g); return g; };
     const labelLayer = layer("lc-labels");               // countries' codes where their land is now (mapdraw.js); the map's own are hidden
     svg.querySelector("#labels")?.setAttribute("display", "none");
+    const premoveLayer = layer("lc-premoves");          // marches planned for a war to come (game.js, premoves)
     const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");
     const markers = new Map(), ships = new Map();                    // army id -> <g>, fleet id -> <g>
     let capitalKey = null, capitalsShown = [];                       // the settlement groups marked as capitals now
@@ -296,6 +297,11 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
                 t.textContent = l.text ?? l.code;
                 return t;
             }));
+        },
+
+        // the marches planned for a war to come: a dashed red line each
+        setPremoves(lines) {
+            premoveLayer.replaceChildren(...lines.map((points) => el("polyline", { class: "lc-premove", points: points.map((p) => p.join(",")).join(" ") })));
         },
 
         // a planned route as a dashed line, or none

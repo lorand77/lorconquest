@@ -173,7 +173,9 @@ function dealWith(ctx, t) {
             sidesOf("def").length ? mk("p", {}, `Would join ${them.name}: ${join(sidesOf("def"))}${calls.some((e) => e[2] === "def") ? " (some may refuse)" : ""}.`) : "",
             sidesOf("att").length ? mk("p", {}, `Would join you: ${join(sidesOf("att"))}.`) : "",
             bound.length ? mk("p", { class: "bad" }, `This breaks ${bound.map((x) => (x.kind === "truce" ? "your truce" : AGREEMENT_NAMES[x.kind])).join(", ")}: your alliances end and the world's opinion of you falls by 40 for 10 years.`) : "",
-            mk("button", { class: "danger", onclick: async () => { if (confirm(`Declare war on ${them.name}? It adds 5 to your warmonger score.`)) { await ctx.send({ type: "declareWar", target: t }); ctx.redraw(); } } }, "Declare war")));
+            // with the marches planned for this war, sent the moment it is declared (game.js, premoves)
+            mk("button", { class: "danger", onclick: async () => { if (confirm(`Declare war on ${them.name}? It adds 5 to your warmonger score.${ctx.planned?.(t) ? ` Your ${ctx.planned(t)} planned march${ctx.planned(t) > 1 ? "es go" : " goes"} at once.` : ""}`)) { await ctx.send({ type: "declareWar", target: t }); ctx.redraw(); } } },
+                ctx.planned?.(t) ? `Declare war — and send ${ctx.planned(t)} planned march${ctx.planned(t) > 1 ? "es" : ""}` : "Declare war")));
     }
 
     // agreements
