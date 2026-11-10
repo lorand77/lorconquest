@@ -5,21 +5,25 @@
 //   lobby:enter                   -> { ok }   the socket then hears "lobby:changed" (the tables or their seats changed),
 //                                   "table:started" { id } / "table:cancelled" { id } for tables it has a seat at, and
 //                                   "online" [{ username, playing }] — who has the lobby or a game open — at once and on change
-//   join    { gameId }            -> { ok, gameId, scenario, me, multi, paused, tickMs, view, seats, setup, chat }
+//   join    { gameId }            -> { ok, gameId, scenario, me, multi, paused, speed, tickMs, view, seats, setup, chat }
 //                                   the user's seat in the game; the socket then receives "tick" { day, events, changes },
-//                                   "private" { day, changes }, "paused", "presence" { country, username, state },
+//                                   "private" { day, changes }, "paused", "speed" { speed }, "presence" { country, username, state },
 //                                   "chat" { id, userId, username, text, at }, "over" { day, winner, why?, defeated?, abandoned? }, "failed"
-//   watch   { gameId }            -> { ok, gameId, scenario, multi, paused, tickMs, view, seats, setup, over }
+//   watch   { gameId }            -> { ok, gameId, scenario, multi, paused, speed, tickMs, view, seats, setup, over }
 //                                   a game being played, watched: the public view (no country's private part, no questions
-//                                   waiting); the socket then hears "tick", "paused", "presence" and "over" — never "private"
+//                                   waiting); the socket then hears "tick", "paused", "speed", "presence" and "over" — never "private"
 //                                   or "chat" — and gives no orders
 //   command { cmd }               -> { ok, error, events }   the country is always the user's seat's, never the client's
 //   pause   { paused }            -> { ok }                  single-player games only
+//   speed   { speed }             -> { ok, error }           single-player games only: ½, 1, 2 or 4 days a tick's time (SPEEDS)
 //   chat    { text }              -> { ok, error }
 //   quit                          -> { ok, error }           give the country to the computer for good (multiplayer)
 //
 // Leaving a game — a closed page, a lost connection — is what makes a player "away" (rooms.js).
 const reply = (ack, value) => { if (typeof ack === "function") ack(value); };
+
+// the speeds a single-player game may run at (RULES.md §1): days in the time one usually takes
+export const SPEEDS = [0.5, 1, 2, 4];
 
 // a person may send this many chat messages in this many milliseconds, from all their tabs together
 const CHAT_BURST = 5, CHAT_WINDOW_MS = 5000;
@@ -115,7 +119,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             const view = await rooms.view(room, seat.country);
             log.debug("socket.join", { game: room.id, socket: socket.id, country: seat.country });
             reply(ack, {
-                ok: true, gameId: room.id, scenario: room.scenario, me: seat.country, multi: room.multi, paused: room.paused, tickMs, view,
+                ok: true, gameId: room.id, scenario: room.scenario, me: seat.country, multi: room.multi, paused: room.paused, speed: room.speed, tickMs, view,
                 seats: rooms.seatList(room), setup: Math.max(0, room.setupUntil - Date.now()), chat: rooms.chatOf(room),
                 over: room.over ?? null,
             });
@@ -134,7 +138,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             mark(user, socket.id, "lobby");                         // online, not playing
             const view = await rooms.view(r, null);
             reply(ack, {
-                ok: true, gameId: r.id, scenario: r.scenario, multi: r.multi, paused: r.paused, tickMs, view,
+                ok: true, gameId: r.id, scenario: r.scenario, multi: r.multi, paused: r.paused, speed: r.speed, tickMs, view,
                 seats: rooms.seatList(r), setup: Math.max(0, r.setupUntil - Date.now()), over: r.over ?? null,
             });
         });
@@ -152,6 +156,14 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             if (!room) return reply(ack, { ok: false, error: "join a game first" });
             if (room.multi) return reply(ack, { ok: false, error: "a game with other people never pauses" });
             rooms.setPaused(room, Boolean(msg?.paused));
+            reply(ack, { ok: true });
+        });
+
+        on("speed", (msg, ack) => {
+            if (!room) return reply(ack, { ok: false, error: "join a game first" });
+            if (room.multi) return reply(ack, { ok: false, error: "a game with other people runs at one speed" });
+            if (!SPEEDS.includes(msg?.speed)) return reply(ack, { ok: false, error: "the speeds are " + SPEEDS.join(", ") });
+            rooms.setSpeed(room, msg.speed);
             reply(ack, { ok: true });
         });
 

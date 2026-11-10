@@ -23,8 +23,8 @@
 Start **1440 AD**. The calendar has **365 days** with the usual months and no leap years. "The
 start of each month" is its 1st; "the start of each year" is 1 January.
 
-**Single player:** free pause; the game runs at this one speed. Leaving pauses the game, and it
-can be resumed later.
+**Single player:** free pause, and four speeds: ½×, 1× (the table above), 2× and 4×. The speed changes only how
+fast the days go by, never what happens in them. Leaving pauses the game, and it can be resumed later, at 1×.
 **Multiplayer:** up to **4 human players**; the computer runs every other country. For the first
 minute the clock stands still while players look around and give their first orders; after that
 there are no pauses.
@@ -444,7 +444,8 @@ zone (the first by number), or else puts to sea there, whatever its crew and the
 that loses its **last port** pays off all its fleets — in port, at sea or sailing: the ships are lost and their crew come
 home. The beaten side **runs for its nearest port**
 in the zone, if it has one, and waits there; ships sunk take their 50 crew each from the population. A
-blockade holds only while its fleet is at sea in the zone, and ends if it leaves, is sunk or runs. A
+blockade holds only while its fleet is at sea in the zone, and ends if it leaves, is sunk or runs — or once the port is no
+longer an enemy's: taken by the blockader's side, or at peace with it (the fleet stays at sea, free for another order). A
 fleet takes on one order at a time: patrol, blockade or none.
 
 - `blockade` — pick an enemy port in that sea zone. While the blockade holds, **all money from

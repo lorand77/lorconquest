@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, SPEEDS, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -35,6 +35,7 @@ socket.on("connect_error", (e) => { if (e.message === "sign in first") location.
 const ask = (event, payload) => new Promise((resolve) => socket.emit(event, payload, resolve));
 
 let me, state, game, scenario, map, legs, tickMs = 100, paused = true, lastTick = performance.now();
+let speed = 1;             // days in a tick's time (alone: ½, 1, 2 or 4 — mirror.js, SPEEDS); with other people always 1
 let myUserId = null;       // the signed-in user, to tell their chat lines from the others'
 let multi = false;         // a game with other people: no pause, a setup minute, chat
 let seats = [];            // the people in it: [{ country, username, state }]
@@ -80,6 +81,7 @@ async function start() {
     const joined = await ask(watching ? "watch" : "join", { gameId });
     if (!joined.ok) { $("panel").textContent = `Cannot open this game: ${joined.error}`; return; }
     ({ paused, tickMs, multi, seats } = joined);
+    speed = joined.speed ?? 1;
     me = joined.me ?? null;
     if (!me) {
         // a watcher: the Map and Events tabs, no clock to stop, no orders
@@ -108,6 +110,10 @@ async function start() {
     $("pause").addEventListener("click", togglePause);
     $("pause").hidden = $("pb-pause").hidden = multi || !me;
     $("pb-pause").addEventListener("click", togglePause);
+    // the speed, alone: a button for each in the status block, one going round them on a phone's bar
+    $("speeds").replaceChildren(...SPEEDS.map((s) => make("button", { "data-speed": String(s), title: `${speedName(s)} speed`, onclick: () => setSpeed(s) }, speedName(s))));
+    $("speeds").hidden = $("pb-speed").hidden = multi || !me;
+    $("pb-speed").addEventListener("click", () => setSpeed(speedAfter(speed, "cycle")));
     if (multi || !me) startPeople(joined);
     for (const b of document.querySelectorAll("#tabs button")) b.addEventListener("click", () => { setSheet(sheetAfter(sheet, "tab")); setTab(b.dataset.tab); });
     sheetGestures();
@@ -122,6 +128,7 @@ async function start() {
     for (const ev of ["pointerup", "pointercancel"]) window.addEventListener(ev, () => press.up());
     document.addEventListener("keydown", onKey);
     socket.on("paused", (m) => { paused = m.paused; if (!paused) setupEnds = 0; renderTop(); });
+    socket.on("speed", (m) => { speed = m.speed; renderTop(); });
     socket.on("over", (m) => {
         state.winner = m.winner;
         paused = true;
@@ -149,6 +156,7 @@ async function start() {
             if (!j.ok) { loading = false; early.length = 0; notice(j.error, "system", 600000); return; }
             state = Object.assign(state, j.view);
             paused = j.paused;
+            speed = j.speed ?? 1;
             seats = j.seats;
             setupEnds = j.setup ? performance.now() + j.setup : 0;
             prune();
@@ -232,7 +240,7 @@ function sheetGestures() {
     fit();
     let from = null;
     handle.addEventListener("pointerdown", (e) => {
-        if (e.target.closest("button")) return;             // the pause button is a button, not the handle
+        if (e.target.closest("button")) return;             // the pause and speed buttons are buttons, not the handle
         from = e.clientY;
         handle.setPointerCapture(e.pointerId);
     });
@@ -254,7 +262,7 @@ const enemies = () => Object.keys(state.countries).filter((c) => atWar(me, c));
 const armiesAt = (key) => Object.values(state.armies).filter((a) => a.at === key);
 const name = (key) => placeName(game.map, key);
 const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.march?.to);
-const displayDay = () => (paused ? state.day : state.day + Math.min(1, (performance.now() - lastTick) / tickMs));
+const displayDay = () => (paused ? state.day : state.day + Math.min(1, (performance.now() - lastTick) * speed / tickMs));
 const swatch = (code) => make("span", { class: "swatch", style: `background:${colourOf(code)}` });
 
 async function send(cmd, { goal = false, planned = false } = {}) {
@@ -388,6 +396,11 @@ function togglePause() {
     ask("pause", { paused: !paused });
 }
 
+function setSpeed(s) {
+    if (multi || !me || s === speed) return;          // with other people the game runs at one speed
+    ask("speed", { speed: s });
+}
+
 // the keys (mirror.js, hotkey, HOTKEYS — the ? card shows them): none while typing in a box, none with Ctrl, Alt or ⌘
 function onKey(e) {
     if (e.target.closest("input, textarea, select")) return;
@@ -408,6 +421,7 @@ function onKey(e) {
             return done();
         case "help": $("help").hidden = !$("help").hidden; return done();
         case "pause": if (!$("pause").hidden) togglePause(); return done();
+        case "slower": case "faster": setSpeed(speedAfter(speed, name)); return done();
         case "tab": if (me || ["selection", "events"].includes(arg)) { setSheet(sheetAfter(sheet, "tab")); setTab(arg); } return done();
         case "zoomIn": map.zoom(1 / 1.4); return done();
         case "zoomOut": map.zoom(1.4); return done();
@@ -469,6 +483,7 @@ function renderTop() {
     $("pause").textContent = state.winner ? "Game over" : paused ? "▶ Play" : "⏸ Pause";
     $("pause").disabled = Boolean(state.winner);
     $("pause").classList.toggle("paused", paused);
+    for (const b of $("speeds").children) { b.classList.toggle("on", Number(b.dataset.speed) === speed); b.disabled = Boolean(state.winner); }
     if (me && country(me).treasury !== undefined) {
         const e = economyOf(game, me);
         $("treasury").textContent = `Treasury ${formatNumber(country(me).treasury)} (${e.moneyPerYear >= 0 ? "+" : "−"}${formatNumber(Math.abs(e.moneyPerYear))} a year)`;
@@ -615,6 +630,8 @@ function renderPhoneBar() {
     $("pb-pause").textContent = paused ? "▶" : "⏸";
     $("pb-pause").disabled = Boolean(state.winner);
     $("pb-pause").classList.toggle("paused", paused);
+    $("pb-speed").textContent = speedName(speed);
+    $("pb-speed").disabled = Boolean(state.winner);
     if (me) $("pb-who").replaceChildren(swatch(me), ` ${mapCode(state, scenario, me)}`); else $("pb-who").textContent = "👁";
     $("pb-who").title = me ? country(me).name : "Watching";
     if ($("setup").hidden) $("pb-date").textContent = shortDate(longDate(state.day));      // (the setup minute's countdown: renderSetup)

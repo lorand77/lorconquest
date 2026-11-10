@@ -164,7 +164,7 @@ export function fleetPoints(state, nodes, zones, day) {
 // The game page's keys (design.md, "The game screen"): the table the ? card shows, and what a key press asks for (hotkey).
 // Arrow keys pan; W A S D are plain letters. A key with Ctrl, Alt or ⌘ is the browser's, never the game's.
 export const HOTKEYS = [
-    ["Space", "play / pause (alone)"], ["1 – 6", "the tabs: Map, Country, Shop, Research, Diplomacy, Events"], ["D", "the Diplomacy tab"],
+    ["Space", "play / pause (alone)"], [",  .", "slower / faster: ½×, 1×, 2×, 4× (alone)"], ["1 – 6", "the tabs: Map, Country, Shop, Research, Diplomacy, Events"], ["D", "the Diplomacy tab"],
     ["+  −", "zoom in / out"], ["arrows", "pan the map"], ["W", "the whole map"],
     ["A or Tab", "your next army (Shift: the one before)"], ["F", "your next fleet"],
     ["Enter", "march, once a destination is picked"], ["Shift+Enter", "march and storm"], ["T", "storm"], ["B", "sortie"],
@@ -173,7 +173,7 @@ export const HOTKEYS = [
     ["?", "this card"], ["Escape", "close, cancel a march, let go of what is selected"],
 ];
 const TABS = ["selection", "country", "shop", "research", "diplomacy", "events"];
-// what a key press asks for, or null: "pause", "tab:<tab>", "zoomIn", "zoomOut", "pan:<dx>,<dy>", "whole", "army:<±1>",
+// what a key press asks for, or null: "pause", "slower", "faster", "tab:<tab>", "zoomIn", "zoomOut", "pan:<dx>,<dy>", "whole", "army:<±1>",
 // "fleet", "march", "marchStorm", "storm", "sortie", "split", "merge", "chat", "notices", "picture", "help", "escape"
 export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false, metaKey = false }) {
     if (ctrlKey || altKey || metaKey) return null;
@@ -183,6 +183,8 @@ export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false,
     if (arrows[k]) return arrows[k];
     switch (k) {
         case " ": return "pause";
+        case ",": case "<": return "slower";
+        case ".": case ">": return "faster";
         case "+": case "=": return "zoomIn";
         case "-": case "_": return "zoomOut";
         case "w": return "whole";
@@ -201,6 +203,17 @@ export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false,
         case "Escape": return "escape";
         default: return null;
     }
+}
+
+// The speeds a game alone may run at (RULES.md §1; socket.js's SPEEDS): days in the time one usually takes. speedAfter: the next
+// one "slower" or "faster", no further than the ends; "cycle" (the phone bar's one button) goes round from 4× back to ½×.
+export const SPEEDS = [0.5, 1, 2, 4];
+export const speedName = (speed) => `${speed === 0.5 ? "½" : speed}×`;
+export function speedAfter(speed, step) {
+    const i = Math.max(0, SPEEDS.indexOf(speed));
+    if (step === "slower") return SPEEDS[Math.max(0, i - 1)];
+    if (step === "faster") return SPEEDS[Math.min(SPEEDS.length - 1, i + 1)];
+    return SPEEDS[(i + 1) % SPEEDS.length];
 }
 
 // The panel as a sheet over the map on a phone held upright (design.md, "The game screen"; game.css, body[data-sheet]): collapsed

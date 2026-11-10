@@ -480,3 +480,25 @@ containers closed).
 **What it showed: nothing measurable.** The mercenaries hired are few — one or two thousand, and only by a country that is rich or
 facing a stronger target — against armies of tens of thousands, and a war's first weeks seldom decide it. Refused orders the same
 (0.33 and 0.34 a game). Harmless, and what a planner would do; not a gain these 20 seeds can see.
+
+## 20. Allies relieve each other's sieges (2026-11-10)
+
+A country at war with an ally's enemy now weighs relieving the ally's besieged settlements as it weighs its own — worth 30 plus a
+thousandth of the people, less the further away (÷ 1 + days / 40) — and values its ally's settlements in danger at 1.5 times. Against
+84e0768, the commit before (30328eb's war.js is the only change of src/ai between them), on rules 39: 140 games, 6 at a time.
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old |
+|---|---|---|---|
+| Bavaria | −0.2 [−0.5, +0.1] | 4 / 4 | 14 / 15 |
+| Brandenburg | +1.9 [−2.1, +5.9] | 11 / 10 | 18 / 17 |
+| Austria | +0.0 [−0.0, +0.0] | 0 / 0 | 13 / 13 |
+| Saxony | +0.1 [−0.1, +0.2] | 2 / 2 | 10 / 9 |
+| Prussia | exactly 0 | 1 / 1 | 11 / 11 |
+| Gdańsk | −0.2 [−0.5, +0.2] | 0 / 0 | 14 / 14 |
+| **All** | **+0.3 [−0.4, +1.0]** | 18 / 17 of 120 | |
+
+**What it showed: nothing measurable, because it seldom happens.** Most games on the new AI were the old game to the last
+settlement: an ally besieged within reach, with forces free to go, is rare. Brandenburg, the country most often in alliances
+at war, is where it shows, within the noise. Refused orders the same (0.23 a game). The cost line rose (96 against 35
+microseconds a country-day), but that line is not to be trusted for one country (tools/strength.js); `simulate.js`'s whole-AI
+time is the measure if it matters.

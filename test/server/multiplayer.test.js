@@ -130,6 +130,7 @@ test("the clock stands still for the setup minute while orders are given, then r
         assert.equal((await emitAck(a.socket, "join", { gameId: id })).setup, 0);
         // nobody can pause it, and a player leaving does not
         assert.deepEqual((({ ok, error }) => [ok, error])(await emitAck(a.socket, "pause", { paused: true })), [false, "a game with other people never pauses"]);
+        assert.deepEqual((({ ok, error }) => [ok, error])(await emitAck(a.socket, "speed", { speed: 2 })), [false, "a game with other people runs at one speed"]);
         const before = ticks.length;
         b.socket.close();
         await until(() => ticks.length > before + 20, "the game to run on without bobby");

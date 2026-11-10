@@ -286,7 +286,18 @@ test("the keys: arrows pan, W A S D are letters with jobs of their own, nothing 
     assert.equal(k("s", { ctrlKey: true }), null, "Ctrl+S is the browser's");
     assert.equal(k("r", { metaKey: true }), null);
     assert.equal(k("x"), null);
+    assert.deepEqual([k(","), k("<"), k("."), k(">")], ["slower", "slower", "faster", "faster"]);
     assert.ok(HOTKEYS.length >= 15 && HOTKEYS.every(([keys, does]) => keys && does));
+});
+
+test("a game's speeds alone: one step slower or faster, no further than ½× and 4×; the phone's button goes round", async () => {
+    const { SPEEDS, speedAfter, speedName } = await import("../../public/js/mirror.js");
+    assert.deepEqual(SPEEDS.map((s) => speedAfter(s, "faster")), [1, 2, 4, 4]);
+    assert.deepEqual(SPEEDS.map((s) => speedAfter(s, "slower")), [0.5, 0.5, 1, 2]);
+    assert.deepEqual(SPEEDS.map((s) => speedAfter(s, "cycle")), [1, 2, 4, 0.5]);
+    assert.deepEqual(SPEEDS.map(speedName), ["½×", "1×", "2×", "4×"]);
+    const { SPEEDS: server } = await import("../../src/game/socket.js");
+    assert.deepEqual(SPEEDS, server, "the page offers what the server takes");
 });
 
 test("a fleet sailing between two sea zones is drawn along the lane between them (through the water), every neighbour having one", async () => {

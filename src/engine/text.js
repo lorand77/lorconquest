@@ -55,6 +55,7 @@ export function describeEvent(map, e) {
         case "fleetSails": return `fleet ${e.fleet} (${e.owner}) sails from ${place(e.from)} to ${place(e.to)}, ${e.days} days`;
         case "fleetArrives": return `fleet ${e.fleet} (${e.owner}) arrives in ${place(e.zone)}`;
         case "blockade": return `fleet ${e.fleet} (${e.owner}) blockades ${place(String(e.port))}`;
+        case "blockadeLifted": return `fleet ${e.fleet} (${e.owner}) lifts its blockade of ${place(String(e.port))}`;
         case "splitFleet": return `fleet ${e.fleet} (${e.owner}) splits off fleet ${e.into}`;
         case "mergeFleet": return `fleet ${e.fleet} (${e.owner}) joins fleet ${e.into}`;
         case "sharpshooters": return `the post at ${place(e.pass)} shoots ${fmt(e.dead)} men of army ${e.army} (${e.owner})`;

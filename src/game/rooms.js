@@ -62,7 +62,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             },
         });
         const room = {
-            id: row.id, host: row.host_id, scenario: row.scenario, visibility: row.visibility ?? "public", worker, paused: true, day: row.day, multi,
+            id: row.id, host: row.host_id, scenario: row.scenario, visibility: row.visibility ?? "public", worker, paused: true, speed: 1, day: row.day, multi,
             seq: db.q.lastSeq.get(row.id).seq, savedDay: row.day, pending: new Map(), nextReq: 1,
             seats: new Map(seatRows.map((s) => [s.country, { country: s.country, userId: s.user_id, username: s.username, sockets: new Set(), state: multi ? "away" : "idle", timer: null }])),
             setupUntil: 0, timers: new Set(), lastTick: performance.now(),
@@ -151,6 +151,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 save(room, { day: m.day }, true);
                 everyone(room).emit("paused", { paused: m.paused, day: m.day });
                 break;
+            case "speed":
+                room.speed = m.speed;
+                everyone(room).emit("speed", { speed: m.speed });
+                break;
             case "over":
                 // the game is won (SCENARIO.md, Victory): saved as finished, and never resumed
                 // or every person's country is out: a defeat for all of them, finished with no winner
@@ -165,7 +169,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 log.info("game.over", { game: room.id, winner: m.winner, defeated: Boolean(m.defeated), humans: [...room.seats.keys()], day: m.day });
                 break;
             case "stats":
-                log.info("game.timing", { game: room.id, days: m.days, mean_ms: Number(m.mean.toFixed(3)), max_ms: Number(m.max.toFixed(3)), budget_ms: tickMs });
+                log.info("game.timing", { game: room.id, days: m.days, mean_ms: Number(m.mean.toFixed(3)), max_ms: Number(m.max.toFixed(3)), budget_ms: tickMs / room.speed });
                 break;
             case "stopped":
                 save(room, m, true);
@@ -191,6 +195,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     const tell = (room, seat) => everyone(room).emit("presence", seatView(seat));
     const caretaker = (room, country, mode) => room.worker.postMessage({ type: "caretaker", country, mode });
     const setPaused = (room, paused) => room.worker.postMessage({ type: "pause", paused });
+    // a single-player game's speed (socket.js checks it is one of SPEEDS); not saved: a game brought back runs at 1
+    const setSpeed = (room, speed) => room.worker.postMessage({ type: "speed", speed });
 
     // the player has been away too long: the full computer player takes the country
     function becomeFull(room, seat) {
@@ -609,6 +615,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             : ask(room, { type: "command", country, source: "human", cmd })),
         view: (room, country) => ask(room, { type: "view", country }).then((m) => m.view),
         setPaused,
+        setSpeed,
         setCaretaker: caretaker,
 
         // stop every game, saving where each got to

@@ -105,6 +105,19 @@ export function leavePort(game, s, events) {
     }
 }
 
+// blockades of ports that are no longer an enemy's (RULES.md §7): taken by the fleet's own side or a friend, or at peace with the
+// fleet's country now — the order ends the same day and the fleet stays at sea where it is, free for another
+export function liftBlockades(game, events) {
+    const st = game.state;
+    for (const f of fleetList(st)) {
+        if (f.order?.type !== "blockade") continue;
+        const s = st.settlements[f.order.port];
+        if (s && atWar(st, f.owner, s.owner)) continue;
+        f.order = null;
+        events.push({ type: "blockadeLifted", day: st.day, fleet: f.id, owner: f.owner, port: s?.id ?? null });
+    }
+}
+
 // a country that has lost its last port (RULES.md §7) pays off its fleets: with no harbour to come home to, every one of
 // them — in port, at sea or sailing — is disbanded, its ships lost and its crew back among the civilians
 export function payOffPortless(game, country, events) {

@@ -327,3 +327,22 @@ test("a game going on under rules the server no longer plays ends as outdated at
         await server.close();
     }
 });
+
+test("a game alone runs at ½, 1, 2 or 4 days a tick's time: the player chooses, the page and those watching hear it", async () => {
+    const server = await startServer({ dbPath: tempDb(), tickMs: 5000 });
+    try {
+        const id = await newGame(server);
+        const s = await connect(server);
+        assert.equal((await emitAck(s, "join", { gameId: id })).speed, 1);
+        const heard = waitFor(s, "speed");
+        assert.deepEqual(await emitAck(s, "speed", { speed: 4 }), { ok: true });
+        assert.deepEqual(await heard, { speed: 4 });
+        assert.equal((await emitAck(s, "join", { gameId: id })).speed, 4, "a page joining again is told");
+        assert.equal(server.app.rooms.get(id).speed, 4);
+        assert.match((await emitAck(s, "speed", { speed: 3 })).error, /the speeds are 0.5, 1, 2, 4/);
+        assert.match((await emitAck(s, "speed", { speed: "4" })).error, /the speeds are/);
+        s.close();
+    } finally {
+        await server.close();
+    }
+});

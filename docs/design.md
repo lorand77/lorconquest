@@ -58,7 +58,7 @@ find. With the server alone running the rules, only Node has to agree with itsel
 
 ### Players
 
-- **Single player:** one human, free pause, one speed — no ×2 or ×4. Leaving pauses the game;
+- **Single player:** one human, free pause, four speeds — ½×, 1×, 2× and 4× (RULES.md §1). Leaving pauses the game;
   its snapshot is saved, its worker stops, and it is rebuilt when the player comes back, the
   same way as after a restart.
 - **Multiplayer:** up to 4 humans, the computer running every other country. Each player picks
@@ -82,7 +82,9 @@ find. With the server alone running the rules, only Node has to agree with itsel
   game's humans for good (the same list a replay is given). One person, one seat per game; a seat can be given up
   until the start (the host cancels instead). "Play alone" opens a table and starts it at once.
 - **Single player** (one seat): free pause; the last socket leaving pauses the game and it waits, resumed whenever the
-  player opens it again, after a restart too.
+  player opens it again, after a restart too. Its speed (`speed`: ½, 1, 2 or 4) changes only the worker's wait between days,
+  never what a day does, so a replay is the same whatever speeds it was played at; it is not saved — a game brought back
+  runs at 1×. A day at 4× has 25 ms, still well over the slowest day's cost.
 - **Several people:** the clock stands still for `SETUP_MS` (a minute) from the start while orders are accepted, then runs
   and no one can pause it. Everyone begins *away*, with a caretaker, until their page joins.
 - **Away and back.** A player is "present" while any socket of theirs is in the game. The last one leaving makes them
@@ -512,14 +514,14 @@ How it is run is in [setup.md](setup.md); the program's parts for it are:
 
 ### Messages
 
-- **Client to server:** `join`, `command`, `pause` (single-player only), `chat`, `quit` and `lobby:enter`, each
+- **Client to server:** `join`, `command`, `pause` and `speed` (single-player only), `chat`, `quit` and `lobby:enter`, each
   answered (Socket.IO's acknowledgement stands in for a request id). The country of a command is always that of
   the user's seat, set by the server, never the client's. A socket belongs to a signed-in user: the handshake
   carries the session cookie and is refused without one.
 - **Server to client:** the full view on joining (the first load, a reload and a reconnect all
   use it — no separate catch-up; it also carries the seats, the seconds left of the setup minute and the
   recent chat), then `tick` every day with its changes and events, `private`
-  when the player's own private part changes, `paused`, `presence` (a player here, away, or gone), `chat`, and
+  when the player's own private part changes, `paused`, `speed`, `presence` (a player here, away, or gone), `chat`, and
   `over`; in the lobby `lobby:changed`, `table:started` and `table:cancelled`. Each list is in
   `src/game/socket.js`; what changed is worked out in the worker (`src/game/view.js`), entity by
   entity, so a day sends only what moved.
@@ -670,7 +672,7 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 `public/js/game.js`, `public/js/mapview.js`.)
 
 - **Layout:** as in LorCiv, the map fills the screen but for a sidebar on its right: at its top the name, the Light/Dark
-  switch and the way back to the lobby, then the player's country, the date, pause, the treasury and the other people, then
+  switch and the way back to the lobby, then the player's country, the date, pause and the speed (alone), the treasury and the other people, then
   the tabs in one row (an icon over each name) and the open tab's panel, and at the bottom Chat and Leave the game when there
   are other people. The replay page has the same sidebar with its controls, the standing and the events.
 - **The signed-in pages** have LorCiv's shell (`public/js/shell.js`): a top bar with the name, who is signed in and Log out,
@@ -801,7 +803,7 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   over the map. Space pauses.
 - **The development page** (`public/index.html`) starts a single-player game on any scenario as any
   country, or reopens one, until accounts and the lobby (milestone 6).
-- **Keys** (`mirror.js`, `hotkey`, `HOTKEYS`; none while typing in a box, none with Ctrl, Alt or ⌘): Space play/pause, 1–6 the
+- **Keys** (`mirror.js`, `hotkey`, `HOTKEYS`; none while typing in a box, none with Ctrl, Alt or ⌘): Space play/pause, `,` `.` slower and faster (alone), 1–6 the
   tabs (D Diplomacy), + − zoom, the arrows pan (W A S D are plain letters), W the whole map, A or Tab the next army of one's
   own (Shift: the one before; the map is brought to it), F the next fleet, Enter march and Shift+Enter march and storm, T storm,
   B sortie, S split, M merge, C chat, N the notices menu, P a picture of the map, ? a card of every key (also a ? button where

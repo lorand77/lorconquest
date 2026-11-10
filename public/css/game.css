@@ -334,6 +334,11 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .status .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .status .pause { min-width: 6.5em; }
 .status .pause.paused { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn); }
+.status .speeds { display: inline-flex; }
+.status .speeds button { padding: 2px 6px; font-size: 12px; border-radius: 0; margin-left: -1px; }
+.status .speeds button:first-child { border-radius: 4px 0 0 4px; }
+.status .speeds button:last-child { border-radius: 0 4px 4px 0; }
+.status .speeds button.on { background: var(--current); border-color: var(--current); color: var(--current-text); }
 .status .treasury { color: var(--text); font-size: 13px; font-variant-numeric: tabular-nums; }
 .status .treasury.bad { color: var(--bad); }
 .status .setup { display: block; margin-top: 8px; background: var(--warn-bg); color: var(--warn); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
@@ -380,6 +385,7 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
         border-bottom: 1px solid var(--line); font-size: 13px; white-space: nowrap; touch-action: none; user-select: none; }
     .pb-pause { width: 28px; height: 26px; padding: 0; border-radius: 50%; font-size: 12px; flex-shrink: 0; }
     .pb-pause.paused { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn); }
+    .pb-speed { height: 26px; padding: 0 6px; font-size: 12px; flex-shrink: 0; }
     .pb-who { font-weight: 700; color: var(--gold); }
     .pb-date { color: var(--text-strong); font-variant-numeric: tabular-nums; }
     .pb-grip { flex: 1; display: flex; justify-content: center; }

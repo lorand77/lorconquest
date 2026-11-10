@@ -175,6 +175,26 @@ test("a blockade halves an enemy port's money while it holds", () => {
     assert.equal(economyOf(game, "BBB").settlementMoney, 57600);
 });
 
+test("a blockade ends once its port is no longer an enemy's: taken, or at peace", () => {
+    const blockading = () => {
+        const game = tinyGame();
+        order(game, cmd("declareWar", { target: "BBB" }));
+        const f = giveFleet(game, "AAA", { cogs: 5 }, null, "south");
+        order(game, cmd("blockade", { fleet: f.id, port: 4 }));
+        assert.equal(ofType(runTo(game, game.day + 1), "blockadeLifted").length, 0, "an enemy's port: it holds");
+        return { game, st: game.state, f: game.state.fleets[f.id] };
+    };
+    let { game, st, f } = blockading();
+    delete st.armies[4];                                                       // its garrison gone, or BBB takes it straight back
+    capture(game, st.settlements[4], "AAA", [], "storm");
+    assert.deepEqual(ofType(runTo(game, game.day + 1), "blockadeLifted").map((e) => [e.fleet, e.port]), [[f.id, 4]], "taken: over the same day");
+    assert.deepEqual([f.order, f.port, f.zone], [null, null, "south"], "at sea where it was, free for another order");
+    ({ game, st, f } = blockading());
+    st.wars = st.wars.filter((w) => !w.split("|").includes("BBB"));            // peace
+    assert.deepEqual(ofType(runTo(game, game.day + 1), "blockadeLifted").map((e) => e.port), [4]);
+    assert.equal(f.order, null);
+});
+
 test("fleets split and merge in the same place", () => {
     const game = tinyGame();
     const f = giveFleet(game, "AAA", { cogs: 10 });

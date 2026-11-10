@@ -6,13 +6,14 @@
 // day is advanced, the computer players give their orders for the next tick (hearing the events of the commands applied
 // since the last), and the day goes out to the main thread: what changed, its events, the commands to save, and at the
 // start of each game year a snapshot. A late tick is caught up, up to 5 days at once; further behind, game time slips
-// rather than skips. Paused, the day stands still and commands are still applied as they come.
+// rather than skips. Paused, the day stands still and commands are still applied as they come. A single-player game may run at
+// ½, 2 or 4 days a tick's time (speed): only the wait between days changes, never what a day does.
 //
-// In:  { type: "command", reqId, country, source, cmd }  { type: "pause", paused }  { type: "view", reqId, country }
+// In:  { type: "command", reqId, country, source, cmd }  { type: "pause", paused }  { type: "speed", speed }  { type: "view", reqId, country }
 //      { type: "caretaker", country, mode }  (mode "caretaker", "full" or null: who plays a human's country while away)  { type: "stop" }
 //      { type: "end" }   every person gone, some eliminated: finished here, as a game that is won is
 // Out: { type: "ready", day }  { type: "tick", day, events, privEvents, pub, priv, commands, snapshot }   (events public, privEvents by country: view.js)
-//      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }
+//      { type: "reply", reqId, ok, error, events }  { type: "view", reqId, view }  { type: "paused", paused, day }  { type: "speed", speed }
 //      { type: "stats", days, mean, max }  { type: "over", day, winner, why, defeated, scores, hash }  { type: "stopped", day, commands }
 // A game is over when a country has won (the engine says so), or when every person's country is out of the game (RULES.md
 // §10, Elimination: a single-player game ends as a defeat when the player's does). It is saved one last time, at exactly the
@@ -25,6 +26,7 @@ import { Changes, splitEvents, viewFor } from "./view.js";
 const CATCH_UP = 5;
 const { scenario, seed, snapshot, log, day, humans, tickMs, statsEvery } = workerData;
 let paused = workerData.paused;
+let dayMs = tickMs;                                     // the wait between days: tickMs at the usual speed (speed)
 
 const game = snapshot ? resume(scenario, snapshot, log, day) : replay(scenario, seed, log, day, humans);
 const changes = new Changes(game.state);
@@ -106,12 +108,12 @@ function loop() {
     if (stopping) return;
     if (paused) {
         if (queue.length) applyNow();
-        timer = setTimeout(loop, tickMs);
+        timer = setTimeout(loop, dayMs);
         return;
     }
     const now = performance.now();
-    for (let n = 0; now >= next && n < CATCH_UP; n++) { tick(); next += tickMs; }
-    if (now - next > tickMs * CATCH_UP) next = now + tickMs;      // too far behind: game time slips
+    for (let n = 0; now >= next && n < CATCH_UP; n++) { tick(); next += dayMs; }
+    if (now - next > dayMs * CATCH_UP) next = now + dayMs;        // too far behind: game time slips
     timer = setTimeout(loop, Math.max(0, next - performance.now()));
 }
 
@@ -129,9 +131,14 @@ parentPort.on("message", (m) => {
         case "pause":
             if (paused !== m.paused) {
                 paused = m.paused;
-                if (!paused) next = performance.now() + tickMs;
+                if (!paused) next = performance.now() + dayMs;
             }
             post({ type: "paused", paused, day: game.day });
+            break;
+        case "speed":
+            dayMs = tickMs / m.speed;
+            next = performance.now() + dayMs;
+            post({ type: "speed", speed: m.speed });
             break;
         case "view":
             post({ type: "view", reqId: m.reqId, view: viewFor(game.state, m.country) });
