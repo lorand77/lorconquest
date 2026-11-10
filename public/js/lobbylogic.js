@@ -58,6 +58,8 @@ export function gameLine(game, scenarioName, countryName, dateText, winnerName =
     const noWinner = game.people > 1 && game.place ? `no winner — placed ${game.place} of ${game.people}` : "lost: every player's country fell";
     if (game.status === "finished") return { text: game.winner ? `${where} — won by ${winnerName}` : `${where} — ${noWinner}`, open: false, replay: true };
     if (game.status === "abandoned") return { text: `${where} — abandoned: nobody was left`, open: false, replay: true };
+    // going on when the rules changed: the server cannot play it on, nor play it over
+    if (game.status === "outdated") return { text: `${where} — ended unfinished: the rules changed`, open: false, replay: false };
     // a game that is going can always be opened: one let go from memory is brought back
     return { text: where, open: true, replay: false };
 }
@@ -86,6 +88,7 @@ export function statsOf(games, row = null) {
         going: played.filter((g) => g.status === "active").length,
         finished: finished.length,
         abandoned: played.filter((g) => g.status === "abandoned").length,
+        outdated: played.filter((g) => g.status === "outdated").length,
         won,
         winRate: pct(won, rated.length),
         counted: rated.length,                                            // the finished games the win rate is of

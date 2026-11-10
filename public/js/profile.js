@@ -91,6 +91,7 @@ $("stat-grid").replaceChildren(...[
     stat(s.firsts, "first among people"),
     stat(s.averagePlace ?? "—", "average place among people"),
     stat(s.abandoned, "abandoned"),
+    own && s.outdated > 0 && stat(s.outdated, "ended by a change of rules"),
 ].filter(Boolean));
 // the win rate in each scenario played to the end
 $("stat-scenarios").replaceChildren(...s.scenarios.map((x) => make("tr", {}, make("td", {}, scenarioOf(x.scenario)?.name ?? x.scenario),

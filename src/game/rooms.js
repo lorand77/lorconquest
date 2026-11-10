@@ -42,6 +42,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     const everyone = (room) => io.to([`game:${room.id}`, `watch:${room.id}`]);
     const live = new Map();
     let closing = false;
+    // the games going on under rules this server no longer plays cannot be brought back (resume): ended at once, as "outdated" —
+    // kept in their people's games, with no replay and in nobody's numbers
+    const outdated = db.q.outdateGames.all(RULES_VERSION).map((r) => r.id);
+    if (outdated.length) log.info("game.outdated", { games: outdated, rulesVersion: RULES_VERSION });
 
     function launch(row, { snapshot = null, commands = [] } = {}) {
         const scenario = scenarios.get(row.scenario);
@@ -475,7 +479,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             const row = table(id);
             if (!row) return { error: "that room is gone or its game has started" };
             if (row.host_id !== userId) return { error: "only the host starts a game" };
-            db.q.setStatus.run("active", row.id);
+            db.q.startGame.run(RULES_VERSION, row.id);
             const room = launch(db.q.game.get(row.id));
             try {
                 await room.ready;
@@ -522,6 +526,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         replayOf(id) {
             const g = db.q.replayGame.get(Number(id));
             if (!g) return { status: 404, error: "no such game" };
+            if (g.status === "outdated") return { status: 409, error: "that game ended unfinished when the rules changed: it has no replay" };
             if (g.status !== "finished" && g.status !== "abandoned") return { status: 409, error: "that game is still being played" };
             if (g.rules_version !== RULES_VERSION) return { status: 409, error: "that game was played under rules version " + g.rules_version + ", and this server plays " + RULES_VERSION + ", so it cannot be replayed exactly" };
             const seats = db.q.seats.all(g.id);

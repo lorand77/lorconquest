@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS games (
     seed INTEGER NOT NULL,
     rules_version INTEGER NOT NULL,
     human TEXT NOT NULL,                        -- the host's country; the seats (game_seats) say who plays what
-    status TEXT NOT NULL DEFAULT 'active',      -- lobby (a table) | active | finished | abandoned (no person left) | aborted
+    status TEXT NOT NULL DEFAULT 'active',      -- lobby (a table) | active | finished | abandoned (no person left) | aborted | outdated (its rules no longer played)
     winner TEXT,                                -- the country that won, once finished
     day INTEGER NOT NULL DEFAULT 0,             -- the last day saved
     paused INTEGER NOT NULL DEFAULT 1,
@@ -180,7 +180,7 @@ export function openDb(file) {
         deleteSessionsOf: db.prepare("DELETE FROM sessions WHERE user_id = ?"),
         scrubUser: db.prepare("UPDATE users SET username = 'deleted-' || id, password_hash = '' WHERE id = ?"),
         deletionSummary: db.prepare(`SELECT
-                (SELECT COUNT(*) FROM game_seats s JOIN games g ON g.id = s.game_id WHERE s.user_id = ?1 AND g.status IN ('finished', 'abandoned')) AS games,
+                (SELECT COUNT(*) FROM game_seats s JOIN games g ON g.id = s.game_id WHERE s.user_id = ?1 AND g.status IN ('finished', 'abandoned', 'outdated')) AS games,
                 (SELECT COUNT(*) FROM games WHERE status = 'lobby' AND host_id = ?1) AS tables,
                 (SELECT COUNT(*) FROM chat_messages WHERE user_id = ?1) AS chat`),
         deleteExpiredSessions: db.prepare("DELETE FROM sessions WHERE expires_at <= ?"),
@@ -200,6 +200,10 @@ export function openDb(file) {
             FROM games g JOIN game_seats s ON s.game_id = g.id WHERE s.user_id = ? AND g.status != 'aborted' ORDER BY g.updated_at DESC, g.id DESC`),
         activeGames: db.prepare("SELECT * FROM games WHERE status = 'active' ORDER BY id"),
         setStatus: db.prepare("UPDATE games SET status = ?, updated_at = datetime('now') WHERE id = ?"),
+        // a table's game starts under the rules the server plays now, whatever they were when the table was opened
+        startGame: db.prepare("UPDATE games SET status = 'active', rules_version = ?, updated_at = datetime('now') WHERE id = ?"),
+        // the games going on under rules the server no longer plays, which cannot be brought back: ended, kept in the records
+        outdateGames: db.prepare("UPDATE games SET status = 'outdated', paused = 1, updated_at = datetime('now') WHERE status = 'active' AND rules_version != ? RETURNING id"),
         finishGame: db.prepare("UPDATE games SET status = 'finished', day = ?, paused = 1, winner = ?, result_hash = ?, final_names = ?, updated_at = datetime('now') WHERE id = ?"),
         setResult: db.prepare("UPDATE game_seats SET place = ?, settlements = ?, pop = ? WHERE game_id = ? AND country = ?"),
         markQuit: db.prepare("UPDATE game_seats SET quit_day = ? WHERE game_id = ? AND user_id = ?"),
@@ -228,7 +232,7 @@ export function openDb(file) {
         replayGame: db.prepare("SELECT id, scenario, seed, rules_version, status, winner, day, result_hash FROM games WHERE id = ?"),
         allCommands: db.prepare("SELECT day, country, source, cmd FROM commands WHERE game_id = ? ORDER BY seq"),
         // chat of games that ended (or never began) more than N days ago
-        deleteOldChat: db.prepare("DELETE FROM chat_messages WHERE game_id IN (SELECT id FROM games WHERE status IN ('finished', 'abandoned', 'aborted') AND updated_at < datetime('now', ?))"),
+        deleteOldChat: db.prepare("DELETE FROM chat_messages WHERE game_id IN (SELECT id FROM games WHERE status IN ('finished', 'abandoned', 'aborted', 'outdated') AND updated_at < datetime('now', ?))"),
         // tables that have waited longer than this
         staleTables: db.prepare("SELECT id FROM games WHERE status = 'lobby' AND created_at < datetime('now', ?)"),
         abandonGame: db.prepare("UPDATE games SET status = 'abandoned', day = ?, paused = 1, updated_at = datetime('now') WHERE id = ?"),

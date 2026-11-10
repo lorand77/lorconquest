@@ -40,6 +40,7 @@ test("a game's line says where it stands: one going can be opened (even if the s
     const g = { id: 1, status: "active", live: true, people: 1 };
     assert.deepEqual(gameLine(g, "Mitteleuropa", "Bavaria", "1 January 1441"), { text: "Mitteleuropa, Bavaria, 1 January 1441", open: true, replay: false });
     assert.deepEqual(gameLine({ ...g, people: 3, live: false }, "Mitteleuropa", "Bavaria", "d"), { text: "Mitteleuropa, Bavaria, 3 people, d", open: true, replay: false });
+    assert.deepEqual(gameLine({ ...g, status: "outdated" }, "M", "B", "d"), { text: "M, B, d — ended unfinished: the rules changed", open: false, replay: false });
     const won = gameLine({ ...g, status: "finished", winner: "AUS" }, "M", "B", "d");
     assert.match(won.text, /won by AUS/);                                                  // the code, when no name is given
     assert.match(gameLine({ status: "finished", winner: "AUS", people: 1 }, "Mitteleuropa", "Bavaria", "1 January 1500", "Austria").text, /won by Austria$/);
@@ -89,13 +90,14 @@ test("My Profile's stats: games played, going, finished and won, alone or with p
         { status: "finished", country: "BRB", winner: "BRB", people: 2, scenario: "historical-1440" },
         { status: "active", country: "BAV", winner: null, people: 1 },
         { status: "abandoned", country: "HUN", winner: null, people: 2 },
+        { status: "outdated", country: "SAX", winner: null, people: 1 },           // ended by a change of rules: in no win rate
         { status: "lobby", country: "POL", winner: null, people: 2 },               // a room not started: no game yet
     ];
     assert.deepEqual(statsOf(games, { firsts: 1, shared: 2, averagePlace: 1.5 }), {
-        games: 5, going: 1, finished: 3, abandoned: 1, won: 2, winRate: 67, counted: 3, winRateAlone: 100, winRateWithOthers: 50, firstRate: 50,
+        games: 6, going: 1, finished: 3, abandoned: 1, outdated: 1, won: 2, winRate: 67, counted: 3, winRateAlone: 100, winRateWithOthers: 50, firstRate: 50,
         scenarios: [{ scenario: "mitteleuropa", finished: 2, won: 1, winRate: 50 }, { scenario: "historical-1440", finished: 1, won: 1, winRate: 100 }],
-        alone: 2, withOthers: 3, firsts: 1, averagePlace: 1.5 });
-    assert.deepEqual(statsOf([]), { games: 0, going: 0, finished: 0, abandoned: 0, won: 0, winRate: null, counted: 0, winRateAlone: null, winRateWithOthers: null, firstRate: null,
+        alone: 3, withOthers: 3, firsts: 1, averagePlace: 1.5 });
+    assert.deepEqual(statsOf([]), { games: 0, going: 0, finished: 0, abandoned: 0, outdated: 0, won: 0, winRate: null, counted: 0, winRateAlone: null, winRateWithOthers: null, firstRate: null,
         scenarios: [], alone: 0, withOthers: 0, firsts: 0, averagePlace: null });
 });
 

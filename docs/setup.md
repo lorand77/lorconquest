@@ -159,8 +159,8 @@ server stops. A restart brings back at once the games with several people, which
 reconnect by themselves and take their countries back — but the players have `AWAY_MS` (two minutes) to do it, after which the
 computer plays them and, if nobody is back, the game is abandoned. So restart quickly, and not mid-game if you can help it
 (`pm2 logs` shows `game.*` lines; the lobby shows what is going). A single-player game waits, paused, until its player opens it.
-A change to the rules (`RULES_VERSION`) makes the games in progress unplayable (`game.resume_failed` in the log) and their replays
-unavailable: do not deploy one while people are playing.
+A change to the rules (`RULES_VERSION`) ends the games in progress, which cannot be played on or over: at start-up they are marked
+outdated (`game.outdated` in the log), shown to their players as ended by a change of rules. Do not deploy one while people are playing.
 
 ## monitoring
 

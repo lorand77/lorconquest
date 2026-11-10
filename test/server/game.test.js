@@ -296,3 +296,34 @@ test("a player's country is played by the computer while it is handed over, and 
     assert.ok(rows.length > 0 && rows.every((r) => r.source === "caretaker"), "BAV's only commands are the computer's");
     assert.ok(rows.every((r) => r.day > 100 && r.day <= 401), `from the day it was handed over to the day it was handed back (${rows.map((r) => r.day).slice(-3)})`);
 });
+
+test("a game going on under rules the server no longer plays ends as outdated at start-up; a table starts under today's", async () => {
+    const dbPath = tempDb();
+    let server = await startServer({ dbPath }), id, table;
+    try {
+        id = await newGame(server);
+        table = (await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV", seed: 3 })).body.id;
+    } finally {
+        await server.close();
+    }
+    let db = openDb(dbPath);
+    db.db.prepare("UPDATE games SET rules_version = rules_version - 1").run();             // both made under the rules before
+    db.close();
+    server = await startServer({ dbPath });
+    try {
+        const game = server.app.db.q.game.get(id);
+        assert.equal(game.status, "outdated");
+        const mine = (await api(server, "GET", "/api/games")).body;
+        assert.deepEqual(mine.find((g) => g.id === id)?.status, "outdated", "still among its player's games");
+        const s = await connect(server);
+        assert.equal((await emitAck(s, "join", { gameId: id })).error, "no such game");
+        s.close();
+        const r = await api(server, "GET", `/api/games/${id}/replay`);
+        assert.deepEqual([r.status, r.body.error], [409, "that game ended unfinished when the rules changed: it has no replay"]);
+        assert.equal((await api(server, "POST", `/api/tables/${table}/start`, {})).status, 200);
+        const started = server.app.db.q.game.get(table);
+        assert.deepEqual([started.status, started.rules_version], ["active", game.rules_version + 1], "the table's game plays today's rules");
+    } finally {
+        await server.close();
+    }
+});

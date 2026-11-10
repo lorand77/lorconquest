@@ -96,6 +96,9 @@ find. With the server alone running the rules, only Node has to agree with itsel
   as a defeat: finished, with no winner, its result and fingerprint kept as for a victory, so it has a replay.
 - **The game is abandoned** — status `abandoned`, its worker stopped — when every seat has quit or been away longer than
   `AWAY_MS`. A game won by a country is finished as before (a computer can win, and then every human has lost).
+- **A change of rules.** A game going on under another `RULES_VERSION` cannot be brought back: at start-up the server
+  ends every such game as `outdated` — in its people's games ("ended unfinished: the rules changed"), with no replay and in
+  no win rate, place or achievement. A table takes the rules version the server plays when its game starts.
 - **Restarts.** Nothing about who is away is saved. A resumed multiplayer game runs on at once, every player away from
   that moment, so players have `AWAY_MS` to reconnect before the computer has their countries and, if none does, the
   game is abandoned. A resumed single-player game waits, paused, as before.
