@@ -340,7 +340,8 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   historical scenario's Emperor (which the engine does not have either), and any memory of grudges beyond what
   the engine's opinion already keeps.
 - **The simulation tool** (`tools/simulate.js`) plays AI-only games headless, in parallel on worker threads,
-  and reports wins by country, wars, peaces, captures, the commands the engine refused and the time a day took.
+  and reports wins by country, wars, peaces, captures, the commands the engine refused and the time a day took, how much war
+  and how armed (`warstats.js`), and how settlements were lost and where the loser's strength was (`losses.js`).
   What it showed goes in `experiments/`.
 
 ### Characters and rivalries

@@ -3,7 +3,8 @@
 // Prints for each game who won, when and how (reaching the scenario's number of settlements, or on time: the most at the end
 // year), and what happened, then the win rates by country, the commands the game refused, and
 // the time a game day took, and how much war and how armed the games were (warstats.js: five measures that do not depend on how
-// long a game lasts). What it shows goes into experiments/.
+// long a game lasts), and how settlements were lost (losses.js: by storm, siege or peace, and whether the loser's strength was near,
+// on another front, or not there at all). What it shows goes into experiments/.
 //
 //   node tools/simulate.js [--games 8] [--years 210] [--seed 1] [--scenario mitteleuropa] [--jobs 4] [--quiet] [--detail] [--by-era]
 //
@@ -19,12 +20,13 @@ import { Worker, isMainThread, parentPort, workerData } from "node:worker_thread
 import { Game, armyList, formatDate, isRebel, scores } from "../src/engine/index.js";
 import { createAI } from "../src/ai/index.js";
 import { warLine, warSampler, warSummary } from "./warstats.js";
+import { lossSampler, lossSummary } from "./losses.js";
 
 const root = path.join(import.meta.dirname, "..");
 
 // one game to its end; the figures worth keeping
 export function simulate(scenario, { seed, years }) {
-    const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] }), wars = warSampler(game);
+    const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] }), wars = warSampler(game), losses = lossSampler(game);
     const count = { war: 0, joins: 0, peace: 0, capture: 0, battle: 0, uprising: 0, agreement: 0, subject: 0, empire: 0, bankruptcy: 0, eliminated: 0 };
     const refused = {}, starts = {}, aiMs = [], dayMs = [];
     let lastWar = 0, how = null;
@@ -46,6 +48,7 @@ export function simulate(scenario, { seed, years }) {
         events.push(...game.advance());
         const t1 = performance.now();
         wars.day(events);
+        losses.day(events);
         for (const e of events) {
             if (e.type in count) count[e.type]++;
             if (e.type === "war") { starts[e.country] = (starts[e.country] ?? 0) + 1; lastWar = game.day; }
@@ -66,6 +69,7 @@ export function simulate(scenario, { seed, years }) {
         aiMean: aiMs.reduce((a, b) => a + b, 0) / aiMs.length, aiMax: Math.max(...aiMs), dayMean: dayMs.reduce((a, b) => a + b, 0) / dayMs.length,
         aiSamples: Float32Array.from(aiMs),                // every day's time, to pool across games for the percentiles
         wars: wars.result(),
+        losses: losses.result(),
     };
 }
 
@@ -107,6 +111,7 @@ if (isMainThread) {
         await run();
         report(results.sort((a, b) => a.seed - b.seed), (performance.now() - t0) / 1000);
         console.log(warSummary(results, { byEra }));
+        console.log(lossSummary(results));
     }
 } else {
     parentPort.postMessage(simulate(loadScenario(workerData.scenarioName, workerData.without), workerData));

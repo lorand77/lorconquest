@@ -502,3 +502,35 @@ settlement: an ally besieged within reach, with forces free to go, is rare. Bran
 at war, is where it shows, within the noise. Refused orders the same (0.23 a game). The cost line rose (96 against 35
 microseconds a country-day), but that line is not to be trusted for one country (tools/strength.js); `simulate.js`'s whole-AI
 time is the measure if it matters.
+
+## 21. How settlements are lost (2026-11-11)
+
+`tools/losses.js`, new in simulate.js: every settlement a country loses, by how — and, lost by force to a country, why, from the
+state at the end of the day it fell. 24 games of Mitteleuropa, seeds 1–24, 210 years (all 24 won: BRB 6, SCH 4, PRU 4, …), on
+the working copy after section 20 and the computer joining its protectorates' wars; 6 at a time, 9 minutes.
+
+| How | A game | Share |
+|---|---|---|
+| By storm | 58.4 | 63% |
+| Walked into, nobody in it | 10.2 | 11% |
+| Starved out by a siege | 1.2 | 1% |
+| In a peace | 22.8 | 25% |
+| To peasant rebels | 0.2 | 0% |
+
+| Lost by force to a country (69.8 a game), why | A game | Share |
+|---|---|---|
+| Outmatched: its whole power under 2/3 of the taker's, or less in all its armies than took the place | 27.9 | 40% |
+| Enough of its own within 60 days, lost anyway | 10.0 | 14% |
+| Its strength elsewhere, at war on two fronts or more | 15.8 | 23% |
+| Its strength elsewhere, in one war | 16.1 | 23% |
+
+The loser's largest army was a median 143 days from the place when it fell; within 60 days in 18% of the cases.
+
+**What it showed.** Towns are stormed, not starved: a siege nearly always ends in a storm first, so a defence is the garrison
+and what can reach it within weeks, not months. Nearly half the force losses (46%) were of a country that had the strength,
+but elsewhere — half of those while fighting on another front (C, one host per front), half in a single war with its host far
+off, most likely attacking while its own towns were stormed behind it. One in nine losses was a town nobody held: the
+settlements behind the border keep no garrison (section 17), and are walked into once the border moves or a host slips past.
+A quarter go in peace treaties, the cost of losing the war rather than of a town. Read with care: the state is the day's end,
+so a host beaten in the field the same day is gone and the loss counts as outmatched; and "enough within 60 days" does not say
+whether it could have come in time for a storm.
