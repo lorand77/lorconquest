@@ -160,12 +160,13 @@ test("weapons go to the reserve by the lot, gated by tech", () => {
 
 test("buying people spreads them over the settlements by their pop", () => {
     const game = tinyGame();
-    assert.match(refused(game, cmd("buyPeople", { lots: 1 })), /costs 100,000/);
+    AAA(game).treasury = 40000;
+    assert.match(refused(game, cmd("buyPeople", { lots: 1 })), /costs 50,000/);
     rich(game);
     order(game, cmd("buyPeople", { lots: 1 }));
     const pops = [1, 2, 3].map((id) => game.state.settlements[id].pop);
     assert.deepEqual(pops, [20500, 10250, 10250]);
-    assert.equal(AAA(game).treasury, 5000000 - 100000);
+    assert.equal(AAA(game).treasury, 5000000 - 50000);
 });
 
 test("equipping: new weapons from the reserve, the old back to it; cannons manned by the army's own soldiers", () => {

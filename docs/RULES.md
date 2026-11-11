@@ -48,8 +48,9 @@ Every **town** (red circle) starts at **10,000 pop**; every **city** (red square
 
 ```
 civilians        = pop − soldiers − rebels (§11), spread over your settlements in proportion to their pop
-settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + 3500 per Workshop)
-                   × (1 + 15% if it has a Market)           (Workshops and Markets, §3)
+settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + 7000 per Workshop)
+                   × (1 + 25% if it has a Market)           (Workshops and Markets, §3)
+                   × compliance, for a settlement not core  (Conquest, below: 0% the day it falls, 100% after 20 years)
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
@@ -68,7 +69,7 @@ bank interest or tribute (§10). A subject pays its overlord a share of its mone
 
 **Tax.** You set the tax from **2 to 3** in steps of 0.1. Every country starts at **2**, the
 normal rate, and you may move it at any time. Each core civilian pays `tax` a year and each
-non-core civilian half of it, so tax 3 brings in 50% more than tax 2 (a Workshop's flat 3500 does
+non-core civilian half of it, so tax 3 brings in 50% more than tax 2 (a Workshop's flat 7000 does
 not change). Taxing above 2 risks a **peasant uprising** (§11), rolled each year on your
 **average tax over the past year** — lowering it just before the roll does not help:
 ```
@@ -111,7 +112,9 @@ proclaimed (*Becomes* in the scenario): the country takes its name, and its own 
 game — the same country, with all it had. Proclaiming another such region later renames it again; one without changes nothing.
 
 **Conquest.** A captured settlement is held from the day it falls: the 20 years start again, its
-courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It
+courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It pays as its people
+grow compliant: nothing the day it falls, a quarter of what it would pay as your core after 10 years, half after 20 — and all
+of it once a Courthouse makes it core. Your own core retaken pays in full at once. It
 keeps its walls, library, workshop and market. It **stays core for every country that had it core**,
 so retaking it makes it core again at once.
 
@@ -176,8 +179,8 @@ country's lowest-numbered port.
 |---|---|---|---|
 | **Walls** | 0.1M | — | ×1.8 defence, doubles siege time |
 | **Library** | 0.075M | — | +5% of total R · max one per settlement · capped at +50% (see §4) |
-| **Workshop** | 0.075M | — | +3500 money from settlement |
-| **Market** | 0.075M | — | +15% money from settlement — its Workshop's 3500 included |
+| **Workshop** | 0.075M | — | +7000 money from settlement |
+| **Market** | 0.075M | — | +25% money from settlement — its Workshop's 7000 included |
 | **Courthouse** | 0.05M | — | Makes the settlement core at once · only once its people are 100% compliant (20 years held), and not where it is your core already |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
@@ -189,7 +192,7 @@ country's lowest-numbered port.
 | **Muskets** (1000) | 0.1M | x3.5MR | ×2 |
 | **Cannons** (100) | 0.1M | unlocked | ×13 each, then ×1.2 — worth 15.6 men · manned by 10 of an army's soldiers each |
 | **Sharpshooters** (100) | 0.015M | x1MR | ×2.5 · rifles · bought and stationed at a mountain pass you own (§5, §8) |
-| **Buy people** (1000 pop) | 0.1M | — | |
+| **Buy people** (1000 pop) | 0.05M | — | |
 | **10 cogs** | 0.1M | unlocked | ×1 each |
 | **10 carracks** | 0.2M | x3MR | ×3 each |
 | **10 galleons** | 0.33M | x8MR | ×5 each |

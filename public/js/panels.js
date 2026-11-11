@@ -123,15 +123,15 @@ export function countryTab(ctx) {
     return out;
 }
 
-// a settlement's compliance with its owner (mirror.js, compliance): a bar to 100%, after which a courthouse makes it core;
-// nothing for a settlement core for its owner already
+// a settlement's compliance with its owner (mirror.js, compliance): a bar to 100%, after which a courthouse makes it core, and
+// what it pays meanwhile — its compliance of the non-core half (RULES.md §2, Conquest); nothing for one core for its owner already
 export function complianceBlock(ctx, s) {
     const c = compliance(s, ctx.state.day, CORING_DAYS);
     if (c.core) return "";
     const years = Math.floor(c.daysLeft / 365), months = Math.floor((c.daysLeft % 365) / 30.4);
     const left = c.ready ? "compliant: a courthouse makes it core" : `${years ? `${years} year${years === 1 ? "" : "s"} ` : ""}${months} month${months === 1 ? "" : "s"} to go`;
     return ctx.make("div", { class: "compliance" },
-        ctx.make("div", { class: "row" }, ctx.make("span", {}, `Compliance ${c.pct}%`), ctx.make("span", { class: "hint" }, left)),
+        ctx.make("div", { class: "row" }, ctx.make("span", {}, `Compliance ${c.pct}% · pays ${Math.floor(c.pct / 2)}% of a core's money`), ctx.make("span", { class: "hint" }, left)),
         ctx.make("div", { class: "bar" }, ctx.make("i", { style: `width:${c.pct}%` })));
 }
 

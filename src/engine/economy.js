@@ -67,8 +67,12 @@ function economyBase(game, code) {
     let settlementMoney = 0;
     for (const s of owned) {
         const civ = pop ? civilians * s.pop / pop : 0;
-        let money = civ * c.tax * (isCore(st, s, code) ? 1 : 0.5) + (s.workshop ? WORKSHOP_MONEY : 0);
+        const core = isCore(st, s, code);
+        let money = civ * c.tax * (core ? 1 : 0.5) + (s.workshop ? WORKSHOP_MONEY : 0);
         if (s.market) money *= 1 + MARKET_BONUS;
+        // a conquest pays as its people settle under the new owner (RULES.md §2, Conquest): nothing the day it falls, all of its
+        // non-core half once fully compliant (20 years), full once core
+        if (!core) money *= Math.min(1, Math.max(0, st.day - s.heldSince) / CORING_DAYS);
         if (blocked.has(s.id)) money /= 2;
         settlementMoney += money;
     }

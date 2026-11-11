@@ -3,6 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { armyCapOf, economyOf, navyCapOf } from "../../src/engine/index.js";
+import { CORING_DAYS } from "../../src/engine/costs.js";
 import { tinyGame, setArmy, runTo, order, refused } from "../helpers/tiny.js";
 
 const close = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) <= eps * Math.max(1, Math.abs(b)), `${a} is not ${b}`);
@@ -20,18 +21,24 @@ test("a country's money at the start, worked out by hand", () => {
     assert.deepEqual([armyCapOf(game.state, "AAA"), navyCapOf(game.state, "AAA")], [2000, 1000]);
 });
 
-test("tax: core civilians pay it, non-core half, a workshop 3500, a market +15% of the lot", () => {
-    const game = tinyGame();
+test("tax: core civilians pay it, non-core half as they grow compliant, a workshop 7000, a market +25% of the lot", () => {
+    const game = tinyGame(), three = game.state.settlements[3];
     game.state.countries.AAA.tax = 3;
     assert.equal(economyOf(game, "AAA").settlementMoney, 115200);          // 50% more
     game.state.countries.AAA.tax = 2;
-    game.state.settlements[3].cores = [];
-    assert.equal(economyOf(game, "AAA").settlementMoney, 67200);           // settlement 3's 9,600 civilians pay half
-    game.state.settlements[3].cores = ["AAA"];
+    three.cores = [];
+    assert.equal(economyOf(game, "AAA").settlementMoney, 57600, "taken today: settlement 3 pays nothing yet");
+    three.heldSince = -CORING_DAYS / 2;
+    assert.equal(economyOf(game, "AAA").settlementMoney, 57600 + 4800, "10 years held: half its non-core half");
+    three.heldSince = -2 * CORING_DAYS;
+    assert.equal(economyOf(game, "AAA").settlementMoney, 67200, "20 years and more: its 9,600 civilians pay half");
+    three.cores = ["AAA"];
+    three.heldSince = 0;
+    assert.equal(economyOf(game, "AAA").settlementMoney, 76800, "a core pays in full however lately taken (retaken)");
     game.state.settlements[2].workshop = true;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 80300);
+    assert.equal(economyOf(game, "AAA").settlementMoney, 83800);
     game.state.settlements[2].market = true;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 76800 - 19200 + (19200 + 3500) * 1.15);
+    assert.equal(economyOf(game, "AAA").settlementMoney, 76800 - 19200 + (19200 + 7000) * 1.25);
 });
 
 test("conscription law, harvest, mercenaries and loans change the money per year", () => {

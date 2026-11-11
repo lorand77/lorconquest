@@ -9,7 +9,7 @@ export const BUILDINGS = Object.keys(BUILDING_PRICE);
 export const WEAPON_PRICE = { swords: 25000, pikes: 30000, cavalry: 60000, handCannons: 50000, arquebuses: 70000, muskets: 100000 };
 export const CANNON_PRICE = 100000;          // per 100
 export const SHARPSHOOTER_PRICE = 15000;     // per 100
-export const PEOPLE_PRICE = 100000;          // per 1000
+export const PEOPLE_PRICE = 50000;           // per 1000
 export const MERCENARY_PRICE = 50000;        // per 1000
 export const SHIP_PRICE = { cogs: 100000, carracks: 200000, galleons: 330000, menOfWar: 500000 };   // per 10
 export const SHIP_POWER = { cogs: 1, carracks: 3, galleons: 5, menOfWar: 8 };
@@ -39,8 +39,8 @@ export const LAWS = {
 };
 
 export const REGIONS_NEEDED = 1;
-export const WORKSHOP_MONEY = 3500;
-export const MARKET_BONUS = 0.15;
+export const WORKSHOP_MONEY = 7000;
+export const MARKET_BONUS = 0.25;
 export const SOLDIER_UPKEEP = 5;
 export const MERCENARY_UPKEEP = 15;
 export const LOAN_CHUNK = 50000;

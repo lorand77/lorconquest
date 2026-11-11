@@ -8,7 +8,7 @@ import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "
 register("./loader.mjs", import.meta.url);
 const { Game, TECHS, buildMap, economyOf } = await import("../../src/engine/index.js");
 const { viewFor } = await import("../../src/game/view.js");
-const { armyEquipment, countryTab, fleetPanel, researchTab, shopTab } = await import("../../public/js/panels.js");
+const { armyEquipment, complianceBlock, countryTab, fleetPanel, researchTab, shopTab } = await import("../../public/js/panels.js");
 
 // the least element the panels use
 class El {
@@ -376,4 +376,12 @@ test("where soldiers are raised and mercenaries hired stays as the player chose 
     assert.equal(sent[0].settlement, Number(other));
     ctx.state.settlements[other].owner = "AUS";                                // lost: back to the capital
     assert.equal(places(shopTab(ctx))[0].value, capital);
+});
+
+test("a conquest's compliance: the bar, and what it pays meanwhile — half its compliance of a core's money", () => {
+    const { ctx } = setup();
+    const s = { ...ctx.state.settlements[37], cores: [], heldSince: ctx.state.day - 10 * 365 };
+    const block = complianceBlock(ctx, s);
+    assert.match(find([block], () => true).map((e) => e.text ?? "").join(" "), /Compliance 50% · pays 25% of a core's money/);
+    assert.equal(complianceBlock(ctx, { ...s, cores: [s.owner] }), "", "a core: nothing to show");
 });
