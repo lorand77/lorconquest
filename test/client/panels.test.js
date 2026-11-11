@@ -174,6 +174,20 @@ test("the Shop tab builds ships for a coastal country and lists what is queued",
     assert.match(nodes.map((n) => n.text).join(" | "), /1,000 soldiers with pikes at place 57, ready 20 February 1440[\s\S]*1,000 mercenaries at place 58, arriving 21 January 1440/);
 });
 
+test("the kind of ship chosen stays, redraw after redraw, while the country has it", async () => {
+    const { ctx, sent } = setup((game) => { game.state.countries.NED.techs.push("carracks"); }, "NED");
+    ctx.ui = { target: null, shipKind: null };
+    const kindOf = (nodes) => find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "carracks"))[0];
+    let nodes = shopTab(ctx);
+    assert.equal(kindOf(nodes).value, "cogs", "nothing chosen yet: the first");
+    kindOf(nodes).value = "carracks";
+    kindOf(nodes).handlers.change();
+    nodes = shopTab(ctx);                                                      // the panel is rebuilt as the days go by
+    assert.equal(kindOf(nodes).value, "carracks");
+    await button(nodes, "Build").handlers.click();
+    assert.equal(sent[0].kind, "carracks");
+});
+
 test("the port ships are built in stays as the player chose it, redraw after redraw — while it is still theirs", async () => {
     const { ctx, sent } = setup((game) => { game.state.settlements[65].owner = "NED"; }, "NED");      // Bremen, a second port
     ctx.ui = { target: null };

@@ -45,7 +45,7 @@ let unseen = 0;            // events that came in while the Events tab was not o
 let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
 let tab = "selection";     // selection (the Map tab) | country | shop | research | diplomacy | events
 // choices the panels keep while the page is open: the country the Diplomacy tab deals with, the weapon soldiers are raised with
-const ui = { target: null, raiseWeapon: null, raiseAt: null, hireAt: null, empire: false };
+const ui = { target: null, raiseWeapon: null, raiseAt: null, hireAt: null, buildAt: null, shipKind: null, empire: false };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 const press = pressGuard((fn) => setTimeout(fn, 0));    // a hand pressing in the panel: the days do not rebuild it under it
 let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed

@@ -840,7 +840,8 @@ at most 75%
 0% if your pop is not larger than theirs, or if their opinion of you is below −50
 0% if you are its rival (SCENARIO.md, Rivalries)
 0% if you hold 75% of the settlements that win (counted as for victory, subjects and all), or this
-   subject would carry you to them — the HRE vote does not ask this, nor whether you are rivals
+   subject would carry you to them — the HRE vote asks this too, state by state as they join, but not
+   whether you are rivals
 ```
 Near victory, nobody bows: what is left must be taken. A subject gained on demand adds to your warmonger score
 (*Warmongers*).

@@ -158,6 +158,24 @@ test("the Empire: demanded once, ever, with enough settlements inside it; those 
     assert.ok(joined.BBB < 30, JSON.stringify(joined));
 });
 
+test("the Empire near victory: once the proposer holds three quarters of the number that wins, the rest refuse unrolled and join the League", () => {
+    const make = (seed, target) => tinyGame(seed, (sc) => { for (const x of sc.settlements) x.hre = true; sc.empire = { needed: 3 }; sc.victory.settlements = target; });
+    // AAA holds 3: at 4 it is at three quarters already — nobody joins, all four are the League
+    const g = make(1, 4), events = order(g, cmd("AAA", "proposeEmpire"));
+    assert.equal(ofType(events, "empire")[0].joined, 0);
+    assert.ok(hasAgreement(g.state, "defensive", "BBB", "EEE"));
+    // at 5 the line is 3.75: two protectorates of one settlement each (half apiece) take AAA to 4, and the rest refuse
+    let most = 0;
+    for (let seed = 1; seed <= 60; seed++) {
+        const h = make(seed, 5);
+        order(h, cmd("AAA", "proposeEmpire"));
+        const members = ["BBB", "CCC", "DDD", "EEE"].filter((c) => h.state.countries[c].overlord === "AAA");
+        most = Math.max(most, members.length);
+        assert.ok(scores(h.state).AAA.settlements <= 4, `seed ${seed}: ${members}`);
+    }
+    assert.equal(most, 2, "two join at most, and sometimes two do");
+});
+
 test("a human state asked to join the Empire answers; a refusal, or none in 6 months, joins the League", () => {
     const make = () => tinyGame(3, (sc) => { for (const s of sc.settlements) s.hre = true; sc.empire = { needed: 3 }; }, ["DDD"]);
     let game = make();

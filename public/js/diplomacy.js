@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -116,8 +116,20 @@ function empireSection(ctx) {
     const foes = eligible.filter((x) => state.wars.includes(pairKey(me, x))), asked = eligible.filter((x) => !foes.includes(x));
     const people = asked.filter((x) => state.humans.includes(x)), rolled = asked.filter((x) => !state.humans.includes(x));
     const expect = rolled.reduce((k, x) => k + demandChance(game, x, me, "protectorate").chance / 100, 0);
-    out.push(mk("p", { class: "hint" }, "Every German state becomes your protectorate or joins the League against you: once, ever."),
-        mk("p", {}, `Now: about ${Math.round(expect)} of ${rolled.length} computer states would join${people.length ? `, and ${list(people)} would be asked` : ""}${foes.length ? `; ${list(foes)}, at war with you, would refuse` : ""}.`),
+    // near victory nobody bows (RULES.md §10): they roll in turn, and once you hold three quarters of what wins, or the next would
+    // carry you to it, the rest refuse — at most this many, were every one before it to join
+    const table = scores(state), target = game.map.scenario.victory?.settlements ?? Infinity;
+    let count = table[me]?.settlements ?? 0, most = 0;
+    for (const x of rolled) {
+        const gain = 0.5 * (table[x]?.settlements ?? 0);
+        if (count >= NEAR_VICTORY * target || count + gain >= target) break;
+        count += gain;
+        most++;
+    }
+    const capped = most < rolled.length;
+    out.push(mk("p", { class: "hint" }, "Every German state becomes your protectorate or joins the League against you: once, ever. Near victory nobody bows: once you hold three quarters of what wins, or the next state would carry you to it, the rest refuse."),
+        mk("p", {}, most === 0 && rolled.length ? `Now: you are too near victory — every computer state would refuse and join the League${people.length ? `, and ${list(people)} would be asked` : ""}.`
+            : `Now: about ${Math.round(Math.min(expect, most))} of ${rolled.length} computer states would join${capped ? ` (at most ${most} before you are near victory)` : ""}${people.length ? `, and ${list(people)} would be asked` : ""}${foes.length ? `; ${list(foes)}, at war with you, would refuse` : ""}.`),
         row(ctx, mk("button", { class: "danger", onclick: async () => { if (confirm("Demand the Empire? You may do this only once, ever.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand the Empire")));
     return section(ctx, "The Holy Roman Empire", ...out);
 }

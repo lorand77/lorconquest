@@ -13,7 +13,7 @@ import { BUILDING_PRICE } from "./costs.js";
 import { popOf } from "./economy.js";
 import { capture } from "./fighting.js";
 import { retreat } from "./movement.js";
-import { agreementAnswer, demandChance, neighboursOf, subjectChance } from "./opinion.js";
+import { agreementAnswer, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
 import { random } from "./random.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
 import { armyList, atWar, canEnter, isRebel, warKey } from "./state.js";
@@ -316,7 +316,8 @@ export function formLeague(game, members, events) {
 const allied = (st, a, b) => hasAgreement(st, "defensive", a, b) || hasAgreement(st, "military", a, b);
 
 // demand the Empire: each German state rolls like a protectorate demand (RULES.md §10); those that join become protectorates,
-// those that refuse form the League. Humans are asked.
+// those that refuse form the League. Humans are asked. Near victory nobody bows (nearVictory), state by state as they join:
+// once the proposer holds three quarters of the number that wins, or the next would carry it there, the rest refuse unrolled.
 // A state at war with the proposer refuses at once, a person too: joining would end the war with no peace (a demand is not
 // made in a war either). `joined` in the event counts those that joined now, not the subjects it had already.
 export function proposeEmpire(game, proposer, events) {
@@ -332,6 +333,7 @@ export function proposeEmpire(game, proposer, events) {
             events.push({ type: "offer", day: st.day, country: c, from: proposer, what: "to join the Empire as a protectorate" });
             continue;
         }
+        if (nearVictory(game, c, proposer, "protectorate")) { refused.push(c); continue; }
         if (random(st) * 100 < demandChance(game, c, proposer, "protectorate").chance) { setSubject(game, c, proposer, "protectorate", events); joined++; }
         else refused.push(c);
     }

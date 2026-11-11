@@ -169,6 +169,11 @@ test("agreements you hold can be broken or cancelled; a vassal is not dealt with
     const able = diplomacyTab(ctx);
     assert.match(textOf(able), /Now: about \d+ of \d+ computer states would join/);
     assert.equal(button(able, "Demand the Empire").attrs.disabled, undefined);
+    // near victory nobody bows: at three quarters of the 45 that win, every computer state would refuse
+    const saved = Object.fromEntries(Object.values(ctx.state.settlements).map((x) => [x.id, x.owner]));
+    for (const x of Object.values(ctx.state.settlements).filter((x) => x.owner !== "BAV").slice(0, 25)) x.owner = "BAV";
+    assert.match(textOf(diplomacyTab(ctx)), /Now: you are too near victory — every computer state would refuse and join the League/);
+    for (const x of Object.values(ctx.state.settlements)) x.owner = saved[x.id];
     // once demanded: what came of it, and no button
     ctx.state.memory.empire.BAV = { league: ["SAX"] };
     ctx.state.countries.ULM.overlord = "BAV";

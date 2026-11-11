@@ -218,10 +218,12 @@ export function shopTab(ctx) {
     const ports = own.filter((s) => game.map.nodes.get(String(s.id)).port);
     if (ports.length) {
         const kinds = SHIPS.filter((k) => c.techs.includes(k));
-        // the port chosen last (kept in ctx.ui while the page is open) while it is still ours, or else the capital's, or the first
+        // the port chosen last (kept in ctx.ui while the page is open) while it is still ours, or else the capital's, or the first;
+        // the kind of ship chosen last, or else the first
         const keptPort = ports.some((s) => s.id === ctx.ui?.buildAt) ? ctx.ui.buildAt : ports.find((s) => s.id === capital)?.id ?? ports[0].id;
-        const bp = select(ctx, settlementOptions(ports), keptPort), bk = select(ctx, kinds.map((k) => [k, `${SHIP_NAMES[k]} · ${money(SHIP_PRICE[k])} for 10`]), kinds[0]), bl = numberInput(ctx, 1, 1, 20);
+        const bp = select(ctx, settlementOptions(ports), keptPort), bk = select(ctx, kinds.map((k) => [k, `${SHIP_NAMES[k]} · ${money(SHIP_PRICE[k])} for 10`]), kinds.includes(ctx.ui?.shipKind) ? ctx.ui.shipKind : kinds[0]), bl = numberInput(ctx, 1, 1, 20);
         bp.addEventListener("change", () => { if (ctx.ui) ctx.ui.buildAt = Number(bp.value); });
+        bk.addEventListener("change", () => { if (ctx.ui) ctx.ui.shipKind = bk.value; });
         out.push(section(ctx, "Ships",
             row(ctx, bp, bk, bl, make("span", {}, "× 10")),
             make("p", { class: "hint" }, "Ships in port need no crew; at sea each takes 50, within the navy cap."),

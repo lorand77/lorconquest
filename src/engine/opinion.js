@@ -145,18 +145,25 @@ export const areRivals = (game, a, b) => (game.map.scenario.rivalries ?? []).som
 // how close a country is to winning, from 0, as a share of the scenario's number (SCENARIO.md, Victory)
 export const NEAR_VICTORY = 0.75;
 
-// the chance that `holder` agrees to a demand to become `demander`'s subject (RULES.md §10): demandChance — but none for a
-// rival, and none for a country at three quarters of victory or that this subject would carry past it (`why` says which;
-// `count` and `target`, how near). The Empire's vote keeps demandChance alone.
-export function subjectChance(game, holder, demander, kind) {
-    const st = game.state, base = demandChance(game, holder, demander, kind), target = game.map.scenario.victory?.settlements;
-    if (areRivals(game, holder, demander)) return { ...base, chance: 0, why: "rival" };
-    if (!target) return base;
+// is `demander` too near victory for `holder` to become its subject (RULES.md §10): at three quarters of the scenario's number,
+// or carried to it by this subject — { count, target } if so, else null
+export function nearVictory(game, holder, demander, kind) {
+    const st = game.state, target = game.map.scenario.victory?.settlements;
+    if (!target) return null;
     const table = scores(st), count = table[demander]?.settlements ?? 0;
     // what it would gain: the holder's settlements and its subjects', at a vassal's share or a protectorate's — less the half a
     // protectorate of its own already gives it, if it is to become a vassal
     const was = st.countries[holder].overlord === demander ? (st.countries[holder].subjectKind === "vassal" ? 1 : 0.5) : 0;
     const gain = (table[holder]?.settlements ?? 0) * ((kind === "vassal" ? 1 : 0.5) - was);
-    if (count >= NEAR_VICTORY * target || count + gain >= target) return { ...base, chance: 0, why: "victory", count, target };
-    return base;
+    return count >= NEAR_VICTORY * target || count + gain >= target ? { count, target } : null;
+}
+
+// the chance that `holder` agrees to a demand to become `demander`'s subject (RULES.md §10): demandChance — but none for a
+// rival, and none near victory (nearVictory; `why` says which, `count` and `target` how near). The Empire's vote asks the
+// second, state by state, and not the first (diplomacy.js, proposeEmpire).
+export function subjectChance(game, holder, demander, kind) {
+    const base = demandChance(game, holder, demander, kind);
+    if (areRivals(game, holder, demander)) return { ...base, chance: 0, why: "rival" };
+    const near = nearVictory(game, holder, demander, kind);
+    return near ? { ...base, chance: 0, why: "victory", ...near } : base;
 }

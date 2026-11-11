@@ -595,7 +595,9 @@ crown's authority behind it:
 chance each German state accepts = size × 10 % + opinion ÷ 10 % + 10 %
 at most 75%
 0% if the Emperor's pop is not larger than theirs, or if their opinion of the Emperor is below −50
+0% once the Emperor holds 75% of the settlements that win, or this state would carry it to them
 ```
+The states roll one after another, and each that accepts counts at once (RULES.md §10: near victory nobody bows).
 Every state that accepts becomes the Emperor's **protectorate** and pays it **10%** of its yearly money. **The
 states that refuse form the League**: all of them make a **defensive alliance** with each other, and IA falls by
 **20**. Refusing does not change their opinion of the Emperor.

@@ -9,7 +9,7 @@
 // the target of choice, and it is never proposed anything. They do not make it attack at worse odds or fight longer — tried,
 // that turned every war between rivals into one between alliances (experiments/, 5). They are the AI's preferences, not
 // rules: a rival's proposal is still answered by the engine's formula, like anyone's.
-import { YEAR_DAYS, agreementAnswer, bordering, need, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
+import { NEAR_VICTORY, YEAR_DAYS, agreementAnswer, bordering, need, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
     peaceAnswer, scores, sizeOf, subjectChance, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
 import { agreementsBetween, alliesOf, friendly } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
@@ -287,8 +287,10 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
         }
     }
 
-    // the Empire, once — at peace, since every German state at war with it would refuse and join the League
-    const needed = game.map.scenario.empire?.needed;
-    if (needed && !foes.length && !declaring && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
+    // the Empire, once — at peace, since every German state at war with it would refuse and join the League; and not at three
+    // quarters of victory, where every one would (RULES.md §10)
+    const needed = game.map.scenario.empire?.needed, target = game.map.scenario.victory?.settlements;
+    const near = target && (scores(st)[code]?.settlements ?? 0) >= NEAR_VICTORY * target;
+    if (needed && !near && !foes.length && !declaring && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
     return { orders: out, prepare: plans.has(code) };
 }

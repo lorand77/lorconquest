@@ -328,7 +328,12 @@ protectorate demand (RULES.md §10):
 chance each German state joins = size × 10 % + opinion ÷ 10 %
 at most 75%
 0% if your pop is not larger than theirs, or if their opinion of you is below −50
+0% once you hold 75% of the settlements that win, or this state would carry you to them
 ```
+
+The states roll one after another, and each that joins counts at once: near victory nobody bows (RULES.md §10), so a demand
+made late in the game brings in only the states that leave you short of three quarters of victory — and the rest form the
+League. A person's state is asked, and may say yes all the same.
 
 Every German state that joins becomes your **protectorate** (RULES.md §10) and pays you **10%** of
 its yearly money.

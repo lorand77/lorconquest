@@ -534,3 +534,28 @@ settlements behind the border keep no garrison (section 17), and are walked into
 A quarter go in peace treaties, the cost of losing the war rather than of a town. Read with care: the state is the day's end,
 so a host beaten in the field the same day is gone and the loss counts as outmatched; and "enough within 60 days" does not say
 whether it could have come in time for a storm.
+
+## 22. A token garrison behind the border (2026-11-11)
+
+Section 21: one loss in nine was a town nobody held. A settlement behind the border (every route from it leading to the country's
+own land) sent its whole garrison to the staging settlement; now it keeps 200 armed men, and is not behind the border at all while
+an enemy force is within 60 days of it (then it keeps the inner towns' 1.5%). Against 5600e0b, on rules 40: 140 games, 6 at a time,
+64 minutes.
+
+| Country | Settlements at the end, new less old (95%) | Wins new / old | Survived new / old |
+|---|---|---|---|
+| Bavaria | +0.5 [−0.3, +1.2] | 6 / 6 | 14 / 14 |
+| Brandenburg | −0.5 [−3.2, +2.3] | 3 / 3 | 14 / 14 |
+| Austria | +1.3 [+0.2, +2.4] | 3 / 3 | 13 / 12 |
+| Saxony | +0.2 [−0.3, +0.6] | 4 / 4 | 12 / 12 |
+| Prussia | −3.5 [−9.0, +1.9] | 1 / 2 | 7 / 6 |
+| Gdańsk | 0.0 [−0.5, +0.5] | 0 / 0 | 16 / 16 |
+| **All** | **−0.4 [−1.4, +0.7]** | 17 / 18 of 120 | |
+
+The loss report of the same 24 games as section 21, every country on the new code: towns walked into 10.2 → 7.1 a game, but
+stormed 58.4 → 64.8, and lost by force to a country 69.8 → 73.0.
+
+**What it showed: nothing gained** (taken out again). The token stops raiding parties, which take only empty towns, but a host storms a town of 200
+as easily as it walks into an empty one: the town is lost the same, by storm. One country of six clear of zero (Austria) is what
+chance gives. Refused orders the same (0.34). The cost line rose (87 against 34 microseconds a country-day; the line is not to be
+trusted, but the 60-day look from every town behind the border at war is real work).
