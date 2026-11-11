@@ -1,7 +1,8 @@
 // The computer player's diplomacy (docs/design.md, "The computer players", strategy): it asks for peace when a war has
 // run its course — dictating terms when it is far ahead, buying peace when it is losing — plans and declares wars it
 // should win, proposes alliances and pacts the other side will accept, demands subjects of weaker neighbours, and
-// proposes the Empire when it holds enough of it. The other side's answers are the engine's pure formulas
+// proposes the Empire when it holds enough of it. It joins its protectorates' wars where its side would be the stronger, and a
+// protectorate its overlord's where the two of them crush the enemy next door (protectorateWar). The other side's answers are the engine's pure formulas
 // (opinion.js), so the computer asks only what it knows will be accepted: a proposal may be made once in five years.
 //
 // Rivalries (SCENARIO.md; util.js, rivalsOf) bend this: among the neighbours a country is strong enough to attack, a rival is
@@ -128,6 +129,37 @@ export function bestTarget(game, code, fl) {
     return best;
 }
 
+// a war of a protectorate's to join, or of the overlord's for a protectorate (RULES.md §10, joining by choice): { ally, enemy } or
+// null. Joining opens a war with that enemy alone, so the odds are our two countries against everyone fighting the ally. An
+// overlord defends a protectorate that was attacked at even odds or so (a warlike one at worse), and joins one that attacked at
+// the odds it would declare at; it must border the enemy or the protectorate, have money, and not be fighting enough wars of
+// its own. A protectorate, the weaker of the two, joins only where it borders the enemy, is at peace and the two of them are
+// twice as strong: land to take, little to lose. Never through an agreement it would break (bound), never against a rebel.
+export function protectorateWar(game, code, fl, limit = 1) {
+    const st = game.state, power = (c) => militaryPowerOf(st, c), foes = realFoes(st, code);
+    if (st.countries[code].treasury <= 0) return null;
+    const leader = leaderFor(game, code);
+    const candidates = (ally) => realFoes(st, ally).filter((e) => st.countries[e].out === null && !foes.includes(e) && !bound(st, code, e)).sort();
+    const against = (ally) => realFoes(st, ally).reduce((n, e) => n + power(e), 0);
+    const mine = subjectsOf(st, code).filter((p) => st.countries[p].subjectKind === "protectorate" && st.countries[p].out === null).sort();
+    for (const p of mine) {
+        for (const e of candidates(p)) {
+            const defending = st.warInfo[warKey(p, e)]?.attacker === e;
+            if (foes.length >= limit + (defending ? 1 : 0)) continue;
+            if (!bordering(game, code, e) && !bordering(game, code, p)) continue;
+            const odds = (defending ? 1.0 : 1.5) - 0.3 * fl.aggression - (e === leader ? 0.2 : 0);
+            if (power(code) + power(p) >= odds * Math.max(1, against(p))) return { ally: p, enemy: e };
+        }
+    }
+    const lord = overlordOf(st, code);
+    if (lord && st.countries[code].subjectKind === "protectorate" && !foes.length) {
+        for (const e of candidates(lord)) {
+            if (bordering(game, code, e) && power(code) + power(lord) >= 2 * Math.max(1, against(lord))) return { ally: lord, enemy: e };
+        }
+    }
+    return null;
+}
+
 // the computer player's diplomacy for one country on one think; `memory` is the AI's: the wars it is preparing (`plans`)
 // and when it last asked a human something (`asked`), since a question to a human leaves no mark in the game until
 // it is answered. `cash` is the treasury once the orders of the same think that spend are applied.
@@ -168,6 +200,12 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     } else if (calm && (fl.racing || r() < 0.03 + 0.1 * fl.aggression)) {           // a front-runner looks for its next war at every think
         const t = bestTarget(game, code, fl);
         if (t) plans.set(code, { target: t.target, since: day });
+    }
+
+    // a protectorate's war joined, or the overlord's — one a think, and not on one that declares a war of its own
+    if (!out.some((o) => o.type === "declareWar")) {
+        const join = protectorateWar(game, code, fl, limit);
+        if (join) cmd("joinWar", join);
     }
 
     // agreements, at most one proposal a think: a military alliance against a common enemy, then a defensive alliance

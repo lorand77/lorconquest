@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, SPEEDS, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, SPEEDS, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -182,6 +182,12 @@ function onTick(m) {
     // a war declared on us: the banner, and anyone joining it since is added to it
     const alert = warAlert(m.events, me, war ?? undefined);
     if (alert) showWar(alert);
+    // a protectorate's war, or the overlord's: one to join, as a call to arms pops up; or it joining ours, as an ally does
+    for (const p of protectorateNews(m.events, state, me)) {
+        const ally = `${p.ours ? "your protectorate" : "your overlord"} ${country(p.ally).name}`, enemy = country(p.enemy)?.name ?? p.enemy;
+        if (p.what === "joined") notice(`${ally[0].toUpperCase()}${ally.slice(1)} joins your war against ${enemy}.`, "diplomacy");
+        else notice(`${ally[0].toUpperCase()}${ally.slice(1)} is at war with ${enemy}: you may join it on its side (the Diplomacy tab, ${country(p.ally).name}).`, "questions");
+    }
     prune();
     renderAll();
 }

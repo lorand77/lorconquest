@@ -361,6 +361,34 @@ export function warAlert(events, me, wars = { attackers: [], against: [], allies
     return any || out.against.length > wars.against.length || out.allies.length > wars.allies.length ? out : null;
 }
 
+// A protectorate's wars (RULES.md §10, joining by choice), from one day's events, as the notices that tell `me` of them: "may",
+// `me`'s protectorate — or, `me` a protectorate, its overlord — gone to war with `enemy`, which `me` may join on its side (the
+// Diplomacy tab has the button), as a call to arms from an ally pops up; "joined", it joining `me`'s war, as an ally answering
+// one. [{ what, ally, enemy, ours }], `ours` true for `me`'s protectorate, false for its overlord; each pair once.
+export function protectorateNews(events, state, me) {
+    const c = state.countries, mine = c[me];
+    if (!me || !mine || (mine.out ?? null) !== null) return [];
+    const at = (a, b) => state.wars.includes(a < b ? `${a}|${b}` : `${b}|${a}`);
+    const ours = (x) => c[x]?.overlord === me && c[x]?.subjectKind === "protectorate";
+    const theirs = (x) => mine.overlord === x && mine.subjectKind === "protectorate";
+    const out = [], seen = new Set();
+    const add = (what, ally, enemy) => {
+        const key = `${what}|${ally}|${enemy}`;
+        if (!seen.has(key)) { seen.add(key); out.push({ what, ally, enemy, ours: ours(ally) }); }
+    };
+    for (const e of events) {
+        if (e.type === "joins" && (ours(e.country) || theirs(e.country)) && at(me, e.enemy)) { add("joined", e.country, e.enemy); continue; }
+        // a war begun, or joined, by the protectorate or the overlord: the other side, unless we are in it already
+        const pairs = e.type === "war" ? [[e.country, e.target], [e.target, e.country]] : e.type === "joins" ? [[e.country, e.enemy]] : [];
+        for (const [ally, enemy] of pairs) {
+            if (!(ours(ally) || theirs(ally)) || enemy === me || c[enemy]?.rebel || !at(ally, enemy) || at(me, enemy)) continue;
+            if (c[enemy]?.overlord === me || mine.overlord === enemy) continue;
+            add("may", ally, enemy);
+        }
+    }
+    return out;
+}
+
 // the tech a country is offered at one click when it researches nothing: the cheapest it may research now (its prerequisite
 // held, itself not), by `costOf(id)`; null if there is none. `techs` is the engine's TECHS, `owned` the country's techs.
 export function cheapestOpenTech(techs, owned, costOf) {

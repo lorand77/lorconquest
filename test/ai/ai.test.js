@@ -9,7 +9,7 @@ import { warKey } from "../../src/engine/state.js";
 import { createAI } from "../../src/ai/index.js";
 import { answerOffers, callAnswers } from "../../src/ai/caretaker.js";
 import { addAgreement } from "../../src/engine/diplomacy.js";
-import { bestTarget, diplomacyOrders, subjectCap } from "../../src/ai/diplomacy.js";
+import { bestTarget, diplomacyOrders, protectorateWar, subjectCap } from "../../src/ai/diplomacy.js";
 import { CHARACTERS, NOISE } from "../../src/ai/characters.js";
 import historical from "../../scenarios/historical-1440/scenario.json" with { type: "json" };
 import { economyOrders, lawFor } from "../../src/ai/economy.js";
@@ -801,4 +801,34 @@ test("a host relieves an ally's town our enemy besieges, if with its garrison it
     const host = Object.values(st.armies).find((a) => a.owner === "AAA" && a.id > 8 && a.at === "1");
     const moves = warOrders(game, "AAA", fl).filter((o) => o.type === "move" && o.army === host.id);
     assert.deepEqual(moves.map((o) => o.to), ["6"], "2,000 with Six's 300 against 1,000: to Six");
+});
+
+test("an overlord joins the war of a protectorate attacked where its side is the stronger; a protectorate its overlord's next door at twice the odds", () => {
+    const attacked = (prepare = () => {}) => {
+        const game = tinyGame(), st = game.state;
+        Object.assign(st.countries.CCC, { overlord: "BBB", subjectKind: "protectorate" });
+        prepare(game, st);
+        game.command({ type: "declareWar", country: "DDD", target: "CCC" });
+        return game;
+    };
+    let game = attacked();
+    assert.deepEqual(protectorateWar(game, "BBB", fl), { ally: "CCC", enemy: "DDD" }, "1,200 and CCC's 400 against DDD's 400");
+    const orders = diplomacyOrders(game, "BBB", fl, { plans: new Map(), asked: new Map() }).orders.filter((o) => o.type === "joinWar");
+    assert.deepEqual(orders, [{ type: "joinWar", country: "BBB", ally: "CCC", enemy: "DDD" }]);
+    assert.ok(game.command(orders[0]).ok && atWar(game.state, "BBB", "DDD"));
+    assert.equal(protectorateWar(game, "BBB", fl), null, "in it already");
+    assert.equal(protectorateWar(attacked((g) => setArmy(g, 7, { swords: 20000 })), "BBB", fl), null, "DDD far the stronger");
+    assert.equal(protectorateWar(attacked((g) => addAgreement(g, "pact", "BBB", "DDD")), "BBB", fl), null, "a pact it would break");
+    assert.equal(protectorateWar(attacked((g, st) => { st.countries.BBB.treasury = -1; }), "BBB", fl), null, "no money");
+    // the protectorate: into its overlord's war with the neighbour it borders, if the two of them are twice as strong
+    game = tinyGame();
+    Object.assign(game.state.countries.CCC, { overlord: "BBB", subjectKind: "protectorate" });
+    game.command({ type: "declareWar", country: "BBB", target: "DDD" });
+    assert.deepEqual(protectorateWar(game, "CCC", fl), { ally: "BBB", enemy: "DDD" });
+    setArmy(game, 7, { swords: 900 });
+    assert.equal(protectorateWar(game, "CCC", fl), null, "1,600 against 900: not twice");
+    game = tinyGame();
+    Object.assign(game.state.countries.CCC, { overlord: "BBB", subjectKind: "protectorate" });
+    game.command({ type: "declareWar", country: "BBB", target: "AAA" });
+    assert.equal(protectorateWar(game, "CCC", fl), null, "AAA is not next door");
 });

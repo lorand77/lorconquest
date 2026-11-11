@@ -38,10 +38,10 @@ export const marchFor = (choice, enemyTown) => (choice === "ask" ? "ask" : { sto
 // each kind, what it covers, and whether it is on unless chosen otherwise, on a computer and on a phone
 export const NOTICE_KINDS = [
     { key: "war", label: "War", text: "a war declared on you, a siege of one of your settlements, one lost, peasants rising", computer: true, phone: true },
-    { key: "questions", label: "Questions", text: "an offer, a demand or a call to arms waiting for your answer, and one that lapses", computer: true, phone: true },
+    { key: "questions", label: "Questions", text: "an offer, a demand or a call to arms waiting for your answer, and one that lapses; a protectorate's war you may join", computer: true, phone: true },
     { key: "refused", label: "Refused orders", text: "an order the rules do not allow, and why", computer: true, phone: true },
     { key: "research", label: "Research", text: "a technology done", computer: true, phone: true },
-    { key: "diplomacy", label: "Diplomacy", text: "answers, agreements, allies joining a war, peace, subjects, the Empire", computer: true, phone: false },
+    { key: "diplomacy", label: "Diplomacy", text: "answers, agreements, allies and protectorates joining a war, peace, subjects, the Empire", computer: true, phone: false },
     { key: "armies", label: "Armies", text: "soldiers ready, mercenaries deserting, a strait not crossed, sharpshooters lost, a fleet paid off", computer: true, phone: false },
     { key: "country", label: "Your country", text: "plague, bankruptcy, a default on loans, a good harvest", computer: true, phone: false },
 ];

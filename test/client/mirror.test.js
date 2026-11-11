@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -389,4 +389,22 @@ test("a march planned before a war: the way into a country at peace with us as i
     const plans = new Map([[1, { to: "35", storm: true, target: "AUS" }], [2, { to: "39", storm: false, target: "TYR" }]]);
     assert.deepEqual(premovesDue(plans, st, "BAV"), []);
     assert.deepEqual(premovesDue(plans, { ...st, wars: [...st.wars, "AUS|BAV"] }, "BAV"), [{ army: 1, to: "35", storm: true, target: "AUS" }]);
+});
+
+test("a protectorate's war: one the player may join, as a call to arms pops up; it joining the player's war, as an ally does", () => {
+    const state = {
+        countries: { BAV: { out: null }, JEN: { overlord: "BAV", subjectKind: "protectorate", out: null }, ULM: { overlord: "BAV", subjectKind: "vassal", out: null },
+            SAX: { out: null }, AUS: { out: null }, RB: { rebel: true } },
+        wars: ["AUS|BAV", "AUS|JEN", "JEN|RB", "JEN|SAX"],
+    };
+    assert.deepEqual(protectorateNews([{ type: "war", country: "SAX", target: "JEN" }], state, "BAV"), [{ what: "may", ally: "JEN", enemy: "SAX", ours: true }], "Saxony attacks Jena");
+    assert.deepEqual(protectorateNews([{ type: "joins", country: "JEN", enemy: "AUS", side: "def" }], state, "BAV"), [{ what: "joined", ally: "JEN", enemy: "AUS", ours: true }], "Jena joins our war");
+    assert.deepEqual(protectorateNews([{ type: "war", country: "JEN", target: "AUS" }], state, "BAV"), [], "at war with Austria already");
+    assert.deepEqual(protectorateNews([{ type: "war", country: "RB", target: "JEN" }], state, "BAV"), [], "peasants are no war to join");
+    assert.deepEqual(protectorateNews([{ type: "war", country: "SAX", target: "ULM" }], { ...state, wars: ["SAX|ULM"] }, "BAV"), [], "a vassal's wars are ours anyway");
+    // the protectorate's side: its overlord's war
+    const jena = protectorateNews([{ type: "war", country: "SAX", target: "BAV" }], { ...state, wars: ["BAV|SAX"] }, "JEN");
+    assert.deepEqual(jena, [{ what: "may", ally: "BAV", enemy: "SAX", ours: false }]);
+    assert.deepEqual(protectorateNews([{ type: "war", country: "SAX", target: "JEN" }, { type: "war", country: "SAX", target: "JEN" }], state, "BAV").length, 1, "once");
+    assert.deepEqual(protectorateNews([], state, null), []);
 });

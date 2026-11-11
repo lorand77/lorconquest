@@ -313,7 +313,11 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   two (`ALLIANCE_CAP`; experiments/README.md, 6), subjects demanded of
   much weaker neighbours (at peace, on 30% of its thinks, where a yes is 35% likely or more; its own protectorates made vassals
   first; up to `subjectCap`: 3, one more per 10 settlements it counts toward victory, two more for a diplomat, which asks
-  whatever its aggression), the Empire proposed once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
+  whatever its aggression), its protectorates' wars joined (`protectorateWar`, one a think: an attacked protectorate at odds
+  of 1 − 0.3 × aggression, one that attacked at 1.5 − 0.3 × aggression, our two countries against everyone fighting it, if it
+  borders the enemy or the protectorate, has money, breaks no agreement, and is in no more wars than it would start; a
+  protectorate joins its overlord's war only with a neighbour, at peace, the two of them twice as strong), the Empire proposed
+  once when it holds enough, and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
   come home) are merged at the end of each think, the smallest into the largest, down to three — none given another order that
   think (`forces.js`, `tidyOrders`). A settlement every route from which leads to its own land (or a subject's or its overlord's) keeps no garrison — not
   the capital, nor while its own peasants are up — and its idle armies march to the staging settlement (`util.js`, `inland`).
@@ -818,6 +822,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   a computer, the first four only on a phone. The choice is kept in the browser (`lorconquest.notices`, the privacy page says
   so) and edited on the Customize page and behind ⚙ by the zoom buttons. At most 3 notices at once, 2 on a phone; the same one
   again counts up ("×3") rather than stacking; each goes after 6 seconds, 3 on a phone. Messages about the connection always show.
+  A protectorate's war (`mirror.js`, `protectorateNews`) — the player's protectorate's, or, the player a protectorate, its
+  overlord's — that the player is not in pops up as a question does ("…: you may join it on its side", the Diplomacy tab
+  has the button), there being no offer to answer; the protectorate or overlord joining the player's war, as diplomacy.
 - **Small screens:** a tablet's panel is 300px. On a phone, either way it is held, the status block gives way to one slim
   **bar** (`renderPhoneBar`): ▶/⏸ (not in a game with others), the country's colour and code (👁 for a watcher), the date short
   (the setup minute's countdown while it runs), the treasury short and what a year brings or takes (`mirror.js`, `shortMoney`,
