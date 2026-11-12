@@ -21,7 +21,7 @@ test("a country's money at the start, worked out by hand", () => {
     assert.deepEqual([armyCapOf(game.state, "AAA"), navyCapOf(game.state, "AAA")], [2000, 1000]);
 });
 
-test("tax: core civilians pay it, non-core half as they grow compliant, a workshop 7000, a market +25% of the lot", () => {
+test("tax: core civilians pay it, non-core half as they grow compliant, a workshop 7000, a market +15% of the lot", () => {
     const game = tinyGame(), three = game.state.settlements[3];
     game.state.countries.AAA.tax = 3;
     assert.equal(economyOf(game, "AAA").settlementMoney, 115200);          // 50% more
@@ -38,7 +38,7 @@ test("tax: core civilians pay it, non-core half as they grow compliant, a worksh
     game.state.settlements[2].workshop = true;
     assert.equal(economyOf(game, "AAA").settlementMoney, 83800);
     game.state.settlements[2].market = true;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 76800 - 19200 + (19200 + 7000) * 1.25);
+    assert.equal(economyOf(game, "AAA").settlementMoney, 76800 - 19200 + (19200 + 7000) * 1.15);
 });
 
 test("conscription law, harvest, mercenaries and loans change the money per year", () => {

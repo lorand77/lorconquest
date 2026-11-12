@@ -559,3 +559,49 @@ stormed 58.4 → 64.8, and lost by force to a country 69.8 → 73.0.
 as easily as it walks into an empty one: the town is lost the same, by storm. One country of six clear of zero (Austria) is what
 chance gives. Refused orders the same (0.34). The cost line rose (87 against 34 microseconds a country-day; the line is not to be
 trusted, but the 60-day look from every town behind the border at war is real work).
+
+## 23. Buildings worth more, conquests paying as they settle, people at half price (2026-11-11)
+
+Rules 42: a Workshop +7,000 (was 3,500), a Market +25% (was 15%); a settlement not core pays its non-core half × its compliance
+(nothing the day it falls, all of it after 20 years); 1,000 people 50,000 (was 100,000); and (rules 41) the Empire's vote near
+victory. The same 24 games as section 21 (seeds 1–24, 210 years, Mitteleuropa), 6 at a time, 12 minutes.
+
+| | Section 21 (rules 40) | Rules 42 |
+|---|---|---|
+| Wins | BRB 6, SCH 4, PRU 4, BAV 3, SAX 3, RUH, AUS, HUN, WAR 1 — 9 countries | **BAV 11, BRB 7, SAX 5, SCH 1 — 4 countries** |
+| By reaching 45 / on time | 15 / 9 | 16 / 8 |
+| Captures a game | 92.8 | 82.4 |
+| Land churn (captures per settlement a century) | 0.76 [0.63, 0.89] | 0.70 [0.58, 0.82] |
+| Lost by force to a country, a game | 69.8 | 61.9 |
+| War exposure | 3.4% | 3.2% |
+| Mobilization | 7.73% | 7.75% |
+| Military burden | 19.1% [18.4, 19.7] | **17.0% [16.5, 17.6]** |
+| AI / engine ms a day | 1.3 / 0.9 | 1.7 / 1.1 |
+
+Money and people (3 games each, the whole map): 1490 3.6–4.0M a year (3.2–3.6M before), 1540 6.3–6.4M (4.5–5.0M), 1590
+8.5–9.6M (6.9M); people 1540 2.4–2.5M (2.1–2.4M). The computer still builds a workshop and a market nearly everywhere by 1490.
+Soldiers about the same (1540: 160–179K, 170–200K before).
+
+**What it showed.** Conquest slowed a little — a tenth fewer captures, churn down within the noise — and money rose by a third
+by 1540 while armies did not: the burden of the armies fell from 19% to 17% of settlement money. But the winners narrowed from
+nine countries to four, Bavaria 11 of 24. Whether that is the rules (buildings and markets favour the rich, slower conquests
+favour the large starters) or these seeds is not known from 24 games.
+
+Then seeds 25–48 on both, old rules (5600e0b, rules 40) and new, 3 at a time each:
+
+| Seeds 25–48 | Rules 40 | Rules 42 |
+|---|---|---|
+| Wins | AUS 7, BRB 6, BAV 4, SAX 2, PRU 2, SCH, BOH, WAR 1 — 8 countries | SAX 6, BRB 4, BAV 4, AUS 3, SCH 3, PRU 3, HUN 1 — 7 countries |
+| By reaching 45 / on time | 14 / 10 | 17 / 7 |
+| Captures a game | 89.8 | 83.0 |
+| Land churn | 0.75 [0.62, 0.89] | 0.66 [0.58, 0.75] |
+| Military burden | 19.2% [18.5, 19.9] | 17.4% [16.8, 18.1] |
+| Lost in a peace / walked into, a game | 21.0 / 10.1 | 17.5 / 8.0 |
+
+All 48 seeds: rules 40 — BRB 12, AUS 8, BAV 7, PRU 6, SCH 5, SAX 5, WAR 2, RUH, HUN, BOH 1 (10 countries, the first three 27 of 48);
+rules 42 — BAV 15, BRB 11, SAX 11, SCH 4, AUS 3, PRU 3, HUN 1 (7 countries, the first three 37 of 48).
+
+**And so:** seeds 1–24's Bavaria (11 of 24) was mostly those seeds — 4 of 24 in the next — but over all 48 the new rules lean
+somewhat to the big starters: three countries win three games in four (against a little over half), Bavaria and Saxony gain,
+Austria loses. Less conquest (captures −8 to −11%, churn −0.06 to −0.09), more money and the same armies (burden −2 points, outside
+the noise both times), and slightly more games won by reaching 45 (33 against 29 of 48).

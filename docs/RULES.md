@@ -49,7 +49,7 @@ Every **town** (red circle) starts at **10,000 pop**; every **city** (red square
 ```
 civilians        = pop − soldiers − rebels (§11), spread over your settlements in proportion to their pop
 settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + 7000 per Workshop)
-                   × (1 + 25% if it has a Market)           (Workshops and Markets, §3)
+                   × (1 + 15% if it has a Market)           (Workshops and Markets, §3)
                    × compliance, for a settlement not core  (Conquest, below: 0% the day it falls, 100% after 20 years)
                    × (1 − your conscription law's income penalty, §9)
 
@@ -180,7 +180,7 @@ country's lowest-numbered port.
 | **Walls** | 0.1M | — | ×1.8 defence, doubles siege time |
 | **Library** | 0.075M | — | +5% of total R · max one per settlement · capped at +50% (see §4) |
 | **Workshop** | 0.075M | — | +7000 money from settlement |
-| **Market** | 0.075M | — | +25% money from settlement — its Workshop's 7000 included |
+| **Market** | 0.075M | — | +15% money from settlement — its Workshop's 7000 included |
 | **Courthouse** | 0.05M | — | Makes the settlement core at once · only once its people are 100% compliant (20 years held), and not where it is your core already |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months (§8) |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |

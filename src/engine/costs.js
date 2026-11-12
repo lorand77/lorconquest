@@ -40,7 +40,7 @@ export const LAWS = {
 
 export const REGIONS_NEEDED = 1;
 export const WORKSHOP_MONEY = 7000;
-export const MARKET_BONUS = 0.25;
+export const MARKET_BONUS = 0.15;
 export const SOLDIER_UPKEEP = 5;
 export const MERCENARY_UPKEEP = 15;
 export const LOAN_CHUNK = 50000;
