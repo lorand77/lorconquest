@@ -13,8 +13,7 @@ dependencies.
 - [docs/plan.md](docs/plan.md) — the milestones and where we are.
 - [docs/setup.md](docs/setup.md) — running it, putting it online (EC2, pm2, Caddy), backups, accounts by hand, monitoring.
 - `scenarios/` — every scenario, a folder each, its id the folder's name (`node tools/map.js scenarios/<name>`, which may leave out the
-  folder of the default, `mitteleuropa`); `lorciv-temporary-import/`
-  is an earlier game kept for reference, not part of this one.
+  folder of the default, `mitteleuropa`).
 
 ## Commands
 

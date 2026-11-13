@@ -5,7 +5,7 @@ How the software will work and why. The game's rules are in [RULES.md](RULES.md)
 the program that runs them. When a decision changes, change it here.
 
 **Status: built through milestone 6** (see [plan.md](plan.md)); what each part does is in its section
-below, written when it was built. LorCiv (`lorciv-temporary-import/`, a turn-based game on the same stack) was
+below, written when it was built. LorCiv (a turn-based game on the same stack) was
 the reference for the approach and the source of what was reused.
 
 ---
