@@ -158,7 +158,7 @@ test("a country that loses its last port pays off every fleet it has, in port, a
 test("a blockade halves an enemy port's money while it holds", () => {
     const game = tinyGame();
     const before = economyOf(game, "BBB").settlementMoney;
-    assert.equal(before, 57600);
+    assert.equal(before, 67600);                                               // 57,600 and the capital's 10,000
     const f = giveFleet(game, "AAA", { cogs: 5 }, null, "south");
     assert.match(refused(game, cmd("blockade", { fleet: f.id, port: 4 })), /not your enemy/);
     order(game, cmd("declareWar", { target: "BBB" }));
@@ -167,12 +167,12 @@ test("a blockade halves an enemy port's money while it holds", () => {
     const inPort = giveFleet(game, "AAA", { cogs: 5 }, 1, "north");
     assert.match(refused(game, cmd("blockade", { fleet: inPort.id, port: 4 })), /at sea/);
     order(game, cmd("blockade", { fleet: f.id, port: 4 }));
-    assert.equal(economyOf(game, "BBB").settlementMoney, 57600 - 19200);       // settlement 4's 38,400 halved
+    assert.equal(economyOf(game, "BBB").settlementMoney, 67600 - 19200);       // settlement 4's 38,400 halved (not the capital's 10,000)
     order(game, cmd("hold", { fleet: f.id }));
-    assert.equal(economyOf(game, "BBB").settlementMoney, 57600);
+    assert.equal(economyOf(game, "BBB").settlementMoney, 67600);
     order(game, cmd("blockade", { fleet: f.id, port: 4 }));
     delete game.state.fleets[f.id];                                            // sunk: the blockade is gone
-    assert.equal(economyOf(game, "BBB").settlementMoney, 57600);
+    assert.equal(economyOf(game, "BBB").settlementMoney, 67600);
 });
 
 test("a blockade ends once its port is no longer an enemy's: taken, or at peace", () => {

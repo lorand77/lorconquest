@@ -12,43 +12,48 @@ const AAA = (game) => game.state.countries.AAA;
 test("a country's money at the start, worked out by hand", () => {
     const game = tinyGame(), e = economyOf(game, "AAA");
     assert.deepEqual([e.pop, e.soldiers, e.civilians], [40000, 1600, 38400]);
-    assert.equal(e.settlementMoney, 76800);                                // 38,400 civilians × tax 2
+    assert.equal(e.settlementMoney, 86800);                                // 38,400 civilians × tax 2, and the capital's 10,000
+    assert.equal(e.capitalMoney, 10000);
     assert.equal(e.upkeep, 8000);                                          // 1,600 soldiers × 5
-    assert.equal(e.moneyPerYear, 68800);
-    assert.equal(e.rPerYear, 2 * 0.5 * 68800 + 10000);                    // investable at 50% plus the flat x10K
-    assert.deepEqual([e.armyCap, e.navyCap, e.loanLimit], [2000, 1000, 153600]);
+    assert.equal(e.moneyPerYear, 78800);
+    assert.equal(e.rPerYear, 2 * 0.5 * 78800 + 10000);                    // investable at 50% plus the flat x10K
+    assert.deepEqual([e.armyCap, e.navyCap, e.loanLimit], [2500, 1000, 173600]);   // 5% of 40,000 and the capital's 500
     assert.equal(AAA(game).treasury, 80000);
-    assert.deepEqual([armyCapOf(game.state, "AAA"), navyCapOf(game.state, "AAA")], [2000, 1000]);
+    assert.deepEqual([armyCapOf(game.state, "AAA"), navyCapOf(game.state, "AAA")], [2500, 1000]);
+    // a country that has lost its capital has neither (a new one is named by the computer, or the player, later)
+    game.state.settlements[1].owner = "BBB";
+    assert.equal(economyOf(game, "AAA").capitalMoney, 0);
+    assert.equal(armyCapOf(game.state, "AAA"), 0.05 * 20000);
 });
 
 test("tax: core civilians pay it, non-core half as they grow compliant, a workshop 7000, a market +15% of the lot", () => {
     const game = tinyGame(), three = game.state.settlements[3];
     game.state.countries.AAA.tax = 3;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 115200);          // 50% more
+    assert.equal(economyOf(game, "AAA").settlementMoney, 115200 + 10000);  // 50% more, but not of the capital's 10,000
     game.state.countries.AAA.tax = 2;
     three.cores = [];
-    assert.equal(economyOf(game, "AAA").settlementMoney, 57600, "taken today: settlement 3 pays nothing yet");
+    assert.equal(economyOf(game, "AAA").settlementMoney, 67600, "taken today: settlement 3 pays nothing yet");
     three.heldSince = -CORING_DAYS / 2;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 57600 + 4800, "10 years held: half its non-core half");
+    assert.equal(economyOf(game, "AAA").settlementMoney, 67600 + 4800, "10 years held: half its non-core half");
     three.heldSince = -2 * CORING_DAYS;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 67200, "20 years and more: its 9,600 civilians pay half");
+    assert.equal(economyOf(game, "AAA").settlementMoney, 77200, "20 years and more: its 9,600 civilians pay half");
     three.cores = ["AAA"];
     three.heldSince = 0;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 76800, "a core pays in full however lately taken (retaken)");
+    assert.equal(economyOf(game, "AAA").settlementMoney, 86800, "a core pays in full however lately taken (retaken)");
     game.state.settlements[2].workshop = true;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 83800);
+    assert.equal(economyOf(game, "AAA").settlementMoney, 93800);
     game.state.settlements[2].market = true;
-    assert.equal(economyOf(game, "AAA").settlementMoney, 76800 - 19200 + (19200 + 7000) * 1.15);
+    assert.equal(economyOf(game, "AAA").settlementMoney, 86800 - 19200 + (19200 + 7000) * 1.15);
 });
 
 test("conscription law, harvest, mercenaries and loans change the money per year", () => {
     const game = tinyGame(), c = AAA(game);
     c.law = "mass";
-    assert.equal(economyOf(game, "AAA").settlementMoney, 76800 * 0.85);   // −15% of settlement money only
+    assert.equal(economyOf(game, "AAA").settlementMoney, 86800 * 0.85);   // −15% of settlement money only, the capital's too
     assert.equal(economyOf(game, "AAA").upkeep, 8000);
     c.law = "feudal";
     c.harvest = true;
-    close(economyOf(game, "AAA").settlementMoney, 76800 * 1.1);
+    close(economyOf(game, "AAA").settlementMoney, 86800 * 1.1);
     c.harvest = false;
     setArmy(game, 2, { swords: 300, pikes: 100 }).mercs = 100;
     let e = economyOf(game, "AAA");

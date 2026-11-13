@@ -17,11 +17,11 @@ test("a vassal pays 40% of its money a year to its overlord, a protectorate 10%,
     let a = economyOf(game, "AAA"), b = economyOf(game, "BBB");
     near(b.tributePaid, 0.4 * 51600);
     near(a.tributeReceived, 0.4 * 51600);
-    near(a.moneyPerYear, 68800 + 20640);
-    near(b.moneyPerYear, 51600 - 20640);
-    near(a.rPerYear, 89440 + 10000);                                            // tribute received is investable: slider 50%
+    near(a.moneyPerYear, 78800 + 20640);                                       // no tribute on BBB's capital's 10,000
+    near(b.moneyPerYear, 61600 - 20640);
+    near(a.rPerYear, 99440 + 10000);                                            // tribute received is investable: slider 50%
     game.state.countries.BBB.subjectKind = "protectorate";
-    near(economyOf(game, "AAA").moneyPerYear, 68800 + 5160);
+    near(economyOf(game, "AAA").moneyPerYear, 78800 + 5160);
     game.state.countries.BBB.loans = 5e6;                                       // interest far over its income: nothing to pay out of
     b = economyOf(game, "BBB");
     assert.ok(b.moneyPerYear < 0);
@@ -37,7 +37,7 @@ test("a subject pays on its money before its own tribute is counted", () => {
     near(c.tributePaid, 0.4 * 17200);
     near(b.tributeReceived, 0.4 * 17200);
     near(b.tributePaid, 0.4 * 51600);                                           // of BBB's own 51,600, not of what CCC sends it
-    near(b.moneyPerYear, 51600 + 6880 - 20640);
+    near(b.moneyPerYear, 61600 + 6880 - 20640);
 });
 
 test("becoming a vassal: its agreements and its war with the overlord end, it joins the overlord's wars", () => {

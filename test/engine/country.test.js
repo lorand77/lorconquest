@@ -37,11 +37,11 @@ test("the law changes to a harsher one once in five years, to a gentler one afte
     assert.match(refused(game, cmd("setLaw", { law: "tyranny" })), /no law/);
     order(game, cmd("setLaw", { law: "standing" }));
     const e = economyOf(game, "AAA");
-    assert.deepEqual([e.armyCap, e.navyCap], [3000, 1200]);
+    assert.deepEqual([e.armyCap, e.navyCap], [3500, 1200]);                     // 7.5% and the capital's 500; 3%
     assert.match(refused(game, cmd("setLaw", { law: "mass" })), new RegExp(`until ${longDate(1825)}`));
     runTo(game, 1825);
     order(game, cmd("setLaw", { law: "mass" }));
-    assert.equal(economyOf(game, "AAA").armyCap, 0.15 * game.state.settlements[1].pop + 0.15 * game.state.settlements[2].pop + 0.15 * game.state.settlements[3].pop);
+    assert.equal(economyOf(game, "AAA").armyCap, 0.15 * game.state.settlements[1].pop + 0.15 * game.state.settlements[2].pop + 0.15 * game.state.settlements[3].pop + 500);
     // an emergency is cheap to leave: a gentler law after a year, a harsher one still after five
     assert.match(refused(game, cmd("setLaw", { law: "feudal" })), new RegExp(`Feudal levy until ${longDate(1825 + 365)}`));
     runTo(game, 1825 + 365);
@@ -83,10 +83,10 @@ test("the bank: nothing that takes the treasury below zero; loans in chunks with
     assert.match(refused(game, cmd("deposit", { amount: 80001 })), /costs|holds/);
     assert.match(refused(game, cmd("withdraw", { amount: 1 })), /bank holds 0/);
     assert.match(refused(game, cmd("borrow", { chunks: 0 })), /whole number/);
-    assert.match(refused(game, cmd("borrow", { chunks: 4 })), /153,600/);       // 4 × 50,000 is over 2 years of 76,800
+    assert.match(refused(game, cmd("borrow", { chunks: 4 })), /173,600/);       // 4 × 50,000 is over 2 years of 86,800
     order(game, cmd("borrow", { chunks: 3 }));
     assert.deepEqual([c.loans, c.treasury], [150000, 230000]);
-    assert.match(refused(game, cmd("borrow", { chunks: 1 })), /153,600/);
+    assert.match(refused(game, cmd("borrow", { chunks: 1 })), /173,600/);
     assert.match(refused(game, cmd("repay", { chunks: 4 })), /you owe 150,000/);
     order(game, cmd("repay", { chunks: 1 }));
     assert.deepEqual([c.loans, c.treasury], [100000, 180000]);
@@ -212,8 +212,8 @@ test("disbanding sends men home and weapons to the reserve, but dismisses no mer
 
 test("soldiers are trained for free in a core settlement: 3 months in the capital, 6 elsewhere, within the cap", () => {
     const game = tinyGame(), c = AAA(game);
-    assert.match(refused(game, cmd("raise", { settlement: 1, kind: "soldiers", lots: 1 })), /more soldiers than your law allows/);   // 1,600 + 1,000 > 2,000
-    order(game, cmd("setLaw", { law: "mass" }));                               // cap 6,000
+    assert.match(refused(game, cmd("raise", { settlement: 1, kind: "soldiers", lots: 2 })), /more soldiers than your law allows/);   // 1,600 + 2,000 > 2,500
+    order(game, cmd("setLaw", { law: "mass" }));                               // cap 6,000 and the capital's 500
     game.state.settlements[2].cores = [];
     assert.match(refused(game, cmd("raise", { settlement: 2, kind: "soldiers", lots: 1 })), /not core/);
     assert.match(refused(game, cmd("raise", { settlement: 4, kind: "soldiers", lots: 1 })), /not AAA's/);
@@ -223,7 +223,7 @@ test("soldiers are trained for free in a core settlement: 3 months in the capita
     assert.match(refused(game, cmd("raise", { settlement: 2, kind: "crew", lots: 1 })), /only soldiers are raised/);
     assert.deepEqual(c.training.map((t) => [t.settlement, t.kind, t.n, t.ready]), [[1, "soldiers", 1000, 91], [2, "soldiers", 1000, 183]]);
     assert.equal(economyOf(game, "AAA").soldiers, 3600);                       // training soldiers already pay upkeep
-    assert.match(refused(game, cmd("raise", { settlement: 3, kind: "soldiers", lots: 3 })), /more soldiers/);   // 3,600 + 3,000 > 6,000
+    assert.match(refused(game, cmd("raise", { settlement: 3, kind: "soldiers", lots: 4 })), /more soldiers/);   // 3,600 + 4,000 > 6,500
     runTo(game, 91);
     assert.deepEqual([game.state.armies[1].men.unarmed, game.state.armies[1].men.swords], [1000, 800]);   // joined the garrison
     assert.equal(c.training.length, 1);
@@ -233,7 +233,8 @@ test("soldiers are trained for free in a core settlement: 3 months in the capita
 });
 
 test("soldiers are raised by the hundred only while there is room for fewer than 1000 more", () => {
-    const game = tinyGame(), c = AAA(game);                                    // feudal: 1,600 of 2,000
+    const game = tinyGame(), c = AAA(game);
+    setArmy(game, 1, { swords: 1300 });                                         // feudal: 2,100 of 2,500
     assert.equal(economyOf(game, "AAA").raiseRoom, 400);
     assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 5 })), /more soldiers than your law allows/);
     assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 10 })), /100 to 900/);
@@ -245,7 +246,7 @@ test("soldiers are raised by the hundred only while there is room for fewer than
     // 350 missing: bought by the hundred, 4 of them at a tenth of a lot's 25,000 each; the 50 over go to the reserve
     assert.deepEqual([before - c.treasury, c.reserve.swords], [10000, 50]);
     assert.equal(economyOf(game, "AAA").raiseRoom, 0);
-    order(game, cmd("setLaw", { law: "mass" }));                               // cap 6,000: room for 1000 again
+    order(game, cmd("setLaw", { law: "mass" }));                               // cap 6,500: room for 1000 again
     assert.match(refused(game, cmd("raise", { settlement: 1, hundreds: 3 })), /raise by the thousand/);
     order(game, cmd("raise", { settlement: 1, lots: 1 }));
 });
@@ -304,7 +305,7 @@ test("soldiers raised with cannons get one for every 10 of them, and arrive as i
 test("mercenaries arrive in a month with pikes, up to the army cap, and add no soldiers", () => {
     const game = tinyGame(), c = AAA(game);
     rich(game);
-    assert.match(refused(game, cmd("hireMercenaries", { settlement: 1, lots: 3 })), /army cap/);   // 3,000 over 2,000
+    assert.match(refused(game, cmd("hireMercenaries", { settlement: 1, lots: 3 })), /army cap/);   // 3,000 over 2,500
     order(game, cmd("hireMercenaries", { settlement: 1, lots: 1 }));
     assert.equal(c.treasury, 5000000 - 50000);
     order(game, cmd("hireMercenaries", { settlement: 2, lots: 1 }));

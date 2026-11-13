@@ -213,7 +213,8 @@ test("forces: the last of the law's allowance raised by the hundred; old guns gi
     const game = tinyGame(1), c = game.state.countries.AAA;
     c.treasury = 1e6;
     game.command({ type: "declareWar", country: "AAA", target: "BBB" });        // at war: all the law allows
-    assert.equal(economyOf(game, "AAA").raiseRoom, 400, "feudal: 1,600 of 2,000");
+    setArmy(game, 1, { swords: 1300 });
+    assert.equal(economyOf(game, "AAA").raiseRoom, 400, "feudal: 2,100 of 2,500");
     const raise = forceOrders(game, "AAA", fl, { budget: 1e6 }).find((o) => o.type === "raise");
     assert.deepEqual([raise.hundreds, raise.lots], [4, undefined]);
     applyAll(game, [raise]);

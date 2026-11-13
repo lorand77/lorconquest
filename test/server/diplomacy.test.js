@@ -85,7 +85,8 @@ test("a game with a winner is saved as finished, tells its players, and is not r
     let server = await startServer({ dbPath, root });
     let id;
     try {
-        id = await newGame(server, { scenario: "mitteleuropa", country: "BAV", seed: 5 });
+        // a seed on which a computer country gets there before Bavaria, whose player gives no orders, falls (that would be a defeat)
+        id = await newGame(server, { scenario: "mitteleuropa", country: "BAV", seed: 1 });
         const s = await connect(server);
         await emitAck(s, "join", { gameId: id });
         const over = waitFor(s, "over");

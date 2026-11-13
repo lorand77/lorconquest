@@ -51,6 +51,7 @@ civilians        = pop − soldiers − rebels (§11), spread over your settleme
 settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + 7000 per Workshop)
                    × (1 + 15% if it has a Market)           (Workshops and Markets, §3)
                    × compliance, for a settlement not core  (Conquest, below: 0% the day it falls, 100% after 20 years)
+                   + 10,000 while you hold your capital     (the court: the same for every country)
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
@@ -60,6 +61,10 @@ money per year   = settlement money
                  + tribute you receive − tribute you pay (§10)
                  + bank interest
 ```
+
+**The capital's 10,000** is the same for a country of two towns as for one of forty — a quarter of a small country's money
+at the start, a rounding error for an empire — and is not taxed: a higher tax does not raise it, nor does a Market. A subject
+pays no tribute on it (§10). A country that has lost its capital has none until it names another.
 
 **Paid monthly.** Every amount given per year — money, upkeep, interest, tribute, research (§4)
 and population growth — is paid at the start of each month, a twelfth at a time.
@@ -630,7 +635,8 @@ The percentages apply to **core manpower + half of non-core**. The two caps are 
 on one cannot be moved to the other.
 
 - **Army cap:** soldiers, men in training (§8), cannon crew and sharpshooters. Mercenaries do
-  not count, but you may hire at most as many as your army cap (§8).
+  not count, but you may hire at most as many as your army cap (§8). **The capital adds 500** to it, whatever the law, while
+  you hold it: the same for every country, so a small one may hold out where its people alone would not let it.
 - **Navy cap:** ship crew at sea (50 per ship). Ships in port need no crew, so you may own more
   ships than you can crew — only the crewed ones can sail.
 
@@ -689,7 +695,7 @@ drops by **40 for 10 years** (see *Computer countries*).
 ### Subjects
 | | Vassal | Protectorate |
 |---|---|---|
-| Pays you | **40%** of its yearly money (§2), when positive | **10%** of its yearly money (§2), when positive |
+| Pays you | **40%** of its yearly money (§2), when positive — the capital's 10,000 aside | **10%** of its yearly money (§2), when positive — the capital's 10,000 aside |
 | Joins your wars | every war, automatically — it cannot refuse | never obliged — but may, by choice, as you may join its |
 | Its own diplomacy | none: it cannot declare war, make agreements or sign peace | keeps it |
 | Counts as your military ally (§5) | yes | only if it chooses to join the war |

@@ -284,7 +284,7 @@ test("the war score and what a peace asks, worked out by hand", () => {
     near(asks({}), 0);
     near(asks({ take: [4] }), 20000 / 30000 * 100);                             // a city of 20,000
     const year = economyOf(game, "BBB").moneyPerYear;                           // BBB, with one settlement left: 18,800 civilians × 2, less 1,200 × 5
-    near(year, 31600);
+    near(year, 41600);                                                           // the capital's 10,000 included
     near(asks({ money: year }), 10);                                            // ten for a year of its money
     near(asks({ makeSubject: "vassal" }), 50);
     near(asks({ makeSubject: "protectorate" }), 25);

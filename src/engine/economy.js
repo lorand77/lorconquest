@@ -6,7 +6,7 @@
 // and R keep their fractions inside the engine.
 
 import { WEAPONS, isEmpty, menOf, takeMen } from "./army.js";
-import { BANK_RATE_MONTHLY, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, CORING_DAYS, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE,
+import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, CORING_DAYS, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE,
     MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
@@ -20,7 +20,9 @@ export const popOf = (state, code) => sum(ownedBy(state, code), (s) => s.pop);
 // core manpower plus half of non-core (RULES.md §9): what the law's percentages apply to
 export const manpowerOf = (state, code) => sum(ownedBy(state, code), (s) => (isCore(state, s, code) ? s.pop : s.pop / 2));
 export const lawOf = (state, code) => LAWS[state.countries[code].law ?? "feudal"];
-export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(state, code);
+// a country that holds its capital: it has the capital's money and soldiers (RULES.md §2, §9) — peasant rebels have none
+const holdsCapital = (state, code) => state.settlements[state.countries[code]?.capital]?.owner === code;
+export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(state, code) + (holdsCapital(state, code) ? CAPITAL_SOLDIERS : 0);
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code);
 export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
@@ -46,10 +48,11 @@ export const TRIBUTE = { vassal: 0.4, protectorate: 0.1 };
 
 // what a country has and earns, as of today (RULES.md §2, §4, §9, §10). All yearly figures are per year. A subject
 // pays its overlord a share of its money, when positive, *before* its own tribute is counted; money per year is
-// then what it earns less upkeep and interest, plus the tribute it receives, less the tribute it pays.
+// then what it earns less upkeep and interest, plus the tribute it receives, less the tribute it pays. The capital's own money
+// is the subject's alone: no tribute is paid on it.
 export function economyOf(game, code) {
     const e = economyBase(game, code), st = game.state;
-    const share = (c) => (st.countries[c].overlord ? TRIBUTE[subjectKind(st, c)] * Math.max(0, economyBase(game, c).moneyPerYear) : 0);
+    const share = (c) => { if (!st.countries[c].overlord) return 0; const b = economyBase(game, c); return TRIBUTE[subjectKind(st, c)] * Math.max(0, b.moneyPerYear - b.capitalMoney); };
     const paid = share(code), received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0);
     const moneyPerYear = e.moneyPerYear + received - paid;
     const investable = Math.max(0, moneyPerYear);
@@ -76,7 +79,9 @@ function economyBase(game, code) {
         if (blocked.has(s.id)) money /= 2;
         settlementMoney += money;
     }
-    settlementMoney *= (1 - law.penalty) * (c.harvest ? 1.1 : 1);
+    // the capital's own money, the same for every country, under the law's penalty and a harvest like the rest
+    const capitalMoney = (holdsCapital(st, code) ? CAPITAL_MONEY : 0) * (1 - law.penalty) * (c.harvest ? 1.1 : 1);
+    settlementMoney = settlementMoney * (1 - law.penalty) * (c.harvest ? 1.1 : 1) + capitalMoney;
     const upkeep = soldiers * SOLDIER_UPKEEP, mercenaryUpkeep = mercenaries * MERCENARY_UPKEEP, interest = c.loans * LOAN_RATE;
     const moneyPerYear = settlementMoney - upkeep - mercenaryUpkeep - interest;
     const investable = Math.max(0, moneyPerYear);
@@ -84,7 +89,7 @@ function economyBase(game, code) {
     const rPerYear = (2 * (c.slider / 100) * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * libraries);
     return {
         pop, soldiers, armySoldiers, crewAtSea: crewAtSea(st, code), mercenaries, rebels, civilians,
-        settlementMoney, upkeep, mercenaryUpkeep, interest, moneyPerYear, investable, rPerYear, libraries,
+        settlementMoney, capitalMoney, upkeep, mercenaryUpkeep, interest, moneyPerYear, investable, rPerYear, libraries,
         // how many men may still be raised: room under the army cap, and civilians to raise them from (RULES.md §8)
         armyCap, raiseRoom: Math.max(0, Math.min(armyCap - armySoldiers, civilians)), navyCap: navyCapOf(st, code), loanLimit: 2 * settlementMoney,
     };

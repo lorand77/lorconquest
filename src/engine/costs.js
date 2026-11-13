@@ -41,6 +41,10 @@ export const LAWS = {
 export const REGIONS_NEEDED = 1;
 export const WORKSHOP_MONEY = 7000;
 export const MARKET_BONUS = 0.15;
+// the capital's own (RULES.md §2, §9): money a year and soldiers on the army cap, the same for every country — a large part of a
+// small one's, next to nothing of a large one's
+export const CAPITAL_MONEY = 10000;
+export const CAPITAL_SOLDIERS = 500;
 export const SOLDIER_UPKEEP = 5;
 export const MERCENARY_UPKEEP = 15;
 export const LOAN_CHUNK = 50000;

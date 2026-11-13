@@ -605,3 +605,40 @@ rules 42 — BAV 15, BRB 11, SAX 11, SCH 4, AUS 3, PRU 3, HUN 1 (7 countries, th
 somewhat to the big starters: three countries win three games in four (against a little over half), Bavaria and Saxony gain,
 Austria loses. Less conquest (captures −8 to −11%, churn −0.06 to −0.09), more money and the same armies (burden −2 points, outside
 the noise both times), and slightly more games won by reaching 45 (33 against 29 of 48).
+
+Then rules 44: the Market back to +15% (the Workshop's +7,000 kept), and the capital's own 10,000 a year (no tribute on it) and
+1,000 on the army cap, the same for every country. Seeds 25–48 again, 6 at a time, 15 minutes:
+
+| Seeds 25–48 | Rules 40 | Rules 42 | Rules 44 |
+|---|---|---|---|
+| Wins | AUS 7, BRB 6, BAV 4, SAX 2, PRU 2, SCH, BOH, WAR 1 | SAX 6, BRB 4, BAV 4, AUS 3, SCH 3, PRU 3, HUN 1 | AUS 8, BAV 5, BRB 3, GDA 2, SAX 2, WAR 2, BOH 1, RUH 1 |
+| Countries that win / the first three's wins | 8 / 17 | 7 / 14 | 8 / 16 |
+| By reaching 45 / on time | 14 / 10 | 17 / 7 | **11 / 13** |
+| Countries left at the end | 19.0 | 19.1 | 20.4 |
+| Wars declared / captures a game | 35.0 / 89.8 | 33.8 / 83.0 | 38.9 / 97.8 |
+| Land churn | 0.75 | 0.66 | 0.72 |
+| Mobilization | 7.75% | 7.83% | **9.78%** [9.46, 10.11] |
+| Military burden | 19.2% | 17.4% | **21.2%** [20.4, 22.0] |
+
+**What it showed.** The winners spread again (eight countries, Gdańsk, Warsaw and the Ruhr among them), fewer games were won by
+reaching 45 and more on time, and a few more countries lived to the end: the runaway is slower. But every country raises the
+capital's 1,000 — 45,000 more men under arms at the start — and spends the 10,000 on them: mobilization up two points, the burden
+of the armies back above where it was, and more wars and captures than under either earlier rule. The small countries are
+stronger; the world is more armed.
+
+Then rules 45: the capital's soldiers halved, 500 on the army cap (its 10,000 a year kept). Seeds 25–48, 6 at a time, 15 minutes:
+
+| Seeds 25–48 | Rules 40 | Rules 44 (1,000) | Rules 45 (500) |
+|---|---|---|---|
+| Wins | AUS 7, BRB 6, BAV 4, SAX 2, PRU 2, SCH, BOH, WAR 1 | AUS 8, BAV 5, BRB 3, GDA 2, SAX 2, WAR 2, BOH, RUH 1 | BRB 6, SCH 4, BAV 4, AUS 4, SAX 2, WAR 2, GDA, RUH 1 |
+| Countries that win / the first three's wins | 8 / 17 | 8 / 16 | 8 / 14 |
+| By reaching 45 / on time | 14 / 10 | 11 / 13 | 14 / 10 |
+| Countries left at the end | 19.0 | 20.4 | **20.9** |
+| Wars declared / captures a game | 35.0 / 89.8 | 38.9 / 97.8 | 40.5 / 100.0 |
+| Mobilization | 7.75% | 9.78% | 8.71% [8.51, 8.92] |
+| Military burden | 19.2% | 21.2% | **18.9%** [18.4, 19.5] |
+
+**What it showed.** Halving the capital's soldiers kept what the bonus was for — winners as spread (eight countries, the first
+three 14 of 24, fewer than ever), the most countries alive at the end — while the burden of the armies came back to where it
+was under rules 40, mobilization half-way. More wars and captures than before stay: the small countries, stronger, are fought
+over rather than swallowed.
