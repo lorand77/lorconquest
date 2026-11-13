@@ -1,5 +1,6 @@
 // A union of two people's countries (RULES.md §10, Union): proposed to the other person and answered, or lapsing as a no; the
-// second country made part of the first at once, with all it had and its research; once in a game; never for a computer, a
+// second country made part of the first at once, with all it had and its research; growing, a newcomer joining the union whoever
+// asks; a yes that can no longer be refused with its reason; never for a computer, a
 // subject, at war with each other or with other enemies, nor near victory. On the tiny map, AAA and CCC played by people.
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -33,11 +34,25 @@ test("a union: asked, accepted, and the second country part of the first, with a
     assert.equal(scores(st).AAA.settlements, 4);
     assert.equal(economyOf(game, "AAA").capitalMoney, 10000, "one capital: AAA's");
     assert.match(refused(game, cmd("AAA", "proposeUnion", { with: "CCC" })), /CCC is no more/);
-    // once in a game: AAA, united, may not unite again with a third person's country
-    const three = tinyGame(1, () => {}, ["AAA", "CCC", "EEE"]);
+});
+
+test("a union grows: a third country joins it whoever proposes — the union keeps its name, the newcomer is part of it", () => {
+    const three = tinyGame(1, () => {}, ["AAA", "CCC", "EEE"]), st = three.state;
     order(three, cmd("AAA", "proposeUnion", { with: "CCC" }));
     answer(three);
-    assert.match(refused(three, cmd("AAA", "proposeUnion", { with: "EEE" })), /unites once/);
+    order(three, cmd("EEE", "proposeUnion", { with: "AAA" }));                  // EEE asks the union
+    const [u] = ofType(answer(three), "union");
+    assert.deepEqual([u.country, u.with], ["AAA", "EEE"], "AAA, the union, takes EEE in — not the other way round");
+    assert.deepEqual([st.settlements[8].owner, st.countries.EEE.out !== null], ["AAA", true]);
+});
+
+test("a yes to a union that can no longer be is refused with why, and the question stays", () => {
+    const game = tinyGame(1, () => {}, ["AAA", "CCC"]), st = game.state;
+    order(game, cmd("AAA", "proposeUnion", { with: "CCC" }));
+    order(game, cmd("AAA", "declareWar", { target: "BBB" }));                     // AAA now at war, CCC not
+    const offer = st.offers.find((o) => o.kind === "union");
+    assert.match(refused(game, cmd("CCC", "answerOffer", { id: offer.id, accept: true })), /same countries/);
+    assert.ok(st.offers.includes(offer), "still asked: it may be answered no, or lapse");
 });
 
 test("a union is of people's countries at peace with each other, free, with the same enemies, and not near victory", () => {

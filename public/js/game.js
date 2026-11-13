@@ -38,6 +38,7 @@ let me, state, game, scenario, map, legs, tickMs = 100, paused = true, lastTick 
 let speed = 1;             // days in a tick's time (alone: ½, 1, 2 or 4 — mirror.js, SPEEDS); with other people always 1
 let myUserId = null;       // the signed-in user, to tell their chat lines from the others'
 let myName = null;         // and their name, to tell their own seat from a fellow ruler's after a union (RULES.md §10)
+let consents = [];         // in a union, the orders waiting for every ruler's yes: [{ what, yes: [username] }] (rooms.js, consent)
 let multi = false;         // a game with other people: no pause, a setup minute, chat
 let seats = [];            // the people in it: [{ country, username, state }]
 let setupEnds = 0;         // when the setup minute ends, by performance.now(); 0 once it has
@@ -84,6 +85,7 @@ async function start() {
     ({ paused, tickMs, multi, seats } = joined);
     speed = joined.speed ?? 1;
     me = joined.me ?? null;
+    consents = joined.consents ?? [];
     if (!me) {
         // a watcher: the Map and Events tabs, no clock to stop, no orders
         for (const b of document.querySelectorAll("#tabs button")) b.hidden = !["selection", "events"].includes(b.dataset.tab);
@@ -131,6 +133,7 @@ async function start() {
     document.addEventListener("keydown", onKey);
     socket.on("paused", (m) => { paused = m.paused; if (!paused) setupEnds = 0; renderTop(); });
     socket.on("speed", (m) => { speed = m.speed; renderTop(); });
+    socket.on("consents", (list) => { consents = list; renderPanel(true); });
     socket.on("over", (m) => {
         state.winner = m.winner;
         paused = true;
@@ -285,6 +288,7 @@ async function send(cmd, { goal = false, planned = false } = {}) {
     if (cmd.army !== undefined && !planned) premoves.delete(cmd.army);
     const r = await ask("command", { cmd });
     if (!r.ok) notice(r.error, "refused");
+    else if (r.waiting) notice(`Waiting for ${r.waiting.join(" and ")} to agree: in a union every ruler must.`, "system");
     // a war declared: the marches planned for it go at once, in the same tick as the declaration
     else if (cmd.type === "declareWar") sendPremoves((p) => p.target === cmd.target);
     return r;
@@ -480,6 +484,10 @@ const ctx = {
     make, swatch, send, dispatch, redraw: () => renderAll(true), name: (key) => name(key), ui,
     planned: (t) => [...premoves.values()].filter((p) => p.target === t).length,          // marches planned for a war on `t`
     get state() { return state; }, get game() { return game; }, get me() { return me; }, get sel() { return sel; },
+    // in a union: the other rulers of our country by name, and who has agreed to what (rooms.js, consent)
+    get fellows() { return seats.filter((s) => s.country === me && s.username !== myName && s.state !== "quit" && s.state !== "out").map((s) => s.username); },
+    agreed: (what) => consents.find((x) => x.what === what)?.yes ?? [],
+    get myName() { return myName; },
 };
 
 // ---------- drawing ----------

@@ -18,6 +18,19 @@ const section = (ctx, title, ...children) => ctx.make("section", { class: "block
 const row = (ctx, ...children) => ctx.make("div", { class: "row" }, ...children);
 const act = (ctx, cmd) => async () => { await ctx.send(cmd()); ctx.redraw(); };
 
+// in a union every ruler must agree to take a country in (RULES.md §10; rooms.js, consent): who has, and whether we have; and
+// the button's words — "Propose a union…" alone, "… (alice has)" once another ruler has, "Waiting for bobby" once we have
+function agreedBy(ctx, what) {
+    const yes = ctx.agreed?.(what) ?? [];
+    return { yes, mine: yes.includes(ctx.myName), others: yes.filter((n) => n !== ctx.myName) };
+}
+function unionLabel(ctx, what, label) {
+    const a = agreedBy(ctx, what), fellows = ctx.fellows ?? [];
+    if (!fellows.length) return label;
+    if (a.mine) return `Waiting for ${fellows.filter((n) => !a.yes.includes(n)).join(" and ")}`;
+    return a.others.length ? `${label} (${a.others.join(" and ")} ${a.others.length === 1 ? "has" : "have"})` : `${label} (all of you must)`;
+}
+
 // what a question put to the player says
 function offerText(ctx, o) {
     const who = (c) => ctx.state.countries[c].name;
@@ -43,7 +56,8 @@ export function diplomacyTab(ctx) {
     const asked = offers.filter((o) => o.to === me);
     if (asked.length) {
         out.push(section(ctx, "Waiting for your answer", ...asked.map((o) => mk("div", { class: "offer" }, mk("p", {}, offerText(ctx, o)),
-            row(ctx, mk("button", { class: "primary", onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: true })) }, o.kind === "call" ? "Join" : "Accept"),
+            row(ctx, mk("button", { class: "primary", disabled: o.kind === "union" && agreedBy(ctx, `answer:${o.id}`).mine ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: true })) },
+                o.kind === "call" ? "Join" : o.kind === "union" ? unionLabel(ctx, `answer:${o.id}`, "Accept") : "Accept"),
                 mk("button", { onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: false })) }, o.kind === "call" ? "Refuse (the alliance ends)" : "Refuse"))))));
     }
     const waiting = offers.filter((o) => o.from === me);
@@ -176,9 +190,9 @@ function dealWith(ctx, t) {
         const why = unionError(game, me, t);
         out.push(section(ctx, "Union",
             mk("p", { class: "hint" }, `${them.name} is played by a person. In a union ${them.name} becomes part of your country at once — its land (your core), armies, fleets, treasury and research — and its player rules your country with you: either of you gives any order, and you win or lose as one. Once in a game, at peace with each other and at war with the same countries, and not near victory.`),
-            row(ctx, mk("button", { class: "primary", disabled: why ? "disabled" : undefined, onclick: async () => {
+            row(ctx, mk("button", { class: "primary", disabled: why || agreedBy(ctx, `propose:${t}`).mine ? "disabled" : undefined, onclick: async () => {
                 if (confirm(`Propose a union to ${them.name}? If its player agrees, ${them.name} becomes part of your country, and they rule it with you for the rest of the game.`)) { await ctx.send({ type: "proposeUnion", with: t }); ctx.redraw(); }
-            } }, "Propose a union…"), why ? mk("span", { class: "hint" }, why) : "")));
+            } }, unionLabel(ctx, `propose:${t}`, "Propose a union…")), why ? mk("span", { class: "hint" }, why) : "")));
     }
     // your vassal of 10 years may become part of your country (RULES.md §10, Integration)
     if (vassal && them.overlord === me) {

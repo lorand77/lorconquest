@@ -420,15 +420,15 @@ function absorb(game, overlord, subject, events) {
 
 // ---------- a union of two people's countries ----------
 
-// why `a` may not propose a union to `b` now (RULES.md §10, Union), or null: both played by people, neither anyone's subject nor
-// in a union before, at peace with each other and at war with the same countries (peasant rebels aside), and not near victory
-// together — three quarters of the number that wins, as for a subject (opinion.js, NEAR_VICTORY)
+// why `a` may not propose a union to `b` now (RULES.md §10, Union), or null: both played by people, neither anyone's subject,
+// at peace with each other and at war with the same countries (peasant rebels aside), and not near victory together — three
+// quarters of the number that wins, as for a subject (opinion.js, NEAR_VICTORY). A union may grow: a third country joins it as
+// the second did (unionInto); that every one of its people agrees is the server's to see (src/game/rooms.js, consent)
 export function unionError(game, a, b) {
     const st = game.state;
     if (!st.humans.includes(a) || !st.humans.includes(b)) return "a union is of two countries played by people";
     if (st.countries[a].out !== null || st.countries[b].out !== null) return "a union is of two countries still in the game";
     if (st.countries[a].overlord || st.countries[b].overlord) return "a subject cannot unite with anyone: it must be free first";
-    if (st.memory.unions?.includes(a) || st.memory.unions?.includes(b)) return "a country unites once in a game";
     if (atWar(st, a, b)) return "not while you are at war with each other";
     const foes = (c) => st.wars.map((w) => w.split("|")).filter((w) => w.includes(c)).map((w) => w.find((x) => x !== c)).filter((x) => !isRebel(st, x)).sort().join(",");
     if (foes(a) !== foes(b)) return "only while you are at war with the same countries, or at peace with all";
@@ -436,6 +436,10 @@ export function unionError(game, a, b) {
     if (target && (table[a]?.settlements ?? 0) + (table[b]?.settlements ?? 0) >= NEAR_VICTORY * target) return "too near victory together: what is left must be taken";
     return null;
 }
+
+// which of two countries a union keeps (RULES.md §10): one that is a union already — a newcomer joins it, whoever asked —
+// else the one that proposed
+export const unionInto = (st, proposer, other) => (!st.memory.unions?.includes(proposer) && st.memory.unions?.includes(other) ? other : proposer);
 
 // `from` becomes part of `into` (absorb), at once and for nothing; `into` keeps its name and gains `from`'s research too, and
 // `from`'s wars, against the same enemies, are `into`'s already. Its person rules `into` with `into`'s (src/game/rooms.js).

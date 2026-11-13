@@ -392,3 +392,50 @@ test("a union: two people's countries made one, ruled by both — either gives o
         await server.close();
     }
 });
+
+test("a union grows only with every ruler's yes: proposing and accepting wait for all of them, and one no is enough", async () => {
+    const three = [...ALICE_BOB, ["carol", "SAX"]];
+    const offerTo = async (server, room, code) => (await server.app.rooms.view(room, code)).countries[code].offers.find((o) => o.kind === "union" && o.to === code);
+    // a game in which alice and bobby rule Bavaria together, carol Saxony
+    async function unite(server) {
+        const id = await makeTable(server, three);
+        const [a, b, c] = await play(server, id, three);
+        const room = server.app.rooms.get(id);
+        assert.equal((await emitAck(a.socket, "command", { cmd: { type: "proposeUnion", with: "ULM" } })).ok, true);
+        await emitAck(b.socket, "command", { cmd: { type: "answerOffer", id: (await offerTo(server, room, "ULM")).id, accept: true } });
+        await until(() => room.seats.get("ULM").plays === "BAV", "the union");
+        await emitAck(b.socket, "join", { gameId: id });
+        return { room, a, b, c };
+    }
+    // proposing: alice's order waits for bobby's, and is sent with his
+    let server = await startServer({ root, dbPath: tempDb(), setupMs: 0 });
+    try {
+        const { room, a, b, c } = await unite(server);
+        const told = waitFor(b.socket, "consents", (list) => list.some((x) => x.what === "propose:SAX"));
+        assert.deepEqual(await emitAck(a.socket, "command", { cmd: { type: "proposeUnion", with: "SAX" } }), { ok: true, events: [], waiting: ["bobby"] });
+        assert.deepEqual((await told).find((x) => x.what === "propose:SAX").yes, ["alice"]);
+        assert.equal(await offerTo(server, room, "SAX"), undefined, "not asked yet");
+        assert.equal((await emitAck(b.socket, "command", { cmd: { type: "proposeUnion", with: "SAX" } })).ok, true);
+        const offer = await offerTo(server, room, "SAX");
+        assert.equal(offer.from, "BAV");
+        await emitAck(c.socket, "command", { cmd: { type: "answerOffer", id: offer.id, accept: true } });
+        await until(() => room.seats.get("SAX").plays === "BAV", "carol to rule Bavaria too");
+    } finally {
+        await server.close();
+    }
+    // accepting: carol asks the union; alice's yes waits for bobby, whose no ends it
+    server = await startServer({ root, dbPath: tempDb(), setupMs: 0 });
+    try {
+        const { room, a, b, c } = await unite(server);
+        await emitAck(c.socket, "command", { cmd: { type: "proposeUnion", with: "BAV" } });
+        const asked = await offerTo(server, room, "BAV");
+        assert.deepEqual((await emitAck(a.socket, "command", { cmd: { type: "answerOffer", id: asked.id, accept: true } })).waiting, ["bobby"]);
+        assert.ok(await offerTo(server, room, "BAV"), "still asked");
+        assert.equal((await emitAck(b.socket, "command", { cmd: { type: "answerOffer", id: asked.id, accept: false } })).ok, true);
+        assert.equal(await offerTo(server, room, "BAV"), undefined, "refused");
+        assert.equal(room.seats.get("SAX").plays, "SAX");
+        assert.deepEqual(server.app.rooms.consentsOf(room, "BAV"), [], "nothing left waiting");
+    } finally {
+        await server.close();
+    }
+});

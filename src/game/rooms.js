@@ -67,6 +67,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             // each seat by the country it took; `plays`, the country it rules now — another after a union (RULES.md §10)
             seats: new Map(seatRows.map((s) => [s.country, { country: s.country, plays: s.plays ?? s.country, userId: s.user_id, username: s.username, sockets: new Set(), state: multi ? "away" : "idle", timer: null }])),
             setupUntil: 0, timers: new Set(), lastTick: performance.now(),
+            consents: new Map(),            // "<country>|<what>" -> the user ids that have agreed (consent): not saved
         };
         room.gone = new Promise((resolve) => { room.onGone = resolve; });
         room.ready = new Promise((resolve, reject) => { room.onReady = resolve; room.onFail = reject; });
@@ -206,6 +207,39 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         return seats.some((s) => s.state === "away") ? "caretaker" : "full";
     }
     const hand = (room, country) => caretaker(room, country, control(room, country));
+
+    // A union that grows needs every ruler's yes (RULES.md §10): a country ruled by two people or more proposes a union, or
+    // accepts one, only once each of its rulers still in the game has given the same order. The orders are collected here, by
+    // what they are ("propose:<country>", "answer:<question id>"), and the last one goes to the engine; until then each ruler is
+    // told who has agreed ("consents"). A no to a union goes at once. Not saved: after a restart the rulers agree again.
+    const deciding = (room, country) => rulers(room, country).filter((s) => s.state !== "quit" && s.state !== "out");
+    function consentsOf(room, country) {
+        const name = new Map([...room.seats.values()].map((s) => [s.userId, s.username]));
+        return [...room.consents].filter(([k]) => k.startsWith(country + "|")).map(([k, ids]) => ({ what: k.slice(country.length + 1), yes: [...ids].map((id) => name.get(id)) }));
+    }
+    const tellConsents = (room, country) => io.to(`game:${room.id}:${country}`).emit("consents", consentsOf(room, country));
+    // what of a ruler's order needs the others' yes too, or null
+    async function needsAll(room, seat, cmd) {
+        if (deciding(room, seat.plays).length < 2) return null;
+        if (cmd?.type === "proposeUnion") return `propose:${cmd.with}`;
+        if (cmd?.type !== "answerOffer" || !cmd.accept) return null;
+        const view = await ask(room, { type: "view", country: seat.plays });
+        return view.view?.countries[seat.plays]?.offers?.some((o) => o.id === cmd.id && o.kind === "union" && o.to === seat.plays) ? `answer:${cmd.id}` : null;
+    }
+    async function command(room, seat, cmd) {
+        if (seat.state === "quit") return { ok: false, error: "you left this game" };
+        const country = seat.plays, what = await needsAll(room, seat, cmd);
+        if (what) {
+            const key = `${country}|${what}`, yes = room.consents.get(key) ?? new Set();
+            yes.add(seat.userId);
+            room.consents.set(key, yes);
+            const waiting = deciding(room, country).filter((s) => !yes.has(s.userId));
+            if (waiting.length) { tellConsents(room, country); return { ok: true, events: [], waiting: waiting.map((s) => s.username) }; }
+            room.consents.delete(key);
+            tellConsents(room, country);
+        } else if (cmd?.type === "answerOffer" && !cmd.accept && room.consents.delete(`${country}|answer:${cmd.id}`)) tellConsents(room, country);
+        return ask(room, { type: "command", country, source: "human", cmd });
+    }
 
     // a union (RULES.md §10): the seats that ruled `from` rule `into` with its own, at once — their pages join again as `into`
     function united(room, into, from) {
@@ -633,9 +667,9 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         },
         attach, detach, quit,
 
-        // a person's command, in the country their seat rules
-        command: (room, seat, cmd) => (seat.state === "quit" ? Promise.resolve({ ok: false, error: "you left this game" })
-            : ask(room, { type: "command", country: seat.plays, source: "human", cmd })),
+        // a person's command, in the country their seat rules — a union's, once every ruler has given it (consent)
+        command,
+        consentsOf,
         view: (room, country) => ask(room, { type: "view", country }).then((m) => m.view),
         setPaused,
         setSpeed,

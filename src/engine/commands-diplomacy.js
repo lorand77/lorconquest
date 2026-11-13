@@ -14,7 +14,7 @@
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
 import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
-    setSubject, takeSubject, validateTerms, joinWar, PACT_DAYS, unionError, unite } from "./diplomacy.js";
+    setSubject, takeSubject, validateTerms, joinWar, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
 import { hasAgreement, isVassal, overlordOf, wouldCycle } from "./relations.js";
@@ -210,6 +210,8 @@ export const diplomacyCommands = {
         const st = game.state, offer = st.offers.find((o) => o.id === cmd.id);
         if (!offer) return refuse(`no question ${cmd.id}`);
         if (offer.to !== cmd.country) return refuse("that question was not put to you");
+        // a yes to a union that can no longer be (one of the two has united meanwhile, or is near victory): said so, and still asked
+        if (offer.kind === "union" && cmd.accept) { const why = unionError(game, offer.from, offer.to); if (why) return refuse(why); }
         st.offers = st.offers.filter((o) => o !== offer);
         const events = [], accept = Boolean(cmd.accept);
         events.push({ type: "answer", day: st.day, country: offer.to, from: offer.from, what: offer.kind === "agreement" ? offer.agreement : offer.kind, accepted: accept });
@@ -231,7 +233,7 @@ export const diplomacyCommands = {
             else if (!accept) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
         } else if (offer.kind === "union") {
             // as things stand now, not as they stood when it was asked
-            if (accept && !unionError(game, offer.from, offer.to)) unite(game, offer.from, offer.to, events);
+            if (accept) { const into = unionInto(st, offer.from, offer.to); unite(game, into, into === offer.from ? offer.to : offer.from, events); }
         } else if (offer.kind === "integrate") {
             if (accept && !integrateError(game, offer.from, offer.to)) integrate(game, offer.from, offer.to, events);
         } else if (offer.kind === "empire") {

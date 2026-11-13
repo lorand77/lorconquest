@@ -720,14 +720,19 @@ only if all of this still holds when they give it. A person whose country is int
 
 **Union.** Two countries played by people may become one, ruled by both. Either **proposes a union** to the other, who is
 **asked**; no answer in 6 months is a no. It is possible while neither is anyone's subject, they are at peace with each other
-and at war with the same countries (peasants aside) — or at peace with all — neither has been in a union before, and together
-they hold less than **three quarters of the settlements that win** (near victory nobody bows, as for a subject). On a yes, the
-other's country becomes part of the proposer's at once, for nothing: its settlements become yours and **core** for you, its
+and at war with the same countries (peasants aside) — or at peace with all — and together they hold less than **three quarters
+of the settlements that win** (near victory nobody bows, as for a subject). On a yes, the other's country becomes part of the
+proposer's at once, for nothing: its settlements become yours and **core** for you, its
 armies, fleets, sharpshooters, soldiers and mercenaries being raised, weapons, treasury, bank deposit, loans, research pool and
 technologies become yours, and its subjects your subjects; its sieges go on as yours. It is out of the game, absorbed, not
 defeated. Its person now **rules your country with you**: either of you gives any order — the last one given stands — both see
-its treasury and research, and the computer looks after it only while **both** are away. You win or lose as one, and share
-your place among the people at the end. A country takes part in one union a game.
+its treasury and research, and the computer looks after it only while **all** its rulers are away. You win or lose as one, and
+share your place among the people at the end.
+
+**A union may grow.** A third person's country may join it, and a fourth: proposed by the union or by the newcomer, the union
+always takes the newcomer in, keeping its name. A country ruled by several people proposes or accepts a union only when **every
+one of them** has given that order — each is shown who has agreed — and one no from any of them refuses. A yes given when the
+union can no longer be (one side has united meanwhile, or gone to war) is refused with the reason, and the question stands.
 
 ### Peace
 Either side may propose peace, with **any terms both sides agree to**: settlements, money, making
