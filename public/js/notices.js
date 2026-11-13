@@ -50,7 +50,7 @@ const KIND_OF_TYPE = {
     uprising: "war",
     offer: "questions", lapsed: "questions",
     tech: "research",
-    answer: "diplomacy", joins: "diplomacy", peace: "diplomacy", subject: "diplomacy", freedom: "diplomacy", agreement: "diplomacy",
+    answer: "diplomacy", joins: "diplomacy", union: "diplomacy", peace: "diplomacy", subject: "diplomacy", freedom: "diplomacy", agreement: "diplomacy",
     ended: "diplomacy", expired: "diplomacy", refused: "diplomacy", empire: "diplomacy", integrated: "diplomacy", broke: "diplomacy",
     ready: "armies", cancelled: "armies", desertion: "armies", crossFailed: "armies", postLost: "armies", scattered: "armies", fleetPaidOff: "armies",
     bankruptcy: "country", plague: "country", default: "country", harvest: "country",

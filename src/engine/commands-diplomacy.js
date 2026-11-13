@@ -10,10 +10,11 @@
 //   demandSubject { target, kind: "vassal" | "protectorate" }   proposeEmpire {}   integrate { target }   a vassal of 10 years
 //   answerOffer { id, accept }       a call to arms, or anything a human was asked
 //   joinWar { ally, enemy }          a war your protectorate fights (or, a protectorate, your overlord's), joined on its side
+//   proposeUnion { with }            two people's countries made one, ruled by both (RULES.md §10, Union): the other is asked
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
 import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
-    setSubject, takeSubject, validateTerms, joinWar, PACT_DAYS } from "./diplomacy.js";
+    setSubject, takeSubject, validateTerms, joinWar, PACT_DAYS, unionError, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
 import { hasAgreement, isVassal, overlordOf, wouldCycle } from "./relations.js";
@@ -90,6 +91,14 @@ export const diplomacyCommands = {
         const events = [];
         joinByChoice(game, me, ally, enemy, events);
         return done(events);
+    },
+
+    proposeUnion(game, cmd) {
+        const { c, error } = other(game, cmd, cmd.with);
+        if (error) return refuse(error);
+        const why = unionError(game, cmd.country, c);
+        if (why) return refuse(why);
+        return asking(game, "union", cmd.country, c);
     },
 
     proposePeace(game, cmd) {
@@ -196,7 +205,7 @@ export const diplomacyCommands = {
         return done(events);
     },
 
-    // a human's answer to a question: a call to arms, a proposal, a demand, the Empire, integration
+    // a human's answer to a question: a call to arms, a proposal, a demand, the Empire, integration, a union
     answerOffer(game, cmd) {
         const st = game.state, offer = st.offers.find((o) => o.id === cmd.id);
         if (!offer) return refuse(`no question ${cmd.id}`);
@@ -220,6 +229,9 @@ export const diplomacyCommands = {
             if (accept && atWar(st, offer.to, offer.from)) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
             else if (accept && !(overlordOf(st, offer.to) && offer.subject === "protectorate")) takeSubject(game, offer.to, offer.from, offer.subject, events);
             else if (!accept) st.memory.refused[`${offer.to}>${offer.from}`] = st.day;
+        } else if (offer.kind === "union") {
+            // as things stand now, not as they stood when it was asked
+            if (accept && !unionError(game, offer.from, offer.to)) unite(game, offer.from, offer.to, events);
         } else if (offer.kind === "integrate") {
             if (accept && !integrateError(game, offer.from, offer.to)) integrate(game, offer.from, offer.to, events);
         } else if (offer.kind === "empire") {

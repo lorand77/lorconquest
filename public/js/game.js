@@ -37,6 +37,7 @@ const ask = (event, payload) => new Promise((resolve) => socket.emit(event, payl
 let me, state, game, scenario, map, legs, tickMs = 100, paused = true, lastTick = performance.now();
 let speed = 1;             // days in a tick's time (alone: ½, 1, 2 or 4 — mirror.js, SPEEDS); with other people always 1
 let myUserId = null;       // the signed-in user, to tell their chat lines from the others'
+let myName = null;         // and their name, to tell their own seat from a fellow ruler's after a union (RULES.md §10)
 let multi = false;         // a game with other people: no pause, a setup minute, chat
 let seats = [];            // the people in it: [{ country, username, state }]
 let setupEnds = 0;         // when the setup minute ends, by performance.now(); 0 once it has
@@ -94,6 +95,7 @@ async function start() {
     [who, scenario, map] = await Promise.all([whoAmI, fetch(`/scenario/${joined.scenario}/scenario.json`).then((r) => r.json()),
         createMapView($("map"), `/scenario/${joined.scenario}/map.svg`, onPick, () => select(null))]);
     myUserId = who.id;
+    myName = who.username;
     game = new Game(buildMap(scenario), state);
     legs = buildLegs(scenario);
     $("zoom-in").addEventListener("click", () => map.zoom(1 / 1.4));
@@ -174,7 +176,12 @@ async function start() {
     }
 }
 
+// the people who rule a country, by name: one, or two and more after a union (RULES.md §10)
+const rulersOf = (code) => seats.filter((s) => s.country === code).map((s) => s.username).join(" & ");
+
 function onTick(m) {
+    // our country made part of another by a union: the page joins again, as the country we now rule with its own person
+    if (me && m.events.some((e) => e.type === "union" && e.with === me)) { location.reload(); return; }
     applyChanges(state, m.changes);
     lastTick = performance.now();
     news(m.events);
@@ -506,7 +513,7 @@ function renderScores() {
     const alive = Object.keys(state.countries).filter((c) => !state.countries[c].rebel && (state.countries[c].out ?? null) === null);
     const power = scoreKey === "military" ? Object.fromEntries(alive.map((c) => [c, militaryPowerOf(state, c)])) : {};
     const rows = scoreboard({ table: scores(state), power, alive, me, key: scoreKey });
-    const player = (c) => (multi ? seats.find((s) => s.country === c)?.username : null);    // names only with other people
+    const player = (c) => (multi ? rulersOf(c) || null : null);                                 // names only with other people
     const show = (r) => (scoreKey === "settlements" ? (Number.isInteger(r.value) ? String(r.value) : r.value.toFixed(1)) : formatMen(Math.round(r.value)));
     // redrawn when a row changes: its value, or its name and colour — a country that proclaims a new state takes both
     const key = scoreKey + "|" + rows.map((r) => `${r.code}:${show(r)}:${country(r.code)?.name}:${colourOf(r.code)}`).join(",");
@@ -557,7 +564,7 @@ function showEnd(end) {
     const screen = endScreen({
         me, end, table: scores(state), target: v.settlements, endYear: v.endYear,
         names: Object.fromEntries(Object.values(state.countries).map((c) => [c.code, c.name])),
-        players: Object.fromEntries(seats.map((s) => [s.country, s.username])),
+        players: Object.fromEntries(seats.map((s) => [s.country, rulersOf(s.country)])),
     });
     $("end").className = `end ${screen.kind}`;
     $("end-title").textContent = screen.title;
@@ -580,7 +587,7 @@ function showEnd(end) {
 function startPeople(joined) {
     socket.on("presence", (p) => {
         if (p.country === me && p.state === "out" && !state.winner) showEnd({ out: true });
-        seats = seats.filter((s) => s.country !== p.country).concat(p);
+        seats = seats.filter((s) => s.username !== p.username).concat(p);              // by person: a union puts two on one country
         renderPeople();
     });
     renderPeople();
@@ -621,7 +628,7 @@ function chatLine(m, live) {
 const renderChatToggle = () => { $("chat-toggle").textContent = unread ? "Chat (" + unread + ")" : "Chat"; };
 
 function renderPeople() {
-    $("people").replaceChildren(...seats.filter((s) => s.country !== me).map((s) => make("span", { class: "person " + s.state, title: presenceText(s.state) }, swatch(s.country), " " + s.username)));
+    $("people").replaceChildren(...seats.filter((s) => s.username !== myName).map((s) => make("span", { class: "person " + s.state, title: presenceText(s.state) }, swatch(s.country), " " + s.username)));
 }
 
 function renderSetup() {

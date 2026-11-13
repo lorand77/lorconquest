@@ -141,6 +141,8 @@ export function openDb(file) {
     addColumnIfMissing("games", "visibility", "TEXT NOT NULL DEFAULT 'public'");
     addColumnIfMissing("game_seats", "captures", "INTEGER");
     addColumnIfMissing("game_seats", "battles", "INTEGER");
+    // the country a person rules now, if not the one they took: after a union, the one theirs became part of (RULES.md §10)
+    addColumnIfMissing("game_seats", "plays", "TEXT");
     // the default scenario lived in docs/ and had the id "docs" until it moved to scenarios/mitteleuropa
     db.exec("UPDATE games SET scenario = 'mitteleuropa' WHERE scenario = 'docs'");
     // games from before accounts (the development page's) have no host and no seats: nobody can open them now
@@ -195,7 +197,7 @@ export function openDb(file) {
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN users h ON h.id = g.host_id WHERE g.status = 'lobby' ORDER BY g.id DESC`),
         // every game a person has a seat in
-        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, s.country, s.place, s.out_day, g.updated_at, g.final_names,
+        gamesOf: db.prepare(`SELECT g.id, g.scenario, g.status, g.winner, g.day, g.paused, g.host_id, COALESCE(s.plays, s.country) AS country, s.place, s.out_day, g.updated_at, g.final_names,
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN game_seats s ON s.game_id = g.id WHERE s.user_id = ? AND g.status != 'aborted' ORDER BY g.updated_at DESC, g.id DESC`),
         activeGames: db.prepare("SELECT * FROM games WHERE status = 'active' ORDER BY id"),
@@ -207,7 +209,7 @@ export function openDb(file) {
         finishGame: db.prepare("UPDATE games SET status = 'finished', day = ?, paused = 1, winner = ?, result_hash = ?, final_names = ?, updated_at = datetime('now') WHERE id = ?"),
         setResult: db.prepare("UPDATE game_seats SET place = ?, settlements = ?, pop = ? WHERE game_id = ? AND country = ?"),
         markQuit: db.prepare("UPDATE game_seats SET quit_day = ? WHERE game_id = ? AND user_id = ?"),
-        seatQuits: db.prepare("SELECT country, quit_day, out_day FROM game_seats WHERE game_id = ?"),
+        seatQuits: db.prepare("SELECT country, plays, quit_day, out_day FROM game_seats WHERE game_id = ?"),
         markOut: db.prepare("UPDATE game_seats SET out_day = ? WHERE game_id = ? AND country = ?"),
         // the leaderboard: every account, with what it did over the finished games it played (none for one that has finished
         // none). A game counts for "firsts" and the average place only with two or more people in it; a "victory" is their
@@ -240,7 +242,8 @@ export function openDb(file) {
 
         insertSeat: db.prepare("INSERT INTO game_seats (game_id, country, user_id) VALUES (?, ?, ?)"),
         deleteSeat: db.prepare("DELETE FROM game_seats WHERE game_id = ? AND user_id = ?"),
-        seats: db.prepare("SELECT s.country, s.user_id, u.username FROM game_seats s JOIN users u ON u.id = s.user_id WHERE s.game_id = ? ORDER BY s.joined_at, s.rowid"),
+        seats: db.prepare("SELECT s.country, s.plays, s.user_id, u.username FROM game_seats s JOIN users u ON u.id = s.user_id WHERE s.game_id = ? ORDER BY s.joined_at, s.rowid"),
+        setPlays: db.prepare("UPDATE game_seats SET plays = ? WHERE game_id = ? AND country = ?"),
         seatOfUser: db.prepare("SELECT country FROM game_seats WHERE game_id = ? AND user_id = ?"),
 
         insertChat: db.prepare("INSERT INTO chat_messages (game_id, user_id, text) VALUES (?, ?, ?)"),

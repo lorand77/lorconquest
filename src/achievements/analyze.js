@@ -3,7 +3,8 @@
 // replay page does (public/js/replayer.js), and the events are watched for each person's country. Pure apart from the engine:
 // it runs in a worker thread (worker.js) and is tested in Node.
 //
-// A seat counts only up to the day its person quit (after that the computer played the country). The answer:
+// A seat counts only up to the day its person quit (after that the computer played the country), and follows the country its
+// person rules — after a union (RULES.md §10), the one theirs became part of. The answer:
 //   { ok, error?, why, seats: { <country>: { feats: [key], captures, battles } } }
 // where `feats` are the regular achievements earned in the game (catalogue.js; those that need the win among them) and the
 // scenario's own, and `why` is how the game was won ("reached" or "end"). A game that cannot be played over exactly — its log
@@ -22,6 +23,7 @@ export function analyzeGame(job) {
     const goals = scenarioAchievements(job.scenarioId, scenario);
     const allTechs = Object.keys(TECHS);
     const seats = new Map(job.seats.map((s) => [s.country, {
+        code: s.country,                    // the country it rules now
         quitDay: s.quitDay ?? Infinity, feats: new Set(), captures: 0, cored: 0, lostAny: false, lostCapital: false,
         met: new Map(),                     // scenario achievement key -> clause -> the first day it was met
     }]));
@@ -44,7 +46,9 @@ export function analyzeGame(job) {
             }
             if (e.type === "subject" || e.type === "freedom") subjects = true;
             if (e.type === "victory") { why = e.why; winner = e.country; }
-            for (const [code, s] of seats) {
+            if (e.type === "union") { owners = true; subjects = true; for (const s of seats.values()) if (s.code === e.with) s.code = e.country; }
+            for (const s of seats.values()) {
+                const code = s.code;
                 if (e.day >= s.quitDay) continue;
                 const mine = (side) => side?.countries?.includes(code);
                 const won = e.type === "battle" && ((e.winner === "a" && mine(e.a)) || (e.winner === "b" && mine(e.b)));
@@ -101,7 +105,8 @@ export function analyzeGame(job) {
             }
         }
         // what is checked against the state: subjects held at once, settlements held at once
-        for (const [code, s] of seats) {
+        for (const s of seats.values()) {
+            const code = s.code;
             if (st.day >= s.quitDay) continue;
             if (subjects && Object.values(st.countries).filter((c) => c.overlord === code && (c.out ?? null) === null).length >= A.overlord.n) s.feats.add("overlord");
             if (owners || st.day === 0) for (const g of goals) if (g.goal.hold && holds(code, g.goal.hold)) note(s, g.key, "hold", st.day);
@@ -131,8 +136,8 @@ export function analyzeGame(job) {
     // what needs the end: the win, the scenario's own
     const st = game.state, byDay = (year) => (year - START_YEAR) * YEAR_DAYS;
     const out = {};
-    for (const [code, s] of seats) {
-        const stayed = s.quitDay === Infinity, won = stayed && winner === code, alive = stayed && (st.countries[code].out ?? null) === null;
+    for (const [seat, s] of seats) {
+        const code = s.code, stayed = s.quitDay === Infinity, won = stayed && winner === code, alive = stayed && (st.countries[code].out ?? null) === null;
         if (won) {
             if (why === "reached") s.feats.add("by_the_sword");
             if (!s.lostAny) s.feats.add("unbroken");
@@ -140,7 +145,7 @@ export function analyzeGame(job) {
         }
         for (const g of goals) {
             const goal = g.goal, met = s.met.get(g.key) ?? new Map();
-            if (goal.as && !goal.as.includes(code)) continue;
+            if (goal.as && !goal.as.includes(seat)) continue;                   // the country the person began as
             if ((goal.win && !won) || (goal.survive && !alive) || (goal.keep && !(stayed && holds(code, goal.keep)))) continue;
             const clauses = [...(goal.proclaim ? ["proclaim"] : []), ...(goal.hold ? ["hold"] : []), ...(goal.empire ? ["empire"] : []), ...(goal.eliminate ?? []).map((c) => `eliminate ${c}`)];
             if (!clauses.every((c) => met.has(c))) continue;
@@ -148,7 +153,7 @@ export function analyzeGame(job) {
             if (goal.by && when >= byDay(goal.by)) continue;
             s.feats.add(g.key);
         }
-        out[code] = { feats: [...s.feats], captures: s.captures, battles: s.battles ?? 0 };
+        out[seat] = { feats: [...s.feats], captures: s.captures, battles: s.battles ?? 0 };
     }
     return { ok: true, why, seats: out };
 }

@@ -7,7 +7,7 @@ export { COMMAND_TYPES, applyCommand } from "./commands.js";
 export { RULES_VERSION, FORMAT, atWar, armiesAt, armyList, canEnter, fleetList, isCore, isFriend, isRebel, ownerOf } from "./state.js";
 export { agreementsBetween, allied, alliesOf, friendly, grantsAccess, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectKind, subjectsOf, wouldCycle } from "./relations.js";
 export { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, nearVictory, areRivals, isAlliance, subjectChance, bordering, demandChance, militaryPowerOf, need, neighboursOf, opinion, peaceAnswer, peaceCost, sizeOf, warScore } from "./opinion.js";
-export { OFFER_DAYS, PACT_DAYS, PROPOSAL_DAYS, TRUCE_DAYS, germanStates, hreSettlementsOf, INTEGRATE_DAYS, integrateError, integratePrice, mayPropose, validateTerms, warJoiners } from "./diplomacy.js";
+export { OFFER_DAYS, PACT_DAYS, PROPOSAL_DAYS, TRUCE_DAYS, germanStates, hreSettlementsOf, INTEGRATE_DAYS, integrateError, integratePrice, mayPropose, unionError, validateTerms, warJoiners } from "./diplomacy.js";
 export { checkVictory, scores } from "./victory.js";
 export { TRIBUTE, armyCapOf, armySoldiersOf, economyOf, manpowerOf, mercenariesOf, navyCapOf, ownedBy, popOf, rebelsOf, soldiersOf, techCost } from "./economy.js";
 export { blockaded, contested, crossable, crewAtSea, fleetPower, shipCount, shipsIn, straitClear } from "./naval.js";

@@ -115,11 +115,11 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             seat = joined.seat;
             if (watching) { socket.leave(`watch:${watching}`); watching = null; }
             mark(user, socket.id, "game");
-            socket.join([`game:${room.id}`, `game:${room.id}:${seat.country}`]);
-            const view = await rooms.view(room, seat.country);
-            log.debug("socket.join", { game: room.id, socket: socket.id, country: seat.country });
+            socket.join([`game:${room.id}`, `game:${room.id}:${seat.plays}`]);
+            const view = await rooms.view(room, seat.plays);
+            log.debug("socket.join", { game: room.id, socket: socket.id, country: seat.plays });
             reply(ack, {
-                ok: true, gameId: room.id, scenario: room.scenario, me: seat.country, multi: room.multi, paused: room.paused, speed: room.speed, tickMs, view,
+                ok: true, gameId: room.id, scenario: room.scenario, me: seat.plays, multi: room.multi, paused: room.paused, speed: room.speed, tickMs, view,
                 seats: rooms.seatList(room), setup: Math.max(0, room.setupUntil - Date.now()), chat: rooms.chatOf(room),
                 over: room.over ?? null,
             });
@@ -148,7 +148,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             if (!msg || typeof msg.cmd !== "object" || msg.cmd === null) return reply(ack, { ok: false, error: "no command" });
             // every command is kept in the game's log as it came: one padded with junk would fill the disk
             if (JSON.stringify(msg.cmd).length > COMMAND_MAX) return reply(ack, { ok: false, error: "that command is too long" });
-            const r = await rooms.command(room, seat.country, msg.cmd);
+            const r = await rooms.command(room, seat, msg.cmd);
             reply(ack, { ok: r.ok, error: r.error, events: r.events });
         });
 
@@ -187,7 +187,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
         function leave() {
             if (!room) return;
             socket.leave(`game:${room.id}`);
-            socket.leave(`game:${room.id}:${seat.country}`);
+            socket.leave(`game:${room.id}:${seat.plays}`);
             rooms.detach(room, user.id, socket.id);
             room = null;
             seat = null;

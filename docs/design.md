@@ -92,6 +92,13 @@ find. With the server alone running the rules, only Node has to agree with itsel
   (*full*). Opening the game again, at either stage, gives the country back at once. `presence` tells the others. The
   worker is told by the message of milestone 5 (`{ type: "caretaker", country, mode }`).
 - **Quitting** (`quit`) gives the country to the full computer player for good: that seat cannot be joined again.
+- **A union** (RULES.md §10, `proposeUnion`) puts two people on one country. A seat keeps the country it took as its identity
+  (`game_seats.country`: its row, its results, the replay's humans) and gains `plays` (`game_seats.plays`), the country it rules
+  now; everything that rules or shows — orders, the private view and its socket room, presence, elimination, the result —
+  follows `plays`. Who plays a country is worked out from all its rulers (`rooms.js`, `control`): its people while any of them is
+  here, the caretaker while one is away and none has passed two minutes, the full computer player once every one has, or
+  quit. On the union the absorbed person's page reloads and joins as the country it now rules. The results rank rulers of one
+  country together, in one place; achievements follow the country a seat rules (`analyze.js`).
 - **Eliminated** (RULES.md §10): a player whose country loses its last settlement is *out*. They may open the game and watch
   to the end; the engine refuses their orders ("your country is no more"); they are placed after everyone still in, the later
   to fall first. When every player's country has fallen — in a single-player game, when the one has — the worker ends the game

@@ -64,7 +64,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         const room = {
             id: row.id, host: row.host_id, scenario: row.scenario, visibility: row.visibility ?? "public", worker, paused: true, speed: 1, day: row.day, multi,
             seq: db.q.lastSeq.get(row.id).seq, savedDay: row.day, pending: new Map(), nextReq: 1,
-            seats: new Map(seatRows.map((s) => [s.country, { country: s.country, userId: s.user_id, username: s.username, sockets: new Set(), state: multi ? "away" : "idle", timer: null }])),
+            // each seat by the country it took; `plays`, the country it rules now — another after a union (RULES.md §10)
+            seats: new Map(seatRows.map((s) => [s.country, { country: s.country, plays: s.plays ?? s.country, userId: s.user_id, username: s.username, sockets: new Set(), state: multi ? "away" : "idle", timer: null }])),
             setupUntil: 0, timers: new Set(), lastTick: performance.now(),
         };
         room.gone = new Promise((resolve) => { room.onGone = resolve; });
@@ -130,7 +131,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                 save(room, m);
                 for (const e of m.events) {
                     const gone = e.type === "eliminated" ? e.country : e.type === "integrated" ? e.subject : null;     // out of the game either way
-                    if (gone && room.seats.has(gone)) seatOut(room, room.seats.get(gone), e.day);
+                    if (gone) for (const seat of rulers(room, gone)) seatOut(room, seat, e.day);
+                    if (e.type === "union") united(room, e.country, e.with);
                 }
                 everyone(room).emit("tick", { day: m.day, events: m.events, changes: m.pub });
                 // each country's private part: what changed of it, and the events only it may see (view.js, splitEvents)
@@ -191,9 +193,30 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
     // ---------- people in a game ----------
 
-    const seatView = (seat) => ({ country: seat.country, username: seat.username, state: seat.state });
+    const seatView = (seat) => ({ country: seat.plays, username: seat.username, state: seat.state });
     const tell = (room, seat) => everyone(room).emit("presence", seatView(seat));
     const caretaker = (room, country, mode) => room.worker.postMessage({ type: "caretaker", country, mode });
+    // the seats that rule a country — two or more after a union (RULES.md §10) — and who plays it, as they stand: its people if
+    // any of them is here; the caretaker if one is away but not yet two minutes; the full computer player once every one of them
+    // is away longer, or has quit
+    const rulers = (room, country) => [...room.seats.values()].filter((s) => s.plays === country);
+    function control(room, country) {
+        const seats = rulers(room, country).filter((s) => s.state !== "out");
+        if (seats.some((s) => s.state === "present")) return null;
+        return seats.some((s) => s.state === "away") ? "caretaker" : "full";
+    }
+    const hand = (room, country) => caretaker(room, country, control(room, country));
+
+    // a union (RULES.md §10): the seats that ruled `from` rule `into` with its own, at once — their pages join again as `into`
+    function united(room, into, from) {
+        for (const seat of rulers(room, from)) {
+            seat.plays = into;
+            db.q.setPlays.run(into, room.id, seat.country);
+            tell(room, seat);
+            log.info("game.seat_united", { game: room.id, country: seat.country, into });
+        }
+        hand(room, into);
+    }
     const setPaused = (room, paused) => room.worker.postMessage({ type: "pause", paused });
     // a single-player game's speed (socket.js checks it is one of SPEEDS); not saved: a game brought back runs at 1
     const setSpeed = (room, speed) => room.worker.postMessage({ type: "speed", speed });
@@ -202,7 +225,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     function becomeFull(room, seat) {
         seat.timer = null;
         seat.state = "full";
-        caretaker(room, seat.country, "full");
+        hand(room, seat.plays);
         tell(room, seat);
         log.info("game.seat_full", { game: room.id, country: seat.country });
         checkEnd(room);
@@ -275,7 +298,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     function recordResult(room, table) {
         if (!table) return;
         const rows = new Map(db.q.seatQuits.all(room.id).map((r) => [r.country, r]));
-        const seats = [...room.seats.keys()].map((country) => ({ country, quitDay: rows.get(country)?.quit_day ?? null, outDay: rows.get(country)?.out_day ?? null }));
+        const seats = [...room.seats.values()].map(({ country, plays }) => ({ country, plays, quitDay: rows.get(country)?.quit_day ?? null, outDay: rows.get(country)?.out_day ?? null }));
         db.tx(() => { for (const r of rankHumans(seats, table)) db.q.setResult.run(r.place, r.settlements, r.pop, room.id, r.country); });
     }
 
@@ -310,8 +333,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         if (room.idleTimer) { clearTimeout(room.idleTimer); room.timers.delete(room.idleTimer); room.idleTimer = null; }
         if (seat.state !== "present") {
             if (seat.timer) { clearTimeout(seat.timer); room.timers.delete(seat.timer); seat.timer = null; }
-            if (room.multi) caretaker(room, seat.country, null);
             seat.state = "present";
+            if (room.multi) hand(room, seat.plays);
             tell(room, seat);
             log.info("game.seat_back", { game: room.id, country: seat.country });
             if (room.multi) stopWaiting(room);
@@ -340,7 +363,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         }
         if (room.over || room.ending) return;                       // nothing is left to look after
         seat.state = "away";
-        caretaker(room, seat.country, "caretaker");
+        hand(room, seat.plays);
         seat.timer = later(room, awayMs, () => becomeFull(room, seat));
         tell(room, seat);
         log.info("game.seat_away", { game: room.id, country: seat.country });
@@ -357,7 +380,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         if (seat.timer) { clearTimeout(seat.timer); room.timers.delete(seat.timer); seat.timer = null; }
         seat.state = "quit";
         seat.sockets.clear();
-        caretaker(room, seat.country, "full");
+        hand(room, seat.plays);
         tell(room, seat);
         log.info("game.seat_quit", { game: room.id, country: seat.country });
         checkEnd(room);
@@ -584,7 +607,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         // people and whether `userId` has a seat in one (then it plays it rather than watches)
         liveGames: (userId) => [...live.values()].filter((r) => !r.over && !r.ending && !r.unloading && mayWatch(r, userId)).map((r) => ({
             id: r.id, scenario: r.scenario, day: r.day, multi: r.multi, paused: r.paused,
-            people: [...r.seats.values()].map((s) => ({ country: s.country, username: s.username.startsWith("deleted-") ? "deleted" : s.username, state: s.state })),
+            people: [...r.seats.values()].map((s) => ({ country: s.plays, username: s.username.startsWith("deleted-") ? "deleted" : s.username, state: s.state })),
             mine: [...r.seats.values()].some((s) => s.userId === userId),
         })).sort((a, b) => b.people.length - a.people.length || b.id - a.id),
 
@@ -610,9 +633,9 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         },
         attach, detach, quit,
 
-        // a person's command, in the country of their seat
-        command: (room, country, cmd) => (room.seats.get(country)?.state === "quit" ? Promise.resolve({ ok: false, error: "you left this game" })
-            : ask(room, { type: "command", country, source: "human", cmd })),
+        // a person's command, in the country their seat rules
+        command: (room, seat, cmd) => (seat.state === "quit" ? Promise.resolve({ ok: false, error: "you left this game" })
+            : ask(room, { type: "command", country: seat.plays, source: "human", cmd })),
         view: (room, country) => ask(room, { type: "view", country }).then((m) => m.view),
         setPaused,
         setSpeed,

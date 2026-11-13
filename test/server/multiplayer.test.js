@@ -4,7 +4,10 @@
 // milliseconds here, and a game day takes 2 ms.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { api, connect, emitAck, newGame, startServer, tempDb, waitFor } from "./helpers.js";
+import { api, connect, emitAck, newGame, startServer, sturdyRoot, tempDb, waitFor } from "./helpers.js";
+
+// the players' countries hard to attack, so that the computer's wars do not end them while a test runs (helpers.js, sturdyRoot)
+const root = sturdyRoot(["BAV", "ULM", "SAX"]);
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 async function until(check, what, timeoutMs = 8000) {
@@ -37,7 +40,7 @@ const status = (server, id) => server.app.db.q.game.get(id).status;
 const ALICE_BOB = [["alice", "BAV"], ["bobby", "ULM"]];
 
 test("a table: seats first come first served, at most four people, a host who starts or cancels it", async () => {
-    const server = await startServer({ dbPath: tempDb() });
+    const server = await startServer({ root, dbPath: tempDb() });
     try {
         const lobby = await connect(server, "carol");
         await emitAck(lobby, "lobby:enter", {});
@@ -82,7 +85,7 @@ test("a table: seats first come first served, at most four people, a host who st
 });
 
 test("the host starts with seats open: those seated are told, the game is theirs, the rest is the computer's", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 100000 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 100000 });
     try {
         const id = await makeTable(server, ALICE_BOB);
         const bobby = await connect(server, "bobby");
@@ -112,7 +115,7 @@ test("the host starts with seats open: those seated are told, the game is theirs
 });
 
 test("the clock stands still for the setup minute while orders are given, then runs and never pauses again", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 400 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 400 });
     try {
         const id = await makeTable(server, ALICE_BOB);
         const [a, b] = await play(server, id, ALICE_BOB);
@@ -141,7 +144,7 @@ test("the clock stands still for the setup minute while orders are given, then r
 });
 
 test("chat reaches everyone in the game, is kept for those who join later, and is limited", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 100000 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 100000 });
     try {
         const id = await makeTable(server, ALICE_BOB);
         const [a, b] = await play(server, id, ALICE_BOB);
@@ -167,7 +170,7 @@ test("chat reaches everyone in the game, is kept for those who join later, and i
 });
 
 test("a player who goes away has a caretaker, then the full computer player; coming back, they have the country at once", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 0, awayMs: 1000 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 0, awayMs: 1000 });
     try {
         const id = await makeTable(server, ALICE_BOB);
         const [a, b] = await play(server, id, ALICE_BOB);
@@ -201,7 +204,7 @@ test("a player who goes away has a caretaker, then the full computer player; com
 });
 
 test("a player who quits gives the country to the computer for good", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 0, awayMs: 100000 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 0, awayMs: 100000 });
     try {
         const id = await makeTable(server, ALICE_BOB);
         const [a, b] = await play(server, id, ALICE_BOB);
@@ -219,7 +222,7 @@ test("a player who quits gives the country to the computer for good", async () =
 });
 
 test("the game ends when no player is left: all quit, or all away too long", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 0, awayMs: 1000, emptyMs: 300 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 0, awayMs: 1000, emptyMs: 300 });
     try {
         // one quits, the other is away too long
         let id = await makeTable(server, ALICE_BOB);
@@ -251,7 +254,7 @@ test("the game ends when no player is left: all quit, or all away too long", asy
 
 test("a game of several people survives a restart: it waits, every player away, and runs again as soon as one is back", async () => {
     const dbPath = tempDb();
-    let server = await startServer({ dbPath, setupMs: 0, awayMs: 100000 });
+    let server = await startServer({ root, dbPath, setupMs: 0, awayMs: 100000 });
     let id, dayBefore;
     try {
         id = await makeTable(server, ALICE_BOB);
@@ -265,7 +268,7 @@ test("a game of several people survives a restart: it waits, every player away, 
     } finally {
         await server.close();
     }
-    server = await startServer({ dbPath, setupMs: 0, awayMs: 100000 });
+    server = await startServer({ root, dbPath, setupMs: 0, awayMs: 100000 });
     try {
         await until(() => server.app.rooms.get(id), "the game to come back");
         assert.equal(status(server, id), "active");
@@ -288,7 +291,7 @@ test("a game of several people survives a restart: it waits, every player away, 
 });
 
 test("the lobby shows who is online — the lobby or a game open — and who is playing, as it changes", async () => {
-    const server = await startServer({ dbPath: tempDb() });
+    const server = await startServer({ root, dbPath: tempDb() });
     try {
         const a = await connect(server, "alice");
         const first = waitFor(a, "online", (list) => list.length === 1);
@@ -310,7 +313,7 @@ test("the lobby shows who is online — the lobby or a game open — and who is 
 });
 
 test("someone watching a game with people in it sees who plays and how they stand, but not their chat", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 0 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 0 });
     try {
         const id = await makeTable(server, ALICE_BOB);
         const [a, b] = await play(server, id, ALICE_BOB);
@@ -336,7 +339,7 @@ test("someone watching a game with people in it sees who plays and how they stan
 });
 
 test("a game everyone has left for now waits for them, paused, and is in the lobby with how long; the first back sets it going", async () => {
-    const server = await startServer({ dbPath: tempDb(), setupMs: 0, awayMs: 100000, emptyMs: 100000 });
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 0, awayMs: 100000, emptyMs: 100000 });
     try {
         const id = await makeTable(server, ALICE_BOB);
         const [a, b] = await play(server, id, ALICE_BOB);
@@ -352,6 +355,39 @@ test("a game everyone has left for now waits for them, paused, and is in the lob
         await until(() => !server.app.rooms.get(id).paused, "the game to run again");
         assert.equal(server.app.rooms.get(id).emptyUntil, 0);
         assert.equal((await api(server, "GET", "/api/games", null, "bobby")).body.find((g) => g.id === id).waiting, null);
+    } finally {
+        await server.close();
+    }
+});
+
+test("a union: two people's countries made one, ruled by both — either gives orders, and the computer has it only when both are away", async () => {
+    const server = await startServer({ root, dbPath: tempDb(), setupMs: 0, awayMs: 1000 });
+    try {
+        // carol, in Saxony, stays: a game nobody is in waits, paused, and the computer plays nobody
+        const three = [...ALICE_BOB, ["carol", "SAX"]];
+        const id = await makeTable(server, three);
+        const [a, b] = await play(server, id, three);
+        const room = server.app.rooms.get(id);
+        assert.equal((await emitAck(a.socket, "command", { cmd: { type: "proposeUnion", with: "ULM" } })).ok, true);
+        const offer = (await server.app.rooms.view(room, "ULM")).countries.ULM.offers.find((o) => o.kind === "union");
+        const united = waitFor(a.socket, "presence", (p) => p.username === "bobby" && p.country === "BAV");
+        assert.equal((await emitAck(b.socket, "command", { cmd: { type: "answerOffer", id: offer.id, accept: true } })).ok, true);
+        await united;
+        assert.equal(server.app.db.db.prepare("SELECT plays FROM game_seats WHERE game_id = ? AND country = 'ULM'").get(id).plays, "BAV");
+        // bobby's page joins again (it reloads on the union): he rules Bavaria, alongside alice
+        const again = await emitAck(b.socket, "join", { gameId: id });
+        assert.deepEqual([again.ok, again.me], [true, "BAV"]);
+        assert.deepEqual(again.seats.map((s) => [s.username, s.country]).sort(), [["alice", "BAV"], ["bobby", "BAV"], ["carol", "SAX"]]);
+        assert.equal((await emitAck(b.socket, "command", { cmd: { type: "setTax", tax: 2.3 } })).ok, true);
+        assert.equal((await server.app.rooms.view(room, "BAV")).countries.BAV.tax, 2.3, "his order is Bavaria's");
+        // alice goes away for good — bobby is here, so nobody else plays Bavaria; then bobby too, and the computer does
+        const byComputer = () => server.app.db.db.prepare("SELECT COUNT(*) AS n FROM commands WHERE game_id = ? AND country = 'BAV' AND source = 'caretaker'").get(id).n;
+        const before = byComputer();
+        a.socket.close();
+        await wait(1400);
+        assert.equal(byComputer(), before, "a ruler is here: no caretaker");
+        b.socket.close();
+        await until(() => byComputer() > before, "the computer to play Bavaria once both are away");
     } finally {
         await server.close();
     }

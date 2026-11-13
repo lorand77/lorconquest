@@ -13,10 +13,11 @@ import { BUILDING_PRICE } from "./costs.js";
 import { popOf } from "./economy.js";
 import { capture } from "./fighting.js";
 import { retreat } from "./movement.js";
-import { agreementAnswer, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
+import { NEAR_VICTORY, agreementAnswer, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
 import { random } from "./random.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
 import { armyList, atWar, canEnter, isRebel, warKey } from "./state.js";
+import { scores } from "./victory.js";
 
 export const OFFER_DAYS = Math.round(6 * 365 / 12);     // a human has 6 months to answer
 export const TRUCE_DAYS = 5 * YEAR_DAYS;
@@ -365,12 +366,20 @@ export function integrateError(game, overlord, subject) {
     return null;
 }
 
-// the vassal becomes part of the overlord: its settlements (core for the overlord at once), armies, fleets, sharpshooters,
-// soldiers being raised, weapons, treasury, bank, loans and research pool, and its own subjects. It is then out of the game
-// — integrated, not eliminated: nothing of it vanishes, and it has no wars to end. +1 warmonger score a settlement.
+// the vassal becomes part of the overlord (absorb). +1 warmonger score a settlement.
 export function integrate(game, overlord, subject, events) {
+    game.state.countries[overlord].treasury -= integratePrice(game, subject);
+    const n = absorb(game, overlord, subject, events);
+    game.state.countries[overlord].warmonger += n;
+    events.push({ type: "integrated", day: game.state.day, country: overlord, subject, settlements: n });
+}
+
+// one country made part of another, by integration or a union: its settlements (core for the other at once), armies, fleets,
+// sharpshooters, soldiers being raised, weapons, treasury, bank, loans and research pool, and its own subjects. It is then out
+// of the game — absorbed, not eliminated: nothing of it vanishes. Its agreements and the questions to it or from it end. The
+// number of its settlements.
+function absorb(game, overlord, subject, events) {
     const st = game.state, o = st.countries[overlord], c = st.countries[subject];
-    o.treasury -= integratePrice(game, subject);
     let n = 0;
     for (const s of Object.values(st.settlements)) {
         if (s.owner !== subject) continue;
@@ -406,8 +415,42 @@ export function integrate(game, overlord, subject, events) {
     c.subjectKind = null;
     c.vassalSince = null;
     lapseCoalitions(game, events);
-    o.warmonger += n;
-    events.push({ type: "integrated", day: st.day, country: overlord, subject, settlements: n });
+    return n;
+}
+
+// ---------- a union of two people's countries ----------
+
+// why `a` may not propose a union to `b` now (RULES.md §10, Union), or null: both played by people, neither anyone's subject nor
+// in a union before, at peace with each other and at war with the same countries (peasant rebels aside), and not near victory
+// together — three quarters of the number that wins, as for a subject (opinion.js, NEAR_VICTORY)
+export function unionError(game, a, b) {
+    const st = game.state;
+    if (!st.humans.includes(a) || !st.humans.includes(b)) return "a union is of two countries played by people";
+    if (st.countries[a].out !== null || st.countries[b].out !== null) return "a union is of two countries still in the game";
+    if (st.countries[a].overlord || st.countries[b].overlord) return "a subject cannot unite with anyone: it must be free first";
+    if (st.memory.unions?.includes(a) || st.memory.unions?.includes(b)) return "a country unites once in a game";
+    if (atWar(st, a, b)) return "not while you are at war with each other";
+    const foes = (c) => st.wars.map((w) => w.split("|")).filter((w) => w.includes(c)).map((w) => w.find((x) => x !== c)).filter((x) => !isRebel(st, x)).sort().join(",");
+    if (foes(a) !== foes(b)) return "only while you are at war with the same countries, or at peace with all";
+    const target = game.map.scenario.victory?.settlements, table = scores(st);
+    if (target && (table[a]?.settlements ?? 0) + (table[b]?.settlements ?? 0) >= NEAR_VICTORY * target) return "too near victory together: what is left must be taken";
+    return null;
+}
+
+// `from` becomes part of `into` (absorb), at once and for nothing; `into` keeps its name and gains `from`'s research too, and
+// `from`'s wars, against the same enemies, are `into`'s already. Its person rules `into` with `into`'s (src/game/rooms.js).
+export function unite(game, into, from, events) {
+    const st = game.state, o = st.countries[into], c = st.countries[from];
+    for (const t of c.techs) if (!o.techs.includes(t)) o.techs.push(t);
+    o.warmonger = Math.max(o.warmonger, c.warmonger);
+    for (const w of [...st.wars]) {
+        const [x, y] = w.split("|");
+        if (x === from || y === from) closeWar(game, x, y);
+    }
+    const n = absorb(game, into, from, events);
+    for (const x of Object.values(st.settlements)) if (x.siege?.by === from) x.siege.by = into;     // its sieges go on, as `into`'s
+    (st.memory.unions ??= []).push(into, from);
+    events.push({ type: "union", day: st.day, country: into, with: from, settlements: n });
 }
 
 // ---------- asking a country to become a subject ----------

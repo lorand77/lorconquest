@@ -17,6 +17,21 @@ export function tempDb() {
     return path.join(dir, "test.sqlite");
 }
 
+// a folder to start a server in (startServer's `root`) whose Mitteleuropa gives `codes` ten times their people — and so ten times
+// their garrisons: the computer, which attacks only at good odds, leaves them alone, and the people who play them in a test,
+// giving no orders, are not swept off the map in the second or two a test runs (a day takes 2 ms)
+export function sturdyRoot(codes) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "lc-root-"));
+    dirs.push(root);
+    const from = path.join(import.meta.dirname, "..", "..", "scenarios", "mitteleuropa"), to = path.join(root, "scenarios", "mitteleuropa");
+    fs.mkdirSync(to, { recursive: true });
+    for (const f of fs.readdirSync(from)) fs.copyFileSync(path.join(from, f), path.join(to, f));
+    const data = JSON.parse(fs.readFileSync(path.join(to, "scenario.json"), "utf8"));
+    for (const x of data.settlements) if (codes.includes(x.country)) x.pop *= 10;
+    fs.writeFileSync(path.join(to, "scenario.json"), JSON.stringify(data));
+    return root;
+}
+
 // { baseUrl, app, close }; `lines`, if given, collects every log line at info and up
 export async function startServer({ dbPath, tickMs = 2, statsEvery = 365, lines, root, setupMs = 0, awayMs = 60000, emptyMs = 600000, idleMs = 600000, stallMs, trustProxy, limits = { loginMax: 1000, registerMax: 1000 } } = {}) {
     const level = lines ? "info" : process.env.TEST_LOG ? "debug" : "silent";

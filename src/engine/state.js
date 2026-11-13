@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 47;
+export const RULES_VERSION = 48;
 // bump when the shape of the state changes
-export const FORMAT = 9;
+export const FORMAT = 10;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -23,7 +23,7 @@ export function initialState(map, seed, humans = []) {
         countries: {}, settlements: {}, armies: {}, fleets: {}, posts: {}, wars: [], cooldowns: {}, rebels: 0,
         // diplomacy (src/engine/diplomacy.js): who the humans are, agreements, a record of each war, what the world
         // remembers, questions waiting for a human's answer, and the winner once there is one
-        humans: [...humans], agreements: [], warInfo: {}, memory: { lastWar: {}, broke: {}, refused: {}, proposed: {}, empire: {} },
+        humans: [...humans], agreements: [], warInfo: {}, memory: { lastWar: {}, broke: {}, refused: {}, proposed: {}, empire: {}, unions: [] },
         offers: [], offerSeq: 0, winner: null,
     };
     for (const c of sc.countries) {

@@ -122,6 +122,9 @@ test("the leaderboard lists everyone and counts the games finished: firsts among
 test("a player who quit is placed after those who stayed, whatever their country made of itself", () => {
     const table = { A: { settlements: 9, pop: 5 }, B: { settlements: 3, pop: 5 }, C: { settlements: 6, pop: 5 } };
     assert.deepEqual(rankHumans([{ country: "A", quitDay: 100 }, { country: "B", quitDay: null }, { country: "C", quitDay: null }], table).map((r) => [r.country, r.place]), [["C", 1], ["B", 2], ["A", 3]]);
+    // after a union two people rule one country: they stand with it and share its place
+    assert.deepEqual(rankHumans([{ country: "A", plays: "C", quitDay: null }, { country: "B", quitDay: null }, { country: "C", quitDay: null }], table).map((r) => [r.country, r.place, r.settlements]),
+        [["A", 1, table.C.settlements], ["C", 1, table.C.settlements], ["B", 3, table.B.settlements]]);
     // the later quitter is placed above the earlier; ties go to the larger population, then the code
     assert.deepEqual(rankHumans([{ country: "A", quitDay: 100 }, { country: "B", quitDay: 900 }], table).map((r) => r.country), ["B", "A"]);
     assert.deepEqual(rankHumans([{ country: "X", quitDay: null }, { country: "Y", quitDay: null }], { X: { settlements: 4, pop: 10 }, Y: { settlements: 4, pop: 20 } }).map((r) => r.country), ["Y", "X"]);
