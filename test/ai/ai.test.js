@@ -18,6 +18,7 @@ import { garrisonFloor, inland, winChance } from "../../src/ai/util.js";
 import { garrisonNeed, lastSorties, turnBacks, warOrders } from "../../src/ai/war.js";
 import { LOOK_DAYS, THINK_DAYS, dice, flavorOf, hash, looksOn, thinksOn } from "../../src/ai/util.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
+import { CAPITAL_SOLDIERS } from "../../src/engine/costs.js";
 import { check } from "../helpers/invariants.js";
 import { giveFleet, setArmy, tinyGame } from "../helpers/tiny.js";
 import fs from "node:fs";
@@ -213,8 +214,8 @@ test("forces: the last of the law's allowance raised by the hundred; old guns gi
     const game = tinyGame(1), c = game.state.countries.AAA;
     c.treasury = 1e6;
     game.command({ type: "declareWar", country: "AAA", target: "BBB" });        // at war: all the law allows
-    setArmy(game, 1, { swords: 1300 });
-    assert.equal(economyOf(game, "AAA").raiseRoom, 400, "feudal: 2,100 of 2,500");
+    setArmy(game, 1, { swords: 800 + CAPITAL_SOLDIERS });
+    assert.equal(economyOf(game, "AAA").raiseRoom, 400, "feudal: 400 short of the cap");
     const raise = forceOrders(game, "AAA", fl, { budget: 1e6 }).find((o) => o.type === "raise");
     assert.deepEqual([raise.hundreds, raise.lots], [4, undefined]);
     applyAll(game, [raise]);

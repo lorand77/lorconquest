@@ -642,3 +642,22 @@ Then rules 45: the capital's soldiers halved, 500 on the army cap (its 10,000 a 
 three 14 of 24, fewer than ever), the most countries alive at the end — while the burden of the armies came back to where it
 was under rules 40, mobilization half-way. More wars and captures than before stay: the small countries, stronger, are fought
 over rather than swallowed.
+
+Then rules 46: the capital's 10,000 a year alone, no soldiers. Seeds 25–48, 6 at a time, 13 minutes:
+
+| Seeds 25–48 | Rules 40 | Rules 44 (+1,000) | Rules 45 (+500) | Rules 46 (money only) |
+|---|---|---|---|---|
+| Wins | AUS 7, BRB 6, BAV 4, SAX 2, PRU 2, SCH, BOH, WAR 1 | AUS 8, BAV 5, BRB 3, GDA 2, SAX 2, WAR 2, BOH, RUH 1 | BRB 6, SCH 4, BAV 4, AUS 4, SAX 2, WAR 2, GDA, RUH 1 | BRB 9, BAV 4, AUS 3, RUH 2, PRU 2, WAR, BOH, GDA, SCH 1 |
+| Countries that win / the first three's wins | 8 / 17 | 8 / 16 | 8 / 14 | 9 / 16 |
+| By reaching 45 / on time | 14 / 10 | 11 / 13 | 14 / 10 | 11 / 13 |
+| Countries left at the end | 19.0 | 20.4 | **20.9** | 19.1 |
+| Wars declared / captures a game | 35.0 / 89.8 | 38.9 / 97.8 | 40.5 / 100.0 | 37.9 / 91.8 |
+| Bloodiness | 0.61 | 0.63 | 0.69 | **0.54** |
+| Mobilization | 7.75% | 9.78% | 8.71% | 7.86% |
+| Military burden | 19.2% | 21.2% | 18.9% | 17.1% |
+
+**What it showed.** Money alone does not keep the small countries alive — as many fall as under rules 40 (19.1 left at the end,
+against 20.9 with the 500 soldiers): what a small country lacks is men it may raise, not money. It makes the world calmer — the
+fewest dead, captures near rules 40, armies the smallest share of the money — and the winners as many, but Brandenburg 9 of 24.
+
+Kept: rules 45's +500 (as rules 47, the same rules as 45 — the number moved on past the money-only trial).

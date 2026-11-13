@@ -5,6 +5,7 @@ import assert from "node:assert/strict";
 import { fight } from "../../src/engine/battle.js";
 import { isCore, menOf } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused, rig } from "../helpers/tiny.js";
+import { CAPITAL_SOLDIERS } from "../../src/engine/costs.js";
 import { newArmy } from "../../src/engine/state.js";
 
 const cmd = (type, rest = {}) => ({ type, country: "AAA", ...rest });
@@ -28,7 +29,7 @@ test("sharpshooters are bought by the hundred at a pass of yours, up to 500, wit
     assert.match(refused(game, cmd("buySharpshooters", { pass: "P9", lots: 1 })), /no pass/);
     order(game, cmd("buySharpshooters", { pass: "P1", lots: 2 }));
     assert.deepEqual([game.state.posts.P1, c.treasury], [{ owner: "AAA", n: 200 }, 80000 - 30000]);
-    setArmy(game, 1, { swords: 1800 });                                         // 2,600 + 200 + 300 > 2,500
+    setArmy(game, 1, { swords: 800 + CAPITAL_SOLDIERS });                       // 1,600 + 200 + 300 over the cap, the capital's own aside
     assert.match(refused(game, cmd("buySharpshooters", { pass: "P1", lots: 3 })), /more soldiers than your law/);
     order(game, cmd("setLaw", { law: "mass" }));
     c.treasury = 1e6;

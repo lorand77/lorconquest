@@ -3,7 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { armyCapOf, economyOf, navyCapOf } from "../../src/engine/index.js";
-import { CORING_DAYS } from "../../src/engine/costs.js";
+import { CAPITAL_SOLDIERS, CORING_DAYS } from "../../src/engine/costs.js";
 import { tinyGame, setArmy, runTo, order, refused } from "../helpers/tiny.js";
 
 const close = (a, b, eps = 1e-6) => assert.ok(Math.abs(a - b) <= eps * Math.max(1, Math.abs(b)), `${a} is not ${b}`);
@@ -17,9 +17,9 @@ test("a country's money at the start, worked out by hand", () => {
     assert.equal(e.upkeep, 8000);                                          // 1,600 soldiers × 5
     assert.equal(e.moneyPerYear, 78800);
     assert.equal(e.rPerYear, 2 * 0.5 * 78800 + 10000);                    // investable at 50% plus the flat x10K
-    assert.deepEqual([e.armyCap, e.navyCap, e.loanLimit], [2500, 1000, 173600]);   // 5% of 40,000 and the capital's 500
+    assert.deepEqual([e.armyCap, e.navyCap, e.loanLimit], [2000 + CAPITAL_SOLDIERS, 1000, 173600]);   // 5% of 40,000 and the capital's own
     assert.equal(AAA(game).treasury, 80000);
-    assert.deepEqual([armyCapOf(game.state, "AAA"), navyCapOf(game.state, "AAA")], [2500, 1000]);
+    assert.deepEqual([armyCapOf(game.state, "AAA"), navyCapOf(game.state, "AAA")], [2000 + CAPITAL_SOLDIERS, 1000]);
     // a country that has lost its capital has neither (a new one is named by the computer, or the player, later)
     game.state.settlements[1].owner = "BBB";
     assert.equal(economyOf(game, "AAA").capitalMoney, 0);
