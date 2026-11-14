@@ -1,6 +1,6 @@
 // A union of two people's countries (RULES.md §10, Union): proposed to the other person and answered, or lapsing as a no; the
 // second country made part of the first at once, with all it had and its research; growing, a newcomer joining the union whoever
-// asks; a yes that can no longer be refused with its reason; never for a computer, a
+// asks, the union taking both names; a yes that can no longer be refused with its reason; never for a computer, a
 // subject, at war with each other or with other enemies, nor near victory. On the tiny map, AAA and CCC played by people.
 import test from "node:test";
 import assert from "node:assert/strict";
@@ -25,7 +25,8 @@ test("a union: asked, accepted, and the second country part of the first, with a
     assert.match(refused(game, cmd("AAA", "proposeUnion", { with: "CCC" })), /asked CCC already/);
     const events = answer(game);
     const [u] = ofType(events, "union");
-    assert.deepEqual([u.country, u.with, u.settlements], ["AAA", "CCC", 1]);
+    assert.deepEqual([u.country, u.with, u.settlements, u.name], ["AAA", "CCC", 1, "AAA–CCC"]);
+    assert.equal(st.countries.AAA.name, "AAA–CCC", "both names, the proposer's first");
     assert.deepEqual([st.settlements[6].owner, st.settlements[6].cores.includes("AAA")], ["AAA", true], "core at once: it pays in full");
     assert.equal(st.countries.CCC.out, st.day, "out of the game, absorbed — not eliminated");
     assert.ok(before.armies.every((id) => st.armies[id].owner === "AAA"));
@@ -36,7 +37,7 @@ test("a union: asked, accepted, and the second country part of the first, with a
     assert.match(refused(game, cmd("AAA", "proposeUnion", { with: "CCC" })), /CCC is no more/);
 });
 
-test("a union grows: a third country joins it whoever proposes — the union keeps its name, the newcomer is part of it", () => {
+test("a union grows: a third country joins it whoever proposes — the union's names first, the newcomer's after, and part of it", () => {
     const three = tinyGame(1, () => {}, ["AAA", "CCC", "EEE"]), st = three.state;
     order(three, cmd("AAA", "proposeUnion", { with: "CCC" }));
     answer(three);
@@ -44,6 +45,7 @@ test("a union grows: a third country joins it whoever proposes — the union kee
     const [u] = ofType(answer(three), "union");
     assert.deepEqual([u.country, u.with], ["AAA", "EEE"], "AAA, the union, takes EEE in — not the other way round");
     assert.deepEqual([st.settlements[8].owner, st.countries.EEE.out !== null], ["AAA", true]);
+    assert.equal(st.countries.AAA.name, "AAA–CCC–EEE");
 });
 
 test("a yes to a union that can no longer be is refused with why, and the question stays", () => {

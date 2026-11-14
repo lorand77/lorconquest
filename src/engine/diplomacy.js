@@ -441,12 +441,14 @@ export function unionError(game, a, b) {
 // else the one that proposed
 export const unionInto = (st, proposer, other) => (!st.memory.unions?.includes(proposer) && st.memory.unions?.includes(other) ? other : proposer);
 
-// `from` becomes part of `into` (absorb), at once and for nothing; `into` keeps its name and gains `from`'s research too, and
-// `from`'s wars, against the same enemies, are `into`'s already. Its person rules `into` with `into`'s (src/game/rooms.js).
+// `from` becomes part of `into` (absorb), at once and for nothing; `into` takes both names, "Bohemia–Hungary" (a newcomer's
+// added at the end), and `from`'s research too, and `from`'s wars, against the same enemies, are `into`'s already. Its person
+// rules `into` with `into`'s (src/game/rooms.js). The map paints the union in its members' colours (public/js/mapdraw.js, landFill).
 export function unite(game, into, from, events) {
     const st = game.state, o = st.countries[into], c = st.countries[from];
     for (const t of c.techs) if (!o.techs.includes(t)) o.techs.push(t);
     o.warmonger = Math.max(o.warmonger, c.warmonger);
+    o.name = `${o.name}–${c.name}`;
     for (const w of [...st.wars]) {
         const [x, y] = w.split("|");
         if (x === from || y === from) closeWar(game, x, y);
@@ -454,7 +456,7 @@ export function unite(game, into, from, events) {
     const n = absorb(game, into, from, events);
     for (const x of Object.values(st.settlements)) if (x.siege?.by === from) x.siege.by = into;     // its sieges go on, as `into`'s
     (st.memory.unions ??= []).push(into, from);
-    events.push({ type: "union", day: st.day, country: into, with: from, settlements: n });
+    events.push({ type: "union", day: st.day, country: into, with: from, name: o.name, settlements: n });
 }
 
 // ---------- asking a country to become a subject ----------

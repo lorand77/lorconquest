@@ -7,12 +7,29 @@
 
 const both = (x, a, b) => (x.a === a && x.b === b) || (x.a === b && x.b === a);
 
-export const hasAgreement = (state, kind, a, b) => state.agreements.some((x) => x.kind === kind && (kind === "guarantee" || kind === "access" ? x.a === a && x.b === b : both(x, a, b)));
-export const agreementsBetween = (state, a, b) => state.agreements.filter((x) => both(x, a, b));
+// Each country's agreements, in the order of state.agreements — so every answer below comes out as a scan of the whole list
+// would give it, without scanning it: these questions are asked thousands of times a day (who is whose friend), and a map of
+// a hundred countries has hundreds of agreements. Kept beside the list, not in the state (which stays plain JSON), and made
+// again whenever the list is another (removeAgreements makes a new one) or longer (addAgreement pushes onto it; a test may too).
+const INDEX = new WeakMap(), NONE = Object.freeze([]);
+function involving(state, code) {
+    const list = state.agreements;
+    let ix = INDEX.get(list);
+    if (!ix || ix.n !== list.length) {
+        const by = new Map();
+        for (const x of list) for (const c of x.a === x.b ? [x.a] : [x.a, x.b]) { if (!by.has(c)) by.set(c, []); by.get(c).push(x); }
+        ix = { n: list.length, by };
+        INDEX.set(list, ix);
+    }
+    return ix.by.get(code) ?? NONE;
+}
+
+export const hasAgreement = (state, kind, a, b) => involving(state, a).some((x) => x.kind === kind && (kind === "guarantee" || kind === "access" ? x.a === a && x.b === b : both(x, a, b)));
+export const agreementsBetween = (state, a, b) => involving(state, a).filter((x) => both(x, a, b));
 // allied by either kind of alliance
 export const allied = (state, a, b) => hasAgreement(state, "defensive", a, b) || hasAgreement(state, "military", a, b);
-export const alliesOf = (state, code) => [...new Set(state.agreements.filter((x) => (x.kind === "defensive" || x.kind === "military") && (x.a === code || x.b === code)).map((x) => (x.a === code ? x.b : x.a)))].sort();
-export const guarantorsOf = (state, code) => state.agreements.filter((x) => x.kind === "guarantee" && x.b === code).map((x) => x.a).sort();
+export const alliesOf = (state, code) => [...new Set(involving(state, code).filter((x) => x.kind === "defensive" || x.kind === "military").map((x) => (x.a === code ? x.b : x.a)))].sort();
+export const guarantorsOf = (state, code) => involving(state, code).filter((x) => x.kind === "guarantee" && x.b === code).map((x) => x.a).sort();
 
 export const overlordOf = (state, code) => state.countries[code]?.overlord ?? null;
 export const subjectKind = (state, code) => state.countries[code]?.subjectKind ?? null;

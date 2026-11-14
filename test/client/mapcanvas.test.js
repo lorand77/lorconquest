@@ -37,6 +37,11 @@ test("a frame keeps who holds what, who is whose subject and the leaders — sma
     const colourOf = (c) => c;
     for (const code of ["BOH", "AUS", "BAV"]) assert.deepEqual(landFill(st, colourOf)(code), landFill(game.state, colourOf)(code));
     assert.ok(JSON.stringify(frame).length < 1500, "a few thousand of them stay in memory");
+    assert.equal(frame.unions, undefined, "no union, no list");
+    game.state.memory.unions = ["AUS", "HUN"];
+    const united = stateOf(frameOf(game.state, scores(game.state)), scenario);
+    assert.deepEqual(landFill(united, colourOf)("AUS"), landFill(game.state, colourOf)("AUS"), "a union's bands from the frame too");
+    assert.equal(landFill(united, colourOf)("AUS").kind, "union");
 });
 
 test("a timelapse's years, made sense of: whole years within the game, the earlier first, a blank the first or last", () => {

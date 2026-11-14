@@ -38,12 +38,20 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     let capitalKey = null, capitalsShown = [];                       // the settlement groups marked as capitals now
 
     // a subject's stripes: one pattern for each pair of colours and kind, made the first time it is needed. In map units, so
-    // they zoom with the land: broad for a vassal, thin for a protectorate, at 45°
+    // they zoom with the land: broad for a vassal, thin for a protectorate, at 45°; a union's, even bands of its members' colours
+    // 5 units wide each, the other way, at −45°
     const defs = svg.querySelector("defs") ?? svg.insertBefore(el("defs"), svg.firstChild);
     const patterns = new Set();
     function paint(fill) {
         if (typeof fill === "string") return fill;
-        const id = `lc-stripe-${fill.kind}-${fill.colour}-${fill.stripe}`.replace(/[^\w-]/g, "");
+        const id = `lc-stripe-${fill.kind}-${fill.colour}-${fill.bands ?? fill.stripe}`.replace(/[^\w-]/g, "");
+        if (!patterns.has(id) && fill.bands) {
+            patterns.add(id);
+            const period = 5 * fill.bands.length;
+            const p = el("pattern", { id, patternUnits: "userSpaceOnUse", width: period, height: period, patternTransform: "rotate(-45)" });
+            p.append(...fill.bands.map((colour, i) => el("rect", { x: 5 * i, width: 5, height: period, fill: colour })));
+            defs.append(p);
+        }
         if (!patterns.has(id)) {
             patterns.add(id);
             const period = 10, width = fill.kind === "vassal" ? 4.5 : 1.6;
@@ -176,7 +184,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
             for (const land of svg.querySelectorAll("#lands [id^='land-']")) land.classList.toggle("lc-dim", Boolean(keep) && !keep.has(land.id.slice(5)));
         },
 
-        // every land in its owner's fill (mapdraw.js, landFill): a colour, or a subject's colour striped with its overlord's;
+        // every land in its owner's fill (mapdraw.js, landFill): a colour, a union's bands, or a subject's colour striped with its overlord's;
         // borders wherever two neighbouring lands have different owners
         colourLands(ownerOf, fillOf) {
             for (const land of svg.querySelectorAll("#lands [id^='land-']")) land.style.fill = paint(fillOf(ownerOf(land.id.slice(5))));

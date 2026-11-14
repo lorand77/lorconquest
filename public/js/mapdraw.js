@@ -84,14 +84,31 @@ export function inMapCodes(text, state, scenario) {
 // settlement, who is whose subject, and who has become a new state
 export const ownersKey = (state) => Object.values(state.settlements).map((s) => s.owner).join()
     + "|" + Object.values(state.countries).filter((c) => c.overlord).map((c) => `${c.code}>${c.overlord}:${c.subjectKind}`).join()
-    + "|" + Object.values(state.countries).filter((c) => c.formed).map((c) => `${c.code}=${c.formed}`).join();
+    + "|" + Object.values(state.countries).filter((c) => c.formed).map((c) => `${c.code}=${c.formed}`).join()
+    + "|" + (state.memory?.unions ?? []).join();
 
-// how a country's land is filled: its own colour, or — for a subject — its own colour striped with its overlord's, broad
+// the countries a union is made of (RULES.md §10), itself first and the others in the order they joined — a union that joined
+// another brings its own — from the engine's record of who united with whom, pairs [into, from] in state.memory.unions; just
+// [code] for a country that never united
+export function unionMembers(state, code) {
+    const pairs = state.memory?.unions ?? [], out = [code];
+    for (let i = 0; i < pairs.length; i += 2) if (pairs[i] === code) for (const m of unionMembers(state, pairs[i + 1])) if (!out.includes(m)) out.push(m);
+    return out;
+}
+
+// how a country's land is filled: its own colour; for a union, even bands of its members' colours (the second band in a colour
+// too near the first is shaded, as below); or — for a subject — its own colour striped with its overlord's, broad
 // stripes for a vassal and thin ones for a protectorate (mapview.js, colourLands, and mapcanvas.js draw them). Where the two
 // colours are the same or nearly, the stripes would not show: they are a darker shade of the overlord's then (a lighter one
 // on a dark colour), still the overlord's, now to be seen.
 export const landFill = (state, colourOf) => (code) => {
     const c = state.countries[code];
+    const members = c && !c.rebel ? unionMembers(state, code) : [code];
+    if (members.length > 1 && !c.overlord) {
+        const bands = [];
+        for (const m of members) { const b = colourOf(m); bands.push(bands.some((x) => alike(x, b)) ? shade(b) : b); }
+        return { colour: bands[0], bands, kind: "union" };
+    }
     if (!c?.overlord || c.rebel || !state.countries[c.overlord]) return colourOf(code);
     const colour = colourOf(code), stripe = colourOf(c.overlord);
     return { colour, stripe: alike(colour, stripe) ? shade(stripe) : stripe, kind: c.subjectKind };

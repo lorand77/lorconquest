@@ -100,7 +100,8 @@ find. With the server alone running the rules, only Node has to agree with itsel
   quit. On the union the absorbed person's page reloads and joins as the country it now rules. A country with several rulers
   proposes or accepts a union only once every ruler still in has given the order (`rooms.js`, `consent`): the orders are
   collected in the room, by what they are, and only the last goes to the engine; the rulers hear `consents` meanwhile. They
-  are not saved — after a restart, the rulers agree again. Which country a union keeps is the engine's (`unionInto`). The results rank rulers of one
+  are not saved — after a restart, the rulers agree again. Which country a union keeps is the engine's (`unionInto`), and so is its name, both names joined (`unite`); the map's bands of its
+  members' colours come from the engine's record of who united with whom, `state.memory.unions` (`mapdraw.js`, `unionMembers`). The results rank rulers of one
   country together, in one place; achievements follow the country a seat rules (`analyze.js`).
 - **Eliminated** (RULES.md §10): a player whose country loses its last settlement is *out*. They may open the game and watch
   to the end; the engine refuses their orders ("your country is no more"); they are placed after everyone still in, the later

@@ -34,7 +34,7 @@ export function exportSpan(fromText, toText, endDay, startYear = 1440, yearDays 
 
 // what a frame needs of a state, kept small — a whole game at a year a second is thousands of frames: the owner of each
 // settlement (in the order of the state's settlements), only the countries that differ from how they began (a subject, a
-// rebel band, one out of the game, a new state proclaimed), the capitals held, and the five with the most settlements. stateOf turns it back into what the map's
+// rebel band, one out of the game, a new state proclaimed), who united with whom (when anyone has), the capitals held, and the five with the most settlements. stateOf turns it back into what the map's
 // drawing reads (mapdraw.js: landFill, countryLabels).
 export function frameOf(state, scores, day = state.day) {
     const owners = Object.values(state.settlements).map((s) => s.owner), changed = {}, capitals = capitalMarks(state).map((c) => c.id);
@@ -44,14 +44,14 @@ export function frameOf(state, scores, day = state.day) {
     const top = Object.entries(scores).filter(([code]) => state.countries[code] && !state.countries[code].rebel)
         .sort((a, b) => b[1].settlements - a[1].settlements || b[1].pop - a[1].pop || (a[0] < b[0] ? -1 : 1)).slice(0, 5)
         .map(([code, s]) => ({ code, name: state.countries[code].name, settlements: s.settlements }));
-    return { day, owners, changed, capitals, top };
+    return { day, owners, changed, capitals, top, ...(state.memory?.unions?.length ? { unions: [...state.memory.unions] } : {}) };
 }
 export function stateOf(frame, scenario) {
     const settlements = {}, countries = {};
     [...scenario.settlements].sort((a, b) => a.id - b.id).forEach((s, i) => { settlements[s.id] = { id: s.id, owner: frame.owners[i] }; });   // the state's order: by id
     for (const c of scenario.countries) countries[c.code] = { code: c.code, name: c.name, overlord: null, subjectKind: null, rebel: false, out: null, formed: null };
     for (const [code, c] of Object.entries(frame.changed)) countries[code] = { code, ...c };
-    return { day: frame.day, settlements, countries };
+    return { day: frame.day, settlements, countries, memory: { unions: frame.unions ?? [] } };
 }
 
 // a painter for the map in `svg` (the page's, as mapview.js loaded it): { width, height, draw(ctx, frame, opts) } in map units
@@ -69,9 +69,20 @@ export function createMapCanvas(svg, scenario) {
     const wasteEdge = svg.querySelector("#waste-edge") ? path(svg.querySelector("#waste-edge")) : null;
     const stripes = new Map();
 
-    // a subject's stripes, as a pattern 10 map units across turned 45°: broad for a vassal, thin for a protectorate
+    // a subject's stripes, as a pattern 10 map units across turned 45°: broad for a vassal, thin for a protectorate; a union's, even
+    // bands of its members' colours 5 units wide each, turned −45° (as mapview.js draws them)
     function stripeOf(ctx, fill) {
-        const key = `${fill.kind}${fill.colour}${fill.stripe}`;
+        const key = `${fill.kind}${fill.colour}${fill.bands ?? fill.stripe}`;
+        if (!stripes.has(key) && fill.bands) {
+            const tile = document.createElement("canvas");
+            tile.width = 20 * fill.bands.length;
+            tile.height = 20;
+            const t = tile.getContext("2d");
+            fill.bands.forEach((colour, i) => { t.fillStyle = colour; t.fillRect(20 * i, 0, 20, 20); });
+            const pattern = ctx.createPattern(tile, "repeat");
+            pattern.setTransform(new DOMMatrix().rotate(-45).scale(0.25));
+            stripes.set(key, pattern);
+        }
         if (!stripes.has(key)) {
             const tile = document.createElement("canvas");
             tile.width = tile.height = 40;                   // 4 pixels a map unit, scaled back below

@@ -96,6 +96,22 @@ test("a subject's land is striped with its overlord's colour — broad for a vas
     assert.ok(["SAL▸AUS", "SAL", undefined].includes(labels.find((l) => l.code === "SAL")?.text), "a small subject's code alone, where the long one has no room");
 });
 
+test("a union's land is in even bands of its members' colours, the order they joined in, a union that joined bringing its own", async () => {
+    const { landFill, ownersKey, unionMembers } = await import("../../public/js/mapdraw.js");
+    const st = Game.create(mitteleuropa, { seed: 1 }).state;
+    const colourOf = (code) => ({ BOH: "#ff0000", HUN: "#00ff00", AUS: "#0000ff", POL: "#ff0001", SAX: "#ffff00" })[code] ?? "#ddd";
+    const before = ownersKey(st);
+    st.memory.unions = ["BOH", "HUN"];
+    assert.notEqual(ownersKey(st), before, "a union redraws the lands");
+    assert.deepEqual(landFill(st, colourOf)("BOH"), { colour: "#ff0000", bands: ["#ff0000", "#00ff00"], kind: "union" });
+    assert.equal(landFill(st, colourOf)("HUN"), "#00ff00", "the one absorbed is a plain country to the map");
+    st.memory.unions.push("POL", "SAX", "BOH", "AUS", "BOH", "POL");
+    assert.deepEqual(unionMembers(st, "BOH"), ["BOH", "HUN", "AUS", "POL", "SAX"]);
+    assert.equal(landFill(st, colourOf)("BOH").bands[3], "#ff7373", "POL's red, too near BOH's, is shaded");
+    Object.assign(st.countries.BAV, { overlord: "BOH", subjectKind: "vassal" });
+    assert.equal(landFill(st, colourOf)("BAV").stripe, "#ff0000", "the union's subject striped with its first colour");
+});
+
 test("a subject coloured like its overlord gets a darker shade of the overlord's colour as stripes (a lighter one on a dark colour)", async () => {
     const { alike, landFill, shade } = await import("../../public/js/mapdraw.js");
     assert.ok(alike("#c6e3a4", "#c6e3a4") && alike("#c6e3a4", "#c0dda0"));

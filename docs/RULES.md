@@ -727,10 +727,12 @@ armies, fleets, sharpshooters, soldiers and mercenaries being raised, weapons, t
 technologies become yours, and its subjects your subjects; its sieges go on as yours. It is out of the game, absorbed, not
 defeated. Its person now **rules your country with you**: either of you gives any order — the last one given stands — both see
 its treasury and research, and the computer looks after it only while **all** its rulers are away. You win or lose as one, and
-share your place among the people at the end.
+share your place among the people at the end. Your country takes **both names**, yours first — *Bohemia–Hungary*, and
+*Bohemia–Hungary–Austria* when a third joins — and keeps its code; the map paints its land in **stripes of its members' colours**.
+A new state proclaimed later (§2) renames it as it would anyone.
 
 **A union may grow.** A third person's country may join it, and a fourth: proposed by the union or by the newcomer, the union
-always takes the newcomer in, keeping its name. A country ruled by several people proposes or accepts a union only when **every
+always takes the newcomer in. A country ruled by several people proposes or accepts a union only when **every
 one of them** has given that order — each is shown who has agreed — and one no from any of them refuses. A yes given when the
 union can no longer be (one side has united meanwhile, or gone to war) is refused with the reason, and the question stands.
 

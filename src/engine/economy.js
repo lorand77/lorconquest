@@ -39,8 +39,9 @@ export const soldiersOf = (state, code) => armySoldiersOf(state, code) + crewAtS
 
 // rebels are your own people under arms (RULES.md §11): the men of the armies of the countries risen against you
 export function rebelsOf(state, code) {
-    const rebels = new Set(Object.values(state.countries).filter((c) => c.of === code).map((c) => c.code));
-    return sum(armyList(state).filter((a) => rebels.has(a.owner)), menOf);
+    let n = 0;                                                      // (one pass over the armies: asked with every country's economy)
+    for (const a of armyList(state)) if (state.countries[a.owner]?.of === code) n += menOf(a);
+    return n;
 }
 
 // the share of its money a subject pays its overlord (RULES.md §10)

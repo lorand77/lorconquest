@@ -156,7 +156,12 @@ export function stormThePost(game, country, key, events) {
 // Armies on cooldown wait.
 export function placeBattles(game, events) {
     const st = game.state;
+    // only where two armies or more stand can there be a battle; and none comes anywhere during the battles (a beaten army sets
+    // out on a march: movement.js, retreat), so the places are counted once, not every army looked at for every place
+    const count = new Map();
+    for (const a of armyList(st)) if (a.at) count.set(a.at, (count.get(a.at) ?? 0) + 1);
     for (const key of game.map.keys) {
+        if ((count.get(key) ?? 0) < 2) continue;
         for (let guard = 0; guard < 8; guard++) {
             const here = armiesAt(st, key);
             if (here.length < 2) break;
