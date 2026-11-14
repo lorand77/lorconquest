@@ -1,3 +1,6 @@
 node_modules/
 data/
 .env
+
+# a scenario's preview picture (node tools/make-base.js <folder> preview): a working copy, not part of the scenario
+scenarios/*/preview.png

@@ -64,6 +64,9 @@ export function createMapCanvas(svg, scenario) {
     const edges = [...svg.querySelectorAll("#edges [id^='edge-']")].map((el) => ({ ends: el.id.slice(5).split("-"), p: path(el) }));
     const rivers = [...svg.querySelectorAll("#rivers path")].map(path);
     const coast = svg.querySelector("#coast") ? path(svg.querySelector("#coast")) : null;
+    // land nobody holds (a map's grey waste, tools/map.js) and where the lands meet it
+    const waste = svg.querySelector("#waste") ? path(svg.querySelector("#waste")) : null;
+    const wasteEdge = svg.querySelector("#waste-edge") ? path(svg.querySelector("#waste-edge")) : null;
     const stripes = new Map();
 
     // a subject's stripes, as a pattern 10 map units across turned 45°: broad for a vassal, thin for a protectorate
@@ -94,6 +97,7 @@ export function createMapCanvas(svg, scenario) {
         ctx.fillStyle = "#99d9ea";
         ctx.fillRect(0, 0, w, h);
         ctx.setTransform(k, 0, 0, k, ox, oy);
+        if (waste) { ctx.fillStyle = "#d6d0c2"; ctx.fill(waste); }
         for (const l of lands) {
             const f = fillOf(owner(l.key));
             ctx.fillStyle = typeof f === "string" ? f : stripeOf(ctx, f);
@@ -105,6 +109,7 @@ export function createMapCanvas(svg, scenario) {
         for (const r of rivers) ctx.stroke(r);
         ctx.strokeStyle = "#7f7f7f";
         for (const e of edges) if (owner(e.ends[0]) !== owner(e.ends[1])) ctx.stroke(e.p);
+        if (wasteEdge) ctx.stroke(wasteEdge);
         if (coast) { ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.stroke(coast); }
         // settlements: a dot each, a larger one for a city — and for a capital, with a thick gold border, as the map's markers have
         const capitals = new Set(frame.capitals ?? []);

@@ -1,5 +1,5 @@
 // Geography of the Historical 1440 scenario, in real latitude and longitude (degrees north, east).
-// make-base.js projects it onto the map. Positions are good to a few kilometres; one map unit is about 1.2 km.
+// tools/make-base.js projects it onto the map (`node tools/make-base.js scenarios/historical-1440`). Positions are good to a few kilometres; one map unit is about 1.2 km.
 
 // ---------------------------------------------------------------------------------------------------------
 // Countries in 1440: code, name, capital (a settlement name below)

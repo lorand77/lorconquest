@@ -42,6 +42,8 @@ dependencies.
 - `FUZZ_SEEDS=40 FUZZ_YEARS=20 node --test test/engine/fuzz.test.js` — the big random-play sweep.
 - `node tools/map.js [folder] [mountains]` — rebuild a scenario's map.svg, scenario.json and the
   generated parts of its SCENARIO.md.
+- `node tools/make-base.js <folder> [preview]` — draw a scenario's first map-base.svg and SCENARIO.md tables from real geography (the
+  folder's data.js); `preview` only draws preview.png. It overwrites both: once they are edited by hand, use tools/map.js only.
 
 ## Layout
 
@@ -79,7 +81,8 @@ dependencies.
   pop up in the game, and what a click with an army does, there too (the Customize page and the game's ⚙ edit them) — the only
   things stored in the browser besides the sign-in cookie.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
-- `tools/` — the runner, the bench, the map tools (`map.js`, and `abbreviations.js`: the short names in the map's markers).
+- `tools/` — the runner, the bench, the map tools (`map.js`, `make-base.js`: a map drawn from latitudes and longitudes, and
+  `abbreviations.js`: the short names in the map's markers).
 - `test/ai/` — each AI layer on the tiny map, the caretaker, and computer-only games on the real map (invariants every month,
   exact replay from the commands alone, the tick's budget); `test/helpers/invariants.js` is the check it shares with the fuzz.
 - `test/engine/` — engine tests on the tiny map in `test/helpers/tiny.js` (a sea, two ports, a strait,

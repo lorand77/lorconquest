@@ -439,9 +439,13 @@ function parseD(d, what) {
 const rnd = (v) => Number(v.toFixed(2));
 const attr = (a, name) => new RegExp(`\\b${name}="([^"]*)"`).exec(a)?.[1];
 const LANDS = new Map(), RIVERS = [], DIVIDERS = [];
+// land nobody holds (tools/make-base.js, WASTE): the paths with id "waste"; on the pixel grid it is land under an id of its own,
+// WASTE_ID — not sea, and no settlement's: no road, port or border of a land comes from it
+const WASTES = [], WASTE_ID = 1e6, isWaste = (id) => id >= WASTE_ID;
 for (const m of base.matchAll(/<path\b([^>]*)>/g)) {
     const id = attr(m[1], "id"), d = attr(m[1], "d");
     if (d === undefined) continue;
+    if (id === "waste") { WASTES.push(...parseD(d, id)[0].map((ring) => ring.map((p) => [rnd(p[0]), rnd(p[1])]))); continue; }
     const lm = id !== undefined && /^land-(\d+)$/.exec(id);
     if (lm) {
         const [r] = parseD(d, id);
@@ -483,8 +487,8 @@ for (const p of PASSES) { p.owner = landAt(p.x, p.y); if (!p.owner) err(`pass ${
 // edges: every side of every land is shared with exactly one neighbour, or is coast, or lies on the frame
 const SEG = new Map(), PK = new Map();
 const pk = (p) => `${p[0]},${p[1]}`;
-for (const id of LIDS) {
-    for (const r of LANDS.get(id)) {
+for (const [id, rings] of [...LIDS.map((x) => [x, LANDS.get(x)]), ...(WASTES.length ? [[WASTE_ID, WASTES]] : [])]) {
+    for (const r of rings) {
         for (let i = 0; i < r.length; i++) {
             const a = r[i], b = r[(i + 1) % r.length];
             if (pk(a) === pk(b)) continue;
@@ -495,11 +499,12 @@ for (const id of LIDS) {
         }
     }
 }
-const PAIR = new Map(), COAST = [], FRAME = [];       // "a-b" -> segments; segment = [p, q]
+const PAIR = new Map(), COAST = [], FRAME = [], WASTEDGE = [];       // "a-b" -> segments; segment = [p, q]; a land's edge with the waste
 for (const k of [...SEG.keys()].sort()) {
     const own = SEG.get(k);
     const [p, q] = k.split("|").map((s) => PK.get(s));
     if (own.length > 2) { err(`edge ${k} is shared by more than two lands (${own.map((x) => "land-" + x).join(", ")})`); continue; }
+    if (own.length === 2 && own.some(isWaste)) { if (!own.every(isWaste)) WASTEDGE.push([p, q]); continue; }
     if (own.length === 2) {
         const [a, b] = [...own].sort(num);
         if (a === b) err(`land-${a} overlaps itself at ${k}`);
@@ -580,6 +585,16 @@ for (const id of LIDS) {
                 REG[i] = id;
             }
         }
+    }
+}
+if (WASTES.length) {
+    const e = [];
+    for (const r of WASTES) for (let i = 0; i < r.length; i++) e.push([r[i], r[(i - 1 + r.length) % r.length]]);
+    for (let y = 0; y < H; y++) {
+        const py = y + 0.5, xs = [];
+        for (const [a, b] of e) if ((a[1] > py) !== (b[1] > py)) xs.push(a[0] + (py - a[1]) / (b[1] - a[1]) * (b[0] - a[0]));
+        xs.sort(num);
+        for (let k = 0; k + 1 < xs.length; k += 2) for (let x = Math.max(0, Math.trunc(xs[k] + 0.5)); x <= Math.min(W - 1, Math.trunc(xs[k + 1] + 0.5) - 1); x++) if (!REG[y * W + x]) REG[y * W + x] = WASTE_ID;
     }
 }
 for (const k of [...OVER.keys()].sort()) { const [a, b] = k.split("-"); if (OVER.get(k) > 3) err(`land-${a} and land-${b} overlap (${OVER.get(k)} px)`); }
@@ -773,8 +788,8 @@ const NEARC = new Array(W * H);                       // pixels within ROUTE_MAR
     for (let y = 0; y < H; y++) {
         for (let x = 0; x < W; x++) {
             const id = REG[y * W + x];
-            if (!id) continue;
-            if (N4.some(([dx, dy]) => { const u = x + dx, v = y + dy; return inb(u, v) && REG[v * W + u] && LC[REG[v * W + u]] !== LC[id]; })) q.push(y * W + x);
+            if (!id || isWaste(id)) continue;
+            if (N4.some(([dx, dy]) => { const u = x + dx, v = y + dy; return inb(u, v) && REG[v * W + u] && !isWaste(REG[v * W + u]) && LC[REG[v * W + u]] !== LC[id]; })) q.push(y * W + x);
         }
     }
     const near = new Uint8Array(W * H);
@@ -800,7 +815,7 @@ const NEARC = new Array(W * H);                       // pixels within ROUTE_MAR
         if (!near[i]) continue;
         const x = i % W, y = (i - x) / W;
         const cs = new Set();
-        for (const [dx, dy] of disc) { const u = x + dx, v = y + dy; if (inb(u, v) && REG[v * W + u]) cs.add(LC[REG[v * W + u]]); }
+        for (const [dx, dy] of disc) { const u = x + dx, v = y + dy; if (inb(u, v) && REG[v * W + u] && !isWaste(REG[v * W + u])) cs.add(LC[REG[v * W + u]]); }
         if (cs.size > 1) NEARC[i] = [...cs];
     }
 }
@@ -810,7 +825,7 @@ const NEARL = new Array(W * H);                       // pixels within ROUTE_MAR
     for (let dy = -ROUTE_MARGIN; dy <= ROUTE_MARGIN; dy++) for (let dx = -ROUTE_MARGIN; dx <= ROUTE_MARGIN; dx++) if (dx ** 2 + dy ** 2 <= ROUTE_MARGIN ** 2) disc.push([dx, dy]);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
         const id = REG[y * W + x];
-        if (!id) continue;
+        if (!id || isWaste(id)) continue;
         let near = null;
         for (const [dx, dy] of disc) {
             const u = x + dx, v = y + dy, o = inb(u, v) ? REG[v * W + u] : 0;
@@ -986,7 +1001,7 @@ function spread() {
         DQ = nq;
     }
 }
-for (let i = 0; i < W * H; i++) if (OCC[i] || !REG[i]) { const x = i % W; obstacle(x, (i - x) / W); }
+for (let i = 0; i < W * H; i++) if (OCC[i] || !REG[i] || isWaste(REG[i])) { const x = i % W; obstacle(x, (i - x) / W); }
 spread();
 function mtnInside(ax, ay, x, y, grow) {
     const hw = MTN_W / 2, h = MTN_H;
@@ -1009,7 +1024,7 @@ function countryAt(x, y) {
     x = Math.trunc(x); y = Math.trunc(y);
     if (!inb(x, y)) return "";
     const id = REG[y * W + x];
-    return id ? LC[id] : "";
+    return id && !isWaste(id) ? LC[id] : "";
 }
 let offsets = [[0, 0, 0]];
 if (MODE === "mountains") {
@@ -1054,7 +1069,7 @@ const LABELS = [];                                    // [x0, y0, x1, y1, size, 
         for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) t[(y + 1) * W1 + x + 1] = f(y * W + x) + t[y * W1 + x + 1] + t[(y + 1) * W1 + x] - t[y * W1 + x];
         return t;
     };
-    const onland = sat((i) => (OCC[i] || !REG[i] ? 1 : 0));
+    const onland = sat((i) => (OCC[i] || !REG[i] || isWaste(REG[i]) ? 1 : 0));
     const anywhere = sat((i) => OCC[i]);
     const busy = (t, x0, y0, x1, y1) => {
         [x0, y0, x1, y1] = [x0, y0, x1, y1].map(Math.trunc);
@@ -1063,7 +1078,7 @@ const LABELS = [];                                    // [x0, y0, x1, y1, size, 
     };
     const land = new Map(), near = new Map();
     const add = (m, k, v) => { if (!m.has(k)) m.set(k, []); m.get(k).push(v); };
-    for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) { const id = REG[y * W + x]; if (id) add(land, LC[id], [x, y]); }
+    for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) { const id = REG[y * W + x]; if (id && !isWaste(id)) add(land, LC[id], [x, y]); }
     for (const id of SIDS) {
         const s = S.get(id);
         for (let y = s.y - 40; y <= s.y + 40; y += 2) for (let x = s.x - 40; x <= s.x + 40; x += 2) add(near, s.country, [x, y]);
@@ -1128,13 +1143,15 @@ const dRings = (rings) => rings.map((r) => dLine(r) + " Z").join(" ");
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 const o = [];
 o.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="Arial, Helvetica, sans-serif">`,
-    `<!-- Generated by tools/map.js from ${DIR}/SCENARIO.md and ${DIR}/map-base.svg. Do not edit: change those and rerun. -->`, `<style>\n${STYLE}</style>`,
+    `<!-- Generated by tools/map.js from ${DIR}/SCENARIO.md and ${DIR}/map-base.svg. Do not edit: change those and rerun. -->`, `<style>\n${STYLE}${WASTES.length ? ".waste{fill:#d6d0c2}\n" : ""}</style>`,
     `<rect id="sea" class="sea" width="${W}" height="${H}"/>`,
+    ...(WASTES.length ? [`<path id="waste" class="waste" d="${dRings(WASTES)}"/>`] : []),                  // land nobody holds, grey
     `<path id="landmass" class="landmass" d="${LIDS.map((id) => dRings(LANDS.get(id))).join(" ")}"/>`,   // under the lands: hides hairline seams between them
     '<g id="lands">');
 for (const id of LIDS) o.push(`  <path id="land-${id}" class="land ${LC[id]}" d="${dRings(LANDS.get(id))}"/>`);
 o.push("</g>", '<g id="edges">', `  <path id="frame" class="frame" d="${chains(FRAME).map(dLine).join(" ")}"/>`,
     `  <path id="coast" class="coast" d="${chains(COAST).map(dLine).join(" ")}"/>`);
+if (WASTEDGE.length) o.push(`  <path id="waste-edge" class="edge border" d="${chains(WASTEDGE).map(dLine).join(" ")}"/>`);   // where the lands meet nobody's
 for (const k of [...PAIR.keys()].sort(byKey)) {
     const [a, b] = k.split("-").map(Number);
     o.push(`  <path id="edge-${k}" class="edge ${LC[a] === LC[b] ? "province" : "border"}" d="${chains(PAIR.get(k)).map(dLine).join(" ")}"/>`);
@@ -1223,7 +1240,7 @@ const LANDLABEL = new Map();                          // land id -> { area, big:
     const bbox = new Map();
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
         const id = REG[y * W + x];
-        if (!id) continue;
+        if (!id || isWaste(id)) continue;
         const b = bbox.get(id) ?? { x0: x, y0: y, x1: x, y1: y, n: 0, sx: 0, sy: 0 };
         if (x < b.x0) b.x0 = x; if (x > b.x1) b.x1 = x; if (y < b.y0) b.y0 = y; if (y > b.y1) b.y1 = y;
         b.n++; b.sx += x; b.sy += y;

@@ -17,7 +17,7 @@ node tools/map.js scenarios/historical-1440 mountains    # the same, but first m
 ```
 
 map-base.svg and the data tables here were first made by
-[make-base.js](make-base.js) from real latitudes and longitudes ([data.js](data.js)); running it again
+[tools/make-base.js](../../tools/make-base.js) from real latitudes and longitudes ([data.js](data.js)); running it again
 **overwrites** map-base.svg and the tables, so once you edit them by hand, use tools/map.js only.
 
 Columns and blocks marked *generated* are rewritten by the script — edit the rest.

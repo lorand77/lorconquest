@@ -918,8 +918,9 @@ code is ES modules, not CommonJS, so whatever is copied from LorCiv is converted
 ### Development environment
 
 Node 24 is installed; nothing is added to `.devcontainer/devcontainer.json`. The map tools are Node too:
-`tools/map.js` builds `scenario.json` and `map.svg` from a scenario folder, and
-`scenarios/historical-1440/make-base.js` drew that scenario's first map from real geography. The repo has no Perl.
+`tools/map.js` builds `scenario.json` and `map.svg` from a scenario folder, and `tools/make-base.js <folder>` draws a scenario's
+first map — `map-base.svg` and the data tables of its SCENARIO.md — from real geography, the folder's `data.js` (the historical
+map's, and Europe's); its projection is the data's (`PROJECTION`). The repo has no Perl.
 
 ---
 
