@@ -802,7 +802,10 @@ function putTable(title, ...t) {
 }
 const BYC = new Map();
 for (const s of S.slice(1)) pushTo(BYC, s.country, s.id);
-putTable("Countries", "| Code | Country | Capital | Settlements | Pop | Army | Ships | HRE |", "|---|---|---|---|---|---|---|---|",
+// a country's colour on the map, if data.js gives one (its fourth field): the Colour column, which tools/map.js keeps
+if (COUNTRIES.some(c => c[3])) putTable("Countries", "| Code | Country | Capital | Colour | Settlements | Pop | Army | Ships | HRE |", "|---|---|---|---|---|---|---|---|---|",
+    ...COUNTRIES.map(c => `| ${c[0]} | ${c[1]} | ${SID.get(c[2])} ${c[2]} | ${c[3] ?? ""} |  |  |  |  |  |`));
+else putTable("Countries", "| Code | Country | Capital | Settlements | Pop | Army | Ships | HRE |", "|---|---|---|---|---|---|---|---|",
     ...COUNTRIES.map(c => `| ${c[0]} | ${c[1]} | ${SID.get(c[2])} ${c[2]} |  |  |  |  |  |`));
 putTable("Settlements", "| ID | Name | Country | Type | Port | HRE | X | Y | Borders | Straits |", "|---|---|---|---|---|---|---|---|---|---|",
     ...S.slice(1).map(s => `| ${s.id} | ${s.name} | ${s.country} | ${s.city ? "city" : "town"} | ${s.port ? "port" : ""} | `
@@ -813,10 +816,12 @@ putTable("Sea zones", "| Zone | X | Y | Ports | Straits | Next to |", "|---|---|
     const [x, y] = proj(z[1], z[2]).map(Math.trunc);
     return `| ${z[0]} | ${x} | ${y} |  |  |  |`;
 }));
-putTable("Special coring", "| Formable | What it was | Settlements | Count |", "|---|---|---|---|", ...FORMABLES.map(([n, what, parts]) => {
+// a region that makes a new state, if data.js says so (its fourth field, [name, code, colour]): the Becomes column
+const becomes = FORMABLES.some(fm => fm[3]);
+putTable("Special coring", `| Formable | What it was | Settlements | Count |${becomes ? " Becomes |" : ""}`, `|---|---|---|---|${becomes ? "---|" : ""}`, ...FORMABLES.map(([n, what, parts, into]) => {
     const ids = parts.flatMap(p => BYC.get(p) ?? [SID.get(p) ?? die(`formable ${n}: no country or settlement ${p}\n`)]).sort(byNumber);
     const u = [...new Set(ids)];
-    return `| **${n}** | ${what} | ${ranges(u)} | ${u.length} |`;
+    return `| **${n}** | ${what} | ${ranges(u)} | ${u.length} |${becomes ? ` ${into ? into.join(", ") : "—"} |` : ""}`;
 }));
 {
     const s = Math.max(0, doc.findIndex(l => /^## Mountains\s*$/.test(l)));
@@ -858,8 +863,8 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 **x = 1** (see the scenario scaling note in RULES.md)
 
-**Army speed:** 420 map units per year — a route takes its length on the map ÷ this (RULES.md §8). One map unit
-is about 1.2 km, so an army covers about 500 km a year, as on the Mitteleuropa map.
+**Army speed:** ${Math.round(504 / KM_PER_UNIT)} map units per year — a route takes its length on the map ÷ this (RULES.md §8). One map unit
+is about ${fixed(KM_PER_UNIT, 1)} km, so an army covers about 500 km a year, as on the Mitteleuropa map.
 
 <!-- generated:summary -->
 <!-- /generated -->

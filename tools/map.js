@@ -1316,7 +1316,8 @@ const cname = (c) => `${c} ${CN.get(c)}`;
 // Every country gets a colour for its land on the map. A Colour in SCENARIO.md is kept; the rest are picked,
 // largest country first, from a palette of light colours (the map's markers and labels are dark): never one a
 // neighbour has — countries whose lands touch or are joined by a route or strait — and of the rest the one
-// used least so far.
+// used least so far. Where every colour of the palette is a neighbour's already, the one whose neighbour holding it is the
+// smallest: two large neighbours never share one, at worst a small country shares with a large one.
 const PALETTE = ["#e8b4a0", "#a9c8e8", "#b7d9a8", "#f2d58c", "#d5b3dc", "#9fd6c9", "#f3a9a9", "#cdcda4", "#a7b9f0",
     "#e9c4e2", "#c6e3a4", "#f1c69d", "#b4abdb", "#dcd2a2", "#acdbea", "#e2abbb", "#bfd8c6", "#e5d3b3"];
 const NEAR = new Map(CORDER.map((c) => [c, new Set()]));
@@ -1331,10 +1332,17 @@ for (const k of [...PAIR.keys(), ...LAND, ...STRAIT]) {
     for (const c of [...CORDER].filter((x) => !COLOUR.has(x)).sort((a, b) => C.get(b).pop - C.get(a).pop || ord.get(a) - ord.get(b))) {
         const taken = new Set([...NEAR.get(c)].map((x) => COLOUR.get(x)));
         const free = PALETTE.filter((p) => !taken.has(p));
-        const pick = (free.length ? free : PALETTE).reduce((best, p) => (uses.get(p) < uses.get(best) ? p : best));
+        const biggest = (p) => Math.max(0, ...[...NEAR.get(c)].filter((x) => COLOUR.get(x) === p).map((x) => C.get(x).pop));
+        const pick = free.length ? free.reduce((best, p) => (uses.get(p) < uses.get(best) ? p : best))
+            : PALETTE.reduce((best, p) => (biggest(p) < biggest(best) || (biggest(p) === biggest(best) && uses.get(p) < uses.get(best)) ? p : best));
         COLOUR.set(c, pick);
         uses.set(pick, uses.get(pick) + 1);
     }
+}
+{
+    const same = [];
+    for (const a of CORDER) for (const b of NEAR.get(a)) if (a < b && COLOUR.get(a) === COLOUR.get(b)) same.push(`${a}-${b} (${Math.trunc(C.get(a).pop / 1000)}K, ${Math.trunc(C.get(b).pop / 1000)}K)`);
+    if (same.length) warn(`neighbours sharing a colour: ${same.join(", ")}`);
 }
 // a new state's colour stands out from every country's (at least 40 apart, red, green and blue as a distance) and from the other
 // new states' (30), and its code is no country's: a state formed is never mistaken for another

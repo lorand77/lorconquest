@@ -1,68 +1,71 @@
 // Geography of the Europe 1440 scenario, in real latitude and longitude (degrees north, east).
-// tools/make-base.js projects it onto the map (`node tools/make-base.js scenarios/europe-1440`). One map unit is about 2.4 km:
+// tools/make-base.js projects it onto the map (`node tools/make-base.js scenarios/europe-1440`). One map unit is about 1.6 km:
 // Europe from Ireland and Portugal to Moscow and Anatolia, from the North Cape to the coast of North Africa, as one rectangle.
 // Settlements follow the people of 1440 — one for about 180,000 — so the empty north and east have few (docs: the plan of
 // this map in experiments/README.md is not it; see SCENARIO.md, Design notes, once written).
 
 const NAME = "EUROPE 1440";
-// Lambert conformal conic for the whole of Europe: standard parallels 38 and 62 N, centred on 50 N 15 E
+// Lambert conformal conic for the whole of Europe: standard parallels 38 and 62 N, centred on 50 N 15 E; 1.6 km a map unit, so
+// that the crowded parts (northern Italy, Flanders, the Rhine) have room for their markers and armies
 // The map reaches below the bottom of the Gulf of Sirte (30.2 N), so the coast of North Africa is whole, and past Ireland's
 // west coast and the North Cape, so the Atlantic and the Arctic are each one stretch of sea
-const PROJECTION = { parallels: [38, 62], origin: [50, 15], kmPerUnit: 2.4, margin: 20, include: [[29.6, 18.5], [53.0, -11.3], [72.0, 27.0]] };
+const PROJECTION = { parallels: [38, 62], origin: [50, 15], kmPerUnit: 1.6, margin: 30, include: [[29.6, 18.5], [53.0, -11.3], [72.0, 27.0]] };
 
 // ---------------------------------------------------------------------------------------------------------
-// Countries in 1440: code, name, capital (a settlement name below). Settlements follow the people of 1440 — one for about
+// Countries in 1440: code, name, capital (a settlement name below), and for the larger powers a colour on the map — after their
+// heraldry and the colours maps give them, none like a neighbour's; tools/map.js picks the rest from its palette, never a
+// neighbour's, and should it run out, the colour of the smallest neighbour. Settlements follow the people of 1440 — one for about
 // 180,000 — so the realms of the empty north and east hold wide lands with few towns, and the Empire's smallest states, whose
-// town did not make the cut, are folded into their neighbours.
+// town did not make the cut, are folded into their neighbours. No two settlements are much closer than 35 km (the smaller of a
+// closer pair is left out: Lucca, Leuven, Pavia...), so that on the map their markers and armies do not crowd each other.
 // ---------------------------------------------------------------------------------------------------------
 const COUNTRIES = [
     // the North and the Baltic
-    ["NOR", "Norway",                 "Bergen"],
-    ["SWE", "Sweden",                 "Stockholm"],
-    ["DEN", "Denmark",                "Copenhagen"],
+    ["NOR", "Norway",                 "Bergen", "#e6bcd4"],
+    ["SWE", "Sweden",                 "Stockholm", "#a8c4ec"],
+    ["DEN", "Denmark",                "Copenhagen", "#f0a8a0"],
     ["GOT", "Gotland",                "Visby"],
-    ["LIV", "Livonian Order",         "Riga"],
-    ["TEU", "Teutonic Order",         "Danzig"],
+    ["LIV", "Livonian Order",         "Riga", "#c4cce0"],
+    ["TEU", "Teutonic Order",         "Danzig", "#d4d4d4"],
     // the British Isles
-    ["ENG", "England",                "London"],
-    ["SCO", "Scotland",               "Edinburgh"],
+    ["ENG", "England",                "London", "#ea9999"],
+    ["SCO", "Scotland",               "Edinburgh", "#b8d8f0"],
     ["ISL", "Lordship of the Isles",  "Inverness"],
     ["TRN", "Tyrone",                 "Dungannon"],
     ["THO", "Thomond",                "Ennis"],
     ["DES", "Desmond",                "Tralee"],
     // France and the Low Countries
-    ["FRA", "France",                 "Paris"],
-    ["BUR", "Burgundy",               "Brussels"],
-    ["BRI", "Brittany",               "Nantes"],
-    ["ANJ", "Anjou",                  "Marseille"],
-    ["BOU", "Bourbon",                "Moulins"],
+    ["FRA", "France",                 "Paris", "#8fb4ea"],
+    ["BUR", "Burgundy",               "Brussels", "#c4a0d8"],
+    ["BRI", "Brittany",               "Nantes", "#d8d8cc"],
+    ["ANJ", "Anjou",                  "Marseille", "#f2c7a6"],
+    ["BOU", "Bourbon",                "Moulins", "#d6e39c"],
     ["ARM", "Armagnac",               "Rodez"],
     ["FOI", "Foix-Béarn",             "Pau"],
-    ["SAV", "Savoy",                  "Chambéry"],
+    ["SAV", "Savoy",                  "Chambéry", "#9fd6c4"],
     ["LIE", "Liège",                  "Liège"],
     ["UTR", "Utrecht",                "Utrecht"],
     ["GEL", "Guelders",               "Nijmegen"],
     ["FRI", "Frisia",                 "Groningen"],
     ["LUX", "Luxembourg",             "Luxembourg"],
     // Iberia
-    ["CAS", "Castile",                "Toledo"],
-    ["ARA", "Aragon",                 "Zaragoza"],
-    ["POR", "Portugal",               "Lisbon"],
+    ["CAS", "Castile",                "Toledo", "#f2d06b"],
+    ["ARA", "Aragon",                 "Zaragoza", "#f4b073"],
+    ["POR", "Portugal",               "Lisbon", "#9fd29a"],
     ["NAV", "Navarre",                "Pamplona"],
-    ["GRA", "Granada",                "Granada"],
+    ["GRA", "Granada",                "Granada", "#d4e8a0"],
     // Italy
-    ["MIL", "Milan",                  "Milan"],
-    ["VEN", "Venice",                 "Venice"],
-    ["GEN", "Genoa",                  "Genoa"],
-    ["FLO", "Florence",               "Florence"],
+    ["MIL", "Milan",                  "Milan", "#f0aaaa"],
+    ["VEN", "Venice",                 "Venice", "#8fd4d4"],
+    ["GEN", "Genoa",                  "Genoa", "#c8c8e8"],
+    ["FLO", "Florence",               "Florence", "#f6cf9e"],
     ["SIE", "Siena",                  "Siena"],
-    ["LUC", "Lucca",                  "Lucca"],
-    ["PAP", "Papal States",           "Rome"],
+    ["PAP", "Papal States",           "Rome", "#f4eba0"],
     ["FER", "Ferrara",                "Ferrara"],
     ["MAN", "Mantua",                 "Mantua"],
     ["MON", "Montferrat",             "Casale"],
     ["RIM", "Rimini",                 "Rimini"],
-    ["NAP", "Naples",                 "Naples"],
+    ["NAP", "Naples",                 "Naples", "#cdb4e6"],
     // the Empire
     ["SHO", "Schleswig-Holstein",     "Schleswig"],
     ["LUB", "Lübeck",                 "Lübeck"],
@@ -72,24 +75,23 @@ const COUNTRIES = [
     ["BRE", "Bremen",                 "Bremen"],
     ["BRU", "Brunswick-Lüneburg",     "Brunswick"],
     ["MAG", "Magdeburg",              "Magdeburg"],
-    ["BRA", "Brandenburg",            "Berlin"],
+    ["BRA", "Brandenburg",            "Berlin", "#cfc4b0"],
     ["CLE", "Cleves-Mark",            "Wesel"],
     ["MUN", "Münster",                "Münster"],
     ["JUL", "Jülich-Berg",            "Düsseldorf"],
     ["COL", "Cologne",                "Cologne"],
     ["HES", "Hesse",                  "Kassel"],
-    ["SAX", "Saxony",                 "Wittenberg"],
+    ["SAX", "Saxony",                 "Wittenberg", "#b8dca8"],
     ["LUS", "Upper Lusatia",          "Bautzen"],
     ["SIL", "Silesia",                "Breslau"],
     ["OPP", "Opole",                  "Oppeln"],
     ["TRI", "Trier",                  "Trier"],
     ["MAI", "Mainz",                  "Mainz"],
-    ["FFM", "Frankfurt",              "Frankfurt"],
     ["WBG", "Würzburg",               "Würzburg"],
     ["ANS", "Ansbach-Kulmbach",       "Ansbach"],
     ["NUR", "Nuremberg",              "Nuremberg"],
     ["PAL", "Palatinate",             "Heidelberg"],
-    ["BOH", "Bohemia",                "Prague"],
+    ["BOH", "Bohemia",                "Prague", "#e8b0a0"],
     ["MET", "Metz",                   "Metz"],
     ["STR", "Strasbourg",             "Strasbourg"],
     ["BAD", "Baden",                  "Baden"],
@@ -100,7 +102,7 @@ const COUNTRIES = [
     ["REG", "Regensburg",             "Regensburg"],
     ["BMU", "Bavaria-Munich",         "Munich"],
     ["BLA", "Bavaria-Landshut",       "Landshut"],
-    ["AUS", "Austria",                "Vienna"],
+    ["AUS", "Austria",                "Vienna", "#f0e0b8"],
     ["TYR", "Tyrol",                  "Innsbruck"],
     ["BAS", "Basel",                  "Basel"],
     ["ZUR", "Zürich",                 "Zürich"],
@@ -108,46 +110,45 @@ const COUNTRIES = [
     ["SAL", "Salzburg",               "Salzburg"],
     ["STY", "Inner Austria",          "Graz"],
     // Poland, Lithuania, Hungary
-    ["POL", "Poland",                 "Kraków"],
+    ["POL", "Poland",                 "Kraków", "#f2b0c0"],
     ["MAZ", "Masovia",                "Warsaw"],
-    ["LIT", "Lithuania",              "Vilnius"],
-    ["HUN", "Hungary",                "Buda"],
+    ["LIT", "Lithuania",              "Vilnius", "#b8a4dc"],
+    ["HUN", "Hungary",                "Buda", "#e2b88a"],
     ["JIS", "Upper Hungary",          "Kassa"],
     // the Balkans
-    ["OTT", "Ottoman Empire",         "Edirne"],
-    ["BYZ", "Byzantium",              "Constantinople"],
-    ["MOR", "Morea",                  "Mistra"],
+    ["OTT", "Ottoman Empire",         "Edirne", "#8cc68c"],
+    ["BYZ", "Byzantium",              "Constantinople", "#b89ad8"],
+    ["MOR", "Morea",                  "Mistra", "#d8c0ec"],
     ["SER", "Serbia",                 "Novo Brdo"],
     ["BOS", "Bosnia",                 "Jajce"],
     ["HER", "Herzegovina",            "Blagaj"],
     ["RAG", "Ragusa",                 "Ragusa"],
-    ["WAL", "Wallachia",              "Târgoviște"],
-    ["MOL", "Moldavia",               "Suceava"],
+    ["WAL", "Wallachia",              "Târgoviște", "#a8d0e8"],
+    ["MOL", "Moldavia",               "Suceava", "#c8e8d0"],
     ["ATH", "Athens",                 "Athens"],
     ["EPI", "Epirus",                 "Arta"],
     ["LES", "Lesbos",                 "Mytilene"],
     // Anatolia and the islands
-    ["KAR", "Karaman",                "Konya"],
+    ["KAR", "Karaman",                "Konya", "#e8c49a"],
     ["CAN", "Candar",                 "Kastamonu"],
     ["TRE", "Trebizond",              "Trebizond"],
     ["DUL", "Dulkadir",               "Elbistan"],
     ["RAM", "Ramadan",                "Adana"],
-    ["AQQ", "Aq Qoyunlu",             "Diyarbakır"],
+    ["AQQ", "Aq Qoyunlu",             "Diyarbakır", "#dcb0b0"],
     ["CYP", "Cyprus",                 "Nicosia"],
     ["KRH", "Knights of Rhodes",      "Rhodes"],
     // Russia and the steppe
-    ["MOS", "Muscovy",                "Moscow"],
-    ["NOV", "Novgorod",               "Novgorod"],
+    ["MOS", "Muscovy",                "Moscow", "#b0dca0"],
+    ["NOV", "Novgorod",               "Novgorod", "#dcc090"],
     ["PSK", "Pskov",                  "Pskov"],
     ["TVE", "Tver",                   "Tver"],
     ["RYA", "Ryazan",                 "Ryazan"],
-    ["CRI", "Crimea",                 "Qırım"],
     ["THE", "Theodoro",               "Mangup"],
-    ["GHO", "Great Horde",            "Azak"],
+    ["GHO", "Great Horde",            "Azak", "#e8de9c"],
     // North Africa
-    ["MRC", "Morocco",                "Fez"],
-    ["TLE", "Tlemcen",                "Tlemcen"],
-    ["TUN", "Tunis",                  "Tunis"],
+    ["MRC", "Morocco",                "Fez", "#e0a888"],
+    ["TLE", "Tlemcen",                "Tlemcen", "#d8cc9c"],
+    ["TUN", "Tunis",                  "Tunis", "#b8d8b0"],
 ];
 
 // ---------------------------------------------------------------------------------------------------------
@@ -223,14 +224,12 @@ const SETTLEMENTS = [
     ["Limoges",         "FRA", 45.83,  1.26, ""],
     ["Périgueux",       "FRA", 45.18,  0.72, ""],
     ["Cahors",          "FRA", 44.45,  1.44, ""],
-    ["Agen",            "FRA", 44.20,  0.62, ""],
     ["Montauban",       "FRA", 44.02,  1.35, ""],
     ["Toulouse",        "FRA", 43.60,  1.44, "city"],
     ["Albi",            "FRA", 43.93,  2.15, ""],
     ["Carcassonne",     "FRA", 43.21,  2.35, ""],
     ["Narbonne",        "FRA", 43.18,  3.00, ""],
-    ["Montpellier",     "FRA", 43.61,  3.88, ""],
-    ["Aigues-Mortes",   "FRA", 43.57,  4.19, "port"],
+    ["Montpellier",     "FRA", 43.61,  3.88, "port"],
     ["Nîmes",           "FRA", 43.84,  4.36, ""],
     ["Le Puy",          "FRA", 45.04,  3.88, ""],
     ["Saint-Flour",     "FRA", 45.03,  3.09, ""],
@@ -240,7 +239,6 @@ const SETTLEMENTS = [
     ["Nevers",          "FRA", 46.99,  3.16, ""],
     ["Troyes",          "FRA", 48.30,  4.08, ""],
     ["Reims",           "FRA", 49.26,  4.03, ""],
-    ["Châlons",         "FRA", 48.96,  4.37, ""],
     ["Laon",            "FRA", 49.56,  3.62, ""],
     ["Beauvais",        "FRA", 49.43,  2.08, ""],
     // England in France
@@ -255,16 +253,13 @@ const SETTLEMENTS = [
     ["Dijon",           "BUR", 47.32,  5.04, ""],
     ["Besançon",        "BUR", 47.24,  6.02, "hre"],
     ["Auxerre",         "BUR", 47.80,  3.57, ""],
-    ["Mâcon",           "BUR", 46.31,  4.83, ""],
     ["Arras",           "BUR", 50.29,  2.78, ""],
     ["Amiens",          "BUR", 49.89,  2.30, ""],
-    ["Abbeville",       "BUR", 50.11,  1.83, "port"],
     ["Lille",           "BUR", 50.63,  3.06, ""],
     ["Bruges",          "BUR", 51.21,  3.22, "city port"],
     ["Ghent",           "BUR", 51.05,  3.72, "city"],
     ["Brussels",        "BUR", 50.85,  4.35, "city hre"],
     ["Antwerp",         "BUR", 51.22,  4.40, "city port hre"],
-    ["Leuven",          "BUR", 50.88,  4.70, "hre"],
     ["Mons",            "BUR", 50.45,  3.95, "hre"],
     ["Namur",           "BUR", 50.47,  4.87, "hre"],
     ["Middelburg",      "BUR", 51.50,  3.61, "port hre"],
@@ -276,7 +271,6 @@ const SETTLEMENTS = [
     ["Vannes",          "BRI", 47.66, -2.76, "port"],
     ["Brest",           "BRI", 48.39, -4.49, "port"],
     ["Angers",          "ANJ", 47.47, -0.55, ""],
-    ["Aix",             "ANJ", 43.53,  5.45, ""],
     ["Marseille",       "ANJ", 43.30,  5.37, "city port"],
     ["Nancy",           "ANJ", 48.69,  6.18, "hre"],
     ["Bar-le-Duc",      "ANJ", 48.77,  5.16, "hre"],
@@ -348,19 +342,14 @@ const SETTLEMENTS = [
     ["Almería",         "GRA", 36.84, -2.46, "port"],
     // Italy
     ["Milan",           "MIL", 45.46,  9.19, "city hre"],
-    ["Pavia",           "MIL", 45.19,  9.16, "hre"],
     ["Como",            "MIL", 45.81,  9.08, "hre"],
     ["Cremona",         "MIL", 45.13, 10.02, "hre"],
-    ["Piacenza",        "MIL", 45.05,  9.69, "hre"],
     ["Parma",           "MIL", 44.80, 10.33, "hre"],
-    ["Alessandria",     "MIL", 44.91,  8.61, "hre"],
     ["Venice",          "VEN", 45.44, 12.33, "city port"],
     ["Padua",           "VEN", 45.41, 11.88, ""],
     ["Verona",          "VEN", 45.44, 10.99, "city"],
-    ["Vicenza",         "VEN", 45.55, 11.55, ""],
     ["Brescia",         "VEN", 45.54, 10.21, ""],
     ["Bergamo",         "VEN", 45.70,  9.67, ""],
-    ["Treviso",         "VEN", 45.67, 12.24, ""],
     ["Udine",           "VEN", 46.06, 13.24, ""],
     ["Zara",            "VEN", 44.12, 15.23, "port"],
     ["Spalato",         "VEN", 43.51, 16.44, "port"],
@@ -371,7 +360,6 @@ const SETTLEMENTS = [
     ["Candia",          "VEN", 35.34, 25.13, "city port"],
     ["Canea",           "VEN", 35.51, 24.02, "port"],
     ["Genoa",           "GEN", 44.41,  8.93, "city port"],
-    ["Savona",          "GEN", 44.31,  8.48, "port"],
     ["Bastia",          "GEN", 42.70,  9.45, "port"],
     ["Chios",           "GEN", 38.37, 26.14, "port"],
     ["Famagusta",       "GEN", 35.12, 33.94, "port"],
@@ -380,7 +368,6 @@ const SETTLEMENTS = [
     ["Pisa",            "FLO", 43.72, 10.40, "port"],
     ["Arezzo",          "FLO", 43.46, 11.88, ""],
     ["Siena",           "SIE", 43.32, 11.33, ""],
-    ["Lucca",           "LUC", 43.84, 10.50, ""],
     ["Rome",            "PAP", 41.90, 12.50, "city"],
     ["Viterbo",         "PAP", 42.42, 12.10, ""],
     ["Perugia",         "PAP", 43.11, 12.39, ""],
@@ -438,7 +425,6 @@ const SETTLEMENTS = [
     ["Oppeln",          "OPP", 50.67, 17.93, "hre"],
     ["Trier",           "TRI", 49.76,  6.64, "hre"],
     ["Mainz",           "MAI", 50.00,  8.27, "hre"],
-    ["Frankfurt",       "FFM", 50.11,  8.68, "hre"],
     ["Würzburg",        "WBG", 49.79,  9.93, "hre"],
     ["Ansbach",         "ANS", 49.30, 10.57, "hre"],
     ["Nuremberg",       "NUR", 49.45, 11.08, "city hre"],
@@ -458,7 +444,6 @@ const SETTLEMENTS = [
     ["Ingolstadt",      "BIN", 48.77, 11.43, "hre"],
     ["Regensburg",      "REG", 49.02, 12.10, "hre"],
     ["Munich",          "BMU", 48.14, 11.58, "hre"],
-    ["Straubing",       "BMU", 48.88, 12.57, "hre"],
     ["Landshut",        "BLA", 48.54, 12.15, "hre"],
     ["Vienna",          "AUS", 48.21, 16.37, "city hre"],
     ["Linz",            "AUS", 48.31, 14.29, "hre"],
@@ -481,7 +466,6 @@ const SETTLEMENTS = [
     ["Kalisz",          "POL", 51.76, 18.09, ""],
     ["Sieradz",         "POL", 51.60, 18.73, ""],
     ["Łęczyca",         "POL", 52.06, 19.20, ""],
-    ["Inowrocław",      "POL", 52.80, 18.26, ""],
     ["Sandomierz",      "POL", 50.68, 21.75, ""],
     ["Lublin",          "POL", 51.25, 22.57, ""],
     ["Przemyśl",        "POL", 49.78, 22.77, ""],
@@ -509,7 +493,6 @@ const SETTLEMENTS = [
     ["Buda",            "HUN", 47.50, 19.04, "city"],
     ["Pozsony",         "HUN", 48.14, 17.11, ""],
     ["Győr",            "HUN", 47.69, 17.63, ""],
-    ["Esztergom",       "HUN", 47.79, 18.74, ""],
     ["Székesfehérvár",  "HUN", 47.19, 18.41, ""],
     ["Pécs",            "HUN", 46.07, 18.23, ""],
     ["Szeged",          "HUN", 46.25, 20.15, ""],
@@ -538,7 +521,6 @@ const SETTLEMENTS = [
     ["Monastir",        "OTT", 41.03, 21.33, ""],
     ["Ioannina",        "OTT", 39.67, 20.85, ""],
     ["Larissa",         "OTT", 39.64, 22.42, ""],
-    ["Kruja",           "OTT", 41.51, 19.79, ""],
     ["Smederevo",       "OTT", 44.66, 20.93, ""],
     ["Constantinople",  "BYZ", 41.01, 28.98, "city port"],
     ["Mesembria",       "BYZ", 42.66, 27.73, "port"],
@@ -563,7 +545,6 @@ const SETTLEMENTS = [
     ["Nicaea",          "OTT", 40.43, 29.72, ""],
     ["Izmit",           "OTT", 40.76, 29.92, "port"],
     ["Balıkesir",       "OTT", 39.65, 27.88, ""],
-    ["Manisa",          "OTT", 38.61, 27.43, ""],
     ["Smyrna",          "OTT", 38.42, 27.14, "port"],
     ["Ayasoluk",        "OTT", 37.94, 27.37, ""],
     ["Milas",           "OTT", 37.32, 27.78, ""],
@@ -614,7 +595,6 @@ const SETTLEMENTS = [
     ["Tver",            "TVE", 56.86, 35.92, ""],
     ["Rzhev",           "TVE", 56.26, 34.33, ""],
     ["Ryazan",          "RYA", 54.63, 39.74, ""],
-    ["Qırım",           "CRI", 45.04, 35.09, ""],
     ["Mangup",          "THE", 44.59, 33.81, ""],
     ["Azak",            "GHO", 47.10, 39.42, "port"],
     // North Africa
@@ -647,7 +627,7 @@ const SETTLEMENTS = [
 // Sea and the Baltic (the historical map's coast, as it is), up Norway to the North Cape and round the White Sea; closes far
 // outside the map to the east and south; and comes back up the Atlantic coast of Morocco, along North Africa, the Levant
 // and Anatolia, round the Black Sea and the Sea of Azov, and back by the Balkans, Italy, France and Spain to Gibraltar.
-// Straits narrower than the map can show (it fills in water under 3 units, about 7 km) are widened to 15-20 km so they stay
+// Straits narrower than the map can show (it fills in water under 3 units, about 5 km) are widened to 15-20 km so they stay
 // open: the Bosporus, the Dardanelles, Messina, the Øresund, Rio–Antirrio, and the water between Lesbos and Anatolia.
 // ---------------------------------------------------------------------------------------------------------
 const COAST = [
@@ -850,8 +830,51 @@ const ISLAND_OWNER = {
 };
 // Pieces of mainland cut off by the map edge, given to a settlement by a point inside them
 const PIECE_OWNER = [];
-// Extra seeds of a settlement's land (points it is grown from besides itself), by name: step 3
-const SEEDS = {};
+// ---------------------------------------------------------------------------------------------------------
+// Extra seeds: a settlement's land is everything nearer (over land) to one of its seeds than to any other. These pull the
+// borders to where they were in 1440 (checked against some 140 places of the year).
+// ---------------------------------------------------------------------------------------------------------
+const SEEDS = {
+    "Oslo":          [ [58.65, 11.45] ],                     // Bohuslän was Norwegian
+    "Lund":          [ [56.70, 12.95], [56.25, 15.10] ],     // Halland and Blekinge were Danish
+    "Beauvais":      [ [49.85, 1.25] ],                      // Dieppe, French again since 1435
+    "Amiens":        [ [49.85, 3.25] ],                      // the Somme towns, Burgundy's by the Treaty of Arras (1435)
+    "Dijon":         [ [46.80, 4.85], [46.35, 4.80] ],       // Chalon and the Mâconnais
+    "Clermont":      [ [45.60, 4.05] ],                      // Forez, the Bourbons'
+    "Montauban":     [ [44.20, 0.60] ],                      // the Agenais, French
+    "Pamplona":      [ [42.10, -1.60] ],                     // Tudela and the Ribera
+    "Bilbao":        [ [43.25, -2.05] ],                     // Gipuzkoa, Castilian
+    "Córdoba":       [ [37.12, -4.48] ],                     // Antequera, taken from Granada in 1410
+    "Málaga":        [ [36.75, -5.12] ],                     // Ronda, Granada's until 1485
+    "Braga":         [ [41.80, -6.80] ],                     // Trás-os-Montes to Bragança
+    "Bergamo":       [ [45.36, 9.70] ],                      // Crema, Venetian since 1449 — Venice's man held it in 1440
+    "Perugia":       [ [43.70, 12.60] ],                     // Urbino and the Marche, the Church's
+    "Viterbo":       [ [42.40, 12.80] ],                     // the Sabina
+    "Genoa":         [ [44.10, 8.15], [43.85, 7.70] ],       // the western Riviera to Ventimiglia
+    "Udine":         [ [45.55, 13.75], [45.10, 13.75] ],     // the coast of Istria, Venetian
+    "Durazzo":       [ [42.40, 18.75] ],                     // Venetian Albania and Cattaro
+    "Modon":         [ [37.57, 22.80] ],                     // Nauplia and Argos, Venetian
+    "Athens":        [ [38.30, 23.30] ],                     // Thebes, the Acciaioli's
+    "Ioannina":      [ [40.50, 19.70] ],                     // southern Albania and Valona, Ottoman since 1417
+    "Sofia":         [ [43.30, 21.95] ],                     // Niš, Ottoman
+    "Akkerman":      [ [45.45, 29.20], [46.85, 29.45] ],     // Kilia and Tighina, Moldavian
+    "Bratslav":      [ [46.65, 30.85], [46.75, 31.35] ],     // Lithuania to the Black Sea: Khadjibey and Ochakiv (Vytautas)
+    "Smolensk":      [ [55.20, 34.30], [56.45, 31.60] ],     // Vyazma and Toropets, Lithuanian
+    "Novgorod-Seversky": [ [51.70, 36.10] ],                 // Kursk, Lithuanian
+    "Kiev":          [ [49.60, 34.50] ],                     // the Left Bank to Poltava, Lithuanian
+    "Azak":          [ [49.40, 37.40], [48.50, 37.00], [46.10, 33.80], [45.40, 34.30], [45.10, 35.00] ],   // the steppe, and inner Crimea
+    "Medininkai":    [ [55.90, 21.20] ],                     // Samogitia at the sea at Palanga (1422)
+    "Thorn":         [ [52.75, 15.25], [53.35, 18.45] ],     // the Neumark, the Order's since 1402; Kulm
+    "Danzig":        [ [53.70, 17.60] ],                     // Pomerelia to Konitz
+    "Gniezno":       [ [53.05, 17.85] ],                     // Bydgoszcz, Polish
+    "Pozsony":       [ [48.85, 18.00] ],                     // Trencsén, the king's
+    "Inverness":     [ [55.50, -5.55], [56.60, -5.70], [57.30, -5.60] ],   // the Lordship's western seaboard: Kintyre, Lorn, Skye
+    "Utrecht":       [ [52.30, 6.15] ],                      // the Oversticht (Deventer)
+    "Antwerp":       [ [51.65, 5.25] ],                      // 's-Hertogenbosch, Brabant's
+    "Liège":         [ [50.25, 4.95] ],                      // Dinant
+    "Luxembourg":    [ [49.35, 6.15] ],                      // Thionville
+    "Tangier":       [ [35.55, -5.40] ],                     // Tetouan
+};
 
 // ---------------------------------------------------------------------------------------------------------
 // Rivers: lat lon from source to the mouth (the last point is moved onto the coast), or to where it leaves the land shown
@@ -972,7 +995,7 @@ const PASSES = [
     ["P3",  47.00, 11.50, [ ["Innsbruck", "Bozen"] ] ],                               // Brenner
     ["P4",  47.63, 15.83, [ ["Wiener Neustadt", "Graz"] ] ],                          // Semmering
     ["P5",  50.70, 13.95, [ ["Prague", "Dresden"] ] ],                                // Nollendorf, Ore Mountains
-    ["P6",  49.32, 12.90, [ ["Plzeň", "Straubing"], ["Plzeň", "Amberg"] ] ],  // Cham, Bohemian Forest
+    ["P6",  49.32, 12.90, [ ["Plzeň", "Amberg"], ["Plzeň", "Regensburg"] ] ],  // Cham, Bohemian Forest
     ["P7",  50.42, 16.20, [ ["Kutná Hora", "Breslau"] ] ],  // Náchod, Sudetes
     ["P8",  49.53, 18.80, [ ["Besztercebánya", "Kraków"] ] ],  // Jablunka, Carpathians
     ["P9",  49.40, 21.70, [ ["Kassa", "Przemyśl"], ["Kassa", "Kraków"] ] ], // Dukla, Carpathians
@@ -1038,9 +1061,32 @@ const MOUNTAINS = [
 ];
 
 // ---------------------------------------------------------------------------------------------------------
-// Special coring (SCENARIO.md): name, what it was, and its settlements as country codes or settlement names — step 3
+// Special coring (SCENARIO.md): name, what it was, its settlements as country codes or settlement names, and if proclaiming it
+// makes a new state, [name, code, colour] (its colour unlike every country's: tools/map.js checks)
 // ---------------------------------------------------------------------------------------------------------
-const FORMABLES = [];
+const FORMABLES = [
+  [ "Kalmar Union",              "the three northern crowns under one king",              ["NOR", "SWE", "DEN", "GOT"],     ["Kalmar Union", "KAL", "#4f7fc0"] ],
+  [ "Spain",                     "the crowns of Castile and Aragon, Navarre and Granada (1512)", ["CAS", "ARA", "NAV", "GRA"], ["Spain", "SPA", "#f0b030"] ],
+  [ "Great Britain",             "England and Scotland under one crown (1603)",           ["ENG", "SCO", "ISL"],            ["Great Britain", "GBR", "#b03040"] ],
+  [ "Kingdom of France",         "the realm whole again: the apanages and the great fiefs under the king", ["FRA", "BRI", "ANJ", "BOU", "ARM", "FOI"] ],
+  [ "Burgundian Netherlands",    "the Seventeen Provinces of 1549",                       ["Bruges", "Ghent", "Lille", "Brussels", "Antwerp", "Mons", "Namur", "Middelburg", "Dordrecht", "Amsterdam", "LIE", "UTR", "GEL", "FRI", "LUX"] ],
+  [ "Kingdom of Burgundy",       "the realm Charles the Bold wanted, Frisia to the Alps", ["BUR", "LIE", "UTR", "GEL", "FRI", "LUX", "MET", "Nancy", "Bar-le-Duc"], ["Kingdom of Burgundy", "KBG", "#c7799f"] ],
+  [ "Italian League",            "the five powers of the Peace of Lodi (1454)",           ["MIL", "VEN", "FLO", "PAP", "NAP"] ],
+  [ "Unite the Swiss",           "the Confederacy with Zürich and Basel (1501)",          ["SWI", "ZUR", "BAS"] ],
+  [ "Reunite Bavaria",           "the Wittelsbach duchies, one again from 1505",          ["BMU", "BLA", "BIN", "REG"] ],
+  [ "Habsburg Austria",          "the hereditary lands of the house of Habsburg",         ["AUS", "STY", "TYR"] ],
+  [ "Lands of the Bohemian Crown", "Bohemia, Moravia, Silesia and Lusatia",               ["BOH", "LUS", "SIL", "OPP"] ],
+  [ "Kingdom of Hungary",        "the crown of St Stephen",                               ["HUN", "JIS"] ],
+  [ "Danubian Monarchy",         "the three crowns Ferdinand of Habsburg gathered in 1526", ["AUS", "STY", "TYR", "BOH", "LUS", "SIL", "OPP", "HUN", "JIS"], ["Habsburg Monarchy", "HAB", "#c8b820"] ],
+  [ "Hanseatic League",          "its leading towns, under Lübeck",                       ["LUB", "HAM", "BRE", "Rostock", "Stralsund", "Danzig", "Cologne", "Riga", "Reval", "Visby"], ["Hanseatic League", "HSL", "#a07850"] ],
+  [ "Brandenburg-Prussia",       "the Hohenzollern lands of 1618",                        ["BRA", "ANS", "Königsberg", "Memel"], ["Brandenburg-Prussia", "BPR", "#a0a0a0"] ],
+  [ "Crown of Poland",           "Poland, Masovia (1526) and Royal Prussia (1466)",      ["POL", "MAZ", "Danzig", "Thorn"] ],
+  [ "Polish-Lithuanian Commonwealth", "Poland and Lithuania joined at Lublin (1569)",     ["POL", "MAZ", "LIT", "LIV", "Danzig", "Thorn", "Königsberg", "Memel"], ["Poland-Lithuania", "PLC", "#e05aa0"] ],
+  [ "Tsardom of Russia",         "the Russian lands gathered by Moscow (1547)",           ["MOS", "NOV", "PSK", "TVE", "RYA"], ["Russia", "RUS", "#6fb07a"] ],
+  [ "Rum",                       "Anatolia whole under the house of Osman (1515)",        ["OTT", "KAR", "CAN", "DUL", "RAM", "TRE", "BYZ"] ],
+  [ "Restored Empire",           "the Empire of the Romans as the Palaiologoi dreamt it: Thrace, Macedonia and Greece", ["BYZ", "MOR", "ATH", "EPI", "Salonica", "Edirne", "Gallipoli", "Philippopolis", "Serres", "Larissa", "Ioannina"], ["Roman Empire", "ROM", "#9c6fc8"] ],
+  [ "The Maghreb",               "North Africa from the Atlantic to Tripoli, as the Almohads held it", ["MRC", "TLE", "TUN"], ["Maghreb", "MGH", "#c89050"] ],
+];
 
 export {
     NAME, PROJECTION, COUNTRIES, SETTLEMENTS, SEEDS, ISLAND_OWNER, PIECE_OWNER, COAST, RIVERS, PASSES, MOUNTAINS, DIVIDERS,

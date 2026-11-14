@@ -23,11 +23,11 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 **x = 1** (see the scenario scaling note in RULES.md)
 
-**Army speed:** 420 map units per year — a route takes its length on the map ÷ this (RULES.md §8). One map unit
-is about 1.2 km, so an army covers about 500 km a year, as on the Mitteleuropa map.
+**Army speed:** 315 map units per year — a route takes its length on the map ÷ this (RULES.md §8). One map unit
+is about 1.6 km, so an army covers about 500 km a year, as on the Mitteleuropa map.
 
 <!-- generated:summary -->
-466 settlements (69 cities, 397 towns) · 121 countries · 5,350,000 people · 1043 land routes, 19 straits, 23 mountain passes
+445 settlements (69 cities, 376 towns) · 118 countries · 5,140,000 people · 1015 land routes, 19 straits, 23 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -36,129 +36,126 @@ is about 1.2 km, so an army covers about 500 km a year, as on the Mitteleuropa m
 
 *Code, Country and Capital are data (Capital is a settlement ID; the script adds the name); the other columns are generated. A country that owns a city must have one as its capital (RULES.md §2).*
 
-| Code | Country | Capital | Settlements | Pop | Army | Ships | HRE |
-|---|---|---|---|---|---|---|---|
-| NOR | Norway | 2 Bergen | 1, 2, 3, 4 | 50K | 2,000 | 25 | — |
-| SWE | Sweden | 5 Stockholm | 5, 6, 7, 8, 9, 10, 11, 12, 13 | 100K | 4,000 | 50 | — |
-| DEN | Denmark | 14 Copenhagen | 14, 15, 16, 17, 18 | 50K | 2,000 | 25 | — |
-| GOT | Gotland | 19 Visby | 19 | 10K | 400 | 5 | — |
-| LIV | Livonian Order | 20 Riga | 20, 21, 22, 23 | 50K | 2,000 | 25 | — |
-| TEU | Teutonic Order | 24 Danzig | 24, 25, 26, 27 | 50K | 2,000 | 25 | — |
-| ENG | England | 28 London | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 86, 87, 88, 89, 90, 91, 92 | 300K | 12,000 | 150 | — |
-| SCO | Scotland | 49 Edinburgh | 49, 50, 51, 52 | 40K | 1,600 | 20 | — |
-| ISL | Lordship of the Isles | 53 Inverness | 53 | 10K | 400 | 5 | — |
-| TRN | Tyrone | 46 Dungannon | 46 | 10K | 400 | — | — |
-| THO | Thomond | 47 Ennis | 47 | 10K | 400 | — | — |
-| DES | Desmond | 48 Tralee | 48 | 10K | 400 | 5 | — |
-| FRA | France | 54 Paris | 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85 | 350K | 14,000 | 175 | — |
-| BUR | Burgundy | 103 Brussels | 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110 | 220K | 8,800 | 110 | part |
-| BRI | Brittany | 112 Nantes | 111, 112, 113, 114 | 50K | 2,000 | 25 | — |
-| ANJ | Anjou | 117 Marseille | 115, 116, 117, 118, 119 | 60K | 2,400 | 30 | part |
-| BOU | Bourbon | 120 Moulins | 120, 121 | 20K | 800 | — | — |
-| ARM | Armagnac | 122 Rodez | 122, 123 | 20K | 800 | — | — |
-| FOI | Foix-Béarn | 124 Pau | 124, 125 | 20K | 800 | — | — |
-| SAV | Savoy | 127 Chambéry | 127, 128, 129, 130, 131, 132 | 60K | 2,400 | 30 | ✓ |
-| LIE | Liège | 133 Liège | 133 | 20K | 800 | — | ✓ |
-| UTR | Utrecht | 134 Utrecht | 134 | 10K | 400 | — | ✓ |
-| GEL | Guelders | 135 Nijmegen | 135 | 10K | 400 | — | ✓ |
-| FRI | Frisia | 136 Groningen | 136 | 10K | 400 | 5 | ✓ |
-| LUX | Luxembourg | 137 Luxembourg | 137 | 10K | 400 | — | ✓ |
-| CAS | Castile | 138 Toledo | 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161 | 290K | 11,600 | 145 | — |
-| ARA | Aragon | 162 Zaragoza | 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 237, 238, 239, 240, 241, 242, 243 | 220K | 8,800 | 110 | — |
-| POR | Portugal | 173 Lisbon | 173, 174, 175, 176, 177, 178, 179 | 80K | 3,200 | 40 | — |
-| NAV | Navarre | 180 Pamplona | 180 | 10K | 400 | — | — |
-| GRA | Granada | 181 Granada | 181, 182, 183 | 40K | 1,600 | 20 | — |
-| MIL | Milan | 184 Milan | 184, 185, 186, 187, 188, 189, 190 | 80K | 3,200 | — | ✓ |
-| VEN | Venice | 191 Venice | 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206 | 190K | 7,600 | 95 | — |
-| GEN | Genoa | 207 Genoa | 207, 208, 209, 210, 211, 212 | 80K | 3,200 | 40 | — |
-| FLO | Florence | 213 Florence | 213, 214, 215 | 40K | 1,600 | 20 | — |
-| SIE | Siena | 216 Siena | 216 | 10K | 400 | — | — |
-| LUC | Lucca | 217 Lucca | 217 | 10K | 400 | — | — |
-| PAP | Papal States | 218 Rome | 126, 218, 219, 220, 221, 222 | 80K | 3,200 | 40 | — |
-| FER | Ferrara | 223 Ferrara | 223, 224 | 20K | 800 | — | part |
-| MAN | Mantua | 225 Mantua | 225 | 10K | 400 | — | ✓ |
-| MON | Montferrat | 226 Casale | 226 | 10K | 400 | — | ✓ |
-| RIM | Rimini | 227 Rimini | 227 | 10K | 400 | 5 | — |
-| NAP | Naples | 228 Naples | 228, 229, 230, 231, 232, 233, 234, 235, 236 | 100K | 4,000 | 50 | — |
-| SHO | Schleswig-Holstein | 244 Schleswig | 244 | 10K | 400 | 5 | — |
-| LUB | Lübeck | 245 Lübeck | 245 | 20K | 800 | 10 | ✓ |
-| HAM | Hamburg | 246 Hamburg | 246 | 20K | 800 | 10 | ✓ |
-| MEC | Mecklenburg | 247 Schwerin | 247, 248 | 20K | 800 | 10 | ✓ |
-| POM | Pomerania | 249 Stettin | 249, 250 | 20K | 800 | 10 | ✓ |
-| BRE | Bremen | 251 Bremen | 251 | 10K | 400 | 5 | ✓ |
-| BRU | Brunswick-Lüneburg | 253 Brunswick | 252, 253 | 30K | 1,200 | — | ✓ |
-| MAG | Magdeburg | 254 Magdeburg | 254 | 20K | 800 | — | ✓ |
-| BRA | Brandenburg | 255 Berlin | 255, 256, 257 | 30K | 1,200 | — | ✓ |
-| CLE | Cleves-Mark | 258 Wesel | 258 | 10K | 400 | — | ✓ |
-| MUN | Münster | 259 Münster | 259 | 10K | 400 | — | ✓ |
-| JUL | Jülich-Berg | 260 Düsseldorf | 260 | 10K | 400 | — | ✓ |
-| COL | Cologne | 261 Cologne | 261 | 20K | 800 | — | ✓ |
-| HES | Hesse | 262 Kassel | 262, 263 | 20K | 800 | — | ✓ |
-| SAX | Saxony | 264 Wittenberg | 264, 265, 266, 267 | 40K | 1,600 | — | ✓ |
-| LUS | Upper Lusatia | 268 Bautzen | 268 | 10K | 400 | — | ✓ |
-| SIL | Silesia | 269 Breslau | 269, 270 | 30K | 1,200 | — | ✓ |
-| OPP | Opole | 271 Oppeln | 271 | 10K | 400 | — | ✓ |
-| TRI | Trier | 272 Trier | 272 | 10K | 400 | — | ✓ |
-| MAI | Mainz | 273 Mainz | 273 | 10K | 400 | — | ✓ |
-| FFM | Frankfurt | 274 Frankfurt | 274 | 10K | 400 | — | ✓ |
-| WBG | Würzburg | 275 Würzburg | 275 | 10K | 400 | — | ✓ |
-| ANS | Ansbach-Kulmbach | 276 Ansbach | 276 | 10K | 400 | — | ✓ |
-| NUR | Nuremberg | 277 Nuremberg | 277 | 20K | 800 | — | ✓ |
-| PAL | Palatinate | 278 Heidelberg | 278, 279 | 20K | 800 | — | ✓ |
-| BOH | Bohemia | 280 Prague | 280, 281, 282, 283, 284 | 60K | 2,400 | — | ✓ |
-| MET | Metz | 285 Metz | 285 | 20K | 800 | — | ✓ |
-| STR | Strasbourg | 286 Strasbourg | 286 | 20K | 800 | — | ✓ |
-| BAD | Baden | 287 Baden | 287 | 10K | 400 | — | ✓ |
-| WRT | Württemberg | 288 Stuttgart | 288 | 10K | 400 | — | ✓ |
-| ULM | Ulm | 289 Ulm | 289 | 20K | 800 | — | ✓ |
-| AUG | Augsburg | 290 Augsburg | 290 | 20K | 800 | — | ✓ |
-| BIN | Bavaria-Ingolstadt | 291 Ingolstadt | 291 | 10K | 400 | — | ✓ |
-| REG | Regensburg | 292 Regensburg | 292 | 10K | 400 | — | ✓ |
-| BMU | Bavaria-Munich | 293 Munich | 293, 294 | 20K | 800 | — | ✓ |
-| BLA | Bavaria-Landshut | 295 Landshut | 295 | 10K | 400 | — | ✓ |
-| AUS | Austria | 296 Vienna | 296, 297, 298 | 40K | 1,600 | — | ✓ |
-| TYR | Tyrol | 299 Innsbruck | 299, 300, 301 | 30K | 1,200 | — | ✓ |
-| BAS | Basel | 302 Basel | 302 | 10K | 400 | — | ✓ |
-| ZUR | Zürich | 303 Zürich | 303 | 10K | 400 | — | ✓ |
-| SWI | Swiss Confederacy | 304 Bern | 304, 305 | 20K | 800 | — | ✓ |
-| SAL | Salzburg | 306 Salzburg | 306 | 10K | 400 | — | ✓ |
-| STY | Inner Austria | 307 Graz | 307, 308, 309 | 30K | 1,200 | 15 | ✓ |
-| POL | Poland | 310 Kraków | 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322 | 150K | 6,000 | — | — |
-| MAZ | Masovia | 323 Warsaw | 323, 324 | 20K | 800 | — | — |
-| LIT | Lithuania | 325 Vilnius | 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339 | 170K | 6,800 | — | — |
-| HUN | Hungary | 340 Buda | 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354 | 160K | 6,400 | — | — |
-| JIS | Upper Hungary | 355 Kassa | 355, 356 | 20K | 800 | — | — |
-| OTT | Ottoman Empire | 357 Edirne | 357, 358, 359, 360, 361, 362, 363, 364, 365, 366, 367, 368, 369, 370, 371, 372, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406 | 350K | 14,000 | 175 | — |
-| BYZ | Byzantium | 373 Constantinople | 373, 374 | 30K | 1,200 | 15 | — |
-| MOR | Morea | 375 Mistra | 375, 376, 377 | 30K | 1,200 | 15 | — |
-| SER | Serbia | 378 Novo Brdo | 378 | 10K | 400 | — | — |
-| BOS | Bosnia | 379 Jajce | 379, 380 | 20K | 800 | — | — |
-| HER | Herzegovina | 381 Blagaj | 381 | 10K | 400 | — | — |
-| RAG | Ragusa | 382 Ragusa | 382 | 10K | 400 | 5 | — |
-| WAL | Wallachia | 383 Târgoviște | 383, 384 | 20K | 800 | — | — |
-| MOL | Moldavia | 385 Suceava | 385, 386, 387 | 30K | 1,200 | 15 | — |
-| ATH | Athens | 388 Athens | 388 | 10K | 400 | 5 | — |
-| EPI | Epirus | 389 Arta | 389 | 10K | 400 | — | — |
-| LES | Lesbos | 390 Mytilene | 390 | 10K | 400 | 5 | — |
-| KAR | Karaman | 407 Konya | 407, 408, 409, 410, 411, 412 | 70K | 2,800 | 35 | — |
-| CAN | Candar | 413 Kastamonu | 413, 414 | 20K | 800 | 10 | — |
-| TRE | Trebizond | 415 Trebizond | 415 | 10K | 400 | 5 | — |
-| DUL | Dulkadir | 416 Elbistan | 416, 417 | 20K | 800 | — | — |
-| RAM | Ramadan | 418 Adana | 418 | 10K | 400 | — | — |
-| AQQ | Aq Qoyunlu | 419 Diyarbakır | 419, 420, 421 | 30K | 1,200 | — | — |
-| CYP | Cyprus | 422 Nicosia | 422 | 10K | 400 | — | — |
-| KRH | Knights of Rhodes | 423 Rhodes | 423, 424 | 20K | 800 | 10 | — |
-| MOS | Muscovy | 425 Moscow | 425, 426, 427, 428, 429, 430, 431, 432, 433 | 100K | 4,000 | — | — |
-| NOV | Novgorod | 434 Novgorod | 434, 435, 436, 437, 438, 439, 440 | 80K | 3,200 | — | — |
-| PSK | Pskov | 441 Pskov | 441 | 10K | 400 | — | — |
-| TVE | Tver | 442 Tver | 442, 443 | 20K | 800 | — | — |
-| RYA | Ryazan | 444 Ryazan | 444 | 10K | 400 | — | — |
-| CRI | Crimea | 445 Qırım | 445 | 10K | 400 | — | — |
-| THE | Theodoro | 446 Mangup | 446 | 10K | 400 | — | — |
-| GHO | Great Horde | 447 Azak | 447 | 10K | 400 | 5 | — |
-| MRC | Morocco | 448 Fez | 448, 449, 450, 451, 452, 453, 454, 455 | 100K | 4,000 | 50 | — |
-| TLE | Tlemcen | 456 Tlemcen | 456, 457, 458 | 40K | 1,600 | 20 | — |
-| TUN | Tunis | 459 Tunis | 459, 460, 461, 462, 463, 464, 465, 466 | 90K | 3,600 | 45 | — |
+| Code | Country | Capital | Colour | Settlements | Pop | Army | Ships | HRE |
+|---|---|---|---|---|---|---|---|---|
+| NOR | Norway | 2 Bergen | #e6bcd4 | 1, 2, 3, 4 | 50K | 2,000 | 25 | — |
+| SWE | Sweden | 5 Stockholm | #a8c4ec | 5, 6, 7, 8, 9, 10, 11, 12, 13 | 100K | 4,000 | 50 | — |
+| DEN | Denmark | 14 Copenhagen | #f0a8a0 | 14, 15, 16, 17, 18 | 50K | 2,000 | 25 | — |
+| GOT | Gotland | 19 Visby |  | 19 | 10K | 400 | 5 | — |
+| LIV | Livonian Order | 20 Riga | #c4cce0 | 20, 21, 22, 23 | 50K | 2,000 | 25 | — |
+| TEU | Teutonic Order | 24 Danzig | #d4d4d4 | 24, 25, 26, 27 | 50K | 2,000 | 25 | — |
+| ENG | England | 28 London | #ea9999 | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 83, 84, 85, 86, 87, 88, 89 | 300K | 12,000 | 150 | — |
+| SCO | Scotland | 49 Edinburgh | #b8d8f0 | 49, 50, 51, 52 | 40K | 1,600 | 20 | — |
+| ISL | Lordship of the Isles | 53 Inverness |  | 53 | 10K | 400 | 5 | — |
+| TRN | Tyrone | 46 Dungannon |  | 46 | 10K | 400 | — | — |
+| THO | Thomond | 47 Ennis |  | 47 | 10K | 400 | — | — |
+| DES | Desmond | 48 Tralee |  | 48 | 10K | 400 | 5 | — |
+| FRA | France | 54 Paris | #8fb4ea | 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82 | 320K | 12,800 | 160 | — |
+| BUR | Burgundy | 98 Brussels | #c4a0d8 | 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104 | 190K | 7,600 | 95 | part |
+| BRI | Brittany | 106 Nantes | #d8d8cc | 105, 106, 107, 108 | 50K | 2,000 | 25 | — |
+| ANJ | Anjou | 110 Marseille | #f2c7a6 | 109, 110, 111, 112 | 50K | 2,000 | 25 | part |
+| BOU | Bourbon | 113 Moulins | #d6e39c | 113, 114 | 20K | 800 | — | — |
+| ARM | Armagnac | 115 Rodez |  | 115, 116 | 20K | 800 | — | — |
+| FOI | Foix-Béarn | 117 Pau |  | 117, 118 | 20K | 800 | — | — |
+| SAV | Savoy | 120 Chambéry | #9fd6c4 | 120, 121, 122, 123, 124, 125 | 60K | 2,400 | 30 | ✓ |
+| LIE | Liège | 126 Liège |  | 126 | 20K | 800 | — | ✓ |
+| UTR | Utrecht | 127 Utrecht |  | 127 | 10K | 400 | — | ✓ |
+| GEL | Guelders | 128 Nijmegen |  | 128 | 10K | 400 | — | ✓ |
+| FRI | Frisia | 129 Groningen |  | 129 | 10K | 400 | 5 | ✓ |
+| LUX | Luxembourg | 130 Luxembourg |  | 130 | 10K | 400 | — | ✓ |
+| CAS | Castile | 131 Toledo | #f2d06b | 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154 | 290K | 11,600 | 145 | — |
+| ARA | Aragon | 155 Zaragoza | #f4b073 | 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 223, 224, 225, 226, 227, 228, 229 | 220K | 8,800 | 110 | — |
+| POR | Portugal | 166 Lisbon | #9fd29a | 166, 167, 168, 169, 170, 171, 172 | 80K | 3,200 | 40 | — |
+| NAV | Navarre | 173 Pamplona |  | 173 | 10K | 400 | — | — |
+| GRA | Granada | 174 Granada | #d4e8a0 | 174, 175, 176 | 40K | 1,600 | 20 | — |
+| MIL | Milan | 177 Milan | #f0aaaa | 177, 178, 179, 180 | 50K | 2,000 | — | ✓ |
+| VEN | Venice | 181 Venice | #8fd4d4 | 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194 | 170K | 6,800 | 85 | — |
+| GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 35 | — |
+| FLO | Florence | 200 Florence | #f6cf9e | 200, 201, 202 | 40K | 1,600 | 20 | — |
+| SIE | Siena | 203 Siena |  | 203 | 10K | 400 | — | — |
+| PAP | Papal States | 204 Rome | #f4eba0 | 119, 204, 205, 206, 207, 208 | 80K | 3,200 | 40 | — |
+| FER | Ferrara | 209 Ferrara |  | 209, 210 | 20K | 800 | — | part |
+| MAN | Mantua | 211 Mantua |  | 211 | 10K | 400 | — | ✓ |
+| MON | Montferrat | 212 Casale |  | 212 | 10K | 400 | — | ✓ |
+| RIM | Rimini | 213 Rimini |  | 213 | 10K | 400 | 5 | — |
+| NAP | Naples | 214 Naples | #cdb4e6 | 214, 215, 216, 217, 218, 219, 220, 221, 222 | 100K | 4,000 | 50 | — |
+| SHO | Schleswig-Holstein | 230 Schleswig |  | 230 | 10K | 400 | 5 | — |
+| LUB | Lübeck | 231 Lübeck |  | 231 | 20K | 800 | 10 | ✓ |
+| HAM | Hamburg | 232 Hamburg |  | 232 | 20K | 800 | 10 | ✓ |
+| MEC | Mecklenburg | 233 Schwerin |  | 233, 234 | 20K | 800 | 10 | ✓ |
+| POM | Pomerania | 235 Stettin |  | 235, 236 | 20K | 800 | 10 | ✓ |
+| BRE | Bremen | 237 Bremen |  | 237 | 10K | 400 | 5 | ✓ |
+| BRU | Brunswick-Lüneburg | 239 Brunswick |  | 238, 239 | 30K | 1,200 | — | ✓ |
+| MAG | Magdeburg | 240 Magdeburg |  | 240 | 20K | 800 | — | ✓ |
+| BRA | Brandenburg | 241 Berlin | #cfc4b0 | 241, 242, 243 | 30K | 1,200 | — | ✓ |
+| CLE | Cleves-Mark | 244 Wesel |  | 244 | 10K | 400 | — | ✓ |
+| MUN | Münster | 245 Münster |  | 245 | 10K | 400 | — | ✓ |
+| JUL | Jülich-Berg | 246 Düsseldorf |  | 246 | 10K | 400 | — | ✓ |
+| COL | Cologne | 247 Cologne |  | 247 | 20K | 800 | — | ✓ |
+| HES | Hesse | 248 Kassel |  | 248, 249 | 20K | 800 | — | ✓ |
+| SAX | Saxony | 250 Wittenberg | #b8dca8 | 250, 251, 252, 253 | 40K | 1,600 | — | ✓ |
+| LUS | Upper Lusatia | 254 Bautzen |  | 254 | 10K | 400 | — | ✓ |
+| SIL | Silesia | 255 Breslau |  | 255, 256 | 30K | 1,200 | — | ✓ |
+| OPP | Opole | 257 Oppeln |  | 257 | 10K | 400 | — | ✓ |
+| TRI | Trier | 258 Trier |  | 258 | 10K | 400 | — | ✓ |
+| MAI | Mainz | 259 Mainz |  | 259 | 10K | 400 | — | ✓ |
+| WBG | Würzburg | 260 Würzburg |  | 260 | 10K | 400 | — | ✓ |
+| ANS | Ansbach-Kulmbach | 261 Ansbach |  | 261 | 10K | 400 | — | ✓ |
+| NUR | Nuremberg | 262 Nuremberg |  | 262 | 20K | 800 | — | ✓ |
+| PAL | Palatinate | 263 Heidelberg |  | 263, 264 | 20K | 800 | — | ✓ |
+| BOH | Bohemia | 265 Prague | #e8b0a0 | 265, 266, 267, 268, 269 | 60K | 2,400 | — | ✓ |
+| MET | Metz | 270 Metz |  | 270 | 20K | 800 | — | ✓ |
+| STR | Strasbourg | 271 Strasbourg |  | 271 | 20K | 800 | — | ✓ |
+| BAD | Baden | 272 Baden |  | 272 | 10K | 400 | — | ✓ |
+| WRT | Württemberg | 273 Stuttgart |  | 273 | 10K | 400 | — | ✓ |
+| ULM | Ulm | 274 Ulm |  | 274 | 20K | 800 | — | ✓ |
+| AUG | Augsburg | 275 Augsburg |  | 275 | 20K | 800 | — | ✓ |
+| BIN | Bavaria-Ingolstadt | 276 Ingolstadt |  | 276 | 10K | 400 | — | ✓ |
+| REG | Regensburg | 277 Regensburg |  | 277 | 10K | 400 | — | ✓ |
+| BMU | Bavaria-Munich | 278 Munich |  | 278 | 10K | 400 | — | ✓ |
+| BLA | Bavaria-Landshut | 279 Landshut |  | 279 | 10K | 400 | — | ✓ |
+| AUS | Austria | 280 Vienna | #f0e0b8 | 280, 281, 282 | 40K | 1,600 | — | ✓ |
+| TYR | Tyrol | 283 Innsbruck |  | 283, 284, 285 | 30K | 1,200 | — | ✓ |
+| BAS | Basel | 286 Basel |  | 286 | 10K | 400 | — | ✓ |
+| ZUR | Zürich | 287 Zürich |  | 287 | 10K | 400 | — | ✓ |
+| SWI | Swiss Confederacy | 288 Bern |  | 288, 289 | 20K | 800 | — | ✓ |
+| SAL | Salzburg | 290 Salzburg |  | 290 | 10K | 400 | — | ✓ |
+| STY | Inner Austria | 291 Graz |  | 291, 292, 293 | 30K | 1,200 | 15 | ✓ |
+| POL | Poland | 294 Kraków | #f2b0c0 | 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305 | 140K | 5,600 | — | — |
+| MAZ | Masovia | 306 Warsaw |  | 306, 307 | 20K | 800 | — | — |
+| LIT | Lithuania | 308 Vilnius | #b8a4dc | 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322 | 170K | 6,800 | — | — |
+| HUN | Hungary | 323 Buda | #e2b88a | 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336 | 150K | 6,000 | — | — |
+| JIS | Upper Hungary | 337 Kassa |  | 337, 338 | 20K | 800 | — | — |
+| OTT | Ottoman Empire | 339 Edirne | #8cc68c | 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386 | 330K | 13,200 | 165 | — |
+| BYZ | Byzantium | 354 Constantinople | #b89ad8 | 354, 355 | 30K | 1,200 | 15 | — |
+| MOR | Morea | 356 Mistra | #d8c0ec | 356, 357, 358 | 30K | 1,200 | 15 | — |
+| SER | Serbia | 359 Novo Brdo |  | 359 | 10K | 400 | — | — |
+| BOS | Bosnia | 360 Jajce |  | 360, 361 | 20K | 800 | — | — |
+| HER | Herzegovina | 362 Blagaj |  | 362 | 10K | 400 | — | — |
+| RAG | Ragusa | 363 Ragusa |  | 363 | 10K | 400 | 5 | — |
+| WAL | Wallachia | 364 Târgoviște | #a8d0e8 | 364, 365 | 20K | 800 | — | — |
+| MOL | Moldavia | 366 Suceava | #c8e8d0 | 366, 367, 368 | 30K | 1,200 | 15 | — |
+| ATH | Athens | 369 Athens |  | 369 | 10K | 400 | 5 | — |
+| EPI | Epirus | 370 Arta |  | 370 | 10K | 400 | — | — |
+| LES | Lesbos | 371 Mytilene |  | 371 | 10K | 400 | 5 | — |
+| KAR | Karaman | 387 Konya | #e8c49a | 387, 388, 389, 390, 391, 392 | 70K | 2,800 | 35 | — |
+| CAN | Candar | 393 Kastamonu |  | 393, 394 | 20K | 800 | 10 | — |
+| TRE | Trebizond | 395 Trebizond |  | 395 | 10K | 400 | 5 | — |
+| DUL | Dulkadir | 396 Elbistan |  | 396, 397 | 20K | 800 | — | — |
+| RAM | Ramadan | 398 Adana |  | 398 | 10K | 400 | — | — |
+| AQQ | Aq Qoyunlu | 399 Diyarbakır | #dcb0b0 | 399, 400, 401 | 30K | 1,200 | — | — |
+| CYP | Cyprus | 402 Nicosia |  | 402 | 10K | 400 | — | — |
+| KRH | Knights of Rhodes | 403 Rhodes |  | 403, 404 | 20K | 800 | 10 | — |
+| MOS | Muscovy | 405 Moscow | #b0dca0 | 405, 406, 407, 408, 409, 410, 411, 412, 413 | 100K | 4,000 | — | — |
+| NOV | Novgorod | 414 Novgorod | #dcc090 | 414, 415, 416, 417, 418, 419, 420 | 80K | 3,200 | — | — |
+| PSK | Pskov | 421 Pskov |  | 421 | 10K | 400 | — | — |
+| TVE | Tver | 422 Tver |  | 422, 423 | 20K | 800 | — | — |
+| RYA | Ryazan | 424 Ryazan |  | 424 | 10K | 400 | — | — |
+| THE | Theodoro | 425 Mangup |  | 425 | 10K | 400 | — | — |
+| GHO | Great Horde | 426 Azak | #e8de9c | 426 | 10K | 400 | 5 | — |
+| MRC | Morocco | 427 Fez | #e0a888 | 427, 428, 429, 430, 431, 432, 433, 434 | 100K | 4,000 | 50 | — |
+| TLE | Tlemcen | 435 Tlemcen | #d8cc9c | 435, 436, 437 | 40K | 1,600 | 20 | — |
+| TUN | Tunis | 438 Tunis | #b8d8b0 | 438, 439, 440, 441, 442, 443, 444, 445 | 90K | 3,600 | 45 | — |
 
 ## Settlements
 
@@ -174,472 +171,451 @@ is about 1.2 km, so an army covers about 500 km a year, as on the Mitteleuropa m
 
 | ID | Name | Country | Type | Port | HRE | X | Y | Borders | Straits |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Oslo | NOR | town | port |  | 877 | 605 | 2, 3, 6, 7, 9, 10 |  |
-| 2 | Bergen | NOR | city | port |  | 757 | 571 | 1, 3 |  |
-| 3 | Nidaros | NOR | town | port |  | 879 | 442 | 1, 2, 10, 11 |  |
-| 4 | Vardøhus | NOR | town | port |  | 1233 | 90 | 11 |  |
-| 5 | Stockholm | SWE | city | port |  | 1046 | 633 | 6, 7 |  |
-| 6 | Uppsala | SWE | town |  |  | 1035 | 609 | 1, 5, 7, 10 |  |
-| 7 | Linköping | SWE | town |  |  | 989 | 677 | 1, 5, 6, 8, 9 |  |
-| 8 | Kalmar | SWE | town | port |  | 1006 | 755 | 7, 9, 15 | 19 |
-| 9 | Älvsborg | SWE | town | port |  | 902 | 706 | 1, 7, 8, 15 |  |
-| 10 | Gävle | SWE | town | port |  | 1021 | 572 | 1, 3, 6, 11 |  |
-| 11 | Torneå | SWE | town | port |  | 1151 | 321 | 3, 4, 10, 12, 13, 437, 440 |  |
-| 12 | Åbo | SWE | town | port |  | 1139 | 575 | 11, 13 |  |
-| 13 | Viborg | SWE | town | port |  | 1283 | 542 | 11, 12, 434, 436, 437 |  |
-| 14 | Copenhagen | DEN | town | port |  | 907 | 800 |  | 15, 16 |
-| 15 | Lund | DEN | town |  |  | 928 | 800 | 8, 9 | 14 |
-| 16 | Odense | DEN | town | port |  | 856 | 810 |  | 14, 17 |
-| 17 | Aarhus | DEN | town | port |  | 853 | 773 | 18, 244 | 16 |
-| 18 | Aalborg | DEN | town | port |  | 849 | 734 | 17 |  |
-| 19 | Visby | GOT | town | port |  | 1060 | 711 |  | 8 |
-| 20 | Riga | LIV | city | port |  | 1202 | 730 | 22, 23, 27, 325, 326, 327, 332, 441 |  |
-| 21 | Reval | LIV | town | port |  | 1202 | 618 | 22, 23 |  |
-| 22 | Dorpat | LIV | town |  |  | 1255 | 656 | 20, 21, 23, 434, 441 |  |
-| 23 | Pernau | LIV | town | port |  | 1202 | 663 | 20, 21, 22 |  |
-| 24 | Danzig | TEU | city | port |  | 1071 | 861 | 25, 26, 249, 316 |  |
-| 25 | Königsberg | TEU | town | port |  | 1119 | 840 | 24, 26, 27, 323, 324, 326, 327, 328 |  |
-| 26 | Thorn | TEU | town |  |  | 1073 | 920 | 24, 25, 316, 324 |  |
-| 27 | Memel | TEU | town | port |  | 1136 | 791 | 20, 25, 327 |  |
-| 28 | London | ENG | city | port |  | 551 | 947 | 31, 32, 35, 36 |  |
-| 29 | York | ENG | city |  |  | 548 | 833 | 34, 37, 38, 39 |  |
-| 30 | Bristol | ENG | city | port |  | 482 | 935 | 32, 33, 35, 40, 41 |  |
-| 31 | Norwich | ENG | town | port |  | 600 | 905 | 28, 34 |  |
-| 32 | Southampton | ENG | town | port |  | 510 | 967 | 28, 30, 33 |  |
-| 33 | Exeter | ENG | town | port |  | 448 | 960 | 30, 32 |  |
-| 34 | Lincoln | ENG | town |  |  | 556 | 869 | 29, 31, 35, 38 |  |
-| 35 | Coventry | ENG | town |  |  | 522 | 899 | 28, 30, 34, 38, 40 |  |
-| 36 | Canterbury | ENG | town |  |  | 582 | 964 | 28 | 86 |
-| 37 | Newcastle | ENG | town | port |  | 545 | 785 | 29, 39, 49 |  |
-| 38 | Chester | ENG | town | port |  | 493 | 856 | 29, 34, 35, 39, 40 | 42 |
-| 39 | Carlisle | ENG | town |  |  | 510 | 781 | 29, 37, 38, 49, 52 |  |
-| 40 | Shrewsbury | ENG | town |  |  | 492 | 878 | 30, 35, 38, 41 |  |
-| 41 | Carmarthen | ENG | town | port |  | 440 | 905 | 30, 40 |  |
-| 42 | Dublin | ENG | town | port |  | 405 | 825 | 43, 45, 46, 47 | 38 |
-| 43 | Waterford | ENG | town | port |  | 370 | 866 | 42, 44, 47 |  |
-| 44 | Cork | ENG | town | port |  | 329 | 870 | 43, 47, 48 |  |
-| 45 | Galway | ENG | town | port |  | 334 | 802 | 42, 46, 47 |  |
-| 46 | Dungannon | TRN | town |  |  | 408 | 771 | 42, 45 |  |
-| 47 | Ennis | THO | town |  |  | 329 | 825 | 42, 43, 44, 45, 48 |  |
-| 48 | Tralee | DES | town | port |  | 302 | 843 | 44, 47 |  |
-| 49 | Edinburgh | SCO | town | port |  | 515 | 734 | 37, 39, 50, 52 |  |
-| 50 | Perth | SCO | town |  |  | 515 | 711 | 49, 51, 52, 53 |  |
-| 51 | Aberdeen | SCO | town | port |  | 553 | 683 | 50, 53 |  |
-| 52 | Glasgow | SCO | town |  |  | 488 | 730 | 39, 49, 50, 53 |  |
-| 53 | Inverness | ISL | town | port |  | 506 | 658 | 50, 51, 52 |  |
-| 54 | Paris | FRA | city |  |  | 599 | 1079 | 55, 57, 81, 82, 84, 85, 95 |  |
-| 55 | Orléans | FRA | town |  |  | 578 | 1119 | 54, 56, 57, 58, 95 |  |
-| 56 | Blois | FRA | town |  |  | 559 | 1130 | 55, 57, 58, 59, 90 |  |
-| 57 | Chartres | FRA | town |  |  | 570 | 1092 | 54, 55, 56, 87, 88, 90 |  |
-| 58 | Bourges | FRA | town |  |  | 587 | 1158 | 55, 56, 60, 63, 80, 95, 120 |  |
-| 59 | Tours | FRA | town |  |  | 538 | 1135 | 56, 60, 90, 115 |  |
-| 60 | Poitiers | FRA | town |  |  | 520 | 1169 | 58, 59, 61, 62, 63, 115 |  |
-| 61 | La Rochelle | FRA | town | port |  | 473 | 1177 | 60, 62, 91, 112 |  |
-| 62 | Angoulême | FRA | town |  |  | 506 | 1209 | 60, 61, 63, 64, 91 |  |
-| 63 | Limoges | FRA | town |  |  | 542 | 1208 | 58, 60, 62, 64, 65, 76, 121 |  |
-| 64 | Périgueux | FRA | town |  |  | 519 | 1234 | 62, 63, 65, 66, 91 |  |
-| 65 | Cahors | FRA | town |  |  | 536 | 1271 | 63, 64, 66, 67, 69, 76, 122 |  |
-| 66 | Agen | FRA | town |  |  | 508 | 1277 | 64, 65, 67, 91, 123 |  |
-| 67 | Montauban | FRA | town |  |  | 530 | 1289 | 65, 66, 68, 69, 123 |  |
-| 68 | Toulouse | FRA | city |  |  | 529 | 1309 | 67, 69, 70, 123, 125 |  |
-| 69 | Albi | FRA | town |  |  | 555 | 1298 | 65, 67, 68, 70, 71, 122 |  |
-| 70 | Carcassonne | FRA | town |  |  | 556 | 1332 | 68, 69, 71, 125, 169 |  |
-| 71 | Narbonne | FRA | town |  |  | 577 | 1337 | 69, 70, 72, 169 |  |
-| 72 | Montpellier | FRA | town |  |  | 609 | 1322 | 71, 73, 74, 122 |  |
-| 73 | Aigues-Mortes | FRA | town | port |  | 622 | 1324 | 72, 74 |  |
-| 74 | Nîmes | FRA | town |  |  | 626 | 1314 | 72, 73, 75, 78, 122, 126 |  |
-| 75 | Le Puy | FRA | town |  |  | 618 | 1257 | 74, 76, 77, 78, 121, 122 |  |
-| 76 | Saint-Flour | FRA | town |  |  | 593 | 1254 | 63, 65, 75, 121, 122 |  |
-| 77 | Lyon | FRA | city |  |  | 653 | 1229 | 75, 78, 79, 96, 121, 127, 128 |  |
-| 78 | Valence | FRA | town |  |  | 650 | 1267 | 74, 75, 77, 79, 126 |  |
-| 79 | Grenoble | FRA | town |  |  | 678 | 1259 | 77, 78, 116, 127, 131, 132 |  |
-| 80 | Nevers | FRA | town |  |  | 609 | 1166 | 58, 93, 95, 120 |  |
-| 81 | Troyes | FRA | town |  |  | 646 | 1112 | 54, 82, 83, 93, 95, 119 |  |
-| 82 | Reims | FRA | town |  |  | 651 | 1069 | 54, 81, 83, 84, 107 |  |
-| 83 | Châlons | FRA | town |  |  | 659 | 1083 | 81, 82, 119, 137 |  |
-| 84 | Laon | FRA | town |  |  | 641 | 1053 | 54, 82, 85, 97, 98, 106 |  |
-| 85 | Beauvais | FRA | town |  |  | 596 | 1052 | 54, 84, 87, 98, 99 |  |
-| 86 | Calais | ENG | town | port |  | 601 | 988 | 97, 99, 100, 101 | 36 |
-| 87 | Rouen | ENG | city | port |  | 567 | 1046 | 57, 85, 88, 99 |  |
-| 88 | Caen | ENG | town | port |  | 522 | 1049 | 57, 87, 89, 90, 111 |  |
-| 89 | Cherbourg | ENG | town | port |  | 490 | 1025 | 88, 111 |  |
-| 90 | Le Mans | ENG | town |  |  | 528 | 1105 | 56, 57, 59, 88, 111, 115 |  |
-| 91 | Bordeaux | ENG | city | port |  | 475 | 1241 | 61, 62, 64, 66, 92, 124 |  |
-| 92 | Bayonne | ENG | town | port |  | 436 | 1296 | 91, 124, 180 |  |
-| 93 | Dijon | BUR | town |  |  | 669 | 1160 | 80, 81, 94, 95, 96, 118, 119 |  |
-| 94 | Besançon | BUR | town |  | HRE | 698 | 1167 | 93, 118, 128, 130, 302, 304 |  |
-| 95 | Auxerre | BUR | town |  |  | 628 | 1132 | 54, 55, 58, 80, 81, 93 |  |
-| 96 | Mâcon | BUR | town |  |  | 656 | 1204 | 77, 93, 120, 128 |  |
-| 97 | Arras | BUR | town |  |  | 622 | 1017 | 84, 86, 98, 99, 100, 106 |  |
-| 98 | Amiens | BUR | town |  |  | 606 | 1032 | 84, 85, 97, 99 |  |
-| 99 | Abbeville | BUR | town | port |  | 594 | 1020 | 85, 86, 87, 97, 98 |  |
-| 100 | Lille | BUR | town |  |  | 633 | 1003 | 86, 97, 101, 102, 106 |  |
-| 101 | Bruges | BUR | city | port |  | 642 | 978 | 86, 100, 102 |  |
-| 102 | Ghent | BUR | city |  |  | 654 | 987 | 100, 101, 103, 104, 106 |  |
-| 103 | Brussels | BUR | city |  | HRE | 671 | 999 | 102, 104, 105, 106, 107 |  |
-| 104 | Antwerp | BUR | city | port | HRE | 675 | 982 | 102, 103, 105, 108, 109, 135 |  |
-| 105 | Leuven | BUR | town |  | HRE | 681 | 999 | 103, 104, 107, 133 |  |
-| 106 | Mons | BUR | town |  | HRE | 657 | 1015 | 84, 97, 100, 102, 103, 107 |  |
-| 107 | Namur | BUR | town |  | HRE | 683 | 1018 | 82, 103, 105, 106, 133, 137 |  |
-| 108 | Middelburg | BUR | town | port | HRE | 658 | 965 | 104, 109 |  |
-| 109 | Dordrecht | BUR | town | port | HRE | 686 | 957 | 104, 108, 110, 134, 135 |  |
-| 110 | Amsterdam | BUR | town | port | HRE | 694 | 932 | 109, 134 |  |
-| 111 | Rennes | BRI | town |  |  | 474 | 1088 | 88, 89, 90, 112, 113, 115 |  |
-| 112 | Nantes | BRI | city | port |  | 469 | 1128 | 61, 111, 113, 115 |  |
-| 113 | Vannes | BRI | town | port |  | 437 | 1100 | 111, 112, 114 |  |
-| 114 | Brest | BRI | town | port |  | 394 | 1055 | 113 |  |
-| 115 | Angers | ANJ | town |  |  | 501 | 1124 | 59, 60, 90, 111, 112 |  |
-| 116 | Aix | ANJ | town |  |  | 659 | 1333 | 79, 117, 126, 132 |  |
-| 117 | Marseille | ANJ | city | port |  | 665 | 1344 | 116, 132 |  |
-| 118 | Nancy | ANJ | town |  | HRE | 711 | 1103 | 93, 94, 119, 285, 286, 301, 302 |  |
-| 119 | Bar-le-Duc | ANJ | town |  | HRE | 681 | 1095 | 81, 83, 93, 118, 137, 285 |  |
-| 120 | Moulins | BOU | town |  |  | 612 | 1186 | 58, 80, 96, 121 |  |
-| 121 | Clermont | BOU | town |  |  | 598 | 1220 | 63, 75, 76, 77, 120 |  |
-| 122 | Rodez | ARM | town |  |  | 571 | 1282 | 65, 69, 72, 74, 75, 76 |  |
-| 123 | Lectoure | ARM | town |  |  | 505 | 1289 | 66, 67, 68, 124 |  |
-| 124 | Pau | FOI | town |  |  | 467 | 1311 | 91, 92, 123, 125, 163 |  |
-| 125 | Foix | FOI | town |  |  | 529 | 1338 | 68, 70, 124, 163, 165, 166, 168, 169 |  |
-| 126 | Avignon | PAP | town |  |  | 641 | 1311 | 74, 78, 116 |  |
-| 127 | Chambéry | SAV | town |  | HRE | 686 | 1242 | 77, 79, 128, 129, 131 |  |
-| 128 | Bourg-en-Bresse | SAV | town |  | HRE | 668 | 1211 | 77, 94, 96, 127, 129 |  |
-| 129 | Geneva | SAV | town |  | HRE | 697 | 1215 | 127, 128, 130, 131 |  |
-| 130 | Lausanne | SAV | town |  | HRE | 713 | 1202 | 94, 129, 131, 304 |  |
-| 131 | Turin | SAV | town |  | HRE | 740 | 1271 | 79, 127, 129, 130, 132, 186, 190, 208, 226 |  |
-| 132 | Nice | SAV | town | port | HRE | 717 | 1329 | 79, 116, 117, 131, 208 |  |
-| 133 | Liège | LIE | city |  | HRE | 704 | 1013 | 105, 107, 135, 137, 260, 261, 272 |  |
-| 134 | Utrecht | UTR | town |  | HRE | 700 | 946 | 109, 110, 135, 136 |  |
-| 135 | Nijmegen | GEL | town |  | HRE | 719 | 960 | 104, 109, 133, 134, 136, 258, 260 |  |
-| 136 | Groningen | FRI | town | port | HRE | 746 | 900 | 134, 135, 251, 259 |  |
-| 137 | Luxembourg | LUX | town |  | HRE | 715 | 1061 | 83, 107, 119, 133, 272, 285 |  |
-| 138 | Toledo | CAS | city |  |  | 309 | 1435 | 139, 146, 147, 150, 152 |  |
-| 139 | Madrid | CAS | town |  |  | 327 | 1413 | 138, 146, 152, 153, 156 |  |
-| 140 | Seville | CAS | city | port |  | 210 | 1526 | 141, 143, 148, 177, 178, 182 |  |
-| 141 | Córdoba | CAS | city |  |  | 259 | 1517 | 140, 142, 147, 148, 149, 182 |  |
-| 142 | Jaén | CAS | town |  |  | 293 | 1531 | 141, 144, 147, 181, 183 |  |
-| 143 | Cádiz | CAS | town | port |  | 193 | 1562 | 140, 182 | 451 |
-| 144 | Murcia | CAS | town |  |  | 390 | 1544 | 142, 145, 146, 147, 171, 183 |  |
-| 145 | Cartagena | CAS | town | port |  | 389 | 1560 | 144, 183 |  |
-| 146 | Cuenca | CAS | town |  |  | 377 | 1442 | 138, 139, 144, 147, 156, 164, 170, 171 |  |
-| 147 | Ciudad Real | CAS | town |  |  | 302 | 1475 | 138, 141, 142, 144, 146, 149 |  |
-| 148 | Badajoz | CAS | town |  |  | 196 | 1450 | 140, 141, 149, 176, 177 |  |
-| 149 | Cáceres | CAS | town |  |  | 224 | 1430 | 141, 147, 148, 150, 176 |  |
-| 150 | Plasencia | CAS | town |  |  | 241 | 1408 | 138, 149, 151, 152, 176 |  |
-| 151 | Salamanca | CAS | town |  |  | 267 | 1371 | 150, 152, 154, 157, 175 |  |
-| 152 | Ávila | CAS | town |  |  | 296 | 1394 | 138, 139, 150, 151, 153, 154 |  |
-| 153 | Segovia | CAS | town |  |  | 319 | 1386 | 139, 152, 154, 155, 156 |  |
-| 154 | Valladolid | CAS | city |  |  | 307 | 1350 | 151, 152, 153, 155, 157 |  |
-| 155 | Burgos | CAS | city |  |  | 349 | 1328 | 153, 154, 156, 157, 159 |  |
-| 156 | Soria | CAS | town |  |  | 383 | 1364 | 139, 146, 153, 155, 162, 164, 180 |  |
-| 157 | León | CAS | town |  |  | 291 | 1300 | 151, 154, 155, 158, 160, 175 |  |
-| 158 | Oviedo | CAS | town |  |  | 292 | 1264 | 157, 159, 161 |  |
-| 159 | Bilbao | CAS | town | port |  | 384 | 1294 | 155, 158, 180 |  |
-| 160 | Santiago | CAS | town |  |  | 199 | 1259 | 157, 161, 175 |  |
-| 161 | A Coruña | CAS | town | port |  | 214 | 1243 | 158, 160 |  |
-| 162 | Zaragoza | ARA | city |  |  | 435 | 1381 | 156, 163, 164, 165, 180 |  |
-| 163 | Huesca | ARA | town |  |  | 455 | 1362 | 124, 125, 162, 165, 180 |  |
-| 164 | Teruel | ARA | town |  |  | 414 | 1438 | 146, 156, 162, 165, 167, 170 |  |
-| 165 | Lleida | ARA | town |  |  | 485 | 1393 | 125, 162, 163, 164, 166, 167 |  |
-| 166 | Barcelona | ARA | city | port |  | 533 | 1410 | 125, 165, 167, 168 | 172 |
-| 167 | Tarragona | ARA | town | port |  | 502 | 1416 | 164, 165, 166, 170 |  |
-| 168 | Girona | ARA | town |  |  | 562 | 1390 | 125, 166, 169 |  |
-| 169 | Perpignan | ARA | town |  |  | 570 | 1358 | 70, 71, 125, 168 |  |
-| 170 | Valencia | ARA | city | port |  | 429 | 1483 | 146, 164, 167, 171 |  |
-| 171 | Alicante | ARA | town | port |  | 416 | 1529 | 144, 146, 170 |  |
-| 172 | Palma | ARA | town | port |  | 542 | 1497 |  | 166 |
-| 173 | Lisbon | POR | city | port |  | 119 | 1433 | 176, 177, 178 |  |
-| 174 | Porto | POR | town | port |  | 175 | 1335 | 175, 176 |  |
-| 175 | Braga | POR | town |  |  | 184 | 1318 | 151, 157, 160, 174 |  |
-| 176 | Coimbra | POR | town |  |  | 165 | 1376 | 148, 149, 150, 173, 174, 177 |  |
-| 177 | Évora | POR | town |  |  | 159 | 1454 | 140, 148, 173, 176, 178 |  |
-| 178 | Lagos | POR | town | port |  | 112 | 1508 | 140, 173, 177 |  |
-| 179 | Ceuta | POR | town | port |  | 211 | 1606 | 448, 450, 451 |  |
-| 180 | Pamplona | NAV | town |  |  | 421 | 1323 | 92, 156, 159, 162, 163 |  |
-| 181 | Granada | GRA | city |  |  | 293 | 1559 | 142, 182, 183 |  |
-| 182 | Málaga | GRA | town | port |  | 258 | 1569 | 140, 141, 143, 181 |  |
-| 183 | Almería | GRA | town | port |  | 331 | 1582 | 142, 144, 145, 181 |  |
-| 184 | Milan | MIL | city |  | HRE | 789 | 1258 | 185, 186, 188, 196, 226 |  |
-| 185 | Pavia | MIL | town |  | HRE | 787 | 1270 | 184, 188, 190, 207, 226 |  |
-| 186 | Como | MIL | town |  | HRE | 787 | 1242 | 131, 184, 196, 226, 305 |  |
-| 187 | Cremona | MIL | town |  | HRE | 815 | 1275 | 188, 189, 195, 225 |  |
-| 188 | Piacenza | MIL | town |  | HRE | 804 | 1277 | 184, 185, 187, 189, 207 |  |
-| 189 | Parma | MIL | town |  | HRE | 824 | 1290 | 187, 188, 207, 217, 224, 225 |  |
-| 190 | Alessandria | MIL | town |  | HRE | 769 | 1281 | 131, 185, 207, 208, 226 |  |
-| 191 | Venice | VEN | city | port |  | 887 | 1264 | 192, 197, 223 |  |
-| 192 | Padua | VEN | town |  |  | 875 | 1265 | 191, 194, 197, 223 |  |
-| 193 | Verona | VEN | city |  |  | 847 | 1262 | 194, 195, 225, 300 |  |
-| 194 | Vicenza | VEN | town |  |  | 865 | 1258 | 192, 193, 197, 300 |  |
-| 195 | Brescia | VEN | town |  |  | 822 | 1256 | 187, 193, 196, 225, 300 |  |
-| 196 | Bergamo | VEN | town |  |  | 805 | 1248 | 184, 186, 195, 300, 303 |  |
-| 197 | Treviso | VEN | town |  |  | 887 | 1254 | 191, 192, 194, 198, 300 |  |
-| 198 | Udine | VEN | town |  |  | 919 | 1237 | 197, 306, 308, 309 |  |
-| 199 | Zara | VEN | town | port |  | 986 | 1324 | 200, 353, 379 |  |
-| 200 | Spalato | VEN | town | port |  | 1023 | 1349 | 199, 379, 381 |  |
-| 201 | Durazzo | VEN | town | port |  | 1133 | 1451 | 368, 369, 371 |  |
-| 202 | Corfu | VEN | town | port |  | 1146 | 1526 |  | 389 |
-| 203 | Modon | VEN | town | port |  | 1228 | 1642 | 375, 376 | 206 |
-| 204 | Negroponte | VEN | town | port |  | 1284 | 1572 | 377, 388 |  |
-| 205 | Candia | VEN | city | port |  | 1362 | 1710 | 206 |  |
-| 206 | Canea | VEN | town | port |  | 1317 | 1706 | 205 | 203 |
-| 207 | Genoa | GEN | city | port |  | 781 | 1302 | 185, 188, 189, 190, 208, 217 |  |
-| 208 | Savona | GEN | town | port |  | 760 | 1305 | 131, 132, 190, 207 |  |
-| 209 | Bastia | GEN | town | port |  | 785 | 1389 |  | 214, 243 |
-| 210 | Chios | GEN | town | port |  | 1374 | 1560 |  | 396 |
-| 211 | Famagusta | GEN | town | port |  | 1689 | 1649 | 422 | 411 |
-| 212 | Caffa | GEN | city | port |  | 1621 | 1191 | 445 |  |
-| 213 | Florence | FLO | city |  |  | 851 | 1339 | 215, 216, 217, 222, 227 |  |
-| 214 | Pisa | FLO | town | port |  | 824 | 1341 | 216, 217 | 209 |
-| 215 | Arezzo | FLO | town |  |  | 871 | 1354 | 213, 216, 220, 227 |  |
-| 216 | Siena | SIE | town |  |  | 853 | 1359 | 213, 214, 215, 219, 220 |  |
-| 217 | Lucca | LUC | town |  |  | 827 | 1334 | 189, 207, 213, 214, 222, 224 |  |
-| 218 | Rome | PAP | city |  |  | 889 | 1426 | 219, 230, 237 |  |
-| 219 | Viterbo | PAP | town |  |  | 877 | 1402 | 216, 218, 220, 230 |  |
-| 220 | Perugia | PAP | town |  |  | 888 | 1370 | 215, 216, 219, 221, 227, 230 |  |
-| 221 | Ancona | PAP | town | port |  | 923 | 1352 | 220, 227, 230 |  |
-| 222 | Bologna | PAP | city |  |  | 856 | 1306 | 213, 217, 223, 224, 227 |  |
-| 223 | Ferrara | FER | town |  |  | 865 | 1291 | 191, 192, 222, 224, 225, 227 |  |
-| 224 | Modena | FER | town |  | HRE | 843 | 1298 | 189, 217, 222, 223, 225 |  |
-| 225 | Mantua | MAN | town |  | HRE | 840 | 1275 | 187, 189, 193, 195, 223, 224 |  |
-| 226 | Casale | MON | town |  | HRE | 765 | 1271 | 131, 184, 185, 186, 190 |  |
-| 227 | Rimini | RIM | town | port |  | 891 | 1329 | 213, 215, 220, 221, 222, 223 |  |
-| 228 | Naples | NAP | city | port |  | 949 | 1473 | 229, 231, 237 |  |
-| 229 | Salerno | NAP | town | port |  | 967 | 1480 | 228, 231, 232, 235 |  |
-| 230 | L'Aquila | NAP | town |  |  | 920 | 1406 | 218, 219, 220, 221, 231, 237 |  |
-| 231 | Foggia | NAP | town |  |  | 993 | 1447 | 228, 229, 230, 232, 237 |  |
-| 232 | Bari | NAP | town | port |  | 1038 | 1466 | 229, 231, 233 |  |
-| 233 | Taranto | NAP | town | port |  | 1056 | 1489 | 232, 234, 235 |  |
-| 234 | Lecce | NAP | town |  |  | 1084 | 1497 | 233 |  |
-| 235 | Cosenza | NAP | town |  |  | 1019 | 1546 | 229, 233, 236 |  |
-| 236 | Reggio | NAP | town | port |  | 1005 | 1601 | 235 | 239 |
-| 237 | Gaeta | ARA | town | port |  | 929 | 1457 | 218, 228, 230, 231 |  |
-| 238 | Palermo | ARA | city | port |  | 914 | 1605 | 240 |  |
-| 239 | Messina | ARA | town | port |  | 984 | 1602 | 240 | 236 |
-| 240 | Catania | ARA | town | port |  | 975 | 1630 | 238, 239, 241 |  |
-| 241 | Syracuse | ARA | town | port |  | 981 | 1650 | 240 |  |
-| 242 | Cagliari | ARA | town | port |  | 762 | 1540 | 243 |  |
-| 243 | Sassari | ARA | town |  |  | 751 | 1471 | 242 | 209 |
-| 244 | Schleswig | SHO | town | port |  | 831 | 849 | 17, 245, 246 |  |
-| 245 | Lübeck | LUB | city | port | HRE | 859 | 880 | 244, 246, 247, 252 |  |
-| 246 | Hamburg | HAM | city | port | HRE | 840 | 893 | 244, 245, 251, 252 |  |
-| 247 | Schwerin | MEC | town |  | HRE | 878 | 892 | 245, 248, 252, 256 |  |
-| 248 | Rostock | MEC | town | port | HRE | 897 | 872 | 247, 250, 255 |  |
-| 249 | Stettin | POM | town | port | HRE | 962 | 903 | 24, 250, 255, 257, 311, 316 |  |
-| 250 | Stralsund | POM | town | port | HRE | 921 | 865 | 248, 249 |  |
-| 251 | Bremen | BRE | town | port | HRE | 806 | 912 | 136, 246, 252, 253, 259 |  |
-| 252 | Lüneburg | BRU | town |  | HRE | 850 | 908 | 245, 246, 247, 251, 253, 254 |  |
-| 253 | Brunswick | BRU | city |  | HRE | 850 | 952 | 251, 252, 254, 262, 267 |  |
-| 254 | Magdeburg | MAG | city |  | HRE | 881 | 960 | 252, 253, 256, 264, 265, 267 |  |
-| 255 | Berlin | BRA | town |  | HRE | 930 | 944 | 248, 249, 256, 257, 264 |  |
-| 256 | Brandenburg | BRA | town |  | HRE | 907 | 949 | 247, 254, 255, 264 |  |
-| 257 | Frankfurt (Oder) | BRA | town |  | HRE | 962 | 952 | 249, 255, 264, 268, 270, 311 |  |
-| 258 | Wesel | CLE | town |  | HRE | 739 | 970 | 135, 259, 260 |  |
-| 259 | Münster | MUN | town |  | HRE | 769 | 960 | 136, 251, 258, 260, 262, 263 |  |
-| 260 | Düsseldorf | JUL | town |  | HRE | 742 | 990 | 133, 135, 258, 259, 261 |  |
-| 261 | Cologne | COL | city |  | HRE | 745 | 1004 | 133, 260, 263, 272, 273 |  |
-| 262 | Kassel | HES | town |  | HRE | 819 | 994 | 253, 259, 263, 267 |  |
-| 263 | Marburg | HES | town |  | HRE | 796 | 1015 | 259, 261, 262, 267, 273, 274, 275 |  |
-| 264 | Wittenberg | SAX | town |  | HRE | 909 | 973 | 254, 255, 256, 257, 265, 266 |  |
-| 265 | Leipzig | SAX | town |  | HRE | 900 | 997 | 254, 264, 266, 267, 279, 281 |  |
-| 266 | Dresden | SAX | town |  | HRE | 939 | 1011 | 264, 265, 268, 280, 281 |  |
-| 267 | Eisenach | SAX | town |  | HRE | 841 | 1010 | 253, 254, 262, 263, 265, 275, 277, 279 |  |
-| 268 | Bautzen | LUS | town |  | HRE | 958 | 1005 | 257, 266, 270, 280, 282 |  |
-| 269 | Breslau | SIL | city |  | HRE | 1032 | 1008 | 270, 271, 282, 284, 313 |  |
-| 270 | Glogau | SIL | town |  | HRE | 1005 | 983 | 257, 268, 269, 311 |  |
-| 271 | Oppeln | OPP | town |  | HRE | 1059 | 1027 | 269, 284, 310, 313, 314 |  |
-| 272 | Trier | TRI | town |  | HRE | 730 | 1056 | 133, 137, 261, 273, 278, 285, 287 |  |
-| 273 | Mainz | MAI | town |  | HRE | 779 | 1050 | 261, 263, 272, 274, 278 |  |
-| 274 | Frankfurt | FFM | town |  | HRE | 791 | 1046 | 263, 273, 275, 278 |  |
-| 275 | Würzburg | WBG | town |  | HRE | 826 | 1063 | 263, 267, 274, 276, 277, 278, 288 |  |
-| 276 | Ansbach | ANS | town |  | HRE | 844 | 1087 | 275, 277, 288, 289, 290, 291 |  |
-| 277 | Nuremberg | NUR | city |  | HRE | 859 | 1081 | 267, 275, 276, 279, 291 |  |
-| 278 | Heidelberg | PAL | town |  | HRE | 789 | 1078 | 272, 273, 274, 275, 287, 288 |  |
-| 279 | Amberg | PAL | town |  | HRE | 882 | 1082 | 265, 267, 277, 281, 292 |  |
-| 280 | Prague | BOH | city |  | HRE | 958 | 1055 | 266, 268, 281, 282 |  |
-| 281 | Plzeň | BOH | town |  | HRE | 927 | 1070 | 265, 266, 279, 280, 294, 297 |  |
-| 282 | Kutná Hora | BOH | town |  | HRE | 982 | 1061 | 268, 269, 280, 283, 284, 297 |  |
-| 283 | Brno | BOH | town |  | HRE | 1022 | 1095 | 282, 284, 296, 297, 341 |  |
-| 284 | Olomouc | BOH | town |  | HRE | 1041 | 1076 | 269, 271, 282, 283, 310, 356 |  |
-| 285 | Metz | MET | city |  | HRE | 713 | 1083 | 118, 119, 137, 272, 286 |  |
-| 286 | Strasbourg | STR | city |  | HRE | 757 | 1113 | 118, 285, 287, 301 |  |
-| 287 | Baden | BAD | town |  | HRE | 773 | 1106 | 272, 278, 286, 288, 301 |  |
-| 288 | Stuttgart | WRT | town |  | HRE | 801 | 1107 | 275, 276, 278, 287, 289, 301 |  |
-| 289 | Ulm | ULM | city |  | HRE | 824 | 1126 | 276, 288, 290, 299, 303 |  |
-| 290 | Augsburg | AUG | city |  | HRE | 851 | 1129 | 276, 289, 291, 293, 299 |  |
-| 291 | Ingolstadt | BIN | town |  | HRE | 868 | 1112 | 276, 277, 290, 292, 293, 295 |  |
-| 292 | Regensburg | REG | town |  | HRE | 888 | 1102 | 279, 291, 294, 295 |  |
-| 293 | Munich | BMU | town |  | HRE | 871 | 1141 | 290, 291, 295, 299, 306 |  |
-| 294 | Straubing | BMU | town |  | HRE | 902 | 1108 | 281, 292, 295, 297, 306 |  |
-| 295 | Landshut | BLA | town |  | HRE | 889 | 1123 | 291, 292, 293, 294, 306 |  |
-| 296 | Vienna | AUS | city |  | HRE | 1016 | 1140 | 283, 297, 298, 341 |  |
-| 297 | Linz | AUS | town |  | HRE | 953 | 1135 | 281, 282, 283, 294, 296, 298, 306, 307 |  |
-| 298 | Wiener Neustadt | AUS | town |  | HRE | 1012 | 1158 | 296, 297, 307, 341, 342 |  |
-| 299 | Innsbruck | TYR | town |  | HRE | 863 | 1180 | 289, 290, 293, 300, 303, 306 |  |
-| 300 | Bozen | TYR | town |  | HRE | 860 | 1215 | 193, 194, 195, 196, 197, 299, 303 |  |
-| 301 | Freiburg | TYR | town |  | HRE | 758 | 1140 | 118, 286, 287, 288, 302, 303 |  |
-| 302 | Basel | BAS | town |  | HRE | 748 | 1158 | 94, 118, 301, 303, 304, 305 |  |
-| 303 | Zürich | ZUR | town |  | HRE | 776 | 1170 | 196, 289, 299, 300, 301, 302, 305 |  |
-| 304 | Bern | SWI | town |  | HRE | 741 | 1185 | 94, 130, 302, 305 |  |
-| 305 | Lucerne | SWI | town |  | HRE | 768 | 1183 | 186, 302, 303, 304 |  |
-| 306 | Salzburg | SAL | town |  | HRE | 915 | 1158 | 198, 293, 294, 295, 297, 299 |  |
-| 307 | Graz | STY | town |  | HRE | 988 | 1192 | 297, 298, 308, 342, 353 |  |
-| 308 | Ljubljana | STY | town |  | HRE | 959 | 1238 | 198, 307, 309, 353 |  |
-| 309 | Trieste | STY | town | port | HRE | 940 | 1255 | 198, 308, 353 |  |
-| 310 | Kraków | POL | city |  |  | 1118 | 1051 | 271, 284, 314, 317, 319, 355, 356 |  |
-| 311 | Poznań | POL | town |  |  | 1028 | 949 | 249, 257, 270, 312, 313, 316 |  |
-| 312 | Gniezno | POL | town |  |  | 1046 | 943 | 311, 313, 316 |  |
-| 313 | Kalisz | POL | town |  |  | 1061 | 977 | 269, 271, 311, 312, 314, 315 |  |
-| 314 | Sieradz | POL | town |  |  | 1079 | 984 | 271, 310, 313, 315 |  |
-| 315 | Łęczyca | POL | town |  |  | 1092 | 962 | 313, 314, 316, 317, 323, 324 |  |
-| 316 | Inowrocław | POL | town |  |  | 1064 | 930 | 24, 26, 249, 311, 312, 315 |  |
-| 317 | Sandomierz | POL | town |  |  | 1168 | 1019 | 310, 315, 318, 319, 323 |  |
-| 318 | Lublin | POL | town |  |  | 1189 | 991 | 317, 319, 320, 323, 329, 330 |  |
-| 319 | Przemyśl | POL | town |  |  | 1201 | 1057 | 310, 317, 318, 320, 321, 355 |  |
-| 320 | Lwów | POL | city |  |  | 1238 | 1050 | 318, 319, 321, 330 |  |
-| 321 | Halicz | POL | town |  |  | 1262 | 1079 | 319, 320, 322, 330, 349, 350, 355, 385 |  |
-| 322 | Kamieniec | POL | town |  |  | 1320 | 1092 | 321, 330, 339, 385, 386 |  |
-| 323 | Warsaw | MAZ | town |  |  | 1141 | 951 | 25, 315, 317, 318, 324, 328, 329 |  |
-| 324 | Płock | MAZ | town |  |  | 1104 | 939 | 25, 26, 315, 323 |  |
-| 325 | Vilnius | LIT | city |  |  | 1244 | 828 | 20, 326, 328, 331, 332 |  |
-| 326 | Kaunas | LIT | town |  |  | 1207 | 823 | 20, 25, 325, 327, 328 |  |
-| 327 | Medininkai | LIT | town |  |  | 1159 | 789 | 20, 25, 27, 326 |  |
-| 328 | Grodno | LIT | town |  |  | 1211 | 878 | 25, 323, 325, 326, 329, 331 |  |
-| 329 | Brest-Litovsk | LIT | town |  |  | 1216 | 950 | 318, 323, 328, 330, 331 |  |
-| 330 | Lutsk | LIT | town |  |  | 1270 | 1004 | 318, 320, 321, 322, 329, 331, 336, 337, 339 |  |
-| 331 | Minsk | LIT | town |  |  | 1309 | 854 | 325, 328, 329, 330, 332, 334, 337 |  |
-| 332 | Polotsk | LIT | town |  |  | 1328 | 777 | 20, 325, 331, 333, 435, 441 |  |
-| 333 | Vitebsk | LIT | town |  |  | 1366 | 783 | 332, 334, 335, 435, 443 |  |
-| 334 | Mogilev | LIT | town |  |  | 1382 | 840 | 331, 333, 335, 337, 338 |  |
-| 335 | Smolensk | LIT | city |  |  | 1417 | 791 | 333, 334, 338, 431, 443 |  |
-| 336 | Kiev | LIT | town |  |  | 1419 | 992 | 330, 337, 338, 339, 387, 445, 447 |  |
-| 337 | Chernigov | LIT | town |  |  | 1430 | 941 | 330, 331, 334, 336, 338 |  |
-| 338 | Novgorod-Seversky | LIT | town |  |  | 1479 | 905 | 334, 335, 336, 337, 431, 444, 447 |  |
-| 339 | Bratslav | LIT | town |  |  | 1388 | 1073 | 322, 330, 336, 386, 387 |  |
-| 340 | Buda | HUN | city |  |  | 1098 | 1169 | 343, 344, 346, 349, 355, 356 |  |
-| 341 | Pozsony | HUN | town |  |  | 1038 | 1142 | 283, 296, 298, 342, 343, 356 |  |
-| 342 | Győr | HUN | town |  |  | 1055 | 1162 | 298, 307, 341, 343, 344, 345 |  |
-| 343 | Esztergom | HUN | town |  |  | 1088 | 1156 | 340, 341, 342, 344, 356 |  |
-| 344 | Székesfehérvár | HUN | town |  |  | 1080 | 1184 | 340, 342, 343, 345, 346 |  |
-| 345 | Pécs | HUN | town |  |  | 1076 | 1235 | 342, 344, 346, 353, 354, 379, 380 |  |
-| 346 | Szeged | HUN | town |  |  | 1136 | 1223 | 340, 344, 345, 347, 348, 349, 354 |  |
-| 347 | Temesvár | HUN | town |  |  | 1172 | 1243 | 346, 348, 350, 351, 354, 364, 372 |  |
-| 348 | Nagyvárad | HUN | town |  |  | 1188 | 1182 | 346, 347, 349, 350 |  |
-| 349 | Debrecen | HUN | town |  |  | 1177 | 1162 | 321, 340, 346, 348, 350, 355 |  |
-| 350 | Kolozsvár | HUN | town |  |  | 1241 | 1190 | 321, 347, 348, 349, 351, 352, 385 |  |
-| 351 | Szeben | HUN | town |  |  | 1264 | 1232 | 347, 350, 352, 364, 383 |  |
-| 352 | Brassó | HUN | town |  |  | 1311 | 1232 | 350, 351, 383, 384, 385, 386 |  |
-| 353 | Zagreb | HUN | town |  |  | 1006 | 1249 | 199, 307, 308, 309, 345, 379 |  |
-| 354 | Belgrade | HUN | town |  |  | 1151 | 1288 | 345, 346, 347, 372, 380 |  |
-| 355 | Kassa | JIS | town |  |  | 1162 | 1109 | 310, 319, 321, 340, 349, 356 |  |
-| 356 | Besztercebánya | JIS | town |  |  | 1099 | 1113 | 284, 310, 340, 341, 343, 355 |  |
-| 357 | Edirne | OTT | city |  |  | 1369 | 1407 | 358, 359, 361, 373, 374 |  |
-| 358 | Gallipoli | OTT | town | port |  | 1374 | 1469 | 357, 373 | 394 |
-| 359 | Philippopolis | OTT | town |  |  | 1305 | 1395 | 357, 360, 361, 366 |  |
-| 360 | Sofia | OTT | town |  |  | 1253 | 1375 | 359, 363, 364, 366, 367, 378 |  |
-| 361 | Tarnovo | OTT | town |  |  | 1328 | 1348 | 357, 359, 362, 363, 374, 383 |  |
-| 362 | Varna | OTT | town | port |  | 1401 | 1328 | 361, 374, 383, 384 |  |
-| 363 | Nikopol | OTT | town |  |  | 1300 | 1323 | 360, 361, 364, 383 |  |
-| 364 | Vidin | OTT | town |  |  | 1233 | 1318 | 347, 351, 360, 363, 372, 378, 383 |  |
-| 365 | Salonica | OTT | city | port |  | 1251 | 1468 | 366, 368, 370 |  |
-| 366 | Serres | OTT | town |  |  | 1270 | 1447 | 359, 360, 365, 367 |  |
-| 367 | Skopje | OTT | town |  |  | 1193 | 1413 | 360, 366, 368, 371, 378 |  |
-| 368 | Monastir | OTT | town |  |  | 1193 | 1458 | 201, 365, 367, 369, 370, 371 |  |
-| 369 | Ioannina | OTT | town |  |  | 1182 | 1522 | 201, 368, 370, 389 |  |
-| 370 | Larissa | OTT | town |  |  | 1237 | 1518 | 365, 368, 369, 377, 389 |  |
-| 371 | Kruja | OTT | town |  |  | 1139 | 1440 | 201, 367, 368, 378, 382 |  |
-| 372 | Smederevo | OTT | town |  |  | 1166 | 1294 | 347, 354, 364, 378, 380 |  |
-| 373 | Constantinople | BYZ | city | port |  | 1453 | 1419 | 357, 358 | 391 |
-| 374 | Mesembria | BYZ | town | port |  | 1393 | 1353 | 357, 361, 362 |  |
-| 375 | Mistra | MOR | town |  |  | 1247 | 1637 | 203, 376, 377 |  |
-| 376 | Patras | MOR | town | port |  | 1223 | 1588 | 203, 375, 377 |  |
-| 377 | Corinth | MOR | town | port |  | 1265 | 1590 | 204, 370, 375, 376, 388, 389 |  |
-| 378 | Novo Brdo | SER | town |  |  | 1191 | 1385 | 360, 364, 367, 371, 372, 380, 382 |  |
-| 379 | Jajce | BOS | town |  |  | 1048 | 1315 | 199, 200, 345, 353, 380, 381 |  |
-| 380 | Srebrenica | BOS | town |  |  | 1115 | 1323 | 345, 354, 372, 378, 379, 381, 382 |  |
-| 381 | Blagaj | HER | town |  |  | 1071 | 1363 | 200, 379, 380, 382 |  |
-| 382 | Ragusa | RAG | town | port |  | 1081 | 1388 | 371, 378, 380, 381 |  |
-| 383 | Târgoviște | WAL | town |  |  | 1310 | 1265 | 351, 352, 361, 362, 363, 364, 384 |  |
-| 384 | Brăila | WAL | town |  |  | 1387 | 1237 | 352, 362, 383, 386, 387 |  |
-| 385 | Suceava | MOL | town |  |  | 1317 | 1139 | 321, 322, 350, 352, 386 |  |
-| 386 | Iași | MOL | town |  |  | 1361 | 1155 | 322, 339, 352, 384, 385, 387 |  |
-| 387 | Akkerman | MOL | town | port |  | 1454 | 1182 | 336, 339, 384, 386, 445, 446 |  |
-| 388 | Athens | ATH | town | port |  | 1293 | 1589 | 204, 377 |  |
-| 389 | Arta | EPI | town |  |  | 1188 | 1545 | 369, 370, 377 | 202 |
-| 390 | Mytilene | LES | town | port |  | 1380 | 1523 |  | 394 |
-| 391 | Bursa | OTT | city |  |  | 1466 | 1460 | 392, 394, 400 | 373 |
-| 392 | Nicaea | OTT | town |  |  | 1486 | 1444 | 391, 393, 400 |  |
-| 393 | Izmit | OTT | town | port |  | 1490 | 1428 | 392, 403, 413 |  |
-| 394 | Balıkesir | OTT | town |  |  | 1429 | 1491 | 391, 395, 400 | 358, 390 |
-| 395 | Manisa | OTT | town |  |  | 1422 | 1541 | 394, 396, 397, 399 |  |
-| 396 | Smyrna | OTT | town | port |  | 1415 | 1551 | 395, 397 | 210 |
-| 397 | Ayasoluk | OTT | town |  |  | 1425 | 1572 | 395, 396, 398, 399 |  |
-| 398 | Milas | OTT | town |  |  | 1444 | 1598 | 397, 399, 424 |  |
-| 399 | Denizli | OTT | town |  |  | 1488 | 1568 | 395, 397, 398, 400, 401, 402 |  |
-| 400 | Kütahya | OTT | town |  |  | 1505 | 1488 | 391, 392, 394, 399, 401, 403 |  |
-| 401 | Afyon | OTT | town |  |  | 1530 | 1513 | 399, 400, 402, 403, 407 |  |
-| 402 | Antalya | OTT | town | port |  | 1552 | 1595 | 399, 401, 407, 412 |  |
-| 403 | Ankara | OTT | town |  |  | 1599 | 1442 | 393, 400, 401, 404, 407, 409, 410, 413 |  |
-| 404 | Amasya | OTT | town |  |  | 1691 | 1383 | 403, 405, 406, 410, 413, 414 |  |
-| 405 | Tokat | OTT | town |  |  | 1720 | 1391 | 404, 406, 410, 415, 416, 420 |  |
-| 406 | Samsun | OTT | town | port |  | 1696 | 1353 | 404, 405, 414 |  |
-| 407 | Konya | KAR | city |  |  | 1608 | 1538 | 401, 402, 403, 408, 409, 412 |  |
-| 408 | Karaman | KAR | town |  |  | 1642 | 1563 | 407, 409, 411, 412, 418 |  |
-| 409 | Aksaray | KAR | town |  |  | 1657 | 1502 | 403, 407, 408, 410, 418 |  |
-| 410 | Kayseri | KAR | town |  |  | 1704 | 1472 | 403, 404, 405, 409, 416, 417, 418 |  |
-| 411 | Silifke | KAR | town | port |  | 1674 | 1588 | 408, 412, 418 | 211 |
-| 412 | Alanya | KAR | town | port |  | 1606 | 1598 | 402, 407, 408, 411 |  |
-| 413 | Kastamonu | CAN | town |  |  | 1614 | 1370 | 393, 403, 404, 414 |  |
-| 414 | Sinop | CAN | town | port |  | 1653 | 1335 | 404, 406, 413 |  |
-| 415 | Trebizond | TRE | town | port |  | 1818 | 1332 | 405, 420, 421, 447 |  |
-| 416 | Elbistan | DUL | town |  |  | 1770 | 1478 | 405, 410, 417, 419, 420 |  |
-| 417 | Maraş | DUL | town |  |  | 1770 | 1508 | 410, 416, 418, 419 |  |
-| 418 | Adana | RAM | town |  |  | 1720 | 1551 | 408, 409, 410, 411, 417 |  |
-| 419 | Diyarbakır | AQQ | town |  |  | 1879 | 1456 | 416, 417, 420, 421 |  |
-| 420 | Erzincan | AQQ | town |  |  | 1826 | 1384 | 405, 415, 416, 419, 421 |  |
-| 421 | Erzurum | AQQ | town |  |  | 1883 | 1356 | 415, 419, 420, 447 |  |
-| 422 | Nicosia | CYP | town |  |  | 1670 | 1652 | 211 |  |
-| 423 | Rhodes | KRH | town | port |  | 1463 | 1644 |  | 424 |
-| 424 | Bodrum | KRH | town | port |  | 1438 | 1612 | 398 | 423 |
-| 425 | Moscow | MOS | city |  |  | 1545 | 710 | 426, 427, 430, 431, 442 |  |
-| 426 | Vladimir | MOS | town |  |  | 1607 | 671 | 425, 427, 429, 430, 444 |  |
-| 427 | Rostov | MOS | town |  |  | 1568 | 634 | 425, 426, 428, 429, 442 |  |
-| 428 | Yaroslavl | MOS | town |  |  | 1571 | 611 | 427, 429, 432, 442 |  |
-| 429 | Kostroma | MOS | town |  |  | 1594 | 597 | 426, 427, 428, 432, 440 |  |
-| 430 | Kolomna | MOS | town |  |  | 1582 | 729 | 425, 426, 431, 444 |  |
-| 431 | Mozhaysk | MOS | town |  |  | 1509 | 733 | 335, 338, 425, 430, 442, 443, 444 |  |
-| 432 | Vologda | MOS | town |  |  | 1548 | 542 | 428, 429, 433, 439, 440 |  |
-| 433 | Beloozero | MOS | town |  |  | 1490 | 523 | 432, 436, 438, 439, 442 |  |
-| 434 | Novgorod | NOV | city |  |  | 1360 | 629 | 13, 22, 435, 436, 438, 441 |  |
-| 435 | Staraya Russa | NOV | town |  |  | 1368 | 652 | 332, 333, 434, 438, 441, 443 |  |
-| 436 | Ladoga | NOV | town |  |  | 1369 | 558 | 13, 433, 434, 437, 438, 439 |  |
-| 437 | Korela | NOV | town |  |  | 1310 | 522 | 11, 13, 436, 439, 440 |  |
-| 438 | Torzhok | NOV | town |  |  | 1464 | 673 | 433, 434, 435, 436, 442, 443 |  |
-| 439 | Kargopol | NOV | town |  |  | 1494 | 450 | 432, 433, 436, 437, 440 |  |
-| 440 | Kholmogory | NOV | town |  |  | 1505 | 312 | 11, 429, 432, 437, 439 |  |
-| 441 | Pskov | PSK | town |  |  | 1297 | 675 | 20, 22, 332, 434, 435 |  |
-| 442 | Tver | TVE | town |  |  | 1489 | 674 | 425, 427, 428, 431, 433, 438, 443 |  |
-| 443 | Rzhev | TVE | town |  |  | 1458 | 711 | 333, 335, 431, 435, 438, 442 |  |
-| 444 | Ryazan | RYA | town |  |  | 1613 | 742 | 338, 426, 430, 431, 447 |  |
-| 445 | Qırım | CRI | town |  |  | 1613 | 1197 | 212, 336, 387, 446, 447 |  |
-| 446 | Mangup | THE | town |  |  | 1578 | 1228 | 387, 445 |  |
-| 447 | Azak | GHO | town | port |  | 1716 | 1067 | 336, 338, 415, 421, 444, 445 |  |
-| 448 | Fez | MRC | city |  |  | 204 | 1688 | 179, 449, 450, 451 |  |
-| 449 | Meknes | MRC | town |  |  | 181 | 1688 | 448, 451, 452, 455 |  |
-| 450 | Taza | MRC | town |  |  | 243 | 1690 | 179, 448, 456 |  |
-| 451 | Tangier | MRC | town | port |  | 195 | 1605 | 179, 448, 449, 452 | 143 |
-| 452 | Salé | MRC | town | port |  | 140 | 1671 | 449, 451, 453, 455 |  |
-| 453 | Azemmour | MRC | town | port |  | 68 | 1687 | 452, 454, 455 |  |
-| 454 | Safi | MRC | town | port |  | 24 | 1719 | 453, 455 |  |
-| 455 | Marrakesh | MRC | city |  |  | 57 | 1762 | 449, 452, 453, 454 |  |
-| 456 | Tlemcen | TLE | city |  |  | 352 | 1684 | 450, 457 |  |
-| 457 | Oran | TLE | town | port |  | 386 | 1656 | 456, 458 |  |
-| 458 | Algiers | TLE | town | port |  | 531 | 1633 | 457, 460 |  |
-| 459 | Tunis | TUN | city | port |  | 795 | 1656 | 462, 463 |  |
-| 460 | Bougie | TUN | town | port |  | 608 | 1645 | 458, 461 |  |
-| 461 | Constantine | TUN | town |  |  | 660 | 1665 | 460, 462, 463, 465 |  |
-| 462 | Bône | TUN | town | port |  | 703 | 1649 | 459, 461, 463 |  |
-| 463 | Kairouan | TUN | town |  |  | 789 | 1709 | 459, 461, 462, 464, 465 |  |
-| 464 | Sfax | TUN | town | port |  | 809 | 1751 | 463, 465 |  |
-| 465 | Gabès | TUN | town | port |  | 780 | 1793 | 461, 463, 464, 466 |  |
-| 466 | Tripoli | TUN | town | port |  | 904 | 1850 | 465 |  |
+| 1 | Oslo | NOR | town | port |  | 1315 | 908 | 2, 3, 6, 7, 9, 10 |  |
+| 2 | Bergen | NOR | city | port |  | 1133 | 857 | 1, 3 |  |
+| 3 | Nidaros | NOR | town | port |  | 1318 | 663 | 1, 2, 10, 11 |  |
+| 4 | Vardøhus | NOR | town | port |  | 1851 | 134 | 11 |  |
+| 5 | Stockholm | SWE | city | port |  | 1570 | 950 | 6, 7 |  |
+| 6 | Uppsala | SWE | town |  |  | 1553 | 914 | 1, 5, 7, 10 |  |
+| 7 | Linköping | SWE | town |  |  | 1484 | 1015 | 1, 5, 6, 8, 9, 15 |  |
+| 8 | Kalmar | SWE | town | port |  | 1511 | 1133 | 7, 15 | 19 |
+| 9 | Älvsborg | SWE | town | port |  | 1351 | 1060 | 1, 7, 15 |  |
+| 10 | Gävle | SWE | town | port |  | 1534 | 859 | 1, 3, 6, 11 |  |
+| 11 | Torneå | SWE | town | port |  | 1727 | 481 | 3, 4, 10, 12, 13, 417, 420 |  |
+| 12 | Åbo | SWE | town | port |  | 1709 | 863 | 11, 13 |  |
+| 13 | Viborg | SWE | town | port |  | 1925 | 814 | 11, 12, 416, 417 |  |
+| 14 | Copenhagen | DEN | town | port |  | 1362 | 1201 |  | 15, 16 |
+| 15 | Lund | DEN | town |  |  | 1392 | 1200 | 7, 8, 9 | 14 |
+| 16 | Odense | DEN | town | port |  | 1284 | 1216 |  | 14, 17 |
+| 17 | Aarhus | DEN | town | port |  | 1279 | 1162 | 18, 230 | 16 |
+| 18 | Aalborg | DEN | town | port |  | 1273 | 1102 | 17 |  |
+| 19 | Visby | GOT | town | port |  | 1588 | 1066 |  | 8 |
+| 20 | Riga | LIV | city | port |  | 1801 | 1094 | 22, 23, 308, 309, 310, 315, 421 |  |
+| 21 | Reval | LIV | town | port |  | 1802 | 925 | 22, 23 |  |
+| 22 | Dorpat | LIV | town |  |  | 1882 | 984 | 20, 21, 23, 414, 421 |  |
+| 23 | Pernau | LIV | town | port |  | 1803 | 995 | 20, 21, 22 |  |
+| 24 | Danzig | TEU | city | port |  | 1606 | 1290 | 25, 26, 235, 296 |  |
+| 25 | Königsberg | TEU | town | port |  | 1679 | 1260 | 24, 26, 27, 306, 307, 309, 310, 311 |  |
+| 26 | Thorn | TEU | town |  |  | 1609 | 1380 | 24, 25, 235, 243, 256, 295, 296, 299, 307 |  |
+| 27 | Memel | TEU | town | port |  | 1702 | 1190 | 25, 310 |  |
+| 28 | London | ENG | city | port |  | 827 | 1421 | 31, 32, 35, 36 |  |
+| 29 | York | ENG | city |  |  | 823 | 1250 | 34, 37, 38, 39 |  |
+| 30 | Bristol | ENG | city | port |  | 724 | 1402 | 32, 33, 35, 40, 41 |  |
+| 31 | Norwich | ENG | town | port |  | 900 | 1358 | 28, 34 |  |
+| 32 | Southampton | ENG | town | port |  | 765 | 1450 | 28, 30, 33 |  |
+| 33 | Exeter | ENG | town | port |  | 673 | 1441 | 30, 32 |  |
+| 34 | Lincoln | ENG | town |  |  | 834 | 1303 | 29, 31, 35, 38 |  |
+| 35 | Coventry | ENG | town |  |  | 783 | 1349 | 28, 30, 34, 38, 40 |  |
+| 36 | Canterbury | ENG | town |  |  | 874 | 1446 | 28 | 83 |
+| 37 | Newcastle | ENG | town | port |  | 817 | 1178 | 29, 39, 49 |  |
+| 38 | Chester | ENG | town | port |  | 740 | 1284 | 29, 34, 35, 39, 40 | 42 |
+| 39 | Carlisle | ENG | town |  |  | 766 | 1171 | 29, 37, 38, 49, 52 |  |
+| 40 | Shrewsbury | ENG | town |  |  | 738 | 1317 | 30, 35, 38, 41 |  |
+| 41 | Carmarthen | ENG | town | port |  | 660 | 1357 | 30, 40 |  |
+| 42 | Dublin | ENG | town | port |  | 610 | 1238 | 43, 45, 46, 47 | 38 |
+| 43 | Waterford | ENG | town | port |  | 555 | 1299 | 42, 44, 47 |  |
+| 44 | Cork | ENG | town | port |  | 494 | 1305 | 43, 47, 48 |  |
+| 45 | Galway | ENG | town | port |  | 501 | 1205 | 42, 46, 47 |  |
+| 46 | Dungannon | TRN | town |  |  | 613 | 1157 | 42, 45 |  |
+| 47 | Ennis | THO | town |  |  | 494 | 1238 | 42, 43, 44, 45, 48 |  |
+| 48 | Tralee | DES | town | port |  | 453 | 1265 | 44, 47 |  |
+| 49 | Edinburgh | SCO | town | port |  | 773 | 1099 | 37, 39, 50, 52 |  |
+| 50 | Perth | SCO | town |  |  | 772 | 1067 | 49, 51, 52, 53 |  |
+| 51 | Aberdeen | SCO | town | port |  | 831 | 1026 | 50, 53 |  |
+| 52 | Glasgow | SCO | town |  |  | 733 | 1095 | 39, 49, 50, 53 |  |
+| 53 | Inverness | ISL | town | port |  | 761 | 989 | 50, 51, 52 |  |
+| 54 | Paris | FRA | city |  |  | 899 | 1618 | 55, 57, 79, 80, 81, 82, 92 |  |
+| 55 | Orléans | FRA | town |  |  | 868 | 1679 | 54, 56, 57, 58, 92 |  |
+| 56 | Blois | FRA | town |  |  | 838 | 1695 | 55, 57, 58, 59, 87 |  |
+| 57 | Chartres | FRA | town |  |  | 856 | 1639 | 54, 55, 56, 84, 85, 87 |  |
+| 58 | Bourges | FRA | town |  |  | 881 | 1738 | 55, 56, 60, 63, 78, 92, 113, 114 |  |
+| 59 | Tours | FRA | town |  |  | 807 | 1703 | 56, 60, 87, 109 |  |
+| 60 | Poitiers | FRA | town |  |  | 780 | 1754 | 58, 59, 61, 62, 63, 109 |  |
+| 61 | La Rochelle | FRA | town | port |  | 707 | 1766 | 60, 62, 88, 106 |  |
+| 62 | Angoulême | FRA | town |  |  | 759 | 1814 | 60, 61, 63, 64, 88 |  |
+| 63 | Limoges | FRA | town |  |  | 813 | 1812 | 58, 60, 62, 64, 65, 74, 114 |  |
+| 64 | Périgueux | FRA | town |  |  | 779 | 1851 | 62, 63, 65, 66, 88 |  |
+| 65 | Cahors | FRA | town |  |  | 804 | 1906 | 63, 64, 66, 68, 74, 115 |  |
+| 66 | Montauban | FRA | town |  |  | 795 | 1934 | 64, 65, 67, 68, 88, 116, 117 |  |
+| 67 | Toulouse | FRA | city |  |  | 794 | 1964 | 66, 68, 69, 116, 118 |  |
+| 68 | Albi | FRA | town |  |  | 832 | 1947 | 65, 66, 67, 69, 70, 115 |  |
+| 69 | Carcassonne | FRA | town |  |  | 834 | 1998 | 67, 68, 70, 118, 162 |  |
+| 70 | Narbonne | FRA | town |  |  | 865 | 2005 | 68, 69, 71, 162 |  |
+| 71 | Montpellier | FRA | town | port |  | 913 | 1983 | 70, 72, 115 |  |
+| 72 | Nîmes | FRA | town |  |  | 939 | 1971 | 71, 73, 76, 110, 115, 119 |  |
+| 73 | Le Puy | FRA | town |  |  | 928 | 1886 | 72, 74, 76, 114, 115 |  |
+| 74 | Saint-Flour | FRA | town |  |  | 890 | 1881 | 63, 65, 73, 114, 115 |  |
+| 75 | Lyon | FRA | city |  |  | 980 | 1844 | 76, 77, 90, 114, 120, 121 |  |
+| 76 | Valence | FRA | town |  |  | 975 | 1901 | 72, 73, 75, 77, 114, 119 |  |
+| 77 | Grenoble | FRA | town |  |  | 1017 | 1888 | 75, 76, 119, 120, 124, 125 |  |
+| 78 | Nevers | FRA | town |  |  | 914 | 1750 | 58, 90, 92, 113 |  |
+| 79 | Troyes | FRA | town |  |  | 970 | 1668 | 54, 80, 90, 92, 112 |  |
+| 80 | Reims | FRA | town |  |  | 977 | 1603 | 54, 79, 81, 112, 126 |  |
+| 81 | Laon | FRA | town |  |  | 962 | 1580 | 54, 80, 94, 100, 126 |  |
+| 82 | Beauvais | FRA | town |  |  | 894 | 1578 | 54, 83, 84, 94 |  |
+| 83 | Calais | ENG | town | port |  | 904 | 1479 | 82, 93, 94, 95, 96 | 36 |
+| 84 | Rouen | ENG | city | port |  | 851 | 1569 | 57, 82, 85 |  |
+| 85 | Caen | ENG | town | port |  | 784 | 1574 | 57, 84, 86, 87, 105 |  |
+| 86 | Cherbourg | ENG | town | port |  | 735 | 1535 | 85, 105 |  |
+| 87 | Le Mans | ENG | town |  |  | 793 | 1658 | 56, 57, 59, 85, 105, 109 |  |
+| 88 | Bordeaux | ENG | city | port |  | 713 | 1861 | 61, 62, 64, 66, 89, 117 |  |
+| 89 | Bayonne | ENG | town | port |  | 653 | 1943 | 88, 117, 152, 173 |  |
+| 90 | Dijon | BUR | town |  |  | 1004 | 1740 | 75, 78, 79, 91, 92, 111, 112, 113, 114, 121 |  |
+| 91 | Besançon | BUR | town |  | HRE | 1048 | 1751 | 90, 111, 121, 123, 286, 288 |  |
+| 92 | Auxerre | BUR | town |  |  | 942 | 1698 | 54, 55, 58, 78, 79, 90 |  |
+| 93 | Arras | BUR | town |  |  | 934 | 1525 | 83, 94, 95, 100 |  |
+| 94 | Amiens | BUR | town |  |  | 909 | 1549 | 81, 82, 83, 93, 100 |  |
+| 95 | Lille | BUR | town |  |  | 949 | 1504 | 83, 93, 96, 97, 100 |  |
+| 96 | Bruges | BUR | city | port |  | 963 | 1467 | 83, 95, 97 |  |
+| 97 | Ghent | BUR | city |  |  | 982 | 1481 | 95, 96, 98, 99, 100 |  |
+| 98 | Brussels | BUR | city |  | HRE | 1007 | 1498 | 97, 99, 100, 101, 126 |  |
+| 99 | Antwerp | BUR | city | port | HRE | 1012 | 1474 | 97, 98, 102, 103, 126, 127, 128, 246 |  |
+| 100 | Mons | BUR | town |  | HRE | 986 | 1523 | 81, 93, 94, 95, 97, 98, 101, 126 |  |
+| 101 | Namur | BUR | town |  | HRE | 1025 | 1527 | 98, 100, 126 |  |
+| 102 | Middelburg | BUR | town | port | HRE | 983 | 1449 | 99, 103 |  |
+| 103 | Dordrecht | BUR | town | port | HRE | 1029 | 1435 | 99, 102, 104, 127 |  |
+| 104 | Amsterdam | BUR | town | port | HRE | 1044 | 1399 | 103, 127 |  |
+| 105 | Rennes | BRI | town |  |  | 711 | 1632 | 85, 86, 87, 106, 107, 109 |  |
+| 106 | Nantes | BRI | city | port |  | 703 | 1693 | 61, 105, 107, 109 |  |
+| 107 | Vannes | BRI | town | port |  | 656 | 1651 | 105, 106, 108 |  |
+| 108 | Brest | BRI | town | port |  | 592 | 1583 | 107 |  |
+| 109 | Angers | ANJ | town |  |  | 752 | 1686 | 59, 60, 87, 105, 106 |  |
+| 110 | Marseille | ANJ | city | port |  | 984 | 2010 | 72, 119, 125 |  |
+| 111 | Nancy | ANJ | town |  | HRE | 1067 | 1654 | 90, 91, 112, 270, 271, 285, 286 |  |
+| 112 | Bar-le-Duc | ANJ | town |  | HRE | 1022 | 1643 | 79, 80, 90, 111, 130, 270 |  |
+| 113 | Moulins | BOU | town |  |  | 918 | 1779 | 58, 78, 90, 114 |  |
+| 114 | Clermont | BOU | town |  |  | 898 | 1830 | 58, 63, 73, 74, 75, 76, 90, 113 |  |
+| 115 | Rodez | ARM | town |  |  | 857 | 1923 | 65, 68, 71, 72, 73, 74 |  |
+| 116 | Lectoure | ARM | town |  |  | 758 | 1934 | 66, 67, 117 |  |
+| 117 | Pau | FOI | town |  |  | 701 | 1966 | 66, 88, 89, 116, 118, 156 |  |
+| 118 | Foix | FOI | town |  |  | 794 | 2007 | 67, 69, 117, 156, 158, 159, 161, 162 |  |
+| 119 | Avignon | PAP | town |  |  | 962 | 1966 | 72, 76, 77, 110, 125 |  |
+| 120 | Chambéry | SAV | town |  | HRE | 1030 | 1864 | 75, 77, 121, 122, 124 |  |
+| 121 | Bourg-en-Bresse | SAV | town |  | HRE | 1003 | 1816 | 75, 90, 91, 120, 122 |  |
+| 122 | Geneva | SAV | town |  | HRE | 1046 | 1822 | 120, 121, 123, 124 |  |
+| 123 | Lausanne | SAV | town |  | HRE | 1070 | 1803 | 91, 122, 124, 288 |  |
+| 124 | Turin | SAV | town |  | HRE | 1110 | 1907 | 77, 120, 122, 123, 125, 178, 195, 212 |  |
+| 125 | Nice | SAV | town | port | HRE | 1078 | 1995 | 77, 110, 119, 124, 195 |  |
+| 126 | Liège | LIE | city |  | HRE | 1057 | 1520 | 80, 81, 98, 99, 100, 101, 130, 246, 247, 258 |  |
+| 127 | Utrecht | UTR | town |  | HRE | 1050 | 1419 | 99, 103, 104, 128, 129, 244, 245 |  |
+| 128 | Nijmegen | GEL | town |  | HRE | 1079 | 1440 | 99, 127, 244 |  |
+| 129 | Groningen | FRI | town | port | HRE | 1119 | 1350 | 127, 237, 245 |  |
+| 130 | Luxembourg | LUX | town |  | HRE | 1072 | 1592 | 112, 126, 258, 270 |  |
+| 131 | Toledo | CAS | city |  |  | 464 | 2153 | 132, 139, 140, 143, 145 |  |
+| 132 | Madrid | CAS | town |  |  | 490 | 2120 | 131, 139, 145, 146, 149 |  |
+| 133 | Seville | CAS | city | port |  | 316 | 2290 | 134, 136, 141, 170, 171, 175 |  |
+| 134 | Córdoba | CAS | city |  |  | 389 | 2275 | 133, 135, 140, 141, 142, 174, 175 |  |
+| 135 | Jaén | CAS | town |  |  | 440 | 2297 | 134, 137, 140, 174, 176 |  |
+| 136 | Cádiz | CAS | town | port |  | 287 | 2343 | 133, 175 | 430 |
+| 137 | Murcia | CAS | town |  |  | 585 | 2316 | 135, 138, 139, 140, 164, 176 |  |
+| 138 | Cartagena | CAS | town | port |  | 586 | 2341 | 137, 176 |  |
+| 139 | Cuenca | CAS | town |  |  | 565 | 2163 | 131, 132, 137, 140, 149, 157, 163, 164 |  |
+| 140 | Ciudad Real | CAS | town |  |  | 454 | 2213 | 131, 134, 135, 137, 139, 142 |  |
+| 141 | Badajoz | CAS | town |  |  | 294 | 2176 | 133, 134, 142, 169, 170 |  |
+| 142 | Cáceres | CAS | town |  |  | 337 | 2146 | 134, 140, 141, 143, 169 |  |
+| 143 | Plasencia | CAS | town |  |  | 362 | 2113 | 131, 142, 144, 145, 169 |  |
+| 144 | Salamanca | CAS | town |  |  | 401 | 2057 | 143, 145, 147, 168 |  |
+| 145 | Ávila | CAS | town |  |  | 444 | 2091 | 131, 132, 143, 144, 146, 147 |  |
+| 146 | Segovia | CAS | town |  |  | 478 | 2079 | 132, 145, 147, 148, 149 |  |
+| 147 | Valladolid | CAS | city |  |  | 461 | 2025 | 144, 145, 146, 148, 150, 168 |  |
+| 148 | Burgos | CAS | city |  |  | 523 | 1992 | 146, 147, 149, 150, 151, 152 |  |
+| 149 | Soria | CAS | town |  |  | 575 | 2046 | 132, 139, 146, 148, 152, 155, 157, 173 |  |
+| 150 | León | CAS | town |  |  | 437 | 1950 | 147, 148, 151, 168 |  |
+| 151 | Oviedo | CAS | town |  |  | 438 | 1896 | 148, 150, 152, 154, 168 |  |
+| 152 | Bilbao | CAS | town | port |  | 576 | 1941 | 89, 148, 149, 151, 173 |  |
+| 153 | Santiago | CAS | town |  |  | 299 | 1888 | 154, 168 |  |
+| 154 | A Coruña | CAS | town | port |  | 319 | 1863 | 151, 153, 168 |  |
+| 155 | Zaragoza | ARA | city |  |  | 653 | 2072 | 149, 156, 157, 158, 173 |  |
+| 156 | Huesca | ARA | town |  |  | 683 | 2044 | 117, 118, 155, 158, 173 |  |
+| 157 | Teruel | ARA | town |  |  | 622 | 2157 | 139, 149, 155, 158, 160, 163 |  |
+| 158 | Lleida | ARA | town |  |  | 728 | 2089 | 118, 155, 156, 157, 159, 160 |  |
+| 159 | Barcelona | ARA | city | port |  | 803 | 2117 | 118, 158, 160, 161 | 165 |
+| 160 | Tarragona | ARA | town | port |  | 752 | 2126 | 157, 158, 159, 163 |  |
+| 161 | Girona | ARA | town |  |  | 843 | 2085 | 118, 159, 162 |  |
+| 162 | Perpignan | ARA | town |  |  | 855 | 2037 | 69, 70, 118, 161 |  |
+| 163 | Valencia | ARA | city | port |  | 647 | 2224 | 139, 157, 160, 164 |  |
+| 164 | Alicante | ARA | town | port |  | 623 | 2297 | 137, 139, 163 |  |
+| 165 | Palma | ARA | town | port |  | 807 | 2243 |  | 159 |
+| 166 | Lisbon | POR | city | port |  | 179 | 2150 | 169, 170, 171 |  |
+| 167 | Porto | POR | town | port |  | 261 | 2000 | 168, 169 |  |
+| 168 | Braga | POR | town |  |  | 277 | 1977 | 144, 147, 150, 151, 153, 154, 167, 169 |  |
+| 169 | Coimbra | POR | town |  |  | 248 | 2064 | 141, 142, 143, 166, 167, 168, 170 |  |
+| 170 | Évora | POR | town |  |  | 239 | 2181 | 133, 141, 166, 169, 171 |  |
+| 171 | Lagos | POR | town | port |  | 169 | 2263 | 133, 166, 170 |  |
+| 172 | Ceuta | POR | town | port |  | 319 | 2406 | 430 |  |
+| 173 | Pamplona | NAV | town |  |  | 632 | 1985 | 89, 149, 152, 155, 156 |  |
+| 174 | Granada | GRA | city |  |  | 440 | 2339 | 134, 135, 175, 176 |  |
+| 175 | Málaga | GRA | town | port |  | 388 | 2355 | 133, 134, 136, 174 |  |
+| 176 | Almería | GRA | town | port |  | 496 | 2374 | 135, 137, 138, 174 |  |
+| 177 | Milan | MIL | city |  | HRE | 1184 | 1887 | 178, 185, 195, 212 |  |
+| 178 | Como | MIL | town |  | HRE | 1181 | 1863 | 124, 177, 185, 212, 289 |  |
+| 179 | Cremona | MIL | town |  | HRE | 1222 | 1912 | 180, 184, 185, 195, 211 |  |
+| 180 | Parma | MIL | town |  | HRE | 1236 | 1936 | 179, 195, 201, 210, 211 |  |
+| 181 | Venice | VEN | city | port |  | 1333 | 1895 | 182, 186, 209, 284 |  |
+| 182 | Padua | VEN | town |  |  | 1313 | 1898 | 181, 183, 209, 284 |  |
+| 183 | Verona | VEN | city |  |  | 1270 | 1894 | 182, 184, 209, 211, 284 |  |
+| 184 | Brescia | VEN | town |  |  | 1233 | 1885 | 179, 183, 185, 211, 284 |  |
+| 185 | Bergamo | VEN | town |  |  | 1208 | 1872 | 177, 178, 179, 184, 284, 287 |  |
+| 186 | Udine | VEN | town |  |  | 1379 | 1856 | 181, 187, 290, 292, 293, 335 |  |
+| 187 | Zara | VEN | town | port |  | 1477 | 1987 | 186, 188, 335, 360 |  |
+| 188 | Spalato | VEN | town | port |  | 1535 | 2026 | 187, 360, 362 |  |
+| 189 | Durazzo | VEN | town | port |  | 1696 | 2174 | 349, 350, 351, 359, 361, 363 |  |
+| 190 | Corfu | VEN | town | port |  | 1720 | 2290 |  | 370 |
+| 191 | Modon | VEN | town | port |  | 1840 | 2467 | 356, 357, 358 | 194 |
+| 192 | Negroponte | VEN | town | port |  | 1927 | 2356 | 369 |  |
+| 193 | Candia | VEN | city | port |  | 2040 | 2562 | 194 |  |
+| 194 | Canea | VEN | town | port |  | 1976 | 2557 | 193 | 191 |
+| 195 | Genoa | GEN | city | port |  | 1166 | 1954 | 124, 125, 177, 179, 180, 201, 212 |  |
+| 196 | Bastia | GEN | town | port |  | 1179 | 2079 |  | 201, 229 |
+| 197 | Chios | GEN | town | port |  | 2063 | 2340 |  | 376 |
+| 198 | Famagusta | GEN | town | port |  | 2536 | 2474 | 402 | 391 |
+| 199 | Caffa | GEN | city | port |  | 2430 | 1790 | 426 |  |
+| 200 | Florence | FLO | city |  |  | 1277 | 2008 | 201, 202, 203, 208, 213 |  |
+| 201 | Pisa | FLO | town | port |  | 1235 | 2009 | 180, 195, 200, 203, 210 | 196 |
+| 202 | Arezzo | FLO | town |  |  | 1307 | 2031 | 200, 203, 206, 213 |  |
+| 203 | Siena | SIE | town |  |  | 1279 | 2039 | 200, 201, 202, 205, 206 |  |
+| 204 | Rome | PAP | city |  |  | 1334 | 2139 | 205, 216, 223 |  |
+| 205 | Viterbo | PAP | town |  |  | 1315 | 2103 | 203, 204, 206, 216 |  |
+| 206 | Perugia | PAP | town |  |  | 1332 | 2056 | 202, 203, 205, 207, 213, 216 |  |
+| 207 | Ancona | PAP | town | port |  | 1384 | 2025 | 206, 216 |  |
+| 208 | Bologna | PAP | city |  |  | 1284 | 1959 | 200, 209, 210, 213 |  |
+| 209 | Ferrara | FER | town |  |  | 1298 | 1936 | 181, 182, 183, 208, 210, 211, 213 |  |
+| 210 | Modena | FER | town |  | HRE | 1264 | 1948 | 180, 201, 208, 209, 211 |  |
+| 211 | Mantua | MAN | town |  | HRE | 1260 | 1912 | 179, 180, 183, 184, 209, 210 |  |
+| 212 | Casale | MON | town |  | HRE | 1147 | 1906 | 124, 177, 178, 195 |  |
+| 213 | Rimini | RIM | town | port |  | 1338 | 1992 | 200, 202, 206, 208, 209 |  |
+| 214 | Naples | NAP | city | port |  | 1424 | 2211 | 215, 217, 223 |  |
+| 215 | Salerno | NAP | town | port |  | 1450 | 2222 | 214, 217, 218, 219, 221 |  |
+| 216 | L'Aquila | NAP | town |  |  | 1381 | 2110 | 204, 205, 206, 207, 217, 223 |  |
+| 217 | Foggia | NAP | town |  |  | 1490 | 2171 | 214, 215, 216, 218, 223 |  |
+| 218 | Bari | NAP | town | port |  | 1557 | 2197 | 215, 217, 219 |  |
+| 219 | Taranto | NAP | town | port |  | 1580 | 2235 | 215, 218, 220, 221 |  |
+| 220 | Lecce | NAP | town |  |  | 1628 | 2245 | 219 |  |
+| 221 | Cosenza | NAP | town |  |  | 1529 | 2320 | 215, 219, 222 |  |
+| 222 | Reggio | NAP | town | port |  | 1505 | 2402 | 221 | 225 |
+| 223 | Gaeta | ARA | town | port |  | 1389 | 2184 | 204, 214, 216, 217 |  |
+| 224 | Palermo | ARA | city | port |  | 1371 | 2406 | 226 |  |
+| 225 | Messina | ARA | town | port |  | 1480 | 2399 | 226 | 222 |
+| 226 | Catania | ARA | town | port |  | 1464 | 2445 | 224, 225, 227 |  |
+| 227 | Syracuse | ARA | town | port |  | 1474 | 2475 | 226 |  |
+| 228 | Cagliari | ARA | town | port |  | 1147 | 2311 | 229 |  |
+| 229 | Sassari | ARA | town |  |  | 1126 | 2207 | 228 | 196 |
+| 230 | Schleswig | SHO | town | port |  | 1247 | 1273 | 17, 231, 232 |  |
+| 231 | Lübeck | LUB | city | port | HRE | 1289 | 1320 | 230, 232, 233, 238 |  |
+| 232 | Hamburg | HAM | city | port | HRE | 1260 | 1340 | 230, 231, 237, 238 |  |
+| 233 | Schwerin | MEC | town |  | HRE | 1317 | 1338 | 231, 234, 238, 240, 242 |  |
+| 234 | Rostock | MEC | town | port | HRE | 1346 | 1308 | 233, 236, 241 |  |
+| 235 | Stettin | POM | town | port | HRE | 1444 | 1355 | 24, 26, 236, 241, 243 |  |
+| 236 | Stralsund | POM | town | port | HRE | 1383 | 1297 | 234, 235 |  |
+| 237 | Bremen | BRE | town | port | HRE | 1209 | 1369 | 129, 232, 238, 239, 245 |  |
+| 238 | Lüneburg | BRU | town |  | HRE | 1275 | 1362 | 231, 232, 233, 237, 239, 240 |  |
+| 239 | Brunswick | BRU | city |  | HRE | 1276 | 1429 | 237, 238, 240, 248, 253 |  |
+| 240 | Magdeburg | MAG | city |  | HRE | 1321 | 1441 | 233, 238, 239, 242, 250, 251, 253 |  |
+| 241 | Berlin | BRA | town |  | HRE | 1396 | 1417 | 234, 235, 242, 243, 250 |  |
+| 242 | Brandenburg | BRA | town |  | HRE | 1361 | 1423 | 233, 240, 241, 250 |  |
+| 243 | Frankfurt (Oder) | BRA | town |  | HRE | 1443 | 1429 | 26, 235, 241, 250, 254, 256 |  |
+| 244 | Wesel | CLE | town |  | HRE | 1109 | 1456 | 127, 128, 245, 246 |  |
+| 245 | Münster | MUN | town |  | HRE | 1154 | 1440 | 127, 129, 237, 244, 246, 248, 249 |  |
+| 246 | Düsseldorf | JUL | town |  | HRE | 1113 | 1486 | 99, 126, 244, 245, 247, 249 |  |
+| 247 | Cologne | COL | city |  | HRE | 1118 | 1506 | 126, 246, 249, 258, 259 |  |
+| 248 | Kassel | HES | town |  | HRE | 1228 | 1491 | 239, 245, 249, 253 |  |
+| 249 | Marburg | HES | town |  | HRE | 1195 | 1522 | 245, 246, 247, 248, 253, 259, 260 |  |
+| 250 | Wittenberg | SAX | town |  | HRE | 1363 | 1460 | 240, 241, 242, 243, 251, 252 |  |
+| 251 | Leipzig | SAX | town |  | HRE | 1350 | 1496 | 240, 250, 252, 253, 264, 266 |  |
+| 252 | Dresden | SAX | town |  | HRE | 1408 | 1517 | 250, 251, 254, 265, 266 |  |
+| 253 | Eisenach | SAX | town |  | HRE | 1262 | 1516 | 239, 240, 248, 249, 251, 260, 262, 264 |  |
+| 254 | Bautzen | LUS | town |  | HRE | 1438 | 1508 | 243, 252, 256, 265, 267 |  |
+| 255 | Breslau | SIL | city |  | HRE | 1549 | 1512 | 256, 257, 267, 269, 297 |  |
+| 256 | Glogau | SIL | town |  | HRE | 1508 | 1475 | 26, 243, 254, 255, 295 |  |
+| 257 | Oppeln | OPP | town |  | HRE | 1588 | 1541 | 255, 269, 294, 297, 298 |  |
+| 258 | Trier | TRI | town |  | HRE | 1096 | 1584 | 126, 130, 247, 259, 263, 270, 272 |  |
+| 259 | Mainz | MAI | town |  | HRE | 1168 | 1575 | 247, 249, 258, 260, 263 |  |
+| 260 | Würzburg | WBG | town |  | HRE | 1240 | 1595 | 249, 253, 259, 261, 262, 263, 273 |  |
+| 261 | Ansbach | ANS | town |  | HRE | 1266 | 1630 | 260, 262, 273, 274, 275, 276 |  |
+| 262 | Nuremberg | NUR | city |  | HRE | 1289 | 1621 | 253, 260, 261, 264, 276 |  |
+| 263 | Heidelberg | PAL | town |  | HRE | 1183 | 1618 | 258, 259, 260, 272, 273 |  |
+| 264 | Amberg | PAL | town |  | HRE | 1323 | 1624 | 251, 253, 262, 266, 276, 277 |  |
+| 265 | Prague | BOH | city |  | HRE | 1437 | 1583 | 252, 254, 266, 267, 281 |  |
+| 266 | Plzeň | BOH | town |  | HRE | 1391 | 1605 | 251, 252, 264, 265, 277, 281 |  |
+| 267 | Kutná Hora | BOH | town |  | HRE | 1474 | 1592 | 254, 255, 265, 268, 269, 281 |  |
+| 268 | Brno | BOH | town |  | HRE | 1534 | 1642 | 267, 269, 280, 281, 324 |  |
+| 269 | Olomouc | BOH | town |  | HRE | 1561 | 1615 | 255, 257, 267, 268, 294, 324 |  |
+| 270 | Metz | MET | city |  | HRE | 1070 | 1625 | 111, 112, 130, 258, 271 |  |
+| 271 | Strasbourg | STR | city |  | HRE | 1136 | 1669 | 111, 270, 272, 285 |  |
+| 272 | Baden | BAD | town |  | HRE | 1159 | 1659 | 258, 263, 271, 273, 285 |  |
+| 273 | Stuttgart | WRT | town |  | HRE | 1202 | 1661 | 260, 261, 263, 272, 274, 285 |  |
+| 274 | Ulm | ULM | city |  | HRE | 1236 | 1690 | 261, 273, 275, 283, 287 |  |
+| 275 | Augsburg | AUG | city |  | HRE | 1277 | 1694 | 261, 274, 276, 278, 283 |  |
+| 276 | Ingolstadt | BIN | town |  | HRE | 1302 | 1668 | 261, 262, 264, 275, 277, 278, 279 |  |
+| 277 | Regensburg | REG | town |  | HRE | 1333 | 1653 | 264, 266, 276, 279, 281 |  |
+| 278 | Munich | BMU | town |  | HRE | 1307 | 1712 | 275, 276, 279, 283, 290 |  |
+| 279 | Landshut | BLA | town |  | HRE | 1334 | 1685 | 276, 277, 278, 281, 290 |  |
+| 280 | Vienna | AUS | city |  | HRE | 1524 | 1710 | 268, 281, 282, 324 |  |
+| 281 | Linz | AUS | town |  | HRE | 1430 | 1703 | 265, 266, 267, 268, 277, 279, 280, 282, 290, 291 |  |
+| 282 | Wiener Neustadt | AUS | town |  | HRE | 1519 | 1737 | 280, 281, 291, 324, 325 |  |
+| 283 | Innsbruck | TYR | town |  | HRE | 1295 | 1770 | 274, 275, 278, 284, 287, 290 |  |
+| 284 | Bozen | TYR | town |  | HRE | 1291 | 1823 | 181, 182, 183, 184, 185, 283, 287 |  |
+| 285 | Freiburg | TYR | town |  | HRE | 1137 | 1710 | 111, 271, 272, 273, 286, 287 |  |
+| 286 | Basel | BAS | town |  | HRE | 1122 | 1738 | 91, 111, 285, 287, 288, 289 |  |
+| 287 | Zürich | ZUR | town |  | HRE | 1165 | 1755 | 185, 274, 283, 284, 285, 286, 289 |  |
+| 288 | Bern | SWI | town |  | HRE | 1112 | 1778 | 91, 123, 286, 289 |  |
+| 289 | Lucerne | SWI | town |  | HRE | 1152 | 1775 | 178, 286, 287, 288 |  |
+| 290 | Salzburg | SAL | town |  | HRE | 1372 | 1737 | 186, 278, 279, 281, 283 |  |
+| 291 | Graz | STY | town |  | HRE | 1482 | 1788 | 281, 282, 292, 325, 335 |  |
+| 292 | Ljubljana | STY | town |  | HRE | 1439 | 1857 | 186, 291, 293, 335 |  |
+| 293 | Trieste | STY | town | port | HRE | 1407 | 1883 | 186, 292 |  |
+| 294 | Kraków | POL | city |  |  | 1677 | 1577 | 257, 269, 298, 300, 302, 324, 337, 338 |  |
+| 295 | Poznań | POL | town |  |  | 1542 | 1424 | 26, 256, 296, 297 |  |
+| 296 | Gniezno | POL | town |  |  | 1570 | 1415 | 24, 26, 295, 297, 299 |  |
+| 297 | Kalisz | POL | town |  |  | 1592 | 1466 | 255, 257, 295, 296, 298, 299 |  |
+| 298 | Sieradz | POL | town |  |  | 1619 | 1476 | 257, 294, 297, 299 |  |
+| 299 | Łęczyca | POL | town |  |  | 1638 | 1444 | 26, 296, 297, 298, 300, 306, 307 |  |
+| 300 | Sandomierz | POL | town |  |  | 1752 | 1529 | 294, 299, 301, 302, 306 |  |
+| 301 | Lublin | POL | town |  |  | 1784 | 1487 | 300, 302, 303, 306, 312, 313 |  |
+| 302 | Przemyśl | POL | town |  |  | 1802 | 1586 | 294, 300, 301, 303, 304, 337 |  |
+| 303 | Lwów | POL | city |  |  | 1857 | 1575 | 301, 302, 304, 313 |  |
+| 304 | Halicz | POL | town |  |  | 1893 | 1619 | 302, 303, 305, 313, 331, 332, 337, 366 |  |
+| 305 | Kamieniec | POL | town |  |  | 1980 | 1638 | 304, 313, 322, 366, 367 |  |
+| 306 | Warsaw | MAZ | town |  |  | 1712 | 1427 | 25, 299, 300, 301, 307, 311, 312 |  |
+| 307 | Płock | MAZ | town |  |  | 1656 | 1409 | 25, 26, 299, 306 |  |
+| 308 | Vilnius | LIT | city |  |  | 1866 | 1242 | 20, 309, 311, 314, 315 |  |
+| 309 | Kaunas | LIT | town |  |  | 1810 | 1234 | 20, 25, 308, 310, 311 |  |
+| 310 | Medininkai | LIT | town |  |  | 1738 | 1183 | 20, 25, 27, 309 |  |
+| 311 | Grodno | LIT | town |  |  | 1817 | 1317 | 25, 306, 308, 309, 312, 314 |  |
+| 312 | Brest-Litovsk | LIT | town |  |  | 1824 | 1425 | 301, 306, 311, 313, 314 |  |
+| 313 | Lutsk | LIT | town |  |  | 1905 | 1507 | 301, 303, 304, 305, 312, 314, 319, 320, 322 |  |
+| 314 | Minsk | LIT | town |  |  | 1964 | 1281 | 308, 311, 312, 313, 315, 316, 317, 320 |  |
+| 315 | Polotsk | LIT | town |  |  | 1992 | 1166 | 20, 308, 314, 316, 318, 421 |  |
+| 316 | Vitebsk | LIT | town |  |  | 2050 | 1175 | 314, 315, 317, 318 |  |
+| 317 | Mogilev | LIT | town |  |  | 2073 | 1260 | 314, 316, 318, 320, 321 |  |
+| 318 | Smolensk | LIT | city |  |  | 2126 | 1187 | 315, 316, 317, 321, 411, 415, 418, 421, 423 |  |
+| 319 | Kiev | LIT | town |  |  | 2129 | 1488 | 313, 320, 321, 322, 426 |  |
+| 320 | Chernigov | LIT | town |  |  | 2146 | 1412 | 313, 314, 317, 319, 321 |  |
+| 321 | Novgorod-Seversky | LIT | town |  |  | 2219 | 1358 | 317, 318, 319, 320, 411, 424, 426 |  |
+| 322 | Bratslav | LIT | town |  |  | 2082 | 1610 | 305, 313, 319, 367, 368, 426 |  |
+| 323 | Buda | HUN | city |  |  | 1648 | 1754 | 325, 326, 328, 331, 337, 338 |  |
+| 324 | Pozsony | HUN | town |  |  | 1558 | 1714 | 268, 269, 280, 282, 294, 325, 338 |  |
+| 325 | Győr | HUN | town |  |  | 1582 | 1744 | 282, 291, 323, 324, 326, 327, 338 |  |
+| 326 | Székesfehérvár | HUN | town |  |  | 1620 | 1776 | 323, 325, 327, 328 |  |
+| 327 | Pécs | HUN | town |  |  | 1615 | 1853 | 325, 326, 328, 335, 336, 360, 361 |  |
+| 328 | Szeged | HUN | town |  |  | 1705 | 1835 | 323, 326, 327, 329, 330, 331, 336 |  |
+| 329 | Temesvár | HUN | town |  |  | 1758 | 1865 | 328, 330, 332, 333, 336, 346, 353 |  |
+| 330 | Nagyvárad | HUN | town |  |  | 1783 | 1774 | 328, 329, 331, 332 |  |
+| 331 | Debrecen | HUN | town |  |  | 1766 | 1743 | 304, 323, 328, 330, 332, 337 |  |
+| 332 | Kolozsvár | HUN | town |  |  | 1862 | 1785 | 304, 329, 330, 331, 333, 334, 366 |  |
+| 333 | Szeben | HUN | town |  |  | 1896 | 1848 | 329, 332, 334, 346, 364 |  |
+| 334 | Brassó | HUN | town |  |  | 1966 | 1849 | 332, 333, 364, 365, 366, 367 |  |
+| 335 | Zagreb | HUN | town |  |  | 1509 | 1873 | 186, 187, 291, 292, 327, 360 |  |
+| 336 | Belgrade | HUN | town |  |  | 1726 | 1932 | 327, 328, 329, 353, 361 |  |
+| 337 | Kassa | JIS | town |  |  | 1743 | 1664 | 294, 302, 304, 323, 331, 338 |  |
+| 338 | Besztercebánya | JIS | town |  |  | 1648 | 1669 | 294, 323, 324, 325, 337 |  |
+| 339 | Edirne | OTT | city |  |  | 2053 | 2110 | 340, 341, 343, 354, 355 |  |
+| 340 | Gallipoli | OTT | town | port |  | 2066 | 2199 | 339, 354 | 375 |
+| 341 | Philippopolis | OTT | town |  |  | 1957 | 2092 | 339, 342, 343, 345, 348 |  |
+| 342 | Sofia | OTT | town |  |  | 1880 | 2063 | 341, 345, 346, 348, 349, 353, 359, 361 |  |
+| 343 | Tarnovo | OTT | town |  |  | 1992 | 2022 | 339, 341, 344, 345, 355, 364 |  |
+| 344 | Varna | OTT | town | port |  | 2102 | 1995 | 343, 355, 364, 365 |  |
+| 345 | Nikopol | OTT | town |  |  | 1950 | 1985 | 341, 342, 343, 346, 364 |  |
+| 346 | Vidin | OTT | town |  |  | 1849 | 1977 | 329, 333, 342, 345, 353, 364 |  |
+| 347 | Salonica | OTT | city | port |  | 1877 | 2204 | 348, 350, 352 |  |
+| 348 | Serres | OTT | town |  |  | 1905 | 2171 | 341, 342, 347, 349 |  |
+| 349 | Skopje | OTT | town |  |  | 1790 | 2120 | 189, 342, 348, 350, 359 |  |
+| 350 | Monastir | OTT | town |  |  | 1790 | 2187 | 189, 347, 349, 351, 352 |  |
+| 351 | Ioannina | OTT | town |  |  | 1773 | 2283 | 189, 350, 352, 370 |  |
+| 352 | Larissa | OTT | town |  |  | 1856 | 2277 | 347, 350, 351, 358, 369, 370 |  |
+| 353 | Smederevo | OTT | town |  |  | 1750 | 1941 | 329, 336, 342, 346, 361 |  |
+| 354 | Constantinople | BYZ | city | port |  | 2180 | 2131 | 339, 340, 355 | 372 |
+| 355 | Mesembria | BYZ | town | port |  | 2091 | 2032 | 339, 343, 344, 354 |  |
+| 356 | Mistra | MOR | town |  |  | 1871 | 2455 | 191, 357 |  |
+| 357 | Patras | MOR | town | port |  | 1833 | 2380 | 191, 356, 358 |  |
+| 358 | Corinth | MOR | town | port |  | 1893 | 2395 | 191, 352, 357, 369, 370 |  |
+| 359 | Novo Brdo | SER | town |  |  | 1786 | 2078 | 189, 342, 349, 361 |  |
+| 360 | Jajce | BOS | town |  |  | 1573 | 1972 | 187, 188, 327, 335, 361, 362 |  |
+| 361 | Srebrenica | BOS | town |  |  | 1673 | 1984 | 189, 327, 336, 342, 353, 359, 360, 362 |  |
+| 362 | Blagaj | HER | town |  |  | 1606 | 2045 | 188, 360, 361, 363 |  |
+| 363 | Ragusa | RAG | town | port |  | 1622 | 2085 | 189, 362 |  |
+| 364 | Târgoviște | WAL | town |  |  | 1966 | 1898 | 333, 334, 343, 344, 345, 346, 365 |  |
+| 365 | Brăila | WAL | town |  |  | 2081 | 1856 | 334, 344, 364, 367, 368 |  |
+| 366 | Suceava | MOL | town |  |  | 1976 | 1709 | 304, 305, 332, 334, 367 |  |
+| 367 | Iași | MOL | town |  |  | 2042 | 1732 | 305, 322, 334, 365, 366, 368 |  |
+| 368 | Akkerman | MOL | town | port |  | 2181 | 1773 | 322, 365, 367 |  |
+| 369 | Athens | ATH | town | port |  | 1939 | 2384 | 192, 352, 358 |  |
+| 370 | Arta | EPI | town |  |  | 1783 | 2317 | 351, 352, 358 | 190 |
+| 371 | Mytilene | LES | town | port |  | 2072 | 2284 |  | 375 |
+| 372 | Bursa | OTT | city |  |  | 2199 | 2190 | 373, 375, 380 | 354 |
+| 373 | Nicaea | OTT | town |  |  | 2230 | 2166 | 372, 374, 380, 383 |  |
+| 374 | Izmit | OTT | town | port |  | 2235 | 2142 | 373, 383, 393 |  |
+| 375 | Balıkesir | OTT | town |  |  | 2144 | 2237 | 372, 376, 379, 380 | 340, 371 |
+| 376 | Smyrna | OTT | town | port |  | 2122 | 2327 | 375, 377, 379 | 197 |
+| 377 | Ayasoluk | OTT | town |  |  | 2137 | 2358 | 376, 378, 379 |  |
+| 378 | Milas | OTT | town |  |  | 2167 | 2397 | 377, 379, 404 |  |
+| 379 | Denizli | OTT | town |  |  | 2232 | 2353 | 375, 376, 377, 378, 380, 381, 382 |  |
+| 380 | Kütahya | OTT | town |  |  | 2257 | 2232 | 372, 373, 375, 379, 381, 383 |  |
+| 381 | Afyon | OTT | town |  |  | 2296 | 2270 | 379, 380, 382, 383, 387 |  |
+| 382 | Antalya | OTT | town | port |  | 2332 | 2393 | 379, 381, 387, 392 |  |
+| 383 | Ankara | OTT | town |  |  | 2399 | 2164 | 373, 374, 380, 381, 384, 387, 389, 390, 393 |  |
+| 384 | Amasya | OTT | town |  |  | 2537 | 2075 | 383, 385, 386, 390, 393, 394 |  |
+| 385 | Tokat | OTT | town |  |  | 2580 | 2087 | 384, 386, 390, 395, 396, 400 |  |
+| 386 | Samsun | OTT | town | port |  | 2551 | 2030 | 384, 385, 394 |  |
+| 387 | Konya | KAR | city |  |  | 2413 | 2307 | 381, 382, 383, 388, 389, 392 |  |
+| 388 | Karaman | KAR | town |  |  | 2464 | 2344 | 387, 389, 391, 392, 398 |  |
+| 389 | Aksaray | KAR | town |  |  | 2486 | 2253 | 383, 387, 388, 390, 398 |  |
+| 390 | Kayseri | KAR | town |  |  | 2556 | 2208 | 383, 384, 385, 389, 396, 397, 398 |  |
+| 391 | Silifke | KAR | town | port |  | 2513 | 2385 | 388, 392, 398 | 198 |
+| 392 | Alanya | KAR | town | port |  | 2411 | 2401 | 382, 387, 388, 391 |  |
+| 393 | Kastamonu | CAN | town |  |  | 2421 | 2055 | 374, 383, 384, 394 |  |
+| 394 | Sinop | CAN | town | port |  | 2477 | 1999 | 384, 386, 393 |  |
+| 395 | Trebizond | TRE | town | port |  | 2726 | 1995 | 385, 400, 401, 426 |  |
+| 396 | Elbistan | DUL | town |  |  | 2656 | 2217 | 385, 390, 397, 399, 400 |  |
+| 397 | Maraş | DUL | town |  |  | 2655 | 2262 | 390, 396, 398, 399 |  |
+| 398 | Adana | RAM | town |  |  | 2580 | 2326 | 388, 389, 390, 391, 397 |  |
+| 399 | Diyarbakır | AQQ | town |  |  | 2819 | 2184 | 396, 397, 400, 401 |  |
+| 400 | Erzincan | AQQ | town |  |  | 2740 | 2077 | 385, 395, 396, 399, 401 |  |
+| 401 | Erzurum | AQQ | town |  |  | 2825 | 2035 | 395, 399, 400, 426 |  |
+| 402 | Nicosia | CYP | town |  |  | 2506 | 2479 | 198 |  |
+| 403 | Rhodes | KRH | town | port |  | 2197 | 2461 |  | 404 |
+| 404 | Bodrum | KRH | town | port |  | 2155 | 2419 | 378 | 403 |
+| 405 | Moscow | MOS | city |  |  | 2318 | 1066 | 406, 407, 410, 411, 422 |  |
+| 406 | Vladimir | MOS | town |  |  | 2411 | 1007 | 405, 407, 409, 410, 424 |  |
+| 407 | Rostov | MOS | town |  |  | 2352 | 951 | 405, 406, 408, 409, 422 |  |
+| 408 | Yaroslavl | MOS | town |  |  | 2357 | 917 | 407, 409, 412, 422 |  |
+| 409 | Kostroma | MOS | town |  |  | 2391 | 895 | 406, 407, 408, 412, 420 |  |
+| 410 | Kolomna | MOS | town |  |  | 2374 | 1094 | 405, 406, 411, 424 |  |
+| 411 | Mozhaysk | MOS | town |  |  | 2264 | 1100 | 318, 321, 405, 410, 422, 423, 424 |  |
+| 412 | Vologda | MOS | town |  |  | 2322 | 814 | 408, 409, 413, 419, 420, 422 |  |
+| 413 | Beloozero | MOS | town |  |  | 2235 | 784 | 412, 416, 418, 419, 422 |  |
+| 414 | Novgorod | NOV | city |  |  | 2041 | 944 | 22, 415, 416, 418, 421 |  |
+| 415 | Staraya Russa | NOV | town |  |  | 2052 | 979 | 318, 414, 418, 421 |  |
+| 416 | Ladoga | NOV | town |  |  | 2053 | 837 | 13, 413, 414, 417, 418, 419 |  |
+| 417 | Korela | NOV | town |  |  | 1966 | 783 | 11, 13, 416, 419, 420 |  |
+| 418 | Torzhok | NOV | town |  |  | 2196 | 1010 | 318, 413, 414, 415, 416, 422, 423 |  |
+| 419 | Kargopol | NOV | town |  |  | 2241 | 675 | 412, 413, 416, 417, 420 |  |
+| 420 | Kholmogory | NOV | town |  |  | 2258 | 468 | 11, 409, 412, 417, 419 |  |
+| 421 | Pskov | PSK | town |  |  | 1946 | 1012 | 20, 22, 315, 318, 414, 415 |  |
+| 422 | Tver | TVE | town |  |  | 2234 | 1012 | 405, 407, 408, 411, 412, 413, 418, 423 |  |
+| 423 | Rzhev | TVE | town |  |  | 2187 | 1067 | 318, 411, 418, 422 |  |
+| 424 | Ryazan | RYA | town |  |  | 2420 | 1113 | 321, 406, 410, 411, 426 |  |
+| 425 | Mangup | THE | town |  |  | 2367 | 1842 | 426 |  |
+| 426 | Azak | GHO | town | port |  | 2574 | 1601 | 199, 319, 321, 322, 395, 401, 424, 425 |  |
+| 427 | Fez | MRC | city |  |  | 306 | 2532 | 428, 429, 430 |  |
+| 428 | Meknes | MRC | town |  |  | 272 | 2533 | 427, 430, 431, 434 |  |
+| 429 | Taza | MRC | town |  |  | 365 | 2535 | 427, 430, 435 |  |
+| 430 | Tangier | MRC | town | port |  | 292 | 2405 | 172, 427, 428, 429, 431 | 136 |
+| 431 | Salé | MRC | town | port |  | 208 | 2505 | 428, 430, 432, 434 |  |
+| 432 | Azemmour | MRC | town | port |  | 103 | 2529 | 431, 433, 434 |  |
+| 433 | Safi | MRC | town | port |  | 34 | 2577 | 432, 434 |  |
+| 434 | Marrakesh | MRC | city |  |  | 85 | 2644 | 428, 431, 432, 433 |  |
+| 435 | Tlemcen | TLE | city |  |  | 528 | 2526 | 429, 436 |  |
+| 436 | Oran | TLE | town | port |  | 579 | 2482 | 435, 437 |  |
+| 437 | Algiers | TLE | town | port |  | 798 | 2447 | 436, 439 |  |
+| 438 | Tunis | TUN | city | port |  | 1193 | 2485 | 441, 442 |  |
+| 439 | Bougie | TUN | town | port |  | 909 | 2465 | 437, 440 |  |
+| 440 | Constantine | TUN | town |  |  | 991 | 2498 | 439, 441, 442, 444 |  |
+| 441 | Bône | TUN | town | port |  | 1056 | 2472 | 438, 440, 442 |  |
+| 442 | Kairouan | TUN | town |  |  | 1183 | 2563 | 438, 440, 441, 443, 444 |  |
+| 443 | Sfax | TUN | town | port |  | 1214 | 2629 | 442, 444 |  |
+| 444 | Gabès | TUN | town | port |  | 1171 | 2690 | 440, 442, 443, 445 |  |
+| 445 | Tripoli | TUN | town | port |  | 1352 | 2772 | 444 |  |
 
 ## Mountain passes
 
@@ -649,29 +625,29 @@ generated from where the pass lies.*
 
 | Pass | X | Y | Routes | In the land of | Owner at start |
 |---|---|---|---|---|---|
-| P1 | 774 | 1206 | 186-305 | 305 Lucerne | SWI Swiss Confederacy |
-| P2 | 827 | 1184 | 299-303 | 299 Innsbruck | TYR Tyrol |
-| P3 | 866 | 1192 | 299-300 | 299 Innsbruck | TYR Tyrol |
-| P4 | 1000 | 1166 | 298-307 | 298 Wiener Neustadt | AUS Austria |
-| P5 | 944 | 1027 | 266-280 | 266 Dresden | SAX Saxony |
-| P6 | 912 | 1089 | 281-294, 279-281 | 281 Plzeň | BOH Bohemia |
-| P7 | 1009 | 1040 | 269-282 | 282 Kutná Hora | BOH Bohemia |
-| P8 | 1086 | 1077 | 310-356 | 356 Besztercebánya | JIS Upper Hungary |
-| P9 | 1172 | 1077 | 319-355, 310-355 | 355 Kassa | JIS Upper Hungary |
-| P10 | 1216 | 1096 | 321-349, 321-355, 321-350 | 319 Przemyśl | POL Poland |
-| P11 | 746 | 1104 | 118-286 | 286 Strasbourg | STR Strasbourg |
-| P12 | 727 | 1233 | 130-131, 129-131 | 130 Lausanne | SAV Savoy |
-| P13 | 716 | 1260 | 127-131, 79-131 | 131 Turin | SAV Savoy |
-| P14 | 433 | 1316 | 92-180 | 180 Pamplona | NAV Navarre |
-| P15 | 458 | 1332 | 124-163 | 124 Pau | FOI Foix-Béarn |
-| P16 | 533 | 1358 | 125-165, 125-169 | 125 Foix | FOI Foix-Béarn |
-| P17 | 1304 | 1239 | 352-383 | 352 Brassó | HUN Hungary |
-| P18 | 1269 | 1242 | 351-383 | 351 Szeben | HUN Hungary |
-| P19 | 1285 | 1162 | 350-385 | 385 Suceava | MOL Moldavia |
-| P20 | 1320 | 1364 | 359-361 | 361 Tarnovo | OTT Ottoman Empire |
-| P21 | 852 | 1324 | 213-222 | 213 Florence | FLO Florence |
-| P22 | 1698 | 1543 | 408-418, 409-418 | 418 Adana | RAM Ramadan |
-| P23 | 858 | 495 | 1-3, 2-3 | 3 Nidaros | NOR Norway |
+| P1 | 1161 | 1810 | 178-289 | 289 Lucerne | SWI Swiss Confederacy |
+| P2 | 1240 | 1777 | 283-287 | 283 Innsbruck | TYR Tyrol |
+| P3 | 1300 | 1789 | 283-284 | 283 Innsbruck | TYR Tyrol |
+| P4 | 1500 | 1750 | 282-291 | 282 Wiener Neustadt | AUS Austria |
+| P5 | 1417 | 1541 | 252-265 | 252 Dresden | SAX Saxony |
+| P6 | 1369 | 1634 | 264-266, 266-277 | 266 Plzeň | BOH Bohemia |
+| P7 | 1514 | 1560 | 255-267 | 267 Kutná Hora | BOH Bohemia |
+| P8 | 1630 | 1616 | 294-338 | 338 Besztercebánya | JIS Upper Hungary |
+| P9 | 1758 | 1616 | 302-337, 294-337 | 337 Kassa | JIS Upper Hungary |
+| P10 | 1825 | 1645 | 304-331, 304-337, 304-332 | 302 Przemyśl | POL Poland |
+| P11 | 1119 | 1657 | 111-271 | 271 Strasbourg | STR Strasbourg |
+| P12 | 1091 | 1850 | 123-124, 122-124 | 123 Lausanne | SAV Savoy |
+| P13 | 1074 | 1890 | 120-124, 77-124 | 124 Turin | SAV Savoy |
+| P14 | 650 | 1975 | 89-173 | 173 Pamplona | NAV Navarre |
+| P15 | 687 | 1998 | 117-156 | 117 Pau | FOI Foix-Béarn |
+| P16 | 799 | 2038 | 118-158, 118-162 | 118 Foix | FOI Foix-Béarn |
+| P17 | 1956 | 1859 | 334-364 | 334 Brassó | HUN Hungary |
+| P18 | 1904 | 1864 | 333-364 | 333 Szeben | HUN Hungary |
+| P19 | 1927 | 1743 | 332-366 | 366 Suceava | MOL Moldavia |
+| P20 | 1980 | 2047 | 341-343 | 343 Tarnovo | OTT Ottoman Empire |
+| P21 | 1279 | 1986 | 200-208 | 200 Florence | FLO Florence |
+| P22 | 2547 | 2315 | 388-398, 389-398 | 398 Adana | RAM Ramadan |
+| P23 | 1287 | 742 | 1-3, 2-3 | 3 Nidaros | NOR Norway |
 
 ## Route bends
 
@@ -689,101 +665,104 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 `node tools/map.js scenarios/europe-1440 mountains` moves any that touch something else.
 
 ```
-1036,204  1003,276  975,348  933,427  843,514  817,534  817,610  787,623
-1291,1350  1302,1413  517,1700  613,1705  438,1710  357,1717  274,1727  208,1749
-137,1771
+1555,306  1504,415  1462,522  1400,641  1255,720  1247,793  1226,916  1190,929
+721,983  1703,1632  1859,1640  1883,1712  1450,1762  1129,1789  1928,1792  1434,1795
+1838,1820  1064,1841  1856,1869  475,1927  2802,1985  728,2036  1913,2036  2004,2050
+400,2074  1939,2132  2661,2132  1489,2192  1798,2240  2496,2293  2452,2365  776,2551
+920,2558  657,2565  536,2576  412,2591  312,2624  90,2663  205,2668
 ```
 
 ## Overview
 
 <!-- generated:overview -->
-**Cities (20K):** 2, 5, 20, 24, 28, 29, 30, 54, 68, 77, 87, 91, 101, 102, 103, 104, 112, 117, 133, 138, 140, 141, 154, 155, 162, 166, 170, 173, 181, 184, 191, 193, 205, 207, 212, 213, 218, 222, 228, 238, 245, 246, 253, 254, 261, 269, 277, 280, 285, 286, 289, 290, 296, 310, 320, 325, 335, 340, 357, 365, 373, 391, 407, 425, 434, 448, 455, 456, 459 — all other settlements are towns (10K).
+**Cities (20K):** 2, 5, 20, 24, 28, 29, 30, 54, 67, 75, 84, 88, 96, 97, 98, 99, 106, 110, 126, 131, 133, 134, 147, 148, 155, 159, 163, 166, 174, 177, 181, 183, 193, 195, 199, 200, 204, 208, 214, 224, 231, 232, 239, 240, 247, 255, 262, 265, 270, 271, 274, 275, 280, 294, 303, 308, 318, 323, 339, 347, 354, 372, 387, 405, 414, 427, 434, 435, 438 — all other settlements are towns (10K).
 
-**HRE settlements (97):** 94, 103–110, 118, 119, 127–137, 184–190, 224–226, 245–309 — held by 54 of the 121 countries.
+**HRE settlements (91):** 91, 98–104, 111, 112, 120–130, 177–180, 210–212, 231–293 — held by 53 of the 118 countries.
 
-**Ports (145):** 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 44, 45, 48, 49, 51, 53, 61, 73, 86, 87, 88, 89, 91, 92, 99, 101, 104, 108, 109, 110, 112, 113, 114, 117, 132, 136, 140, 143, 145, 159, 161, 166, 167, 170, 171, 172, 173, 174, 178, 179, 182, 183, 191, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 214, 221, 227, 228, 229, 232, 233, 236, 237, 238, 239, 240, 241, 242, 244, 245, 246, 248, 249, 250, 251, 309, 358, 362, 365, 373, 374, 376, 377, 382, 387, 388, 390, 393, 396, 402, 406, 411, 412, 414, 415, 423, 424, 447, 451, 452, 453, 454, 457, 458, 459, 460, 462, 464, 465, 466 — on the coast; grow +0.5% more (RULES.md §2).
+**Ports (143):** 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 44, 45, 48, 49, 51, 53, 61, 71, 83, 84, 85, 86, 88, 89, 96, 99, 102, 103, 104, 106, 107, 108, 110, 125, 129, 133, 136, 138, 152, 154, 159, 160, 163, 164, 165, 166, 167, 171, 172, 175, 176, 181, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 201, 207, 213, 214, 215, 218, 219, 222, 223, 224, 225, 226, 227, 228, 230, 231, 232, 234, 235, 236, 237, 293, 340, 344, 347, 354, 355, 357, 358, 363, 368, 369, 371, 374, 376, 382, 386, 391, 392, 394, 395, 403, 404, 426, 430, 431, 432, 433, 436, 437, 438, 439, 441, 443, 444, 445 — on the coast; grow +0.5% more (RULES.md §2).
 
-**On a river (162):** 20, 24, 26, 27, 28, 30, 36, 54, 55, 56, 58, 59, 65, 66, 67, 68, 73, 74, 75, 77, 78, 80, 81, 85, 87, 88, 91, 93, 95, 105, 107, 108, 109, 110, 112, 115, 116, 118, 119, 120, 123, 125, 126, 127, 128, 129, 130, 131, 133, 134, 135, 138, 139, 140, 141, 142, 143, 146, 149, 150, 154, 155, 156, 162, 164, 165, 173, 174, 175, 184, 185, 187, 188, 189, 190, 191, 192, 193, 222, 223, 224, 225, 226, 245, 246, 247, 249, 251, 252, 254, 256, 257, 258, 260, 261, 262, 264, 265, 266, 267, 268, 269, 270, 271, 273, 274, 278, 279, 280, 282, 284, 285, 286, 287, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 301, 302, 303, 305, 310, 315, 316, 317, 318, 321, 322, 323, 324, 326, 328, 332, 333, 334, 335, 336, 340, 341, 342, 343, 344, 345, 354, 363, 364, 372, 384, 387, 427, 428, 429, 438, 442, 447 — within 24px of a river on the map; grow +0.5% more (RULES.md §2).
+**On a river (111):** 20, 24, 26, 28, 36, 54, 55, 56, 59, 66, 67, 72, 73, 75, 76, 78, 79, 84, 88, 90, 101, 103, 106, 109, 112, 113, 116, 119, 122, 123, 124, 126, 127, 128, 131, 133, 134, 135, 136, 139, 142, 143, 147, 149, 155, 166, 167, 177, 179, 180, 209, 211, 212, 232, 235, 237, 238, 240, 243, 244, 246, 247, 248, 250, 252, 255, 256, 257, 259, 263, 265, 267, 269, 271, 272, 274, 275, 276, 277, 280, 281, 285, 286, 287, 294, 300, 304, 305, 306, 307, 309, 311, 315, 317, 318, 319, 323, 324, 325, 327, 336, 345, 346, 353, 365, 368, 408, 409, 418, 422, 426 — within 24px of a river on the map; grow +0.5% more (RULES.md §2).
 
-**Routes crossing a river (270):** 20-27, 20-325, 20-326, 20-327, 20-332, 24-25, 24-26, 24-249, 25-26, 25-27, 25-323, 25-326, 25-327, 26-324, 28-32, 28-36, 54-81, 54-82, 54-84, 54-85, 54-95, 55-58, 56-58, 57-87, 58-95, 59-60, 60-115, 61-91, 61-112, 62-91, 64-66, 64-91, 65-66, 66-67, 67-68, 67-123, 68-69, 68-70, 68-125, 75-77, 75-78, 77-78, 77-79, 77-121, 77-127, 78-79, 78-126, 80-93, 80-95, 81-93, 81-95, 83-137, 87-88, 96-120, 104-135, 107-137, 109-110, 109-134, 109-135, 116-126, 118-119, 118-301, 119-137, 119-285, 124-125, 125-163, 127-128, 127-129, 129-131, 130-131, 131-132, 131-190, 131-208, 131-226, 133-135, 133-137, 133-260, 133-261, 133-272, 134-135, 135-136, 135-258, 135-260, 138-146, 138-147, 138-150, 139-146, 139-156, 140-141, 140-143, 140-182, 141-142, 141-182, 142-144, 142-147, 146-156, 148-176, 149-150, 149-176, 151-154, 151-157, 151-175, 152-154, 153-154, 153-155, 153-156, 155-159, 156-162, 156-164, 156-180, 162-163, 162-165, 162-180, 164-165, 164-167, 167-170, 173-176, 174-175, 176-177, 185-190, 185-207, 187-189, 188-189, 188-207, 189-225, 190-226, 191-223, 192-223, 196-303, 223-225, 224-225, 245-252, 246-251, 246-252, 247-252, 249-257, 249-311, 249-316, 251-252, 251-253, 253-262, 254-256, 254-264, 257-270, 257-311, 258-260, 260-261, 261-263, 261-273, 262-267, 263-267, 264-265, 265-266, 266-280, 266-281, 268-270, 268-280, 268-282, 269-270, 269-271, 269-282, 269-313, 271-284, 272-273, 272-278, 272-287, 273-278, 276-290, 284-310, 286-287, 286-301, 289-290, 289-299, 289-303, 290-291, 291-293, 291-295, 292-294, 292-295, 294-295, 294-297, 294-306, 296-297, 296-298, 297-298, 297-306, 297-307, 298-341, 299-303, 300-303, 301-302, 301-303, 302-303, 302-305, 310-319, 310-355, 310-356, 315-324, 317-318, 317-319, 318-323, 321-349, 321-350, 321-355, 321-385, 322-385, 322-386, 323-324, 323-328, 323-329, 325-328, 325-332, 326-328, 328-331, 330-337, 331-332, 331-337, 332-333, 333-435, 334-335, 334-337, 334-338, 335-338, 335-431, 336-337, 336-338, 336-445, 336-447, 338-444, 339-386, 340-343, 340-346, 340-349, 340-355, 340-356, 341-342, 342-343, 343-344, 344-346, 345-346, 345-354, 347-364, 354-380, 360-363, 360-364, 361-363, 361-383, 362-383, 362-384, 364-372, 364-378, 372-378, 372-380, 384-387, 386-387, 387-445, 387-446, 415-447, 421-447, 425-442, 426-429, 427-428, 427-429, 427-442, 428-442, 431-442, 435-443, 438-443, 442-443, 444-447 — +1 month to march (RULES.md §8).
+**Routes crossing a river (265):** 20-22, 20-23, 20-315, 20-421, 24-25, 24-26, 24-235, 25-26, 25-27, 25-306, 25-309, 25-310, 26-235, 26-243, 26-307, 28-32, 28-36, 54-55, 54-57, 54-92, 55-58, 56-58, 57-84, 58-92, 59-60, 60-109, 61-88, 61-106, 62-88, 64-88, 66-67, 66-88, 66-116, 66-117, 67-68, 67-69, 67-118, 72-110, 73-76, 75-76, 75-77, 75-114, 75-120, 76-77, 76-114, 76-119, 77-119, 78-90, 78-92, 79-90, 79-92, 80-126, 81-126, 84-85, 90-113, 90-114, 99-103, 99-127, 99-128, 99-246, 102-103, 110-119, 111-112, 111-285, 112-130, 112-270, 117-118, 118-156, 119-125, 120-121, 120-122, 122-124, 123-124, 124-125, 124-195, 124-212, 126-130, 126-246, 126-247, 126-258, 127-128, 128-244, 131-139, 131-140, 131-143, 132-139, 132-149, 133-134, 133-136, 133-175, 134-135, 134-174, 134-175, 135-137, 135-140, 139-149, 141-169, 142-143, 142-169, 144-147, 144-168, 145-147, 146-147, 146-148, 146-149, 148-149, 148-152, 149-152, 149-155, 149-173, 155-157, 157-158, 157-160, 160-163, 166-169, 167-169, 168-169, 169-170, 177-195, 179-180, 179-195, 180-211, 181-209, 182-209, 183-209, 185-287, 195-212, 209-211, 210-211, 231-238, 232-237, 232-238, 233-238, 233-240, 235-243, 237-238, 237-239, 239-248, 240-242, 240-250, 243-256, 244-246, 245-246, 246-249, 247-249, 247-259, 248-253, 249-253, 250-251, 250-252, 252-254, 254-256, 254-265, 254-267, 255-257, 255-267, 255-269, 257-294, 257-297, 257-298, 258-259, 258-263, 258-272, 259-263, 261-275, 268-280, 269-294, 271-272, 271-285, 274-275, 274-283, 274-287, 275-276, 276-278, 276-279, 277-279, 279-281, 280-281, 280-324, 281-282, 281-290, 281-291, 282-324, 283-287, 284-287, 285-286, 285-287, 294-302, 294-324, 294-337, 294-338, 299-307, 300-301, 300-302, 301-306, 304-331, 304-332, 304-337, 304-366, 305-366, 305-367, 306-307, 306-311, 306-312, 308-311, 308-315, 309-311, 311-314, 313-320, 314-315, 314-320, 315-316, 315-318, 317-318, 317-320, 317-321, 318-321, 318-411, 318-415, 318-418, 318-421, 319-320, 319-321, 319-426, 322-367, 322-426, 323-328, 323-331, 323-337, 323-338, 324-325, 325-338, 326-328, 327-328, 327-336, 328-336, 329-336, 329-346, 333-346, 336-353, 341-345, 342-345, 342-353, 343-345, 343-364, 344-364, 344-365, 345-346, 346-353, 346-364, 353-361, 365-368, 367-368, 395-426, 401-426, 405-422, 406-409, 407-408, 407-409, 407-422, 408-422, 411-422, 418-423, 422-423, 424-426 — +1 month to march (RULES.md §8).
 
-**Marching** at 420 map units a year, +1 month per river crossing, +2 per leg to or from a pass: a route takes 0.02–1.00 years (median 0.15); through a pass 0.41–0.77.
+**Marching** at 315 map units a year, +1 month per river crossing, +2 per leg to or from a pass: a route takes 0.06–1.92 years (median 0.29); through a pass 0.49–1.21.
 
 | Pop | Countries |
 |---|---|
-| 350K | 2: FRA France · OTT Ottoman Empire |
+| 330K | 1: OTT Ottoman Empire |
+| 320K | 1: FRA France |
 | 300K | 1: ENG England |
 | 290K | 1: CAS Castile |
-| 220K | 2: BUR Burgundy · ARA Aragon |
-| 190K | 1: VEN Venice |
-| 170K | 1: LIT Lithuania |
-| 160K | 1: HUN Hungary |
-| 150K | 1: POL Poland |
+| 220K | 1: ARA Aragon |
+| 190K | 1: BUR Burgundy |
+| 170K | 2: VEN Venice · LIT Lithuania |
+| 150K | 1: HUN Hungary |
+| 140K | 1: POL Poland |
 | 100K | 4: SWE Sweden · NAP Naples · MOS Muscovy · MRC Morocco |
 | 90K | 1: TUN Tunis |
-| 80K | 5: POR Portugal · MIL Milan · GEN Genoa · PAP Papal States · NOV Novgorod |
-| 70K | 1: KAR Karaman |
-| 60K | 3: ANJ Anjou · SAV Savoy · BOH Bohemia |
-| 50K | 5: NOR Norway · DEN Denmark · LIV Livonian Order · TEU Teutonic Order · BRI Brittany |
+| 80K | 3: POR Portugal · PAP Papal States · NOV Novgorod |
+| 70K | 2: GEN Genoa · KAR Karaman |
+| 60K | 2: SAV Savoy · BOH Bohemia |
+| 50K | 7: NOR Norway · DEN Denmark · LIV Livonian Order · TEU Teutonic Order · BRI Brittany · ANJ Anjou · MIL Milan |
 | 40K | 6: SCO Scotland · GRA Granada · FLO Florence · SAX Saxony · AUS Austria · TLE Tlemcen |
 | 30K | 9: BRU Brunswick-Lüneburg · BRA Brandenburg · SIL Silesia · TYR Tyrol · STY Inner Austria · BYZ Byzantium · MOR Morea · MOL Moldavia · AQQ Aq Qoyunlu |
-| 20K | 28: BOU Bourbon · ARM Armagnac · FOI Foix-Béarn · LIE Liège · FER Ferrara · LUB Lübeck · HAM Hamburg · MEC Mecklenburg · POM Pomerania · MAG Magdeburg · COL Cologne · HES Hesse · NUR Nuremberg · PAL Palatinate · MET Metz · STR Strasbourg · ULM Ulm · AUG Augsburg · BMU Bavaria-Munich · SWI Swiss Confederacy · MAZ Masovia · JIS Upper Hungary · BOS Bosnia · WAL Wallachia · CAN Candar · DUL Dulkadir · KRH Knights of Rhodes · TVE Tver |
-| 10K | 49: GOT Gotland · ISL Lordship of the Isles · TRN Tyrone · THO Thomond · DES Desmond · UTR Utrecht · GEL Guelders · FRI Frisia · LUX Luxembourg · NAV Navarre · SIE Siena · LUC Lucca · MAN Mantua · MON Montferrat · RIM Rimini · SHO Schleswig-Holstein · BRE Bremen · CLE Cleves-Mark · MUN Münster · JUL Jülich-Berg · LUS Upper Lusatia · OPP Opole · TRI Trier · MAI Mainz · FFM Frankfurt · WBG Würzburg · ANS Ansbach-Kulmbach · BAD Baden · WRT Württemberg · BIN Bavaria-Ingolstadt · REG Regensburg · BLA Bavaria-Landshut · BAS Basel · ZUR Zürich · SAL Salzburg · SER Serbia · HER Herzegovina · RAG Ragusa · ATH Athens · EPI Epirus · LES Lesbos · TRE Trebizond · RAM Ramadan · CYP Cyprus · PSK Pskov · RYA Ryazan · CRI Crimea · THE Theodoro · GHO Great Horde |
+| 20K | 27: BOU Bourbon · ARM Armagnac · FOI Foix-Béarn · LIE Liège · FER Ferrara · LUB Lübeck · HAM Hamburg · MEC Mecklenburg · POM Pomerania · MAG Magdeburg · COL Cologne · HES Hesse · NUR Nuremberg · PAL Palatinate · MET Metz · STR Strasbourg · ULM Ulm · AUG Augsburg · SWI Swiss Confederacy · MAZ Masovia · JIS Upper Hungary · BOS Bosnia · WAL Wallachia · CAN Candar · DUL Dulkadir · KRH Knights of Rhodes · TVE Tver |
+| 10K | 47: GOT Gotland · ISL Lordship of the Isles · TRN Tyrone · THO Thomond · DES Desmond · UTR Utrecht · GEL Guelders · FRI Frisia · LUX Luxembourg · NAV Navarre · SIE Siena · MAN Mantua · MON Montferrat · RIM Rimini · SHO Schleswig-Holstein · BRE Bremen · CLE Cleves-Mark · MUN Münster · JUL Jülich-Berg · LUS Upper Lusatia · OPP Opole · TRI Trier · MAI Mainz · WBG Würzburg · ANS Ansbach-Kulmbach · BAD Baden · WRT Württemberg · BIN Bavaria-Ingolstadt · REG Regensburg · BMU Bavaria-Munich · BLA Bavaria-Landshut · BAS Basel · ZUR Zürich · SAL Salzburg · SER Serbia · HER Herzegovina · RAG Ragusa · ATH Athens · EPI Epirus · LES Lesbos · TRE Trebizond · RAM Ramadan · CYP Cyprus · PSK Pskov · RYA Ryazan · THE Theodoro · GHO Great Horde |
 
-**Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Eastern Black Sea, are 16 hops (32 months).
+**Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Sea of Azov, are 17 hops (34 months).
 
-**Naval powers:** 48 countries, 1755 ships. Crossing a strait needs 10 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there.
+**Naval powers:** 48 countries, 1695 ships. Crossing a strait needs 10 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
-| FRA France | 61, 73 | Bay of Biscay, Western Mediterranean | 175 | yes: 166-172, 209-243 |
-| OTT Ottoman Empire | 358, 362, 365, 393, 396, 402, 406 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 175 | yes: 210-396, 211-411, 358-394, 373-391, 390-394, 423-424 |
-| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 44, 45, 86, 87, 88, 89, 91, 92 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 150 | yes: 36-86, 38-42 |
-| CAS Castile | 140, 143, 145, 159, 161 | Atlantic, Bay of Biscay, Gulf of Cádiz, Western Mediterranean | 145 | yes: 143-451, 166-172, 209-243 |
-| BUR Burgundy | 99, 101, 104, 108, 109, 110 | North Sea, English Channel | 110 | yes: 36-86 |
-| ARA Aragon | 166, 167, 170, 171, 172, 237, 238, 239, 240, 241, 242 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea | 110 | yes: 166-172, 202-389, 203-206, 209-243, 236-239 |
-| VEN Venice | 191, 199, 200, 201, 202, 203, 204, 205, 206 | Ionian Sea, Adriatic Sea, Aegean Sea | 95 | yes: 202-389, 203-206, 210-396, 236-239, 390-394 |
+| OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 165 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 |
+| FRA France | 61, 71 | Bay of Biscay, Western Mediterranean | 160 | yes: 159-165, 196-229 |
+| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 44, 45, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 150 | yes: 36-83, 38-42 |
+| CAS Castile | 133, 136, 138, 152, 154 | Atlantic, Bay of Biscay, Gulf of Cádiz, Western Mediterranean | 145 | yes: 136-430, 159-165, 196-229 |
+| ARA Aragon | 159, 160, 163, 164, 165, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea | 110 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
+| BUR Burgundy | 96, 99, 102, 103, 104 | North Sea | 95 | no — no strait in its zones |
+| VEN Venice | 181, 187, 188, 189, 190, 191, 192, 193, 194 | Ionian Sea, Adriatic Sea, Aegean Sea | 85 | yes: 190-370, 191-194, 197-376, 222-225, 371-375 |
 | SWE Sweden | 5, 8, 9, 10, 11, 12, 13 | Kattegat, Baltic Sea, Northern Baltic, Gulf of Bothnia, Gulf of Finland | 50 | yes: 8-19, 14-15 |
-| NAP Naples | 228, 229, 232, 233, 236 | Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 50 | yes: 202-389, 203-206, 236-239 |
-| MRC Morocco | 451, 452, 453, 454 | Gulf of Cádiz | 50 | yes: 143-451 |
-| TUN Tunis | 459, 460, 462, 464, 465, 466 | Western Mediterranean, Tyrrhenian Sea, Strait of Sicily | 45 | yes: 166-172, 209-243 |
-| POR Portugal | 173, 174, 178, 179 | Gulf of Cádiz, Alboran Sea | 40 | yes: 143-451 |
-| GEN Genoa | 207, 208, 209, 210, 211, 212 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 40 | yes: 209-214, 210-396, 211-411, 390-394, 423-424 |
-| PAP Papal States | 221 | Adriatic Sea | 40 | no — no strait in its zones |
-| KAR Karaman | 411, 412 | Levantine Sea | 35 | yes: 211-411, 423-424 |
-| ANJ Anjou | 117 | Western Mediterranean | 30 | yes: 166-172, 209-243 |
-| SAV Savoy | 132 | Ligurian Sea | 30 | yes: 209-214 |
+| NAP Naples | 214, 215, 218, 219, 222 | Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 50 | yes: 190-370, 191-194, 222-225 |
+| MRC Morocco | 430, 431, 432, 433 | Gulf of Cádiz | 50 | yes: 136-430 |
+| TUN Tunis | 438, 439, 441, 443, 444, 445 | Western Mediterranean, Tyrrhenian Sea, Strait of Sicily | 45 | yes: 159-165, 196-229 |
+| POR Portugal | 166, 167, 171, 172 | Gulf of Cádiz, Alboran Sea | 40 | yes: 136-430 |
+| PAP Papal States | 207 | Adriatic Sea | 40 | no — no strait in its zones |
+| GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 35 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 |
+| KAR Karaman | 391, 392 | Levantine Sea | 35 | yes: 198-391, 403-404 |
+| SAV Savoy | 125 | Ligurian Sea | 30 | yes: 196-201 |
 | NOR Norway | 1, 2, 3, 4 | Norwegian Sea, North Sea, Skagerrak | 25 | no — no strait in its zones |
 | DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 25 | yes: 14-15, 14-16, 16-17 |
 | LIV Livonian Order | 20, 21, 23 | Gulf of Riga, Gulf of Finland | 25 | no — no strait in its zones |
 | TEU Teutonic Order | 24, 25, 27 | Baltic Sea | 25 | yes: 8-19 |
-| BRI Brittany | 112, 113, 114 | Atlantic, Bay of Biscay | 25 | no — no strait in its zones |
+| BRI Brittany | 106, 107, 108 | English Channel, Bay of Biscay | 25 | yes: 36-83 |
+| ANJ Anjou | 110 | Western Mediterranean | 25 | yes: 159-165, 196-229 |
 | SCO Scotland | 49, 51 | North Sea | 20 | no — no strait in its zones |
-| GRA Granada | 182, 183 | Alboran Sea | 20 | no — no strait in its zones |
-| FLO Florence | 214 | Ligurian Sea | 20 | yes: 209-214 |
-| TLE Tlemcen | 457, 458 | Western Mediterranean | 20 | yes: 166-172, 209-243 |
-| STY Inner Austria | 309 | Adriatic Sea | 15 | no — no strait in its zones |
-| BYZ Byzantium | 373, 374 | Sea of Marmara, Western Black Sea | 15 | yes: 358-394, 373-391 |
-| MOR Morea | 376, 377 | Ionian Sea, Aegean Sea | 15 | yes: 202-389, 203-206, 210-396, 236-239, 390-394 — one zone at a time (10 ships in each) |
-| MOL Moldavia | 387 | Western Black Sea | 15 | no — no strait in its zones |
-| LUB Lübeck | 245 | Belt Sea | 10 | **exactly**: 14-16, 16-17 |
-| HAM Hamburg | 246 | North Sea | 10 | no — no strait in its zones |
-| MEC Mecklenburg | 248 | Belt Sea | 10 | **exactly**: 14-16, 16-17 |
-| POM Pomerania | 249, 250 | Baltic Sea | 10 | **exactly**: 8-19 |
-| CAN Candar | 414 | Eastern Black Sea | 10 | no — no strait in its zones |
-| KRH Knights of Rhodes | 423, 424 | Aegean Sea, Levantine Sea | 10 | **exactly**: 210-396, 211-411, 390-394, 423-424 — one zone at a time (10 ships in each) |
+| GRA Granada | 175, 176 | Alboran Sea | 20 | no — no strait in its zones |
+| FLO Florence | 201 | Ligurian Sea | 20 | yes: 196-201 |
+| TLE Tlemcen | 436, 437 | Western Mediterranean | 20 | yes: 159-165, 196-229 |
+| STY Inner Austria | 293 | Adriatic Sea | 15 | no — no strait in its zones |
+| BYZ Byzantium | 354, 355 | Sea of Marmara, Western Black Sea | 15 | yes: 340-375, 354-372 |
+| MOR Morea | 357, 358 | Ionian Sea, Aegean Sea | 15 | yes: 190-370, 191-194, 197-376, 222-225, 371-375 — one zone at a time (10 ships in each) |
+| MOL Moldavia | 368 | Western Black Sea | 15 | no — no strait in its zones |
+| LUB Lübeck | 231 | Belt Sea | 10 | **exactly**: 14-16, 16-17 |
+| HAM Hamburg | 232 | North Sea | 10 | no — no strait in its zones |
+| MEC Mecklenburg | 234 | Belt Sea | 10 | **exactly**: 14-16, 16-17 |
+| POM Pomerania | 235, 236 | Baltic Sea | 10 | **exactly**: 8-19 |
+| CAN Candar | 394 | Eastern Black Sea | 10 | no — no strait in its zones |
+| KRH Knights of Rhodes | 403, 404 | Aegean Sea, Levantine Sea | 10 | **exactly**: 197-376, 198-391, 371-375, 403-404 — one zone at a time (10 ships in each) |
 | GOT Gotland | 19 | Northern Baltic | 5 | no — no strait in its zones |
 | ISL Lordship of the Isles | 53 | North Sea | 5 | no — no strait in its zones |
 | DES Desmond | 48 | Atlantic | 5 | no — no strait in its zones |
-| FRI Frisia | 136 | North Sea | 5 | no — no strait in its zones |
-| RIM Rimini | 227 | Adriatic Sea | 5 | no — no strait in its zones |
-| SHO Schleswig-Holstein | 244 | Belt Sea | 5 | no — too few ships for 14-16, 16-17 |
-| BRE Bremen | 251 | North Sea | 5 | no — no strait in its zones |
-| RAG Ragusa | 382 | Adriatic Sea | 5 | no — no strait in its zones |
-| ATH Athens | 388 | Aegean Sea | 5 | no — too few ships for 210-396, 390-394 |
-| LES Lesbos | 390 | Aegean Sea | 5 | no — too few ships for 210-396, 390-394 |
-| TRE Trebizond | 415 | Eastern Black Sea | 5 | no — no strait in its zones |
-| GHO Great Horde | 447 | Sea of Azov | 5 | no — no strait in its zones |
+| FRI Frisia | 129 | North Sea | 5 | no — no strait in its zones |
+| RIM Rimini | 213 | Adriatic Sea | 5 | no — no strait in its zones |
+| SHO Schleswig-Holstein | 230 | Belt Sea | 5 | no — too few ships for 14-16, 16-17 |
+| BRE Bremen | 237 | North Sea | 5 | no — no strait in its zones |
+| RAG Ragusa | 363 | Adriatic Sea | 5 | no — no strait in its zones |
+| ATH Athens | 369 | Aegean Sea | 5 | no — too few ships for 197-376, 371-375 |
+| LES Lesbos | 371 | Aegean Sea | 5 | no — too few ships for 197-376, 371-375 |
+| TRE Trebizond | 395 | Eastern Black Sea | 5 | no — no strait in its zones |
+| GHO Great Horde | 426 | Sea of Azov | 5 | no — no strait in its zones |
 <!-- /generated -->
 
 ## Special coring
@@ -797,8 +776,29 @@ You may proclaim a region when **both** are true:
 Every settlement in the region becomes core immediately. If you later lose one and retake it, it is core again
 on capture.
 
-| Formable | What it was | Settlements | Count |
-|---|---|---|---|
+| Formable | What it was | Settlements | Count | Becomes |
+|---|---|---|---|---|
+| **Kalmar Union** | the three northern crowns under one king | 1–19 | 19 | Kalmar Union, KAL, #4f7fc0 |
+| **Spain** | the crowns of Castile and Aragon, Navarre and Granada (1512) | 131–165, 173–176, 223–229 | 46 | Spain, SPA, #f0b030 |
+| **Great Britain** | England and Scotland under one crown (1603) | 28–45, 49–53, 83–89 | 30 | Great Britain, GBR, #b03040 |
+| **Kingdom of France** | the realm whole again: the apanages and the great fiefs under the king | 54–82, 105–118 | 43 | — |
+| **Burgundian Netherlands** | the Seventeen Provinces of 1549 | 95–104, 126–130 | 15 | — |
+| **Kingdom of Burgundy** | the realm Charles the Bold wanted, Frisia to the Alps | 90–104, 111, 112, 126–130, 270 | 23 | Kingdom of Burgundy, KBG, #c7799f |
+| **Italian League** | the five powers of the Peace of Lodi (1454) | 119, 177–194, 200–202, 204–208, 214–222 | 36 | — |
+| **Unite the Swiss** | the Confederacy with Zürich and Basel (1501) | 286–289 | 4 | — |
+| **Reunite Bavaria** | the Wittelsbach duchies, one again from 1505 | 276–279 | 4 | — |
+| **Habsburg Austria** | the hereditary lands of the house of Habsburg | 280–285, 291–293 | 9 | — |
+| **Lands of the Bohemian Crown** | Bohemia, Moravia, Silesia and Lusatia | 254–257, 265–269 | 9 | — |
+| **Kingdom of Hungary** | the crown of St Stephen | 323–338 | 16 | — |
+| **Danubian Monarchy** | the three crowns Ferdinand of Habsburg gathered in 1526 | 254–257, 265–269, 280–285, 291–293, 323–338 | 34 | Habsburg Monarchy, HAB, #c8b820 |
+| **Hanseatic League** | its leading towns, under Lübeck | 19–21, 24, 231, 232, 234, 236, 237, 247 | 10 | Hanseatic League, HSL, #a07850 |
+| **Brandenburg-Prussia** | the Hohenzollern lands of 1618 | 25, 27, 241–243, 261 | 6 | Brandenburg-Prussia, BPR, #a0a0a0 |
+| **Crown of Poland** | Poland, Masovia (1526) and Royal Prussia (1466) | 24, 26, 294–307 | 16 | — |
+| **Polish-Lithuanian Commonwealth** | Poland and Lithuania joined at Lublin (1569) | 20–27, 294–322 | 37 | Poland-Lithuania, PLC, #e05aa0 |
+| **Tsardom of Russia** | the Russian lands gathered by Moscow (1547) | 405–424 | 20 | Russia, RUS, #6fb07a |
+| **Rum** | Anatolia whole under the house of Osman (1515) | 339–355, 372–398 | 44 | — |
+| **Restored Empire** | the Empire of the Romans as the Palaiologoi dreamt it: Thrace, Macedonia and Greece | 339–341, 347, 348, 351, 352, 354–358, 369, 370 | 14 | Roman Empire, ROM, #9c6fc8 |
+| **The Maghreb** | North Africa from the Atlantic to Tripoli, as the Almohads held it | 427–445 | 19 | Maghreb, MGH, #c89050 |
 
 ## Sea zones
 
@@ -809,66 +809,265 @@ point; the other columns are generated from the map.*
 
 | Zone | X | Y | Ports | Straits | Next to |
 |---|---|---|---|---|---|
-| Norwegian Sea | 783 | 311 | 3, 4 | — | White Sea, North Sea, Atlantic |
-| White Sea | 1415 | 304 | — | — | Norwegian Sea |
-| North Sea | 676 | 809 | 2, 28, 31, 37, 49, 51, 53, 101, 104, 108, 109, 110, 136, 246, 251 | — | Norwegian Sea, Skagerrak, English Channel |
-| Skagerrak | 834 | 690 | 1 | — | North Sea, Kattegat |
-| Kattegat | 883 | 739 | 9, 14, 17, 18 | 14-15 | Skagerrak, Belt Sea, Baltic Sea |
-| Belt Sea | 862 | 840 | 16, 244, 245, 248 | 14-16, 16-17 | Kattegat, Baltic Sea |
-| Baltic Sea | 1026 | 813 | 8, 24, 25, 27, 249, 250 | 8-19 | Kattegat, Belt Sea, Northern Baltic |
-| Northern Baltic | 1094 | 664 | 5, 10, 12, 19 | — | Baltic Sea, Gulf of Riga, Gulf of Bothnia, Gulf of Finland |
-| Gulf of Riga | 1185 | 702 | 20, 23 | — | Northern Baltic |
-| Gulf of Bothnia | 1080 | 461 | 11 | — | Northern Baltic |
-| Gulf of Finland | 1228 | 594 | 13, 21 | — | Northern Baltic |
-| English Channel | 485 | 998 | 32, 33, 86, 87, 88, 89, 99 | 36-86 | North Sea, Atlantic |
-| Irish Sea | 442 | 824 | 38, 42 | 38-42 | Atlantic |
-| Atlantic | 308 | 978 | 30, 41, 43, 44, 45, 48, 114, 161 | — | Norwegian Sea, English Channel, Irish Sea, Bay of Biscay, Gulf of Cádiz |
-| Bay of Biscay | 391 | 1190 | 61, 91, 92, 112, 113, 159 | — | Atlantic |
-| Gulf of Cádiz | 146 | 1545 | 140, 143, 173, 174, 178, 451, 452, 453, 454 | 143-451 | Atlantic, Alboran Sea |
-| Alboran Sea | 283 | 1613 | 179, 182, 183 | — | Gulf of Cádiz, Western Mediterranean |
-| Western Mediterranean | 602 | 1511 | 73, 117, 145, 166, 167, 170, 171, 172, 457, 458, 460, 462 | 166-172, 209-243 | Alboran Sea, Ligurian Sea, Tyrrhenian Sea |
-| Ligurian Sea | 770 | 1341 | 132, 207, 208, 214 | 209-214 | Western Mediterranean, Tyrrhenian Sea |
-| Tyrrhenian Sea | 886 | 1513 | 209, 228, 229, 237, 238, 242, 459 | — | Western Mediterranean, Ligurian Sea, Strait of Sicily, Ionian Sea |
-| Strait of Sicily | 879 | 1722 | 464, 465, 466 | — | Tyrrhenian Sea, Ionian Sea |
-| Ionian Sea | 1103 | 1627 | 202, 203, 233, 236, 239, 240, 241, 376 | 202-389, 203-206, 236-239 | Tyrrhenian Sea, Strait of Sicily, Adriatic Sea, Aegean Sea, Levantine Sea |
-| Adriatic Sea | 991 | 1377 | 191, 199, 200, 201, 221, 227, 232, 309, 382 | — | Ionian Sea |
-| Aegean Sea | 1334 | 1546 | 204, 205, 206, 210, 365, 377, 388, 390, 396, 424 | 210-396, 390-394 | Ionian Sea, Levantine Sea, Sea of Marmara |
-| Levantine Sea | 1556 | 1735 | 211, 402, 411, 412, 423 | 211-411, 423-424 | Ionian Sea, Aegean Sea |
-| Sea of Marmara | 1431 | 1439 | 358, 373, 393 | 358-394, 373-391 | Aegean Sea, Western Black Sea |
-| Western Black Sea | 1484 | 1301 | 362, 374, 387 | — | Sea of Marmara, Eastern Black Sea |
-| Eastern Black Sea | 1702 | 1278 | 212, 406, 414, 415 | — | Western Black Sea |
-| Sea of Azov | 1649 | 1127 | 447 | — | — |
+| Norwegian Sea | 1174 | 467 | 3, 4 | — | White Sea, North Sea, Atlantic |
+| White Sea | 2122 | 457 | — | — | Norwegian Sea |
+| North Sea | 1014 | 1214 | 2, 28, 31, 37, 49, 51, 53, 83, 96, 99, 102, 103, 104, 129, 232, 237 | — | Norwegian Sea, Skagerrak, English Channel |
+| Skagerrak | 1251 | 1035 | 1 | — | North Sea, Kattegat |
+| Kattegat | 1324 | 1108 | 9, 14, 17, 18 | 14-15 | Skagerrak, Belt Sea, Baltic Sea |
+| Belt Sea | 1293 | 1261 | 16, 230, 231, 234 | 14-16, 16-17 | Kattegat, Baltic Sea |
+| Baltic Sea | 1539 | 1220 | 8, 24, 25, 27, 235, 236 | 8-19 | Kattegat, Belt Sea, Northern Baltic |
+| Northern Baltic | 1641 | 996 | 5, 10, 12, 19 | — | Baltic Sea, Gulf of Riga, Gulf of Bothnia, Gulf of Finland |
+| Gulf of Riga | 1777 | 1053 | 20, 23 | — | Northern Baltic |
+| Gulf of Bothnia | 1620 | 692 | 11 | — | Northern Baltic |
+| Gulf of Finland | 1842 | 891 | 13, 21 | — | Northern Baltic |
+| English Channel | 727 | 1497 | 32, 33, 84, 85, 86, 108 | 36-83 | North Sea, Atlantic |
+| Irish Sea | 664 | 1236 | 38, 42 | 38-42 | Atlantic |
+| Atlantic | 463 | 1467 | 30, 41, 43, 44, 45, 48, 154 | — | Norwegian Sea, English Channel, Irish Sea, Bay of Biscay, Gulf of Cádiz |
+| Bay of Biscay | 587 | 1785 | 61, 88, 89, 106, 107, 152 | — | Atlantic |
+| Gulf of Cádiz | 219 | 2318 | 133, 136, 166, 167, 171, 430, 431, 432, 433 | 136-430 | Atlantic, Alboran Sea |
+| Alboran Sea | 425 | 2420 | 172, 175, 176 | — | Gulf of Cádiz, Western Mediterranean |
+| Western Mediterranean | 904 | 2267 | 71, 110, 138, 159, 160, 163, 164, 165, 436, 437, 439, 441 | 159-165, 196-229 | Alboran Sea, Ligurian Sea, Tyrrhenian Sea |
+| Ligurian Sea | 1155 | 2012 | 125, 195, 201 | 196-201 | Western Mediterranean, Tyrrhenian Sea |
+| Tyrrhenian Sea | 1330 | 2270 | 196, 214, 215, 223, 224, 228, 438 | — | Western Mediterranean, Ligurian Sea, Strait of Sicily, Ionian Sea |
+| Strait of Sicily | 1319 | 2583 | 443, 444, 445 | — | Tyrrhenian Sea, Ionian Sea |
+| Ionian Sea | 1655 | 2441 | 190, 191, 219, 222, 225, 226, 227, 357 | 190-370, 191-194, 222-225 | Tyrrhenian Sea, Strait of Sicily, Adriatic Sea, Aegean Sea, Levantine Sea |
+| Adriatic Sea | 1487 | 2066 | 181, 187, 188, 189, 207, 213, 218, 293, 363 | — | Ionian Sea |
+| Aegean Sea | 2001 | 2319 | 192, 193, 194, 197, 347, 358, 369, 371, 376, 404 | 197-376, 371-375 | Ionian Sea, Levantine Sea, Sea of Marmara |
+| Levantine Sea | 2334 | 2602 | 198, 382, 391, 392, 403 | 198-391, 403-404 | Ionian Sea, Aegean Sea |
+| Sea of Marmara | 2147 | 2159 | 340, 354, 374 | 340-375, 354-372 | Aegean Sea, Western Black Sea |
+| Western Black Sea | 2226 | 1951 | 344, 355, 368 | — | Sea of Marmara, Eastern Black Sea |
+| Eastern Black Sea | 2553 | 1917 | 199, 386, 394, 395 | — | Western Black Sea, Sea of Azov |
+| Sea of Azov | 2474 | 1691 | 426 | — | Eastern Black Sea |
+
+## The situation in 1440
+
+The game opens in the middle of eight wars, and with the alliances of 1440 already signed. They count exactly as if declared
+and signed in play (RULES.md §10): the sides below are at war from the first day, the agreements are in force, and every
+warmonger score still starts at 0. War score in these wars counts populations as they were at the start. Allies are **not**
+in these wars unless listed — a military alliance only calls an ally into wars declared from now on.
+
+### Wars
+
+| War | Attacking side | Defending side | What happened |
+|---|---|---|---|
+| **Hundred Years' War** (since 1337) | ENG England | FRA France | England held Normandy, Maine and Guyenne; Paris had been French again since 1436. Normandy fell in 1450, Bordeaux in 1453. |
+| **Praguerie** (1440) | BOU Bourbon | FRA France | The duke of Bourbon and the Dauphin rose against Charles VII and his new standing army; it was over by July. |
+| **Dutch–Hanseatic War** (since 1438) | LUB Lübeck, HAM Hamburg | BUR Burgundy | The Wendish towns of the Hansa fought Holland's ships out of the Baltic trade; peace at Copenhagen in 1441. |
+| **Wars in Lombardy** (since 1438) | MIL Milan | VEN Venice, FLO Florence, PAP Papal States | The Visconti against Venice and her allies for the Lombard plain — Anghiari was fought in 1440; peace at Cremona in 1441. |
+| **War of the Neapolitan Succession** (since 1435) | ARA Aragon | NAP Naples, GEN Genoa | Alfonso V of Aragon against René of Anjou for Naples, with Genoa on René's side; Alfonso took the city in 1442. |
+| **Hungarian civil war** (1440) | HUN Hungary | JIS Upper Hungary | Władysław III against the party of the infant Ladislaus Posthumus; Jan Jiskra held the north for Ladislaus until 1462. |
+| **Old Zürich War** (1440) | SWI Swiss Confederacy | ZUR Zürich | Schwyz and the cantons against Zürich over the Toggenburg inheritance; peace in 1450. |
+| **Ottoman–Hungarian war** (since 1437) | OTT Ottoman Empire | HUN Hungary, SER Serbia | Murad II had taken Smederevo in 1439 and besieged Belgrade in 1440; the despot of Serbia fought on from Hungary. Varna, 1444. |
+
+### Agreements
+
+| Agreement | Between | Why |
+|---|---|---|
+| Military alliance | POL Poland – HUN Hungary | Władysław III is king of both. |
+| Defensive alliance | POL Poland – LIT Lithuania | The Jagiellon brothers: Władysław in Kraków, Casimir in Vilnius. |
+| Defensive alliances | DEN Denmark – SWE Sweden – NOR Norway (each pair) | One king, Christopher of Bavaria — the Kalmar Union. |
+| Military alliance | TEU Teutonic Order – LIV Livonian Order | Two branches of one Order. |
+| Military alliances | STY Inner Austria – AUS Austria – TYR Tyrol (each pair) | Frederick III rules all three Habsburg lands: his own, and two as guardian. |
+| Guarantee | STY Inner Austria → JIS Upper Hungary | Frederick holds the infant Ladislaus — and the Holy Crown of Hungary. |
+| Defensive alliance | BRA Brandenburg – ANS Ansbach-Kulmbach | The Hohenzollern brothers Frederick Irontooth and Albert Achilles. |
+| Defensive alliance | LUB Lübeck – HAM Hamburg | The Wendish towns of the Hansa. |
+| Military alliance | ANJ Anjou – NAP Naples | René is duke of Anjou, count of Provence, duke of Lorraine and Bar — and king of Naples. |
+| Military alliance | VEN Venice – FLO Florence | The league against the Visconti. |
+| Defensive alliance | FRA France – SCO Scotland | The Auld Alliance (1295). |
+| Defensive alliance | FRA France – CAS Castile | The Franco-Castilian alliance of the Trastámaras. |
+| Defensive alliance | ENG England – POR Portugal | The Treaty of Windsor (1386). |
+| Non-aggression pact, 5 years left | TEU Teutonic Order – POL Poland | The Peace of Brest (1435). |
+| Non-aggression pact, 7 years left | ENG England – SCO Scotland | The truce of 1438. |
+| Non-aggression pact, 3 years left | CAS Castile – GRA Granada | The truce of 1439. |
+| Non-aggression pact, 3 years left | OTT Ottoman Empire – KAR Karaman | The peace of 1437; Karaman attacked again in 1443. |
 
 ## The Holy Roman Empire
 
-The Empire is every settlement marked **HRE** above (listed in the *Overview*).
-
-Demand to become leader of the Empire under your hegemony. You must control **at least 20 settlements inside
-the HRE**, and may propose **only once, ever**.
-
-Each German state — every country that holds an HRE settlement — rolls on its own, like a protectorate demand
-(RULES.md §10):
-```
-chance each German state joins = size × 10 % + opinion ÷ 10 %
-at most 75%
-0% if your pop is not larger than theirs, or if their opinion of you is below −50
-```
-
-Every German state that joins becomes your **protectorate** (RULES.md §10) and pays you **10%** of its yearly
-money.
-
-**The states that refuse form the League.** All of them make a **defensive alliance** with each other — declare
-war on one member and the rest join against you. Refusing does not change their opinion of you (RULES.md §10).
+> **Not on this map yet.** As on the historical map, there is no demand of the Empire: settlements marked **HRE** only make two
+> German states think 10 better of each other (RULES.md §10).
 
 ## Victory
 
-> **Control or vassalize 85 settlements.** Protectorates count as half — unless you demand one become a vassal
+> **Control or vassalize 180 settlements.** Protectorates count as half — unless you demand one become a vassal
 > and it agrees.
 
-**End date: 1650.** The game ends when a player reaches 85, or at the start of **1650** — 210 years, about 2 hours
+**End date: 1650.** The game ends when a player reaches 180, or at the start of **1650** — 210 years, about 2 hours
 8 minutes of play. At the end date the player with the most settlements wins, counted the same way: controlled
 and vassalized settlements count 1, protectorates ½. A tie goes to the larger total population (own settlements
 and subjects).
+
+
+## Characters
+
+*How the computer plays each country when no person does (docs/design.md, *Characters and rivalries*). Data: every country
+needs one of six characters — conqueror, zealot, opportunist, diplomat, defender, merchant — and `node tools/map.js` refuses a
+lopsided spread: no character for more than 30% of the countries, every one for at least two, conqueror and zealot together
+for no more than 30%. Each game varies a character a little, so a country keeps its nature without being scripted.*
+
+| Code | Character | Why |
+|---|---|---|
+| NOR | Defender | The junior kingdom of the Kalmar Union, keeping to its fjords. |
+| SWE | Opportunist | Its nobles had risen with Engelbrekt in 1434 and would leave the Union when they could. |
+| DEN | Conqueror | The Union's kings, at war for Sweden, Schleswig and the Sound for two centuries. |
+| GOT | Opportunist | From 1439 the deposed King Eric held Visby and lived by piracy. |
+| LIV | Zealot | The Livonian branch of the Teutonic Order. |
+| TEU | Zealot | A crusading order of knights, beaten at Grunwald but still armed. |
+| ENG | Conqueror | A century of war in France, and Henry VI's council not yet ready to give it up. |
+| SCO | Defender | A small kingdom whose wars were to keep England out. |
+| ISL | Opportunist | The MacDonald lords of the Isles, who made treaties with England behind their king's back. |
+| TRN | Defender | The O'Neills, holding Ulster against all comers. |
+| THO | Defender | The O'Briens behind the Shannon. |
+| DES | Opportunist | The FitzGeralds, Anglo-Irish lords gone native, who took what the crown could not hold. |
+| FRA | Conqueror | Charles VII's France, with a standing army from 1445, taking its lands back one by one. |
+| BUR | Diplomat | Philip the Good, who gathered the Low Countries by marriage, purchase and treaty. |
+| BRI | Defender | The dukes of Brittany, keeping out of the war between France and England. |
+| ANJ | Diplomat | René of Anjou, a prince of many crowns and few victories. |
+| BOU | Opportunist | A great vassal ready to rise against the king — the Praguerie of 1440. |
+| ARM | Opportunist | The counts of Armagnac, faithless vassals of every king. |
+| FOI | Diplomat | Gaston IV of Foix, who married his way to the throne of Navarre. |
+| SAV | Diplomat | Its dukes, princes of the Empire and of France, playing one against the other — Amadeus VIII was pope in 1440. |
+| LIE | Defender | The prince-bishopric, whose towns rose against Burgundy again and again. |
+| UTR | Defender | The prince-bishopric, defending its liberties against Burgundy. |
+| GEL | Opportunist | The dukes of Guelders, ready to change sides between Burgundy and its enemies. |
+| FRI | Defender | The Frisian freedom, kept by its farmers against every prince. |
+| LUX | Diplomat | Elisabeth of Görlitz, who sold the duchy to Burgundy in 1443. |
+| CAS | Zealot | The crown of the Reconquista, its eyes on Granada. |
+| ARA | Conqueror | Alfonso V, who spent his reign conquering Naples and left Aragon to his queen. |
+| POR | Merchant | Henry the Navigator's Portugal, turned to the sea and the African coast. |
+| NAV | Defender | A small kingdom between Castile and France. |
+| GRA | Defender | The last Muslim kingdom of Iberia, behind its mountains and its truces. |
+| MIL | Conqueror | Filippo Maria Visconti, at war with Venice for Lombardy all his life. |
+| VEN | Merchant | The Serenissima, which fought for its trade and its terraferma alike. |
+| GEN | Merchant | A republic of bankers and seafarers, its colonies from Chios to the Crimea. |
+| FLO | Merchant | The Medici's Florence, which hired its wars and banked for popes. |
+| SIE | Merchant | A republic of merchants in Florence's shadow. |
+| PAP | Diplomat | The papacy, healing the schism with councils and treaties. |
+| FER | Diplomat | The Este, whose court made peace between the powers of Italy. |
+| MAN | Diplomat | The Gonzaga, captains for hire married into every court. |
+| MON | Defender | A small marquisate between Milan and Savoy. |
+| RIM | Opportunist | Sigismondo Malatesta, condottiero, who fought for whoever paid. |
+| NAP | Opportunist | A kingdom fought over, ready to change its king. |
+| SHO | Opportunist | The Holstein counts, who had taken Schleswig while the Danish crown was weak. |
+| LUB | Merchant | The queen of the Hansa. |
+| HAM | Merchant | A city of the Hansa, the North Sea's gate. |
+| MEC | Diplomat | Its dukes had sat on the Swedish throne by marriage and election. |
+| POM | Defender | Its dukes, holding the coast against Brandenburg. |
+| BRE | Merchant | A Hanseatic city on the Weser. |
+| BRU | Defender | The Guelph dukes, heirs of Henry the Lion, keeping what was left. |
+| MAG | Zealot | The archbishopric, a prince of the Church with soldiers. |
+| BRA | Opportunist | The Hohenzollern margraves, who made the most of every chance. |
+| CLE | Opportunist | The dukes of Cleves, who changed sides in every feud of the Lower Rhine. |
+| MUN | Zealot | The prince-bishopric, its bishops fighting the Soest feud. |
+| JUL | Diplomat | Its dukes, who gathered Jülich and Berg by inheritance. |
+| COL | Merchant | The free city of the Rhine trade, which had thrown out its archbishop. |
+| HES | Defender | The landgraves, holding their hills between greater neighbours. |
+| SAX | Diplomat | The Wettin electors, who grew by marriage and inheritance. |
+| LUS | Merchant | The Six Towns of Upper Lusatia, a league of merchants. |
+| SIL | Defender | Its Piast dukes, holding on between Bohemia and Poland. |
+| OPP | Defender | The Piast dukes of Opole. |
+| TRI | Zealot | The archbishop-elector of Trier. |
+| MAI | Zealot | The archbishop-elector of Mainz, the Empire's arch-chancellor. |
+| WBG | Zealot | The prince-bishop of Würzburg. |
+| ANS | Opportunist | Albert Achilles, the Hohenzollern who fought everyone in Franconia. |
+| NUR | Merchant | The richest city of the Empire's south. |
+| PAL | Opportunist | The electors Palatine, who rose by every feud they could win. |
+| BOH | Zealot | The Hussite crown, its knights and preachers still armed. |
+| MET | Merchant | A free city of the Empire, living by its trade. |
+| STR | Merchant | A free city on the Rhine. |
+| BAD | Diplomat | Its margraves, who kept the peace with their neighbours. |
+| WRT | Opportunist | Its counts, who rose to dukes by taking what they could. |
+| ULM | Merchant | A free city of the Swabian League. |
+| AUG | Merchant | The free city of the Fuggers' trade. |
+| BIN | Opportunist | Louis the Bearded, who feuded with all his kin. |
+| REG | Merchant | A free city on the Danube. |
+| BMU | Defender | The Munich dukes, holding their share. |
+| BLA | Merchant | The rich dukes of Landshut. |
+| AUS | Diplomat | Frederick III, who outlasted his enemies. |
+| TYR | Defender | Duke Sigismund, guarded by Frederick, holding the Alpine passes. |
+| BAS | Merchant | A free city of the Rhine, its council in 1440. |
+| ZUR | Opportunist | The city that broke with the Confederacy and sought the Habsburgs' help. |
+| SWI | Conqueror | The cantons, who beat every army sent against them. |
+| SAL | Zealot | The prince-archbishop of Salzburg. |
+| STY | Diplomat | Frederick III's own lands, ruled with patience. |
+| POL | Diplomat | The Jagiellon kingdom, which grew by union and marriage. |
+| MAZ | Defender | The Piast dukes of Masovia. |
+| LIT | Conqueror | Casimir Jagiellon's Lithuania, still reaching east. |
+| HUN | Conqueror | A kingdom at war with the Ottomans and with itself. |
+| JIS | Opportunist | Jan Jiskra, a Hussite captain holding Upper Hungary for Ladislaus. |
+| OTT | Conqueror | Murad II, who took the Balkans back after Ankara and pushed on to Hungary. |
+| BYZ | Diplomat | The last of the Romans, living on diplomacy and appeals to the West. |
+| MOR | Defender | The despots of the Morea, behind the Hexamilion wall. |
+| SER | Defender | The despot Đurađ Branković, fighting for his lands from exile. |
+| BOS | Opportunist | A kingdom of feuding nobles between Hungary and the Ottomans. |
+| HER | Opportunist | Duke Stjepan Vukčić, who served whoever paid. |
+| RAG | Merchant | The republic of Ragusa, trading with all sides. |
+| WAL | Opportunist | Vlad Dracul, between Hungary and the Sultan. |
+| MOL | Defender | A principality defending itself between greater neighbours. |
+| ATH | Diplomat | The Florentine Acciaioli, dukes of Athens by the Sultan's leave. |
+| EPI | Defender | The Tocco, holding Arta against the Ottomans. |
+| LES | Merchant | The Genoese Gattilusi of Lesbos. |
+| KAR | Opportunist | The beylik of Karaman, the Ottomans' rival in Anatolia, ready to strike when they were busy. |
+| CAN | Defender | The Candarids of Kastamonu, keeping to their mountains. |
+| TRE | Diplomat | The Grand Komnenoi, marrying their daughters to every neighbour. |
+| DUL | Opportunist | The Dulkadir beys, between the Mamluks and the Ottomans. |
+| RAM | Opportunist | The Ramadan beys of Cilicia. |
+| AQQ | Conqueror | Uzun Hasan's people, the White Sheep, at war across the east. |
+| CYP | Merchant | The Lusignan kingdom of Cyprus, living on its trade. |
+| KRH | Zealot | The Knights Hospitaller, a crusading order on Rhodes. |
+| MOS | Conqueror | Vasily II's Muscovy, which gathered the Russian lands. |
+| NOV | Merchant | Lord Novgorod the Great, a republic of the fur trade. |
+| PSK | Defender | The city-republic of Pskov, on the Livonian frontier. |
+| TVE | Diplomat | The grand princes of Tver, balancing Moscow against Lithuania. |
+| RYA | Defender | The grand principality of Ryazan, on the steppe frontier. |
+| THE | Defender | The Orthodox principality of Theodoro in the Crimean mountains. |
+| GHO | Conqueror | Küchük Muhammad's horde, raiding north and west. |
+| MRC | Zealot | The Marinids and their Wattasid viziers, at war with Portugal for Tangier. |
+| TLE | Defender | The Zayyanids of Tlemcen, holding on between Fez and Tunis. |
+| TUN | Merchant | The Hafsids of Tunis, a power of trade and of the sea. |
+
+### Rivalries
+
+*Pairs the computer holds a grudge between: of the neighbours it is strong enough to attack, it goes for a rival first, and it
+never proposes anything to one. A rivalry goes both ways. Mostly it is the computer's preference: a person playing either
+country is free of it, and a rival's proposals are answered by the game's formulas, like anyone's — but for one rule: a computer
+country never agrees to become its rival's subject on demand (RULES.md §10). The Diplomacy tab shows a country's rivals.*
+
+| Rivals | Why |
+|---|---|
+| ENG England – FRA France | The Hundred Years' War. |
+| ENG England – SCO Scotland | The wars of Scottish independence, and every border raid since. |
+| FRA France – BUR Burgundy | Valois cousins: reconciled at Arras in 1435, at war again under Charles the Bold. |
+| BUR Burgundy – LIE Liège | The prince-bishopric's towns against the Burgundian dukes, until Liège was razed in 1468. |
+| CAS Castile – POR Portugal | Aljubarrota (1385), and every succession since. |
+| CAS Castile – GRA Granada | The Reconquista. |
+| ARA Aragon – NAP Naples | Alfonso V and René of Anjou, for Naples. |
+| ARA Aragon – GEN Genoa | For the western Mediterranean, Corsica and Sardinia. |
+| MIL Milan – VEN Venice | For the Lombard plain. |
+| MIL Milan – FLO Florence | The Visconti against the Florentine republic, for Tuscany and the Romagna. |
+| VEN Venice – GEN Genoa | Two maritime republics, four wars for the trade of the East. |
+| VEN Venice – OTT Ottoman Empire | For the Aegean and the Adriatic, until 1718. |
+| VEN Venice – HUN Hungary | For Dalmatia. |
+| OTT Ottoman Empire – HUN Hungary | For the Danube and the Balkans — Varna, Belgrade, Mohács. |
+| OTT Ottoman Empire – KAR Karaman | For Anatolia, until Karaman fell in 1468. |
+| OTT Ottoman Empire – BYZ Byzantium | Constantinople. |
+| OTT Ottoman Empire – AQQ Aq Qoyunlu | Uzun Hasan against Mehmed II, for eastern Anatolia (Otlukbeli, 1473). |
+| POL Poland – TEU Teutonic Order | Grunwald (1410), and the Thirteen Years' War (1454–66). |
+| LIT Lithuania – TEU Teutonic Order | The Order's crusade against Lithuania. |
+| LIT Lithuania – LIV Livonian Order | The Livonian Order's long border war with Lithuania. |
+| LIT Lithuania – MOS Muscovy | For the Russian lands between them, war after war from 1492. |
+| MOS Muscovy – NOV Novgorod | Moscow against the republic, until Ivan III took it in 1478. |
+| MOS Muscovy – TVE Tver | The two grand principalities' contest for the leadership of Rus'. |
+| MOS Muscovy – GHO Great Horde | The Tatar yoke, until the Ugra in 1480. |
+| DEN Denmark – SWE Sweden | The Kalmar Union's kings against the Swedish nobility, until 1523. |
+| DEN Denmark – LUB Lübeck | The Danish kings against the Hansa, for the Sound and the Baltic trade. |
+| DEN Denmark – SHO Schleswig-Holstein | The crown and the Holstein counts, over Schleswig. |
+| SWI Swiss Confederacy – AUS Austria | The cantons against their old Habsburg lords: Morgarten, Sempach, Näfels. |
+| SWI Swiss Confederacy – ZUR Zürich | The Old Zürich War. |
+| HUN Hungary – JIS Upper Hungary | The war for the crown of the infant Ladislaus. |
+| BRA Brandenburg – POM Pomerania | The Hohenzollern margraves' claim to Pomerania. |
+| POR Portugal – MRC Morocco | Ceuta (1415), Tangier (1437), and the wars for the Moroccan coast. |
+| MRC Morocco – TLE Tlemcen | The Marinids and the Zayyanids, for the central Maghreb. |
+| TLE Tlemcen – TUN Tunis | The Zayyanids and the Hafsids. |
 
 ---
 
@@ -876,3 +1075,27 @@ and subjects).
 
 *Hand-written. Unlike everything above it is not checked by the script, so re-read it after changing countries
 or borders.*
+
+### How the map was made
+
+From real latitudes and longitudes (data.js) by `tools/make-base.js`, as the historical map was, at 1.6 km a map unit: Europe
+from Ireland and Portugal to Moscow and Anatolia, from the North Cape to the coast of North Africa, as one rectangle. The land the
+game leaves to nobody — the Sahara, Libya east of Misrata, Egypt, the Levant and Syria (the Mamluks are not in the game) — is
+grey: no settlement grows into it, no road crosses it.
+
+Settlements follow the people of 1440, about one for 180,000, so the realms of the empty north and east hold wide lands with few
+towns, and France, Italy, the Low Countries and the Empire are dense. No two settlements are much closer than 35 km — the smaller
+of a closer pair is left out (Lucca, Leuven, Pavia, Frankfurt…) — so that their markers and armies do not crowd each other; the
+Empire's smallest states, whose town did not make the cut, are folded into their neighbours. Borders are pulled to where they
+were in 1440 by extra seeds (data.js), checked against some 140 places of the year.
+
+### Colours
+
+The larger powers have colours after their heraldry and the colours maps give them (data.js), none like a neighbour's;
+`tools/map.js` picks the rest from its palette, never a neighbour's, and should it run out, the colour of the smallest neighbour,
+so that two large neighbours never share one.
+
+### Still to do
+
+The Empire (as on the historical map), achievements, and the balance: the 180 settlements that win are a first guess, and the
+speed of the computer players on a map of this size is still to be measured.
