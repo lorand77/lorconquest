@@ -1,6 +1,7 @@
 // The live game (docs/plan.md, milestone 2): a game created over REST, played over sockets in its worker, its
 // changes kept in step on the client, saved, and resumed exactly after a restart.
 import test from "node:test";
+import path from "node:path";
 import assert from "node:assert/strict";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { replay } from "../../src/engine/index.js";
@@ -15,6 +16,9 @@ test("scenarios, and starting a game", async () => {
         const scenarios = (await api(server, "GET", "/api/scenarios")).body;
         assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Mitteleuropa: Balanced"], ["historical-1440", "Mitteleuropa: Historical 1440"]]);
         assert.equal(scenarios[0].countries.length, 45);
+        // a scenario still being made (a DRAFT file in its folder) is offered only with DRAFT_SCENARIOS=1
+        const { loadScenarios } = await import("../../src/game/scenarios.js");
+        assert.ok(loadScenarios(path.join(import.meta.dirname, "..", ".."), { drafts: true }).has("europe-1440"));
         assert.equal((await api(server, "POST", "/api/tables", { scenario: "nowhere", country: "BAV" })).status, 400);
         assert.equal((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "XXX" })).status, 400);
         assert.equal((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV", seed: -1 })).status, 400);

@@ -19,6 +19,8 @@ export default {
     PORT: intEnv("PORT", 3002),
     // the single SQLite file, created on first run
     DB_PATH: process.env.DB_PATH || path.join(ROOT, "data", "lorconquest.sqlite"),
+    // scenarios still being made — a folder with a DRAFT file (src/game/scenarios.js) — offered all the same: for trying one out
+    DRAFT_SCENARIOS: process.env.DRAFT_SCENARIOS === "1",
     // real time per game day (RULES.md §1)
     TICK_MS: intEnv("TICK_MS", 100),
     // how often each game logs how long its days take, in game days

@@ -715,7 +715,9 @@ for (const e of [...STRAIT].sort()) {
     const [p, q] = e.split("-").map((x) => S.get(Number(x)));
     const L = Math.sqrt((q.x - p.x) ** 2 + (q.y - p.y) ** 2);
     const cnt = new Map();
-    for (let i = 12; i <= Math.trunc(L) - 12; i++) {
+    // the markers at either end left out — 12 units of it, or a quarter of a short crossing (a map at a coarser scale)
+    const skip = Math.min(12, Math.trunc(L / 4));
+    for (let i = skip; i <= Math.trunc(L) - skip; i++) {
         const z = zoneAt(p.x + (q.x - p.x) * i / L, p.y + (q.y - p.y) * i / L);
         if (z) cnt.set(z.name, (cnt.get(z.name) || 0) + 1);
     }

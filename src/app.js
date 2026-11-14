@@ -45,7 +45,7 @@ function securityHeaders(req, res, next) {
 export function createApp({
     dbPath = config.DB_PATH, tickMs = config.TICK_MS, statsEvery = config.STATS_EVERY_DAYS, root = config.ROOT, log = defaultLog,
     setupMs = config.SETUP_MS, awayMs = config.AWAY_MS, emptyMs = config.EMPTY_MS, maxHumans = config.MAX_HUMANS, idleMs = config.IDLE_MS, production = config.PRODUCTION, limits = {},
-    trustProxy = config.TRUST_PROXY, stallMs = config.HEALTH_STALL_MS,
+    trustProxy = config.TRUST_PROXY, stallMs = config.HEALTH_STALL_MS, drafts = config.DRAFT_SCENARIOS,
 } = {}) {
     const db = openDb(dbPath);
     const sessions = createSessions({ db, name: config.SESSION_COOKIE, days: config.SESSION_DAYS, production });
@@ -55,7 +55,7 @@ export function createApp({
     sessions.sweep();
     const sweeper = setInterval(() => sessions.sweep(), 60 * 60 * 1000);
     sweeper.unref();
-    const scenarios = loadScenarios(root);
+    const scenarios = loadScenarios(root, { drafts });
     const app = express();
     app.disable("x-powered-by");
     // behind Caddy the client's address is the one it forwards (and https is known from X-Forwarded-Proto)

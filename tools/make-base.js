@@ -696,8 +696,9 @@ for (const r of RIVERS) {
         RIVERLINES.push([r[0], q]);
     }
 }
-function rayHit(o, dir) {      // nearest coast crossing from o along dir
+function rayHit(o, dir) {      // nearest coast crossing from o along dir — or the map's edge, for a divider out to the open sea
     let best = 1e9;
+    for (const [k, edge] of [[0, 0], [0, W], [1, 0], [1, H]]) if (dir[k]) { const t = (edge - o[k]) / dir[k]; if (t > 0 && t < best) best = t; }
     for (const [a, b] of COASTSEG) {
         const [ex, ey] = [b[0] - a[0], b[1] - a[1]];
         const den = dir[0] * ey - dir[1] * ex;
@@ -715,8 +716,9 @@ for (const d of DIVIDERS) {
     const end = [a, b].map(e => {
         const [dx, dy] = [e[0] - m[0], e[1] - m[1]];
         const L = Math.sqrt(dx * dx + dy * dy);
-        const t = rayHit(m, [dx / L, dy / L]);
-        if (t > 400) warn(`sea zone divider near ${fixed(m[0], 0)},${fixed(m[1], 0)} reaches no coast\n`);
+        const t = rayHit(m, [dx / L, dy / L]), [ex, ey] = [m[0] + dx / L * t, m[1] + dy / L * t];
+        const atEdge = Math.min(Math.abs(ex), Math.abs(ex - W), Math.abs(ey), Math.abs(ey - H)) < 0.01;
+        if (t > 400 && !atEdge) warn(`sea zone divider near ${fixed(m[0], 0)},${fixed(m[1], 0)} reaches no coast\n`);
         return [m[0] + dx / L * t, m[1] + dy / L * t].map(v => Number(fixed(v, 2)));
     });
     DIVLINES.push(end);

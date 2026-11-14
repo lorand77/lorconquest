@@ -13,7 +13,8 @@ dependencies.
 - [docs/plan.md](docs/plan.md) — the milestones and where we are.
 - [docs/setup.md](docs/setup.md) — running it, putting it online (EC2, pm2, Caddy), backups, accounts by hand, monitoring.
 - `scenarios/` — every scenario, a folder each, its id the folder's name (`node tools/map.js scenarios/<name>`, which may leave out the
-  folder of the default, `mitteleuropa`).
+  folder of the default, `mitteleuropa`). A folder with a `DRAFT` file is a scenario still being made (`europe-1440`): the server leaves it
+  out unless `DRAFT_SCENARIOS=1`.
 
 ## Commands
 

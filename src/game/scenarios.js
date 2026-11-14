@@ -1,6 +1,8 @@
 // The scenarios a game can be played on: every folder under scenarios/ with a scenario.json. Read once when the server
 // starts; each has an id (its folder: "mitteleuropa", "historical-1440"), a name from the first line of its SCENARIO.md,
-// its folder, and its data. The default scenario comes first in the list, so the lobby offers it first.
+// its folder, and its data. The default scenario comes first in the list, so the lobby offers it first. A scenario still being
+// made has a file named DRAFT in its folder: it is left out — no game can be started on it, the lobby does not offer it —
+// unless `drafts` (the setting DRAFT_SCENARIOS=1, src/config.js) asks for it, to try it out.
 import fs from "node:fs";
 import path from "node:path";
 
@@ -13,9 +15,10 @@ function nameOf(dir, id) {
     return raw.toLowerCase().replace(/(^|[\s-])(\p{L})/gu, (_, s, c) => s + c.toUpperCase());
 }
 
-export function loadScenarios(root) {
+export function loadScenarios(root, { drafts = false } = {}) {
     const folder = path.join(root, "scenarios");
-    const ids = fs.existsSync(folder) ? fs.readdirSync(folder).filter((d) => fs.existsSync(path.join(folder, d, "scenario.json"))) : [];
+    const ids = fs.existsSync(folder) ? fs.readdirSync(folder).filter((d) => fs.existsSync(path.join(folder, d, "scenario.json"))
+        && (drafts || !fs.existsSync(path.join(folder, d, "DRAFT")))) : [];
     const ordered = [...ids.filter((id) => id === DEFAULT_SCENARIO), ...ids.filter((id) => id !== DEFAULT_SCENARIO).sort()];
     const scenarios = new Map();
     for (const id of ordered) {
