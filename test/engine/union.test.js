@@ -1,10 +1,11 @@
 // A union of two people's countries (RULES.md §10, Union): proposed to the other person and answered, or lapsing as a no; the
 // second country made part of the first at once, with all it had and its research; growing, a newcomer joining the union whoever
-// asks, the union taking both names; a yes that can no longer be refused with its reason; never for a computer, a
+// asks, the union taking both names and keeping each member's capital as one of its own; a yes that can no longer be refused with its reason; never for a computer, a
 // subject, at war with each other or with other enemies, nor near victory. On the tiny map, AAA and CCC played by people.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { economyOf, scores } from "../../src/engine/index.js";
+import { CAPITAL_MONEY, CAPITAL_SOLDIERS, TRAIN_CAPITAL_DAYS, armyCapOf, capitalsOf, economyOf, scores } from "../../src/engine/index.js";
+import { capture } from "../../src/engine/fighting.js";
 import { order, refused, runTo, tinyGame } from "../helpers/tiny.js";
 
 const cmd = (country, type, rest = {}) => ({ type, country, ...rest });
@@ -33,7 +34,8 @@ test("a union: asked, accepted, and the second country part of the first, with a
     assert.equal(st.countries.AAA.treasury, before.treasury + 30000);
     assert.ok(st.countries.AAA.techs.includes("handCannons"), "its research too");
     assert.equal(scores(st).AAA.settlements, 4);
-    assert.equal(economyOf(game, "AAA").capitalMoney, 10000, "one capital: AAA's");
+    assert.deepEqual(capitalsOf(st, "AAA"), [1, 6], "CCC's capital is the union's too");
+    assert.equal(economyOf(game, "AAA").capitalMoney, 2 * CAPITAL_MONEY, "a court's money for each");
     assert.match(refused(game, cmd("AAA", "proposeUnion", { with: "CCC" })), /CCC is no more/);
 });
 
@@ -95,4 +97,30 @@ test("a union refused, or not answered in 6 months, changes nothing", () => {
     assert.deepEqual(ofType(events, "lapsed").map((e) => e.kind), ["union"]);
     assert.equal(game.state.countries.CCC.out, null);
     assert.equal(ofType(events, "union").length, 0);
+});
+
+test("a union's capitals: each brings its money and soldiers and trains men fast, each counts for proclaiming, each is lost, named and won back on its own", () => {
+    const game = people(1, (sc) => { sc.formables.push({ id: "east", name: "The East", settlements: [6, 7] }); }), st = game.state;
+    order(game, cmd("AAA", "proposeUnion", { with: "CCC" }));
+    answer(game);
+    // CCC's old capital, 6: three months to train, as in AAA's own
+    st.countries.AAA.treasury = 1e6;
+    order(game, cmd("AAA", "raise", { settlement: 6, lots: 1 }));
+    assert.equal(st.countries.AAA.training.at(-1).ready, st.day + TRAIN_CAPITAL_DAYS);
+    // a region with CCC's capital in it may be proclaimed, though AAA's own capital lies elsewhere
+    Object.assign(st.settlements[7], { owner: "AAA", cores: ["DDD"] });
+    order(game, cmd("AAA", "proclaim", { region: "east" }));
+    assert.ok(st.settlements[7].cores.includes("AAA"));
+    // 6 lost: one court the less — its 500 soldiers, and its 10,000 people under the law — and a new one named in its place,
+    // not the first capital, which still stands
+    const cap = armyCapOf(st, "AAA");
+    capture(game, st.settlements[6], "BBB", [], "peace");
+    assert.deepEqual([capitalsOf(st, "AAA"), armyCapOf(st, "AAA")], [[1], cap - CAPITAL_SOLDIERS - 0.05 * 10000]);
+    assert.match(refused(game, cmd("AAA", "setCapital", { settlement: 1 })), /one of your capitals already/);
+    order(game, cmd("AAA", "setCapital", { settlement: 2 }));
+    assert.deepEqual([capitalsOf(st, "AAA"), st.countries.AAA.capital], [[1, 2], 1]);
+    assert.match(refused(game, cmd("AAA", "setCapital", { settlement: 3 })), /your capitals still stand/);
+    // 6 won back: CCC's capital in the union again, at once, and 2 an ordinary town
+    capture(game, st.settlements[6], "AAA", [], "peace");
+    assert.deepEqual(capitalsOf(st, "AAA"), [1, 6]);
 });

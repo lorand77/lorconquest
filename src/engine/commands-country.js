@@ -16,7 +16,7 @@ import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_C
     MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTER_PRICE, SHARPSHOOTERS_PER_PASS, SHIPS, SHIP_PRICE, TECHS, TRAIN_CAPITAL_DAYS,
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
 import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, unlockTech } from "./economy.js";
-import { newFleet, isCore, ownerOf } from "./state.js";
+import { capitalsOf, newFleet, isCore, ownerOf } from "./state.js";
 import { isVassal, overlordOf } from "./relations.js";
 import { coringDays } from "./religion.js";
 
@@ -73,14 +73,19 @@ export const countryCommands = {
         return done(events);
     },
 
+    // a capital lost is replaced (RULES.md §2): the first one, then, in a union, each joined country's in turn — never by
+    // another of its capitals, and a city if it holds one that is not a capital already
     setCapital(game, cmd) {
-        const st = game.state, c = mine(game, cmd);
-        if (st.settlements[c.capital]?.owner === c.code) return refuse("your capital still stands");
+        const st = game.state, c = mine(game, cmd), held = capitalsOf(st, c.code);
+        const first = held.includes(c.capital), seat = first ? (c.seats ?? []).find((x) => !held.includes(x.at)) : null;
+        if (first && !seat) return refuse(c.seats?.length ? "your capitals still stand" : "your capital still stands");
         const { s, error } = ownSettlement(game, cmd);
         if (error) return refuse(error);
-        const cities = ownedBy(st, c.code).filter((x) => game.map.scenario.settlements.find((y) => y.id === x.id).type === "city");
+        if (held.includes(s.id)) return refuse(`${cmd.settlement} is one of your capitals already`);
+        const cities = ownedBy(st, c.code).filter((x) => !held.includes(x.id) && game.map.scenario.settlements.find((y) => y.id === x.id).type === "city");
         if (cities.length && !cities.includes(s)) return refuse("name a city as the capital: you own one");
-        c.capital = s.id;
+        if (seat) seat.at = s.id;
+        else c.capital = s.id;
         return done([{ type: "capital", day: st.day, country: c.code, settlement: s.id }]);
     },
 
@@ -251,7 +256,7 @@ export const countryCommands = {
             c.treasury -= cost;
             c.reserve[weapon] += lots * lot - k;
         }
-        const capital = st.settlements[c.capital]?.owner === c.code && c.capital === s.id;
+        const capital = capitalsOf(st, c.code).includes(s.id);
         c.training.push({ settlement: s.id, kind: "soldiers", weapon, n, ready: st.day + (capital ? TRAIN_CAPITAL_DAYS : TRAIN_OTHER_DAYS) });
         return done();
     },
@@ -356,14 +361,14 @@ export const countryCommands = {
         return done();
     },
 
-    // special coring (SCENARIO.md): the capital lies in the region and the country holds all of it; every settlement
+    // special coring (SCENARIO.md): a capital lies in the region — in a union any of its capitals — and the country holds all of it; every settlement
     // in it becomes core at once, with no courthouse and no wait. A region that makes a new state renames the country, and
     // gives it the new state's code and colour on the map (RULES.md §2)
     proclaim(game, cmd) {
         const st = game.state, c = mine(game, cmd);
         const region = (game.map.scenario.formables ?? []).find((f) => f.id === cmd.region);
         if (!region) return refuse(`no region ${cmd.region}`);
-        if (!region.settlements.includes(c.capital) || st.settlements[c.capital]?.owner !== c.code) return refuse("your capital must lie within the region");
+        if (!capitalsOf(st, c.code).some((id) => region.settlements.includes(id))) return refuse(c.seats?.length ? "one of your capitals must lie within the region" : "your capital must lie within the region");
         // held by the country or one of its vassals (not a protectorate, which keeps its own diplomacy), as for winning
         const ours = (owner) => owner === c.code || (isVassal(st, owner) && overlordOf(st, owner) === c.code);
         const missing = region.settlements.filter((id) => !ours(st.settlements[id]?.owner));

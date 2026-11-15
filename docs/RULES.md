@@ -51,7 +51,7 @@ civilians        = pop − soldiers − rebels (§11), spread over your settleme
 settlement money = (core civilians × tax + non-core civilians × tax ÷ 2 + 7000 per Workshop)
                    × (1 + 15% if it has a Market)           (Workshops and Markets, §3)
                    × compliance, for a settlement not core  (Conquest, below: 0% the day it falls, 100% after 20 years)
-                   + 10,000 while you hold your capital     (the court: the same for every country)
+                   + 10,000 for each capital you hold      (the court: the same for every country; a union has several, §10)
                    × (1 − your conscription law's income penalty, §9)
 
 money per year   = settlement money
@@ -192,6 +192,12 @@ interest, research or debt — whatever its treasury or loans stood at when its 
 the capital is lost, name a new one from any city you own; if you own no city, any settlement. Take back the capital you
 began with — by storm, siege or peace — and it is your capital again at once.
 The capital trains soldiers twice as fast as other settlements (§8).
+**A union has a capital for each country in it** (§10, Union): yours, and each joined country's — the one it held when it
+joined (if it held none, you name one). **Each** brings its 10,000 a year and its 500 soldiers on the army cap (§9), trains
+soldiers in 3 months, and counts for proclaiming a region (Special coring). Each is lost and named again on its own: name the
+first capital first, then the others in the order their countries joined, never one that is a capital already; take back a
+joined country's own first capital and it is that country's capital in the union again at once. Peasants rise outside the
+first (§11).
 
 **Ships** start as cogs, in one fleet, in the capital's port — or, if the capital is not a port, in the
 country's lowest-numbered port.
@@ -655,7 +661,7 @@ The percentages apply to **core manpower + half of non-core**. The two caps are 
 on one cannot be moved to the other.
 
 - **Army cap:** soldiers, men in training (§8), cannon crew and sharpshooters. Mercenaries do
-  not count, but you may hire at most as many as your army cap (§8). **The capital adds 500** to it, whatever the law, while
+  not count, but you may hire at most as many as your army cap (§8). **The capital adds 500** to it (each capital of a union, §2), whatever the law, while
   you hold it: the same for every country, so a small one may hold out where its people alone would not let it.
 - **Navy cap:** ship crew at sea (50 per ship). Ships in port need no crew, so you may own more
   ships than you can crew — only the crewed ones can sail.
@@ -747,7 +753,8 @@ armies, fleets, sharpshooters, soldiers and mercenaries being raised, weapons, t
 technologies become yours, and its subjects your subjects; its sieges go on as yours. It is out of the game, absorbed, not
 defeated. Its person now **rules your country with you**: either of you gives any order — the last one given stands — both see
 its treasury and research, and the computer looks after it only while **all** its rulers are away. You win or lose as one, and
-share your place among the people at the end. Your country takes **both names**, yours first — *Bohemia–Hungary*, and
+share your place among the people at the end. The other's capital stays a capital, yours now (§2: **a union has a capital for each country in it**, each with its money and
+soldiers). Your country takes **both names**, yours first — *Bohemia–Hungary*, and
 *Bohemia–Hungary–Austria* when a third joins — and keeps its code; the map paints its land in **stripes of its members' colours**.
 A new state proclaimed later (§2) renames it as it would anyone.
 

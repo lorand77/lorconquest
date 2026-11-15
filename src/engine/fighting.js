@@ -63,10 +63,16 @@ export function capture(game, s, country, events, how) {
     s.courthouse = false;
     cancelAt(game.state, s.id);
     events.push({ type: "capture", day: game.state.day, settlement: s.id, from, to: country, how });
-    // the capital a country began with, taken back (by storm, siege or peace): its capital again at once (RULES.md §2)
-    const c = game.state.countries[country], home = game.map.scenario.countries.find((x) => x.code === country)?.capital;
-    if (c && !c.rebel && home === s.id && c.capital !== s.id) {
+    // the capital a country began with, taken back (by storm, siege or peace): its capital again at once (RULES.md §2) — and in
+    // a union, each joined country's, as that country's seat
+    const c = game.state.countries[country], homeOf = (code) => game.map.scenario.countries.find((x) => x.code === code)?.capital;
+    if (c && !c.rebel && homeOf(country) === s.id && c.capital !== s.id) {
         c.capital = s.id;
+        events.push({ type: "capital", day: game.state.day, country, settlement: s.id });
+    }
+    for (const seat of c?.seats ?? []) {
+        if (homeOf(seat.of) !== s.id || seat.at === s.id) continue;
+        seat.at = s.id;
         events.push({ type: "capital", day: game.state.day, country, settlement: s.id });
     }
     postsLost(game, s.id, events);

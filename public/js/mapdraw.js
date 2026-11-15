@@ -2,7 +2,7 @@
 // round besieged settlements, the sharpshooter posts. Shared by the game page (which draws what its player may see, with
 // their own armies marked and one selected) and the replay page (which draws everything). Pure functions of a state and a
 // day, so they are tested in Node against real games.
-import { atWar, menOf } from "/engine/index.js";
+import { atWar, menOf, capitalsOf } from "/engine/index.js";
 import { armyPoint, fleetPoints, formatMen } from "./mirror.js";
 
 // every army as a marker: armies standing at one place in a column beside it, marching ones where their march has them
@@ -50,7 +50,7 @@ export function capitalMarks(state, me = null) {
     const out = [];
     for (const c of Object.values(state.countries)) {
         if (c.rebel || (c.out ?? null) !== null || c.capital === null || c.capital === undefined) continue;
-        if (state.settlements[c.capital]?.owner === c.code) out.push({ id: c.capital, code: c.code, mine: c.code === me });
+        for (const id of capitalsOf(state, c.code)) out.push({ id, code: c.code, mine: c.code === me });       // a union's, one for each member
     }
     return out.sort((a, b) => a.id - b.id);
 }

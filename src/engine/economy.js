@@ -10,7 +10,7 @@ import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUI
     MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
-import { armyList, isCore, isRebel, killPeople, removeArmy } from "./state.js";
+import { armyList, capitalsOf, isCore, isRebel, killPeople, removeArmy } from "./state.js";
 import { coringDays } from "./religion.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
@@ -21,9 +21,8 @@ export const popOf = (state, code) => sum(ownedBy(state, code), (s) => s.pop);
 // core manpower plus half of non-core (RULES.md §9): what the law's percentages apply to
 export const manpowerOf = (state, code) => sum(ownedBy(state, code), (s) => (isCore(state, s, code) ? s.pop : s.pop / 2));
 export const lawOf = (state, code) => LAWS[state.countries[code].law ?? "feudal"];
-// a country that holds its capital: it has the capital's money and soldiers (RULES.md §2, §9) — peasant rebels have none
-const holdsCapital = (state, code) => state.settlements[state.countries[code]?.capital]?.owner === code;
-export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(state, code) + (holdsCapital(state, code) ? CAPITAL_SOLDIERS : 0);
+// each capital a country holds brings its money and soldiers (RULES.md §2, §9) — a union's every member's; peasant rebels have none
+export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(state, code) + capitalsOf(state, code).length * CAPITAL_SOLDIERS;
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code);
 export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
@@ -81,8 +80,8 @@ function economyBase(game, code) {
         if (blocked.has(s.id)) money /= 2;
         settlementMoney += money;
     }
-    // the capital's own money, the same for every country, under the law's penalty and a harvest like the rest
-    const capitalMoney = (holdsCapital(st, code) ? CAPITAL_MONEY : 0) * (1 - law.penalty) * (c.harvest ? 1.1 : 1);
+    // each capital's own money, the same for every country, under the law's penalty and a harvest like the rest
+    const capitalMoney = capitalsOf(st, code).length * CAPITAL_MONEY * (1 - law.penalty) * (c.harvest ? 1.1 : 1);
     settlementMoney = settlementMoney * (1 - law.penalty) * (c.harvest ? 1.1 : 1) + capitalMoney;
     const upkeep = soldiers * SOLDIER_UPKEEP, mercenaryUpkeep = mercenaries * MERCENARY_UPKEEP, interest = c.loans * LOAN_RATE;
     const moneyPerYear = settlementMoney - upkeep - mercenaryUpkeep - interest;

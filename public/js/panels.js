@@ -3,7 +3,7 @@
 // Research tab, the panel of a selected fleet, and an army's equipment. Every control sends a command to the server,
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
-import { BUILDING_PRICE, CANNON_PRICE, LAWS, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
+import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
 import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
@@ -97,12 +97,13 @@ export function countryTab(ctx) {
             make("button", { onclick: act(ctx, () => ({ type: "repay", chunks: 1 })) }, "Repay 0.05M"),
             c.loans ? make("button", { class: "danger", onclick: async () => { if (confirm("Default? Every loan is cancelled, no banker will lend for 20 years, and half your mercenaries desert.")) { await ctx.send({ type: "defaultOnLoans" }); ctx.redraw(); } } }, "Default") : "")));
 
-    // special coring
-    const regions = (game.map.scenario.formables ?? []).filter((f) => f.settlements.includes(c.capital));
+    // special coring: the regions one of its capitals lies in (a union has one for each member)
+    const capitals = capitalsOf(state, me);
+    const regions = (game.map.scenario.formables ?? []).filter((f) => capitals.some((id) => f.settlements.includes(id)));
     if (regions.length) {
         // held by you or a vassal of yours (RULES.md, Special coring)
         const ours = (owner) => owner === me || (state.countries[owner]?.overlord === me && state.countries[owner]?.subjectKind === "vassal");
-        out.push(section(ctx, "Regions to proclaim", make("p", { class: "hint" }, "Your capital is in each; you and your vassals must hold all of it. Every settlement in it then becomes your core at once, your vassals' too."),
+        out.push(section(ctx, "Regions to proclaim", make("p", { class: "hint" }, `${capitals.length > 1 ? "One of your capitals" : "Your capital"} is in each; you and your vassals must hold all of it. Every settlement in it then becomes your core at once, your vassals' too.`),
             ...regions.map((f) => {
                 const held = f.settlements.filter((id) => ours(state.settlements[id]?.owner)), core = f.settlements.filter((id) => state.settlements[id]?.cores.includes(me));
                 const ready = held.length === f.settlements.length && core.length < f.settlements.length;
@@ -113,12 +114,14 @@ export function countryTab(ctx) {
             })));
     }
 
-    // a lost capital
-    if (state.settlements[c.capital]?.owner !== me) {
-        const own = Object.values(state.settlements).filter((s) => s.owner === me);
+    // a lost capital — the first, then in a union each joined country's in turn (setCapital names them in that order)
+    const lostSeat = capitals.includes(c.capital) ? (c.seats ?? []).find((x) => !capitals.includes(x.at)) : null;
+    if (!capitals.includes(c.capital) || lostSeat) {
+        const own = Object.values(state.settlements).filter((s) => s.owner === me && !capitals.includes(s.id));
         const cities = own.filter((s) => game.map.scenario.settlements.find((x) => x.id === s.id).type === "city");
         const pick = select(ctx, (cities.length ? cities : own).map((s) => [s.id, ctx.name(String(s.id))]), (cities.length ? cities : own)[0]?.id);
-        out.push(section(ctx, "Capital lost", make("p", { class: "bad" }, "Name a new capital: a city if you own one."), row(ctx, pick, make("button", { class: "primary", onclick: act(ctx, () => ({ type: "setCapital", settlement: Number(pick.value) })) }, "Name it"))));
+        const what = lostSeat ? `${state.countries[lostSeat.of]?.name ?? lostSeat.of}'s capital, one of your union's,` : "Your capital";
+        out.push(section(ctx, "Capital lost", make("p", { class: "bad" }, `${what} is lost. Name a new one: a city if you own one.`), row(ctx, pick, make("button", { class: "primary", onclick: act(ctx, () => ({ type: "setCapital", settlement: Number(pick.value) })) }, "Name it"))));
     }
     return out;
 }
@@ -145,8 +148,9 @@ export function shopTab(ctx) {
     const out = [];                                          // (the treasury is in the top bar)
     const own = Object.values(state.settlements).filter((s) => s.owner === me);
     const core = own.filter((s) => isCore(state, s, me));
-    const settlementOptions = (list) => list.map((s) => [s.id, `${ctx.name(String(s.id))}${s.id === capital ? " ★ capital" : ""}`]);
-    const capital = state.settlements[c.capital]?.owner === me ? c.capital : null;
+    const capitals = capitalsOf(state, me);
+    const settlementOptions = (list) => list.map((s) => [s.id, `${ctx.name(String(s.id))}${capitals.includes(s.id) ? " ★ capital" : ""}`]);
+    const capital = capitals.includes(c.capital) ? c.capital : null;
 
     // buildings, in the settlement selected on the map
     const sel = ctx.sel?.kind === "place" ? state.settlements[ctx.sel.key] : null;
@@ -154,7 +158,7 @@ export function shopTab(ctx) {
         // (no courthouse where the settlement is core already, where it would do nothing, nor before its people are compliant)
         const ready = compliance(sel, state.day, coringDays(game, me, sel.id)).ready;
         // its people first: the settlement selected is the player's own, and this is the panel it opens (mirror.js, tabForSelection)
-        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}${sel.id === capital ? " ★ capital" : ""}`, make("p", {}, `${n(sel.pop)} people${sel.cores.includes(me) ? ", core" : ", not core"}.`),
+        out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}${capitals.includes(sel.id) ? " ★ capital" : ""}`, make("p", {}, `${n(sel.pop)} people${sel.cores.includes(me) ? ", core" : ", not core"}.`),
             complianceBlock(ctx, sel), make("div", { class: "buttons" },
             ...Object.keys(BUILDING_PRICE).filter((b) => b !== "courthouse" || sel.courthouse || !sel.cores.includes(me)).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${b}`)
                 : b === "courthouse" && !ready ? make("span", { class: "hint" }, "courthouse: once compliant")

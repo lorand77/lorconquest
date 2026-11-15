@@ -776,7 +776,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 You may proclaim a region when **both** are true:
 
-1. Your **capital** lies within the region.
+1. Your **capital** lies within the region — in a union, any one of its capitals (RULES.md §2).
 2. You control **100%** of its settlements.
 
 Every settlement in the region becomes core immediately. If you later lose one and retake it, it is core again

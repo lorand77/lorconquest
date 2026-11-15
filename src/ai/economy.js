@@ -6,7 +6,7 @@
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it. A vassal of 10 years it
 // integrates when it can pay.
 import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, isVassal, lawChangeDay, coringDays,
-    manpowerOf, militaryPowerOf, neighboursOf, overlordOf, subjectsOf } from "../engine/index.js";
+    manpowerOf, militaryPowerOf, neighboursOf, overlordOf, subjectsOf, capitalsOf } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
 import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
 
@@ -67,11 +67,13 @@ export function economyOrders(game, code, fl, ctx) {
     const enemies = threatsOf(st, code), atWarNow = enemies.length > 0, reserve = reserveOf(e);
     const cmd = (type, rest = {}) => out.push({ type, country: code, ...rest });
 
-    // a capital lost: the largest city held becomes the new one, or the largest settlement if it holds no city — the capital
-    // trains soldiers twice as fast (RULES.md §2); retaking the old one makes it the capital again by itself
-    if (st.settlements[c.capital]?.owner !== code) {
+    // a capital lost — the first, or in a union one of the joined countries' — the largest city held becomes the new one, or the
+    // largest settlement if it holds no city — a capital trains soldiers twice as fast (RULES.md §2); retaking the old one makes
+    // it a capital again by itself
+    const capitals = capitalsOf(st, code);
+    if (!capitals.includes(c.capital) || (c.seats ?? []).some((x) => !capitals.includes(x.at))) {
         const city = (s) => game.map.scenario.settlements.find((x) => x.id === s.id)?.type === "city";
-        const pick = ownSettlements(st, code).sort((a, b) => city(b) - city(a) || b.pop - a.pop || a.id - b.id)[0];
+        const pick = ownSettlements(st, code).filter((s) => !capitals.includes(s.id)).sort((a, b) => city(b) - city(a) || b.pop - a.pop || a.id - b.id)[0];
         if (pick) cmd("setCapital", { settlement: pick.id });
     }
 
@@ -82,10 +84,10 @@ export function economyOrders(game, code, fl, ctx) {
         ctx.budget += amount;
     }
 
-    // regions: one its capital lies in, held whole by it and its vassals and not all its core yet, is proclaimed (RULES.md, Special coring)
+    // regions: one a capital of its lies in, held whole by it and its vassals and not all its core yet, is proclaimed (RULES.md, Special coring)
     const ours = (owner) => owner === code || (isVassal(st, owner) && overlordOf(st, owner) === code);
     for (const f of game.map.scenario.formables ?? []) {
-        if (st.settlements[c.capital]?.owner !== code || !f.settlements.includes(c.capital)) continue;
+        if (!capitals.some((id) => f.settlements.includes(id))) continue;
         if (f.settlements.every((id) => ours(st.settlements[id]?.owner)) && f.settlements.some((id) => !st.settlements[id].cores.includes(code))) cmd("proclaim", { region: f.id });
     }
 

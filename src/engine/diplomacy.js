@@ -441,7 +441,7 @@ export function unionError(game, a, b) {
 // else the one that proposed
 export const unionInto = (st, proposer, other) => (!st.memory.unions?.includes(proposer) && st.memory.unions?.includes(other) ? other : proposer);
 
-// `from` becomes part of `into` (absorb), at once and for nothing; `into` takes both names, "Bohemia–Hungary" (a newcomer's
+// `from` becomes part of `into` (absorb), at once and for nothing, its capital one of `into`'s (RULES.md §2); `into` takes both names, "Bohemia–Hungary" (a newcomer's
 // added at the end), and `from`'s research too, and `from`'s wars, against the same enemies, are `into`'s already. Its person
 // rules `into` with `into`'s (src/game/rooms.js). The map paints the union in its members' colours (public/js/mapdraw.js, landFill).
 export function unite(game, into, from, events) {
@@ -453,7 +453,12 @@ export function unite(game, into, from, events) {
         const [x, y] = w.split("|");
         if (x === from || y === from) closeWar(game, x, y);
     }
+    // its capital stays a capital, `into`'s now, and so do those of the countries that joined it before — each that it holds
+    const held = (id) => st.settlements[id]?.owner === from;
+    const seats = [{ of: from, at: held(c.capital) ? c.capital : null }, ...(c.seats ?? []).map((x) => ({ of: x.of, at: held(x.at) ? x.at : null }))];
     const n = absorb(game, into, from, events);
+    o.seats = [...(o.seats ?? []), ...seats];
+    c.seats = [];
     for (const x of Object.values(st.settlements)) if (x.siege?.by === from) x.siege.by = into;     // its sieges go on, as `into`'s
     (st.memory.unions ??= []).push(into, from);
     events.push({ type: "union", day: st.day, country: into, with: from, name: o.name, settlements: n });

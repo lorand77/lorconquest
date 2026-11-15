@@ -405,7 +405,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 You may proclaim a region when **both** are true:
 
-1. Your **capital** lies within the region.
+1. Your **capital** lies within the region — in a union, any one of its capitals (RULES.md §2).
 2. You and your **vassals** together control **100%** of its settlements (a protectorate's do not count: it keeps its own
    diplomacy). Your vassals' settlements count as they do for winning.
 
