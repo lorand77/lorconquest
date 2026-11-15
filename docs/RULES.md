@@ -79,6 +79,7 @@ not change). Taxing above 2 risks a **peasant uprising** (§11), rolled each yea
 **average tax over the past year** — lowering it just before the roll does not help:
 ```
 uprising chance per year = (average tax − 2)² × 25%   + the law's unrest (§9): +5% Mass levy, +15% Scrape the barrel
+                           + the unrest of faith (Religion, below): up to +10%
 ```
 
 | Tax | Settlement money | Uprising chance per year |
@@ -111,17 +112,36 @@ only through growth or **Buy people**.
 **Mercenaries** are the exception: they are foreigners, and their dead cost you no people (§8).
 
 **Coring.** A settlement's people grow **compliant** with you as you hold it: from 0% when you take it to **100% after 20
-years**. Only then may you buy it a **Courthouse**, and it becomes core at once. Special coring (see
+years** (longer for people of another faith: Religion, below). Only then may you buy it a **Courthouse**, and it becomes core at once. Special coring (see
 [Special coring](../scenarios/mitteleuropa/SCENARIO.md#special-coring)) waives both. Some regions make a **new state** when
 proclaimed (*Becomes* in the scenario): the country takes its name, and its own code and colour on the map, for the rest of the
 game — the same country, with all it had. Proclaiming another such region later renames it again; one without changes nothing.
 
 **Conquest.** A captured settlement is held from the day it falls: the 20 years start again, its
 courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It pays as its people
-grow compliant: nothing the day it falls, a quarter of what it would pay as your core after 10 years, half after 20 — and all
+grow compliant: nothing the day it falls, a quarter of what it would pay as your core after 10 years, half after 20 (of another faith, longer) — and all
 of it once a Courthouse makes it core. Your own core retaken pays in full at once. It
 keeps its walls, library, workshop and market. It **stays core for every country that had it core**,
 so retaking it makes it core again at once.
+
+**Religion.** Each country has a faith — Catholic, Orthodox, Hussite or Sunni — given by its scenario
+([Religions](../scenarios/europe-1440/SCENARIO.md#religions)); a settlement's people have the faith of the country that held it in 1440.
+Faiths never change in a game. Two faiths regard each other by one number, which the computer adds to its opinion (§10):
+
+|  | Catholic | Orthodox | Hussite | Sunni |
+|---|---|---|---|---|
+| **Catholic** | +15 | −10 | −20 | −25 |
+| **Orthodox** | −10 | +15 | 0 | −20 |
+| **Hussite** | −20 | 0 | +15 | −15 |
+| **Sunni** | −25 | −20 | −15 | +15 |
+
+People of another faith are slower to accept you. Their **gap** is the pair's number ÷ −25, from 0 to 1 — 0 for the same
+faith or a pair at 0, 1 for Catholic and Sunni, 0.4 for Catholic and Orthodox. A settlement not core for you takes
+**20 × (1 + gap) years** to grow fully compliant — up to 40 — and pays by the same longer clock (a quarter of a core's after half
+of it); only then may a Courthouse make it core. And each year your chance of a peasant uprising (§11) rises by
+**10% × the sum of the gaps of your settlements not core for you ÷ all the settlements you hold** — +3.3% for a realm a third
+of whose land is Catholic and not yet core under a Sunni ruler. Once core, the land is yours like any other: its faith no
+longer matters. A scenario without religions has none of this; of the scenarios, only Europe 1440 gives them.
 
 **Bank:** deposits earn `0.25% per month` interest (≈3%/year compounded). Withdraw any time.
 Bank interest is **money only** — it never goes to research (§4).
@@ -819,6 +839,8 @@ the sum of everything below that applies:
 | You fought a war against it in the last 20 years | −25 |
 | You broke an agreement with anyone in the last 10 years | −40 |
 | It refused your demand to become your subject in the last 10 years (not the HRE vote) | −30 |
+| Your faiths (Religion, §2): the same | +15 |
+| … or Catholic and Orthodox −10, Catholic and Hussite −20, Catholic and Sunni −25, Orthodox and Hussite 0, Orthodox and Sunni −20, Hussite and Sunni −15 | as given |
 | Your warmonger score — in full if you share a border, half if you do not | −score, at most −60 |
 
 **Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:
@@ -976,7 +998,7 @@ Rolled at the start of each year.
 |---|---|---|
 | Good harvest | 10% | +10% money that year |
 | Plague | 5% | −10% pop |
-| Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) — plus the law's unrest: +5% under Mass levy, +15% under Scrape the barrel (§9) | See below |
+| Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) — plus the law's unrest: +5% under Mass levy, +15% under Scrape the barrel (§9), plus the unrest of faith, up to +10% (§2, Religion) | See below |
 
 **Peasant uprising.** Overtaxed peasants rise against you. A rebel country forms with soldiers
 equal to **3% of your total population** (every settlement you own, core and non-core), armed

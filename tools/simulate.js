@@ -10,8 +10,8 @@
 //
 // --detail prints each game's war measures under its line; --by-era gives them for 1440–1499, 1500–1574 and 1575–1650 apart.
 //
-// --scenario is a folder of scenarios/ (or a path to one). For experiments, --without characters and/or --without rivalries
-// play the scenario as if it gave none (characters are then rolled at random, as for a scenario without them).
+// --scenario is a folder of scenarios/ (or a path to one). For experiments, --without characters, --without rivalries and/or
+// --without religions play the scenario as if it gave none (characters are then rolled at random, as for a scenario without them).
 //
 // --years stops a game early (the scenario's own end is 1650); --jobs plays games on worker threads at once.
 import fs from "node:fs";
@@ -78,6 +78,7 @@ const loadScenario = (name, without = []) => {
     const sc = JSON.parse(fs.readFileSync(path.join(dir, "scenario.json"), "utf8"));
     if (without.includes("characters")) for (const c of sc.countries) delete c.character;
     if (without.includes("rivalries")) sc.rivalries = [];
+    if (without.includes("religions")) for (const c of sc.countries) delete c.religion;
     return sc;
 };
 

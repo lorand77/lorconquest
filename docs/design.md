@@ -600,7 +600,8 @@ would break that.
   (training and hires), `naval` (fleets, patrols, blockades, straits), `passes` (sharpshooters),
   `events` (harvest, plague, uprisings and the rebels), `relations` (who is allied, guaranteed, subject or
   friend — pure questions over the state), `opinion` (military power, neighbours, opinion, and the formulas by which a
-  computer answers), `diplomacy` (wars, joining, peace, subjects, the Empire, coalitions), `diplomacy-day`
+  computer answers), `religion` (each country's and settlement's faith, read from the scenario and never state: what
+  two faiths think of each other, and how much longer land of another faith takes to comply and how much likelier it is to rise), `diplomacy` (wars, joining, peace, subjects, the Empire, coalitions), `diplomacy-day`
   (expiries, unanswered questions, subjects breaking free, the yearly step), `victory`, `elimination` (a country with no
   settlement left is out of the game, checked at the end of every day and command), `day`, `command-util`,
   `commands` (war and armies), `commands-country`, `commands-naval`, `commands-diplomacy`, `text` (events in

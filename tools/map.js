@@ -11,6 +11,7 @@
 // Node built-ins only. Pixel grids are typed arrays indexed y * W + x.
 import fs from "node:fs";
 import { CHARACTERS, WARLIKE } from "../src/ai/characters.js";
+import { RELIGIONS } from "../src/engine/religion.js";
 import { abbreviate } from "./abbreviations.js";
 import path from "node:path";
 
@@ -356,6 +357,25 @@ if (doc.some((l) => /^## Characters\s*$/.test(l))) {
         }
     }
 }
+// each country's faith (RULES.md §2, Religion), if the scenario has a "## Religions" table (Religion, Countries, Why): every
+// country not in it is Catholic, and none may be listed twice. Without the section the scenario has no religions at all.
+const RELIGION = new Map();
+if (doc.some((l) => /^## Religions\s*$/.test(l))) {
+    for (const code of CORDER) RELIGION.set(code, "catholic");
+    const listed = new Set();
+    for (const r of table("Religions")[1]) {
+        const faith = (r.Religion ?? "").toLowerCase();
+        if (!RELIGIONS.includes(faith)) { err(`Religions line ${r._line}: '${r.Religion}' is none of ${RELIGIONS.join(", ")}`); continue; }
+        const codes = [...(r.Countries ?? "").matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]);
+        for (const code of codes) {
+            if (!CN.has(code)) { err(`Religions line ${r._line}: no country ${code}`); continue; }
+            if (listed.has(code)) err(`Religions line ${r._line}: ${code} is listed twice`);
+            listed.add(code);
+            RELIGION.set(code, faith);
+        }
+    }
+}
+
 // the scenario's own achievements (design.md, Achievements), if it has an "## Achievements" table: Achievement, Icon, Goal,
 // Description. The goal is clauses joined by ";", all of which a person's country must meet in one game: "as" codes (the
 // country played), "win", "survive" (still in at the end), "proclaim" a region (its id under Special coring), "hold" settlement
@@ -1526,7 +1546,7 @@ const json = {
     countries: CORDER.map((code) => {
         const c = C.get(code);
         return { code, name: CN.get(code), capital: CAP.get(code), colour: COLOUR.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, hre: c.hrestate,
-            ...(CHARACTER.has(code) ? { character: CHARACTER.get(code) } : {}) };
+            ...(CHARACTER.has(code) ? { character: CHARACTER.get(code) } : {}), ...(RELIGION.has(code) ? { religion: RELIGION.get(code) } : {}) };
     }),
     settlements: SIDS.map((id) => {
         const s = S.get(id);

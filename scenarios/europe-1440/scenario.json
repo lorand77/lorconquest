@@ -25,7 +25,8 @@
    "army": 2000,
    "ships": 25,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "SWE",
@@ -47,7 +48,8 @@
    "army": 4000,
    "ships": 50,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "DEN",
@@ -65,7 +67,8 @@
    "army": 2000,
    "ships": 25,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "GOT",
@@ -79,7 +82,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "LIV",
@@ -96,7 +100,8 @@
    "army": 2000,
    "ships": 25,
    "hre": "none",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "TEU",
@@ -113,7 +118,8 @@
    "army": 2000,
    "ships": 25,
    "hre": "none",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "ENG",
@@ -151,7 +157,8 @@
    "army": 12000,
    "ships": 150,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "SCO",
@@ -168,7 +175,8 @@
    "army": 1600,
    "ships": 20,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "ISL",
@@ -182,7 +190,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "TRN",
@@ -196,7 +205,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "THO",
@@ -210,7 +220,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "DES",
@@ -224,7 +235,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "FRA",
@@ -266,7 +278,8 @@
    "army": 12800,
    "ships": 160,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "BUR",
@@ -294,7 +307,8 @@
    "army": 7600,
    "ships": 95,
    "hre": "part",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "BRI",
@@ -311,7 +325,8 @@
    "army": 2000,
    "ships": 25,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "ANJ",
@@ -328,7 +343,8 @@
    "army": 2000,
    "ships": 25,
    "hre": "part",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "BOU",
@@ -343,7 +359,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "ARM",
@@ -358,7 +375,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "FOI",
@@ -373,7 +391,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "SAV",
@@ -392,7 +411,8 @@
    "army": 2400,
    "ships": 30,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "LIE",
@@ -406,7 +426,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "UTR",
@@ -420,7 +441,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "GEL",
@@ -434,7 +456,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "FRI",
@@ -448,7 +471,8 @@
    "army": 400,
    "ships": 5,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "LUX",
@@ -462,7 +486,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "CAS",
@@ -499,7 +524,8 @@
    "army": 11600,
    "ships": 145,
    "hre": "none",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "ARA",
@@ -530,7 +556,8 @@
    "army": 8800,
    "ships": 110,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "POR",
@@ -550,7 +577,8 @@
    "army": 3200,
    "ships": 40,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "NAV",
@@ -564,7 +592,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "GRA",
@@ -580,7 +609,8 @@
    "army": 1600,
    "ships": 20,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "sunni"
   },
   {
    "code": "MIL",
@@ -597,7 +627,8 @@
    "army": 2000,
    "ships": 0,
    "hre": "all",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "VEN",
@@ -624,7 +655,8 @@
    "army": 6800,
    "ships": 85,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "GEN",
@@ -642,7 +674,8 @@
    "army": 2800,
    "ships": 35,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "FLO",
@@ -658,7 +691,8 @@
    "army": 1600,
    "ships": 20,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "SIE",
@@ -672,7 +706,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "PAP",
@@ -691,7 +726,8 @@
    "army": 3200,
    "ships": 40,
    "hre": "none",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "FER",
@@ -706,7 +742,8 @@
    "army": 800,
    "ships": 0,
    "hre": "part",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "MAN",
@@ -720,7 +757,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "MON",
@@ -734,7 +772,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "RIM",
@@ -748,7 +787,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "NAP",
@@ -770,7 +810,8 @@
    "army": 4000,
    "ships": 50,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "SHO",
@@ -784,7 +825,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "LUB",
@@ -798,7 +840,8 @@
    "army": 800,
    "ships": 10,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "HAM",
@@ -812,7 +855,8 @@
    "army": 800,
    "ships": 10,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "MEC",
@@ -827,7 +871,8 @@
    "army": 800,
    "ships": 10,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "POM",
@@ -842,7 +887,8 @@
    "army": 800,
    "ships": 10,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "BRE",
@@ -856,7 +902,8 @@
    "army": 400,
    "ships": 5,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "BRU",
@@ -871,7 +918,8 @@
    "army": 1200,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "MAG",
@@ -885,7 +933,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "BRA",
@@ -901,7 +950,8 @@
    "army": 1200,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "CLE",
@@ -915,7 +965,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "MUN",
@@ -929,7 +980,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "JUL",
@@ -943,7 +995,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "COL",
@@ -957,7 +1010,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "HES",
@@ -972,7 +1026,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "SAX",
@@ -989,7 +1044,8 @@
    "army": 1600,
    "ships": 0,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "LUS",
@@ -1003,7 +1059,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "SIL",
@@ -1018,7 +1075,8 @@
    "army": 1200,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "OPP",
@@ -1032,7 +1090,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "TRI",
@@ -1046,7 +1105,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "MAI",
@@ -1060,7 +1120,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "WBG",
@@ -1074,7 +1135,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "ANS",
@@ -1088,7 +1150,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "NUR",
@@ -1102,7 +1165,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "PAL",
@@ -1117,7 +1181,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "BOH",
@@ -1135,7 +1200,8 @@
    "army": 2400,
    "ships": 0,
    "hre": "all",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "hussite"
   },
   {
    "code": "MET",
@@ -1149,7 +1215,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "STR",
@@ -1163,7 +1230,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "BAD",
@@ -1177,7 +1245,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "WRT",
@@ -1191,7 +1260,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "ULM",
@@ -1205,7 +1275,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "AUG",
@@ -1219,7 +1290,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "BIN",
@@ -1233,7 +1305,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "REG",
@@ -1247,7 +1320,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "BMU",
@@ -1261,7 +1335,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "BLA",
@@ -1275,7 +1350,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "AUS",
@@ -1291,7 +1367,8 @@
    "army": 1600,
    "ships": 0,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "TYR",
@@ -1307,7 +1384,8 @@
    "army": 1200,
    "ships": 0,
    "hre": "all",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "BAS",
@@ -1321,7 +1399,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "ZUR",
@@ -1335,7 +1414,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "SWI",
@@ -1350,7 +1430,8 @@
    "army": 800,
    "ships": 0,
    "hre": "all",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "SAL",
@@ -1364,7 +1445,8 @@
    "army": 400,
    "ships": 0,
    "hre": "all",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "STY",
@@ -1380,7 +1462,8 @@
    "army": 1200,
    "ships": 15,
    "hre": "all",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "POL",
@@ -1405,7 +1488,8 @@
    "army": 5600,
    "ships": 0,
    "hre": "none",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "MAZ",
@@ -1420,7 +1504,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "LIT",
@@ -1448,7 +1533,8 @@
    "army": 6800,
    "ships": 0,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "HUN",
@@ -1475,7 +1561,8 @@
    "army": 6000,
    "ships": 0,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "catholic"
   },
   {
    "code": "JIS",
@@ -1490,7 +1577,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "OTT",
@@ -1533,7 +1621,8 @@
    "army": 13200,
    "ships": 165,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "sunni"
   },
   {
    "code": "BYZ",
@@ -1548,7 +1637,8 @@
    "army": 1200,
    "ships": 15,
    "hre": "none",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "orthodox"
   },
   {
    "code": "MOR",
@@ -1564,7 +1654,8 @@
    "army": 1200,
    "ships": 15,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "orthodox"
   },
   {
    "code": "SER",
@@ -1578,7 +1669,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "orthodox"
   },
   {
    "code": "BOS",
@@ -1593,7 +1685,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "catholic"
   },
   {
    "code": "HER",
@@ -1607,7 +1700,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "orthodox"
   },
   {
    "code": "RAG",
@@ -1621,7 +1715,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "WAL",
@@ -1636,7 +1731,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "orthodox"
   },
   {
    "code": "MOL",
@@ -1652,7 +1748,8 @@
    "army": 1200,
    "ships": 15,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "orthodox"
   },
   {
    "code": "ATH",
@@ -1666,7 +1763,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "catholic"
   },
   {
    "code": "EPI",
@@ -1680,7 +1778,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "catholic"
   },
   {
    "code": "LES",
@@ -1694,7 +1793,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "KAR",
@@ -1713,7 +1813,8 @@
    "army": 2800,
    "ships": 35,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "sunni"
   },
   {
    "code": "CAN",
@@ -1728,7 +1829,8 @@
    "army": 800,
    "ships": 10,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "sunni"
   },
   {
    "code": "TRE",
@@ -1742,7 +1844,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "orthodox"
   },
   {
    "code": "DUL",
@@ -1757,7 +1860,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "sunni"
   },
   {
    "code": "RAM",
@@ -1771,7 +1875,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "opportunist"
+   "character": "opportunist",
+   "religion": "sunni"
   },
   {
    "code": "AQQ",
@@ -1787,7 +1892,8 @@
    "army": 1200,
    "ships": 0,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "sunni"
   },
   {
    "code": "CYP",
@@ -1801,7 +1907,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "catholic"
   },
   {
    "code": "KRH",
@@ -1816,7 +1923,8 @@
    "army": 800,
    "ships": 10,
    "hre": "none",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "catholic"
   },
   {
    "code": "MOS",
@@ -1838,7 +1946,8 @@
    "army": 4000,
    "ships": 0,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "orthodox"
   },
   {
    "code": "NOV",
@@ -1858,7 +1967,8 @@
    "army": 3200,
    "ships": 0,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "orthodox"
   },
   {
    "code": "PSK",
@@ -1872,7 +1982,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "orthodox"
   },
   {
    "code": "TVE",
@@ -1887,7 +1998,8 @@
    "army": 800,
    "ships": 0,
    "hre": "none",
-   "character": "diplomat"
+   "character": "diplomat",
+   "religion": "orthodox"
   },
   {
    "code": "RYA",
@@ -1901,7 +2013,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "orthodox"
   },
   {
    "code": "THE",
@@ -1915,7 +2028,8 @@
    "army": 400,
    "ships": 0,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "orthodox"
   },
   {
    "code": "GHO",
@@ -1929,7 +2043,8 @@
    "army": 400,
    "ships": 5,
    "hre": "none",
-   "character": "conqueror"
+   "character": "conqueror",
+   "religion": "sunni"
   },
   {
    "code": "MRC",
@@ -1950,7 +2065,8 @@
    "army": 4000,
    "ships": 50,
    "hre": "none",
-   "character": "zealot"
+   "character": "zealot",
+   "religion": "sunni"
   },
   {
    "code": "TLE",
@@ -1966,7 +2082,8 @@
    "army": 1600,
    "ships": 20,
    "hre": "none",
-   "character": "defender"
+   "character": "defender",
+   "religion": "sunni"
   },
   {
    "code": "TUN",
@@ -1987,7 +2104,8 @@
    "army": 3600,
    "ships": 45,
    "hre": "none",
-   "character": "merchant"
+   "character": "merchant",
+   "religion": "sunni"
   }
  ],
  "settlements": [

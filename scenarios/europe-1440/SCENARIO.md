@@ -897,6 +897,19 @@ and vassalized settlements count 1, protectorates ½. A tie goes to the larger t
 and subjects).
 
 
+## Religions
+
+*Each country's faith (RULES.md §2, Religion): every country not listed here is **Catholic**. A faith is the ruler's; a
+settlement's people have the faith of the country that held it in 1440. Faiths set part of the computer's opinion of a country,
+and land of another faith takes longer to comply with a conqueror and rises more readily. Data: `node tools/map.js` reads the
+table; a country listed twice, or a faith that is none of Catholic, Orthodox, Hussite and Sunni, is refused.*
+
+| Religion | Countries | Why |
+|---|---|---|
+| Orthodox | BYZ, MOR, TRE, THE, SER, HER, WAL, MOL, MOS, NOV, PSK, TVE, RYA | The Greek and Slavonic churches: Byzantium and its despotates, Trebizond and Theodoro, Serbia, the Romanian principalities, the Russian lands. Herzegovina's lord patronised the Orthodox — his title became Herceg of St Sava. The Latin lords of Greek lands — Athens, Epirus, Lesbos, Cyprus, Rhodes — keep the ruler's Catholic faith |
+| Hussite | BOH | Utraquist Bohemia between kings, the Compacts of Basel only four years old |
+| Sunni | OTT, KAR, CAN, DUL, RAM, AQQ, GHO, GRA, MRC, TLE, TUN | The Ottomans and the Anatolian beyliks, the Aq Qoyunlu, the Great Horde, Granada and the Maghreb |
+
 ## Characters
 
 *How the computer plays each country when no person does (docs/design.md, *Characters and rivalries*). Data: every country

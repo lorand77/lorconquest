@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, unionError, unionInto, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -162,6 +162,14 @@ function warsOf(ctx, t) {
 }
 
 // everything the player can do about one country
+// a country's faith and what it does to its opinion of us (RULES.md §2, Religion); nothing on a map without religions
+function faithLine(ctx, t) {
+    const theirs = religionOf(ctx.game, t), mine = religionOf(ctx.game, ctx.me);
+    if (!theirs || !mine) return "";
+    const f = faithOpinion(ctx.game, t, ctx.me);
+    return ctx.make("p", {}, `${RELIGION_NAMES[theirs]}${theirs === mine ? ", as you are" : `; you are ${RELIGION_NAMES[mine]}`}: ${f > 0 ? "+" : ""}${f} to its opinion of you.`);
+}
+
 function dealWith(ctx, t) {
     const { state, game, me, make: mk } = ctx;
     const them = state.countries[t], out = [];
@@ -172,6 +180,7 @@ function dealWith(ctx, t) {
     out.push(section(ctx, `${them.name}`,
         mk("p", {}, `${n(Object.values(state.settlements).filter((s) => s.owner === t).reduce((k, s) => k + s.pop, 0))} people, military power ${n(power)} against your ${n(mypower)}${bordering(game, me, t) ? ", a neighbour" : ""}.`),
         human ? mk("p", { class: "hint" }, "A person plays this country: proposals wait for its answer.") : mk("p", {}, `Its opinion of you: ${op > 0 ? "+" : ""}${Math.round(op)}. Warmonger score ${Math.round(them.warmonger ?? 0)}.`),
+        faithLine(ctx, t),
         them.overlord ? mk("p", {}, `A ${them.subjectKind} of ${state.countries[them.overlord].name}${vassal ? ": it has no diplomacy of its own — speak to its overlord" : ""}.`) : "",
         rivalsLine(ctx, t),
         warsOf(ctx, t)));

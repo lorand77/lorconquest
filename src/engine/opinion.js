@@ -7,6 +7,7 @@ import { militaryPower } from "./army.js";
 import { YEAR_DAYS } from "./calendar.js";
 import { economyOf, popOf } from "./economy.js";
 import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
+import { faithOpinion } from "./religion.js";
 import { armyList, atWar, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
 
@@ -69,6 +70,8 @@ export function opinion(game, holder, other) {
     if (within(st, m.broke[other], 10)) o -= 40;
     // refused your demand to become your subject in the last 10 years
     if (within(st, m.refused[`${holder}>${other}`], 10)) o -= 30;
+    // the two faiths (religion.js): +15 the same, down to −25 for Catholic and Sunni
+    o += faithOpinion(game, holder, other);
     // the warmonger score: in full beside it, half further off, at most −60
     o -= Math.min(60, (st.countries[other].warmonger ?? 0) * (border ? 1 : 0.5));
     return Math.max(-100, Math.min(100, o));

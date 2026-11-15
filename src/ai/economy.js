@@ -5,7 +5,7 @@
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it. A vassal of 10 years it
 // integrates when it can pay.
-import { BUILDING_PRICE, CORING_DAYS, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, isVassal, lawChangeDay,
+import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, isVassal, lawChangeDay, coringDays,
     manpowerOf, militaryPowerOf, neighboursOf, overlordOf, subjectsOf } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
 import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
@@ -153,8 +153,8 @@ export function economyOrders(game, code, fl, ctx) {
         return true;
     };
     let bought = 0;
-    // a courthouse where a settlement is not core but its people are compliant (20 years held): it becomes core at once
-    for (const s of own) if (bought < 2 && !s.cores.includes(code) && st.day - s.heldSince >= CORING_DAYS && buy("courthouse", s)) bought++;
+    // a courthouse where a settlement is not core but its people are compliant (20 years held, longer for another faith): it becomes core at once
+    for (const s of own) if (bought < 2 && !s.cores.includes(code) && st.day - s.heldSince >= coringDays(game, code, s.id) && buy("courthouse", s)) bought++;
     if (atWarNow) for (const s of own) if (bought < 2 && nextToEnemy(game, code, String(s.id)) && s.pop >= 15000 && buy("walls", s)) bought++;
     const libraries = own.filter((s) => s.library).length;
     if (libraries < MAX_LIBRARIES && fl.builder > 0.4) for (const s of own) if (bought < 2 && !s.library && buy("library", s)) { bought++; break; }

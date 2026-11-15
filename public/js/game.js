@@ -2,7 +2,7 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
+import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
 import { HOTKEYS, SPEEDS, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
@@ -840,7 +840,7 @@ function placePanel(key) {
     const s = state.settlements[node.id];
     const capital = country(s.owner)?.capital === s.id;            // its owner's capital (a lost one is no capital)
     const out = [make("h2", {}, swatch(s.owner), ` ${name(key)}${capital ? " ★" : ""}`),
-        make("p", {}, `${country(s.owner).name}${capital ? ": its capital" : ""}. ${formatNumber(s.pop)} people.${s.cores.includes(s.owner) ? " Core." : ""}${s.walls ? " Walls." : ""}${scenario.settlements.find((x) => x.id === s.id)?.hre ? " In the Holy Roman Empire." : ""}`)];
+        make("p", {}, `${country(s.owner).name}${capital ? ": its capital" : ""}. ${formatNumber(s.pop)} people${landReligion(game, s.id) ? `, ${RELIGION_NAMES[landReligion(game, s.id)]}` : ""}.${s.cores.includes(s.owner) ? " Core." : ""}${s.walls ? " Walls." : ""}${scenario.settlements.find((x) => x.id === s.id)?.hre ? " In the Holy Roman Empire." : ""}`)];
     if (s.siege) out.push(make("p", { class: "siege" }, `Besieged by ${country(s.siege.by).name}: it falls ${longDate(s.siege.end)} unless relieved.`));
     const comply = complianceBlock(ctx, s);                   // a settlement not core for its owner: how far its people comply
     if (comply) out.push(comply);

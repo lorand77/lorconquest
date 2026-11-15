@@ -6,11 +6,12 @@
 // and R keep their fractions inside the engine.
 
 import { WEAPONS, isEmpty, menOf, takeMen } from "./army.js";
-import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, CORING_DAYS, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE,
+import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE,
     MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
 import { armyList, isCore, isRebel, killPeople, removeArmy } from "./state.js";
+import { coringDays } from "./religion.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
 const realCountries = (state) => Object.keys(state.countries).sort().filter((c) => !isRebel(state, c));
@@ -75,8 +76,8 @@ function economyBase(game, code) {
         let money = civ * c.tax * (core ? 1 : 0.5) + (s.workshop ? WORKSHOP_MONEY : 0);
         if (s.market) money *= 1 + MARKET_BONUS;
         // a conquest pays as its people settle under the new owner (RULES.md §2, Conquest): nothing the day it falls, all of its
-        // non-core half once fully compliant (20 years), full once core
-        if (!core) money *= Math.min(1, Math.max(0, st.day - s.heldSince) / CORING_DAYS);
+        // non-core half once fully compliant (20 years, longer for people of another faith: religion.js), full once core
+        if (!core) money *= Math.min(1, Math.max(0, st.day - s.heldSince) / coringDays(game, code, s.id));
         if (blocked.has(s.id)) money /= 2;
         settlementMoney += money;
     }
@@ -186,9 +187,9 @@ export function monthly(game, events) {
         if (c.treasury < 0 && c.debtSince === null) c.debtSince = st.day;
         if (c.treasury >= 0) c.debtSince = null;
         if (c.debtSince !== null && st.day - c.debtSince >= DEBT_DAYS && -c.treasury > popOf(st, code) * 10) bankrupt(game, code, events);
-        // a settlement becomes core after 20 years held and a courthouse
+        // a settlement becomes core after 20 years held (longer for another faith) and a courthouse
         for (const s of ownedBy(st, code)) {
-            if (s.courthouse && !s.cores.includes(code) && st.day - s.heldSince >= CORING_DAYS) {
+            if (s.courthouse && !s.cores.includes(code) && st.day - s.heldSince >= coringDays(game, code, s.id)) {
                 s.cores.push(code);
                 events.push({ type: "cored", day: st.day, country: code, settlement: s.id });
             }

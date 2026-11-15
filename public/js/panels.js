@@ -3,7 +3,7 @@
 // Research tab, the panel of a selected fleet, and an army's equipment. Every control sends a command to the server,
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
-import { BUILDING_PRICE, CANNON_PRICE, CORING_DAYS, LAWS, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
+import { BUILDING_PRICE, CANNON_PRICE, LAWS, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
 import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
@@ -124,15 +124,18 @@ export function countryTab(ctx) {
 }
 
 // a settlement's compliance with its owner (mirror.js, compliance): a bar to 100%, after which a courthouse makes it core, and
-// what it pays meanwhile — its compliance of the non-core half (RULES.md §2, Conquest); nothing for one core for its owner already
+// what it pays meanwhile — its compliance of the non-core half (RULES.md §2, Conquest); nothing for one core for its owner already.
+// People of another faith take longer (religion.js), and it says so.
 export function complianceBlock(ctx, s) {
-    const c = compliance(s, ctx.state.day, CORING_DAYS);
+    const days = coringDays(ctx.game, s.owner, s.id), c = compliance(s, ctx.state.day, days);
     if (c.core) return "";
+    const faith = faithGap(ctx.game, s.owner, s.id) > 0
+        ? ctx.make("p", { class: "hint" }, `${RELIGION_NAMES[landReligion(ctx.game, s.id)]} people, of another faith: ${Math.round(days / 365)} years to comply, not 20, and likelier to rise.`) : "";
     const years = Math.floor(c.daysLeft / 365), months = Math.floor((c.daysLeft % 365) / 30.4);
     const left = c.ready ? "compliant: a courthouse makes it core" : `${years ? `${years} year${years === 1 ? "" : "s"} ` : ""}${months} month${months === 1 ? "" : "s"} to go`;
     return ctx.make("div", { class: "compliance" },
         ctx.make("div", { class: "row" }, ctx.make("span", {}, `Compliance ${c.pct}% · pays ${Math.floor(c.pct / 2)}% of a core's money`), ctx.make("span", { class: "hint" }, left)),
-        ctx.make("div", { class: "bar" }, ctx.make("i", { style: `width:${c.pct}%` })));
+        ctx.make("div", { class: "bar" }, ctx.make("i", { style: `width:${c.pct}%` })), faith);
 }
 
 // ---------- Shop ----------
@@ -149,7 +152,7 @@ export function shopTab(ctx) {
     const sel = ctx.sel?.kind === "place" ? state.settlements[ctx.sel.key] : null;
     if (sel && sel.owner === me) {
         // (no courthouse where the settlement is core already, where it would do nothing, nor before its people are compliant)
-        const ready = compliance(sel, state.day, CORING_DAYS).ready;
+        const ready = compliance(sel, state.day, coringDays(game, me, sel.id)).ready;
         // its people first: the settlement selected is the player's own, and this is the panel it opens (mirror.js, tabForSelection)
         out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}${sel.id === capital ? " ★ capital" : ""}`, make("p", {}, `${n(sel.pop)} people${sel.cores.includes(me) ? ", core" : ", not core"}.`),
             complianceBlock(ctx, sel), make("div", { class: "buttons" },
