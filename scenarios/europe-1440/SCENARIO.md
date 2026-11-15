@@ -21,7 +21,7 @@ map-base.svg and the data tables here were first made by
 
 Columns and blocks marked *generated* are rewritten by the script — edit the rest.
 
-**x = 2** (see the scenario scaling note in RULES.md)
+**x = 3** (see the scenario scaling note in RULES.md)
 
 **Army speed:** 315 map units per year — a route takes its length on the map ÷ this (RULES.md §8). One map unit
 is about 1.6 km, so an army covers about 500 km a year, as on the Mitteleuropa map.
@@ -711,7 +711,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Sea of Azov, are 17 hops (34 months).
 
-**Naval powers:** 48 countries, 1695 ships. Crossing a strait needs 20 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 20 ships there.
+**Naval powers:** 48 countries, 1695 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
@@ -722,25 +722,25 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 | ARA Aragon | 159, 160, 163, 164, 165, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea | 110 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
 | BUR Burgundy | 96, 99, 102, 103, 104 | North Sea | 95 | no — no strait in its zones |
 | VEN Venice | 181, 187, 188, 189, 190, 191, 192, 193, 194 | Ionian Sea, Adriatic Sea, Aegean Sea | 85 | yes: 190-370, 191-194, 197-376, 222-225, 371-375 |
-| SWE Sweden | 5, 8, 9, 10, 11, 12, 13 | Kattegat, Baltic Sea, Northern Baltic, Gulf of Bothnia, Gulf of Finland | 50 | yes: 8-19, 14-15 |
+| SWE Sweden | 5, 8, 9, 10, 11, 12, 13 | Kattegat, Baltic Sea, Northern Baltic, Gulf of Bothnia, Gulf of Finland | 50 | yes: 8-19, 14-15 — one zone at a time (30 ships in each) |
 | NAP Naples | 214, 215, 218, 219, 222 | Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 50 | yes: 190-370, 191-194, 222-225 |
 | MRC Morocco | 430, 431, 432, 433 | Gulf of Cádiz | 50 | yes: 136-430 |
 | TUN Tunis | 438, 439, 441, 443, 444, 445 | Western Mediterranean, Tyrrhenian Sea, Strait of Sicily | 45 | yes: 159-165, 196-229 |
 | POR Portugal | 166, 167, 171, 172 | Gulf of Cádiz, Alboran Sea | 40 | yes: 136-430 |
 | PAP Papal States | 207 | Adriatic Sea | 40 | no — no strait in its zones |
-| GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 35 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 — one zone at a time (20 ships in each) |
+| GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 35 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 — one zone at a time (30 ships in each) |
 | KAR Karaman | 391, 392 | Levantine Sea | 35 | yes: 198-391, 403-404 |
-| SAV Savoy | 125 | Ligurian Sea | 30 | yes: 196-201 |
+| SAV Savoy | 125 | Ligurian Sea | 30 | **exactly**: 196-201 |
 | NOR Norway | 1, 2, 3, 4 | Norwegian Sea, North Sea, Skagerrak | 25 | no — no strait in its zones |
-| DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 25 | yes: 14-15, 14-16, 16-17 — one zone at a time (20 ships in each) |
+| DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 25 | no — too few ships for 14-15, 14-16, 16-17 |
 | LIV Livonian Order | 20, 21, 23 | Gulf of Riga, Gulf of Finland | 25 | no — no strait in its zones |
-| TEU Teutonic Order | 24, 25, 27 | Baltic Sea | 25 | yes: 8-19 |
-| BRI Brittany | 106, 107, 108 | English Channel, Bay of Biscay | 25 | yes: 36-83 |
-| ANJ Anjou | 110 | Western Mediterranean | 25 | yes: 159-165, 196-229 |
+| TEU Teutonic Order | 24, 25, 27 | Baltic Sea | 25 | no — too few ships for 8-19 |
+| BRI Brittany | 106, 107, 108 | English Channel, Bay of Biscay | 25 | no — too few ships for 36-83 |
+| ANJ Anjou | 110 | Western Mediterranean | 25 | no — too few ships for 159-165, 196-229 |
 | SCO Scotland | 49, 51 | North Sea | 20 | no — no strait in its zones |
 | GRA Granada | 175, 176 | Alboran Sea | 20 | no — no strait in its zones |
-| FLO Florence | 201 | Ligurian Sea | 20 | **exactly**: 196-201 |
-| TLE Tlemcen | 436, 437 | Western Mediterranean | 20 | **exactly**: 159-165, 196-229 |
+| FLO Florence | 201 | Ligurian Sea | 20 | no — too few ships for 196-201 |
+| TLE Tlemcen | 436, 437 | Western Mediterranean | 20 | no — too few ships for 159-165, 196-229 |
 | STY Inner Austria | 293 | Adriatic Sea | 15 | no — no strait in its zones |
 | BYZ Byzantium | 354, 355 | Sea of Marmara, Western Black Sea | 15 | no — too few ships for 340-375, 354-372 |
 | MOR Morea | 357, 358 | Ionian Sea, Aegean Sea | 15 | no — too few ships for 190-370, 191-194, 197-376, 222-225, 371-375 |
