@@ -3,7 +3,7 @@
 // Research tab, the panel of a selected fleet, and an army's equipment. Every control sends a command to the server,
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
-import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
+import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
 import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
@@ -101,15 +101,15 @@ export function countryTab(ctx) {
     const capitals = capitalsOf(state, me);
     const regions = (game.map.scenario.formables ?? []).filter((f) => capitals.some((id) => f.settlements.includes(id)));
     if (regions.length) {
-        // held by you or a vassal of yours (RULES.md, Special coring)
-        const ours = (owner) => owner === me || (state.countries[owner]?.overlord === me && state.countries[owner]?.subjectKind === "vassal");
-        out.push(section(ctx, "Regions to proclaim", make("p", { class: "hint" }, `${capitals.length > 1 ? "One of your capitals" : "Your capital"} is in each; you and your vassals must hold all of it. Every settlement in it then becomes your core at once, your vassals' too.`),
+        out.push(section(ctx, "Regions to proclaim", make("p", { class: "hint" }, `${capitals.length > 1 ? "One of your capitals" : "Your capital"} is in each; you and your vassals must hold all of it — or what a region needs. Every settlement in it then becomes your core at once.`),
             ...regions.map((f) => {
-                const held = f.settlements.filter((id) => ours(state.settlements[id]?.owner)), core = f.settlements.filter((id) => state.settlements[id]?.cores.includes(me));
-                const ready = held.length === f.settlements.length && core.length < f.settlements.length;
+                // how far you are, by the engine's own check (regions.js): held by you or your vassals, what it needs
+                const p = proclaimCheck(game, me, f), core = f.settlements.filter((id) => state.settlements[id]?.cores.includes(me));
+                const ready = !p.error;
+                const needs = f.needs ? ` — ${f.needs.count} needed, with ${f.needs.settlements.map((id) => ctx.name(String(id))).join(" and ")}${p.named.length ? ` (${p.named.map((id) => ctx.name(String(id))).join(" and ")} not held)` : ""}` : "";
                 // a region that makes a new state says so, in its colour (SCENARIO.md, Special coring: Becomes)
                 const becomes = f.becomes && f.becomes.name !== c.name ? [" — becomes ", make("span", { class: "swatch", style: `background:${f.becomes.colour}` }), ` ${f.becomes.name}`] : [];
-                return row(ctx, make("span", {}, `${f.name}: ${held.length} of ${f.settlements.length} held${core.length === f.settlements.length ? ", all core" : ""}`, ...becomes),
+                return row(ctx, make("span", {}, `${f.name}: ${p.held} of ${f.settlements.length} held${needs}${core.length === f.settlements.length ? ", all core" : ""}`, ...becomes),
                     ready ? make("button", { class: "primary", onclick: act(ctx, () => ({ type: "proclaim", region: f.id })) }, "Proclaim") : "");
             })));
     }

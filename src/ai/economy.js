@@ -5,8 +5,8 @@
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it. A vassal of 10 years it
 // integrates when it can pay.
-import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, isVassal, lawChangeDay, coringDays,
-    manpowerOf, militaryPowerOf, neighboursOf, overlordOf, subjectsOf, capitalsOf } from "../engine/index.js";
+import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, lawChangeDay, coringDays,
+    manpowerOf, militaryPowerOf, neighboursOf, subjectsOf, capitalsOf, proclaimCheck } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
 import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
 
@@ -84,12 +84,9 @@ export function economyOrders(game, code, fl, ctx) {
         ctx.budget += amount;
     }
 
-    // regions: one a capital of its lies in, held whole by it and its vassals and not all its core yet, is proclaimed (RULES.md, Special coring)
-    const ours = (owner) => owner === code || (isVassal(st, owner) && overlordOf(st, owner) === code);
-    for (const f of game.map.scenario.formables ?? []) {
-        if (!capitals.some((id) => f.settlements.includes(id))) continue;
-        if (f.settlements.every((id) => ours(st.settlements[id]?.owner)) && f.settlements.some((id) => !st.settlements[id].cores.includes(code))) cmd("proclaim", { region: f.id });
-    }
+    // regions: one it may proclaim — a capital of its in it, held whole by it and its vassals (or as its Needs say), not all its core
+    // yet — is proclaimed (RULES.md, Special coring; the engine's own check, regions.js)
+    for (const f of game.map.scenario.formables ?? []) if (!proclaimCheck(game, code, f).error) cmd("proclaim", { region: f.id });
 
     // tax: none above 2 in peace, a little in war, more if the treasury needs it
     let tax = atWarNow ? 2.2 : 2.0;

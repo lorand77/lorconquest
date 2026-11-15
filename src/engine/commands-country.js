@@ -17,7 +17,7 @@ import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_C
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
 import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, unlockTech } from "./economy.js";
 import { capitalsOf, newFleet, isCore, ownerOf } from "./state.js";
-import { isVassal, overlordOf } from "./relations.js";
+import { proclaimCheck } from "./regions.js";
 import { coringDays } from "./religion.js";
 
 const mine = (game, cmd) => game.state.countries[cmd.country];
@@ -361,20 +361,16 @@ export const countryCommands = {
         return done();
     },
 
-    // special coring (SCENARIO.md): a capital lies in the region — in a union any of its capitals — and the country holds all of it; every settlement
-    // in it becomes core at once, with no courthouse and no wait. A region that makes a new state renames the country, and
+    // special coring (SCENARIO.md): a capital lies in the region — in a union any of its capitals — and the country holds all of it
+    // (or, for a region with Needs, what they name); every settlement in it becomes core at once, with no courthouse and no wait. A region that makes a new state renames the country, and
     // gives it the new state's code and colour on the map (RULES.md §2)
     proclaim(game, cmd) {
         const st = game.state, c = mine(game, cmd);
         const region = (game.map.scenario.formables ?? []).find((f) => f.id === cmd.region);
         if (!region) return refuse(`no region ${cmd.region}`);
-        if (!capitalsOf(st, c.code).some((id) => region.settlements.includes(id))) return refuse(c.seats?.length ? "one of your capitals must lie within the region" : "your capital must lie within the region");
-        // held by the country or one of its vassals (not a protectorate, which keeps its own diplomacy), as for winning
-        const ours = (owner) => owner === c.code || (isVassal(st, owner) && overlordOf(st, owner) === c.code);
-        const missing = region.settlements.filter((id) => !ours(st.settlements[id]?.owner));
-        if (missing.length) return refuse(`you and your vassals must control all of ${region.name}; ${missing.length} settlements are not yours or theirs`);
-        const fresh = region.settlements.filter((id) => !st.settlements[id].cores.includes(c.code));
-        if (!fresh.length) return refuse(`${region.name} is already core`);
+        // a capital in it, and all of it held — or what its Needs say — with the vassals (regions.js)
+        const { error, fresh } = proclaimCheck(game, c.code, region);
+        if (error) return refuse(error);
         for (const id of fresh) st.settlements[id].cores.push(c.code);
         const was = c.name;
         if (region.becomes) Object.assign(c, { name: region.becomes.name, formed: region.id });

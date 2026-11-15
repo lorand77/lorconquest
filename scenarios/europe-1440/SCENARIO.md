@@ -777,34 +777,43 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 You may proclaim a region when **both** are true:
 
 1. Your **capital** lies within the region — in a union, any one of its capitals (RULES.md §2).
-2. You control **100%** of its settlements.
+2. You control **100%** of its settlements — or, for a region with *Needs*, the settlements it names and that many of its
+   settlements in all (those named among them).
 
-Every settlement in the region becomes core immediately. If you later lose one and retake it, it is core again
-on capture.
+Every settlement in the region becomes core immediately — for a region with *Needs*, every one of them, held or not, so each
+you take later is core the day it falls. If you later lose one and retake it, it is core again on capture.
 
-| Formable | What it was | Settlements | Count | Becomes |
-|---|---|---|---|---|
-| **Kalmar Union** | the three northern crowns under one king | 1–19 | 19 | Kalmar Union, KAL, #4f7fc0 |
-| **Spain** | the crowns of Castile and Aragon, Navarre and Granada (1512) | 131–165, 173–176, 223–229 | 46 | Spain, SPA, #f0b030 |
-| **Great Britain** | England and Scotland under one crown (1603) | 28–45, 49–53, 83–89 | 30 | Great Britain, GBR, #b03040 |
-| **Kingdom of France** | the realm whole again: the apanages and the great fiefs under the king | 54–82, 105–118 | 43 | — |
-| **Burgundian Netherlands** | the Seventeen Provinces of 1549 | 95–104, 126–130 | 15 | — |
-| **Kingdom of Burgundy** | the realm Charles the Bold wanted, Frisia to the Alps | 90–104, 111, 112, 126–130, 270 | 23 | Kingdom of Burgundy, KBG, #c7799f |
-| **Italian League** | the five powers of the Peace of Lodi (1454) | 119, 177–194, 200–202, 204–208, 214–222 | 36 | — |
-| **Unite the Swiss** | the Confederacy with Zürich and Basel (1501) | 286–289 | 4 | — |
-| **Reunite Bavaria** | the Wittelsbach duchies, one again from 1505 | 276–279 | 4 | — |
-| **Habsburg Austria** | the hereditary lands of the house of Habsburg | 280–285, 291–293 | 9 | — |
-| **Lands of the Bohemian Crown** | Bohemia, Moravia, Silesia and Lusatia | 254–257, 265–269 | 9 | — |
-| **Kingdom of Hungary** | the crown of St Stephen | 323–338 | 16 | — |
-| **Danubian Monarchy** | the three crowns Ferdinand of Habsburg gathered in 1526 | 254–257, 265–269, 280–285, 291–293, 323–338 | 34 | Habsburg Monarchy, HAB, #c8b820 |
-| **Hanseatic League** | its leading towns, under Lübeck | 19–21, 24, 231, 232, 234, 236, 237, 247 | 10 | Hanseatic League, HSL, #a07850 |
-| **Brandenburg-Prussia** | the Hohenzollern lands of 1618 | 25, 27, 241–243, 261 | 6 | Brandenburg-Prussia, BPR, #a0a0a0 |
-| **Crown of Poland** | Poland, Masovia (1526) and Royal Prussia (1466) | 24, 26, 294–307 | 16 | — |
-| **Polish-Lithuanian Commonwealth** | Poland and Lithuania joined at Lublin (1569) | 20–27, 294–322 | 37 | Poland-Lithuania, PLC, #e05aa0 |
-| **Tsardom of Russia** | the Russian lands gathered by Moscow (1547) | 405–424 | 20 | Russia, RUS, #6fb07a |
-| **Rum** | Anatolia whole under the house of Osman (1515) | 339–355, 372–398 | 44 | — |
-| **Restored Empire** | the Empire of the Romans as the Palaiologoi dreamt it: Thrace, Macedonia and Greece | 339–341, 347, 348, 351, 352, 354–358, 369, 370 | 14 | Roman Empire, ROM, #9c6fc8 |
-| **The Maghreb** | North Africa from the Atlantic to Tripoli, as the Almohads held it | 427–445 | 19 | Maghreb, MGH, #c89050 |
+| Formable | What it was | Settlements | Count | Needs | Becomes |
+|---|---|---|---|---|---|
+| **Kalmar Union** | the three northern crowns under one king | 1–19 | 19 | — | Kalmar Union, KAL, #4f7fc0 |
+| **Spain** | the crowns of Castile and Aragon, Navarre and Granada (1512) | 131–165, 173–176, 223–229 | 46 | — | Spain, SPA, #f0b030 |
+| **Great Britain** | England and Scotland under one crown (1603) | 28–45, 49–53, 83–89 | 30 | — | Great Britain, GBR, #b03040 |
+| **Kingdom of France** | the realm whole again: the apanages and the great fiefs under the king | 54–82, 105–118 | 43 | — | — |
+| **Burgundian Netherlands** | the Seventeen Provinces of 1549 | 95–104, 126–130 | 15 | — | — |
+| **Kingdom of Burgundy** | the realm Charles the Bold wanted, Frisia to the Alps | 90–104, 111, 112, 126–130, 270 | 23 | — | Kingdom of Burgundy, KBG, #c7799f |
+| **Italian League** | the five powers of the Peace of Lodi (1454) | 119, 177–194, 200–202, 204–208, 214–222 | 36 | — | — |
+| **Unite the Swiss** | the Confederacy with Zürich and Basel (1501) | 286–289 | 4 | — | — |
+| **Reunite Bavaria** | the Wittelsbach duchies, one again from 1505 | 276–279 | 4 | — | — |
+| **Habsburg Austria** | the hereditary lands of the house of Habsburg | 280–285, 291–293 | 9 | — | — |
+| **Lands of the Bohemian Crown** | Bohemia, Moravia, Silesia and Lusatia | 254–257, 265–269 | 9 | — | — |
+| **Kingdom of Hungary** | the crown of St Stephen | 323–338 | 16 | — | — |
+| **Danubian Monarchy** | the three crowns Ferdinand of Habsburg gathered in 1526 | 254–257, 265–269, 280–285, 291–293, 323–338 | 34 | — | Habsburg Monarchy, HAB, #c8b820 |
+| **Hanseatic League** | its leading towns, under Lübeck | 19–21, 24, 231, 232, 234, 236, 237, 247 | 10 | — | Hanseatic League, HSL, #a07850 |
+| **Brandenburg-Prussia** | the Hohenzollern lands of 1618 | 25, 27, 241–243, 261 | 6 | — | Brandenburg-Prussia, BPR, #a0a0a0 |
+| **Crown of Poland** | Poland, Masovia (1526) and Royal Prussia (1466) | 24, 26, 294–307 | 16 | — | — |
+| **Polish-Lithuanian Commonwealth** | Poland and Lithuania joined at Lublin (1569) | 20–27, 294–322 | 37 | — | Poland-Lithuania, PLC, #e05aa0 |
+| **Tsardom of Russia** | the Russian lands gathered by Moscow (1547) | 405–424 | 20 | — | Russia, RUS, #6fb07a |
+| **Rum** | Anatolia whole under the house of Osman (1515) | 339–355, 372–398 | 44 | — | — |
+| **Restored Empire** | the Empire of the Romans as the Palaiologoi dreamt it: Thrace, Macedonia and Greece | 339–341, 347, 348, 351, 352, 354–358, 369, 370 | 14 | — | Eastern Roman Empire, ERE, #7a5c9e |
+| **The Maghreb** | North Africa from the Atlantic to Tripoli, as the Almohads held it | 427–445 | 19 | — | Maghreb, MGH, #c89050 |
+| **Electorate of Saxony** | the Wettin lands of the electoral line, with Lusatia (1635) | 250–254 | 5 | — | — |
+| **Electoral Rhine** | the four electors on the Rhine: Cologne, Mainz, Trier and the Palatine | 247, 258, 259, 263 | 4 | — | — |
+| **Westphalia** | the Lower Rhine and Westphalia: Cleves-Mark, Münster, Jülich-Berg | 244–246 | 3 | — | — |
+| **Swabian League** | the league of 1488: Württemberg, Baden and the free cities | 272–275 | 4 | — | — |
+| **Franconian Circle** | the bishops, margraves and free cities of Franconia | 260–262 | 3 | — | — |
+| **Lower Saxon Circle** | the Hanse cities, Holstein, Mecklenburg, Brunswick and Magdeburg | 230–234, 237–240 | 9 | — | — |
+| **Germany** | the German lands of the Empire as one realm | 230–253, 258–264, 271–279, 285 | 41 | — | Germany, GER, #6e7f99 |
+| **Roman Empire** | the Empire of Trajan, from Hadrian's Wall to the Euphrates — as far as this map goes | 28–41, 54–103, 105–128, 130–229, 247, 258, 259, 263, 270–293, 323, 325–327, 329, 332–336, 339–363, 369–398, 402–404, 427, 428, 430, 431, 435–445 | 299 | Rome, Constantinople and 100 in all | Roman Empire, ROM, #9c6fc8 |
 
 ## Sea zones
 

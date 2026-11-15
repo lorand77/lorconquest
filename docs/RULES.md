@@ -115,7 +115,10 @@ only through growth or **Buy people**.
 years** (longer for people of another faith: Religion, below). Only then may you buy it a **Courthouse**, and it becomes core at once. Special coring (see
 [Special coring](../scenarios/mitteleuropa/SCENARIO.md#special-coring)) waives both. Some regions make a **new state** when
 proclaimed (*Becomes* in the scenario): the country takes its name, and its own code and colour on the map, for the rest of the
-game — the same country, with all it had. Proclaiming another such region later renames it again; one without changes nothing.
+game — the same country, with all it had. Proclaiming another such region later renames it again; one without changes nothing. A region may **need only part of
+itself** (*Needs* in the scenario: the Roman Empire of Europe 1440 needs Rome, Constantinople and 100 of its 299 settlements): proclaimed
+with that part, **every** settlement of it becomes your core, held or not — each you take later is core the day it falls, and pays
+in full.
 
 **Conquest.** A captured settlement is held from the day it falls: the 20 years start again, its
 courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It pays as its people

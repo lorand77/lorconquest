@@ -19,4 +19,5 @@ export { positionOf, progress, routeFor } from "./movement.js";
 export { START_YEAR, YEAR_DAYS, MONTH_NAMES, dateOf, dayOf, formatDate, longDate, parseDate } from "./calendar.js";
 export { describeEvent, eventCountries, placeName } from "./text.js";
 export { buildMap, legKey } from "./map.js";
+export { proclaimCheck } from "./regions.js";
 export { RELIGIONS, RELIGION_NAMES, coringDays, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, religionOf } from "./religion.js";

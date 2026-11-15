@@ -241,7 +241,9 @@ const ZONES = [];                                     // sea zones: name, and a 
 }
 
 // special coring: regions a country may proclaim (SCENARIO.md, Special coring). A region's settlements are listed
-// as numbers and ranges (32, 33, 79–88), and may start from another region by name (Modern Poland + 17, 18).
+// as numbers and ranges (32, 33, 79–88), and may start from another region by name (Modern Poland + 17, 18). A "Needs"
+// column, if there, lets a region be proclaimed with part of it: "Rome, Constantinople and 100 in all" — the settlements it
+// names (by name or number) and how many of its settlements in all, those named among them; "—" or nothing is all of them.
 const FORMABLES = [];
 {
     const [, rows] = table("Special coring");
@@ -268,7 +270,20 @@ const FORMABLES = [];
             if (!title || !/^[A-Z]{3}$/.test(code ?? "") || !/^#[0-9a-f]{6}$/.test(colour ?? "")) err(`Special coring line ${r._line}: Becomes must be like "Germany, GER, #e0b040"`);
             else becomes = { name: title, code, colour };
         }
-        FORMABLES.push({ id: slug(name), name, settlements: [...ids].sort(num), ...(becomes ? { becomes } : {}) });
+        let needs;
+        if (r.Needs && r.Needs !== "—") {
+            const m = /^(.*?)\s*(?:,\s*|\band\s+)?(\d+) in all$/.exec(r.Needs.trim());
+            if (!m) err(`Special coring line ${r._line}: Needs must be like "Rome, Constantinople and 100 in all"`);
+            else {
+                const byName = (t) => [...S].find(([, x]) => x.name === t)?.[0];
+                const named = m[1].split(/,|\band\b/).map((t) => t.trim()).filter(Boolean).map((t) => (/^\d+$/.test(t) ? Number(t) : byName(t)));
+                const count = Number(m[2]);
+                if (named.some((id) => id === undefined || !ids.has(id))) err(`Special coring line ${r._line}: Needs names a settlement that is not in ${name}`);
+                if (count < named.length || count > ids.size) err(`Special coring line ${r._line}: Needs ${count} in all, of ${ids.size}, with ${named.length} named`);
+                needs = { settlements: named.filter((id) => id !== undefined).sort(num), count };
+            }
+        }
+        FORMABLES.push({ id: slug(name), name, settlements: [...ids].sort(num), ...(needs ? { needs } : {}), ...(becomes ? { becomes } : {}) });
     }
     if (new Set(FORMABLES.map((f) => f.id)).size !== FORMABLES.length) err("Special coring: two regions have the same name");
 }
@@ -284,7 +299,8 @@ const VICTORY = {}, EMPIRE = {};
     if (y) VICTORY.endYear = Number(y[1]); else err("SCENARIO.md: no 'End date: YEAR' under Victory");
     if (h) EMPIRE.needed = Number(h[1]);                  // a scenario without it has no plain Empire proposal
     // a region held whole by one as large as victory would already have won: its coring could never be worth anything
-    for (const f of FORMABLES) if (w && f.settlements.length >= VICTORY.settlements - 1) err(`Special coring: ${f.name} has ${f.settlements.length} settlements; victory is ${VICTORY.settlements}, so it could only be proclaimed as the game is won`);
+    // (a region with Needs: the number it needs)
+    for (const f of FORMABLES) if (w && (f.needs?.count ?? f.settlements.length) >= VICTORY.settlements - 1) err(`Special coring: ${f.name} needs ${f.needs?.count ?? f.settlements.length} settlements; victory is ${VICTORY.settlements}, so it could only be proclaimed as the game is won`);
 }
 
 // how the game opens (RULES.md §10), if the scenario says: "### Wars" and "### Agreements" tables under "## The
