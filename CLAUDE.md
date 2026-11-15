@@ -5,7 +5,11 @@ running 45 countries, one game day every 0.1 s. Node 24; Express and Socket.IO a
 dependencies.
 
 - [docs/RULES.md](docs/RULES.md) — the rules. The engine implements them; where they are silent,
-  decide, and write the reading into RULES.md in the same commit.
+  decide, and write the reading into RULES.md in the same commit. The site's Rules page shows this very file, a section a tab.
+- [docs/STARTER.md](docs/STARTER.md) — the rules for a first game, one page, the Rules page's *Start here*. A rule change that makes
+  it untrue changes it in the same commit. The site's Rules page shows this very file, a section a tab.
+- [docs/STARTER.md](docs/STARTER.md) — the rules for a first game, one page, the Rules page's *Start here*. A rule change that makes
+  it untrue changes it in the same commit.
 - [scenarios/mitteleuropa/SCENARIO.md](scenarios/mitteleuropa/SCENARIO.md) and its `scenario.json` — the default scenario, the map.
   scenario.json and map.svg are generated: edit SCENARIO.md or map-base.svg and run `node tools/map.js`.
 - [docs/design.md](docs/design.md) — how the software works and why. Read it before changing
@@ -75,7 +79,11 @@ dependencies.
   Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node),
   `profile.html` (`js/profile.js`: Stats and My Games) and `customize.html` (`js/customize.js`: the colours), which with the leaderboard
   have LorCiv's shell (`js/shell.js`: a top bar and a rail of sections on the left), and
-  `login.html` the sign-in page (`js/login.js`, `js/auth.js`); `replay.html` plays a finished game over (`js/replay.js`, with
+  `login.html` the sign-in page (`js/login.js`, `js/auth.js`); `rules.html` the Rules page (`js/rules.js`: Start here, the Rules and
+  the Scenarios, from `/docs/STARTER.md`, `/docs/RULES.md` and each scenario.json, with `js/markdown.js`, `js/ruleslogic.js` and
+  `js/scenarioinfo.js`, the pure parts, tested in Node; a scenario's *About* is a section of its SCENARIO.md); `rules.html` the Rules page (`js/rules.js`: Start here, the Rules and
+  the Scenarios, from `/docs/STARTER.md`, `/docs/RULES.md` and each scenario.json, with `js/markdown.js`, `js/ruleslogic.js` and
+  `js/scenarioinfo.js`, the pure parts, tested in Node; a scenario's *About* is a section of its SCENARIO.md); `replay.html` plays a finished game over (`js/replay.js`, with
   `js/replayer.js` — the pure part, tested against real games — and `js/mapdraw.js`, which the game page shares; `js/mapcanvas.js` paints the map onto a canvas for a picture of it and a timelapse video); `leaderboard.html`;
   `terms.html` and `privacy.html`, which must stay true of what the code does. `js/theme.js` (a plain script, not a module, in every
   page's head) applies the dark or light colours and keeps the choice in local storage; `js/notices.js` keeps which notices

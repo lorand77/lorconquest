@@ -24,6 +24,12 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 ![Map](map.svg)
 
+## About
+
+*For players: shown on the Rules page with the rest of this scenario's facts.*
+
+Central Europe from the North Sea to the Carpathians and from the Alps to the Baltic, cut into 45 countries of much the same size — regions and cities more than the states of 1440 — so that any of them can win. The Holy Roman Empire covers its middle; Scandinavia, Poland and Hungary lie around it.
+
 ## Countries
 
 *Code, Country and Capital are data (Capital is a settlement ID; the script adds the name); the other columns are generated. A country that owns a city must have one as its capital (RULES.md §2).*

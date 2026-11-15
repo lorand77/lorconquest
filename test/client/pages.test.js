@@ -101,13 +101,13 @@ test("My Profile's stats: games played, going, finished and won, alone or with p
         scenarios: [], alone: 0, withOthers: 0, firsts: 0, averagePlace: null });
 });
 
-test("every signed-in page but the game and the replay has the shell; the rail lists Play, My Profile, Stats, My Games, Customize, Leaderboard", () => {
-    for (const [html, script] of [["index.html", "lobby.js"], ["profile.html", "profile.js"], ["customize.html", "customize.js"], ["leaderboard.html", "leaderboard.js"]]) {
+test("every signed-in page but the game and the replay has the shell; the rail lists Play, My Profile, Stats, My Games, Customize, Leaderboard, Rules", () => {
+    for (const [html, script] of [["index.html", "lobby.js"], ["profile.html", "profile.js"], ["customize.html", "customize.js"], ["leaderboard.html", "leaderboard.js"], ["rules.html", "rules.js"]]) {
         assert.match(read(html), /<body class="shell">/, `${html} reserves the room for the shell`);
         assert.match(read(`js/${script}`), /mountShell\(/, `${script} builds the shell`);
     }
     const shell = read("js/shell.js");
-    assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Achievements", "Friends", "Customize", "Leaderboard"]);
+    assert.deepEqual([...shell.matchAll(/label: "([^"]+)"/g)].map((m) => m[1]), ["Play", "My Profile", "Stats", "My Games", "Achievements", "Friends", "Customize", "Leaderboard", "Rules"]);
 });
 
 test("the leaderboard sorts by any column, either way; each row keeps its rank, and no average place comes last", () => {

@@ -46,6 +46,16 @@ test("the pages come with every module their script needs to preload, so the bro
         assert.doesNotMatch(lobby, /href="\/engine\/index\.js"/);
         assert.doesNotMatch(await (await fetch(server.baseUrl + "/terms.html")).text(), /modulepreload/);
         assert.equal((await fetch(server.baseUrl + "/nothing.html")).status, 404);
+        // the Rules page, and the two files of docs/ it reads — no others
+        const rules = await (await fetch(server.baseUrl + "/rules.html")).text();
+        for (const u of ["/js/rules.js", "/js/markdown.js", "/js/scenarioinfo.js", "/engine/index.js"]) assert.match(rules, new RegExp(`modulepreload" href="${u.replace(/\./g, "\\.")}"`), u);
+        for (const doc of ["RULES.md", "STARTER.md"]) {
+            const r = await fetch(server.baseUrl + "/docs/" + doc);
+            assert.equal(r.status, 200, doc);
+            assert.match(r.headers.get("content-type"), /markdown/);
+        }
+        assert.match(await (await fetch(server.baseUrl + "/docs/STARTER.md")).text(), /^# Start here/);
+        for (const other of ["design.md", "setup.md", "..%2Fpackage.json"]) assert.equal((await fetch(server.baseUrl + "/docs/" + other)).status, 404, other);
     } finally {
         await server.close();
     }

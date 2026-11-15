@@ -106,6 +106,11 @@ export function createApp({
         if (!s || !["map.svg", "scenario.json"].includes(req.params.file)) return res.status(404).end();
         res.sendFile(path.join(s.dir, req.params.file));
     });
+    // the rules and the short version for starters, as written, for the Rules page (public/js/rules.js reads the Markdown)
+    app.get("/docs/:file", (req, res) => {
+        if (!["RULES.md", "STARTER.md"].includes(req.params.file)) return res.status(404).end();
+        res.set("Cache-Control", "no-cache").type("text/markdown; charset=utf-8").sendFile(path.join(root, "docs", req.params.file));
+    });
     // the pages, each with every module its script needs to load at once (preload.js); then the rest of public/
     app.use(preloadPages(root, production));
     app.use(express.static(path.join(root, "public"), fresh));

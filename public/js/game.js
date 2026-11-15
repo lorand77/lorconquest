@@ -104,6 +104,8 @@ async function start() {
     $("zoom-out").addEventListener("click", () => map.zoom(1.4));
     $("snapshot").addEventListener("click", snapshot);
     $("notice-settings").addEventListener("click", noticeMenu);
+    // the Rules page (rules.js), open at this game's scenario, in a tab of its own so the game goes on
+    $("rules").addEventListener("click", () => window.open(`/rules.html#scenario-${encodeURIComponent(joined.scenario)}`, "_blank", "noopener"));
     drawHelp();
     $("keys").addEventListener("click", () => { $("help").hidden = false; });
     $("help-close").addEventListener("click", () => { $("help").hidden = true; });

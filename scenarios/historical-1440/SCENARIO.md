@@ -33,6 +33,12 @@ is about 1.2 km, so an army covers about 500 km a year, as on the Mitteleuropa m
 
 ![Map](map.svg)
 
+## About
+
+*For players: shown on the Rules page with the rest of this scenario's facts.*
+
+Central Europe as it stood in 1440: the Holy Roman Empire's patchwork of electors, dukes, bishops and free cities between France and Poland, Burgundy rising in the Low Countries, Hungary in civil war, Bohemia Hussite and between kings. 74 countries, as unequal as they were — some a single town.
+
 ## Countries
 
 *Code, Country and Capital are data (Capital is a settlement ID; the script adds the name); the other columns are generated. A country that owns a city must have one as its capital (RULES.md §2).*

@@ -32,6 +32,12 @@ is about 1.6 km, so an army covers about 500 km a year, as on the Mitteleuropa m
 
 ![Map](map.svg)
 
+## About
+
+*For players: shown on the Rules page with the rest of this scenario's facts.*
+
+All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from the North Cape to the Maghreb: 118 countries as they were. France and England are still at war, the Ottomans hold land on both sides of the straits, Granada is the last Muslim kingdom in Iberia, and the Golden Horde has broken up. Here faith matters: Catholic, Orthodox, Hussite and Sunni.
+
 ## Countries
 
 *Code, Country and Capital are data (Capital is a settlement ID; the script adds the name); the other columns are generated. A country that owns a city must have one as its capital (RULES.md §2).*

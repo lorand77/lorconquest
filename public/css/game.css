@@ -192,6 +192,29 @@ body.shell > .page { max-width: 860px; margin: 0 auto; }
 .page h1 { margin: 0.2em 0 0.6em; font-size: 24px; }
 .page-section { margin: 0 0 1.2em; padding: 12px 16px; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
 .page-section h2 { margin: 0 0 10px; font-size: 15px; }
+/* The Rules page (rules.js): three tabs, a list of sections beside the text, the rules as Markdown (markdown.js) */
+body.shell > .page.rules-page { max-width: 1100px; }
+.doc-tabs { display: flex; gap: 6px; margin: 0 0 14px; }
+.doc-tabs a { padding: 6px 14px; border-radius: 4px; border: 1px solid var(--btn-border); background: var(--btn); color: var(--text); text-decoration: none; font-size: 14px; }
+.doc-tabs a.current { background: var(--current); border-color: var(--current); color: var(--current-text); }
+.doc-body { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 18px; align-items: start; }
+.doc-nav { position: sticky; top: calc(var(--topbar-h) + 12px); display: flex; flex-direction: column; gap: 2px; }
+.doc-nav a { padding: 5px 10px; border-radius: 4px; color: var(--text); text-decoration: none; font-size: 13px; }
+.doc-nav a:hover { background: var(--btn-hover); }
+.doc-nav a.current { background: var(--surface-2); color: var(--gold); font-weight: 600; }
+.doc-nav[hidden] { display: none; }
+.doc-nav[hidden] + .doc { grid-column: 1 / -1; max-width: 760px; }
+.doc { line-height: 1.55; font-size: 14px; padding: 4px 20px 16px; background: var(--side-bg); border: 1px solid var(--border); border-radius: 6px; }
+.doc h1, .doc h2 { color: var(--gold); margin: 0.9em 0 0.4em; }
+.doc h1 { font-size: 22px; } .doc h2 { font-size: 18px; } .doc h3 { font-size: 15px; margin: 1.1em 0 0.3em; }
+.doc table { border-collapse: collapse; margin: 0.6em 0; font-size: 13px; }
+.doc th, .doc td { text-align: left; padding: 4px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.doc th { color: var(--gold); }
+.doc pre { background: var(--surface-2); padding: 8px 12px; border-radius: 4px; overflow-x: auto; font-size: 12.5px; }
+.doc code { font-size: 0.92em; }
+.doc blockquote { margin: 0.8em 0; padding: 2px 14px; border-left: 3px solid var(--gold); background: var(--surface-2); }
+.doc hr { border: none; border-top: 1px solid var(--line); margin: 1.2em 0; }
+@media (max-width: 760px) { .doc-body { grid-template-columns: minmax(0, 1fr); } .doc-nav { position: static; flex-direction: row; flex-wrap: wrap; } }
 .profile-tabs { display: flex; gap: 6px; margin: 0 0 12px; }
 .profile-tabs a { padding: 6px 12px; border-radius: 4px; border: 1px solid var(--btn-border); background: var(--btn); color: var(--text); text-decoration: none; font-size: 13px; }
 .profile-tabs a.current { background: var(--current); border-color: var(--current); color: var(--current-text); }
