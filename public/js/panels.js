@@ -3,7 +3,7 @@
 // Research tab, the panel of a selected fleet, and an army's equipment. Every control sends a command to the server,
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
-import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
+import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
 import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
@@ -112,6 +112,18 @@ export function countryTab(ctx) {
                 return row(ctx, make("span", {}, `${f.name}: ${p.held} of ${f.settlements.length} held${needs}${core.length === f.settlements.length ? ", all core" : ""}`, ...becomes),
                     ready ? make("button", { class: "primary", onclick: act(ctx, () => ({ type: "proclaim", region: f.id })) }, "Proclaim") : "");
             })));
+    }
+
+    // faith, on a map with religions (RULES.md §2, Religion): yours, and from 1517 the Reformation for a Catholic or Hussite
+    if (c.religion) {
+        const why = reformationError(game, me), may = ["catholic", "hussite"].includes(c.religion);
+        const church = e.settlementMoney;
+        out.push(section(ctx, "Faith", make("p", {}, `You are ${RELIGION_NAMES[c.religion]}.${c.reformed !== null && c.reformed !== undefined ? ` You adopted the Reformation ${longDate(c.reformed)}.` : ""}`),
+            may && why ? make("p", { class: "hint" }, `From 31 October 1517 you may adopt the Reformation.`) : "",
+            !why ? row(ctx, make("span", { class: "hint" }, "Turn Protestant: your core land of your faith with you, the church lands' wealth, and Catholics' enmity."),
+                make("button", { class: "danger", onclick: async () => {
+                    if (confirm(`Adopt the Reformation? Your country turns Protestant, and so do your core settlements of your faith. The church lands bring ${money(church)} at once. Your faith then counts −25 in Catholic countries' opinion of you and +15 in Protestants', and for 5 years peasants are likelier to rise (+5% a year). There is no going back.`)) { await ctx.send({ type: "adoptReformation" }); ctx.redraw(); }
+                } }, "Adopt the Reformation…")) : ""));
     }
 
     // a lost capital — the first, then in a union each joined country's in turn (setCapital names them in that order)

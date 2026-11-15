@@ -27,7 +27,8 @@
    "ships": 25,
    "hre": "none",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "SWE",
@@ -50,7 +51,8 @@
    "ships": 50,
    "hre": "none",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "DEN",
@@ -69,7 +71,8 @@
    "ships": 25,
    "hre": "none",
    "character": "conqueror",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "GOT",
@@ -102,7 +105,8 @@
    "ships": 25,
    "hre": "none",
    "character": "zealot",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "TEU",
@@ -120,7 +124,8 @@
    "ships": 25,
    "hre": "none",
    "character": "zealot",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "ENG",
@@ -159,7 +164,8 @@
    "ships": 150,
    "hre": "none",
    "character": "conqueror",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "SCO",
@@ -177,7 +183,8 @@
    "ships": 20,
    "hre": "none",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "ISL",
@@ -393,7 +400,8 @@
    "ships": 0,
    "hre": "none",
    "character": "diplomat",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "SAV",
@@ -443,7 +451,8 @@
    "ships": 0,
    "hre": "all",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "GEL",
@@ -458,7 +467,8 @@
    "ships": 0,
    "hre": "all",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "FRI",
@@ -473,7 +483,8 @@
    "ships": 5,
    "hre": "all",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "LUX",
@@ -827,7 +838,8 @@
    "ships": 5,
    "hre": "none",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "LUB",
@@ -842,7 +854,8 @@
    "ships": 10,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "HAM",
@@ -857,7 +870,8 @@
    "ships": 10,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "MEC",
@@ -873,7 +887,8 @@
    "ships": 10,
    "hre": "all",
    "character": "diplomat",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "POM",
@@ -889,7 +904,8 @@
    "ships": 10,
    "hre": "all",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "BRE",
@@ -904,7 +920,8 @@
    "ships": 5,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "BRU",
@@ -920,7 +937,8 @@
    "ships": 0,
    "hre": "all",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "MAG",
@@ -935,7 +953,8 @@
    "ships": 0,
    "hre": "all",
    "character": "zealot",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "BRA",
@@ -952,7 +971,8 @@
    "ships": 0,
    "hre": "all",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "CLE",
@@ -1028,7 +1048,8 @@
    "ships": 0,
    "hre": "all",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "SAX",
@@ -1046,7 +1067,8 @@
    "ships": 0,
    "hre": "all",
    "character": "diplomat",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "LUS",
@@ -1061,7 +1083,8 @@
    "ships": 0,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "SIL",
@@ -1077,7 +1100,8 @@
    "ships": 0,
    "hre": "all",
    "character": "defender",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "OPP",
@@ -1152,7 +1176,8 @@
    "ships": 0,
    "hre": "all",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "NUR",
@@ -1167,7 +1192,8 @@
    "ships": 0,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "PAL",
@@ -1183,7 +1209,8 @@
    "ships": 0,
    "hre": "all",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "BOH",
@@ -1202,7 +1229,8 @@
    "ships": 0,
    "hre": "all",
    "character": "zealot",
-   "religion": "hussite"
+   "religion": "hussite",
+   "leans": true
   },
   {
    "code": "MET",
@@ -1232,7 +1260,8 @@
    "ships": 0,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "BAD",
@@ -1262,7 +1291,8 @@
    "ships": 0,
    "hre": "all",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "ULM",
@@ -1277,7 +1307,8 @@
    "ships": 0,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "AUG",
@@ -1401,7 +1432,8 @@
    "ships": 0,
    "hre": "all",
    "character": "merchant",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "ZUR",
@@ -1416,7 +1448,8 @@
    "ships": 0,
    "hre": "all",
    "character": "opportunist",
-   "religion": "catholic"
+   "religion": "catholic",
+   "leans": true
   },
   {
    "code": "SWI",

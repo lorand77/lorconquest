@@ -13,7 +13,8 @@ import { NEAR_VICTORY, YEAR_DAYS, agreementAnswer, bordering, need, hasAgreement
     peaceAnswer, scores, sizeOf, subjectChance, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
 import { agreementsBetween, alliesOf, friendly } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
-import { dice, enemiesOf, hash, leaderFor, ownSettlements, reachFrom, rivalsOf, stagingSettlement, thinksOn } from "./util.js";
+import { dice, enemiesOf, hash, leaderFor, ownSettlements, reachFrom, restlessOf, rivalsOf, stagingSettlement, thinksOn } from "./util.js";
+import { faithOpinion } from "../engine/religion.js";
 
 // the most subjects a computer country asks for on demand (it may have more, from its peace terms): 3, one more for every 10
 // settlements it counts toward victory (its subjects' too), and two more for a diplomat, which gains by demand more than by war
@@ -110,6 +111,14 @@ function bound(st, code, t) {
         || agreementsBetween(st, code, t).some((x) => ["pact", "truce", "defensive", "military"].includes(x.kind));
 }
 
+// a war's odds and worth beyond strength: a country restless after a long peace (util.js, restlessOf) takes it at up to a quarter
+// worse odds; a neighbour of a faith ours regards badly (RULES.md §2, Religion) is worth up to half again — Catholic and Sunni,
+// Catholic and Protestant — and a zealot takes it at a sixth worse odds. Nothing of faith on a map without religions
+function spur(game, code, t, fl) {
+    const regard = faithOpinion(game, code, t);
+    return { odds: (1 - 0.25 * restlessOf(game, code)) * (fl.character === "zealot" && regard <= -20 ? 0.85 : 1), worth: 1 + Math.max(0, -regard) / 50 };
+}
+
 // a neighbour worth attacking: weak enough, with nothing binding us to it, giving the most land next to ours
 export function bestTarget(game, code, fl) {
     const st = game.state, own = new Set(ownSettlements(st, code).map((s) => String(s.id))), rivals = rivalsOf(game, code);
@@ -119,11 +128,11 @@ export function bestTarget(game, code, fl) {
     let best = null;
     for (const t of neighboursOf(game, code)) {
         if (!st.countries[t] || bound(st, code, t)) continue;
-        const { ours, theirs } = sideOf(game, code, t);
-        if (ours < (fl.defending ? 3 : t === leader ? 1.1 - 0.3 * fl.aggression : 1.5 - 0.4 * fl.aggression) * Math.max(theirs, 1)) continue;
+        const { ours, theirs } = sideOf(game, code, t), s = spur(game, code, t, fl);
+        if (ours < (fl.defending ? 3 : (t === leader ? 1.1 - 0.3 * fl.aggression : 1.5 - 0.4 * fl.aggression) * s.odds) * Math.max(theirs, 1)) continue;
         const gain = ownSettlements(st, t).filter((s) => game.map.adj.get(String(s.id)).some((e) => own.has(e.to))).reduce((n, s) => n + worth(s), 0);
         // how much weaker it is counts up to three times: past that, every target is crushed alike, and the land and the grudge decide
-        const score = gain * (ours / Math.max(theirs, 1)) * (rivals.has(t) ? 1.5 : 1) * (t === leader ? 2 : 1);
+        const score = gain * (ours / Math.max(theirs, 1)) * (rivals.has(t) ? 1.5 : 1) * (t === leader ? 2 : 1) * s.worth;
         if (gain > 0 && (!best || score > best.score || (score === best.score && t < best.target))) best = { target: t, score };
     }
     return best;
@@ -190,14 +199,14 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     const calm = foes.length < limit && c.treasury > 0 && (c.warmonger ?? 0) < 12 + 30 * fl.aggression;
     if (plan) {
         const target = st.countries[plan.target], { ours, theirs } = sideOf(game, code, plan.target);
-        const odds = fl.defending ? 2.5 : plan.target === leaderFor(game, code) ? 1.0 - 0.3 * fl.aggression : 1.3 - 0.4 * fl.aggression;
+        const odds = fl.defending ? 2.5 : (plan.target === leaderFor(game, code) ? 1.0 - 0.3 * fl.aggression : 1.3 - 0.4 * fl.aggression) * spur(game, code, plan.target, fl).odds;
         // and nothing binds us to it now: it may have signed a pact or an alliance with us while we mustered (the engine answers
         // for the computer), and declaring through it would end every alliance we have
         const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && !bound(st, code, plan.target) && ours >= odds * Math.max(theirs, 1);
         if (!valid) plans.delete(code);
         // a front-runner declares at once: no 40 days of preparing
         else if (day - plan.since >= (fl.racing ? 0 : 40)) { plans.delete(code); cmd("declareWar", { target: plan.target }); }
-    } else if (calm && (fl.racing || r() < 0.03 + 0.1 * fl.aggression)) {           // a front-runner looks for its next war at every think
+    } else if (calm && (fl.racing || r() < 0.03 + 0.1 * fl.aggression + 0.07 * restlessOf(game, code))) {           // a front-runner looks for its next war at every think; a restless one more often
         const t = bestTarget(game, code, fl);
         if (t) plans.set(code, { target: t.target, since: day });
     }

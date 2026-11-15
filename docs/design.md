@@ -297,6 +297,13 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   the end year (`util.js`, `racing`) — plays as if 0.3 more aggressive (wars sooner, two at once if warlike, fewer pacts, more
   warmonger borne) and asks up to 9 towns in a peace, not 6; it looks for its next war at every think and declares without the
   40 days of preparing, and winning a war it fights on three years before it offers terms.
+- **Restless after a long peace, zealous against another faith:** a country at peace grows restless from its tenth year without a
+  war to its fortieth (`util.js`, `restlessOf`, worked out from the game's memory of each pair's last war): it looks for a war
+  up to 0.07 more often a think and takes it at up to a quarter worse odds — so the long peaces of a settled map end. On a map
+  with religions a neighbour of a faith it regards badly is worth up to half again as a target (Catholic and Sunni, Catholic and
+  Protestant), and a zealot takes it at a sixth worse odds (`diplomacy.js`, `spur`). From 1517 a Catholic or Hussite country no
+  person plays may adopt the Reformation — 10% a year where its scenario says it leans to it, 1% elsewhere, more as its
+  neighbours do (`economy.js`).
 - **Raiding parties:** a host of 3,000 men or more splits off 600 for an undefended enemy town within 60 days it is not going
   to itself, up to 3 at a time; an army under 800 men is a raiding party, never merged into a host, going only for undefended
   towns and waiting at the staging settlement when none is left (`war.js`).

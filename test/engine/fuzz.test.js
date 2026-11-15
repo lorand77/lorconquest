@@ -168,6 +168,7 @@ function randomCommand(game, r) {
         case "disband": return { ...a, army: army?.id, men: { [w]: int(0, 400) }, cannons: int(0, 1), crew: int(0, 20) };
         case "dismissMercenaries": return { ...a, army: army?.id, n: int(1, 300) };
         case "proclaim": return { ...a, region: pick(game.map.scenario.formables).id };
+        case "adoptReformation": return a;                                            // (refused on a map without religions)
         case "sail": return r() < 0.3 ? { ...a, fleet: fleet?.id, port: place?.id } : { ...a, fleet: fleet?.id, zone: pick(zones) };
         case "blockade": return { ...a, fleet: fleet?.id, port: pick(Object.values(st.settlements)).id };
         case "patrol": case "hold": return { ...a, fleet: fleet?.id };
@@ -214,5 +215,5 @@ test("random play: 45 countries giving every kind of command keep the state sane
     const never = COMMAND_TYPES.filter((t) => !accepted.has(t));
     // (joinWar needs a protectorate at war, which random play seldom makes: subjects.test.js covers it; a union two people at
     // peace with the same enemies: union.test.js)
-    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire", "integrate", "joinWar", "proposeUnion"].includes(t)), [], "never accepted");
+    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire", "integrate", "joinWar", "proposeUnion", "adoptReformation"].includes(t)), [], "never accepted");
 });

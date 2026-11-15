@@ -75,6 +75,7 @@ export function describeEvent(map, e) {
         case "broke": return `${e.country} breaks an agreement: its alliances end, and the world remembers`;
         case "peace": return `${e.country} and ${e.with} make peace${[e.terms?.take?.length && `, ${e.country} takes ${e.terms.take.map(town).join(", ")}`, e.terms?.give?.length && `, ${e.country} gives ${e.terms.give.map(town).join(", ")}`, e.terms?.money && `, ${fmt(Math.abs(e.terms.money))} paid`, e.terms?.makeSubject && `, ${e.with} becomes its ${e.terms.makeSubject}`, e.terms?.becomeSubject && `, ${e.country} becomes its ${e.terms.becomeSubject}`].filter(Boolean).join("")}`;
         case "subject": return `${e.country} becomes a ${e.kind} of ${e.overlord}`;
+        case "reformation": return `${e.country} adopts the Reformation: ${e.settlements} of its settlements turn Protestant, and the church lands bring ${fmt(e.money)}`;
         case "union": return `${e.country} and ${e.with} unite: ${e.with} becomes part of ${e.country}${e.name ? `, now ${e.name},` : ""} its ${e.settlements} settlements with it, and its ruler rules with ${e.country}'s`;
         case "integrated": return `${e.country} integrates its vassal ${e.subject}: ${e.settlements} settlements become its own`;
         case "freedom": return `${e.country} breaks free of ${e.overlord}`;
@@ -100,6 +101,7 @@ export function eventCountries(e) {
         case "subject": case "freedom": return [e.country, e.overlord];
         case "integrated": return [e.country, e.subject];
         case "union": return [e.country, e.with];
+        case "reformation": return [e.country];
         case "eliminated": return [e.country];
         case "league": return e.members;
         case "surrender": return [e.owner, e.by];

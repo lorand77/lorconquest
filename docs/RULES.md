@@ -79,7 +79,7 @@ not change). Taxing above 2 risks a **peasant uprising** (§11), rolled each yea
 **average tax over the past year** — lowering it just before the roll does not help:
 ```
 uprising chance per year = (average tax − 2)² × 25%   + the law's unrest (§9): +5% Mass levy, +15% Scrape the barrel
-                           + the unrest of faith (Religion, below): up to +10%
+                           + the unrest of faith (Religion, below): up to +10%, and +5% for 5 years after the Reformation
 ```
 
 | Tax | Settlement money | Uprising chance per year |
@@ -127,16 +127,24 @@ of it once a Courthouse makes it core. Your own core retaken pays in full at onc
 keeps its walls, library, workshop and market. It **stays core for every country that had it core**,
 so retaking it makes it core again at once.
 
-**Religion.** Each country has a faith — Catholic, Orthodox, Hussite or Sunni — given by its scenario
+**Religion.** Each country has a faith — Catholic, Orthodox, Hussite or Sunni, and from 1517 Protestant — given by its scenario
 ([Religions](../scenarios/europe-1440/SCENARIO.md#religions)); a settlement's people have the faith of the country that held it in 1440.
-Faiths never change in a game. Two faiths regard each other by one number, which the computer adds to its opinion (§10):
+Two faiths regard each other by one number, which the computer adds to its opinion (§10):
 
-|  | Catholic | Orthodox | Hussite | Sunni |
-|---|---|---|---|---|
-| **Catholic** | +15 | −10 | −20 | −25 |
-| **Orthodox** | −10 | +15 | 0 | −20 |
-| **Hussite** | −20 | 0 | +15 | −15 |
-| **Sunni** | −25 | −20 | −15 | +15 |
+|  | Catholic | Orthodox | Hussite | Sunni | Protestant |
+|---|---|---|---|---|---|
+| **Catholic** | +15 | −10 | −20 | −25 | −25 |
+| **Orthodox** | −10 | +15 | 0 | −20 | 0 |
+| **Hussite** | −20 | 0 | +15 | −15 | +10 |
+| **Sunni** | −25 | −20 | −15 | +15 | −5 |
+| **Protestant** | −25 | 0 | +10 | −5 | +15 |
+
+**The Reformation.** From **31 October 1517** a Catholic or Hussite country may **adopt the Reformation**, once and for good:
+it turns **Protestant**, and so do the people of its **core** settlements of its old faith — land it holds that is not core keeps
+its faith. The church lands bring **a year of its settlement money** at once, and for **5 years** its chance of a peasant uprising
+is **5% a year** higher (§11). Its standing changes with its faith (the table above): Catholics think the worse of it, Protestants
+the better. The computer adopts it on its own reckoning — likelier where its scenario says it leans to it, and as its neighbours
+do — but never for a person's country it looks after.
 
 People of another faith are slower to accept you. Their **gap** is the pair's number ÷ −25, from 0 to 1 — 0 for the same
 faith or a pair at 0, 1 for Catholic and Sunni, 0.4 for Catholic and Orthodox. A settlement not core for you takes
@@ -703,7 +711,7 @@ When you declare war:
 |---|---|---|
 | **Defensive alliance** | If either side is declared on, the other joins the war automatically | 10 or 20 years, as proposed |
 | **Military alliance** | Each side is called into every war the other fights, attacking or defending; it may refuse (above) | 10 or 20 years, as proposed |
-| **Guarantee** | One-way: if the guaranteed country is declared on, the guarantor joins automatically | until broken |
+| **Guarantee** | One-way: if the guaranteed country is declared on, the guarantor joins automatically | 20 years |
 | **Military access** | One-way: your armies may enter and march through its land and use its passes and straits. It never joins your wars and you may not capture anything there. It may cancel at any time — that is not breaking an agreement | until cancelled |
 | **Non-aggression pact** | Neither side may declare war on the other | 10 years |
 | **Truce** | Starts when a peace is signed; neither side may declare war on the other | 5 years |
@@ -951,8 +959,9 @@ is the holder's own core, at +1 per 1,000 people (half for the defending side of
 
 **Proposals.** The same proposal to the same country once in 5 years — peace, each kind of agreement, and each kind of
 demand — whether it was accepted or not. An agreement cannot be proposed while at war, nor to a vassal. A guarantee is
-given by the proposer; access is given by the one asked. A pact lasts 10 years, a truce 5; neither can be re-signed
-while it stands.
+given by the proposer; access is given by the one asked. A pact lasts 10 years, a truce 5, a guarantee 20 (one given in a war
+the guarantor is fighting for it still runs out: the war goes on); none can be re-signed while it stands, and each may be
+signed again once it has run out.
 
 **Questions to a person** wait 6 months. Only one of each kind from the same country waits at a time (a new peace offer
 replaces the one waiting). An answer counts only if what was asked still makes sense: a call to arms whose war is over, or
@@ -1008,7 +1017,7 @@ Rolled at the start of each year.
 |---|---|---|
 | Good harvest | 10% | +10% money that year |
 | Plague | 5% | −10% pop |
-| Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) — plus the law's unrest: +5% under Mass levy, +15% under Scrape the barrel (§9), plus the unrest of faith, up to +10% (§2, Religion) | See below |
+| Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) — plus the law's unrest: +5% under Mass levy, +15% under Scrape the barrel (§9), plus the unrest of faith, up to +10%, and +5% for 5 years after adopting the Reformation (§2, Religion) | See below |
 
 **Peasant uprising.** Overtaxed peasants rise against you. A rebel country forms with soldiers
 equal to **3% of your total population** (every settlement you own, core and non-core), armed

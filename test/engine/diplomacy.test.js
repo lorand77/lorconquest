@@ -294,3 +294,13 @@ test("the war score and what a peace asks, worked out by hand", () => {
     assert.equal(peaceAnswer(game, "BBB", "AAA", { makeSubject: "protectorate" }).accept, true);    // 25 ≤ 36.7
     assert.equal(peaceAnswer(game, "BBB", "AAA", { makeSubject: "vassal" }).accept, false);         // 50 > 36.7
 });
+
+test("a guarantee runs out after 20 years, as one given at the start does", () => {
+    const game = tinyGame(1, (sc) => { sc.start.agreements.push({ kind: "guarantee", a: "AAA", b: "CCC" }); }), st = game.state;
+    const g = st.agreements.find((x) => x.kind === "guarantee");
+    assert.equal(g.until, 20 * 365);
+    st.day = 20 * 365 - 1;
+    const events = game.advance();
+    assert.ok(!st.agreements.some((x) => x.kind === "guarantee"));
+    assert.ok(events.some((e) => e.type === "expired" && e.kind === "guarantee"));
+});

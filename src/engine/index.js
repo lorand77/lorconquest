@@ -7,7 +7,7 @@ export { COMMAND_TYPES, applyCommand } from "./commands.js";
 export { RULES_VERSION, FORMAT, atWar, armiesAt, armyList, canEnter, capitalsOf, fleetList, isCore, isFriend, isRebel, ownerOf } from "./state.js";
 export { agreementsBetween, allied, alliesOf, friendly, grantsAccess, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectKind, subjectsOf, wouldCycle } from "./relations.js";
 export { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, nearVictory, areRivals, isAlliance, subjectChance, bordering, demandChance, militaryPowerOf, need, neighboursOf, opinion, peaceAnswer, peaceCost, sizeOf, warScore } from "./opinion.js";
-export { OFFER_DAYS, PACT_DAYS, PROPOSAL_DAYS, TRUCE_DAYS, germanStates, hreSettlementsOf, INTEGRATE_DAYS, integrateError, integratePrice, mayPropose, unionError, unionInto, validateTerms, warJoiners } from "./diplomacy.js";
+export { GUARANTEE_DAYS, OFFER_DAYS, PACT_DAYS, PROPOSAL_DAYS, TRUCE_DAYS, germanStates, hreSettlementsOf, INTEGRATE_DAYS, integrateError, integratePrice, mayPropose, unionError, unionInto, validateTerms, warJoiners } from "./diplomacy.js";
 export { checkVictory, scores } from "./victory.js";
 export { TRIBUTE, armyCapOf, armySoldiersOf, economyOf, manpowerOf, mercenariesOf, navyCapOf, ownedBy, popOf, rebelsOf, soldiersOf, techCost } from "./economy.js";
 export { blockaded, contested, crossable, crewAtSea, fleetPower, shipCount, shipsIn, straitClear } from "./naval.js";
@@ -20,4 +20,4 @@ export { START_YEAR, YEAR_DAYS, MONTH_NAMES, dateOf, dayOf, formatDate, longDate
 export { describeEvent, eventCountries, placeName } from "./text.js";
 export { buildMap, legKey } from "./map.js";
 export { proclaimCheck } from "./regions.js";
-export { RELIGIONS, RELIGION_NAMES, coringDays, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, religionOf } from "./religion.js";
+export { REFORMATION_DAY, RELIGIONS, RELIGION_NAMES, reformationError, coringDays, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, religionOf } from "./religion.js";

@@ -10,7 +10,7 @@ import { formatNumber } from "./mirror.js";
 const town = (ctx, id) => ctx.game.map.nodes.get(String(id))?.name ?? String(id);
 
 const n = formatNumber;
-const AGREEMENT_NAMES = { defensive: "defensive alliance", military: "military alliance", guarantee: "guarantee", pact: "non-aggression pact (10 years)", access: "military access" };
+const AGREEMENT_NAMES = { defensive: "defensive alliance", military: "military alliance", guarantee: "guarantee (20 years)", pact: "non-aggression pact (10 years)", access: "military access" };
 const ASK_LABEL = { defensive: "Propose a defensive alliance", military: "Propose a military alliance", guarantee: "Guarantee them", pact: "Propose a non-aggression pact", access: "Ask for military access" };
 const pairKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 

@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 53;
+export const RULES_VERSION = 55;
 // bump when the shape of the state changes
-export const FORMAT = 11;
+export const FORMAT = 12;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -32,6 +32,9 @@ export function initialState(map, seed, humans = []) {
             // in a union, the capital of each country that joined it, kept as one of its own (RULES.md §10, Union): [{ of: the
             // country that joined, at: the settlement, or null while it has none }] — the first capital is `capital`
             seats: [],
+            // its faith (RULES.md §2, Religion), from the scenario, or null on a map without religions; and the day it adopted the
+            // Reformation, or null
+            religion: c.religion ?? null, reformed: null,
             // treasury x × pop × 2 (RULES.md §2)
             treasury: sc.scaleX * c.pop * 2, bank: 0, loans: 0, noBorrowUntil: 0, debtSince: null,
             tax: 2, taxSum: 0, harvest: false, slider: 50, law: "feudal", lawDay: null,
@@ -43,9 +46,11 @@ export function initialState(map, seed, humans = []) {
             formed: null,
         };
     }
+    const faithOf = new Map(sc.countries.map((c) => [c.code, c.religion ?? null]));
     for (const s of sc.settlements) {
         state.settlements[s.id] = {
-            id: s.id, owner: s.country, pop: s.pop, cores: [s.country], heldSince: 0, siege: null,
+            // faith: its people's (RULES.md §2, Religion) — its 1440 owner's, changed only by the Reformation of the land's own ruler
+            id: s.id, owner: s.country, pop: s.pop, cores: [s.country], heldSince: 0, siege: null, faith: faithOf.get(s.country) ?? null,
             walls: false, library: false, workshop: false, market: false, courthouse: false,
         };
         state.nextId = Math.max(state.nextId, s.id + 1);

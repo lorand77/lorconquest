@@ -22,6 +22,7 @@ import { scores } from "./victory.js";
 export const OFFER_DAYS = Math.round(6 * 365 / 12);     // a human has 6 months to answer
 export const TRUCE_DAYS = 5 * YEAR_DAYS;
 export const PACT_DAYS = 10 * YEAR_DAYS;
+export const GUARANTEE_DAYS = 20 * YEAR_DAYS;        // a guarantee runs out, as an alliance does, and may be given again (RULES.md §10)
 export const START_ALLIANCE_DAYS = 20 * YEAR_DAYS;        // an alliance a scenario opens with
 export const PROPOSAL_DAYS = 5 * YEAR_DAYS;             // the same proposal to the same country once in 5 years
 
@@ -493,7 +494,7 @@ export function takeSubject(game, target, demander, kind, events) {
 export function applyStart(game) {
     const start = game.map.scenario.start ?? { wars: [], agreements: [] };
     for (const w of start.wars) for (const a of w.attackers) for (const d of w.defenders) openWar(game, a, d, a);
-    const days = (x) => (x.yearsLeft ? x.yearsLeft * YEAR_DAYS : x.kind === "pact" ? PACT_DAYS : x.kind === "defensive" || x.kind === "military" ? START_ALLIANCE_DAYS : null);
+    const days = (x) => (x.yearsLeft ? x.yearsLeft * YEAR_DAYS : x.kind === "pact" ? PACT_DAYS : x.kind === "guarantee" ? GUARANTEE_DAYS : x.kind === "defensive" || x.kind === "military" ? START_ALLIANCE_DAYS : null);
     for (const x of start.agreements) addAgreement(game, x.kind, x.a, x.b, days(x));
 }
 

@@ -5,10 +5,10 @@
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it. A vassal of 10 years it
 // integrates when it can pay.
-import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, lawChangeDay, coringDays,
+import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, lawChangeDay, coringDays, reformationError, religionOf,
     manpowerOf, militaryPowerOf, neighboursOf, subjectsOf, capitalsOf, proclaimCheck } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
-import { exposed, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
+import { dice, exposed, hash, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
 
 // the day the country's last war with a real country ended (0 if it never fought one)
 function peaceSince(st, code) {
@@ -87,6 +87,16 @@ export function economyOrders(game, code, fl, ctx) {
     // regions: one it may proclaim — a capital of its in it, held whole by it and its vassals (or as its Needs say), not all its core
     // yet — is proclaimed (RULES.md, Special coring; the engine's own check, regions.js)
     for (const f of game.map.scenario.formables ?? []) if (!proclaimCheck(game, code, f).error) cmd("proclaim", { region: f.id });
+
+    // the Reformation (RULES.md §2, Religion): a country the scenario says leans to it adopts it at 10% a year, any other Catholic
+    // at 1% — a Hussite at twice that — and 10% more for all its neighbours Protestant, a zealot half as readily: a chance at each
+    // think (every 15 days), on dice of its own. Never for a person's country it looks after while they are away: their faith is theirs
+    if (!st.humans.includes(code) && !reformationError(game, code)) {
+        const leans = game.map.scenario.countries.find((x) => x.code === code)?.leans;
+        const nb = neighboursOf(game, code), protestant = nb.length ? nb.filter((n) => religionOf(game, n) === "protestant").length / nb.length : 0;
+        const yearly = ((leans ? 0.10 : 0.01) * (c.religion === "hussite" ? 2 : 1) + 0.10 * protestant) * (fl.character === "zealot" ? 0.5 : 1);
+        if (dice(hash(`${st.seed}:${code}:${st.day}:reformation`))() < yearly * 15 / YEAR_DAYS) cmd("adoptReformation");
+    }
 
     // tax: none above 2 in peace, a little in war, more if the treasury needs it
     let tax = atWarNow ? 2.2 : 2.0;

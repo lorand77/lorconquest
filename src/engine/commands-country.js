@@ -1,5 +1,5 @@
 // The commands of running a country (design.md §3; RULES.md §2-§4, §8, §9): tax, research, laws, the bank and
-// loans, the shop, raising and equipping forces, and special coring. Each handler is given the game and the
+// loans, the shop, raising and equipping forces, special coring and the Reformation. Each handler is given the game and the
 // command, whose `country` is the one giving it, and answers { ok, events } or { ok: false, error }.
 //
 //   setTax { tax }  setSlider { slider }  setLaw { law }  research { tech }  setCapital { settlement }
@@ -8,7 +8,7 @@
 //   buySharpshooters { pass, lots }  buyShips { kind, port, lots }
 //   raise { settlement, kind: "soldiers", lots | hundreds, weapon }  hireMercenaries { settlement, lots }
 //   equip { army, from, to, n }  equipCannons { army, n }  (n < 0 returns them)  disband { army, men, cannons, crew }
-//   dismissMercenaries { army, n }  proclaim { region }
+//   dismissMercenaries { army, n }  proclaim { region }  adoptReformation {}
 import { CREW_PER_CANNON, WEAPONS, menOf, takeMen } from "./army.js";
 import { YEAR_DAYS, longDate } from "./calendar.js";
 import { afford, done, money, ownArmy, positive, refuse, whole } from "./command-util.js";
@@ -18,7 +18,7 @@ import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_C
 import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, unlockTech } from "./economy.js";
 import { capitalsOf, newFleet, isCore, ownerOf } from "./state.js";
 import { proclaimCheck } from "./regions.js";
-import { coringDays } from "./religion.js";
+import { coringDays, reformationError } from "./religion.js";
 
 const mine = (game, cmd) => game.state.countries[cmd.country];
 const near = (x, step) => Math.abs(x / step - Math.round(x / step)) < 1e-9;
@@ -71,6 +71,20 @@ export const countryCommands = {
         const events = [];
         unlockTech(game, c.code, events);
         return done(events);
+    },
+
+    // the Reformation adopted (RULES.md §2, Religion): from 1517, by a Catholic or Hussite country. It becomes Protestant, and so do
+    // the people of its core land of its old faith; the church lands bring a year of its settlement money; 5 years of unrest follow
+    adoptReformation(game, cmd) {
+        const st = game.state, c = mine(game, cmd);
+        const why = reformationError(game, c.code);
+        if (why) return refuse(why);
+        const old = c.religion, money = economyOf(game, c.code).settlementMoney;
+        let n = 0;
+        for (const s of ownedBy(st, c.code)) if (s.cores.includes(c.code) && s.faith === old) { s.faith = "protestant"; n++; }
+        Object.assign(c, { religion: "protestant", reformed: st.day });
+        c.treasury += money;
+        return done([{ type: "reformation", day: st.day, country: c.code, settlements: n, money }]);
     },
 
     // a capital lost is replaced (RULES.md §2): the first one, then, in a union, each joined country's in turn — never by

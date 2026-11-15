@@ -382,8 +382,9 @@ if (doc.some((l) => /^## About\s*$/.test(l))) {
 }
 
 // each country's faith (RULES.md §2, Religion), if the scenario has a "## Religions" table (Religion, Countries, Why): every
-// country not in it is Catholic, and none may be listed twice. Without the section the scenario has no religions at all.
-const RELIGION = new Map();
+// country not in it is Catholic, and none may be listed twice. Without the section the scenario has no religions at all. A line
+// "**Lean to the Reformation:** SWE, DEN, …" in it names the countries the computer is likelier to make Protestant (src/ai).
+const RELIGION = new Map(), LEANS = new Set();
 if (doc.some((l) => /^## Religions\s*$/.test(l))) {
     for (const code of CORDER) RELIGION.set(code, "catholic");
     const listed = new Set();
@@ -397,6 +398,13 @@ if (doc.some((l) => /^## Religions\s*$/.test(l))) {
             listed.add(code);
             RELIGION.set(code, faith);
         }
+    }
+    const [s, e] = section("Religions");
+    const lean = doc.slice(s, e + 1).find((l) => /^\*\*Lean to the Reformation:\*\*/.test(l));
+    for (const code of lean ? [...lean.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]) : []) {
+        if (!CN.has(code)) err(`Religions: no country ${code} to lean to the Reformation`);
+        else if (!["catholic", "hussite"].includes(RELIGION.get(code))) err(`Religions: ${code} is ${RELIGION.get(code)}: only a Catholic or Hussite country leans to the Reformation`);
+        else LEANS.add(code);
     }
 }
 
@@ -1571,7 +1579,7 @@ const json = {
     countries: CORDER.map((code) => {
         const c = C.get(code);
         return { code, name: CN.get(code), capital: CAP.get(code), colour: COLOUR.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, hre: c.hrestate,
-            ...(CHARACTER.has(code) ? { character: CHARACTER.get(code) } : {}), ...(RELIGION.has(code) ? { religion: RELIGION.get(code) } : {}) };
+            ...(CHARACTER.has(code) ? { character: CHARACTER.get(code) } : {}), ...(RELIGION.has(code) ? { religion: RELIGION.get(code) } : {}), ...(LEANS.has(code) ? { leans: true } : {}) };
     }),
     settlements: SIDS.map((id) => {
         const s = S.get(id);

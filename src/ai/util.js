@@ -100,6 +100,25 @@ export function standings(game) {
     return Object.keys(table).filter((c) => st.countries[c].out === null).sort((a, b) => table[b].settlements - table[a].settlements || table[b].pop - table[a].pop || (a < b ? -1 : 1));
 }
 
+// how restless a country at peace has grown, 0 to 1 (design.md, The computer players): nothing in its first 10 years without a war,
+// all after 40 — a long peace makes a court look for glory, so it looks for a war more often and takes it at worse odds
+// (diplomacy.js). At war it is 0. The last war of each country is worked out once a day from the game's memory of each pair's
+// last war (diplomacy.js in the engine, closeWar), so it is the same however it is asked
+const LAST_WAR = new WeakMap();
+export function restlessOf(game, code) {
+    const st = game.state;
+    if (enemiesOf(st, code).some((c) => !st.countries[c]?.rebel)) return 0;
+    let seen = LAST_WAR.get(st.memory.lastWar);
+    if (!seen || seen.day !== st.day) {
+        const last = new Map();
+        for (const [key, day] of Object.entries(st.memory.lastWar)) for (const c of key.split("|")) if (!st.countries[c]?.rebel && (last.get(c) ?? -1) < day) last.set(c, day);
+        seen = { day: st.day, last };
+        LAST_WAR.set(st.memory.lastWar, seen);
+    }
+    const years = (st.day - (seen.last.get(code) ?? 0)) / YEAR_DAYS;
+    return Math.min(1, Math.max(0, (years - 10) / 30));
+}
+
 // whom `code` gangs up on: the leader (leaderOf) if it is someone else; in the endgame, for the second to the fifth, the first,
 // whatever its lead — they go for what closes the gap
 export function leaderFor(game, code) {

@@ -1,9 +1,9 @@
 // Religion (RULES.md §2): the faiths' part of the computer's opinion, the longer road to compliance for people of another faith —
 // in what they pay, when a courthouse may be bought — and the unrest of land of another faith not yet core; none of it on a map
-// without religions. On the tiny map, AAA and EEE Catholic, BBB Sunni, CCC Orthodox, DDD Hussite.
+// without religions; and the Reformation. On the tiny map, AAA and EEE Catholic, BBB Sunni, CCC Orthodox, DDD Hussite.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { CORING_DAYS, coringDays, economyOf, faithGap, faithRegard, faithUnrest, landReligion, opinion, religionOf } from "../../src/engine/index.js";
+import { CORING_DAYS, REFORMATION_DAY, coringDays, economyOf, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, opinion, religionOf } from "../../src/engine/index.js";
 import { order, refused, tinyGame } from "../helpers/tiny.js";
 
 const FAITHS = { AAA: "catholic", BBB: "sunni", CCC: "orthodox", DDD: "hussite", EEE: "catholic" };
@@ -61,4 +61,23 @@ test("unrest: 10% × the gaps of the land not core ÷ all the land held, gone on
     game.state.settlements[5].cores.push("AAA");
     assert.ok(Math.abs(faithUnrest(game, "AAA") - 0.1 * 0.4 / 5) < 1e-12, "core: its faith no longer matters");
     assert.equal(faithUnrest(tinyGame(), "AAA"), 0);
+});
+
+test("the Reformation: from 1517, for a Catholic or Hussite; its core land of its faith with it, the church lands' money, 5 years of unrest", () => {
+    const game = faithful(), st = game.state;
+    assert.match(refused(game, { type: "adoptReformation", country: "AAA" }), /begins on 31 October 1517/);
+    st.day = REFORMATION_DAY;
+    assert.match(refused(game, { type: "adoptReformation", country: "BBB" }), /a Sunni country cannot/);
+    taken(game, 5, 1);                                                             // a Sunni town, not core: it keeps its faith
+    const money = economyOf(game, "AAA").settlementMoney, before = st.countries.AAA.treasury;
+    const [e] = order(game, { type: "adoptReformation", country: "AAA" });
+    assert.deepEqual([e.type, e.settlements, st.countries.AAA.religion, st.countries.AAA.reformed], ["reformation", 3, "protestant", REFORMATION_DAY]);
+    assert.deepEqual([1, 2, 3, 5].map((id) => landReligion(game, id)), ["protestant", "protestant", "protestant", "sunni"]);
+    assert.equal(st.countries.AAA.treasury, before + money);
+    assert.deepEqual([faithOpinion(game, "EEE", "AAA"), faithOpinion(game, "BBB", "AAA"), faithOpinion(game, "DDD", "AAA")], [-25, -5, 10]);
+    assert.ok(Math.abs(faithUnrest(game, "AAA") - (0.1 * 0.2 / 4 + 0.05)) < 1e-12, "Protestant over Sunni (gap 0.2), and the first 5 years");
+    st.day += 5 * 365;
+    assert.ok(Math.abs(faithUnrest(game, "AAA") - 0.1 * 0.2 / 4) < 1e-12, "5 years on: the unrest of the Reformation is over");
+    assert.match(refused(game, { type: "adoptReformation", country: "AAA" }), /a Protestant country cannot/);
+    assert.match(refused(tinyGame(), { type: "adoptReformation", country: "AAA" }), /no religions/);
 });

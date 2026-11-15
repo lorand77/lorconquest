@@ -925,6 +925,12 @@ table; a country listed twice, or a faith that is none of Catholic, Orthodox, Hu
 | Hussite | BOH | Utraquist Bohemia between kings, the Compacts of Basel only four years old |
 | Sunni | OTT, KAR, CAN, DUL, RAM, AQQ, GHO, GRA, MRC, TLE, TUN | The Ottomans and the Anatolian beyliks, the Aq Qoyunlu, the Great Horde, Granada and the Maghreb |
 
+From 31 October 1517 a Catholic or Hussite country may adopt the Reformation and turn Protestant (RULES.md §2, Religion). The
+computer is likelier to where it did: the north of the Empire, Scandinavia, the Baltic, Britain, the Swiss and Dutch towns, Béarn
+and Bohemia.
+
+**Lean to the Reformation:** SWE, DEN, NOR, ENG, SCO, LIV, TEU, SHO, LUB, HAM, MEC, POM, BRE, BRU, MAG, BRA, HES, SAX, LUS, SIL, ANS, NUR, PAL, STR, WRT, ULM, BAS, ZUR, UTR, GEL, FRI, FOI, BOH
+
 ## Characters
 
 *How the computer plays each country when no person does (docs/design.md, *Characters and rivalries*). Data: every country

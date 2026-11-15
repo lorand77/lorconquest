@@ -14,7 +14,7 @@
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
 import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
-    setSubject, takeSubject, validateTerms, joinWar, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
+    setSubject, takeSubject, validateTerms, joinWar, GUARANTEE_DAYS, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
 import { hasAgreement, isVassal, overlordOf, wouldCycle } from "./relations.js";
@@ -55,11 +55,11 @@ function agreementError(game, cmd, to, kind) {
     return null;
 }
 
-// the agreement signed: a pact for 10 years, an alliance for the years proposed
+// the agreement signed: a pact for 10 years, a guarantee for 20, an alliance for the years proposed
 function sign(game, kind, from, to, events, years = 10) {
     const st = game.state;
     const [a, b] = kind === "access" ? [to, from] : [from, to];
-    addAgreement(game, kind, a, b, kind === "pact" ? PACT_DAYS : isAlliance(kind) ? years * YEAR_DAYS : null);
+    addAgreement(game, kind, a, b, kind === "pact" ? PACT_DAYS : kind === "guarantee" ? GUARANTEE_DAYS : isAlliance(kind) ? years * YEAR_DAYS : null);
     events.push({ type: "agreement", day: st.day, kind, a, b, ...(isAlliance(kind) ? { years } : {}) });
 }
 
