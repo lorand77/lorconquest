@@ -560,7 +560,7 @@ weapons with them.
 | Movement | |
 |---|---|
 | Army | route length ÷ army speed |
-| River crossing | +1 month |
+| River crossing | +1 month each |
 | Leg to or from a mountain pass | +2 months |
 | Fleet, to a neighbouring sea zone | 2 months |
 

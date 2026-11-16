@@ -19,7 +19,7 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 **Army speed:** 480 map units per year — a route takes its length on the map ÷ this (RULES.md §8).
 
 <!-- generated:summary -->
-87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 187 land routes, 4 straits, 7 mountain passes
+87 settlements (19 cities, 68 towns) · 45 countries · 1,060,000 people · 185 land routes, 4 straits, 7 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -113,7 +113,7 @@ Settlements 25 and 27 were deleted from the map.
 | 11 | Kiel | SCH | city | port | HRE | 435 | 376 | 9, 10, 12, 13, 66 |  |
 | 12 | Lüneburg | SCH | town |  | HRE | 402 | 445 | 11, 13, 66, 67, 69, 75 |  |
 | 13 | Rostock | MEC | town | port | HRE | 558 | 419 | 11, 12, 14, 75, 76 |  |
-| 14 | Stettin | MEC | town | port | HRE | 655 | 409 | 13, 76, 78, 79 |  |
+| 14 | Stettin | MEC | town | port | HRE | 655 | 409 | 13, 76, 78 |  |
 | 15 | Gdynia | GDA | city | port |  | 924 | 399 | 16, 79, 80, 81 |  |
 | 16 | Danzig | PRU | town | port |  | 1052 | 402 | 15, 17, 20, 81, 88 |  |
 | 17 | Königsberg | PRU | city | port |  | 1119 | 390 | 16, 18, 20 |  |
@@ -141,7 +141,7 @@ Settlements 25 and 27 were deleted from the map.
 | 41 | Bern | SWI | city |  | HRE | 290 | 1098 | 40, 42, 45, 46, 47 |  |
 | 42 | Geneva | ELS | town |  | HRE | 169 | 1113 | 41, 43, 44, 45 |  |
 | 43 | Lyon | NAN | town |  |  | 119 | 1088 | 42, 44 |  |
-| 44 | Nancy | NAN | town |  | HRE | 125 | 1022 | 42, 43, 45, 52, 53 |  |
+| 44 | Nancy | NAN | town |  | HRE | 125 | 1022 | 42, 43, 45, 53 |  |
 | 45 | Strassburg | ELS | city |  | HRE | 179 | 981 | 41, 42, 44, 46, 52 |  |
 | 46 | Basel | LGE | town |  | HRE | 258 | 965 | 41, 45, 47, 49 |  |
 | 47 | Konstanz | LGE | town |  | HRE | 363 | 973 | 38, 40, 41, 46, 49 |  |
@@ -149,7 +149,7 @@ Settlements 25 and 27 were deleted from the map.
 | 49 | Stuttgart | STU | city |  | HRE | 338 | 888 | 46, 47, 48, 50, 52 |  |
 | 50 | Frankfurt | FRA | town |  | HRE | 327 | 803 | 48, 49, 51, 70 |  |
 | 51 | Bonn | FRA | town |  | HRE | 292 | 752 | 50, 61, 62, 70 |  |
-| 52 | Trier | TRI | town |  | HRE | 200 | 859 | 44, 45, 49, 53, 60 |  |
+| 52 | Trier | TRI | town |  | HRE | 200 | 859 | 45, 49, 53, 60 |  |
 | 53 | Luxemburg | LUX | town |  | HRE | 102 | 883 | 44, 52, 54, 60 |  |
 | 54 | Brussels | BEL | town |  | HRE | 36 | 802 | 53, 55, 56, 60 |  |
 | 55 | Liège | LIE | town |  | HRE | 122 | 729 | 54, 56, 58, 59, 60, 61 |  |
@@ -176,7 +176,7 @@ Settlements 25 and 27 were deleted from the map.
 | 76 | Berlin | BRB | city |  | HRE | 623 | 495 | 13, 14, 74, 75, 77, 78 |  |
 | 77 | Cottbus | BRB | town |  | HRE | 701 | 580 | 74, 76, 78, 82, 83 |  |
 | 78 | Seelow Heights | BRB | town |  | HRE | 735 | 465 | 14, 76, 77, 79, 80, 82 |  |
-| 79 | Szczecinek | GDA | town |  |  | 858 | 434 | 14, 15, 78, 80 |  |
+| 79 | Szczecinek | GDA | town |  |  | 858 | 434 | 15, 78, 80 |  |
 | 80 | Bydgoszcz | GDA | town |  |  | 881 | 487 | 15, 78, 79, 81, 82, 84 |  |
 | 81 | Płock | GDA | town |  |  | 1000 | 499 | 15, 16, 80, 84, 88 |  |
 | 82 | Piła | POZ | town |  |  | 845 | 541 | 77, 78, 80, 83, 84 |  |

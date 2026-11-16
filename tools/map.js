@@ -224,7 +224,7 @@ const SPEEDN = Number(SPEED);
 const DELAY = {};                                     // months from RULES.md §8: crossing a river, each leg to or from a pass, a fleet's hop between zones
 for (const l of fs.readFileSync(path.join(ROOT, "docs/RULES.md"), "utf8").split("\n")) {
     let m;
-    if ((m = /^\| River crossing \| \+(\d+) months? \|/.exec(l))) DELAY.river = Number(m[1]);
+    if ((m = /^\| River crossing \| \+(\d+) months?[^|]*\|/.exec(l))) DELAY.river = Number(m[1]);
     if ((m = /^\| Leg to or from a mountain pass \| \+(\d+) months? \|/.exec(l))) DELAY.pass = Number(m[1]);
     if ((m = /^\| Fleet, to a neighbouring sea zone \| (\d+) months? \|/.exec(l))) DELAY.fleet = Number(m[1]);
 }
@@ -1187,16 +1187,15 @@ for (const s of ROUTESEG) {
     if (s[5]) continue;
     CROSS.set(s[4], (CROSS.get(s[4]) || 0) + RSEG.filter((r) => cross([s[0], s[1]], [s[2], s[3]], r[0], r[1])).length);
 }
-for (const e of [...CROSS.keys()].filter((e) => CROSS.get(e) > 1).sort(byKey)) warn(`route ${e} crosses a river ${CROSS.get(e)} times but is charged one crossing -- bend it in Route bends`);
-// marching time in years (RULES.md §8): distance at army speed, plus the river and pass delays
-const crossesRiver = (p) => { for (let i = 1; i < p.length; i++) if (RSEG.some((r) => cross(p[i - 1], p[i], r[0], r[1]))) return true; return false; };
+// marching time in years (RULES.md §8): distance at army speed, plus the delay of every river crossing and of the pass
+const crossings = (p) => { let n = 0; for (let i = 1; i < p.length; i++) n += RSEG.filter((r) => cross(p[i - 1], p[i], r[0], r[1])).length; return n; };
 const YEARS = new Map(), LEGYEARS = new Map();
 for (const e of LAND) {
     if (RLEGPTS.has(e)) {
-        const ly = RLEGPTS.get(e).map((p) => plen(p) / SPEEDN + DELAY.pass / 12 + (crossesRiver(p) ? DELAY.river / 12 : 0));
+        const ly = RLEGPTS.get(e).map((p) => plen(p) / SPEEDN + DELAY.pass / 12 + crossings(p) * DELAY.river / 12);
         LEGYEARS.set(e, ly);
         YEARS.set(e, ly[0] + ly[1]);
-    } else YEARS.set(e, RLEN.get(e) / SPEEDN + (CROSS.get(e) ? DELAY.river / 12 : 0));
+    } else YEARS.set(e, RLEN.get(e) / SPEEDN + (CROSS.get(e) ?? 0) * DELAY.river / 12);
 }
 for (const s of S.values()) s.river = RSEG.some((r) => segDist(s.x, s.y, r[0], r[1]) <= RIVER_NEAR);
 
@@ -1649,6 +1648,7 @@ fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");
         if (Math.min(angleAt(pa, pb, pc), angleAt(pb, pa, pc), angleAt(pc, pa, pb)) >= 25) continue;
         const sides = [[a, b, c], [b, c, a], [a, c, b]].map(([p, q, o]) => ({ p, q, o, l: len(at(p), at(q)) })).sort((x, y) => y.l - x.l);
         const [L] = sides;
+        if (VIA.has(ekey(L.p, L.q))) continue;                     // a road through a pass goes by the pass, not the straight line
         if (sides[1].l + sides[2].l <= 1.1 * L.l && !thin.has(ekey(L.p, L.q))) {
             thin.add(ekey(L.p, L.q));
             warn(`road ${ekey(L.p, L.q)} is the long side of a thin triangle: by ${L.o} ${S.get(L.o).name} it is hardly longer -- take it out of Borders`);

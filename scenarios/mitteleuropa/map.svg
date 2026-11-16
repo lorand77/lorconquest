@@ -377,7 +377,6 @@
   <path id="route-13-76" class="route" d="M558 419 L601.5 444.5 L623 495"/>
   <path id="route-14-76" class="route" d="M655 409 L623 495"/>
   <path id="route-14-78" class="route" d="M655 409 L735 465"/>
-  <path id="route-14-79" class="route" d="M655 409 L858 434"/>
   <path id="route-15-16" class="route" d="M924 399 L1052 402"/>
   <path id="route-15-79" class="route" d="M924 399 L858 434"/>
   <path id="route-15-80" class="route" d="M924 399 L912.5 456.5 L881 487"/>
@@ -445,7 +444,6 @@
   <path id="route-42-45" class="route" d="M169 1113 L179 981"/>
   <path id="route-43-44" class="route" d="M119 1088 L125 1022"/>
   <path id="route-44-45" class="route" d="M125 1022 L179 981"/>
-  <path id="route-44-52" class="route" d="M125 1022 L140.5 910.5 L200 859"/>
   <path id="route-44-53" class="route" d="M125 1022 L102 883"/>
   <path id="route-45-46" class="route" d="M179 981 L258 965"/>
   <path id="route-45-52" class="route" d="M179 981 L200 859"/>
@@ -965,7 +963,7 @@
   <text id="label-CPH" class="label" x="485" y="245.4">CPH</text>
   <text id="label-SCH" class="label" x="368" y="415.4">SCH</text>
   <text id="label-MEC" class="label" x="616" y="433.4">MEC</text>
-  <text id="label-GDA" class="label" x="820" y="407.4">GDA</text>
+  <text id="label-GDA" class="label" x="776" y="423.4">GDA</text>
   <text id="label-PRU" class="label" x="1228" y="393.4">PRU</text>
   <text id="label-LIT" class="label" x="1212" y="55.4">LIT</text>
   <text id="label-EPL" class="label" x="1272" y="573.4">EPL</text>

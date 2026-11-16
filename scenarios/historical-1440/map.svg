@@ -709,7 +709,6 @@
   <path id="route-28-29" class="route" d="M887 555 L990 600"/>
   <path id="route-28-30" class="route" d="M887 555 L892 679"/>
   <path id="route-28-31" class="route" d="M887 555 L706 712"/>
-  <path id="route-28-40" class="route" d="M887 555 L785.5 616.5 L728 579"/>
   <path id="route-28-41" class="route" d="M887 555 L799 550"/>
   <path id="route-28-57" class="route" d="M887 555 L800.5 650.5 L801 739"/>
   <path id="route-29-30" class="route" d="M990 600 L892 679"/>
@@ -907,7 +906,6 @@
   <path id="route-101-119" class="route" d="M198 966 L200.5 1003.5 L164 1021"/>
   <path id="route-102-103" class="route" d="M259 915 L296 952"/>
   <path id="route-102-104" class="route" d="M259 915 L297.5 915.5 L321 943"/>
-  <path id="route-102-110" class="route" d="M259 915 L254.5 959.5 L273.5 975.5 L317 1008"/>
   <path id="route-103-104" class="route" d="M296 952 L321 943"/>
   <path id="route-103-110" class="route" d="M296 952 L317 1008"/>
   <path id="route-104-105" class="route" d="M321 943 L394 978"/>
@@ -930,7 +928,6 @@
   <path id="route-109-111" class="route" d="M461 1012 L508 1015"/>
   <path id="route-109-128" class="route" d="M461 1012 L479 1077"/>
   <path id="route-110-119" class="route" d="M317 1008 L164 1021"/>
-  <path id="route-110-122" class="route" d="M317 1008 L253.5 1034.5 L249.5 1042.5 L254 1080"/>
   <path id="route-110-123" class="route" d="M317 1008 L286 1066"/>
   <path id="route-110-124" class="route" d="M317 1008 L343 1068"/>
   <path id="route-111-113" class="route" d="M508 1015 L560.5 1012.5 L570 1027 L599 988"/>
@@ -1031,7 +1028,6 @@
   <path id="route-143-160" class="route" d="M764 1351 L669 1331"/>
   <path id="route-144-145" class="route" d="M1112 1168 L1243 1224"/>
   <path id="route-144-147" class="route" d="M1112 1168 L1078 1061"/>
-  <path id="route-145-147" class="route" d="M1243 1224 L1200.5 1080.5 L1194.5 1074.5 L1078 1061"/>
   <path id="route-146-147" class="route" d="M950 1070 L1078 1061"/>
   <path id="route-148-149" class="route" d="M226 1124 L256 1135"/>
   <path id="route-148-150" class="route" d="M226 1124 L236 1173"/>
@@ -1046,7 +1042,6 @@
   <path id="route-152-153" class="route" d="M294 1195 L277 1224"/>
   <path id="route-152-155" class="route" d="M294 1195 L329.5 1220.5 L398 1224 L472 1215"/>
   <path id="route-153-154" class="route" d="M277 1224 L223 1229"/>
-  <path id="route-153-155" class="route" d="M277 1224 L328.5 1245.5 L472 1215"/>
   <path id="route-153-164" class="route" d="M277 1224 L290 1270 L318 1342"/>
   <path id="route-154-161" class="route" d="M223 1229 L167 1263"/>
   <path id="route-155-156" class="route" d="M472 1215 L478 1240 L467 1286"/>
@@ -1060,7 +1055,6 @@
   <path id="route-159-165" class="route" d="M659 1264 L585 1284 L587 1329"/>
   <path id="route-160-165" class="route" d="M669 1331 L587 1329"/>
   <path id="route-161-162" class="route" d="M167 1263 L133 1289"/>
-  <path id="route-161-163" class="route" d="M167 1263 L207.5 1343.5 L112 1346"/>
   <path id="route-161-167" class="route" d="M167 1263 L135 1193"/>
   <path id="route-162-163" class="route" d="M133 1289 L112 1346"/>
   <path id="route-162-166" class="route" d="M133 1289 L86.5 1240.5 L75 1178"/>
@@ -1616,7 +1610,7 @@
   <text id="label-SHO" class="label small" x="406" y="585.6">SHO</text>
   <text id="label-LUB" class="label small" x="496" y="569.6">LUB</text>
   <text id="label-MEC" class="label" x="534" y="627.4">MEC</text>
-  <text id="label-POM" class="label" x="774" y="587.4">POM</text>
+  <text id="label-POM" class="label" x="754" y="611.4">POM</text>
   <text id="label-TEU" class="label" x="1034" y="563.4">TEU</text>
   <text id="label-LIT" class="label" x="1280" y="565.4">LIT</text>
   <text id="label-FRI" class="label" x="190" y="663.4">FRI</text>
@@ -1649,15 +1643,17 @@
   <text id="label-MET" class="label small" x="140" y="1011.6">MET</text>
   <text id="label-LOR" class="label" x="44" y="1035.4">LOR</text>
   <text id="label-STR" class="label small" x="226" y="1081.6">STR</text>
+  <text id="label-BAD" class="label" x="246" y="1031.4">BAD</text>
   <text id="label-WRT" class="label small" x="180" y="1193.6">WRT</text>
   <text id="label-BMU" class="label small" x="578" y="1049.6">BMU</text>
   <text id="label-PAS" class="label small" x="616" y="1061.6">PAS</text>
   <text id="label-AUS" class="label" x="698" y="1155.4">AUS</text>
   <text id="label-HUN" class="label" x="1270" y="1339.4">HUN</text>
-  <text id="label-JIS" class="label" x="1116" y="1089.4">JIS</text>
+  <text id="label-JIS" class="label" x="1124" y="1073.4">JIS</text>
   <text id="label-DEC" class="label small" x="196" y="1119.6">DEC</text>
   <text id="label-BAS" class="label small" x="248" y="1216.6">BAS</text>
   <text id="label-KON" class="label small" x="366" y="1163.6">KON</text>
+  <text id="label-ZUR" class="label small" x="302" y="1238.6">ZUR</text>
   <text id="label-SWI" class="label" x="256" y="1251.4">SWI</text>
   <text id="label-TYR" class="label" x="436" y="1369.4">TYR</text>
   <text id="label-SAL" class="label small" x="560" y="1225.6">SAL</text>

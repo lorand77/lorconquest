@@ -2053,7 +2053,6 @@
     29,
     30,
     31,
-    40,
     41,
     57
    ],
@@ -2411,12 +2410,12 @@
    "label": {
     "area": 4745,
     "big": [
-     747,
-     618
+     751,
+     612
     ],
     "small": [
-     745,
-     616
+     751,
+     612
     ],
     "near": null
    },
@@ -2431,7 +2430,6 @@
    "land": "land-40",
    "seaZone": "baltic-sea",
    "borders": [
-    28,
     31,
     39,
     41
@@ -4458,8 +4456,7 @@
     86,
     101,
     103,
-    104,
-    110
+    104
    ],
    "straits": []
   },
@@ -4681,7 +4678,10 @@
    "abbr": "Hei",
    "label": {
     "area": 8571,
-    "big": null,
+    "big": [
+     244,
+     1027
+    ],
     "small": [
      248,
      1001
@@ -4700,12 +4700,10 @@
    "seaZone": null,
    "borders": [
     101,
-    102,
     103,
     104,
     105,
     119,
-    122,
     123,
     124
    ],
@@ -5110,7 +5108,6 @@
    "land": "land-122",
    "seaZone": null,
    "borders": [
-    110,
     119,
     121,
     123,
@@ -5127,7 +5124,10 @@
     "area": 3339,
     "big": null,
     "small": null,
-    "near": null
+    "near": [
+     248,
+     1028
+    ]
    },
    "country": "BAD",
    "type": "town",
@@ -5850,8 +5850,7 @@
     65,
     66,
     142,
-    144,
-    147
+    144
    ],
    "straits": []
   },
@@ -5899,12 +5898,12 @@
    "label": {
     "area": 17975,
     "big": [
-     1117,
-     1085
+     1121,
+     1059
     ],
     "small": [
-     1115,
-     1085
+     1113,
+     1059
     ],
     "near": null
    },
@@ -5923,7 +5922,6 @@
     65,
     141,
     144,
-    145,
     146
    ],
    "straits": []
@@ -6066,7 +6064,10 @@
     "area": 2999,
     "big": null,
     "small": null,
-    "near": null
+    "near": [
+     302,
+     1235
+    ]
    },
    "country": "ZUR",
    "type": "town",
@@ -6095,8 +6096,8 @@
     "area": 5483,
     "big": null,
     "small": [
-     302,
-     1249
+     304,
+     1245
     ],
     "near": null
    },
@@ -6114,7 +6115,6 @@
     150,
     152,
     154,
-    155,
     164
    ],
    "straits": []
@@ -6185,7 +6185,6 @@
     131,
     151,
     152,
-    153,
     156,
     157,
     165
@@ -6368,8 +6367,8 @@
     "area": 6487,
     "big": null,
     "small": [
-     215,
-     1318
+     195,
+     1288
     ],
     "near": null
    },
@@ -6386,7 +6385,6 @@
    "borders": [
     154,
     162,
-    163,
     167
    ],
    "straits": []
@@ -6450,7 +6448,6 @@
    "land": "land-163",
    "seaZone": null,
    "borders": [
-    161,
     162,
     168
    ],
@@ -7764,32 +7761,6 @@
    ]
   },
   {
-   "id": "route-28-40",
-   "from": 28,
-   "to": 40,
-   "type": "land",
-   "length": 160.8,
-   "years": 0.38,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": false,
-   "points": [
-    [
-     887,
-     555
-    ],
-    [
-     785.5,
-     616.5
-    ],
-    [
-     728,
-     579
-    ]
-   ]
-  },
-  {
    "id": "route-28-41",
    "from": 28,
    "to": 41,
@@ -8255,7 +8226,7 @@
    "to": 45,
    "type": "land",
    "length": 78.39,
-   "years": 0.27,
+   "years": 0.35,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -10071,11 +10042,11 @@
    "to": 146,
    "type": "land",
    "length": 159.35,
-   "years": 0.8,
+   "years": 0.88,
    "legs": [
     {
      "length": 83.74,
-     "years": 0.45
+     "years": 0.53
     },
     {
      "length": 75.61,
@@ -10749,7 +10720,7 @@
    "to": 76,
    "type": "land",
    "length": 56.57,
-   "years": 0.22,
+   "years": 0.3,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -10771,7 +10742,7 @@
    "to": 81,
    "type": "land",
    "length": 46.01,
-   "years": 0.19,
+   "years": 0.28,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -10815,7 +10786,7 @@
    "to": 84,
    "type": "land",
    "length": 56.6,
-   "years": 0.22,
+   "years": 0.3,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -10889,7 +10860,7 @@
    "to": 81,
    "type": "land",
    "length": 41.44,
-   "years": 0.18,
+   "years": 0.27,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -11279,7 +11250,7 @@
    "to": 102,
    "type": "land",
    "length": 65.37,
-   "years": 0.24,
+   "years": 0.32,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -11573,7 +11544,7 @@
    "to": 90,
    "type": "land",
    "length": 98.08,
-   "years": 0.32,
+   "years": 0.4,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -11938,7 +11909,7 @@
    "to": 112,
    "type": "land",
    "length": 103.41,
-   "years": 0.33,
+   "years": 0.41,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12004,7 +11975,7 @@
    "to": 97,
    "type": "land",
    "length": 75.17,
-   "years": 0.26,
+   "years": 0.35,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12166,7 +12137,7 @@
    "to": 115,
    "type": "land",
    "length": 130.74,
-   "years": 0.39,
+   "years": 0.48,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12315,7 +12286,7 @@
    "to": 102,
    "type": "land",
    "length": 79.51,
-   "years": 0.27,
+   "years": 0.36,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12337,7 +12308,7 @@
    "to": 110,
    "type": "land",
    "length": 126.19,
-   "years": 0.38,
+   "years": 0.47,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12359,7 +12330,7 @@
    "to": 119,
    "type": "land",
    "length": 78.06,
-   "years": 0.27,
+   "years": 0.35,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12385,7 +12356,7 @@
    "to": 103,
    "type": "land",
    "length": 52.33,
-   "years": 0.21,
+   "years": 0.29,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12428,36 +12399,6 @@
    ]
   },
   {
-   "id": "route-102-110",
-   "from": 102,
-   "to": 110,
-   "type": "land",
-   "length": 130.38,
-   "years": 0.39,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": true,
-   "points": [
-    [
-     259,
-     915
-    ],
-    [
-     254.5,
-     959.5
-    ],
-    [
-     273.5,
-     975.5
-    ],
-    [
-     317,
-     1008
-    ]
-   ]
-  },
-  {
    "id": "route-103-104",
    "from": 103,
    "to": 104,
@@ -12485,7 +12426,7 @@
    "to": 110,
    "type": "land",
    "length": 59.81,
-   "years": 0.23,
+   "years": 0.31,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12507,7 +12448,7 @@
    "to": 105,
    "type": "land",
    "length": 80.96,
-   "years": 0.28,
+   "years": 0.36,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12945,7 +12886,7 @@
    "to": 119,
    "type": "land",
    "length": 153.55,
-   "years": 0.45,
+   "years": 0.53,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -12958,36 +12899,6 @@
     [
      164,
      1021
-    ]
-   ]
-  },
-  {
-   "id": "route-110-122",
-   "from": 110,
-   "to": 122,
-   "type": "land",
-   "length": 115.52,
-   "years": 0.36,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": true,
-   "points": [
-    [
-     317,
-     1008
-    ],
-    [
-     253.5,
-     1034.5
-    ],
-    [
-     249.5,
-     1042.5
-    ],
-    [
-     254,
-     1080
     ]
    ]
   },
@@ -13172,7 +13083,7 @@
    "to": 115,
    "type": "land",
    "length": 84.01,
-   "years": 0.28,
+   "years": 0.37,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -13575,7 +13486,7 @@
    "to": 134,
    "type": "land",
    "length": 108.21,
-   "years": 0.34,
+   "years": 0.42,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -13711,7 +13622,7 @@
    "to": 121,
    "type": "land",
    "length": 62.59,
-   "years": 0.23,
+   "years": 0.32,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -15360,36 +15271,6 @@
    ]
   },
   {
-   "id": "route-145-147",
-   "from": 145,
-   "to": 147,
-   "type": "land",
-   "length": 231.94,
-   "years": 0.55,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": false,
-   "points": [
-    [
-     1243,
-     1224
-    ],
-    [
-     1200.5,
-     1080.5
-    ],
-    [
-     1194.5,
-     1074.5
-    ],
-    [
-     1078,
-     1061
-    ]
-   ]
-  },
-  {
    "id": "route-146-147",
    "from": 146,
    "to": 147,
@@ -15531,7 +15412,7 @@
    "to": 152,
    "type": "land",
    "length": 62.03,
-   "years": 0.23,
+   "years": 0.31,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -15619,11 +15500,11 @@
    "to": 155,
    "type": "land",
    "length": 156.11,
-   "years": 0.79,
+   "years": 0.87,
    "legs": [
     {
      "length": 81.57,
-     "years": 0.44
+     "years": 0.53
     },
     {
      "length": 74.55,
@@ -15728,32 +15609,6 @@
     [
      223,
      1229
-    ]
-   ]
-  },
-  {
-   "id": "route-153-155",
-   "from": 153,
-   "to": 155,
-   "type": "land",
-   "length": 202.51,
-   "years": 0.57,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": true,
-   "points": [
-    [
-     277,
-     1224
-    ],
-    [
-     328.5,
-     1245.5
-    ],
-    [
-     472,
-     1215
     ]
    ]
   },
@@ -16104,32 +15959,6 @@
    ]
   },
   {
-   "id": "route-161-163",
-   "from": 161,
-   "to": 163,
-   "type": "land",
-   "length": 99.57,
-   "years": 0.32,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": true,
-   "points": [
-    [
-     167,
-     1263
-    ],
-    [
-     207.5,
-     1343.5
-    ],
-    [
-     112,
-     1346
-    ]
-   ]
-  },
-  {
    "id": "route-161-167",
    "from": 161,
    "to": 167,
@@ -16231,7 +16060,7 @@
    "to": 168,
    "type": "land",
    "length": 93.3,
-   "years": 0.31,
+   "years": 0.39,
    "legs": null,
    "pass": null,
    "seaZone": null,

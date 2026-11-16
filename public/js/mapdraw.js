@@ -141,7 +141,8 @@ export function shade(hex) {
 // Countries' codes on the map, where their land is now (the map's own, drawn in 1440, are hidden by the game): each country
 // still in the game gets its code on the clearest spot (tools/map.js worked them out, land by land) of the land it holds that
 // lies nearest the middle of all it holds, large if it fits and small if not — or, if none of its lands has room, beside one
-// of its settlements — never over another code, larger countries first. A country with nowhere free gets none. Peasant rebels
+// of its settlements — never over another code, larger countries first, and not on the only spot a country still to come has,
+// while it has another free. A country with nowhere free gets none. Peasant rebels
 // and countries out of the game get none. A subject's label names its overlord too, "ULM▸BAV", where that fits, and its own code
 // alone where it does not.
 const CHAR_W = 0.72;                                      // a capital letter's width, in em, as tools/map.js reckons it
@@ -156,32 +157,42 @@ export function countryLabels(state, scenario) {
     const groups = [...lands].map(([code, list]) => ({ code, list, area: list.reduce((n, s) => n + s.label.area, 0) }))
         .sort((a, b) => b.area - a.area || (a.code < b.code ? -1 : 1));
     const placed = [], out = [];
-    const clear = (box) => !placed.some((p) => box[0] < p[2] && box[2] > p[0] && box[1] < p[3] && box[3] > p[1]);
+    const overlap = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+    const clear = (box) => !placed.some((p) => overlap(box, p));
+    const SIZES = [[15, "big"], [10, "small"], [10, "near"]];
+    const boxAt = ([x, y], size, text) => { const tw = CHAR_W * size * text.length, th = CHAR_W * size, m = size / 5; return [x - tw / 2 - m, y - th / 2 - m, x + tw / 2 + m, y + th / 2 + m]; };
+    // a country with one spot alone, for its own code: kept for it from those placed before it, while they have another
+    const only = new Map();
     for (const g of groups) {
+        const short = mapCode(state, scenario, g.code);
+        const all = SIZES.flatMap(([size, key]) => g.list.map((s) => s.label[key]).filter(Boolean).map((p) => boxAt(p, size, short)));
+        if (all.length === 1) only.set(g.code, all[0]);
+    }
+    groups.forEach((g, i) => {
         const at = (s) => s.label.small ?? s.label.big ?? [s.x, s.y];
         const weight = g.area || 1;
         const mx = g.list.reduce((n, s) => n + at(s)[0] * (s.label.area || 1), 0) / weight;
         const my = g.list.reduce((n, s) => n + at(s)[1] * (s.label.area || 1), 0) / weight;
-        let chosen = null;
         const overlord = state.countries[g.code].overlord;
         const short = mapCode(state, scenario, g.code);
-        for (const text of overlord ? [`${short}▸${mapCode(state, scenario, overlord)}`, short] : [short]) {
-            for (const [size, key] of [[15, "big"], [10, "small"], [10, "near"]]) {
-                const tw = CHAR_W * size * text.length, th = CHAR_W * size, m = size / 5;
-                const spots = g.list.map((s) => s.label[key]).filter(Boolean).sort((p, q) => (p[0] - mx) ** 2 + (p[1] - my) ** 2 - ((q[0] - mx) ** 2 + (q[1] - my) ** 2));
-                for (const [x, y] of spots) {
-                    const box = [x - tw / 2 - m, y - th / 2 - m, x + tw / 2 + m, y + th / 2 + m];
-                    if (!clear(box)) continue;
-                    chosen = { code: g.code, text, x, y: y + th / 2, size, box };
-                    break;
+        const kept = groups.slice(i + 1).map((x) => only.get(x.code)).filter(Boolean);
+        const pick = (spare) => {
+            for (const text of overlord ? [`${short}▸${mapCode(state, scenario, overlord)}`, short] : [short]) {
+                for (const [size, key] of SIZES) {
+                    const spots = g.list.map((s) => s.label[key]).filter(Boolean).sort((p, q) => (p[0] - mx) ** 2 + (p[1] - my) ** 2 - ((q[0] - mx) ** 2 + (q[1] - my) ** 2));
+                    for (const p of spots) {
+                        const box = boxAt(p, size, text);
+                        if (!clear(box) || (spare && kept.some((k) => overlap(box, k)))) continue;
+                        return { code: g.code, text, x: p[0], y: p[1] + CHAR_W * size / 2, size, box };
+                    }
                 }
-                if (chosen) break;
             }
-            if (chosen) break;
-        }
-        if (!chosen) continue;
+            return null;
+        };
+        const chosen = pick(true) ?? pick(false);
+        if (!chosen) return;
         placed.push(chosen.box);
         out.push({ code: chosen.code, text: chosen.text, x: chosen.x, y: chosen.y, size: chosen.size });
-    }
+    });
     return out;
 }

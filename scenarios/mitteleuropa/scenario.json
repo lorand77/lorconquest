@@ -1138,8 +1138,7 @@
    "borders": [
     13,
     76,
-    78,
-    79
+    78
    ],
    "straits": []
   },
@@ -2080,7 +2079,6 @@
     42,
     43,
     45,
-    52,
     53
    ],
    "straits": []
@@ -2338,8 +2336,8 @@
      844
     ],
     "small": [
-     154,
-     846
+     166,
+     892
     ],
     "near": null
    },
@@ -2354,7 +2352,6 @@
    "land": "land-52",
    "seaZone": null,
    "borders": [
-    44,
     45,
     49,
     53,
@@ -3261,12 +3258,12 @@
    "label": {
     "area": 14303,
     "big": [
-     816,
-     403
+     802,
+     419
     ],
     "small": [
-     810,
-     407
+     804,
+     423
     ],
     "near": null
    },
@@ -3281,7 +3278,6 @@
    "land": "land-79",
    "seaZone": null,
    "borders": [
-    14,
     15,
     78,
     80
@@ -4288,28 +4284,6 @@
     [
      735,
      465
-    ]
-   ]
-  },
-  {
-   "id": "route-14-79",
-   "from": 14,
-   "to": 79,
-   "type": "land",
-   "length": 204.53,
-   "years": 0.43,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": false,
-   "points": [
-    [
-     655,
-     409
-    ],
-    [
-     858,
-     434
     ]
    ]
   },
@@ -6010,32 +5984,6 @@
     [
      179,
      981
-    ]
-   ]
-  },
-  {
-   "id": "route-44-52",
-   "from": 44,
-   "to": 52,
-   "type": "land",
-   "length": 191.26,
-   "years": 0.4,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": false,
-   "points": [
-    [
-     125,
-     1022
-    ],
-    [
-     140.5,
-     910.5
-    ],
-    [
-     200,
-     859
     ]
    ]
   },
