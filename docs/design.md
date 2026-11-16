@@ -700,7 +700,7 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 - **Layout:** as in LorCiv, the map fills the screen but for a sidebar on its right: at its top the name, the Light/Dark
   switch and the way back to the lobby, then the player's country, the date, pause and the speed (alone), the treasury and the other people, then
   the tabs in one row (an icon over each name) and the open tab's panel, and at the bottom Chat and Leave the game when there
-  are other people. The replay page has the same sidebar with its controls, the standing and the events.
+  are other people. The replay page has the same sidebar with its controls, the standing — by settlements, people or military power, as the game's scores (`mirror.js`, `scoreboard`) — and the events.
 - **The signed-in pages** have LorCiv's shell (`public/js/shell.js`): a top bar with the name, who is signed in and Log out,
   and a rail of sections on the left — Play (the lobby: a new game, rooms, games in progress, and in a column on its right, as in LorCiv, who is
   online — has the lobby or a game open, and whether playing, kept in memory by `socket.js` and sent to the lobby as it changes), My Profile with its two tabs
