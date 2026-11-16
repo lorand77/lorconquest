@@ -28,7 +28,7 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 is about 1.2 km, so an army covers about 500 km a year, as on the Mitteleuropa map.
 
 <!-- generated:summary -->
-168 settlements (21 cities, 147 towns) · 74 countries · 1,890,000 people · 405 land routes, 4 straits, 13 mountain passes
+168 settlements (21 cities, 147 towns) · 74 countries · 1,890,000 people · 404 land routes, 4 straits, 13 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -161,7 +161,7 @@ Central Europe as it stood in 1440: the Holy Roman Empire's patchwork of elector
 | 25 | Lutsk | LIT | town |  |  | 1296 | 844 | 24, 62, 66 |  |
 | 26 | Memel | TEU | town | port |  | 1012 | 419 | 20, 27 |  |
 | 27 | Königsberg | TEU | town | port |  | 983 | 515 | 20, 21, 26, 28, 29 |  |
-| 28 | Danzig | TEU | city | port |  | 887 | 555 | 27, 29, 30, 31, 40, 41, 56, 57 |  |
+| 28 | Danzig | TEU | city | port |  | 887 | 555 | 27, 29, 30, 31, 40, 41, 57 |  |
 | 29 | Allenstein | TEU | town |  |  | 990 | 600 | 23, 27, 28, 30, 60, 61 |  |
 | 30 | Thorn | TEU | town |  |  | 892 | 679 | 28, 29, 56, 60 |  |
 | 31 | Landsberg | TEU | town |  |  | 706 | 712 | 28, 39, 40, 52, 55, 57, 95 |  |
@@ -189,7 +189,7 @@ Central Europe as it stood in 1440: the Holy Roman Empire's patchwork of elector
 | 53 | Brandenburg | BRA | town |  | HRE | 555 | 742 | 50, 51, 54, 88 |  |
 | 54 | Berlin | BRA | town |  | HRE | 603 | 732 | 52, 53, 55, 88 |  |
 | 55 | Frankfurt (Oder) | BRA | town |  | HRE | 667 | 749 | 31, 52, 54, 88, 93, 94, 95 |  |
-| 56 | Inowrocław | POL | town |  |  | 874 | 700 | 28, 30, 57, 58, 59, 60 |  |
+| 56 | Inowrocław | POL | town |  |  | 874 | 700 | 30, 57, 58, 59, 60 |  |
 | 57 | Poznań | POL | town |  |  | 801 | 739 | 28, 31, 56, 58, 95 |  |
 | 58 | Kalisz | POL | town |  |  | 870 | 796 | 56, 57, 59, 97, 98 |  |
 | 59 | Łęczyca | POL | town |  |  | 931 | 764 | 56, 58, 60, 61, 63, 64, 98 |  |
@@ -363,7 +363,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 **Routes crossing a river (159):** 20-27, 21-23, 21-27, 22-23, 23-61, 24-61, 26-27, 27-28, 28-29, 28-30, 29-61, 30-56, 31-52, 31-55, 34-46, 35-45, 35-46, 36-46, 36-51, 39-52, 45-46, 45-47, 47-78, 47-80, 47-85, 49-85, 50-53, 50-88, 51-52, 51-53, 55-95, 56-60, 59-60, 60-61, 61-62, 62-63, 63-65, 64-65, 64-99, 64-146, 64-147, 67-68, 68-72, 68-74, 71-100, 72-74, 73-74, 74-75, 74-76, 75-76, 75-81, 75-82, 75-84, 76-81, 80-83, 80-102, 81-82, 81-83, 82-84, 83-102, 84-100, 84-101, 85-87, 86-87, 86-102, 87-106, 88-89, 88-90, 89-90, 90-91, 90-112, 93-112, 94-95, 94-112, 95-96, 95-97, 96-97, 96-115, 97-115, 98-99, 98-115, 99-146, 100-120, 101-102, 101-110, 101-119, 102-103, 102-104, 102-110, 103-110, 104-105, 104-110, 105-106, 105-108, 105-110, 105-124, 106-107, 107-109, 107-111, 108-127, 110-119, 110-122, 112-114, 112-115, 112-118, 113-118, 113-130, 113-134, 114-115, 115-116, 115-117, 116-136, 118-134, 118-136, 119-120, 119-121, 119-122, 120-121, 121-125, 121-166, 121-167, 122-123, 122-149, 124-151, 126-127, 126-151, 126-155, 127-128, 128-131, 128-132, 129-130, 129-132, 134-135, 135-136, 135-157, 135-158, 135-159, 136-137, 137-138, 138-139, 139-140, 140-146, 141-144, 141-146, 141-147, 142-144, 142-145, 148-149, 149-150, 149-152, 150-152, 151-152, 151-155, 152-155, 153-155, 161-163, 162-163, 162-168, 163-168 — +1 month to march (RULES.md §8).
 
-**Marching** at 420 map units a year, +1 month per river crossing, +2 per leg to or from a pass: a route takes 0.06–1.06 years (median 0.24); through a pass 0.51–1.06.
+**Marching** at 420 map units a year, +1 month per river crossing, +2 per leg to or from a pass: a route takes 0.06–1.06 years (median 0.23); through a pass 0.51–1.06.
 
 | Pop | Countries |
 |---|---|

@@ -2033,8 +2033,8 @@
     "area": 12387,
     "big": null,
     "small": [
-     858,
-     541
+     870,
+     605
     ],
     "near": null
    },
@@ -2055,7 +2055,6 @@
     31,
     40,
     41,
-    56,
     57
    ],
    "straits": []
@@ -2926,10 +2925,13 @@
    "abbr": "Ino",
    "label": {
     "area": 5651,
-    "big": null,
+    "big": [
+     842,
+     683
+    ],
     "small": [
-     846,
-     695
+     844,
+     687
     ],
     "near": null
    },
@@ -2944,7 +2946,6 @@
    "land": "land-56",
    "seaZone": null,
    "borders": [
-    28,
     30,
     57,
     58,
@@ -7807,32 +7808,6 @@
     [
      799,
      550
-    ]
-   ]
-  },
-  {
-   "id": "route-28-56",
-   "from": 28,
-   "to": 56,
-   "type": "land",
-   "length": 145.58,
-   "years": 0.35,
-   "legs": null,
-   "pass": null,
-   "seaZone": null,
-   "crossesRiver": false,
-   "points": [
-    [
-     887,
-     555
-    ],
-    [
-     831.5,
-     644.5
-    ],
-    [
-     874,
-     700
     ]
    ]
   },

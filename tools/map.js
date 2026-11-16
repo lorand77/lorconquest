@@ -1617,6 +1617,35 @@ const json = {
 };
 fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");
 
+// roads that make no sense, as drawn: a road A–C passing close by a settlement B that has roads to both A and C, the way
+// through B hardly longer (take A–C out of Borders: the way leads through B), and two roads crossing with no settlement there
+{
+    const land = json.routes.filter((r) => r.type === "land"), at = (id) => [S.get(id).x, S.get(id).y];
+    const road = new Set(land.map((r) => ekey(r.from, r.to)));
+    const line = (r) => (r.points?.length ? r.points : [at(r.from), at(r.to)]);
+    const near = (p, a, b) => {
+        const vx = b[0] - a[0], vy = b[1] - a[1], t = Math.max(0, Math.min(1, ((p[0] - a[0]) * vx + (p[1] - a[1]) * vy) / (vx * vx + vy * vy || 1)));
+        return { d: Math.hypot(a[0] + t * vx - p[0], a[1] + t * vy - p[1]), t };
+    };
+    for (const r of land) {
+        const a = at(r.from), c = at(r.to), ac = Math.hypot(a[0] - c[0], a[1] - c[1]), drawn = line(r);
+        for (const b of SIDS) {
+            if (b === r.from || b === r.to || !road.has(ekey(r.from, b)) || !road.has(ekey(b, r.to))) continue;
+            const p = at(b), via = Math.hypot(a[0] - p[0], a[1] - p[1]) + Math.hypot(p[0] - c[0], p[1] - c[1]), { t } = near(p, a, c);
+            const d = Math.min(...drawn.slice(1).map((q, i) => near(p, drawn[i], q).d));
+            if (t > 0.15 && t < 0.85 && d < Math.max(18, 0.2 * ac) && via <= 1.15 * ac) warn(`road ${ekey(r.from, r.to)} passes ${Math.round(d)} from ${b} ${S.get(b).name}, whose roads to both ends are hardly longer -- take it out of Borders`);
+        }
+    }
+    const side = (a, b, c) => Math.sign((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]));
+    const cross = (p, q, r, s) => side(p, q, r) * side(p, q, s) < 0 && side(r, s, p) * side(r, s, q) < 0;
+    for (let i = 0; i < land.length; i++) for (let j = i + 1; j < land.length; j++) {
+        const x = land[i], y = land[j];
+        if (new Set([x.from, x.to, y.from, y.to]).size < 4) continue;
+        const lx = line(x), ly = line(y);
+        if (lx.slice(1).some((p, m) => ly.slice(1).some((q, n) => cross(lx[m], p, ly[n], q)))) warn(`roads ${ekey(x.from, x.to)} and ${ekey(y.from, y.to)} cross with no settlement there -- take one out of Borders`);
+    }
+}
+
 {
     const [, rows, i, j] = table("Countries");
     // the Colour column stays only if the table has one; what is written in it is kept as it was

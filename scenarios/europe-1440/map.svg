@@ -1679,7 +1679,6 @@
   <path id="route-24-25" class="route" d="M1606 1290 L1638.5 1306.5 L1676.5 1272.5 L1679 1260"/>
   <path id="route-24-26" class="route" d="M1606 1290 L1609 1380"/>
   <path id="route-24-235" class="route" d="M1606 1290 L1444 1355"/>
-  <path id="route-24-296" class="route" d="M1606 1290 L1574.5 1352.5 L1570 1415"/>
   <path id="route-25-26" class="route" d="M1679 1260 L1666.5 1329.5 L1609 1380"/>
   <path id="route-25-27" class="route" d="M1679 1260 L1712.5 1233.5 L1716.5 1203.5 L1702 1190"/>
   <path id="route-25-306" class="route" d="M1679 1260 L1713.5 1340.5 L1712 1427"/>
@@ -1688,9 +1687,6 @@
   <path id="route-25-310" class="route" d="M1679 1260 L1731.5 1243.5 L1735.5 1235.5 L1738 1183"/>
   <path id="route-25-311" class="route" d="M1679 1260 L1817 1317"/>
   <path id="route-26-235" class="route" d="M1609 1380 L1584.5 1352.5 L1444 1355"/>
-  <path id="route-26-243" class="route" d="M1609 1380 L1584.5 1352.5 L1506.5 1366.5 L1443 1429"/>
-  <path id="route-26-256" class="route" d="M1609 1380 L1584.5 1352.5 L1523.5 1362.5 L1514.5 1371.5 L1505.5 1391.5 L1496.5 1424.5 L1498.5 1465.5 L1508 1475"/>
-  <path id="route-26-295" class="route" d="M1609 1380 L1542 1424"/>
   <path id="route-26-296" class="route" d="M1609 1380 L1570 1415"/>
   <path id="route-26-299" class="route" d="M1609 1380 L1616.5 1422.5 L1638 1444"/>
   <path id="route-26-307" class="route" d="M1609 1380 L1656 1409"/>
@@ -1793,7 +1789,6 @@
   <path id="route-66-68" class="route" d="M795 1934 L832 1947"/>
   <path id="route-66-88" class="route" d="M795 1934 L713 1861"/>
   <path id="route-66-116" class="route" d="M795 1934 L758 1934"/>
-  <path id="route-66-117" class="route" d="M795 1934 L768.5 1925.5 L745.5 1920.5 L714.5 1920.5 L701 1966"/>
   <path id="route-67-68" class="route" d="M794 1964 L832 1947"/>
   <path id="route-67-69" class="route" d="M794 1964 L834 1998"/>
   <path id="route-67-116" class="route" d="M794 1964 L758 1934"/>
@@ -1821,7 +1816,6 @@
   <path id="route-74-115" class="route" d="M890 1881 L857 1923"/>
   <path id="route-75-76" class="route" d="M980 1844 L975 1901"/>
   <path id="route-75-77" class="route" d="M980 1844 L1017 1888"/>
-  <path id="route-75-90" class="route" d="M980 1844 L1004 1740"/>
   <path id="route-75-114" class="route" d="M980 1844 L898 1830"/>
   <path id="route-75-120" class="route" d="M980 1844 L1030 1864"/>
   <path id="route-75-121" class="route" d="M980 1844 L1003 1816"/>
@@ -1898,7 +1892,6 @@
   <path id="route-99-128" class="route" d="M1012 1474 L1079 1440"/>
   <path id="route-99-246" class="route" d="M1012 1474 L1113 1486"/>
   <path id="route-100-101" class="route" d="M986 1523 L1025 1527"/>
-  <path id="route-100-126" class="route" d="M986 1523 L1001.5 1542.5 L1039.5 1543.5 L1048.5 1534.5 L1057 1520"/>
   <path id="route-101-126" class="route" d="M1025 1527 L1057 1520"/>
   <path id="route-102-103" class="route" d="M983 1449 L1029 1435"/>
   <path id="route-103-104" class="route" d="M1029 1435 L1024.5 1415.5 L1044 1399"/>
@@ -2094,7 +2087,6 @@
   <path id="route-186-290" class="route" d="M1379 1856 L1372 1737"/>
   <path id="route-186-292" class="route" d="M1379 1856 L1439 1857"/>
   <path id="route-186-293" class="route" d="M1379 1856 L1407 1883"/>
-  <path id="route-186-335" class="route" d="M1379 1856 L1509 1873"/>
   <path id="route-187-188" class="route" d="M1477 1987 L1535 2026"/>
   <path id="route-187-335" class="route" d="M1477 1987 L1509 1873"/>
   <path id="route-187-360" class="route" d="M1477 1987 L1573 1972"/>
@@ -2246,7 +2238,6 @@
   <path id="route-257-298" class="route" d="M1588 1541 L1619 1476"/>
   <path id="route-258-259" class="route" d="M1096 1584 L1168 1575"/>
   <path id="route-258-263" class="route" d="M1096 1584 L1135.5 1613.5 L1183 1618"/>
-  <path id="route-258-270" class="route" d="M1096 1584 L1110.5 1615.5 L1107.5 1624.5 L1070 1625"/>
   <path id="route-258-272" class="route" d="M1096 1584 L1159 1659"/>
   <path id="route-259-260" class="route" d="M1168 1575 L1240 1595"/>
   <path id="route-259-263" class="route" d="M1168 1575 L1183 1618"/>
@@ -2331,7 +2322,6 @@
   <path id="route-294-298" class="route" d="M1677 1577 L1619 1476"/>
   <path id="route-294-300" class="route" d="M1677 1577 L1752 1529"/>
   <path id="route-294-302" class="route" d="M1677 1577 L1740.5 1589.5 L1802 1586"/>
-  <path id="route-294-324" class="route" d="M1677 1577 L1628.5 1614.5 L1558 1714"/>
   <path id="route-294-337" class="route" d="M1677 1577 L1758 1616 L1743 1664"/>
   <path id="route-294-338" class="route" d="M1677 1577 L1630 1616 L1648 1669"/>
   <path id="route-295-296" class="route" d="M1542 1424 L1570 1415"/>
@@ -2504,7 +2494,6 @@
   <path id="route-353-361" class="route" d="M1750 1941 L1732.5 1988.5 L1724.5 1992.5 L1673 1984"/>
   <path id="route-354-355" class="route" d="M2180 2131 L2127.5 2106.5 L2123.5 2098.5 L2080.5 2043.5 L2091 2032"/>
   <path id="route-354-372" class="route strait" d="M2180 2131 L2199 2190"/>
-  <path id="route-356-357" class="route" d="M1871 2455 L1840.5 2422.5 L1833 2380"/>
   <path id="route-357-358" class="route" d="M1833 2380 L1893 2395"/>
   <path id="route-358-369" class="route" d="M1893 2395 L1902.5 2381.5 L1935.5 2380.5 L1939 2384"/>
   <path id="route-358-370" class="route" d="M1893 2395 L1895.5 2380.5 L1887.5 2375.5 L1879.5 2372.5 L1872.5 2367.5 L1866.5 2361.5 L1860.5 2355.5 L1803.5 2337.5 L1783 2317"/>
@@ -2588,7 +2577,6 @@
   <path id="route-399-400" class="route" d="M2819 2184 L2740 2077"/>
   <path id="route-399-401" class="route" d="M2819 2184 L2825 2035"/>
   <path id="route-400-401" class="route" d="M2740 2077 L2825 2035"/>
-  <path id="route-401-426" class="route" d="M2825 2035 L2821.5 1741.5 L2574 1601"/>
   <path id="route-403-404" class="route strait" d="M2197 2461 L2155 2419"/>
   <path id="route-405-406" class="route" d="M2318 1066 L2411 1007"/>
   <path id="route-405-407" class="route" d="M2318 1066 L2352 951"/>
@@ -2606,7 +2594,6 @@
   <path id="route-408-412" class="route" d="M2357 917 L2322 814"/>
   <path id="route-408-422" class="route" d="M2357 917 L2263.5 921.5 L2234 1012"/>
   <path id="route-409-412" class="route" d="M2391 895 L2322 814"/>
-  <path id="route-409-420" class="route" d="M2391 895 L2258 468"/>
   <path id="route-410-411" class="route" d="M2374 1094 L2323.5 1141.5 L2264 1100"/>
   <path id="route-410-424" class="route" d="M2374 1094 L2420 1113"/>
   <path id="route-411-422" class="route" d="M2264 1100 L2234 1012"/>
@@ -3419,7 +3406,7 @@
   <text id="label-DEN" class="label" x="1238" y="1149.4">DEN</text>
   <text id="label-GOT" class="label" x="1564" y="1031.4">GOT</text>
   <text id="label-LIV" class="label" x="1874" y="937.4">LIV</text>
-  <text id="label-TEU" class="label" x="1546" y="1343.4">TEU</text>
+  <text id="label-TEU" class="label" x="1574" y="1337.4">TEU</text>
   <text id="label-ENG" class="label" x="504" y="1175.4">ENG</text>
   <text id="label-SCO" class="label small" x="826" y="1007.6">SCO</text>
   <text id="label-ISL" class="label" x="750" y="965.4">ISL</text>
