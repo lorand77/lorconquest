@@ -1,13 +1,14 @@
 // The replay page (design.md, "Replays"): a finished game played over in the browser by the engine, from its seed and its
-// command log, with a speed, a slider to go to any day, who is ahead, the events that mattered — and, at the end, whether
+// command log, with a speed, a slider to go to any day, who is ahead — by settlements, people or military power, as the game's
+// scores — the events that mattered — and, at the end, whether
 // this replay came out exactly as the game did. Everything is drawn by the same code as the game page (mapdraw.js). A picture of
 // the day shown, and a timelapse video of any span of the game (mapcanvas.js), are a click away.
-import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, scores } from "/engine/index.js";
+import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, militaryPowerOf, scores } from "/engine/index.js";
 import { requireUser } from "./auth.js";
 import { countryColour, countryLabels, inMapCodes, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoName, videoType } from "./mapcanvas.js";
-import { buildLegs } from "./mirror.js";
+import { buildLegs, formatMen, scoreboard } from "./mirror.js";
 import { createReplayer } from "./replayer.js";
 
 const $ = (id) => document.getElementById(id);
@@ -57,12 +58,26 @@ function feed(events) {
     while ($("events").children.length > 150) $("events").lastChild.remove();
 }
 
+// the twelve ahead on the tab chosen — settlements (what wins), people (their own and their subjects') or military power (their
+// armies' strength, worked out only while that tab is open) — redrawn only when a row changes
+let scoreKey = "settlements", scored = "";
 function standing() {
-    const table = scores(replayer.state);
-    const rows = Object.entries(table).sort((a, b) => b[1].settlements - a[1].settlements || b[1].pop - a[1].pop).slice(0, 12);
-    $("standing").replaceChildren(...rows.map(([code, s]) => make("li", { class: player.has(code) ? "person" : "" },
-        make("span", { class: "swatch", style: `background:${colourOf(code)}` }), ` ${nameOf(code)}${player.has(code) ? ` (${player.get(code)})` : ""} — ${s.settlements}`)));
+    const st = replayer.state;
+    const alive = Object.keys(st.countries).filter((c) => !st.countries[c].rebel && (st.countries[c].out ?? null) === null);
+    const power = scoreKey === "military" ? Object.fromEntries(alive.map((c) => [c, militaryPowerOf(st, c)])) : {};
+    const rows = scoreboard({ table: scores(st), power, alive, key: scoreKey, n: 12 });
+    const show = (r) => (scoreKey === "settlements" ? (Number.isInteger(r.value) ? String(r.value) : r.value.toFixed(1)) : formatMen(Math.round(r.value)));
+    const key = scoreKey + "|" + rows.map((r) => `${r.code}:${show(r)}:${nameOf(r.code)}:${colourOf(r.code)}`).join(",");
+    if (key === scored) return;
+    scored = key;
+    for (const b of document.querySelectorAll("#standing-tabs button")) b.classList.toggle("on", b.dataset.score === scoreKey);
+    $("standing").replaceChildren(...rows.map((r) => make("li", { class: player.has(r.code) ? "person" : "" },
+        make("span", { class: "rank" }, String(r.rank)), make("span", { class: "swatch", style: `background:${colourOf(r.code)}` }),
+        make("span", { class: "who" }, `${nameOf(r.code)}${player.has(r.code) ? ` (${player.get(r.code)})` : ""}`),
+        make("span", { class: "val" }, show(r)))));
+    $("standing-note").textContent = scoreKey === "settlements" ? `${scenario.victory?.settlements} to win; at the start of ${scenario.victory?.endYear} the most win` : scoreKey === "people" ? "their own and their subjects'" : "the strength of their armies";
 }
+for (const b of document.querySelectorAll("#standing-tabs button")) b.addEventListener("click", () => { scoreKey = b.dataset.score; standing(); });
 
 function draw() {
     const now = ownersKey(replayer.state);

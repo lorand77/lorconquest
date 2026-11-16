@@ -76,8 +76,8 @@ export function scenarioPage(sc, name) {
                 return `| ${RELIGION_NAMES[f] ?? f} | ${of.length > 30 ? `${of.length} countries — every one not listed here` : cell(of.map((c) => c.name).join(", "))} |`;
             }));
         // the Reformation, and who leans to it (RULES.md §2)
-        const leans = sc.countries.filter((c) => c.leans);
-        out.push(`From **31 October 1517** a Catholic or Hussite country may adopt the Reformation and turn Protestant, with its core land of its old faith: the church lands bring a year of its settlement money, Catholics then think the worse of it, and its peasants are restless for 5 years.${leans.length ? ` The computer is likelier to where it did: ${leans.map((c) => c.name).join(", ")}.` : ""}`);
+        const leans = sc.countries.filter((c) => c.leans), bulwarks = sc.countries.filter((c) => c.bulwark);
+        out.push(`From **31 October 1517** a Catholic or Hussite country may adopt the Reformation and turn Protestant, with its core land of its old faith: the church lands bring a year of its settlement money, Catholics then think the worse of it, and its peasants are restless for 5 years.${leans.length ? ` The computer does so only in the lands where it happened, until 1600 — those of ${leans.map((c) => c.name).join(", ")}.` : ""}${bulwarks.length ? ` These never do, as the computer plays them: ${bulwarks.map((c) => c.name).join(", ")}.` : ""}`);
     }
 
     // its own achievements

@@ -302,8 +302,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   up to 0.07 more often a think and takes it at up to a quarter worse odds — so the long peaces of a settled map end. On a map
   with religions a neighbour of a faith it regards badly is worth up to half again as a target (Catholic and Sunni, Catholic and
   Protestant), and a zealot takes it at a sixth worse odds (`diplomacy.js`, `spur`). From 1517 a Catholic or Hussite country no
-  person plays may adopt the Reformation — 10% a year where its scenario says it leans to it, 1% elsewhere, more as its
-  neighbours do (`economy.js`).
+  person plays may adopt the Reformation — only one most of whose core land lay in 1440 in a country its scenario says leans to
+  it, at 10% a year and more as its neighbours turn, falling to nothing by 1600, and never a bulwark of the Church the scenario
+  names (`economy.js`): a Protestant north against a Catholic south, as it was, not a cascade that turns everyone.
 - **Raiding parties:** a host of 3,000 men or more splits off 600 for an undefended enemy town within 60 days it is not going
   to itself, up to 3 at a time; an army under 800 men is a raiding party, never merged into a host, going only for undefended
   towns and waiting at the staging settlement when none is left (`war.js`).

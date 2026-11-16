@@ -31,6 +31,16 @@ test("a peace: the war ends, a truce of 5 years starts, the world remembers, and
     assert.deepEqual([game.state.countries.AAA.warmonger, game.state.countries.BBB.warmonger], [15, 5]);
 });
 
+test("a scenario's warmonger scale counts the settlements taken, not the declaring", () => {
+    const game = tinyGame(1, (sc) => { sc.warmongerScale = 0.25; });
+    order(game, cmd("AAA", "declareWar", { target: "BBB" }));
+    take(game, 5, "AAA");
+    take(game, 2, "BBB");
+    order(game, cmd("AAA", "proposePeace", { with: "BBB" }));
+    // +5 for declaring, then a quarter of +10 and of +5
+    assert.deepEqual([game.state.countries.AAA.warmonger, game.state.countries.BBB.warmonger], [5 + 2.5, 1.25]);
+});
+
 test("retaking a settlement that was your core adds nothing, on either side", () => {
     const game = tinyGame();
     order(game, cmd("AAA", "declareWar", { target: "BBB" }));

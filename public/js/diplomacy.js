@@ -208,7 +208,7 @@ function dealWith(ctx, t) {
     if (vassal && them.overlord === me) {
         const why = integrateError(game, me, t), since = them.vassalSince ?? 0;
         out.push(section(ctx, "Integrate",
-            mk("p", { class: "hint" }, `Your vassal since ${longDate(since)}. After 10 years, while neither of you is at war, it may become part of your country for ${n(integratePrice(game, t))} (a courthouse a settlement): its settlements become your core, its armies, fleets and treasury yours. +1 warmonger score a settlement.${human ? " A person plays it: they are asked." : ""}`),
+            mk("p", { class: "hint" }, `Your vassal since ${longDate(since)}. After 10 years, while neither of you is at war, it may become part of your country for ${n(integratePrice(game, t))} (a courthouse a settlement): its settlements become your core, its armies, fleets and treasury yours. +${game.map.warmongerScale} warmonger score a settlement.${human ? " A person plays it: they are asked." : ""}`),
             row(ctx, mk("button", { class: "primary", disabled: why ? "disabled" : undefined, onclick: async () => { if (confirm(`Integrate ${them.name}?`)) { await ctx.send({ type: "integrate", target: t }); ctx.redraw(); } } }, "Integrate"),
                 why ? mk("span", { class: "hint" }, why) : "")));
     }
@@ -224,11 +224,24 @@ function dealWith(ctx, t) {
     else {
         const { auto, calls } = warJoiners(game, me, t);
         const bound = state.agreements.filter((x) => ["pact", "truce", "defensive", "military"].includes(x.kind) && [x.a, x.b].includes(me) && [x.a, x.b].includes(t) || (x.kind === "guarantee" && x.a === me && x.b === t));
-        const join = (list) => list.map((e) => state.countries[e[0]].name).join(", ");
+        // each joiner, and why (RULES.md §10): a vassal, a guarantor, a coalition against you, an ally — or called, and free to
+        // refuse — and its faith on a map with religions
+        const why = (e) => {
+            const c = e[0], side = e[e.length - 1], principal = side === "def" ? t : me;
+            if (e.length === 3) return "called by its military alliance";
+            if (state.countries[c].overlord === principal) return "vassal";
+            if (state.agreements.some((x) => x.kind === "defensive" && x.against === me && [x.a, x.b].includes(c) && [x.a, x.b].includes(principal))) return "coalition against you";
+            if (state.agreements.some((x) => x.kind === "guarantee" && x.a === c && x.b === principal)) return "guarantees it";
+            return "defensive ally";
+        };
+        const faith = (c) => (religionOf(game, c) ? `, ${RELIGION_NAMES[religionOf(game, c)]}` : "");
+        const join = (list) => list.map((e) => `${state.countries[e[0]].name} (${why(e)}${faith(e[0])})`).join(", ");
+        const score = Math.round(state.countries[me].warmonger ?? 0);
         const sidesOf = (side) => [...auto, ...calls].filter((e) => e[e.length - 1] === side);
         out.push(section(ctx, "War",
             sidesOf("def").length ? mk("p", {}, `Would join ${them.name}: ${join(sidesOf("def"))}${calls.some((e) => e[2] === "def") ? " (some may refuse)" : ""}.`) : "",
             sidesOf("att").length ? mk("p", {}, `Would join you: ${join(sidesOf("att"))}.`) : "",
+            mk("p", { class: score >= 30 ? "bad" : "hint" }, `Your warmonger score: ${score}. At 30 or more, the computer countries that border you and each other, and do not loathe each other's faith, ally against you each year — those alliances bring them in only when you attack, and end once your score is under 30 again.`),
             bound.length ? mk("p", { class: "bad" }, `This breaks ${bound.map((x) => (x.kind === "truce" ? "your truce" : AGREEMENT_NAMES[x.kind])).join(", ")}: your alliances end and the world's opinion of you falls by 40 for 10 years.`) : "",
             // with the marches planned for this war, sent the moment it is declared (game.js, premoves)
             mk("button", { class: "danger", onclick: async () => { if (confirm(`Declare war on ${them.name}? It adds 5 to your warmonger score.${ctx.planned?.(t) ? ` Your ${ctx.planned(t)} planned march${ctx.planned(t) > 1 ? "es go" : " goes"} at once.` : ""}`)) { await ctx.send({ type: "declareWar", target: t }); ctx.redraw(); } } },

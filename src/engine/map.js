@@ -53,7 +53,9 @@ export function buildMap(scenario) {
     }
     for (const list of adj.values()) list.sort((x, y) => byKey(x.to, y.to));
     const zones = new Map(scenario.seaZones.map((z) => [z.id, z]));
-    return { scenario, nodes, adj, legDays, straits, zones, keys: [...nodes.keys()].sort(byKey), x: scenario.scaleX };
+    return { scenario, nodes, adj, legDays, straits, zones, keys: [...nodes.keys()].sort(byKey), x: scenario.scaleX,
+        // the warmonger score a settlement taken or integrated adds, × this (RULES.md §10, Warmongers): 1 but on a larger map
+        warmongerScale: scenario.warmongerScale ?? 1 };
 }
 
 // Dijkstra over the legs, from a place ({ node }) or a point on a leg ({ from, to, f, days }, f the way along

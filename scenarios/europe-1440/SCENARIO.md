@@ -23,6 +23,9 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 **x = 3** (see the scenario scaling note in RULES.md)
 
+**Warmonger scale:** 0.25 — 45 ÷ the 180 settlements that win here: a settlement taken counts a quarter of what it does on Mitteleuropa, so a winner
+is about as notorious as one there (RULES.md §10, Warmongers). Change it with the number that wins.
+
 **Army speed:** 315 map units per year — a route takes its length on the map ÷ this (RULES.md §8). One map unit
 is about 1.6 km, so an army covers about 500 km a year, as on the Mitteleuropa map.
 
@@ -926,10 +929,13 @@ table; a country listed twice, or a faith that is none of Catholic, Orthodox, Hu
 | Sunni | OTT, KAR, CAN, DUL, RAM, AQQ, GHO, GRA, MRC, TLE, TUN | The Ottomans and the Anatolian beyliks, the Aq Qoyunlu, the Great Horde, Granada and the Maghreb |
 
 From 31 October 1517 a Catholic or Hussite country may adopt the Reformation and turn Protestant (RULES.md §2, Religion). The
-computer is likelier to where it did: the north of the Empire, Scandinavia, the Baltic, Britain, the Swiss and Dutch towns, Béarn
-and Bohemia.
+computer does only where it did: in the lands of the countries leaning to it below — the north of the Empire, Scandinavia, the
+Baltic, Britain, the Swiss and Dutch towns, Béarn and Bohemia — a country most of whose core land lay in them in 1440, until
+1600; never a bulwark of the Church.
 
 **Lean to the Reformation:** SWE, DEN, NOR, ENG, SCO, LIV, TEU, SHO, LUB, HAM, MEC, POM, BRE, BRU, MAG, BRA, HES, SAX, LUS, SIL, ANS, NUR, PAL, STR, WRT, ULM, BAS, ZUR, UTR, GEL, FRI, FOI, BOH
+
+**Bulwarks of the Church:** PAP, CAS, ARA, NAV, POR, FRA, AUS, TYR, STY, BMU, BIN, BLA, SAL, POL, MAZ, LIT, MIL, VEN, GEN, FLO, SIE, FER, MAN, MON, RIM, NAP, SAV, KRH, COL, MAI, TRI, WBG, MUN, LIE, TRN, THO, DES
 
 ## Characters
 

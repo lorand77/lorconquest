@@ -88,14 +88,22 @@ export function economyOrders(game, code, fl, ctx) {
     // yet — is proclaimed (RULES.md, Special coring; the engine's own check, regions.js)
     for (const f of game.map.scenario.formables ?? []) if (!proclaimCheck(game, code, f).error) cmd("proclaim", { region: f.id });
 
-    // the Reformation (RULES.md §2, Religion): a country the scenario says leans to it adopts it at 10% a year, any other Catholic
-    // at 1% — a Hussite at twice that — and 10% more for all its neighbours Protestant, a zealot half as readily: a chance at each
-    // think (every 15 days), on dice of its own. Never for a person's country it looks after while they are away: their faith is theirs
+    // the Reformation (RULES.md §2, Religion), only where it was: a country most of whose core land lay in 1440 in a country its
+    // scenario says leans to it — so whoever holds Saxony or the Dutch towns now — adopts it at 10% a year, a Hussite at twice that,
+    // and 10% more for all its neighbours Protestant, a zealot half as readily; less each year from 1517, none from 1600; never a
+    // bulwark of the Church its scenario names, nor anyone else. A chance at each think (every 15 days), on dice of its own — and
+    // never for a person's country it looks after while they are away: their faith is theirs
     if (!st.humans.includes(code) && !reformationError(game, code)) {
-        const leans = game.map.scenario.countries.find((x) => x.code === code)?.leans;
-        const nb = neighboursOf(game, code), protestant = nb.length ? nb.filter((n) => religionOf(game, n) === "protestant").length / nb.length : 0;
-        const yearly = ((leans ? 0.10 : 0.01) * (c.religion === "hussite" ? 2 : 1) + 0.10 * protestant) * (fl.character === "zealot" ? 0.5 : 1);
-        if (dice(hash(`${st.seed}:${code}:${st.day}:reformation`))() < yearly * 15 / YEAR_DAYS) cmd("adoptReformation");
+        const sc = game.map.scenario, me = sc.countries.find((x) => x.code === code);
+        const leaning = new Set(sc.countries.filter((x) => x.leans).map((x) => x.code));
+        const core = ownSettlements(st, code).filter((x) => x.cores.includes(code));
+        const leansNow = core.length > 0 && core.filter((x) => leaning.has(sc.settlements.find((y) => y.id === x.id)?.country)).length > core.length / 2;
+        const year = st.day / YEAR_DAYS + 1440, window = Math.max(0, 1 - (year - 1517) / 83);
+        if (leansNow && !me?.bulwark && window > 0) {
+            const nb = neighboursOf(game, code), protestant = nb.length ? nb.filter((n) => religionOf(game, n) === "protestant").length / nb.length : 0;
+            const yearly = (0.10 * (c.religion === "hussite" ? 2 : 1) + 0.10 * protestant) * window * (fl.character === "zealot" ? 0.5 : 1);
+            if (dice(hash(`${st.seed}:${code}:${st.day}:reformation`))() < yearly * 15 / YEAR_DAYS) cmd("adoptReformation");
+        }
     }
 
     // tax: none above 2 in peace, a little in war, more if the treasury needs it

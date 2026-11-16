@@ -66,7 +66,14 @@
                 <p id="ex-status" class="hint">The borders year by year, with the date and who leads. It records in real time: 210 years at 5 years a second take 42 seconds, after the game has been played over once. Keep this tab in front: the recording waits while it is hidden.</p>
             </div>
             <h3>Standing</h3>
-            <ol id="standing" class="standing"></ol>
+            <!-- the scores as the game shows them (mirror.js, scoreboard): settlements, people or military power -->
+            <div id="standing-tabs" class="sb-tabs standing-tabs">
+                <button data-score="settlements" class="on">Settlements</button>
+                <button data-score="people">People</button>
+                <button data-score="military">Military</button>
+            </div>
+            <ol id="standing" class="sb-rows standing"></ol>
+            <div id="standing-note" class="sb-note standing-note"></div>
             <h3>Events</h3>
             <ul id="events" class="events"></ul>
         </aside>

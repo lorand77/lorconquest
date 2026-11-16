@@ -143,8 +143,9 @@ Two faiths regard each other by one number, which the computer adds to its opini
 it turns **Protestant**, and so do the people of its **core** settlements of its old faith — land it holds that is not core keeps
 its faith. The church lands bring **a year of its settlement money** at once, and for **5 years** its chance of a peasant uprising
 is **5% a year** higher (§11). Its standing changes with its faith (the table above): Catholics think the worse of it, Protestants
-the better. The computer adopts it on its own reckoning — likelier where its scenario says it leans to it, and as its neighbours
-do — but never for a person's country it looks after.
+the better. The computer adopts it only where it was adopted: a country most of whose core land lay in 1440 in a country its scenario says
+leans to it, the likelier as its neighbours turn, less each year and not from 1600 — never a bulwark of the Church its scenario
+names, and never for a person's country it looks after. A person may adopt it at any time from 1517.
 
 People of another faith are slower to accept you. Their **gap** is the pair's number ÷ −25, from 0 to 1 — 0 for the same
 faith or a pair at 0, 1 for Catholic and Sunni, 0.4 for Catholic and Orthodox. A settlement not core for you takes
@@ -752,7 +753,7 @@ with that country, do not count). It costs the price of a **courthouse for each 
 become yours and **core** for you at once; its armies, fleets, sharpshooters, soldiers and mercenaries being raised, weapons,
 treasury, bank deposit, loans and research pool become yours, and its own subjects become your subjects (a vassal among them
 counting its 10 years afresh). It is then out of the game — integrated, not defeated: nothing of it vanishes. Your warmonger
-score rises by **1 for each settlement**. A computer-run vassal has no say; a person's is **asked**, and their yes counts
+score rises by **1 for each settlement** (× the warmonger scale, *Warmongers* below). A computer-run vassal has no say; a person's is **asked**, and their yes counts
 only if all of this still holds when they give it. A person whose country is integrated has lost it, as if eliminated.
 
 **Union.** Two countries played by people may become one, ruled by both. Either **proposes a union** to the other, who is
@@ -787,7 +788,7 @@ go to war for gain:
 | You | On the attacking side | On the defending side |
 |---|---|---|
 | Declare a war | +5 | — |
-| End a war holding a settlement you took in it — captured, or given to you in the peace | +1 per 1,000 of its pop (a town ≈ +10, a city ≈ +20) | **half**: +1 per 2,000 (a town ≈ +5, a city ≈ +10) |
+| End a war holding a settlement you took in it — captured, or given to you in the peace | +1 per 1,000 of its pop (a town ≈ +10, a city ≈ +20) × the warmonger scale | **half**: +1 per 2,000 (a town ≈ +5, a city ≈ +10) × the warmonger scale |
 | Make a country your vassal in a peace | +10 | +5 |
 | Make a country your protectorate in a peace | +5 | +2.5 |
 | Make a country your vassal on demand (or your protectorate a vassal) | +5 (+2.5) | — |
@@ -797,6 +798,9 @@ go to war for gain:
 side — defensive allies, guarantors and military allies it called in. The world sees it as the
 victim, so it is forgiven half of what it takes from the aggressor. Everyone else is on the
 attacking side: the country that declared and everyone who joined it.
+
+**The warmonger scale** is the scenario's: 1, but on a larger map, where winning takes more settlements, less — Europe 1440's 0.25, so
+that a winner there is about as notorious as one on Mitteleuropa. It scales the settlements taken and integrated, nothing else.
 
 Retaking a settlement that was **your core when the war began** adds nothing, on either side.
 Subjects gained through the HRE add nothing either — they agreed; one gained on demand agreed too, but the world sees a
@@ -893,10 +897,13 @@ A neighbour is any country whose settlements share a land route with its settlem
 
 **Coalitions.** At the start of each year, every computer country that borders a country with a
 warmonger score of **30 or more** proposes a **defensive alliance** to every other computer
-country that borders the same warmonger. Each proposal is answered as above — the warmonger part
-of `need` counts for both, since neither is the warmonger. A coalition's alliance is **against that warmonger**: it lapses
-at the start of a year when the warmonger's score has fallen below 30, or the moment the warmonger is out of the game. (An
-alliance the two had already, or sign for themselves, is not a coalition's and does not lapse.)
+country that borders the same warmonger **and borders it too** — never to one of a faith the two regard at **−20 or worse**
+(§2, Religion: Christians and Muslims, Catholics and Protestants or Hussites). Each proposal is answered as above — the warmonger
+part of `need` counts for both, since neither is the warmonger. A coalition's alliance is **against that warmonger**: it brings
+the ally into a war **only when the warmonger declares it** — anyone else who attacks one of them meets it alone, or with its
+other allies — and it lapses at the start of a year when the warmonger's score has fallen below 30, or the moment the warmonger
+is out of the game. (An alliance the two had already, or sign for themselves, is not a coalition's and does not lapse.)
+Coalitions are among computer countries only.
 
 **Becoming your subject** — mostly size, a little opinion. The HRE vote is rolled the same way
 ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)):

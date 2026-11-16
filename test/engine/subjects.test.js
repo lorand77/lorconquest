@@ -3,7 +3,7 @@
 // 68,800, CCC's 17,200.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { addAgreement, formLeague, setSubject } from "../../src/engine/diplomacy.js";
+import { addAgreement, formLeague, setSubject, warJoiners } from "../../src/engine/diplomacy.js";
 import { INTEGRATE_DAYS, atWar, demandChance, subjectChance, economyOf, germanStates, hasAgreement, opinion, scores, wouldCycle } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused, rigRoll } from "../helpers/tiny.js";
 
@@ -223,8 +223,12 @@ test("the League allies no two members at war with each other, nor a vassal, nor
     for (const r of rest) if (!atWar(g.state, r, "DDD")) assert.ok(hasAgreement(g.state, "defensive", r, "DDD"));
 });
 
+// a road from 2 to 6: AAA and CCC, who both border BBB, border each other too — as the members of a coalition must
+const road = (sc) => { sc.routes.push({ id: "route-2-6", from: 2, to: 6, type: "land", length: 0, crossesRiver: false, seaZone: null, points: [], pass: null, years: 0.2, legs: null }); };
+const neighbours = (seed = 1, change = () => {}, humans = []) => tinyGame(seed, (sc) => { road(sc); change(sc); }, humans);
+
 test("each year the warmonger score falls by 2, and computer countries bordering a warmonger of 30 or more ally against it", () => {
-    const game = tinyGame();
+    const game = neighbours();
     game.state.countries.BBB.warmonger = 40;
     game.state.countries.AAA.warmonger = 1;
     const events = runTo(game, 365);
@@ -233,18 +237,18 @@ test("each year the warmonger score falls by 2, and computer countries bordering
     assert.ok(hasAgreement(game.state, "defensive", "AAA", "CCC"));
     assert.deepEqual(ofType(events, "agreement").map((e) => [e.kind, e.why]).filter((x) => x[1] === "against BBB").length > 0, true);
     // no alliance forms against a warmonger under 30, nor with a human or a vassal
-    const quiet = tinyGame();
+    const quiet = neighbours();
     quiet.state.countries.BBB.warmonger = 31;                                   // 29 after the year's fall
     runTo(quiet, 365);
     assert.equal(hasAgreement(quiet.state, "defensive", "AAA", "CCC"), false);
-    const humans = tinyGame(1, () => {}, ["CCC"]);
+    const humans = neighbours(1, () => {}, ["CCC"]);
     humans.state.countries.BBB.warmonger = 40;
     runTo(humans, 365);
     assert.equal(hasAgreement(humans.state, "defensive", "AAA", "CCC"), false);
 });
 
 test("a coalition's alliances lapse when the warmonger they were made against is one no more, or is out of the game", () => {
-    const game = tinyGame();
+    const game = neighbours();
     game.state.countries.BBB.warmonger = 40;
     runTo(game, 365);
     const coalition = game.state.agreements.find((x) => x.kind === "defensive" && x.a === "AAA" && x.b === "CCC");
@@ -259,7 +263,7 @@ test("a coalition's alliances lapse when the warmonger they were made against is
     assert.deepEqual(ofType(events, "expired").map((e) => [e.a, e.b, e.against]), [["AAA", "CCC", "BBB"]]);
     assert.ok(hasAgreement(game.state, "defensive", "DDD", "EEE"), "an ordinary alliance does not lapse");
     // a warmonger that is eliminated takes its coalitions with it, at once
-    const out = tinyGame();
+    const out = neighbours();
     out.state.countries.BBB.warmonger = 60;
     runTo(out, 365);
     assert.ok(hasAgreement(out.state, "defensive", "AAA", "CCC"));
@@ -267,6 +271,26 @@ test("a coalition's alliances lapse when the warmonger they were made against is
     const gone = runTo(out, 366);
     assert.ok(ofType(gone, "eliminated").some((e) => e.country === "BBB"));
     assert.equal(hasAgreement(out.state, "defensive", "AAA", "CCC"), false);
+});
+
+test("a coalition: only of countries that border each other, never across faiths at −20 or worse, and only against its warmonger", () => {
+    // without the road AAA and CCC both border BBB, but not each other: no coalition
+    const apart = tinyGame();
+    apart.state.countries.BBB.warmonger = 40;
+    runTo(apart, 365);
+    assert.equal(hasAgreement(apart.state, "defensive", "AAA", "CCC"), false);
+    // Catholic AAA and Sunni CCC: none either
+    const faiths = neighbours(1, (sc) => { for (const c of sc.countries) c.religion = c.code === "CCC" ? "sunni" : "catholic"; });
+    faiths.state.countries.BBB.warmonger = 40;
+    runTo(faiths, 365);
+    assert.equal(hasAgreement(faiths.state, "defensive", "AAA", "CCC"), false);
+    // the coalition brings AAA in when BBB attacks CCC, not when DDD does
+    const game = neighbours();
+    game.state.countries.BBB.warmonger = 40;
+    runTo(game, 365);
+    assert.ok(hasAgreement(game.state, "defensive", "AAA", "CCC"));
+    assert.ok(warJoiners(game, "BBB", "CCC").auto.some(([c]) => c === "AAA"), "against the warmonger: AAA joins");
+    assert.ok(!warJoiners(game, "DDD", "CCC").auto.some(([c]) => c === "AAA"), "against anyone else: CCC stands alone");
 });
 
 test("winning: the settlements held and vassalized, protectorates half; the end year goes to the most, then the most people", () => {

@@ -13,8 +13,9 @@ import { BUILDING_PRICE } from "./costs.js";
 import { popOf } from "./economy.js";
 import { capture } from "./fighting.js";
 import { retreat } from "./movement.js";
-import { NEAR_VICTORY, agreementAnswer, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
+import { NEAR_VICTORY, agreementAnswer, bordering, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
 import { random } from "./random.js";
+import { faithRegard } from "./religion.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
 import { armyList, atWar, canEnter, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
@@ -148,7 +149,9 @@ export function warJoiners(game, declarer, target) {
     };
     for (const c of subjectsOf(st, declarer).filter((x) => isVassal(st, x))) add(auto, c, [c, "att"], "att");
     for (const c of subjectsOf(st, target).filter((x) => isVassal(st, x))) add(auto, c, [c, "def"], "def");
-    for (const c of [...new Set([...alliesOf(st, target).filter((x) => hasAgreement(st, "defensive", target, x)), ...guarantorsOf(st, target)])].sort()) add(auto, c, [c, "def"], "def");
+    // a defensive ally joins — one of a coalition only against the warmonger it was made against (RULES.md §10, Coalitions)
+    const defends = (x) => agreementsBetween(st, target, x).some((g) => g.kind === "defensive" && (!g.against || g.against === declarer));
+    for (const c of [...new Set([...alliesOf(st, target).filter(defends), ...guarantorsOf(st, target)])].sort()) add(auto, c, [c, "def"], "def");
     for (const side of ["att", "def"]) {
         for (const c of alliesOf(st, principal[side]).filter((x) => hasAgreement(st, "military", principal[side], x))) add(calls, c, [c, principal[side], side], side);
     }
@@ -258,7 +261,8 @@ export function validateTerms(game, mine, other, terms) {
 }
 
 // the warmonger score at a peace (RULES.md §10): +1 per 1,000 people of each settlement held that was taken in the war or
-// given in the peace — half on the defending side — unless it was one's own core; +10/+5 for a vassal made, +5/+2.5 for a protectorate
+// given in the peace — half on the defending side, × the scenario's warmonger scale — unless it was one's own core; +10/+5 for
+// a vassal made, +5/+2.5 for a protectorate
 function scoreWarmongers(game, a, b, info, terms, gainer) {
     const st = game.state;
     const credit = (country, points) => { st.countries[country].warmonger += points; };
@@ -266,7 +270,7 @@ function scoreWarmongers(game, a, b, info, terms, gainer) {
     for (const [id, taker] of Object.entries({ ...info.gained, ...gainer })) {
         const s = st.settlements[id];
         if (s.owner !== taker || (taker !== a && taker !== b) || s.cores.includes(taker)) continue;
-        credit(taker, s.pop / 1000 * side(taker));
+        credit(taker, s.pop / 1000 * side(taker) * game.map.warmongerScale);
     }
     if (terms.makeSubject) credit(terms.who, { vassal: 10, protectorate: 5 }[terms.makeSubject] * side(terms.who));
     if (terms.becomeSubject) credit(terms.other, { vassal: 10, protectorate: 5 }[terms.becomeSubject] * side(terms.other));
@@ -367,11 +371,11 @@ export function integrateError(game, overlord, subject) {
     return null;
 }
 
-// the vassal becomes part of the overlord (absorb). +1 warmonger score a settlement.
+// the vassal becomes part of the overlord (absorb). +1 warmonger score a settlement, × the scenario's warmonger scale.
 export function integrate(game, overlord, subject, events) {
     game.state.countries[overlord].treasury -= integratePrice(game, subject);
     const n = absorb(game, overlord, subject, events);
-    game.state.countries[overlord].warmonger += n;
+    game.state.countries[overlord].warmonger += n * game.map.warmongerScale;
     events.push({ type: "integrated", day: game.state.day, country: overlord, subject, settlements: n });
 }
 
@@ -512,7 +516,8 @@ export function notePropose(game, from, to, kind) {
     game.state.memory.proposed[proposalKey(from, to, kind)] = game.state.day;
 }
 
-// the computer countries that border the same warmonger propose defensive alliances to each other (RULES.md §10)
+// the computer countries that border the same warmonger — and each other — propose defensive alliances to each other, never
+// across faiths that regard each other at −20 or worse (RULES.md §10, Coalitions)
 // a coalition's alliances lapse once the warmonger they were made against is one no more — its score fallen under 30 (checked
 // at the start of the year, after the fall) — or is out of the game (RULES.md §10, Coalitions)
 export function lapseCoalitions(game, events) {
@@ -525,6 +530,7 @@ export function lapseCoalitions(game, events) {
     evictClosed(game, events);
 }
 
+export const COALITION_FAITH = -20;
 export function coalitions(game, events) {
     const st = game.state;
     const computer = (c) => real(st, c) && !isHuman(st, c) && !st.countries[c].overlord;
@@ -532,7 +538,8 @@ export function coalitions(game, events) {
         if (!real(st, w) || (st.countries[w].warmonger ?? 0) < 30) continue;
         const near = neighboursOf(game, w).filter(computer);
         for (const c of near) for (const d of near) {
-            if (c === d || allied(st, c, d) || atWar(st, c, d)) continue;
+            if (c === d || allied(st, c, d) || atWar(st, c, d) || !bordering(game, c, d)) continue;
+            if (faithRegard(st.countries[c].religion, st.countries[d].religion) <= COALITION_FAITH) continue;
             if (agreementAnswer(game, d, c, "defensive").accept) {
                 addAgreement(game, "defensive", c, d, null, w);
                 events.push({ type: "agreement", day: st.day, kind: "defensive", a: c, b: d, why: `against ${w}` });
