@@ -113,16 +113,20 @@ export function warScore(game, mine, other) {
 
 // what a set of peace terms asks of `other`, in the units of the formula: % of its people in the settlements
 // asked for, 10 for each year of its money asked for, 50 for a vassal and 25 for a protectorate — less the same
-// for what the proposer gives
+// for what the proposer gives. Money is counted in years of the payer's money: what it asks, in years of `other`'s; what it
+// pays, in years of its own — an empire's coin is no small country's treasure. And money paid only offsets what else is asked:
+// a subject is won by the war, never bought (RULES.md §10, Peace)
+const yearOf = (game, code) => { const e = economyOf(game, code); return Math.max(1, e.moneyPerYear, 0.25 * (e.settlementMoney ?? 0)); };
 export function peaceCost(game, mine, other, terms) {
     const st = game.state, w = st.warInfo[warKey(mine, other)];
     const base = Math.max(1, w ? w.startPop[other] : popOf(st, other));
     const pop = (ids) => sum(ids, (id) => st.settlements[id].pop) / base * 100;
-    let cost = pop(terms.take ?? []) - pop(terms.give ?? []);
-    // a year of its money — never less than a quarter of what its settlements yield: one deep in debt, earning nothing a year,
-    // does not sell a peace for a handful of coins
-    if (terms.money) { const e = economyOf(game, other); cost += 10 * terms.money / Math.max(1, e.moneyPerYear, 0.25 * (e.settlementMoney ?? 0)); }
-    cost += pop((terms.release ?? []).flatMap((c) => Object.values(st.settlements).filter((s) => s.owner === c).map((s) => s.id)));
+    // a year of the payer's money — never less than a quarter of what its settlements yield: one deep in debt, earning nothing a
+    // year, does not sell a peace for a handful of coins
+    const asked = pop(terms.take ?? []) + (terms.money > 0 ? 10 * terms.money / yearOf(game, other) : 0)
+        + pop((terms.release ?? []).flatMap((c) => Object.values(st.settlements).filter((s) => s.owner === c).map((s) => s.id)));
+    const paid = terms.money < 0 ? 10 * -terms.money / yearOf(game, mine) : 0;
+    let cost = asked - (terms.makeSubject ? Math.min(paid, asked) : paid) - pop(terms.give ?? []);
     cost += { vassal: 50, protectorate: 25 }[terms.makeSubject] ?? 0;
     cost -= { vassal: 50, protectorate: 25 }[terms.becomeSubject] ?? 0;
     return cost;

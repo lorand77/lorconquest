@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { capture } from "../../src/engine/fighting.js";
 import { addAgreement, setSubject } from "../../src/engine/diplomacy.js";
-import { Game, hasAgreement, isCore, routeFor, situation } from "../../src/engine/index.js";
+import { Game, economyOf, hasAgreement, isCore, peaceCost, routeFor, situation } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused } from "../helpers/tiny.js";
 
 const cmd = (country, type, rest = {}) => ({ type, country, ...rest });
@@ -235,4 +235,18 @@ test("the capital a country began with, taken back, is its capital again at once
     capture(game, st.settlements[1], "AAA", events, "storm");                   // taken back
     assert.equal(st.countries.AAA.capital, 1);
     assert.deepEqual(ofType(events, "capital").map((e) => [e.country, e.settlement]), [["AAA", 1]]);
+});
+
+test("money in a peace: what is asked in years of the loser's money, what is paid in years of the payer's; a subject is never bought", () => {
+    const game = tinyGame();
+    order(game, cmd("AAA", "declareWar", { target: "BBB" }));
+    const year = (c) => { const e = economyOf(game, c); return Math.max(1, e.moneyPerYear, 0.25 * e.settlementMoney); };
+    const X = 100000;
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: X }) - 10 * X / year("BBB")) < 1e-9, "asked: in years of BBB's money");
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: -X }) + 10 * X / year("AAA")) < 1e-9, "paid: in years of AAA's own");
+    // however much AAA pays, BBB as its vassal costs 50; paid money offsets only what else is asked
+    assert.equal(peaceCost(game, "AAA", "BBB", { money: -1e9, makeSubject: "vassal" }), 50);
+    const five = 10000 / Math.max(1, game.state.warInfo["AAA|BBB"].startPop.BBB) * 100;  // settlement 5, as % of BBB's people
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], money: -1e9, makeSubject: "protectorate" }) - 25) < 1e-9, "the land bought, the protectorate not");
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], makeSubject: "protectorate" }) - (five + 25)) < 1e-9);
 });
