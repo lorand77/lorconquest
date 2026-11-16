@@ -1779,7 +1779,6 @@
   <path id="route-63-74" class="route" d="M813 1812 L890 1881"/>
   <path id="route-63-114" class="route" d="M813 1812 L898 1830"/>
   <path id="route-64-65" class="route" d="M779 1851 L804 1906"/>
-  <path id="route-64-66" class="route" d="M779 1851 L770.5 1887.5 L776.5 1915.5 L795 1934"/>
   <path id="route-64-88" class="route" d="M779 1851 L713 1861"/>
   <path id="route-65-66" class="route" d="M804 1906 L795 1934"/>
   <path id="route-65-68" class="route" d="M804 1906 L832 1947"/>
@@ -1820,7 +1819,6 @@
   <path id="route-75-120" class="route" d="M980 1844 L1030 1864"/>
   <path id="route-75-121" class="route" d="M980 1844 L1003 1816"/>
   <path id="route-76-77" class="route" d="M975 1901 L1017 1888"/>
-  <path id="route-76-114" class="route" d="M975 1901 L955.5 1876.5 L898 1830"/>
   <path id="route-76-119" class="route" d="M975 1901 L962 1966"/>
   <path id="route-77-119" class="route" d="M1017 1888 L1019.5 1946.5 L962 1966"/>
   <path id="route-77-120" class="route" d="M1017 1888 L1030 1864"/>
@@ -1839,7 +1837,6 @@
   <path id="route-81-94" class="route" d="M962 1580 L909 1549"/>
   <path id="route-81-100" class="route" d="M962 1580 L982.5 1562.5 L987.5 1553.5 L986 1523"/>
   <path id="route-81-126" class="route" d="M962 1580 L1031.5 1551.5 L1048.5 1534.5 L1057 1520"/>
-  <path id="route-82-83" class="route" d="M894 1578 L884.5 1555.5 L885.5 1530.5 L889.5 1522.5 L904 1479"/>
   <path id="route-82-84" class="route" d="M894 1578 L851 1569"/>
   <path id="route-82-94" class="route" d="M894 1578 L909 1549"/>
   <path id="route-83-93" class="route" d="M904 1479 L934 1525"/>
@@ -1863,7 +1860,6 @@
   <path id="route-90-111" class="route" d="M1004 1740 L1067 1654"/>
   <path id="route-90-112" class="route" d="M1004 1740 L1019.5 1690.5 L1022 1643"/>
   <path id="route-90-113" class="route" d="M1004 1740 L918 1779"/>
-  <path id="route-90-114" class="route" d="M1004 1740 L951.5 1812.5 L933.5 1820.5 L898 1830"/>
   <path id="route-90-121" class="route" d="M1004 1740 L1003 1816"/>
   <path id="route-91-111" class="route" d="M1048 1751 L1067 1654"/>
   <path id="route-91-121" class="route" d="M1048 1751 L1017.5 1802.5 L1003 1816"/>
@@ -1873,7 +1869,6 @@
   <path id="route-93-94" class="route" d="M934 1525 L909 1549"/>
   <path id="route-93-95" class="route" d="M934 1525 L949 1504"/>
   <path id="route-93-100" class="route" d="M934 1525 L967.5 1527.5 L986 1523"/>
-  <path id="route-94-100" class="route" d="M909 1549 L932.5 1553.5 L971.5 1538.5 L986 1523"/>
   <path id="route-95-96" class="route" d="M949 1504 L963 1467"/>
   <path id="route-95-97" class="route" d="M949 1504 L982 1481"/>
   <path id="route-95-100" class="route" d="M949 1504 L986 1523"/>
@@ -1888,7 +1883,6 @@
   <path id="route-99-102" class="route" d="M1012 1474 L1012.5 1462.5 L1006.5 1455.5 L993.5 1446.5 L983 1449"/>
   <path id="route-99-103" class="route" d="M1012 1474 L1029 1435"/>
   <path id="route-99-126" class="route" d="M1012 1474 L1042.5 1487.5 L1057 1520"/>
-  <path id="route-99-127" class="route" d="M1012 1474 L1034.5 1464.5 L1052.5 1438.5 L1050 1419"/>
   <path id="route-99-128" class="route" d="M1012 1474 L1079 1440"/>
   <path id="route-99-246" class="route" d="M1012 1474 L1113 1486"/>
   <path id="route-100-101" class="route" d="M986 1523 L1025 1527"/>
@@ -1931,7 +1925,6 @@
   <path id="route-123-124" class="route" d="M1070 1803 L1091 1850 L1110 1907"/>
   <path id="route-123-288" class="route" d="M1070 1803 L1112 1778"/>
   <path id="route-124-125" class="route" d="M1110 1907 L1075.5 1944.5 L1075.5 1992.5 L1078 1995"/>
-  <path id="route-124-178" class="route" d="M1110 1907 L1122.5 1857.5 L1130.5 1853.5 L1181 1863"/>
   <path id="route-124-195" class="route" d="M1110 1907 L1124.5 1940.5 L1135.5 1946.5 L1166 1954"/>
   <path id="route-124-212" class="route" d="M1110 1907 L1147 1906"/>
   <path id="route-125-195" class="route" d="M1078 1995 L1153.5 1949.5 L1166 1954"/>
@@ -1941,7 +1934,6 @@
   <path id="route-126-258" class="route" d="M1057 1520 L1096 1584"/>
   <path id="route-127-128" class="route" d="M1050 1419 L1079 1440"/>
   <path id="route-127-129" class="route" d="M1050 1419 L1082.5 1407.5 L1095.5 1390.5 L1119 1350"/>
-  <path id="route-127-244" class="route" d="M1050 1419 L1074.5 1411.5 L1095.5 1419.5 L1107.5 1431.5 L1109 1456"/>
   <path id="route-127-245" class="route" d="M1050 1419 L1074.5 1411.5 L1136.5 1422.5 L1154 1440"/>
   <path id="route-128-244" class="route" d="M1079 1440 L1109 1456"/>
   <path id="route-129-237" class="route" d="M1119 1350 L1209 1369"/>
@@ -2022,7 +2014,6 @@
   <path id="route-152-173" class="route" d="M576 1941 L632 1985"/>
   <path id="route-153-154" class="route" d="M299 1888 L319 1863"/>
   <path id="route-153-168" class="route" d="M299 1888 L277 1977"/>
-  <path id="route-154-168" class="route" d="M319 1863 L360.5 1915.5 L344.5 1932.5 L277 1977"/>
   <path id="route-155-156" class="route" d="M653 2072 L683 2044"/>
   <path id="route-155-157" class="route" d="M653 2072 L622 2157"/>
   <path id="route-155-158" class="route" d="M653 2072 L686.5 2088.5 L728 2089"/>
@@ -2045,7 +2036,6 @@
   <path id="route-166-171" class="route" d="M179 2150 L196.5 2176.5 L192.5 2183.5 L188.5 2191.5 L185.5 2199.5 L182.5 2207.5 L172.5 2260.5 L169 2263"/>
   <path id="route-167-168" class="route" d="M261 2000 L277 1977"/>
   <path id="route-167-169" class="route" d="M261 2000 L248 2064"/>
-  <path id="route-168-169" class="route" d="M277 1977 L313.5 2027.5 L319.5 2045.5 L248 2064"/>
   <path id="route-169-170" class="route" d="M248 2064 L239 2181"/>
   <path id="route-170-171" class="route" d="M239 2181 L169 2263"/>
   <path id="route-172-430" class="route" d="M319 2406 L292 2405"/>
@@ -2083,7 +2073,6 @@
   <path id="route-184-284" class="route" d="M1233 1885 L1291 1823"/>
   <path id="route-185-284" class="route" d="M1208 1872 L1230.5 1847.5 L1242.5 1835.5 L1291 1823"/>
   <path id="route-185-287" class="route" d="M1208 1872 L1212.5 1837.5 L1213.5 1803.5 L1165 1755"/>
-  <path id="route-186-187" class="route" d="M1379 1856 L1477 1987"/>
   <path id="route-186-290" class="route" d="M1379 1856 L1372 1737"/>
   <path id="route-186-292" class="route" d="M1379 1856 L1439 1857"/>
   <path id="route-186-293" class="route" d="M1379 1856 L1407 1883"/>
@@ -2379,7 +2368,6 @@
   <path id="route-314-317" class="route" d="M1964 1281 L2073 1260"/>
   <path id="route-314-320" class="route" d="M1964 1281 L2041.5 1372.5 L2146 1412"/>
   <path id="route-315-316" class="route" d="M1992 1166 L2050 1175"/>
-  <path id="route-315-318" class="route" d="M1992 1166 L2028.5 1113.5 L2096.5 1128.5 L2102.5 1134.5 L2126 1187"/>
   <path id="route-315-421" class="route" d="M1992 1166 L1946 1012"/>
   <path id="route-316-317" class="route" d="M2050 1175 L2073 1260"/>
   <path id="route-316-318" class="route" d="M2050 1175 L2126 1187"/>
@@ -2389,11 +2377,9 @@
   <path id="route-318-321" class="route" d="M2126 1187 L2219 1358"/>
   <path id="route-318-411" class="route" d="M2126 1187 L2264 1100"/>
   <path id="route-318-415" class="route" d="M2126 1187 L2052 979"/>
-  <path id="route-318-418" class="route" d="M2126 1187 L2125.5 1026.5 L2196 1010"/>
   <path id="route-318-421" class="route" d="M2126 1187 L2102.5 1134.5 L1946 1012"/>
   <path id="route-318-423" class="route" d="M2126 1187 L2187 1067"/>
   <path id="route-319-320" class="route" d="M2129 1488 L2146 1412"/>
-  <path id="route-319-321" class="route" d="M2129 1488 L2225.5 1478.5 L2236.5 1455.5 L2219 1358"/>
   <path id="route-319-322" class="route" d="M2129 1488 L2082 1610"/>
   <path id="route-319-426" class="route" d="M2129 1488 L2574 1601"/>
   <path id="route-320-321" class="route" d="M2146 1412 L2219 1358"/>
@@ -2433,7 +2419,6 @@
   <path id="route-329-353" class="route" d="M1758 1865 L1750 1941"/>
   <path id="route-330-331" class="route" d="M1783 1774 L1766 1743"/>
   <path id="route-330-332" class="route" d="M1783 1774 L1862 1785"/>
-  <path id="route-331-332" class="route" d="M1766 1743 L1833.5 1709.5 L1842.5 1712.5 L1862 1785"/>
   <path id="route-331-337" class="route" d="M1766 1743 L1743 1664"/>
   <path id="route-332-333" class="route" d="M1862 1785 L1896 1848"/>
   <path id="route-332-334" class="route" d="M1862 1785 L1934.5 1784.5 L1966 1849"/>
@@ -2464,9 +2449,7 @@
   <path id="route-342-346" class="route" d="M1880 2063 L1849 1977"/>
   <path id="route-342-348" class="route" d="M1880 2063 L1905 2171"/>
   <path id="route-342-349" class="route" d="M1880 2063 L1838.5 2099.5 L1790 2120"/>
-  <path id="route-342-353" class="route" d="M1880 2063 L1750 1941"/>
   <path id="route-342-359" class="route" d="M1880 2063 L1786 2078"/>
-  <path id="route-342-361" class="route" d="M1880 2063 L1682.5 1993.5 L1673 1984"/>
   <path id="route-343-344" class="route" d="M1992 2022 L2045.5 1994.5 L2102 1995"/>
   <path id="route-343-345" class="route" d="M1992 2022 L1950 1985"/>
   <path id="route-343-355" class="route" d="M1992 2022 L2091 2032"/>
@@ -2588,20 +2571,16 @@
   <path id="route-406-410" class="route" d="M2411 1007 L2374 1094"/>
   <path id="route-406-424" class="route" d="M2411 1007 L2422.5 1062.5 L2420 1113"/>
   <path id="route-407-408" class="route" d="M2352 951 L2357 917"/>
-  <path id="route-407-409" class="route" d="M2352 951 L2396.5 947.5 L2401.5 938.5 L2391 895"/>
   <path id="route-407-422" class="route" d="M2352 951 L2234 1012"/>
   <path id="route-408-409" class="route" d="M2357 917 L2391 895"/>
   <path id="route-408-412" class="route" d="M2357 917 L2322 814"/>
-  <path id="route-408-422" class="route" d="M2357 917 L2263.5 921.5 L2234 1012"/>
   <path id="route-409-412" class="route" d="M2391 895 L2322 814"/>
   <path id="route-410-411" class="route" d="M2374 1094 L2323.5 1141.5 L2264 1100"/>
   <path id="route-410-424" class="route" d="M2374 1094 L2420 1113"/>
   <path id="route-411-422" class="route" d="M2264 1100 L2234 1012"/>
   <path id="route-411-423" class="route" d="M2264 1100 L2187 1067"/>
-  <path id="route-411-424" class="route" d="M2264 1100 L2327.5 1205.5 L2377.5 1156.5 L2420 1113"/>
   <path id="route-412-413" class="route" d="M2322 814 L2235 784"/>
   <path id="route-412-419" class="route" d="M2322 814 L2307.5 734.5 L2241 675"/>
-  <path id="route-412-420" class="route" d="M2322 814 L2506.5 596.5 L2503.5 587.5 L2258 468"/>
   <path id="route-412-422" class="route" d="M2322 814 L2247.5 901.5 L2234 1012"/>
   <path id="route-413-416" class="route" d="M2235 784 L2053 837"/>
   <path id="route-413-418" class="route" d="M2235 784 L2196 1010"/>
@@ -2609,7 +2588,6 @@
   <path id="route-413-422" class="route" d="M2235 784 L2234 1012"/>
   <path id="route-414-415" class="route" d="M2041 944 L2052 979"/>
   <path id="route-414-416" class="route" d="M2041 944 L2053 837"/>
-  <path id="route-414-418" class="route" d="M2041 944 L2092.5 941.5 L2132.5 941.5 L2196 1010"/>
   <path id="route-414-421" class="route" d="M2041 944 L1985.5 973.5 L1946 1012"/>
   <path id="route-415-418" class="route" d="M2052 979 L2196 1010"/>
   <path id="route-415-421" class="route" d="M2052 979 L1946 1012"/>
@@ -3046,7 +3024,7 @@
   <g id="settlement-90" class="settlement town BUR"><rect class="marker" x="993.5" y="1733" width="21" height="14" rx="7"/><text class="abbr" x="1004" y="1743">Dij</text><text class="name" x="1004" y="1756" text-anchor="middle">Dijon</text></g>
   <g id="settlement-91" class="settlement town BUR"><rect class="marker" x="1037.5" y="1744" width="21" height="14" rx="7"/><text class="abbr" x="1048" y="1754">Bes</text><text class="name" x="1048" y="1767" text-anchor="middle">Besançon</text></g>
   <g id="settlement-92" class="settlement town BUR"><rect class="marker" x="931.5" y="1691" width="21" height="14" rx="7"/><text class="abbr" x="942" y="1701">Aux</text><text class="name" x="942" y="1714" text-anchor="middle">Auxerre</text></g>
-  <g id="settlement-93" class="settlement town BUR"><rect class="marker" x="923.5" y="1518" width="21" height="14" rx="7"/><text class="abbr" x="934" y="1528">Arr</text><text class="name" x="934" y="1541" text-anchor="middle">Arras</text></g>
+  <g id="settlement-93" class="settlement town BUR"><rect class="marker" x="923.5" y="1518" width="21" height="14" rx="7"/><text class="abbr" x="934" y="1528">Arr</text><text class="name" x="921.5" y="1528" text-anchor="end">Arras</text></g>
   <g id="settlement-94" class="settlement town BUR"><rect class="marker" x="898.5" y="1542" width="21" height="14" rx="7"/><text class="abbr" x="909" y="1552">Ami</text><text class="name" x="909" y="1565" text-anchor="middle">Amiens</text></g>
   <g id="settlement-95" class="settlement town BUR"><rect class="marker" x="938.5" y="1497" width="21" height="14" rx="7"/><text class="abbr" x="949" y="1507">Lil</text><text class="name" x="949" y="1495" text-anchor="middle">Lille</text></g>
   <g id="settlement-96" class="settlement city BUR"><rect class="marker" x="952.5" y="1459" width="21" height="16" rx="2"/><text class="abbr" x="963" y="1470">Bru</text><text class="name" x="950.5" y="1470" text-anchor="end">Bruges</text></g>
@@ -3066,7 +3044,7 @@
   <g id="settlement-110" class="settlement city ANJ"><rect class="marker" x="973.5" y="2002" width="21" height="16" rx="2"/><text class="abbr" x="984" y="2013">Mar</text><text class="name" x="984" y="2027" text-anchor="middle">Marseille</text></g>
   <g id="settlement-111" class="settlement town ANJ"><rect class="marker" x="1056.5" y="1647" width="21" height="14" rx="7"/><text class="abbr" x="1067" y="1657">Nac</text><text class="name" x="1067" y="1670" text-anchor="middle">Nancy</text></g>
   <g id="settlement-112" class="settlement town ANJ"><rect class="marker" x="1011.5" y="1636" width="21" height="14" rx="7"/><text class="abbr" x="1022" y="1646">Bal</text><text class="name" x="1022" y="1659" text-anchor="middle">Bar-le-Duc</text></g>
-  <g id="settlement-113" class="settlement town BOU"><rect class="marker" x="907.5" y="1772" width="21" height="14" rx="7"/><text class="abbr" x="918" y="1782">Mou</text><text class="name" x="930.5" y="1782" text-anchor="start">Moulins</text></g>
+  <g id="settlement-113" class="settlement town BOU"><rect class="marker" x="907.5" y="1772" width="21" height="14" rx="7"/><text class="abbr" x="918" y="1782">Mou</text><text class="name" x="918" y="1795" text-anchor="middle">Moulins</text></g>
   <g id="settlement-114" class="settlement town BOU"><rect class="marker" x="887.5" y="1823" width="21" height="14" rx="7"/><text class="abbr" x="898" y="1833">Cle</text><text class="name" x="898" y="1846" text-anchor="middle">Clermont</text></g>
   <g id="settlement-115" class="settlement town ARM"><rect class="marker" x="846.5" y="1916" width="21" height="14" rx="7"/><text class="abbr" x="857" y="1926">Rod</text><text class="name" x="857" y="1939" text-anchor="middle">Rodez</text></g>
   <g id="settlement-116" class="settlement town ARM"><rect class="marker" x="747.5" y="1927" width="21" height="14" rx="7"/><text class="abbr" x="758" y="1937">Lec</text><text class="name" x="758" y="1925" text-anchor="middle">Lectoure</text></g>
@@ -3074,8 +3052,8 @@
   <g id="settlement-118" class="settlement town FOI"><rect class="marker" x="783.5" y="2000" width="21" height="14" rx="7"/><text class="abbr" x="794" y="2010">Foi</text><text class="name" x="794" y="2023" text-anchor="middle">Foix</text></g>
   <g id="settlement-119" class="settlement town PAP"><rect class="marker" x="951.5" y="1959" width="21" height="14" rx="7"/><text class="abbr" x="962" y="1969">Avi</text><text class="name" x="962" y="1957" text-anchor="middle">Avignon</text></g>
   <g id="settlement-120" class="settlement town SAV"><rect class="marker" x="1019.5" y="1857" width="21" height="14" rx="7"/><text class="abbr" x="1030" y="1867">Chm</text><text class="name" x="1030" y="1880" text-anchor="middle">Chambéry</text></g>
-  <g id="settlement-121" class="settlement town SAV"><rect class="marker" x="992.5" y="1809" width="21" height="14" rx="7"/><text class="abbr" x="1003" y="1819">Boe</text><text class="name" x="990.5" y="1819" text-anchor="end">Bourg-en-Bresse</text></g>
-  <g id="settlement-122" class="settlement town SAV"><rect class="marker" x="1035.5" y="1815" width="21" height="14" rx="7"/><text class="abbr" x="1046" y="1825">Gev</text><text class="name" x="1046" y="1838" text-anchor="middle">Geneva</text></g>
+  <g id="settlement-121" class="settlement town SAV"><rect class="marker" x="992.5" y="1809" width="21" height="14" rx="7"/><text class="abbr" x="1003" y="1819">Boe</text><text class="name" x="1003" y="1832" text-anchor="middle">Bourg-en-Bresse</text></g>
+  <g id="settlement-122" class="settlement town SAV"><rect class="marker" x="1035.5" y="1815" width="21" height="14" rx="7"/><text class="abbr" x="1046" y="1825">Gev</text><text class="name" x="1058.5" y="1825" text-anchor="start">Geneva</text></g>
   <g id="settlement-123" class="settlement town SAV"><rect class="marker" x="1059.5" y="1796" width="21" height="14" rx="7"/><text class="abbr" x="1070" y="1806">Lau</text><text class="name" x="1070" y="1794" text-anchor="middle">Lausanne</text></g>
   <g id="settlement-124" class="settlement town SAV"><rect class="marker" x="1099.5" y="1900" width="21" height="14" rx="7"/><text class="abbr" x="1110" y="1910">Tur</text><text class="name" x="1110" y="1923" text-anchor="middle">Turin</text></g>
   <g id="settlement-125" class="settlement town SAV"><rect class="marker" x="1067.5" y="1988" width="21" height="14" rx="7"/><text class="abbr" x="1078" y="1998">Nic</text><text class="name" x="1078" y="2011" text-anchor="middle">Nice</text></g>
@@ -3414,10 +3392,10 @@
   <text id="label-THO" class="label small" x="524" y="1249.6">THO</text>
   <text id="label-DES" class="label small" x="442" y="1289.6">DES</text>
   <text id="label-FRA" class="label" x="828" y="1735.4">FRA</text>
-  <text id="label-BUR" class="label small" x="1034" y="1733.6">BUR</text>
+  <text id="label-BUR" class="label" x="950" y="1553.4">BUR</text>
   <text id="label-BRI" class="label" x="670" y="1619.4">BRI</text>
   <text id="label-ANJ" class="label small" x="1010" y="1993.6">ANJ</text>
-  <text id="label-BOU" class="label small" x="892" y="1791.6">BOU</text>
+  <text id="label-BOU" class="label small" x="926" y="1819.6">BOU</text>
   <text id="label-ARM" class="label small" x="850" y="1907.6">ARM</text>
   <text id="label-FOI" class="label" x="720" y="2001.4">FOI</text>
   <text id="label-SAV" class="label small" x="1042" y="1803.6">SAV</text>
@@ -3427,16 +3405,17 @@
   <text id="label-LUX" class="label small" x="1048" y="1593.6">LUX</text>
   <text id="label-CAS" class="label" x="526" y="2231.4">CAS</text>
   <text id="label-ARA" class="label" x="610" y="2243.4">ARA</text>
-  <text id="label-POR" class="label" x="220" y="2253.4">POR</text>
+  <text id="label-POR" class="label" x="288" y="2047.4">POR</text>
   <text id="label-NAV" class="label small" x="606" y="1993.6">NAV</text>
   <text id="label-GRA" class="label" x="474" y="2337.4">GRA</text>
-  <text id="label-MIL" class="label small" x="1152" y="1843.6">MIL</text>
+  <text id="label-MIL" class="label" x="1150" y="1851.4">MIL</text>
   <text id="label-VEN" class="label small" x="1360" y="1835.6">VEN</text>
   <text id="label-GEN" class="label small" x="1100" y="1963.6">GEN</text>
   <text id="label-FLO" class="label small" x="1267" y="2066.6">FLO</text>
   <text id="label-SIE" class="label small" x="1266" y="2079.6">SIE</text>
   <text id="label-PAP" class="label" x="1350" y="2083.4">PAP</text>
   <text id="label-FER" class="label small" x="1322" y="1945.6">FER</text>
+  <text id="label-MON" class="label small" x="1113" y="1869.6">MON</text>
   <text id="label-RIM" class="label" x="1374" y="1965.4">RIM</text>
   <text id="label-NAP" class="label small" x="1518" y="2203.6">NAP</text>
   <text id="label-SHO" class="label small" x="1234" y="1301.6">SHO</text>
@@ -3469,9 +3448,9 @@
   <text id="label-POL" class="label" x="1690" y="1537.4">POL</text>
   <text id="label-MAZ" class="label small" x="1732" y="1373.6">MAZ</text>
   <text id="label-LIT" class="label" x="2366" y="1305.4">LIT</text>
-  <text id="label-HUN" class="label" x="1564" y="1891.4">HUN</text>
+  <text id="label-HUN" class="label" x="1820" y="1747.4">HUN</text>
   <text id="label-JIS" class="label" x="1686" y="1691.4">JIS</text>
-  <text id="label-OTT" class="label" x="1996" y="2143.4">OTT</text>
+  <text id="label-OTT" class="label" x="1796" y="2009.4">OTT</text>
   <text id="label-BYZ" class="label small" x="2060" y="2045.6">BYZ</text>
   <text id="label-MOR" class="label small" x="1896" y="2463.6">MOR</text>
   <text id="label-SER" class="label" x="1740" y="2077.4">SER</text>
@@ -3494,7 +3473,7 @@
   <text id="label-MOS" class="label" x="2792" y="587.4">MOS</text>
   <text id="label-NOV" class="label" x="2340" y="293.4">NOV</text>
   <text id="label-PSK" class="label" x="1930" y="1081.4">PSK</text>
-  <text id="label-TVE" class="label" x="2154" y="1053.4">TVE</text>
+  <text id="label-TVE" class="label" x="2262" y="979.4">TVE</text>
   <text id="label-RYA" class="label" x="2540" y="1105.4">RYA</text>
   <text id="label-THE" class="label" x="2327" y="1887.4">THE</text>
   <text id="label-GHO" class="label" x="2700" y="1331.4">GHO</text>

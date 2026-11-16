@@ -1618,7 +1618,9 @@ const json = {
 fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");
 
 // roads that make no sense, as drawn: a road A–C passing close by a settlement B that has roads to both A and C, the way
-// through B hardly longer (take A–C out of Borders: the way leads through B), and two roads crossing with no settlement there
+// through B hardly longer (take A–C out of Borders: the way leads through B); the longest side of a thin triangle of roads (an
+// angle under 25°) when the way round by the third is at most 10% longer; a road over water (6 units or more off every land);
+// and two roads crossing with no settlement there
 {
     const land = json.routes.filter((r) => r.type === "land"), at = (id) => [S.get(id).x, S.get(id).y];
     const road = new Set(land.map((r) => ekey(r.from, r.to)));
@@ -1635,6 +1637,41 @@ fs.writeFileSync(JSONF, JSON.stringify(json, null, 1) + "\n");
             const d = Math.min(...drawn.slice(1).map((q, i) => near(p, drawn[i], q).d));
             if (t > 0.15 && t < 0.85 && d < Math.max(18, 0.2 * ac) && via <= 1.15 * ac) warn(`road ${ekey(r.from, r.to)} passes ${Math.round(d)} from ${b} ${S.get(b).name}, whose roads to both ends are hardly longer -- take it out of Borders`);
         }
+    }
+    const len = (p, q) => Math.hypot(p[0] - q[0], p[1] - q[1]);
+    const angleAt = (v, p, q) => Math.acos(Math.max(-1, Math.min(1, ((p[0] - v[0]) * (q[0] - v[0]) + (p[1] - v[1]) * (q[1] - v[1])) / (len(v, p) * len(v, q) || 1)))) * 180 / Math.PI;
+    const nbOf = new Map(SIDS.map((id) => [id, new Set()]));
+    for (const r of land) { nbOf.get(r.from).add(r.to); nbOf.get(r.to).add(r.from); }
+    const thin = new Set();
+    for (const a of SIDS) for (const b of nbOf.get(a)) for (const c of nbOf.get(a)) {
+        if (!(a < b && b < c) || !nbOf.get(b).has(c)) continue;
+        const [pa, pb, pc] = [at(a), at(b), at(c)];
+        if (Math.min(angleAt(pa, pb, pc), angleAt(pb, pa, pc), angleAt(pc, pa, pb)) >= 25) continue;
+        const sides = [[a, b, c], [b, c, a], [a, c, b]].map(([p, q, o]) => ({ p, q, o, l: len(at(p), at(q)) })).sort((x, y) => y.l - x.l);
+        const [L] = sides;
+        if (sides[1].l + sides[2].l <= 1.1 * L.l && !thin.has(ekey(L.p, L.q))) {
+            thin.add(ekey(L.p, L.q));
+            warn(`road ${ekey(L.p, L.q)} is the long side of a thin triangle: by ${L.o} ${S.get(L.o).name} it is hardly longer -- take it out of Borders`);
+        }
+    }
+    // over water: points of the drawn line 2 units apart, on no land and no waste
+    const rings = [...[...LANDS.values()].flat(), ...WASTES].map((ring) => {
+        const xs = ring.map((p) => p[0]), ys = ring.map((p) => p[1]);
+        return { ring, box: [Math.min(...xs) - 1, Math.min(...ys) - 1, Math.max(...xs) + 1, Math.max(...ys) + 1] };
+    });
+    const inRing = (p, ring) => { let c = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; };
+    const dry = (p) => rings.some((g) => p[0] >= g.box[0] && p[0] <= g.box[2] && p[1] >= g.box[1] && p[1] <= g.box[3] && inRing(p, g.ring));
+    for (const r of land) {
+        const l = line(r);
+        let run = 0, worst = 0;
+        for (let i = 1; i < l.length; i++) {
+            const n = Math.max(1, Math.ceil(len(l[i - 1], l[i]) / 2)), step = len(l[i - 1], l[i]) / n;
+            for (let k = 0; k <= n; k++) {
+                const p = [l[i - 1][0] + (l[i][0] - l[i - 1][0]) * k / n, l[i - 1][1] + (l[i][1] - l[i - 1][1]) * k / n];
+                if (dry(p)) run = 0; else worst = Math.max(worst, run += step);
+            }
+        }
+        if (worst >= 6) warn(`road ${ekey(r.from, r.to)} crosses ${Math.round(worst)} units of water -- take it out of Borders, or make it a strait`);
     }
     const side = (a, b, c) => Math.sign((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]));
     const cross = (p, q, r, s) => side(p, q, r) * side(p, q, s) < 0 && side(r, s, p) * side(r, s, q) < 0;
