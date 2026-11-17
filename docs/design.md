@@ -206,6 +206,11 @@ for its player to come back.
 - **Staggered:** every computer country thinks every 15 days (1.5 s), on a day of its own, so that about 3 of the
   45 think in any tick. The period is the same for all, deliberately: with different periods a country would get more chances to
   plan a war or ask for peace than another (it began as 10–20 days, a side effect of the stagger, and was made equal).
+- **Answers remembered for the day:** the computer players only read the state and give commands, applied on the next tick, so
+  while they think (`createAI().orders`, inside the engine's `withMemo`, `memo.js`) a country's economy, its military power, its
+  neighbours and the scores are worked out once and handed out as copies to every country that asks that day. Outside it
+  nothing is remembered. The commands are the same, to the hash; on Europe a game runs about a quarter faster (the computer's
+  own thinking about 40%).
 - **Three layers**, so the expensive thinking is rare and the reactions are fast:
 
 | Layer | How often | Decides |

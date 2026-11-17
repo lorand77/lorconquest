@@ -12,6 +12,7 @@ import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
 import { armyList, capitalsOf, isCore, isRebel, killPeople, removeArmy } from "./state.js";
 import { coringDays } from "./religion.js";
+import { memo } from "./memo.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
 const realCountries = (state) => Object.keys(state.countries).sort().filter((c) => !isRebel(state, c));
@@ -51,7 +52,8 @@ export const TRIBUTE = { vassal: 0.4, protectorate: 0.1 };
 // pays its overlord a share of its money, when positive, *before* its own tribute is counted; money per year is
 // then what it earns less upkeep and interest, plus the tribute it receives, less the tribute it pays. The capital's own money
 // is the subject's alone: no tribute is paid on it.
-export function economyOf(game, code) {
+export function economyOf(game, code) { return memo("economy", code, () => economyOfNow(game, code)); }
+function economyOfNow(game, code) {
     const e = economyBase(game, code), st = game.state;
     const share = (c) => { if (!st.countries[c].overlord) return 0; const b = economyBase(game, c); return TRIBUTE[subjectKind(st, c)] * Math.max(0, b.moneyPerYear - b.capitalMoney); };
     const paid = share(code), received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0);
@@ -61,7 +63,9 @@ export function economyOf(game, code) {
     return { ...e, tributePaid: paid, tributeReceived: received, moneyPerYear, investable, rPerYear: (2 * slider * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * e.libraries) };
 }
 
-function economyBase(game, code) {
+// (remembered while the computer players think: memo.js)
+function economyBase(game, code) { return memo("economyBase", code, () => economyBaseNow(game, code)); }
+function economyBaseNow(game, code) {
     // another country's private settings are not known to a player's copy of the game: its starting ones stand in
     const st = game.state, c = { tax: 2, slider: 50, law: "feudal", loans: 0, harvest: false, ...st.countries[code] }, law = LAWS[c.law];
     const owned = ownedBy(st, code), pop = sum(owned, (s) => s.pop);

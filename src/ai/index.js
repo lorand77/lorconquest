@@ -6,7 +6,7 @@
 //               and the tick after a think that split or equipped anything, so what needed an army's new id can follow.
 // Its dice are its own (util.js) and it keeps only what a restart may forget: wars it is preparing and when it last asked a
 // human something. `orders` returns what to apply at the start of the next tick, as { country, source, cmd }.
-import { economyOf, isVassal } from "../engine/index.js";
+import { economyOf, isVassal, withMemo } from "../engine/index.js";
 import { caretakerOrders, answerOffers } from "./caretaker.js";
 import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
@@ -84,7 +84,9 @@ export function createAI({ seed, humans = [] }) {
         },
 
         // the orders for the end of `game.day`; `events` are the events of the day just advanced
-        orders(game, events = []) {
+        // — all of it with the engine's memory on (memo.js): the state stands still while they think
+        orders(game, events = []) { return withMemo(() => this.ordersNow(game, events)); },
+        ordersNow(game, events) {
             const st = game.state, out = [], wake = touched(game, events), followUp = new Set(again);
             again.clear();
             const landed = new Set(Object.values(st.settlements).map((s) => s.owner));

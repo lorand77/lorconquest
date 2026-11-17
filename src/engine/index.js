@@ -20,4 +20,5 @@ export { START_YEAR, YEAR_DAYS, MONTH_NAMES, dateOf, dayOf, formatDate, longDate
 export { describeEvent, eventCountries, placeName } from "./text.js";
 export { buildMap, legKey } from "./map.js";
 export { proclaimCheck } from "./regions.js";
+export { withMemo } from "./memo.js";
 export { REFORMATION_DAY, RELIGIONS, RELIGION_NAMES, reformationError, coringDays, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, religionOf } from "./religion.js";

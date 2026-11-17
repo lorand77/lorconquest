@@ -10,12 +10,14 @@ import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
 import { faithOpinion } from "./religion.js";
 import { armyList, atWar, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
+import { memo } from "./memo.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
 
 // a country's whole land force on paper (RULES.md §5): every army, garrison and sharpshooter post it owns; men
 // without weapons and in training count 0, ships do not count
-export function militaryPowerOf(state, code) {
+export function militaryPowerOf(state, code) { return memo("power", code, () => militaryPowerNow(state, code)); }
+function militaryPowerNow(state, code) {
     return sum(armyList(state).filter((a) => a.owner === code), militaryPower)
         + sum(Object.values(state.posts).filter((p) => p.owner === code), (p) => p.n * 2.5);
 }
@@ -31,7 +33,8 @@ export const sizeOf = (state, code) => popOf(state, code);
 export const sizeRatio = (state, a, b) => (sizeOf(state, b) > 0 ? sizeOf(state, a) / sizeOf(state, b) : Infinity);
 
 // the countries whose settlements share a land route with its settlements (RULES.md §10)
-export function neighboursOf(game, code) {
+export function neighboursOf(game, code) { return memo("neighbours", code, () => neighboursNow(game, code)); }
+function neighboursNow(game, code) {
     const st = game.state, out = new Set();
     for (const r of game.map.scenario.routes) {
         if (r.type !== "land") continue;

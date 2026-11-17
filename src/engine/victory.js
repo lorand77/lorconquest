@@ -7,9 +7,11 @@
 // country may win.
 import { dayOf } from "./calendar.js";
 import { isRebel } from "./state.js";
+import { memo } from "./memo.js";
 
 // every country's score and total people
-export function scores(state) {
+export function scores(state) { return memo("scores", "", () => scoresNow(state)); }
+function scoresNow(state) {
     const out = {};
     for (const code of Object.keys(state.countries)) if (!isRebel(state, code)) out[code] = { settlements: 0, pop: 0 };
     for (const s of Object.values(state.settlements)) {
