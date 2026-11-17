@@ -601,6 +601,9 @@ would break that.
 - **Where an army is:** at a place (`at`), or on a leg (`march`: from, to, start day, end day),
   moving evenly — so its position on any day is arithmetic, and head-on meetings are found from
   the day two marches cross. Start and end may be fractions of a day.
+  The day's battles and settling ask for the armies at hundreds of places; they get them from an index made once for the step
+  (`state.js`, `withPlacesIndexed`), each checked still to be there when asked for — in those steps armies only leave or die,
+  none arrives.
 - **Whole numbers:** men, cannons and crews are whole. A loss is a share of the army: the total
   is rounded to the nearest man and spread over its weapons by largest remainder; cannons are
   rounded separately and each takes 10 crew with it. Population, treasury and money keep their

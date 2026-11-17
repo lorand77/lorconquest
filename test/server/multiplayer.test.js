@@ -396,7 +396,8 @@ test("a union: two people's countries made one, ruled by both — either gives o
 test("a union grows only with every ruler's yes: proposing and accepting wait for all of them, and one no is enough", async () => {
     const three = [...ALICE_BOB, ["carol", "SAX"]];
     const offerTo = async (server, room, code) => (await server.app.rooms.view(room, code)).countries[code].offers.find((o) => o.kind === "union" && o.to === code);
-    // a game in which alice and bobby rule Bavaria together, carol Saxony
+    // a game in which alice and bobby rule Bavaria together, carol Saxony — at 20 ms a day: a question to a person lapses after 6
+    // months, and at 2 ms that is a third of a second, less than a busy machine may take to answer the test
     async function unite(server) {
         const id = await makeTable(server, three);
         const [a, b, c] = await play(server, id, three);
@@ -408,7 +409,7 @@ test("a union grows only with every ruler's yes: proposing and accepting wait fo
         return { room, a, b, c };
     }
     // proposing: alice's order waits for bobby's, and is sent with his
-    let server = await startServer({ root, dbPath: tempDb(), setupMs: 0 });
+    let server = await startServer({ root, dbPath: tempDb(), setupMs: 0, tickMs: 20 });
     try {
         const { room, a, b, c } = await unite(server);
         const told = waitFor(b.socket, "consents", (list) => list.some((x) => x.what === "propose:SAX"));
@@ -424,7 +425,7 @@ test("a union grows only with every ruler's yes: proposing and accepting wait fo
         await server.close();
     }
     // accepting: carol asks the union; alice's yes waits for bobby, whose no ends it
-    server = await startServer({ root, dbPath: tempDb(), setupMs: 0 });
+    server = await startServer({ root, dbPath: tempDb(), setupMs: 0, tickMs: 20 });
     try {
         const { room, a, b, c } = await unite(server);
         await emitAck(c.socket, "command", { cmd: { type: "proposeUnion", with: "BAV" } });

@@ -408,3 +408,13 @@ test("a protectorate's war: one the player may join, as a call to arms pops up; 
     assert.deepEqual(protectorateNews([{ type: "war", country: "SAX", target: "JEN" }, { type: "war", country: "SAX", target: "JEN" }], state, "BAV").length, 1, "once");
     assert.deepEqual(protectorateNews([], state, null), []);
 });
+
+test("an army or a fleet as a player tells it from another: by its strength, not its number", async () => {
+    const { armyStrength, fleetStrength } = await import("../../public/js/mirror.js");
+    assert.equal(armyStrength({ men: { swords: 8000, pikes: 4400 }, cannons: 40 }), "12k men, 40 cannons");
+    assert.equal(armyStrength({ men: { swords: 800 }, cannons: 1 }), "800 men, 1 cannon");
+    assert.equal(armyStrength({ men: { swords: 2500 }, cannons: 0 }), "2.5k men");
+    assert.equal(fleetStrength({ ships: { cogs: 12, carracks: 12, galleons: 0 } }), "24 ships: 12 cogs, 12 carracks");
+    assert.equal(fleetStrength({ ships: { cogs: 10 } }), "10 ships (cogs)");
+    assert.equal(fleetStrength({ ships: { menOfWar: 1 } }), "1 ship (men-of-war)");
+});

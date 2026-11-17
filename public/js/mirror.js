@@ -110,6 +110,20 @@ export function formatMen(n) {
     return `${Math.round(n / 1000)}k`;
 }
 
+// an army or a fleet as a player tells it from another: by what it is, not by the number the game keeps it under (the merge
+// buttons) — "12k men, 40 cannons"; "24 ships: 12 cogs, 12 carracks"
+export function armyStrength(a) {
+    const men = Object.values(a.men).reduce((n, x) => n + x, 0);                // mercenaries among them
+    return `${formatMen(Math.round(men))} men${a.cannons ? `, ${formatNumber(a.cannons)} cannon${a.cannons === 1 ? "" : "s"}` : ""}`;
+}
+const SHIP_WORDS = { cogs: ["cog", "cogs"], carracks: ["carrack", "carracks"], galleons: ["galleon", "galleons"], menOfWar: ["man-of-war", "men-of-war"] };
+export function fleetStrength(f) {
+    const kinds = Object.entries(f.ships).filter(([, n]) => n > 0);
+    const total = kinds.reduce((n, [, k]) => n + k, 0);
+    const word = ([kind, n]) => `${n} ${SHIP_WORDS[kind]?.[n === 1 ? 0 : 1] ?? kind}`;
+    return `${total} ship${total === 1 ? "" : "s"}${kinds.length > 1 ? `: ${kinds.map(word).join(", ")}` : kinds.length ? ` (${SHIP_WORDS[kinds[0][0]]?.[1] ?? kinds[0][0]})` : ""}`;
+}
+
 // a whole number with thousands separated: "1,060,000"
 export const formatNumber = (n) => Math.round(n).toLocaleString("en-GB");
 

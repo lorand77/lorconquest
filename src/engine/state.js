@@ -105,7 +105,21 @@ export const isAlive = (state, army) => state.armies[army.id] === army;
 // every army, in id order (the state's object keys are whole numbers, which JavaScript keeps in order)
 export const armyList = (state) => Object.values(state.armies);
 export const fleetList = (state) => Object.values(state.fleets);
-export const armiesAt = (state, key) => armyList(state).filter((a) => a.at === key);
+// the armies at a place, in id order. Within `withPlacesIndexed` they come from an index of every place made once: for a loop over
+// many places in which no army arrives anywhere — the day's battles and settling (day.js), where armies only leave (a retreat is
+// a march) or die — each one still checked to be there, and alive, when asked for
+let byPlace = null;
+export function armiesAt(state, key) {
+    if (byPlace?.armies === state.armies) return (byPlace.map.get(key) ?? []).filter((a) => a.at === key && state.armies[a.id] === a);
+    return armyList(state).filter((a) => a.at === key);
+}
+export function withPlacesIndexed(state, fn) {
+    if (byPlace) return fn();
+    const map = new Map();
+    for (const a of armyList(state)) if (a.at) { if (!map.has(a.at)) map.set(a.at, []); map.get(a.at).push(a); }
+    byPlace = { armies: state.armies, map };
+    try { return fn(); } finally { byPlace = null; }
+}
 
 export const warKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 export const atWar = (state, a, b) => a !== b && state.wars.includes(warKey(a, b));

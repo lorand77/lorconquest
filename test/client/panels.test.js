@@ -9,6 +9,7 @@ register("./loader.mjs", import.meta.url);
 const { Game, TECHS, buildMap, economyOf } = await import("../../src/engine/index.js");
 const { viewFor } = await import("../../src/game/view.js");
 const { armyEquipment, complianceBlock, countryTab, fleetPanel, researchTab, shopTab } = await import("../../public/js/panels.js");
+const { fleetStrength } = await import("../../public/js/mirror.js");
 
 // the least element the panels use
 class El {
@@ -341,7 +342,8 @@ test("a fleet sent on its way is let go of (ctx.dispatch); merging it keeps it s
     await button(fleetPanel(ctx, f), "Patrol").handlers.click();
     assert.deepEqual(dispatched.map((c) => c.type), ["sail", "patrol"]);
     ctx.state.fleets[999] = { ...f, id: 999, ships: { ...f.ships } };       // a second fleet beside it, to merge into
-    await button(fleetPanel(ctx, f), "Merge into fleet 999").handlers.click();
+    // the button names the other fleet by its ships, not its number (mirror.js, fleetStrength)
+    await button(fleetPanel(ctx, f), `Merge into the fleet of ${fleetStrength(ctx.state.fleets[999])}`).handlers.click();
     assert.deepEqual(sent.map((c) => c.type), ["mergeFleet"]);                 // sent plainly: the selection stays
 });
 

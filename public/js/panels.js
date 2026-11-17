@@ -6,7 +6,7 @@
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
 import { FAITH_COLOURS } from "./mapdraw.js";
-import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
+import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
 const n = formatNumber;
 export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
@@ -333,7 +333,7 @@ export function fleetPanel(ctx, f) {
             make("button", { class: "primary", onclick: async () => { const ships = {}; for (const [s, i] of inputs) if (Number(i.value)) ships[s] = Number(i.value); await ctx.send({ type: "splitFleet", fleet: f.id, ships }); ctx.redraw(); } }, "Split")));
     }
     for (const o of Object.values(state.fleets).filter((x) => x.owner === me && x.id !== f.id && !x.moving && x.zone === f.zone && x.port === f.port)) {
-        buttons.push(make("button", { onclick: act(ctx, () => ({ type: "mergeFleet", fleet: f.id, into: o.id })) }, `Merge into fleet ${o.id}`));
+        buttons.push(make("button", { onclick: act(ctx, () => ({ type: "mergeFleet", fleet: f.id, into: o.id })) }, `Merge into the fleet of ${fleetStrength(o)}`));
     }
     out.push(make("div", { class: "buttons vertical" }, ...buttons));
     return out;

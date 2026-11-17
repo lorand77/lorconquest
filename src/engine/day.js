@@ -9,7 +9,7 @@ import { endUprisings, rebelOrders, rebelWars, yearly } from "./events.js";
 import { arrive, meetings, placeBattles, settle, surrenders } from "./fighting.js";
 import { forcesDay } from "./forces.js";
 import { liftBlockades, navalDay } from "./naval.js";
-import { armyList, isAlive, isRebel } from "./state.js";
+import { armyList, isAlive, isRebel, withPlacesIndexed } from "./state.js";
 import { attrition } from "./supply.js";
 import { checkVictory } from "./victory.js";
 import { eliminations } from "./elimination.js";
@@ -35,7 +35,7 @@ export function advanceDay(game) {
         a.march = null;
         arrive(game, a, events);
     }
-    placeBattles(game, events);
+    withPlacesIndexed(st, () => placeBattles(game, events));                  // battles: armies leave or die, none arrives
     surrenders(game, events);
     rebelOrders(game, events);
     if (isMonthStart(st.day)) {
@@ -47,7 +47,8 @@ export function advanceDay(game) {
     diplomacyDay(game, events);
     checkVictory(game, events);
     const occupied = new Set(armyList(st).map((a) => a.at));
-    for (const s of Object.values(st.settlements)) if (s.siege || occupied.has(String(s.id))) settle(game, String(s.id), events);
+    // the armies of each place gathered once: in the settling no army arrives anywhere (state.js, withPlacesIndexed)
+    withPlacesIndexed(st, () => { for (const s of Object.values(st.settlements)) if (s.siege || occupied.has(String(s.id))) settle(game, String(s.id), events); });
     eliminations(game, events);
     rebelWars(game, events);
     liftBlockades(game, events);

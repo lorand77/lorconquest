@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, SPEEDS, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, SPEEDS, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -782,7 +782,7 @@ function armyPanel(a) {
         const post = state.posts[a.at];
         if (post && atWar(me, post.owner)) buttons.push(make("button", { onclick: () => dispatch({ type: "stormPost", army: a.id }) }, `Storm the post (${formatNumber(post.n)} sharpshooters)`));
         const others = here.filter((x) => x.owner === me && x.id !== a.id && x.relief === a.relief && !x.retreating);
-        for (const o of others) buttons.push(make("button", { onclick: () => send({ type: "merge", army: a.id, into: o.id }) }, `Merge into army ${o.id}`));
+        for (const o of others) buttons.push(make("button", { onclick: () => send({ type: "merge", army: a.id, into: o.id }) }, `Merge into the army of ${armyStrength(o)}`));
     }
     out.push(make("div", { class: "buttons" }, ...buttons));
     if (splitOpen && a.at) out.push(splitForm(a));
