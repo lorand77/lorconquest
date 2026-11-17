@@ -122,6 +122,26 @@ test("every country thinks every 15 days, the same for all, each on days of its 
     assert.ok(Math.max(...perDay) <= 8, `the busiest day has ${Math.max(...perDay)} countries thinking: ${perDay}`);
 });
 
+test("on a scenario the think days are given by size, once, from the map as it begins: the largest each a day of its own, the load even", () => {
+    const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
+    for (const sc of [europe, docsScenario]) {
+        const size = (c) => c.settlements.length, slot = (c) => [...Array(THINK_DAYS).keys()].find((d) => thinksOn(c.code, d, sc));
+        // every country every 15 days still, and its look days among its think days
+        for (const c of sc.countries) {
+            const days = [...Array(90).keys()].filter((d) => thinksOn(c.code, d, sc));
+            assert.deepEqual(days.slice(1).map((d, i) => d - days[i]), Array(days.length - 1).fill(THINK_DAYS), c.code);
+            for (const d of days) assert.ok(looksOn(c.code, d, sc), `${c.code}: a think day is a look day`);
+        }
+        // the six largest on six different days; no day with much more to think about than another (in settlements)
+        const largest = [...sc.countries].sort((a, b) => size(b) - size(a)).slice(0, 6);
+        assert.equal(new Set(largest.map(slot)).size, 6);
+        const load = [...Array(THINK_DAYS).keys()].map((d) => sc.countries.filter((c) => slot(c) === d).reduce((n, c) => n + size(c), 0));
+        assert.ok(Math.max(...load) - Math.min(...load) <= Math.max(...sc.countries.map(size)) / 2, `even: ${load}`);
+        // from the scenario alone: the same however often it is asked, whatever the game has become
+        assert.deepEqual(sc.countries.map(slot), sc.countries.map(slot));
+    }
+});
+
 test("research: with nothing left it wants, the slider goes to 0 — under 50% it adds to the money — and back up once there is", () => {
     const game = tinyGame(1), c = game.state.countries.AAA;
     c.treasury = 2e6;

@@ -204,7 +204,10 @@ for its player to come back.
   as a human; it never changes the state directly. That keeps it honest, gives it the same
   checks, and lets it move to a thread of its own later if it grows heavy.
 - **Staggered:** every computer country thinks every 15 days (1.5 s), on a day of its own, so that about 3 of the
-  45 think in any tick. The period is the same for all, deliberately: with different periods a country would get more chances to
+  45 think in any tick. The days are given by size, once, from the scenario's map as it begins (`util.js`, `slotOf`): the largest
+  country first, each on the day of the cycle with the least to think about so far, so two great powers never think on the same
+  day and Europe's heaviest day holds about 30 settlements' worth of countries, not 64. Never changed in a game: a country moved
+  would think once at a gap of other than 15 days. The period is the same for all, deliberately: with different periods a country would get more chances to
   plan a war or ask for peace than another (it began as 10–20 days, a side effect of the stagger, and was made equal).
 - **Answers remembered for the day:** the computer players only read the state and give commands, applied on the next tick, so
   while they think (`createAI().orders`, inside the engine's `withMemo`, `memo.js`) a country's economy, its military power, its

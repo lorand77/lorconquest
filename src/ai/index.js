@@ -1,6 +1,7 @@
 // The computer players (docs/design.md, "The computer players"): one AI for every country that has no person, run inline in
 // the game's worker. It reads the state and gives commands like a human would, three ways at three speeds:
-//   strategy    every 15 days, on a day of the country's own (util.js, thinksOn): the economy, forces, diplomacy and war;
+//   strategy    every 15 days, on a day of the country's own, the large spread apart (util.js, thinksOn): the economy, forces,
+//               diplomacy and war;
 //   operations  the same think moves armies — musters, marches, sieges;
 //   reflexes    the tick after an event that touches a country (a siege begun, a war declared) it looks at its war again,
 //               and the tick after a think that split or equipped anything, so what needed an army's new id can follow.
@@ -97,8 +98,8 @@ export function createAI({ seed, humans = [] }) {
                 const source = human ? "caretaker" : "computer";
                 const give = (cmds) => { for (const cmd of cmds) out.push({ country: code, source, cmd }); };
                 const before = out.length;
-                if (thinksOn(code, st.day)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : think(game, code));
-                else if (wake.has(code) || followUp.has(code) || (looksOn(code, st.day) && threatsOf(st, code).length)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) }));
+                if (thinksOn(code, st.day, game.map.scenario)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : think(game, code));
+                else if (wake.has(code) || followUp.has(code) || (looksOn(code, st.day, game.map.scenario) && threatsOf(st, code).length)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) }));
                 // every day, whether it thinks or not: a besieged town of its about to fall makes a last sortie (war.js, lastSorties)
                 const last = [];
                 lastSorties(game, code, last);

@@ -236,14 +236,37 @@ export const THINK_DAYS = 15;
 // days, on days of its own (its think days among them, LOOK_DAYS dividing THINK_DAYS): a march on a town of its is met while
 // there is time to meet it, not up to fifteen days late
 export const LOOK_DAYS = 5;
-export function looksOn(country, day) {
-    return (day + hash(`${country}*`) % THINK_DAYS) % LOOK_DAYS === 0;
+export function looksOn(country, day, scenario = null) {
+    return (day - slotOf(country, scenario)) % LOOK_DAYS === 0;
 }
 
-// does `country` think on `day`? Every THINK_DAYS days, on a day of its own, so 45 countries never all think at once. The
-// period is the same for all: a country that thought twice as often would get twice the chances to plan a war, ask for
-// peace or answer a threat, and the stagger needs only different days, not different periods.
-export function thinksOn(country, day) {
-    const offset = hash(`${country}*`) % THINK_DAYS;
-    return (day + offset) % THINK_DAYS === 0;
+// does `country` think on `day`? Every THINK_DAYS days, on a day of its own — its slot in the cycle — so the countries never all
+// think at once. The period is the same for all: a country that thought twice as often would get twice the chances to plan a
+// war, ask for peace or answer a threat, and the stagger needs only different days, not different periods.
+export function thinksOn(country, day, scenario = null) {
+    return day % THINK_DAYS === slotOf(country, scenario);
+}
+
+// the slots, from the scenario's map as it begins and never again: a think costs about what a country holds, so the largest
+// is placed first, each on the day of the cycle that has the least to think about so far (then the fewest countries, then the
+// earliest) — two great powers never think on the same day, and the one-town countries fill the gaps. Without a scenario, or
+// for a country not in it, a day from its code
+const SLOTS = new WeakMap();
+function slotOf(country, scenario) {
+    if (!scenario) return hash(`${country}*`) % THINK_DAYS;
+    let slots = SLOTS.get(scenario);
+    if (!slots) {
+        slots = new Map();
+        const load = Array(THINK_DAYS).fill(0), count = Array(THINK_DAYS).fill(0);
+        const size = (c) => c.settlements?.length ?? 1;
+        for (const c of [...scenario.countries].sort((a, b) => size(b) - size(a) || (a.code < b.code ? -1 : 1))) {
+            let best = 0;
+            for (let d = 1; d < THINK_DAYS; d++) if (load[d] < load[best] || (load[d] === load[best] && count[d] < count[best])) best = d;
+            slots.set(c.code, best);
+            load[best] += size(c);
+            count[best]++;
+        }
+        SLOTS.set(scenario, slots);
+    }
+    return slots.get(country) ?? hash(`${country}*`) % THINK_DAYS;
 }
