@@ -683,5 +683,7 @@ years, 6 at a time, about 25 minutes each; each variant a copy of scenario.json 
 **What it showed.** The warmonger score had been the brake on war after 1500: a computer country plans no war while its score
 is high, and one war's conquests kept a large country out for decades. Halving it keeps the map at war through the 1500s; a
 quarter ends games in a few decades, and makes the computer slower. No scale stops games ending early at 115: the target, not
-the scale, decides that. Chosen: 0.5, the victory number left at 180 — the target is a goal for a person, which the computer
-rarely reaches.
+the scale, decides that. Chosen: 0.5. Then 0.5 with 180 (seeds 1–6): FRA 3, LIT, POL, BUR — no Ottoman win — every game to 1650, winners 80–153; war
+exposure 8.5% → 4.3% → 4.4%, land churn 0.91 → 0.37 → 0.35, the computer 8.8 ms a day, 119 ms at its slowest. The victory number
+was then set to 227, half the map as on the other two (52% and 51%): nobody held half of Europe in these two centuries, so a
+game is mostly decided in 1650, by the most.

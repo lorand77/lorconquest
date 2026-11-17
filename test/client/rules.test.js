@@ -60,7 +60,7 @@ test("the address names a tab and a section or scenario; anything else is Start 
 
 test("a scenario's page: what wins, what its x costs, the start, and faiths and the Empire only where it has them", () => {
     const eu = scenarioPage(scenario("europe-1440"), "Europe 1440"), me = scenarioPage(scenario("mitteleuropa"), "Mitteleuropa");
-    assert.match(eu, /Hold \*\*180\*\* of the map's 445 settlements/);
+    assert.match(eu, /Hold \*\*227\*\* of the map's 445 settlements/);
     assert.match(eu, /## Scale: x = 3/);
     assert.match(eu, /\| Hand cannons \| Swords \| 4\.5M R \|/);
     assert.match(eu, /Crossing a strait: \*\*30\*\*/);
