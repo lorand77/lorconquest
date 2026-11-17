@@ -424,7 +424,9 @@ if (doc.some((l) => /^## Religions\s*$/.test(l))) {
 // Description. The goal is clauses joined by ";", all of which a person's country must meet in one game: "as" codes (the
 // country played), "win", "survive" (still in at the end), "proclaim" a region (its id under Special coring), "hold" settlement
 // ids (all at once, at some moment), "keep" settlement ids (all held at the end), "eliminate" codes (take each one's last settlement), "empire" n (demand the Empire and have at least n
-// German states join), "by" a year (every clause met before it begins). src/achievements/catalogue.js reads them.
+// German states join), "by" a year (every clause met before it begins); on a map with religions "reform" (adopt the
+// Reformation), "faith" a religion (yours at the end), "none" a religion (no country of it left at the end — one there during
+// the game: a faith that never appeared counts for nothing). src/achievements/catalogue.js reads them.
 const ACHIEVEMENTS = [];
 if (doc.some((l) => /^## Achievements\s*$/.test(l))) {
     const [, rows] = table("Achievements");
@@ -449,10 +451,15 @@ if (doc.some((l) => /^## Achievements\s*$/.test(l))) {
                 if (!EMPIRE.needed) err(`${at}: this scenario has no demand of the Empire`);
                 goal.empire = Number(rest[0]);
             } else if (word === "by") goal.by = Number(rest[0]);
-            else err(`${at}: don't know '${clause}'`);
+            else if (word === "reform") goal.reform = true;
+            else if (word === "faith" || word === "none") {
+                if (!RELIGIONS.includes(rest[0])) err(`${at}: '${rest[0]}' is none of ${RELIGIONS.join(", ")}`);
+                if (!RELIGION.size) err(`${at}: this scenario has no religions`);
+                goal[word] = rest[0];
+            } else err(`${at}: don't know '${clause}'`);
             if (["empire", "by"].includes(word) && !Number.isInteger(goal[word])) err(`${at}: '${clause}' needs a whole number`);
         }
-        if (!Object.keys(goal).some((k) => k !== "as" && k !== "by")) err(`${at}: the goal needs something to do, not only who and by when`);
+        if (!Object.keys(goal).some((k) => k !== "as" && k !== "by" && k !== "faith")) err(`${at}: the goal needs something to do, not only who and by when`);
         const id = slugOf(name);
         if (ACHIEVEMENTS.some((a) => a.id === id)) err(`${at}: two achievements are called '${name}'`);
         ACHIEVEMENTS.push({ id, name, icon: r.Icon, desc: r.Description, goal });

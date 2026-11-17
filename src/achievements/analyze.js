@@ -28,6 +28,8 @@ export function analyzeGame(job) {
         met: new Map(),                     // scenario achievement key -> clause -> the first day it was met
     }]));
     let why = null, winner = null;
+    // every faith a country had at some time in the game: the start's, and Protestant once one turns (a "none" goal needs it there)
+    const faiths = new Set(Object.values(game.state.countries).map((c) => c.religion).filter(Boolean));
     const lastTaker = new Map();            // country -> who last took a settlement of its
 
     const note = (seat, key, clause, day) => { const m = seat.met.get(key) ?? new Map(); if (!m.has(clause)) m.set(clause, day); seat.met.set(key, m); };
@@ -46,6 +48,7 @@ export function analyzeGame(job) {
             }
             if (e.type === "subject" || e.type === "freedom") subjects = true;
             if (e.type === "victory") { why = e.why; winner = e.country; }
+            if (e.type === "reformation") faiths.add("protestant");
             if (e.type === "union") { owners = true; subjects = true; for (const s of seats.values()) if (s.code === e.with) s.code = e.country; }
             for (const s of seats.values()) {
                 const code = s.code;
@@ -97,6 +100,10 @@ export function analyzeGame(job) {
                     case "tech":
                         if (e.country === code && allTechs.every((t) => st.countries[code].techs.includes(t))) s.feats.add("scholar");
                         break;
+                    case "reformation":
+                        if (e.country !== code) break;
+                        for (const g of goals) if (g.goal.reform) note(s, g.key, "reform", e.day);
+                        break;
                     case "empire":
                         if (e.country !== code) break;
                         for (const g of goals) if (g.goal.empire && e.joined >= g.goal.empire) note(s, g.key, "empire", e.day);
@@ -147,7 +154,10 @@ export function analyzeGame(job) {
             const goal = g.goal, met = s.met.get(g.key) ?? new Map();
             if (goal.as && !goal.as.includes(seat)) continue;                   // the country the person began as
             if ((goal.win && !won) || (goal.survive && !alive) || (goal.keep && !(stayed && holds(code, goal.keep)))) continue;
-            const clauses = [...(goal.proclaim ? ["proclaim"] : []), ...(goal.hold ? ["hold"] : []), ...(goal.empire ? ["empire"] : []), ...(goal.eliminate ?? []).map((c) => `eliminate ${c}`)];
+            // faith at the end: the person's country's, and a faith gone — that had been there
+            if (goal.faith && !(stayed && st.countries[code].religion === goal.faith)) continue;
+            if (goal.none && !(faiths.has(goal.none) && !Object.values(st.countries).some((c) => !c.rebel && (c.out ?? null) === null && c.religion === goal.none))) continue;
+            const clauses = [...(goal.reform ? ["reform"] : []), ...(goal.proclaim ? ["proclaim"] : []), ...(goal.hold ? ["hold"] : []), ...(goal.empire ? ["empire"] : []), ...(goal.eliminate ?? []).map((c) => `eliminate ${c}`)];
             if (!clauses.every((c) => met.has(c))) continue;
             const when = Math.max(0, ...clauses.map((c) => met.get(c)), ...(goal.win ? [st.day] : []));
             if (goal.by && when >= byDay(goal.by)) continue;

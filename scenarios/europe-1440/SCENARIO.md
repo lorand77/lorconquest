@@ -923,6 +923,36 @@ and vassalized settlements count 1, protectorates ½. A tie goes to the larger t
 and subjects).
 
 
+
+## Achievements
+
+This scenario's own achievements, beside the ones every scenario has (docs/design.md, *Achievements*). The **Goal** is
+for `tools/map.js` and the server: clauses joined by `;`, all met by your country in one game — `as` the countries you
+may play, `win`, `survive` (still in at the end), `proclaim` a region by its id (*Special coring*), `hold` settlements
+all at once, `keep` settlements held at the end, `eliminate` a country (take its last settlement), `by` a year (everything
+else done before it begins), `reform` (adopt the Reformation), `faith` your faith at the end, `none` a faith no country
+still has at the end — one some country had during the game: a faith that never appeared counts for nothing.
+
+| Achievement | Icon | Goal | Description |
+|---|---|---|---|
+| The City Holds | 🧱 | `as BYZ; keep 354` | As Byzantium, still hold Constantinople at the end. It fell in 1453. |
+| Fall of Constantinople | 🌙 | `as OTT; hold 354; by 1460` | As the Ottomans, take Constantinople before 1460, as Mehmed did in 1453. |
+| Third Rome | ☦️ | `as MOS; proclaim tsardom-of-russia; hold 354` | As Muscovy, proclaim Russia and hold Constantinople. |
+| Reconquista | ⛪ | `as CAS ARA; hold 174 175 176; by 1500` | As Castile or Aragon, hold Granada, Málaga and Almería at once before 1500. |
+| Two Crowns, One King | 🌹 | `as ENG; hold 54; keep 84 88` | As England, take Paris, and still hold Rouen and Bordeaux at the end. |
+| Out of France | ⚜️ | `as FRA; hold 83 84 85 86 87 88 89; by 1460` | As France, hold every English town in France — Calais, Rouen, Caen, Cherbourg, Le Mans, Bordeaux and Bayonne — at once before 1460. |
+| Varna Avenged | ✝️ | `as HUN POL; hold 339; by 1460` | As Hungary or Poland, take Edirne before 1460: the crusade of 1444, won. |
+| Vienna Falls | 🐎 | `as OTT; hold 280` | As the Ottomans, take Vienna. |
+| Rhodes Stands | 🗼 | `as KRH; keep 403` | As the Knights of Rhodes, still hold Rhodes at the end. They lost it in 1522. |
+| Lepanto | ⛵ | `eliminate OTT` | Take the Ottoman Empire's last settlement. |
+| Le Royaume de Bourgogne | 🍇 | `as BUR; proclaim kingdom-of-burgundy` | As Burgundy, proclaim the kingdom Charles the Bold wanted. |
+| Lion of the North | 🦁 | `as SWE; proclaim swedish-empire` | As Sweden, proclaim the Swedish Empire. |
+| Italia | 🎭 | `proclaim kingdom-of-italy` | Proclaim the Kingdom of Italy. |
+| Deutschland | 🦅 | `proclaim germany` | Proclaim Germany. |
+| Renovatio Imperii | 🏛️ | `proclaim roman-empire` | Proclaim the Roman Empire: Rome, Constantinople and 100 of its lands. |
+| Here I Stand | 🔨 | `reform` | Adopt the Reformation. |
+| Defender of the Faith | 📿 | `win; faith catholic; none protestant` | Win as a Catholic country with no Protestant country left — in a game where some country did turn Protestant. |
+
 ## Religions
 
 *Each country's faith (RULES.md §2, Religion): every country not listed here is **Catholic**. A faith is the ruler's; a
@@ -1145,5 +1175,5 @@ so that two large neighbours never share one.
 
 ### Still to do
 
-The Empire (as on the historical map) and this map's own achievements. The balance is measured (experiments/README.md, 24):
+The Empire (as on the historical map). The balance is measured (experiments/README.md, 24):
 227 settlements win, about half the map as on the others, and the warmonger scale is 0.5.

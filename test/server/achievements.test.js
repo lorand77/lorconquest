@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
-import { Game, fingerprint } from "../../src/engine/index.js";
+import { Game, REFORMATION_DAY, fingerprint } from "../../src/engine/index.js";
 import { analyzeGame } from "../../src/achievements/analyze.js";
 import { deleteAccount } from "../../src/accounts.js";
 import { tinyScenario } from "../helpers/tiny.js";
@@ -50,6 +50,51 @@ test("playing a game over finds what each person did: a capital and a last settl
     assert.deepEqual(analyzeGame({ ...job, seats: [{ country: "CCC", quitDay: 10 }] }).seats.CCC.feats, []);
     assert.deepEqual([analyzeGame({ ...job, resultHash: "wrong" }).ok, analyzeGame({ ...job, resultHash: "wrong" }).error], [false, "mismatch"]);
     assert.equal(analyzeGame({ ...job, log: [{ day: 0, cmd: { type: "storm", country: "CCC", army: 6 } }] }).error, "refused");
+});
+
+// faith goals, on the tiny map with religions and its game running to 1650: AAA and CCC are people; DDD, Protestant from the start,
+// is the faith to see gone. AAA adopts the Reformation in 1517 — or, in a second game, does not, and CCC takes DDD's only town
+function faithGame(reform) {
+    const sc = tinyScenario();
+    sc.victory = { settlements: 99, endYear: 1650 };
+    sc.settlements.find((s) => s.id === 6).pop = 200000;
+    for (const c of sc.countries) c.religion = c.code === "DDD" && !reform ? "protestant" : "catholic";
+    sc.achievements = [
+        { id: "here", name: "Here I Stand", icon: "🔨", desc: "Adopt the Reformation.", goal: { reform: true } },
+        { id: "defender", name: "Defender", icon: "📿", desc: "Survive Catholic, no Protestant left.", goal: { survive: true, faith: "catholic", none: "protestant" } },
+        { id: "no-sunni", name: "No Sunni", icon: "☪", desc: "Survive, no Sunni left.", goal: { survive: true, none: "sunni" } },
+    ];
+    const game = Game.create(sc, { seed: 1, humans: ["AAA", "CCC"] }), log = [];
+    const cmd = (c) => { const r = game.command(c); assert.ok(r.ok, r.error); log.push({ day: game.day, cmd: c }); };
+    if (reform) {
+        while (game.day < REFORMATION_DAY) game.advance();
+        cmd({ type: "adoptReformation", country: "AAA" });
+    } else {
+        cmd({ type: "declareWar", country: "CCC", target: "DDD" });
+        cmd({ type: "move", country: "CCC", army: 6, to: 7 });
+        while (game.day < 40) game.advance();
+        cmd({ type: "storm", country: "CCC", army: 6 });
+    }
+    const end = game.day + 60;
+    while (game.day < end) game.advance();
+    const job = { scenarioId: "tiny", scenario: sc, seed: 1, humans: ["AAA", "CCC"], log, endDay: game.day, resultHash: fingerprint(game.snapshot()), seats: [{ country: "AAA", quitDay: null }, { country: "CCC", quitDay: null }] };
+    return { game, r: analyzeGame(job) };
+}
+
+test("faith goals: the Reformation adopted; a faith at the end; none of a faith left, counting only a faith that was there", () => {
+    // AAA turns Protestant and is still in: Here I Stand is AAA's; no Defender while a Protestant stands; no Sunni ever, so no "none sunni"
+    let { r } = faithGame(true);
+    assert.equal(r.ok, true);
+    assert.ok(r.seats.AAA.feats.includes("tiny:here"));
+    assert.ok(!r.seats.CCC.feats.includes("tiny:here"));
+    assert.ok(!r.seats.CCC.feats.includes("tiny:defender"), "AAA is Protestant still");
+    assert.ok(!r.seats.CCC.feats.includes("tiny:no-sunni"), "a faith never there counts for nothing");
+    // DDD, the only Protestant, is taken out by CCC: no Protestant is left, and CCC, Catholic and still in, is the Defender
+    const second = faithGame(false);
+    assert.notEqual(second.game.state.countries.DDD.out, null, "DDD is out");
+    assert.equal(second.r.ok, true);
+    assert.ok(second.r.seats.CCC.feats.includes("tiny:defender"));
+    assert.ok(!second.r.seats.AAA.feats.includes("tiny:here"));
 });
 
 // a scenario where 6 settlements win, so a game ends quickly (as in finishing.test.js)

@@ -42107,7 +42107,235 @@
    "TUN"
   ]
  ],
- "achievements": [],
+ "achievements": [
+  {
+   "id": "the-city-holds",
+   "name": "The City Holds",
+   "icon": "🧱",
+   "desc": "As Byzantium, still hold Constantinople at the end. It fell in 1453.",
+   "goal": {
+    "as": [
+     "BYZ"
+    ],
+    "keep": [
+     354
+    ]
+   }
+  },
+  {
+   "id": "fall-of-constantinople",
+   "name": "Fall of Constantinople",
+   "icon": "🌙",
+   "desc": "As the Ottomans, take Constantinople before 1460, as Mehmed did in 1453.",
+   "goal": {
+    "as": [
+     "OTT"
+    ],
+    "hold": [
+     354
+    ],
+    "by": 1460
+   }
+  },
+  {
+   "id": "third-rome",
+   "name": "Third Rome",
+   "icon": "☦️",
+   "desc": "As Muscovy, proclaim Russia and hold Constantinople.",
+   "goal": {
+    "as": [
+     "MOS"
+    ],
+    "proclaim": "tsardom-of-russia",
+    "hold": [
+     354
+    ]
+   }
+  },
+  {
+   "id": "reconquista",
+   "name": "Reconquista",
+   "icon": "⛪",
+   "desc": "As Castile or Aragon, hold Granada, Málaga and Almería at once before 1500.",
+   "goal": {
+    "as": [
+     "CAS",
+     "ARA"
+    ],
+    "hold": [
+     174,
+     175,
+     176
+    ],
+    "by": 1500
+   }
+  },
+  {
+   "id": "two-crowns-one-king",
+   "name": "Two Crowns, One King",
+   "icon": "🌹",
+   "desc": "As England, take Paris, and still hold Rouen and Bordeaux at the end.",
+   "goal": {
+    "as": [
+     "ENG"
+    ],
+    "hold": [
+     54
+    ],
+    "keep": [
+     84,
+     88
+    ]
+   }
+  },
+  {
+   "id": "out-of-france",
+   "name": "Out of France",
+   "icon": "⚜️",
+   "desc": "As France, hold every English town in France — Calais, Rouen, Caen, Cherbourg, Le Mans, Bordeaux and Bayonne — at once before 1460.",
+   "goal": {
+    "as": [
+     "FRA"
+    ],
+    "hold": [
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89
+    ],
+    "by": 1460
+   }
+  },
+  {
+   "id": "varna-avenged",
+   "name": "Varna Avenged",
+   "icon": "✝️",
+   "desc": "As Hungary or Poland, take Edirne before 1460: the crusade of 1444, won.",
+   "goal": {
+    "as": [
+     "HUN",
+     "POL"
+    ],
+    "hold": [
+     339
+    ],
+    "by": 1460
+   }
+  },
+  {
+   "id": "vienna-falls",
+   "name": "Vienna Falls",
+   "icon": "🐎",
+   "desc": "As the Ottomans, take Vienna.",
+   "goal": {
+    "as": [
+     "OTT"
+    ],
+    "hold": [
+     280
+    ]
+   }
+  },
+  {
+   "id": "rhodes-stands",
+   "name": "Rhodes Stands",
+   "icon": "🗼",
+   "desc": "As the Knights of Rhodes, still hold Rhodes at the end. They lost it in 1522.",
+   "goal": {
+    "as": [
+     "KRH"
+    ],
+    "keep": [
+     403
+    ]
+   }
+  },
+  {
+   "id": "lepanto",
+   "name": "Lepanto",
+   "icon": "⛵",
+   "desc": "Take the Ottoman Empire's last settlement.",
+   "goal": {
+    "eliminate": [
+     "OTT"
+    ]
+   }
+  },
+  {
+   "id": "le-royaume-de-bourgogne",
+   "name": "Le Royaume de Bourgogne",
+   "icon": "🍇",
+   "desc": "As Burgundy, proclaim the kingdom Charles the Bold wanted.",
+   "goal": {
+    "as": [
+     "BUR"
+    ],
+    "proclaim": "kingdom-of-burgundy"
+   }
+  },
+  {
+   "id": "lion-of-the-north",
+   "name": "Lion of the North",
+   "icon": "🦁",
+   "desc": "As Sweden, proclaim the Swedish Empire.",
+   "goal": {
+    "as": [
+     "SWE"
+    ],
+    "proclaim": "swedish-empire"
+   }
+  },
+  {
+   "id": "italia",
+   "name": "Italia",
+   "icon": "🎭",
+   "desc": "Proclaim the Kingdom of Italy.",
+   "goal": {
+    "proclaim": "kingdom-of-italy"
+   }
+  },
+  {
+   "id": "deutschland",
+   "name": "Deutschland",
+   "icon": "🦅",
+   "desc": "Proclaim Germany.",
+   "goal": {
+    "proclaim": "germany"
+   }
+  },
+  {
+   "id": "renovatio-imperii",
+   "name": "Renovatio Imperii",
+   "icon": "🏛️",
+   "desc": "Proclaim the Roman Empire: Rome, Constantinople and 100 of its lands.",
+   "goal": {
+    "proclaim": "roman-empire"
+   }
+  },
+  {
+   "id": "here-i-stand",
+   "name": "Here I Stand",
+   "icon": "🔨",
+   "desc": "Adopt the Reformation.",
+   "goal": {
+    "reform": true
+   }
+  },
+  {
+   "id": "defender-of-the-faith",
+   "name": "Defender of the Faith",
+   "icon": "📿",
+   "desc": "Win as a Catholic country with no Protestant country left — in a game where some country did turn Protestant.",
+   "goal": {
+    "win": true,
+    "faith": "catholic",
+    "none": "protestant"
+   }
+  }
+ ],
  "victory": {
   "settlements": 227,
   "endYear": 1650
