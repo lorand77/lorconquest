@@ -116,9 +116,10 @@ export function warScore(game, mine, other) {
 
 // what a set of peace terms asks of `other`, in the units of the formula: % of its people in the settlements
 // asked for, 10 for each year of its money asked for, 50 for a vassal and 25 for a protectorate — less the same
-// for what the proposer gives. Money is counted in years of the payer's money: what it asks, in years of `other`'s; what it
-// pays, in years of its own — an empire's coin is no small country's treasure. And money paid only offsets what else is asked:
-// a subject is won by the war, never bought (RULES.md §10, Peace)
+// for what the proposer gives. Money asked is counted in years of `other`'s money; money paid in years of the payer's or the
+// receiver's, whichever is the more — worth no more than it costs the one who pays, nor than it means to the one who gets it:
+// an empire's coin is no small country's treasure, and a small country's coin is no empire's. And money paid only offsets what
+// else is asked: a subject is won by the war, never bought (RULES.md §10, Peace)
 const yearOf = (game, code) => { const e = economyOf(game, code); return Math.max(1, e.moneyPerYear, 0.25 * (e.settlementMoney ?? 0)); };
 export function peaceCost(game, mine, other, terms) {
     const st = game.state, w = st.warInfo[warKey(mine, other)];
@@ -128,7 +129,7 @@ export function peaceCost(game, mine, other, terms) {
     // year, does not sell a peace for a handful of coins
     const asked = pop(terms.take ?? []) + (terms.money > 0 ? 10 * terms.money / yearOf(game, other) : 0)
         + pop((terms.release ?? []).flatMap((c) => Object.values(st.settlements).filter((s) => s.owner === c).map((s) => s.id)));
-    const paid = terms.money < 0 ? 10 * -terms.money / yearOf(game, mine) : 0;
+    const paid = terms.money < 0 ? 10 * -terms.money / Math.max(yearOf(game, mine), yearOf(game, other)) : 0;
     let cost = asked - (terms.makeSubject ? Math.min(paid, asked) : paid) - pop(terms.give ?? []);
     cost += { vassal: 50, protectorate: 25 }[terms.makeSubject] ?? 0;
     cost -= { vassal: 50, protectorate: 25 }[terms.becomeSubject] ?? 0;

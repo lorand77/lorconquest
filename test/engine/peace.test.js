@@ -237,13 +237,19 @@ test("the capital a country began with, taken back, is its capital again at once
     assert.deepEqual(ofType(events, "capital").map((e) => [e.country, e.settlement]), [["AAA", 1]]);
 });
 
-test("money in a peace: what is asked in years of the loser's money, what is paid in years of the payer's; a subject is never bought", () => {
+test("money in a peace: what is asked in years of the loser's money, what is paid in years of the richer side's; a subject is never bought", () => {
     const game = tinyGame();
     order(game, cmd("AAA", "declareWar", { target: "BBB" }));
     const year = (c) => { const e = economyOf(game, c); return Math.max(1, e.moneyPerYear, 0.25 * e.settlementMoney); };
     const X = 100000;
     assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: X }) - 10 * X / year("BBB")) < 1e-9, "asked: in years of BBB's money");
-    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: -X }) + 10 * X / year("AAA")) < 1e-9, "paid: in years of AAA's own");
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: -X }) + 10 * X / Math.max(year("AAA"), year("BBB"))) < 1e-9, "paid: in years of the richer of the two");
+    // a poor payer's coin is no rich receiver's treasure: BBB grown ten times richer, AAA's money buys a tenth as much
+    const before = peaceCost(game, "AAA", "BBB", { money: -X });
+    for (const id of [4, 5]) game.state.settlements[id].pop *= 10;
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: -X }) + 10 * X / year("BBB")) < 1e-9 && year("BBB") > year("AAA"));
+    assert.ok(peaceCost(game, "AAA", "BBB", { money: -X }) > before, "worth less to the richer receiver");
+    for (const id of [4, 5]) game.state.settlements[id].pop /= 10;
     // however much AAA pays, BBB as its vassal costs 50; paid money offsets only what else is asked
     assert.equal(peaceCost(game, "AAA", "BBB", { money: -1e9, makeSubject: "vassal" }), 50);
     const five = 10000 / Math.max(1, game.state.warInfo["AAA|BBB"].startPop.BBB) * 100;  // settlement 5, as % of BBB's people

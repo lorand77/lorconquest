@@ -873,10 +873,12 @@ cost      = settlements you ask for, as % of its pop
             + 10 for each year of its money (§2) you ask for — a year counted as at least a quarter of
               what its settlements yield, so one deep in debt does not sell peace for a few coins
             + 50 to make it your vassal · 25 to make it your protectorate
-            − the same for what you give: settlements, and 10 for each year of YOUR money you pay it
+            − the same for what you give: settlements, and 10 for each year of money you pay it — counted in years
+              of your money or its, whichever is the more
 ```
-**Money is counted in years of the payer's money**: what you ask, in years of its; what you pay, in years of yours — an
-empire's coin is no small country's treasure. And **a subject is won by the war, never bought**: money you pay offsets only
+**Money is counted by what it means**: what you ask, in years of its money; what you pay, in years of yours or its, whichever
+is the more — no more than it costs you, nor than it is worth to it: an empire's coin is no small country's treasure, and a small
+country's coin is no empire's. And **a subject is won by the war, never bought**: money you pay offsets only
 the settlements, money and freedom you ask in the same terms, never the 50 or 25 of making it your vassal or protectorate.
 Pops are counted as they were when the war began. A plain peace (cost 0) is accepted whenever your
 war score is 0 or more.
