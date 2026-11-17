@@ -140,7 +140,8 @@ lorconquest.lorand77.dev {
 ```
 
 `encode` compresses what is sent: the app does not, and uncompressed a game page is about 800 KB with the historical
-scenario (its map, its data and the engine), a fifth of that compressed.
+scenario (its map, its data and the engine), a fifth of that compressed — and about 1.7 MB with Europe 1440 (its map 860 KB and
+its data 630 KB), 250 KB of it compressed.
 
 and `sudo systemctl reload caddy`. Caddy passes WebSockets through with no further setting, and sends `X-Forwarded-For` and
 `X-Forwarded-Proto`, which `TRUST_PROXY=1` makes the app use.

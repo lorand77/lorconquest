@@ -297,3 +297,12 @@ chat true), and `docs/setup.md`, the whole deployment on the shared EC2 machine.
 when their player has been gone ten minutes, and brought back when they return, as the design always said. **Not checked by
 machine, and not done:** that the game is *online* — nothing here can deploy it; the domain and the contact address
 (`lorconquest@lorand77.dev`) on the legal pages are guesses to confirm — and that four browsers, or any browser, play it.
+
+## After the milestones: Europe 1440
+
+**Released.** A third scenario, all of Europe in 1440 (scenarios/europe-1440): 445 settlements, 118 countries, drawn from real
+geography by `tools/make-base.js`; religions and the Reformation, 35 regions to proclaim (the Roman Empire with part of its land),
+17 achievements of its own. Balanced by experiment (experiments/README.md, 24): 227 settlements win, about half the map as on
+the others, the warmonger scale 0.5, x = 3. Checked by machine: the suite's computer-only games on it (60 years, 6 seeds:
+invariants every month, exact replay, the time per day) and simulations of whole games. Not checked by machine: that it plays
+well in a browser — played by hand. Not in it: the Empire's demand (as on the historical map).

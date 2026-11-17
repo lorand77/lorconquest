@@ -1173,7 +1173,7 @@ The larger powers have colours after their heraldry and the colours maps give th
 `tools/map.js` picks the rest from its palette, never a neighbour's, and should it run out, the colour of the smallest neighbour,
 so that two large neighbours never share one.
 
-### Still to do
+### For later
 
-The Empire (as on the historical map). The balance is measured (experiments/README.md, 24):
-227 settlements win, about half the map as on the others, and the warmonger scale is 0.5.
+The Empire (as on the historical map) is not on this map yet. The balance is measured (experiments/README.md, 24): 227
+settlements win, about half the map as on the others, and the warmonger scale is 0.5.
