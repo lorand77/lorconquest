@@ -508,6 +508,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 /* a capital's marker: red as any other, with a gold border — everyone's alike (mapview.js, setCapitals) */
 .map .settlement.capital .marker { stroke: #e8b000; stroke-width: 2.2px; }
 #lands .lc-dim { opacity: 0.3; }
+/* the key to the faiths on the map (panels.js, Faith) */
+.faith-key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 4px 0 2px; font-size: 12px; }
 .lc-route { fill: none; stroke: #222; stroke-width: 2; stroke-dasharray: 6 4; pointer-events: none; }
 /* a march planned for a war to come, sent when it breaks out (game.js, premoves) */
 .lc-premove { fill: none; stroke: #d0021b; stroke-width: 1.8; stroke-dasharray: 3 4; pointer-events: none; opacity: 0.85; }

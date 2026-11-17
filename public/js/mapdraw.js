@@ -96,6 +96,13 @@ export function unionMembers(state, code) {
     return out;
 }
 
+// the faiths shown on the map (the Country tab's Faith, "Show on the map"): each land in the colour of its people's faith
+// (RULES.md §2, Religion), the borders drawn between faiths — and what they depend on, to repaint when a land turns Protestant
+export const FAITH_COLOURS = { catholic: "#e2c35a", orthodox: "#9a7ccb", hussite: "#4ea7a2", sunni: "#4e9b58", protestant: "#4c7ed0" };
+export const faithOfLand = (state) => (key) => state.settlements[key]?.faith ?? null;
+export const faithFill = (faith) => FAITH_COLOURS[faith] ?? "#cfcfcf";
+export const faithsKey = (state) => Object.values(state.settlements).map((s) => s.faith ?? "").join();
+
 // how a country's land is filled: its own colour; for a union, even bands of its members' colours (the second band in a colour
 // too near the first is shaded, as below); or — for a subject — its own colour striped with its overlord's, broad
 // stripes for a vassal and thin ones for a protectorate (mapview.js, colourLands, and mapcanvas.js draw them). Where the two

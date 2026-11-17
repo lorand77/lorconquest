@@ -689,6 +689,9 @@ protectorate. The scenarios reuse colours (dozens of pairs of countries share on
 overlord — or nearly (`alike`: a redmean distance under 30) — gets its stripes in a darker shade of the overlord's colour, a
 lighter one on a dark colour (`shade`). Its label names the overlord, "ULM▸BAV", where that fits, and its own code alone where it does not. The lands
 and labels are redrawn when a settlement changes hands or a country becomes, or stops being, a subject (`ownersKey`).
+On a map with religions the Country tab's Faith can show the faiths instead: each land in the colour of its people's faith,
+borders between faiths (`faithOfLand`, `faithFill`), repainted when a land turns Protestant (`faithsKey`) — as the Diplomacy
+tab's Empire dims every land outside it (`markLands`).
 
 ### The game screen
 

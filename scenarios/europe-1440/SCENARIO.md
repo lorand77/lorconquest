@@ -818,6 +818,12 @@ you take later is core the day it falls. If you later lose one and retake it, it
 | **Lower Saxon Circle** | the Hanse cities, Holstein, Mecklenburg, Brunswick and Magdeburg | 230–234, 237–240 | 9 | — | — |
 | **Germany** | the German lands of the Empire as one realm | 230–253, 258–264, 271–279, 285 | 41 | — | Germany, GER, #6e7f99 |
 | **Roman Empire** | the Empire of Trajan, from Hadrian's Wall to the Euphrates — as far as this map goes | 28–41, 54–103, 105–128, 130–229, 247, 258, 259, 263, 270–293, 323, 325–327, 329, 332–336, 339–363, 369–398, 402–404, 427, 428, 430, 431, 435–445 | 299 | Rome, Constantinople and 100 in all | Roman Empire, ROM, #9c6fc8 |
+| **Kingdom of Ireland** | the island under one crown, as Henry VIII proclaimed it (1541): the Pale's towns and the Gaelic lords | 42–48 | 7 | — | Kingdom of Ireland, IRE, #3d8f5e |
+| **Iberian Union** | Spain and Portugal under one king (1580) | Spain + 166–172 | 53 | — | Iberian Union, IBR, #b9862a |
+| **Kingdom of Italy** | the peninsula and its islands as one realm, the dream of the age's Italians | 124, 125, 177–186, 195, 196, 200–229 | 44 | — | Italy, ITA, #4e9a7a |
+| **Swedish Empire** | the Baltic dominion of the Vasas (1561–1648): Finland, Scania, Gotland, Livonia and Estonia, Ingria and Kexholm, Pomerania and Bremen | 5–13, 15, 19–23, 235–237, 416, 417 | 20 | — | Swedish Empire, SVE, #2f5f9f |
+| **Kingdom of Scotland** | Scotland whole, the Lordship of the Isles forfeited to the crown (1493) | 49–53 | 5 | — | — |
+| **Crimean Khanate** | the Khanate the Giray founded in 1441, with the Crimea's Genoese and Gothic towns and Azov | 199, 425, 426 | 3 | — | Crimean Khanate, CRI, #a85a32 |
 
 ## Sea zones
 

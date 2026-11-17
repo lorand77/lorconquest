@@ -7,7 +7,7 @@ import { HOTKEYS, SPEEDS, protectorateNews, speedAfter, speedName, armyPoint, fl
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
-import { armyMarkers as drawArmies, countryColour, countryLabels, fleetMarkers as drawFleets, inMapCodes, landFill, mapCode, ownersKey, paintMap } from "./mapdraw.js";
+import { armyMarkers as drawArmies, countryColour, countryLabels, faithFill, faithOfLand, faithsKey, fleetMarkers as drawFleets, inMapCodes, landFill, mapCode, ownersKey, paintMap } from "./mapdraw.js";
 import { TECH_NAMES, armyEquipment, complianceBlock, countryTab, fleetPanel, money, researchTab, shopTab } from "./panels.js";
 import { diplomacyTab } from "./diplomacy.js";
 import { toast as achievementToast } from "./achievements.js";
@@ -47,7 +47,7 @@ let unseen = 0;            // events that came in while the Events tab was not o
 let sel = null;            // { kind: "army", id } | { kind: "fleet", id } | { kind: "place", key } | { kind: "country", code }
 let tab = "selection";     // selection (the Map tab) | country | shop | research | diplomacy | events
 // choices the panels keep while the page is open: the country the Diplomacy tab deals with, the weapon soldiers are raised with
-const ui = { target: null, raiseWeapon: null, raiseAt: null, hireAt: null, buildAt: null, shipKind: null, empire: false };
+const ui = { target: null, raiseWeapon: null, raiseAt: null, hireAt: null, buildAt: null, shipKind: null, empire: false, faith: false };
 let panelHtml = "";        // what the panel shows now, so it is rebuilt only when it changes
 const press = pressGuard((fn) => setTimeout(fn, 0));    // a hand pressing in the panel: the days do not rebuild it under it
 let war = null;            // what the war banner shows: { attackers, against, allies }, or null when it is closed
@@ -673,8 +673,14 @@ const armyMarkers = (day) => drawArmies(state, game.map.nodes, legs, day, colour
 
 let empireShown = false;
 function renderMap() {
-    const now = ownersKey(state);
-    if (now !== owners) { owners = now; map.colourLands(ownerOfLand, landFill(state, colourOf)); map.setLabels(countryLabels(state, scenario)); }
+    // the lands by owner — or, while the Country tab's Faith asks, by their people's faith (mapdraw.js, faithFill)
+    const now = ui.faith ? `faith|${faithsKey(state)}` : ownersKey(state);
+    if (now !== owners) {
+        owners = now;
+        if (ui.faith) map.colourLands(faithOfLand(state), faithFill);
+        else map.colourLands(ownerOfLand, landFill(state, colourOf));
+        map.setLabels(countryLabels(state, scenario));
+    }
     if (ui.empire !== empireShown) { empireShown = ui.empire; map.markLands(ui.empire ? new Set(scenario.settlements.filter((x) => x.hre).map((x) => String(x.id))) : null); }   // the Diplomacy tab's "Show on the map"
     paintMap(map, state, game.map.nodes, game.map.zones, legs, displayDay(), colourOf, markerOptions());
     const a = plan && state.armies[plan.army];

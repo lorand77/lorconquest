@@ -5,6 +5,7 @@
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
+import { FAITH_COLOURS } from "./mapdraw.js";
 import { BEST_FIRST, armingCost, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
 const n = formatNumber;
@@ -118,7 +119,11 @@ export function countryTab(ctx) {
     if (c.religion) {
         const why = reformationError(game, me), may = ["catholic", "hussite"].includes(c.religion);
         const church = e.settlementMoney;
+        // the faiths on the map, as the Empire is shown (game.js, renderMap): each land in its people's faith, with a key
+        const key = make("div", { class: "faith-key" }, ...Object.entries(FAITH_COLOURS).map(([f, colour]) => make("span", {}, make("span", { class: "swatch", style: `background:${colour}` }), ` ${RELIGION_NAMES[f]}`)));
         out.push(section(ctx, "Faith", make("p", {}, `You are ${RELIGION_NAMES[c.religion]}.${c.reformed !== null && c.reformed !== undefined ? ` You adopted the Reformation ${longDate(c.reformed)}.` : ""}`),
+            row(ctx, make("button", { onclick: () => { ctx.ui.faith = !ctx.ui.faith; ctx.redraw(); } }, ctx.ui.faith ? "Whole map" : "Show faiths on the map")),
+            ctx.ui.faith ? key : "",
             may && why ? make("p", { class: "hint" }, `From 31 October 1517 you may adopt the Reformation.`) : "",
             !why ? row(ctx, make("span", { class: "hint" }, "Turn Protestant: your core land of your faith with you, the church lands' wealth, and Catholics' enmity."),
                 make("button", { class: "danger", onclick: async () => {

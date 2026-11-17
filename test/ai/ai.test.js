@@ -407,6 +407,7 @@ test("games of computers alone on the real map: legal, sane every month, and rep
         const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] });
         const t0 = performance.now();
         const refused = play(game, ai, YEARS * 365, { onDay: (g) => { if (isMonthStart(g.day)) check(g, `seed ${seed}, day ${g.day}`); } });
+        const perDay = (performance.now() - t0) / game.day;                      // the play alone, not the replay below
         const st = game.state;
         // refusals are the odd race between two countries, not a habit
         assert.ok(refused.length < 20 * YEARS, `seed ${seed}: ${refused.length} refused: ${JSON.stringify(refused.slice(0, 3))}`);
@@ -415,8 +416,9 @@ test("games of computers alone on the real map: legal, sane every month, and rep
         // the computers' own dice never touch the game's: the commands alone replay it
         assert.ok(game.log.length > 50 * YEARS / 2, "the computers gave plenty of commands");
         assert.equal(replay(scenario, seed, game.log, game.day, []).snapshot(), game.snapshot(), `seed ${seed}`);
-        // the tick's budget is 100 ms: a day of 45 computers takes a small part of it
-        assert.ok((performance.now() - t0) / game.day < 20, "a day takes far less than its budget");
+        // the tick's budget is 100 ms: a day takes a small part of it — 20 ms for 45 countries, more on a larger map
+        const allowed = 20 * Math.max(1, Object.keys(st.countries).filter((c) => !st.countries[c].rebel).length / 45);
+        assert.ok(perDay < allowed, `a day takes far less than its budget: ${perDay.toFixed(1)} ms, allowed ${allowed.toFixed(0)}`);
         assert.ok(st.wars.length >= 0 && armyList(st).length > 0);
     }
 });

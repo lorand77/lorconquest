@@ -140,3 +140,17 @@ test("an event's line names a country that proclaimed a new state by the map's c
     assert.equal(countryLabel(sc, "ULM", { BAV: "Germany" }), "Ulm");
     assert.equal(countryLabel(null, "XYZ"), "XYZ");
 });
+
+test("the faiths on the map: each land in its people's faith, a key that changes when a land turns Protestant", async () => {
+    const { FAITH_COLOURS, faithFill, faithOfLand, faithsKey } = await import("../../public/js/mapdraw.js");
+    const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
+    const st = Game.create(europe, { seed: 1 }).state;
+    const byName = (n) => String(europe.settlements.find((s) => s.name === n).id);
+    assert.deepEqual(["Rome", "Edirne", "Moscow", "Prague"].map((n) => faithOfLand(st)(byName(n))), ["catholic", "sunni", "orthodox", "hussite"]);
+    assert.equal(faithFill("protestant"), FAITH_COLOURS.protestant);
+    assert.equal(faithFill(null), "#cfcfcf", "a land of no faith (a map without religions)");
+    const before = faithsKey(st);
+    st.settlements[byName("Stockholm")].faith = "protestant";
+    assert.notEqual(faithsKey(st), before, "repainted when a land turns");
+    assert.equal(faithOfLand(Game.create(mitteleuropa, { seed: 1 }).state)("1"), null, "Mitteleuropa has no religions");
+});
