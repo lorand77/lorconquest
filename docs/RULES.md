@@ -799,8 +799,8 @@ side — defensive allies, guarantors and military allies it called in. The worl
 victim, so it is forgiven half of what it takes from the aggressor. Everyone else is on the
 attacking side: the country that declared and everyone who joined it.
 
-**The warmonger scale** is the scenario's: 1, but on a larger map, where winning takes more settlements, less — Europe 1440's 0.25, so
-that a winner there is about as notorious as one on Mitteleuropa. It scales the settlements taken and integrated, nothing else.
+**The warmonger scale** is the scenario's: 1, but on a larger map, where winning takes more settlements, less — Europe 1440's 0.5, so
+that winning there, which takes many more settlements, does not turn the whole map against the winner. It scales the settlements taken and integrated, nothing else.
 
 Retaking a settlement that was **your core when the war began** adds nothing, on either side.
 Subjects gained through the HRE add nothing either — they agreed; one gained on demand agreed too, but the world sees a

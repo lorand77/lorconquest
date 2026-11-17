@@ -23,8 +23,9 @@ Columns and blocks marked *generated* are rewritten by the script — edit the r
 
 **x = 3** (see the scenario scaling note in RULES.md)
 
-**Warmonger scale:** 0.25 — 45 ÷ the 180 settlements that win here: a settlement taken counts a quarter of what it does on Mitteleuropa, so a winner
-is about as notorious as one there (RULES.md §10, Warmongers). Change it with the number that wins.
+**Warmonger scale:** 0.5 — a settlement taken counts half of what it does on Mitteleuropa: winning here takes many more of them,
+and at 0.5 the computer still makes war after 1500 without games ending in a few decades (experiments/README.md, Europe's warmonger
+scale; RULES.md §10, Warmongers).
 
 **Army speed:** 315 map units per year — a route takes its length on the map ÷ this (RULES.md §8). One map unit
 is about 1.6 km, so an army covers about 500 km a year, as on the Mitteleuropa map.

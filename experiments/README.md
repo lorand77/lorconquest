@@ -661,3 +661,27 @@ against 20.9 with the 500 soldiers): what a small country lacks is men it may ra
 fewest dead, captures near rules 40, armies the smallest share of the money — and the winners as many, but Brandenburg 9 of 24.
 
 Kept: rules 45's +500 (as rules 47, the same rules as 45 — the number moved on past the money-only trial).
+
+## 24. Europe's warmonger scale (2026-11-16)
+
+Europe 1440 (445 settlements, 118 countries, x = 3, rules 57: the Reformation, coalitions only of neighbours of a bearable faith
+and only against their warmonger). The warmonger score a settlement adds, × the scenario's scale (RULES.md §10). Seeds 1–6, 210
+years, 6 at a time, about 25 minutes each; each variant a copy of scenario.json with the scale and the victory number changed.
+
+| Scale, victory | Ended early | Wins | War exposure by period | Land churn by period | AI slowest day |
+|---|---|---|---|---|---|
+| 1 (no scale), 180 — rules 56, before | 0 of 6 | BUR 4, FRA 1, OTT 1 | 5.8% → 2.8% → 2.5% | 0.78 → 0.22 → 0.19 | 105 ms |
+| 0.25, 180 | 1 (OTT 1588) | OTT 4, BUR 2 | 12.8% → 7.7% → 8.2% | 1.53 → 0.60 → 0.48 | 394 ms |
+| 0.25, 115 | 5 (1499–1586) | BUR 2, OTT 2, FRA, POL | 12.5% → 11.5% → — | 1.39 → 1.13 → — | 127 ms |
+| 0.4, 115 | 3 (1506–1602) | OTT 2, FRA 2, BUR, ENG | 12.8% → 10.4% → 7.1% | 1.27 → 0.82 → 0.34 | 106 ms |
+| 0.6, 115 | 3 (1558–1623) | FRA 2, OTT 2, BUR, VEN | 8.9% → 6.1% → — | 0.97 → 0.39 → — | 80 ms |
+| 1, 115 | 4 (1524–1603) | FRA 3, OTT 2, BUR | 7.3% → 3.9% → 1.2% | 0.77 → 0.25 → 0.08 | 83 ms |
+| 0.5, 150 | 1 (FRA 1559) | FRA 3, OTT 2, ENG | 10.4% → 4.5% → 3.0% | 1.16 → 0.35 → 0.21 | 194 ms |
+
+(— : too few games still going after 1575 to say.) At 0.5 and 150 the winners on time held 97–127, 23 to 53 short.
+
+**What it showed.** The warmonger score had been the brake on war after 1500: a computer country plans no war while its score
+is high, and one war's conquests kept a large country out for decades. Halving it keeps the map at war through the 1500s; a
+quarter ends games in a few decades, and makes the computer slower. No scale stops games ending early at 115: the target, not
+the scale, decides that. Chosen: 0.5, the victory number left at 180 — the target is a goal for a person, which the computer
+rarely reaches.

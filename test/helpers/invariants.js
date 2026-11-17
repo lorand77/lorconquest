@@ -2,7 +2,7 @@
 // positions consistent, nothing in a place that does not exist, no army without men. The random-play fuzz checks it every
 // month, and so do the games of computer players.
 import assert from "node:assert/strict";
-import { WEAPONS, menOf } from "../../src/engine/index.js";
+import { WEAPONS, atWar, menOf } from "../../src/engine/index.js";
 
 export function check(game, where) {
     const st = game.state, nodes = game.map.nodes;
@@ -49,7 +49,9 @@ export function check(game, where) {
     for (const x of st.agreements) {
         assert.ok(["defensive", "military", "guarantee", "access", "pact", "truce"].includes(x.kind), `${where}: agreement ${x.kind}`);
         assert.ok(st.countries[x.a] && st.countries[x.b] && !st.countries[x.a].rebel && !st.countries[x.b].rebel && x.a !== x.b, `${where}: agreement of ${x.a} and ${x.b}`);
-        assert.ok(x.until === null || x.until > st.day, `${where}: an agreement that has run out`);
+        // an alliance whose term ran out while the two fight a common enemy lasts until that war is over (RULES.md §10)
+        const sharedWar = (x.kind === "defensive" || x.kind === "military") && Object.keys(st.countries).some((c) => atWar(st, x.a, c) && atWar(st, x.b, c));
+        assert.ok(x.until === null || x.until > st.day || sharedWar, `${where}: an agreement that has run out`);
         if (x.against) assert.ok(x.kind === "defensive" && st.countries[x.against] && st.countries[x.against].out === null, `${where}: a coalition against ${x.against}, which is gone`);
         if (x.kind === "defensive" || x.kind === "military") assert.ok(!st.countries[x.a].subjectKind || st.countries[x.a].subjectKind !== "vassal", `${where}: a vassal in an alliance`);
     }
