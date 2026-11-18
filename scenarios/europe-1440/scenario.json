@@ -23,9 +23,9 @@
     3,
     4
    ],
-   "pop": 50000,
-   "army": 2000,
-   "ships": 25,
+   "pop": 40000,
+   "army": 1600,
+   "ships": 20,
    "hre": "none",
    "character": "defender",
    "religion": "catholic",
@@ -47,9 +47,9 @@
     12,
     13
    ],
-   "pop": 100000,
-   "army": 4000,
-   "ships": 50,
+   "pop": 90000,
+   "army": 3600,
+   "ships": 45,
    "hre": "none",
    "character": "opportunist",
    "religion": "catholic",
@@ -79,7 +79,7 @@
    "code": "GOT",
    "name": "Gotland",
    "capital": 19,
-   "colour": "#f1c69d",
+   "colour": "#dcd2a2",
    "settlements": [
     19
    ],
@@ -150,8 +150,6 @@
     41,
     42,
     43,
-    44,
-    45,
     83,
     84,
     85,
@@ -160,9 +158,9 @@
     88,
     89
    ],
-   "pop": 300000,
-   "army": 12000,
-   "ships": 150,
+   "pop": 290000,
+   "army": 11600,
+   "ships": 145,
    "hre": "none",
    "character": "conqueror",
    "religion": "catholic",
@@ -191,7 +189,7 @@
    "code": "ISL",
    "name": "Lordship of the Isles",
    "capital": 53,
-   "colour": "#b4abdb",
+   "colour": "#acdbea",
    "settlements": [
     53
    ],
@@ -206,7 +204,7 @@
    "code": "TRN",
    "name": "Tyrone",
    "capital": 46,
-   "colour": "#dcd2a2",
+   "colour": "#e2abbb",
    "settlements": [
     46
    ],
@@ -222,13 +220,14 @@
    "code": "THO",
    "name": "Thomond",
    "capital": 47,
-   "colour": "#acdbea",
+   "colour": "#d5b3dc",
    "settlements": [
+    45,
     47
    ],
-   "pop": 10000,
-   "army": 400,
-   "ships": 0,
+   "pop": 20000,
+   "army": 800,
+   "ships": 10,
    "hre": "none",
    "character": "defender",
    "religion": "catholic",
@@ -238,13 +237,14 @@
    "code": "DES",
    "name": "Desmond",
    "capital": 48,
-   "colour": "#e2abbb",
+   "colour": "#9fd6c9",
    "settlements": [
+    44,
     48
    ],
-   "pop": 10000,
-   "army": 400,
-   "ships": 5,
+   "pop": 20000,
+   "army": 800,
+   "ships": 10,
    "hre": "none",
    "character": "opportunist",
    "religion": "catholic",
@@ -316,9 +316,9 @@
     103,
     104
    ],
-   "pop": 190000,
-   "army": 7600,
-   "ships": 95,
+   "pop": 180000,
+   "army": 7200,
+   "ships": 90,
    "hre": "part",
    "character": "diplomat",
    "religion": "catholic"
@@ -379,7 +379,7 @@
    "code": "ARM",
    "name": "Armagnac",
    "capital": 115,
-   "colour": "#d5b3dc",
+   "colour": "#f3a9a9",
    "settlements": [
     115,
     116
@@ -395,7 +395,7 @@
    "code": "FOI",
    "name": "Foix-Béarn",
    "capital": 117,
-   "colour": "#9fd6c9",
+   "colour": "#cdcda4",
    "settlements": [
     117,
     118
@@ -433,7 +433,7 @@
    "code": "LIE",
    "name": "Liège",
    "capital": 126,
-   "colour": "#f3a9a9",
+   "colour": "#a7b9f0",
    "settlements": [
     126
    ],
@@ -497,7 +497,7 @@
    "code": "LUX",
    "name": "Luxembourg",
    "capital": 130,
-   "colour": "#a9c8e8",
+   "colour": "#b7d9a8",
    "settlements": [
     130
    ],
@@ -564,6 +564,12 @@
     163,
     164,
     165,
+    217,
+    218,
+    219,
+    220,
+    221,
+    222,
     223,
     224,
     225,
@@ -572,9 +578,9 @@
     228,
     229
    ],
-   "pop": 220000,
-   "army": 8800,
-   "ships": 110,
+   "pop": 280000,
+   "army": 11200,
+   "ships": 140,
    "hre": "none",
    "character": "conqueror",
    "religion": "catholic",
@@ -606,7 +612,7 @@
    "code": "NAV",
    "name": "Navarre",
    "capital": 173,
-   "colour": "#b7d9a8",
+   "colour": "#a9c8e8",
    "settlements": [
     173
    ],
@@ -644,12 +650,13 @@
     177,
     178,
     179,
-    180
+    180,
+    208
    ],
-   "pop": 50000,
-   "army": 2000,
+   "pop": 70000,
+   "army": 2800,
    "ships": 0,
-   "hre": "all",
+   "hre": "part",
    "character": "conqueror",
    "religion": "catholic",
    "bulwark": true
@@ -747,12 +754,11 @@
     204,
     205,
     206,
-    207,
-    208
+    207
    ],
-   "pop": 80000,
-   "army": 3200,
-   "ships": 40,
+   "pop": 60000,
+   "army": 2400,
+   "ships": 30,
    "hre": "none",
    "character": "diplomat",
    "religion": "catholic",
@@ -762,7 +768,7 @@
    "code": "FER",
    "name": "Ferrara",
    "capital": 209,
-   "colour": "#cdcda4",
+   "colour": "#e9c4e2",
    "settlements": [
     209,
     210
@@ -831,17 +837,11 @@
    "settlements": [
     214,
     215,
-    216,
-    217,
-    218,
-    219,
-    220,
-    221,
-    222
+    216
    ],
-   "pop": 100000,
-   "army": 4000,
-   "ships": 50,
+   "pop": 40000,
+   "army": 1600,
+   "ships": 20,
    "hre": "none",
    "character": "opportunist",
    "religion": "catholic",
@@ -867,7 +867,7 @@
    "code": "LUB",
    "name": "Lübeck",
    "capital": 231,
-   "colour": "#a7b9f0",
+   "colour": "#c6e3a4",
    "settlements": [
     231
    ],
@@ -883,7 +883,7 @@
    "code": "HAM",
    "name": "Hamburg",
    "capital": 232,
-   "colour": "#e9c4e2",
+   "colour": "#f1c69d",
    "settlements": [
     232
    ],
@@ -899,7 +899,7 @@
    "code": "MEC",
    "name": "Mecklenburg",
    "capital": 233,
-   "colour": "#c6e3a4",
+   "colour": "#b4abdb",
    "settlements": [
     233,
     234
@@ -916,7 +916,7 @@
    "code": "POM",
    "name": "Pomerania",
    "capital": 235,
-   "colour": "#f1c69d",
+   "colour": "#dcd2a2",
    "settlements": [
     235,
     236
@@ -966,7 +966,7 @@
    "code": "MAG",
    "name": "Magdeburg",
    "capital": 240,
-   "colour": "#b4abdb",
+   "colour": "#acdbea",
    "settlements": [
     240
    ],
@@ -1046,7 +1046,7 @@
    "code": "COL",
    "name": "Cologne",
    "capital": 247,
-   "colour": "#dcd2a2",
+   "colour": "#e2abbb",
    "settlements": [
     247
    ],
@@ -1062,7 +1062,7 @@
    "code": "HES",
    "name": "Hesse",
    "capital": 248,
-   "colour": "#acdbea",
+   "colour": "#bfd8c6",
    "settlements": [
     248,
     249
@@ -1162,7 +1162,7 @@
    "code": "MAI",
    "name": "Mainz",
    "capital": 259,
-   "colour": "#e2abbb",
+   "colour": "#e5d3b3",
    "settlements": [
     259
    ],
@@ -1178,7 +1178,7 @@
    "code": "WBG",
    "name": "Würzburg",
    "capital": 260,
-   "colour": "#e5d3b3",
+   "colour": "#e2abbb",
    "settlements": [
     260
    ],
@@ -1210,7 +1210,7 @@
    "code": "NUR",
    "name": "Nuremberg",
    "capital": 262,
-   "colour": "#e2abbb",
+   "colour": "#e5d3b3",
    "settlements": [
     262
    ],
@@ -1226,7 +1226,7 @@
    "code": "PAL",
    "name": "Palatinate",
    "capital": 263,
-   "colour": "#bfd8c6",
+   "colour": "#e8b4a0",
    "settlements": [
     263,
     264
@@ -1263,7 +1263,7 @@
    "code": "MET",
    "name": "Metz",
    "capital": 270,
-   "colour": "#e5d3b3",
+   "colour": "#a9c8e8",
    "settlements": [
     270
    ],
@@ -1278,7 +1278,7 @@
    "code": "STR",
    "name": "Strasbourg",
    "capital": 271,
-   "colour": "#e8b4a0",
+   "colour": "#f2d58c",
    "settlements": [
     271
    ],
@@ -1309,7 +1309,7 @@
    "code": "WRT",
    "name": "Württemberg",
    "capital": 273,
-   "colour": "#e8b4a0",
+   "colour": "#f2d58c",
    "settlements": [
     273
    ],
@@ -1325,7 +1325,7 @@
    "code": "ULM",
    "name": "Ulm",
    "capital": 274,
-   "colour": "#a9c8e8",
+   "colour": "#d5b3dc",
    "settlements": [
     274
    ],
@@ -1341,7 +1341,7 @@
    "code": "AUG",
    "name": "Augsburg",
    "capital": 275,
-   "colour": "#f2d58c",
+   "colour": "#9fd6c9",
    "settlements": [
     275
    ],
@@ -1372,7 +1372,7 @@
    "code": "REG",
    "name": "Regensburg",
    "capital": 277,
-   "colour": "#f2d58c",
+   "colour": "#d5b3dc",
    "settlements": [
     277
    ],
@@ -1387,7 +1387,7 @@
    "code": "BMU",
    "name": "Bavaria-Munich",
    "capital": 278,
-   "colour": "#d5b3dc",
+   "colour": "#e8b4a0",
    "settlements": [
     278
    ],
@@ -1564,7 +1564,7 @@
    "code": "MAZ",
    "name": "Masovia",
    "capital": 306,
-   "colour": "#d5b3dc",
+   "colour": "#f3a9a9",
    "settlements": [
     306,
     307
@@ -1639,7 +1639,7 @@
    "code": "JIS",
    "name": "Upper Hungary",
    "capital": 337,
-   "colour": "#9fd6c9",
+   "colour": "#cdcda4",
    "settlements": [
     337,
     338
@@ -1688,9 +1688,9 @@
     385,
     386
    ],
-   "pop": 330000,
-   "army": 13200,
-   "ships": 165,
+   "pop": 320000,
+   "army": 12800,
+   "ships": 160,
    "hre": "none",
    "character": "conqueror",
    "religion": "sunni"
@@ -1747,7 +1747,7 @@
    "code": "BOS",
    "name": "Bosnia",
    "capital": 360,
-   "colour": "#f3a9a9",
+   "colour": "#a7b9f0",
    "settlements": [
     360,
     361
@@ -1891,7 +1891,7 @@
    "code": "CAN",
    "name": "Candar",
    "capital": 393,
-   "colour": "#cdcda4",
+   "colour": "#e9c4e2",
    "settlements": [
     393,
     394
@@ -1922,7 +1922,7 @@
    "code": "DUL",
    "name": "Dulkadir",
    "capital": 396,
-   "colour": "#a7b9f0",
+   "colour": "#c6e3a4",
    "settlements": [
     396,
     397
@@ -1985,7 +1985,7 @@
    "code": "KRH",
    "name": "Knights of Rhodes",
    "capital": 403,
-   "colour": "#e9c4e2",
+   "colour": "#f1c69d",
    "settlements": [
     403,
     404
@@ -2061,7 +2061,7 @@
    "code": "TVE",
    "name": "Tver",
    "capital": 422,
-   "colour": "#c6e3a4",
+   "colour": "#b4abdb",
    "settlements": [
     422,
     423
@@ -2234,8 +2234,8 @@
     "near": null
    },
    "country": "NOR",
-   "type": "city",
-   "pop": 20000,
+   "type": "town",
+   "pop": 10000,
    "port": true,
    "river": false,
    "hre": false,
@@ -2328,8 +2328,8 @@
     "near": null
    },
    "country": "SWE",
-   "type": "city",
-   "pop": 20000,
+   "type": "town",
+   "pop": 10000,
    "port": true,
    "river": false,
    "hre": false,
@@ -3178,8 +3178,8 @@
     "near": null
    },
    "country": "ENG",
-   "type": "town",
-   "pop": 10000,
+   "type": "city",
+   "pop": 20000,
    "port": true,
    "river": false,
    "hre": false,
@@ -3586,7 +3586,7 @@
     ],
     "near": null
    },
-   "country": "ENG",
+   "country": "DES",
    "type": "town",
    "pop": 10000,
    "port": true,
@@ -3619,7 +3619,7 @@
     ],
     "near": null
    },
-   "country": "ENG",
+   "country": "THO",
    "type": "town",
    "pop": 10000,
    "port": true,
@@ -3706,10 +3706,13 @@
    "abbr": "Tra",
    "label": {
     "area": 2928,
-    "big": null,
-    "small": [
+    "big": [
      444,
      1286
+    ],
+    "small": [
+     442,
+     1288
     ],
     "near": null
    },
@@ -5341,8 +5344,8 @@
     "near": null
    },
    "country": "BUR",
-   "type": "city",
-   "pop": 20000,
+   "type": "town",
+   "pop": 10000,
    "port": true,
    "river": false,
    "hre": true,
@@ -6770,7 +6773,7 @@
   {
    "id": 144,
    "name": "Salamanca",
-   "abbr": "Sam",
+   "abbr": "Sal",
    "label": {
     "area": 5236,
     "big": null,
@@ -8792,7 +8795,7 @@
      1943
     ]
    },
-   "country": "PAP",
+   "country": "MIL",
    "type": "city",
    "pop": 20000,
    "port": false,
@@ -9074,7 +9077,7 @@
     ],
     "near": null
    },
-   "country": "NAP",
+   "country": "ARA",
    "type": "town",
    "pop": 10000,
    "port": false,
@@ -9106,7 +9109,7 @@
      2173
     ]
    },
-   "country": "NAP",
+   "country": "ARA",
    "type": "town",
    "pop": 10000,
    "port": true,
@@ -9136,7 +9139,7 @@
      2265
     ]
    },
-   "country": "NAP",
+   "country": "ARA",
    "type": "town",
    "pop": 10000,
    "port": true,
@@ -9167,7 +9170,7 @@
      2221
     ]
    },
-   "country": "NAP",
+   "country": "ARA",
    "type": "town",
    "pop": 10000,
    "port": false,
@@ -9195,7 +9198,7 @@
     ],
     "near": null
    },
-   "country": "NAP",
+   "country": "ARA",
    "type": "town",
    "pop": 10000,
    "port": false,
@@ -9225,7 +9228,7 @@
      2430
     ]
    },
-   "country": "NAP",
+   "country": "ARA",
    "type": "town",
    "pop": 10000,
    "port": true,
@@ -13336,7 +13339,7 @@
   {
    "id": 347,
    "name": "Salonica",
-   "abbr": "Sal",
+   "abbr": "Sac",
    "label": {
     "area": 4763,
     "big": null,
@@ -13347,8 +13350,8 @@
     "near": null
    },
    "country": "OTT",
-   "type": "city",
-   "pop": 20000,
+   "type": "town",
+   "pop": 10000,
    "port": true,
    "river": false,
    "hre": false,
@@ -14640,7 +14643,7 @@
   {
    "id": 386,
    "name": "Samsun",
-   "abbr": "Sau",
+   "abbr": "Sam",
    "label": {
     "area": 3100,
     "big": null,
@@ -28815,8 +28818,8 @@
    "from": 217,
    "to": 223,
    "type": "land",
-   "length": 101.83,
-   "years": 0.32,
+   "length": 113.23,
+   "years": 0.36,
    "legs": null,
    "pass": null,
    "seaZone": null,
@@ -42605,6 +42608,21 @@
    {
     "subject": "LIV",
     "overlord": "TEU",
+    "kind": "vassal"
+   },
+   {
+    "subject": "BYZ",
+    "overlord": "OTT",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "ATH",
+    "overlord": "OTT",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "MAZ",
+    "overlord": "POL",
     "kind": "vassal"
    }
   ]

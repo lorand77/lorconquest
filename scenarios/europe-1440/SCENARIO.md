@@ -31,7 +31,7 @@ scale; RULES.md §10, Warmongers).
 is about 1.6 km, so an army covers about 500 km a year, as on the Mitteleuropa map.
 
 <!-- generated:summary -->
-445 settlements (69 cities, 376 towns) · 118 countries · 5,140,000 people · 980 land routes, 19 straits, 23 mountain passes
+445 settlements (66 cities, 379 towns) · 118 countries · 5,110,000 people · 980 land routes, 19 straits, 23 mountain passes
 <!-- /generated -->
 
 ![Map](map.svg)
@@ -48,20 +48,20 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 
 | Code | Country | Capital | Colour | Settlements | Pop | Army | Ships | HRE |
 |---|---|---|---|---|---|---|---|---|
-| NOR | Norway | 2 Bergen | #e6bcd4 | 1, 2, 3, 4 | 50K | 2,000 | 25 | — |
-| SWE | Sweden | 5 Stockholm | #a8c4ec | 5, 6, 7, 8, 9, 10, 11, 12, 13 | 100K | 4,000 | 50 | — |
+| NOR | Norway | 2 Bergen | #e6bcd4 | 1, 2, 3, 4 | 40K | 1,600 | 20 | — |
+| SWE | Sweden | 5 Stockholm | #a8c4ec | 5, 6, 7, 8, 9, 10, 11, 12, 13 | 90K | 3,600 | 45 | — |
 | DEN | Denmark | 14 Copenhagen | #f0a8a0 | 14, 15, 16, 17, 18 | 50K | 2,000 | 25 | — |
 | GOT | Gotland | 19 Visby |  | 19 | 10K | 400 | 5 | — |
 | LIV | Livonian Order | 20 Riga | #c4cce0 | 20, 21, 22, 23 | 50K | 2,000 | 25 | — |
 | TEU | Teutonic Order | 24 Danzig | #d4d4d4 | 24, 25, 26, 27 | 50K | 2,000 | 25 | — |
-| ENG | England | 28 London | #ea9999 | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 83, 84, 85, 86, 87, 88, 89 | 300K | 12,000 | 150 | — |
+| ENG | England | 28 London | #ea9999 | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 83, 84, 85, 86, 87, 88, 89 | 290K | 11,600 | 145 | — |
 | SCO | Scotland | 49 Edinburgh | #b8d8f0 | 49, 50, 51, 52 | 40K | 1,600 | 20 | — |
 | ISL | Lordship of the Isles | 53 Inverness |  | 53 | 10K | 400 | 5 | — |
 | TRN | Tyrone | 46 Dungannon |  | 46 | 10K | 400 | — | — |
-| THO | Thomond | 47 Ennis |  | 47 | 10K | 400 | — | — |
-| DES | Desmond | 48 Tralee |  | 48 | 10K | 400 | 5 | — |
+| THO | Thomond | 47 Ennis |  | 45, 47 | 20K | 800 | 10 | — |
+| DES | Desmond | 48 Tralee |  | 44, 48 | 20K | 800 | 10 | — |
 | FRA | France | 54 Paris | #8fb4ea | 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82 | 320K | 12,800 | 160 | — |
-| BUR | Burgundy | 98 Brussels | #c4a0d8 | 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104 | 190K | 7,600 | 95 | part |
+| BUR | Burgundy | 98 Brussels | #c4a0d8 | 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104 | 180K | 7,200 | 90 | part |
 | BRI | Brittany | 106 Nantes | #d8d8cc | 105, 106, 107, 108 | 50K | 2,000 | 25 | — |
 | ANJ | Anjou | 110 Marseille | #f2c7a6 | 109, 110, 111, 112 | 50K | 2,000 | 25 | part |
 | BOU | Bourbon | 113 Moulins | #d6e39c | 113, 114 | 20K | 800 | — | — |
@@ -74,21 +74,21 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | FRI | Frisia | 129 Groningen |  | 129 | 10K | 400 | 5 | ✓ |
 | LUX | Luxembourg | 130 Luxembourg |  | 130 | 10K | 400 | — | ✓ |
 | CAS | Castile | 131 Toledo | #f2d06b | 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154 | 290K | 11,600 | 145 | — |
-| ARA | Aragon | 155 Zaragoza | #f4b073 | 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 223, 224, 225, 226, 227, 228, 229 | 220K | 8,800 | 110 | — |
+| ARA | Aragon | 155 Zaragoza | #f4b073 | 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229 | 280K | 11,200 | 140 | — |
 | POR | Portugal | 166 Lisbon | #9fd29a | 166, 167, 168, 169, 170, 171, 172 | 80K | 3,200 | 40 | — |
 | NAV | Navarre | 173 Pamplona |  | 173 | 10K | 400 | — | — |
 | GRA | Granada | 174 Granada | #d4e8a0 | 174, 175, 176 | 40K | 1,600 | 20 | — |
-| MIL | Milan | 177 Milan | #f0aaaa | 177, 178, 179, 180 | 50K | 2,000 | — | ✓ |
+| MIL | Milan | 177 Milan | #f0aaaa | 177, 178, 179, 180, 208 | 70K | 2,800 | — | part |
 | VEN | Venice | 181 Venice | #8fd4d4 | 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194 | 170K | 6,800 | 85 | — |
 | GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 35 | — |
 | FLO | Florence | 200 Florence | #f6cf9e | 200, 201, 202 | 40K | 1,600 | 20 | — |
 | SIE | Siena | 203 Siena |  | 203 | 10K | 400 | — | — |
-| PAP | Papal States | 204 Rome | #f4eba0 | 119, 204, 205, 206, 207, 208 | 80K | 3,200 | 40 | — |
+| PAP | Papal States | 204 Rome | #f4eba0 | 119, 204, 205, 206, 207 | 60K | 2,400 | 30 | — |
 | FER | Ferrara | 209 Ferrara |  | 209, 210 | 20K | 800 | — | part |
 | MAN | Mantua | 211 Mantua |  | 211 | 10K | 400 | — | ✓ |
 | MON | Montferrat | 212 Casale |  | 212 | 10K | 400 | — | ✓ |
 | RIM | Rimini | 213 Rimini |  | 213 | 10K | 400 | 5 | — |
-| NAP | Naples | 214 Naples | #cdb4e6 | 214, 215, 216, 217, 218, 219, 220, 221, 222 | 100K | 4,000 | 50 | — |
+| NAP | Naples | 214 Naples | #cdb4e6 | 214, 215, 216 | 40K | 1,600 | 20 | — |
 | SHO | Schleswig-Holstein | 230 Schleswig |  | 230 | 10K | 400 | 5 | — |
 | LUB | Lübeck | 231 Lübeck |  | 231 | 20K | 800 | 10 | ✓ |
 | HAM | Hamburg | 232 Hamburg |  | 232 | 20K | 800 | 10 | ✓ |
@@ -136,7 +136,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | LIT | Lithuania | 308 Vilnius | #b8a4dc | 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322 | 170K | 6,800 | — | — |
 | HUN | Hungary | 323 Buda | #e2b88a | 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336 | 150K | 6,000 | — | — |
 | JIS | Upper Hungary | 337 Kassa |  | 337, 338 | 20K | 800 | — | — |
-| OTT | Ottoman Empire | 339 Edirne | #8cc68c | 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386 | 330K | 13,200 | 165 | — |
+| OTT | Ottoman Empire | 339 Edirne | #8cc68c | 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386 | 320K | 12,800 | 160 | — |
 | BYZ | Byzantium | 354 Constantinople | #b89ad8 | 354, 355 | 30K | 1,200 | 15 | — |
 | MOR | Morea | 356 Mistra | #d8c0ec | 356, 357, 358 | 30K | 1,200 | 15 | — |
 | SER | Serbia | 359 Novo Brdo |  | 359 | 10K | 400 | — | — |
@@ -169,7 +169,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 
 ## Settlements
 
-- **Type** — `town` (red circle, 10,000 pop) or `city` (red square, 20,000 pop). The 69 cities are the largest
+- **Type** — `town` (red circle, 10,000 pop) or `city` (red square, 20,000 pop). The 66 cities are the largest
   towns of the map around 1440.
 - **Port** — the settlement sits on the coast.
 - **HRE** — inside the Holy Roman Empire.
@@ -182,10 +182,10 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | ID | Name | Country | Type | Port | HRE | X | Y | Borders | Straits |
 |---|---|---|---|---|---|---|---|---|---|
 | 1 | Oslo | NOR | town | port |  | 1315 | 908 | 2, 3, 6, 7, 9, 10 |  |
-| 2 | Bergen | NOR | city | port |  | 1133 | 857 | 1, 3 |  |
+| 2 | Bergen | NOR | town | port |  | 1133 | 857 | 1, 3 |  |
 | 3 | Nidaros | NOR | town | port |  | 1318 | 663 | 1, 2, 10, 11 |  |
 | 4 | Vardøhus | NOR | town | port |  | 1851 | 134 | 11 |  |
-| 5 | Stockholm | SWE | city | port |  | 1570 | 950 | 6, 7 |  |
+| 5 | Stockholm | SWE | town | port |  | 1570 | 950 | 6, 7 |  |
 | 6 | Uppsala | SWE | town |  |  | 1553 | 914 | 1, 5, 7, 10 |  |
 | 7 | Linköping | SWE | town |  |  | 1484 | 1015 | 1, 5, 6, 8, 9, 15 |  |
 | 8 | Kalmar | SWE | town | port |  | 1511 | 1133 | 7, 15 | 19 |
@@ -211,7 +211,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 28 | London | ENG | city | port |  | 827 | 1421 | 31, 32, 35, 36 |  |
 | 29 | York | ENG | city |  |  | 823 | 1250 | 34, 37, 38, 39 |  |
 | 30 | Bristol | ENG | city | port |  | 724 | 1402 | 32, 33, 35, 40, 41 |  |
-| 31 | Norwich | ENG | town | port |  | 900 | 1358 | 28, 34 |  |
+| 31 | Norwich | ENG | city | port |  | 900 | 1358 | 28, 34 |  |
 | 32 | Southampton | ENG | town | port |  | 765 | 1450 | 28, 30, 33 |  |
 | 33 | Exeter | ENG | town | port |  | 673 | 1441 | 30, 32 |  |
 | 34 | Lincoln | ENG | town |  |  | 834 | 1303 | 29, 31, 35, 38 |  |
@@ -224,8 +224,8 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 41 | Carmarthen | ENG | town | port |  | 660 | 1357 | 30, 40 |  |
 | 42 | Dublin | ENG | town | port |  | 610 | 1238 | 43, 45, 46, 47 | 38 |
 | 43 | Waterford | ENG | town | port |  | 555 | 1299 | 42, 44, 47 |  |
-| 44 | Cork | ENG | town | port |  | 494 | 1305 | 43, 47, 48 |  |
-| 45 | Galway | ENG | town | port |  | 501 | 1205 | 42, 46, 47 |  |
+| 44 | Cork | DES | town | port |  | 494 | 1305 | 43, 47, 48 |  |
+| 45 | Galway | THO | town | port |  | 501 | 1205 | 42, 46, 47 |  |
 | 46 | Dungannon | TRN | town |  |  | 613 | 1157 | 42, 45 |  |
 | 47 | Ennis | THO | town |  |  | 494 | 1238 | 42, 43, 44, 45, 48 |  |
 | 48 | Tralee | DES | town | port |  | 453 | 1265 | 44, 47 |  |
@@ -279,7 +279,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 96 | Bruges | BUR | city | port |  | 963 | 1467 | 83, 95, 97 |  |
 | 97 | Ghent | BUR | city |  |  | 982 | 1481 | 95, 96, 98, 99, 100 |  |
 | 98 | Brussels | BUR | city |  | HRE | 1007 | 1498 | 97, 99, 100, 101, 126 |  |
-| 99 | Antwerp | BUR | city | port | HRE | 1012 | 1474 | 97, 98, 102, 103, 126, 128, 246 |  |
+| 99 | Antwerp | BUR | town | port | HRE | 1012 | 1474 | 97, 98, 102, 103, 126, 128, 246 |  |
 | 100 | Mons | BUR | town |  | HRE | 986 | 1523 | 81, 93, 95, 97, 98, 101 |  |
 | 101 | Namur | BUR | town |  | HRE | 1025 | 1527 | 98, 100, 126 |  |
 | 102 | Middelburg | BUR | town | port | HRE | 983 | 1449 | 99, 103 |  |
@@ -388,7 +388,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 205 | Viterbo | PAP | town |  |  | 1315 | 2103 | 203, 204, 206, 216 |  |
 | 206 | Perugia | PAP | town |  |  | 1332 | 2056 | 202, 203, 205, 207, 213, 216 |  |
 | 207 | Ancona | PAP | town | port |  | 1384 | 2025 | 206, 216 |  |
-| 208 | Bologna | PAP | city |  |  | 1284 | 1959 | 200, 209, 210, 213 |  |
+| 208 | Bologna | MIL | city |  |  | 1284 | 1959 | 200, 209, 210, 213 |  |
 | 209 | Ferrara | FER | town |  |  | 1298 | 1936 | 181, 182, 183, 208, 210, 211, 213 |  |
 | 210 | Modena | FER | town |  | HRE | 1264 | 1948 | 180, 201, 208, 209, 211 |  |
 | 211 | Mantua | MAN | town |  | HRE | 1260 | 1912 | 179, 180, 183, 184, 209, 210 |  |
@@ -397,12 +397,12 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 214 | Naples | NAP | city | port |  | 1424 | 2211 | 215, 217, 223 |  |
 | 215 | Salerno | NAP | town | port |  | 1450 | 2222 | 214, 217, 218, 219, 221 |  |
 | 216 | L'Aquila | NAP | town |  |  | 1381 | 2110 | 204, 205, 206, 207, 217, 223 |  |
-| 217 | Foggia | NAP | town |  |  | 1490 | 2171 | 214, 215, 216, 218, 223 |  |
-| 218 | Bari | NAP | town | port |  | 1557 | 2197 | 215, 217, 219 |  |
-| 219 | Taranto | NAP | town | port |  | 1580 | 2235 | 215, 218, 220, 221 |  |
-| 220 | Lecce | NAP | town |  |  | 1628 | 2245 | 219 |  |
-| 221 | Cosenza | NAP | town |  |  | 1529 | 2320 | 215, 219, 222 |  |
-| 222 | Reggio | NAP | town | port |  | 1505 | 2402 | 221 | 225 |
+| 217 | Foggia | ARA | town |  |  | 1490 | 2171 | 214, 215, 216, 218, 223 |  |
+| 218 | Bari | ARA | town | port |  | 1557 | 2197 | 215, 217, 219 |  |
+| 219 | Taranto | ARA | town | port |  | 1580 | 2235 | 215, 218, 220, 221 |  |
+| 220 | Lecce | ARA | town |  |  | 1628 | 2245 | 219 |  |
+| 221 | Cosenza | ARA | town |  |  | 1529 | 2320 | 215, 219, 222 |  |
+| 222 | Reggio | ARA | town | port |  | 1505 | 2402 | 221 | 225 |
 | 223 | Gaeta | ARA | town | port |  | 1389 | 2184 | 204, 214, 216, 217 |  |
 | 224 | Palermo | ARA | city | port |  | 1371 | 2406 | 226 |  |
 | 225 | Messina | ARA | town | port |  | 1480 | 2399 | 226 | 222 |
@@ -527,7 +527,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 344 | Varna | OTT | town | port |  | 2102 | 1995 | 343, 355, 364, 365 |  |
 | 345 | Nikopol | OTT | town |  |  | 1950 | 1985 | 341, 342, 343, 346, 364 |  |
 | 346 | Vidin | OTT | town |  |  | 1849 | 1977 | 329, 333, 342, 345, 353, 364 |  |
-| 347 | Salonica | OTT | city | port |  | 1877 | 2204 | 348, 350, 352 |  |
+| 347 | Salonica | OTT | town | port |  | 1877 | 2204 | 348, 350, 352 |  |
 | 348 | Serres | OTT | town |  |  | 1905 | 2171 | 341, 342, 347, 349 |  |
 | 349 | Skopje | OTT | town |  |  | 1790 | 2120 | 189, 342, 348, 350, 359 |  |
 | 350 | Monastir | OTT | town |  |  | 1790 | 2187 | 189, 347, 349, 351, 352 |  |
@@ -685,7 +685,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 ## Overview
 
 <!-- generated:overview -->
-**Cities (20K):** 2, 5, 20, 24, 28, 29, 30, 54, 67, 75, 84, 88, 96, 97, 98, 99, 106, 110, 126, 131, 133, 134, 147, 148, 155, 159, 163, 166, 174, 177, 181, 183, 193, 195, 199, 200, 204, 208, 214, 224, 231, 232, 239, 240, 247, 255, 262, 265, 270, 271, 274, 275, 280, 294, 303, 308, 318, 323, 339, 347, 354, 372, 387, 405, 414, 427, 434, 435, 438 — all other settlements are towns (10K).
+**Cities (20K):** 20, 24, 28, 29, 30, 31, 54, 67, 75, 84, 88, 96, 97, 98, 106, 110, 126, 131, 133, 134, 147, 148, 155, 159, 163, 166, 174, 177, 181, 183, 193, 195, 199, 200, 204, 208, 214, 224, 231, 232, 239, 240, 247, 255, 262, 265, 270, 271, 274, 275, 280, 294, 303, 308, 318, 323, 339, 354, 372, 387, 405, 414, 427, 434, 435, 438 — all other settlements are towns (10K).
 
 **HRE settlements (91):** 91, 98–104, 111, 112, 120–130, 177–180, 210–212, 231–293 — held by 53 of the 118 countries.
 
@@ -699,62 +699,62 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 | Pop | Countries |
 |---|---|
-| 330K | 1: OTT Ottoman Empire |
-| 320K | 1: FRA France |
-| 300K | 1: ENG England |
-| 290K | 1: CAS Castile |
-| 220K | 1: ARA Aragon |
-| 190K | 1: BUR Burgundy |
+| 320K | 2: FRA France · OTT Ottoman Empire |
+| 290K | 2: ENG England · CAS Castile |
+| 280K | 1: ARA Aragon |
+| 180K | 1: BUR Burgundy |
 | 170K | 2: VEN Venice · LIT Lithuania |
 | 150K | 1: HUN Hungary |
 | 140K | 1: POL Poland |
-| 100K | 4: SWE Sweden · NAP Naples · MOS Muscovy · MRC Morocco |
-| 90K | 1: TUN Tunis |
-| 80K | 3: POR Portugal · PAP Papal States · NOV Novgorod |
-| 70K | 2: GEN Genoa · KAR Karaman |
-| 60K | 2: SAV Savoy · BOH Bohemia |
-| 50K | 7: NOR Norway · DEN Denmark · LIV Livonian Order · TEU Teutonic Order · BRI Brittany · ANJ Anjou · MIL Milan |
-| 40K | 6: SCO Scotland · GRA Granada · FLO Florence · SAX Saxony · AUS Austria · TLE Tlemcen |
+| 100K | 2: MOS Muscovy · MRC Morocco |
+| 90K | 2: SWE Sweden · TUN Tunis |
+| 80K | 2: POR Portugal · NOV Novgorod |
+| 70K | 3: MIL Milan · GEN Genoa · KAR Karaman |
+| 60K | 3: SAV Savoy · PAP Papal States · BOH Bohemia |
+| 50K | 5: DEN Denmark · LIV Livonian Order · TEU Teutonic Order · BRI Brittany · ANJ Anjou |
+| 40K | 8: NOR Norway · SCO Scotland · GRA Granada · FLO Florence · NAP Naples · SAX Saxony · AUS Austria · TLE Tlemcen |
 | 30K | 9: BRU Brunswick-Lüneburg · BRA Brandenburg · SIL Silesia · TYR Tyrol · STY Inner Austria · BYZ Byzantium · MOR Morea · MOL Moldavia · AQQ Aq Qoyunlu |
-| 20K | 27: BOU Bourbon · ARM Armagnac · FOI Foix-Béarn · LIE Liège · FER Ferrara · LUB Lübeck · HAM Hamburg · MEC Mecklenburg · POM Pomerania · MAG Magdeburg · COL Cologne · HES Hesse · NUR Nuremberg · PAL Palatinate · MET Metz · STR Strasbourg · ULM Ulm · AUG Augsburg · SWI Swiss Confederacy · MAZ Masovia · JIS Upper Hungary · BOS Bosnia · WAL Wallachia · CAN Candar · DUL Dulkadir · KRH Knights of Rhodes · TVE Tver |
-| 10K | 47: GOT Gotland · ISL Lordship of the Isles · TRN Tyrone · THO Thomond · DES Desmond · UTR Utrecht · GEL Guelders · FRI Frisia · LUX Luxembourg · NAV Navarre · SIE Siena · MAN Mantua · MON Montferrat · RIM Rimini · SHO Schleswig-Holstein · BRE Bremen · CLE Cleves-Mark · MUN Münster · JUL Jülich-Berg · LUS Upper Lusatia · OPP Opole · TRI Trier · MAI Mainz · WBG Würzburg · ANS Ansbach-Kulmbach · BAD Baden · WRT Württemberg · BIN Bavaria-Ingolstadt · REG Regensburg · BMU Bavaria-Munich · BLA Bavaria-Landshut · BAS Basel · ZUR Zürich · SAL Salzburg · SER Serbia · HER Herzegovina · RAG Ragusa · ATH Athens · EPI Epirus · LES Lesbos · TRE Trebizond · RAM Ramadan · CYP Cyprus · PSK Pskov · RYA Ryazan · THE Theodoro · GHO Great Horde |
+| 20K | 29: THO Thomond · DES Desmond · BOU Bourbon · ARM Armagnac · FOI Foix-Béarn · LIE Liège · FER Ferrara · LUB Lübeck · HAM Hamburg · MEC Mecklenburg · POM Pomerania · MAG Magdeburg · COL Cologne · HES Hesse · NUR Nuremberg · PAL Palatinate · MET Metz · STR Strasbourg · ULM Ulm · AUG Augsburg · SWI Swiss Confederacy · MAZ Masovia · JIS Upper Hungary · BOS Bosnia · WAL Wallachia · CAN Candar · DUL Dulkadir · KRH Knights of Rhodes · TVE Tver |
+| 10K | 45: GOT Gotland · ISL Lordship of the Isles · TRN Tyrone · UTR Utrecht · GEL Guelders · FRI Frisia · LUX Luxembourg · NAV Navarre · SIE Siena · MAN Mantua · MON Montferrat · RIM Rimini · SHO Schleswig-Holstein · BRE Bremen · CLE Cleves-Mark · MUN Münster · JUL Jülich-Berg · LUS Upper Lusatia · OPP Opole · TRI Trier · MAI Mainz · WBG Würzburg · ANS Ansbach-Kulmbach · BAD Baden · WRT Württemberg · BIN Bavaria-Ingolstadt · REG Regensburg · BMU Bavaria-Munich · BLA Bavaria-Landshut · BAS Basel · ZUR Zürich · SAL Salzburg · SER Serbia · HER Herzegovina · RAG Ragusa · ATH Athens · EPI Epirus · LES Lesbos · TRE Trebizond · RAM Ramadan · CYP Cyprus · PSK Pskov · RYA Ryazan · THE Theodoro · GHO Great Horde |
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Sea of Azov, are 17 hops (34 months).
 
-**Naval powers:** 48 countries, 1695 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there.
+**Naval powers:** 49 countries, 1675 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
-| OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 165 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 |
 | FRA France | 61, 71 | Bay of Biscay, Western Mediterranean | 160 | yes: 159-165, 196-229 |
-| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 44, 45, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 150 | yes: 36-83, 38-42 |
+| OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 160 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 |
+| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 145 | yes: 36-83, 38-42 |
 | CAS Castile | 133, 136, 138, 152, 154 | Atlantic, Bay of Biscay, Gulf of Cádiz, Western Mediterranean | 145 | yes: 136-430, 159-165, 196-229 |
-| ARA Aragon | 159, 160, 163, 164, 165, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea | 110 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
-| BUR Burgundy | 96, 99, 102, 103, 104 | North Sea | 95 | no — no strait in its zones |
+| ARA Aragon | 159, 160, 163, 164, 165, 218, 219, 222, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 140 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
+| BUR Burgundy | 96, 99, 102, 103, 104 | North Sea | 90 | no — no strait in its zones |
 | VEN Venice | 181, 187, 188, 189, 190, 191, 192, 193, 194 | Ionian Sea, Adriatic Sea, Aegean Sea | 85 | yes: 190-370, 191-194, 197-376, 222-225, 371-375 |
-| SWE Sweden | 5, 8, 9, 10, 11, 12, 13 | Kattegat, Baltic Sea, Northern Baltic, Gulf of Bothnia, Gulf of Finland | 50 | yes: 8-19, 14-15 — one zone at a time (30 ships in each) |
-| NAP Naples | 214, 215, 218, 219, 222 | Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 50 | yes: 190-370, 191-194, 222-225 |
 | MRC Morocco | 430, 431, 432, 433 | Gulf of Cádiz | 50 | yes: 136-430 |
+| SWE Sweden | 5, 8, 9, 10, 11, 12, 13 | Kattegat, Baltic Sea, Northern Baltic, Gulf of Bothnia, Gulf of Finland | 45 | yes: 8-19, 14-15 — one zone at a time (30 ships in each) |
 | TUN Tunis | 438, 439, 441, 443, 444, 445 | Western Mediterranean, Tyrrhenian Sea, Strait of Sicily | 45 | yes: 159-165, 196-229 |
 | POR Portugal | 166, 167, 171, 172 | Gulf of Cádiz, Alboran Sea | 40 | yes: 136-430 |
-| PAP Papal States | 207 | Adriatic Sea | 40 | no — no strait in its zones |
 | GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 35 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 — one zone at a time (30 ships in each) |
 | KAR Karaman | 391, 392 | Levantine Sea | 35 | yes: 198-391, 403-404 |
 | SAV Savoy | 125 | Ligurian Sea | 30 | **exactly**: 196-201 |
-| NOR Norway | 1, 2, 3, 4 | Norwegian Sea, North Sea, Skagerrak | 25 | no — no strait in its zones |
+| PAP Papal States | 207 | Adriatic Sea | 30 | no — no strait in its zones |
 | DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 25 | no — too few ships for 14-15, 14-16, 16-17 |
 | LIV Livonian Order | 20, 21, 23 | Gulf of Riga, Gulf of Finland | 25 | no — no strait in its zones |
 | TEU Teutonic Order | 24, 25, 27 | Baltic Sea | 25 | no — too few ships for 8-19 |
 | BRI Brittany | 106, 107, 108 | English Channel, Bay of Biscay | 25 | no — too few ships for 36-83 |
 | ANJ Anjou | 110 | Western Mediterranean | 25 | no — too few ships for 159-165, 196-229 |
+| NOR Norway | 1, 2, 3, 4 | Norwegian Sea, North Sea, Skagerrak | 20 | no — no strait in its zones |
 | SCO Scotland | 49, 51 | North Sea | 20 | no — no strait in its zones |
 | GRA Granada | 175, 176 | Alboran Sea | 20 | no — no strait in its zones |
 | FLO Florence | 201 | Ligurian Sea | 20 | no — too few ships for 196-201 |
+| NAP Naples | 214, 215 | Tyrrhenian Sea | 20 | no — no strait in its zones |
 | TLE Tlemcen | 436, 437 | Western Mediterranean | 20 | no — too few ships for 159-165, 196-229 |
 | STY Inner Austria | 293 | Adriatic Sea | 15 | no — no strait in its zones |
 | BYZ Byzantium | 354, 355 | Sea of Marmara, Western Black Sea | 15 | no — too few ships for 340-375, 354-372 |
 | MOR Morea | 357, 358 | Ionian Sea, Aegean Sea | 15 | no — too few ships for 190-370, 191-194, 197-376, 222-225, 371-375 |
 | MOL Moldavia | 368 | Western Black Sea | 15 | no — no strait in its zones |
+| THO Thomond | 45 | Atlantic | 10 | no — no strait in its zones |
+| DES Desmond | 44, 48 | Atlantic | 10 | no — no strait in its zones |
 | LUB Lübeck | 231 | Belt Sea | 10 | no — too few ships for 14-16, 16-17 |
 | HAM Hamburg | 232 | North Sea | 10 | no — no strait in its zones |
 | MEC Mecklenburg | 234 | Belt Sea | 10 | no — too few ships for 14-16, 16-17 |
@@ -763,7 +763,6 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 | KRH Knights of Rhodes | 403, 404 | Aegean Sea, Levantine Sea | 10 | no — too few ships for 197-376, 198-391, 371-375, 403-404 |
 | GOT Gotland | 19 | Northern Baltic | 5 | no — no strait in its zones |
 | ISL Lordship of the Isles | 53 | North Sea | 5 | no — no strait in its zones |
-| DES Desmond | 48 | Atlantic | 5 | no — no strait in its zones |
 | FRI Frisia | 129 | North Sea | 5 | no — no strait in its zones |
 | RIM Rimini | 213 | Adriatic Sea | 5 | no — no strait in its zones |
 | SHO Schleswig-Holstein | 230 | Belt Sea | 5 | no — too few ships for 14-16, 16-17 |
@@ -866,7 +865,7 @@ point; the other columns are generated from the map.*
 
 ## The situation in 1440
 
-The game opens in the middle of eight wars, with the alliances of 1440 already signed and five countries already others' subjects. They count exactly as if declared
+The game opens in the middle of eight wars, with the alliances of 1440 already signed and eight countries already others' subjects. They count exactly as if declared
 and signed in play (RULES.md §10): the sides below are at war from the first day, the agreements are in force, and every
 warmonger score still starts at 0. War score in these wars counts populations as they were at the start. Allies are **not**
 in these wars unless listed — a military alliance only calls an ally into wars declared from now on.
@@ -917,6 +916,9 @@ a vassal has none and pays 40%. A vassal of the start may be integrated as any o
 | MOL Moldavia | POL Poland | protectorate | Its voivodes had sworn fealty to the Polish king since 1387. |
 | RAG Ragusa | HUN Hungary | protectorate | Under the Hungarian crown since 1358, paying it a yearly tribute. |
 | LIV Livonian Order | TEU Teutonic Order | vassal | The Order's Livonian branch, under the Grand Master. |
+| BYZ Byzantium | OTT Ottoman Empire | protectorate | John VIII paid the Sultan tribute from 1424, and went west in 1438 to beg a crusade. |
+| ATH Athens | OTT Ottoman Empire | protectorate | The Acciaioli dukes held Athens as the Sultan's tributaries. |
+| MAZ Masovia | POL Poland | vassal | Its Piast dukes held Masovia as a fief of the Polish crown from 1351 until it was joined to it in 1526. |
 
 ### Walls
 
@@ -1213,6 +1215,23 @@ towns, and France, Italy, the Low Countries and the Empire are dense. No two set
 of a closer pair is left out (Lucca, Leuven, Pavia, Frankfurt…) — so that their markers and armies do not crowd each other; the
 Empire's smallest states, whose town did not make the cut, are folded into their neighbours. Borders are pulled to where they
 were in 1440 by extra seeds (data.js), checked against some 140 places of the year.
+
+### Left out on purpose
+
+What a reader who knows 1440 will miss, and why it is missing — choices, not mistakes:
+
+- **Towns too near a larger one**: Pavia (by Milan), Lucca (by Pisa and Florence), Leuven (by Brussels), Frankfurt am Main (by
+  Mainz) and Pera across the Golden Horn from Constantinople — the 35 km rule above. Their people are counted in their neighbours'.
+- **Silesia and Pomerania** are one duchy each, of two settlements, where a dozen Piast and Griffin dukes divided them: their
+  quarrels were too small for this map, and any one of them would hold a single town.
+- **North Africa south of the coast, Egypt and the Levant** are grey and unplayable: the Mamluks and the Maghreb's inland
+  powers would pull the game toward a Mediterranean it is not about, and their land is mostly empty at this scale.
+- **The March of Ancona** is the Pope's, though Francesco Sforza held it as his own from 1433 to 1447: a condottiero's
+  conquest, lost within the decade.
+- **Walls** stand only in the fourteen great fortresses of *The situation in 1440*; most towns had a wall of some kind, but one
+  that doubled a siege only where these were.
+- **Ships** at the start follow the rule of RULES.md §2 (people ÷ 2000, coastal countries only), not the real fleets of Venice,
+  Genoa or the Hansa.
 
 ### Colours
 
