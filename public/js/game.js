@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, SPEEDS, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { HOTKEYS, SPEEDS, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -39,7 +39,8 @@ let speed = 1;             // days in a tick's time (alone: ½, 1, 2 or 4 — mi
 let myUserId = null;       // the signed-in user, to tell their chat lines from the others'
 let myName = null;         // and their name, to tell their own seat from a fellow ruler's after a union (RULES.md §10)
 let consents = [];         // in a union, the orders waiting for every ruler's yes: [{ what, yes: [username] }] (rooms.js, consent)
-let multi = false;         // a game with other people: no pause, a setup minute, chat
+let multi = false;         // a game with other people: a pause by vote, a setup minute, chat
+let hold = null, holdAt = 0; // a pause its players asked for, and when the server said so (rooms.js; mirror.js, holdLine)
 let seats = [];            // the people in it: [{ country, username, state }]
 let setupEnds = 0;         // when the setup minute ends, by performance.now(); 0 once it has
 let unread = 0;            // chat lines not yet seen
@@ -92,6 +93,8 @@ async function start() {
         document.title = "LorConquest — watching";
     }
     setupEnds = joined.setup ? performance.now() + joined.setup : 0;
+    hold = joined.hold ?? null;
+    holdAt = performance.now();
     state = joined.view;
     let who;
     [who, scenario, map] = await Promise.all([whoAmI, fetch(`/scenario/${joined.scenario}/scenario.json`).then((r) => r.json()),
@@ -114,7 +117,7 @@ async function start() {
         if (e.key === null || e.key === "lorconquest.march") marchClick = loadMarch();
     });
     $("pause").addEventListener("click", togglePause);
-    $("pause").hidden = $("pb-pause").hidden = multi || !me;
+    $("pause").hidden = $("pb-pause").hidden = !me;
     $("pb-pause").addEventListener("click", togglePause);
     // the speed, alone: a button for each in the status block, one going round them on a phone's bar
     $("speeds").replaceChildren(...SPEEDS.map((s) => make("button", { "data-speed": String(s), title: `${speedName(s)} speed`, onclick: () => setSpeed(s) }, speedName(s))));
@@ -135,6 +138,7 @@ async function start() {
     document.addEventListener("keydown", onKey);
     socket.on("paused", (m) => { paused = m.paused; if (!paused) setupEnds = 0; renderTop(); });
     socket.on("speed", (m) => { speed = m.speed; renderTop(); });
+    socket.on("hold", (h) => { hold = h; holdAt = performance.now(); renderTop(); renderHold(); });
     socket.on("consents", (list) => { consents = list; renderPanel(true); });
     socket.on("over", (m) => {
         state.winner = m.winner;
@@ -166,6 +170,8 @@ async function start() {
             speed = j.speed ?? 1;
             seats = j.seats;
             setupEnds = j.setup ? performance.now() + j.setup : 0;
+            hold = j.hold ?? null;
+            holdAt = performance.now();
             prune();
             caughtUp();
             renderAll();
@@ -416,9 +422,11 @@ async function dispatch(cmd) {
     return r;
 }
 
-function togglePause() {
-    if (multi || !me) return;                         // with other people in the game the clock never stops; a watcher has none
-    ask("pause", { paused: !paused });
+// alone, at once; with other people, a request the others vote on, or continuing a pause they hold (RULES.md §1)
+async function togglePause() {
+    if (!me || pauseButton({ multi, paused, hold, over: state.winner }).disabled) return;      // a watcher has no clock to stop
+    const r = await ask("pause", { paused: multi ? !hold?.by : !paused });
+    if (!r.ok) notice(r.error);
 }
 
 function setSpeed(s) {
@@ -509,8 +517,9 @@ function renderTop() {
     if (!me) $("me").textContent = "👁 Watching";
     else $("me").replaceChildren(swatch(me), ` ${country(me).name}`);
     $("date").textContent = longDate(state.day);
-    $("pause").textContent = state.winner ? "Game over" : paused ? "▶ Play" : "⏸ Pause";
-    $("pause").disabled = Boolean(state.winner);
+    const pb = pauseButton({ multi, paused, hold, over: state.winner });
+    $("pause").textContent = pb.text;
+    $("pause").disabled = pb.disabled;
     $("pause").classList.toggle("paused", paused);
     for (const b of $("speeds").children) { b.classList.toggle("on", Number(b.dataset.speed) === speed); b.disabled = Boolean(state.winner); }
     if (me && country(me).treasury !== undefined) {
@@ -607,7 +616,7 @@ function startPeople(joined) {
         renderPeople();
     });
     renderPeople();
-    setInterval(renderSetup, 250);
+    setInterval(() => { renderSetup(); renderHold(); }, 250);
     if (!me) return;                                  // a watcher sees who plays, but has no seat to leave and no chat
     $("quit").hidden = false;
     $("chat-toggle").hidden = false;
@@ -654,10 +663,22 @@ function renderSetup() {
     if (!$("setup").hidden) $("pb-date").textContent = `⏳ ${formatCountdown(left)}`;
 }
 
+// a pause asked for, held or ending, under the clock — with Yes and No for one who has yet to answer
+function renderHold() {
+    const line = holdLine(hold, me ? myName : null, performance.now() - holdAt);             // a watcher sees it, and has no vote
+    $("hold").hidden = !line;
+    if (!line) return;
+    if ($("hold").dataset.text === line.text + line.vote) return;                 // (redrawn four times a second: buttons kept)
+    $("hold").dataset.text = line.text + line.vote;
+    const answer = (yes) => async () => { const r = await ask("pauseVote", { yes }); if (!r.ok) notice(r.error); };
+    $("hold").replaceChildren(line.text, ...(line.vote ? [" ", make("button", { onclick: answer(true) }, "Yes"), " ", make("button", { onclick: answer(false) }, "No")] : []));
+}
+
 // a phone's slim bar (game.css): play, the country's colour and code (or 👁 for a watcher), the date short, the treasury short
 function renderPhoneBar() {
-    $("pb-pause").textContent = paused ? "▶" : "⏸";
-    $("pb-pause").disabled = Boolean(state.winner);
+    const pb = pauseButton({ multi, paused, hold, over: state.winner });
+    $("pb-pause").textContent = pb.short;
+    $("pb-pause").disabled = pb.disabled;
     $("pb-pause").classList.toggle("paused", paused);
     $("pb-speed").textContent = speedName(speed);
     $("pb-speed").disabled = Boolean(state.winner);

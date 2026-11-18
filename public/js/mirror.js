@@ -223,6 +223,32 @@ export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false,
 // one "slower" or "faster", no further than the ends; "cycle" (the phone bar's one button) goes round from 4× back to ½×.
 export const SPEEDS = [0.5, 1, 2, 4];
 export const speedName = (speed) => `${speed === 0.5 ? "½" : speed}×`;
+// the pause button (RULES.md §1): alone, play and pause; with other people, ask for a pause, or continue one the players hold —
+// nothing to press while a request is open, while the game is going on again, or while the clock stands still for another reason
+// (the setup minute, a game waiting for its players). `hold` is the server's (rooms.js): { by, vote, resumeBy, resumeIn }
+export function pauseButton({ multi, paused, hold, over }) {
+    if (over) return { text: "Game over", short: "▶", disabled: true };
+    if (!multi) return { text: paused ? "▶ Play" : "⏸ Pause", short: paused ? "▶" : "⏸", disabled: false };
+    if (hold?.resumeIn != null) return { text: "▶ Continuing…", short: "…", disabled: true };
+    if (hold?.by) return { text: "▶ Continue", short: "▶", disabled: false };
+    if (hold?.vote) return { text: "⏸ Pause asked…", short: "…", disabled: true };
+    if (paused) return { text: "⏸ Paused", short: "⏸", disabled: true };
+    return { text: "⏸ Ask to pause", short: "⏸", disabled: false };
+}
+
+// the line under the clock while a pause is asked for, held or ending, `elapsed` ms after the server said so: { text, vote } —
+// `vote`, whether `me` (a username) has yet to answer — or null
+export function holdLine(hold, me, elapsed = 0) {
+    if (!hold) return null;
+    const secs = (ms) => Math.max(0, Math.ceil((ms - elapsed) / 1000));
+    if (hold.resumeIn != null) return { text: `${hold.resumeBy} continues the game: ${secs(hold.resumeIn)}…`, vote: false };
+    if (hold.by) return { text: `Paused for ${hold.by} — anyone may continue`, vote: false };
+    const v = hold.vote;
+    if (!v) return null;
+    const answered = v.yes.includes(me) || v.no.includes(me);
+    return { text: `${v.by === me ? "You ask" : `${v.by} asks`} for a pause: ${v.yes.length} of the ${v.needed} needed say yes (${secs(v.endsIn)} s)`, vote: Boolean(me) && !answered };
+}
+
 export function speedAfter(speed, step) {
     const i = Math.max(0, SPEEDS.indexOf(speed));
     if (step === "slower") return SPEEDS[Math.max(0, i - 1)];

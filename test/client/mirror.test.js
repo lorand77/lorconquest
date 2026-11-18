@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -417,4 +417,21 @@ test("an army or a fleet as a player tells it from another: by its strength, not
     assert.equal(fleetStrength({ ships: { cogs: 12, carracks: 12, galleons: 0 } }), "24 ships: 12 cogs, 12 carracks");
     assert.equal(fleetStrength({ ships: { cogs: 10 } }), "10 ships (cogs)");
     assert.equal(fleetStrength({ ships: { menOfWar: 1 } }), "1 ship (men-of-war)");
+});
+
+test("the pause with other people: ask, wait for the vote, continue — and the line under the clock that says where it stands", () => {
+    const vote = { by: "alice", yes: ["alice"], no: [], needed: 2, voters: 3, endsIn: 9500 };
+    assert.deepEqual(pauseButton({ multi: false, paused: true }), { text: "▶ Play", short: "▶", disabled: false });
+    assert.equal(pauseButton({ multi: true, paused: false, hold: null }).text, "⏸ Ask to pause");
+    assert.equal(pauseButton({ multi: true, paused: false, hold: { by: null, vote, resumeIn: null } }).disabled, true);
+    assert.deepEqual(pauseButton({ multi: true, paused: true, hold: { by: "alice", vote: null, resumeIn: null } }), { text: "▶ Continue", short: "▶", disabled: false });
+    assert.equal(pauseButton({ multi: true, paused: true, hold: { by: "alice", vote: null, resumeBy: "bobby", resumeIn: 3000 } }).disabled, true);
+    assert.equal(pauseButton({ multi: true, paused: true, hold: null }).disabled, true, "the setup minute, or a game waiting for its players");
+    assert.equal(pauseButton({ multi: true, paused: false, hold: null, over: "BAV" }).text, "Game over");
+    assert.equal(holdLine(null, "bobby"), null);
+    assert.deepEqual(holdLine({ by: null, vote, resumeIn: null }, "bobby", 1000), { text: "alice asks for a pause: 1 of the 2 needed say yes (9 s)", vote: true });
+    assert.deepEqual(holdLine({ by: null, vote, resumeIn: null }, "alice"), { text: "You ask for a pause: 1 of the 2 needed say yes (10 s)", vote: false });
+    assert.equal(holdLine({ by: null, vote, resumeIn: null }, null).vote, false, "a watcher has no vote");
+    assert.equal(holdLine({ by: "alice", vote: null, resumeIn: null }, "bobby").text, "Paused for alice — anyone may continue");
+    assert.equal(holdLine({ by: "alice", vote: null, resumeBy: "bobby", resumeIn: 3000 }, "carol", 1200).text, "bobby continues the game: 2…");
 });

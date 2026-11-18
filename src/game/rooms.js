@@ -7,7 +7,8 @@
 // public part to everyone in "game:<id>", each country's private part to "game:<id>:<code>".
 //
 // With one person a game is single-player: free pause, and it pauses when they leave and waits for them. With two or
-// more it is multiplayer (RULES.md §1): the clock stands still for the first minute and never stops again, and
+// more it is multiplayer (RULES.md §1): the clock stands still for the first minute, and after that only when its players vote
+// for it — more than half of those here, the one asking counted — until any one of them continues it; and
 //   * a player who is away — no socket in the game — has a caretaker at once, and the full computer player after AWAY_MS;
 //   * one who comes back has their country back at once, whichever of the two had it;
 //   * one who quits gives it to the full computer player for good;
@@ -36,7 +37,8 @@ const MAX_TABLES = 3, MAX_RUNNING = 6;
 // the names a finished game's countries ended under, where a new state renamed them: { code: name }, empty if none
 const namesOf = (g) => (g.final_names ? JSON.parse(g.final_names) : {});
 
-export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, emptyMs = 10 * 60 * 1000, maxHumans, idleMs, achievements }) {
+export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, emptyMs = 10 * 60 * 1000, maxHumans, idleMs, achievements,
+    pauseVoteMs = 10 * 1000, resumeMs = 3 * 1000, pauseRetryMs = 60 * 1000 }) {
     // a game's players ("game:<id>") and those watching it ("watch:<id>", socket.js): both hear the days, pauses, presence and
     // the end; only the players hear the chat, and each player alone their country's private part ("game:<id>:<country>")
     const everyone = (room) => io.to([`game:${room.id}`, `watch:${room.id}`]);
@@ -68,6 +70,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             seats: new Map(seatRows.map((s) => [s.country, { country: s.country, plays: s.plays ?? s.country, userId: s.user_id, username: s.username, sockets: new Set(), state: multi ? "away" : "idle", timer: null }])),
             setupUntil: 0, timers: new Set(), lastTick: performance.now(),
             consents: new Map(),            // "<country>|<what>" -> the user ids that have agreed (consent): not saved
+            vote: null, hold: null, resuming: null, retry: new Map(),       // a pause its players ask for (askPause): not saved
         };
         room.gone = new Promise((resolve) => { room.onGone = resolve; });
         room.ready = new Promise((resolve, reject) => { room.onReady = resolve; room.onFail = reject; });
@@ -195,7 +198,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     // ---------- people in a game ----------
 
     const seatView = (seat) => ({ country: seat.plays, username: seat.username, state: seat.state });
-    const tell = (room, seat) => everyone(room).emit("presence", seatView(seat));
+    // who is here, as it changes — and so who votes on a pause asked for
+    const tell = (room, seat) => { everyone(room).emit("presence", seatView(seat)); tally(room); };
     const caretaker = (room, country, mode) => room.worker.postMessage({ type: "caretaker", country, mode });
     // the seats that rule a country — two or more after a union (RULES.md §10) — and who plays it, as they stand: its people if
     // any of them is here; the caretaker if one is away but not yet two minutes; the full computer player once every one of them
@@ -255,6 +259,99 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     // a single-player game's speed (socket.js checks it is one of SPEEDS); not saved: a game brought back runs at 1
     const setSpeed = (room, speed) => room.worker.postMessage({ type: "speed", speed });
 
+    // A pause with other people (RULES.md §1). One asks; the game runs on while those here vote, PAUSE_VOTE_MS at most; it stands
+    // still once more than half of them say yes (the one asking is a yes), and the request is lost once that can no longer be, or
+    // the time is up — and its asker may not ask again for PAUSE_RETRY_MS. Paused, any one of them continues it, unasked: the
+    // clock starts again RESUME_MS later, so that nobody is caught mid-order. Orders are taken all the while, as in the setup
+    // minute. `room.vote` { userId, by, yes, no, until, timer } while a request is open; `room.hold` { by } while the players hold
+    // the game; `room.resuming` { by, at, timer } in the seconds before it goes on. None of it is saved: a game brought back runs.
+    const voters = (room) => [...new Set([...room.seats.values()].filter((s) => s.state === "present").map((s) => s.userId))];
+    const nameOf = (room, userId) => [...room.seats.values()].find((s) => s.userId === userId)?.username ?? null;
+    const majority = (n) => Math.floor(n / 2) + 1;
+    const stop = (room, t) => { if (t) { clearTimeout(t); room.timers.delete(t); } };
+    function holdView(room) {
+        const v = room.vote, here = voters(room), now = Date.now();
+        return {
+            by: room.hold?.by ?? null,
+            vote: v ? { by: v.by, yes: here.filter((u) => v.yes.has(u)).map((u) => nameOf(room, u)), no: here.filter((u) => v.no.has(u)).map((u) => nameOf(room, u)),
+                needed: majority(here.length), voters: here.length, endsIn: Math.max(0, v.until - now) } : null,
+            resumeBy: room.resuming?.by ?? null, resumeIn: room.resuming ? Math.max(0, room.resuming.at - now) : null,
+        };
+    }
+    const tellHold = (room) => everyone(room).emit("hold", holdView(room));
+    // where a request stands, as votes come in and people come and go
+    function tally(room) {
+        const v = room.vote;
+        if (!v) return;
+        const here = voters(room), yes = here.filter((u) => v.yes.has(u)).length, no = here.filter((u) => v.no.has(u)).length;
+        if (here.length && yes >= majority(here.length)) closeVote(room, true);
+        else if (!here.length || here.length - no < majority(here.length)) closeVote(room, false);
+        else tellHold(room);
+    }
+    function closeVote(room, carried) {
+        const v = room.vote;
+        stop(room, v.timer);
+        room.vote = null;
+        if (carried) { room.hold = { by: v.by }; setPaused(room, true); }
+        else room.retry.set(v.userId, Date.now() + pauseRetryMs);
+        log.info("game.pause_vote", { game: room.id, carried, yes: v.yes.size, no: v.no.size, day: room.day });
+        tellHold(room);
+    }
+    // nobody is left here: no request stands, and nothing holds the game but the wait for its players (waitForPlayers)
+    function dropHold(room) {
+        if (!room.vote && !room.hold && !room.resuming) return;
+        if (room.vote) stop(room, room.vote.timer);
+        if (room.resuming) stop(room, room.resuming.timer);
+        room.vote = room.hold = room.resuming = null;
+        tellHold(room);
+    }
+    // who may ask, vote and continue: a player here, in a game with other people that is going on
+    function voterError(room, userId) {
+        if (!room.multi) return "a single-player game pauses at once";
+        if (room.over || room.ending) return "the game is over";
+        if (!voters(room).includes(userId)) return "only a player in the game may do that";
+        return null;
+    }
+    function askPause(room, userId) {
+        const bad = voterError(room, userId);
+        if (bad) return { ok: false, error: bad };
+        if (room.setupUntil > Date.now()) return { ok: false, error: "the clock has not started yet" };
+        if (room.hold || room.paused) return { ok: false, error: "the game is paused already" };
+        if (room.vote) return { ok: false, error: "a pause has been asked for already: vote on it" };
+        const wait = (room.retry.get(userId) ?? 0) - Date.now();
+        if (wait > 0) return { ok: false, error: `your last request was turned down: ask again in ${Math.ceil(wait / 1000)} s` };
+        room.vote = { userId, by: nameOf(room, userId), yes: new Set([userId]), no: new Set(), until: Date.now() + pauseVoteMs, timer: null };
+        room.vote.timer = later(room, pauseVoteMs, () => { if (room.vote) closeVote(room, false); });
+        log.info("game.pause_asked", { game: room.id, day: room.day });
+        tally(room);                                                // alone here, or with one other who is away: paused at once
+        return { ok: true };
+    }
+    function votePause(room, userId, yes) {
+        const bad = voterError(room, userId);
+        if (bad) return { ok: false, error: bad };
+        if (!room.vote) return { ok: false, error: "no pause is being asked for" };
+        room.vote.yes.delete(userId);
+        room.vote.no.delete(userId);
+        (yes ? room.vote.yes : room.vote.no).add(userId);
+        tally(room);
+        return { ok: true };
+    }
+    function continueGame(room, userId) {
+        const bad = voterError(room, userId);
+        if (bad) return { ok: false, error: bad };
+        if (!room.hold) return { ok: false, error: "the game is not paused by its players" };
+        if (room.resuming) return { ok: true };
+        const at = Date.now() + resumeMs;
+        room.resuming = { by: nameOf(room, userId), at, timer: later(room, resumeMs, () => {
+            room.resuming = room.hold = null;
+            if (!room.emptyTimer && !room.over && !room.ending) setPaused(room, false);
+            tellHold(room);
+        }) };
+        log.info("game.pause_ended", { game: room.id, day: room.day });
+        tellHold(room);
+        return { ok: true };
+    }
+
     // the player has been away too long: the full computer player takes the country
     function becomeFull(room, seat) {
         seat.timer = null;
@@ -292,6 +389,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     // a game with nobody in it stands still and waits for one of its players; the first back sets it going (attach)
     function waitForPlayers(room) {
         if (room.emptyTimer) return;
+        dropHold(room);
         setPaused(room, true);
         room.emptyUntil = Date.now() + emptyMs;
         room.emptyTimer = later(room, emptyMs, () => {
@@ -673,6 +771,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         view: (room, country) => ask(room, { type: "view", country }).then((m) => m.view),
         setPaused,
         setSpeed,
+        askPause, votePause, continueGame, holdOf: holdView,
         setCaretaker: caretaker,
 
         // stop every game, saving where each got to

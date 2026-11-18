@@ -64,7 +64,7 @@ find. With the server alone running the rules, only Node has to agree with itsel
 - **Multiplayer:** up to 4 humans, the computer running every other country. Each player picks
   a free country, first come; the host may start with seats still open, and the computer takes
   them. For the first minute the clock stands still while players look around and give first
-  orders; after that, no pauses (RULES.md §1). Players can chat, as in LorCiv.
+  orders; after that it pauses only by vote, and any player continues it (RULES.md §1). Players can chat, as in LorCiv.
 - **Disconnects** (multiplayer): a **caretaker** takes the country over at once; after
   **2 minutes** away the full computer player does. A player who comes back takes the country
   back at the next tick. The 2 minutes is a server setting, tunable without touching the engine.
@@ -85,8 +85,15 @@ find. With the server alone running the rules, only Node has to agree with itsel
   player opens it again, after a restart too. Its speed (`speed`: ½, 1, 2 or 4) changes only the worker's wait between days,
   never what a day does, so a replay is the same whatever speeds it was played at; it is not saved — a game brought back
   runs at 1×. A day at 4× has 25 ms, still well over the slowest day's cost.
-- **Several people:** the clock stands still for `SETUP_MS` (a minute) from the start while orders are accepted, then runs
-  and no one can pause it. Everyone begins *away*, with a caretaker, until their page joins.
+- **Several people:** the clock stands still for `SETUP_MS` (a minute) from the start while orders are accepted, then runs,
+  and stops only when its players vote for it. Everyone begins *away*, with a caretaker, until their page joins.
+- **A pause by vote** (`rooms.js`, `askPause`): one player asks; the game runs on while those *present* vote, `PAUSE_VOTE_MS`
+  (10 seconds) at most. More than half of them, the asker a yes, pause it; the request is lost once that can no longer be, or
+  when time is up, and its asker waits `PAUSE_RETRY_MS` (a minute) to ask again. People coming and going count at once — the
+  vote is tallied again on every `presence`. Any player present continues the game, unasked, `RESUME_MS` (3 seconds) later.
+  The vote, the pause and the countdown are the room's, not the game's: a pause changes when days happen, never what they do,
+  so nothing of it is in the state, the log or a replay, and none of it is saved — a game brought back is never held, and
+  one everyone leaves drops its pause and waits for its players as any other. `hold` tells everyone where it stands.
 - **Away and back.** A player is "present" while any socket of theirs is in the game. The last one leaving makes them
   *away*: a caretaker defends at once and, after `AWAY_MS` (two minutes), the full computer player takes the country
   (*full*). Opening the game again, at either stage, gives the country back at once. `presence` tells the others. The
@@ -145,7 +152,7 @@ chosen themselves.
 - **A late tick** is caught up by running the missed days at once, up to 5 (half a second). If
   the loop falls further behind, the backlog is dropped and game time slips behind wall time
   rather than skipping days.
-- **While paused** (single player, and the multiplayer setup minute) the loop keeps applying
+- **While paused** (single player, the multiplayer setup minute and a pause voted for) the loop keeps applying
   commands, so purchases and orders show at once, but does not advance the day.
 
 ### One game, one loop
@@ -547,14 +554,16 @@ How it is run is in [setup.md](setup.md); the program's parts for it are:
 
 ### Messages
 
-- **Client to server:** `join`, `command`, `pause` and `speed` (single-player only), `chat`, `quit` and `lobby:enter`, each
+- **Client to server:** `join`, `command`, `pause` (alone at once; with other people a request or a continue), `pauseVote`, `speed`
+  (single-player only), `chat`, `quit` and `lobby:enter`, each
   answered (Socket.IO's acknowledgement stands in for a request id). The country of a command is always that of
   the user's seat, set by the server, never the client's. A socket belongs to a signed-in user: the handshake
   carries the session cookie and is refused without one.
 - **Server to client:** the full view on joining (the first load, a reload and a reconnect all
   use it — no separate catch-up; it also carries the seats, the seconds left of the setup minute and the
   recent chat), then `tick` every day with its changes and events, `private`
-  when the player's own private part changes, `paused`, `speed`, `presence` (a player here, away, or gone), `chat`, and
+  when the player's own private part changes, `paused`, `speed`, `presence` (a player here, away, or gone), `hold` (a pause asked
+  for, held or ending), `chat`, and
   `over`; in the lobby `lobby:changed`, `table:started` and `table:cancelled`. Each list is in
   `src/game/socket.js`; what changed is worked out in the worker (`src/game/view.js`), entity by
   entity, so a day sends only what moved.

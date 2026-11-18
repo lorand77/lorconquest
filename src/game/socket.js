@@ -5,18 +5,21 @@
 //   lobby:enter                   -> { ok }   the socket then hears "lobby:changed" (the tables or their seats changed),
 //                                   "table:started" { id } / "table:cancelled" { id } for tables it has a seat at, and
 //                                   "online" [{ username, playing }] — who has the lobby or a game open — at once and on change
-//   join    { gameId }            -> { ok, gameId, scenario, me, consents, multi, paused, speed, tickMs, view, seats, setup, chat }
+//   join    { gameId }            -> { ok, gameId, scenario, me, consents, multi, paused, speed, tickMs, view, seats, setup, chat, hold }
 //                                   the user's seat in the game; the socket then receives "tick" { day, events, changes },
 //                                   "private" { day, changes }, "paused", "speed" { speed }, "presence" { country, username, state },
-//                                   "chat" { id, userId, username, text, at }, "over" { day, winner, why?, defeated?, abandoned? }, "failed"
-//   watch   { gameId }            -> { ok, gameId, scenario, multi, paused, speed, tickMs, view, seats, setup, over }
+//                                   "chat" { id, userId, username, text, at }, "hold" (pause), "over" { day, winner, why?, defeated?, abandoned? }, "failed"
+//   watch   { gameId }            -> { ok, gameId, scenario, multi, paused, speed, tickMs, view, seats, setup, hold, over }
 //                                   a game being played, watched: the public view (no country's private part, no questions
 //                                   waiting); the socket then hears "tick", "paused", "speed", "presence" and "over" — never "private"
 //                                   or "chat" — and gives no orders
 //   command { cmd }               -> { ok, error, events, waiting? }   the country is always the user's seat's, never the client's;
 //                                   in a union, an order that needs every ruler (rooms.js, consent) waits for the others: `waiting`
 //                                   names them, and the country's rulers hear "consents" [{ what, yes: [username] }]
-//   pause   { paused }            -> { ok }                  single-player games only
+//   pause   { paused }            -> { ok, error }           alone, at once; with other people (rooms.js, askPause) true asks the
+//                                   others for a pause and false continues one they hold — every socket of the game then hears
+//                                   "hold" { by, vote: { by, yes, no, needed, voters, endsIn } | null, resumeBy, resumeIn }
+//   pauseVote { yes }             -> { ok, error }           a player's answer to a pause asked for
 //   speed   { speed }             -> { ok, error }           single-player games only: ½, 1, 2 or 4 days a tick's time (SPEEDS)
 //   chat    { text }              -> { ok, error }
 //   quit                          -> { ok, error }           give the country to the computer for good (multiplayer)
@@ -122,7 +125,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             log.debug("socket.join", { game: room.id, socket: socket.id, country: seat.plays });
             reply(ack, {
                 ok: true, gameId: room.id, scenario: room.scenario, me: seat.plays, consents: rooms.consentsOf(room, seat.plays), multi: room.multi, paused: room.paused, speed: room.speed, tickMs, view,
-                seats: rooms.seatList(room), setup: Math.max(0, room.setupUntil - Date.now()), chat: rooms.chatOf(room),
+                seats: rooms.seatList(room), setup: Math.max(0, room.setupUntil - Date.now()), chat: rooms.chatOf(room), hold: rooms.holdOf(room),
                 over: room.over ?? null,
             });
         });
@@ -141,7 +144,7 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
             const view = await rooms.view(r, null);
             reply(ack, {
                 ok: true, gameId: r.id, scenario: r.scenario, multi: r.multi, paused: r.paused, speed: r.speed, tickMs, view,
-                seats: rooms.seatList(r), setup: Math.max(0, r.setupUntil - Date.now()), over: r.over ?? null,
+                seats: rooms.seatList(r), setup: Math.max(0, r.setupUntil - Date.now()), hold: rooms.holdOf(r), over: r.over ?? null,
             });
         });
 
@@ -156,9 +159,14 @@ export function attachSockets({ io, rooms, sessions, log, tickMs }) {
 
         on("pause", (msg, ack) => {
             if (!room) return reply(ack, { ok: false, error: "join a game first" });
-            if (room.multi) return reply(ack, { ok: false, error: "a game with other people never pauses" });
+            if (room.multi) return reply(ack, msg?.paused ? rooms.askPause(room, user.id) : rooms.continueGame(room, user.id));
             rooms.setPaused(room, Boolean(msg?.paused));
             reply(ack, { ok: true });
+        });
+
+        on("pauseVote", (msg, ack) => {
+            if (!room) return reply(ack, { ok: false, error: "join a game first" });
+            reply(ack, rooms.votePause(room, user.id, Boolean(msg?.yes)));
         });
 
         on("speed", (msg, ack) => {

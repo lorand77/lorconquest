@@ -41,10 +41,12 @@ function securityHeaders(req, res, next) {
     next();
 }
 
-// `setupMs`, `awayMs` and `emptyMs` are the multiplayer minute, the two minutes and the ten minutes (RULES.md §1); `limits` the login throttles (config.js)
+// `setupMs`, `awayMs` and `emptyMs` are the multiplayer minute, the two minutes and the ten minutes (RULES.md §1), `pauseVoteMs`,
+// `resumeMs` and `pauseRetryMs` a pause's vote, countdown and wait after a refusal; `limits` the login throttles (config.js)
 export function createApp({
     dbPath = config.DB_PATH, tickMs = config.TICK_MS, statsEvery = config.STATS_EVERY_DAYS, root = config.ROOT, log = defaultLog,
-    setupMs = config.SETUP_MS, awayMs = config.AWAY_MS, emptyMs = config.EMPTY_MS, maxHumans = config.MAX_HUMANS, idleMs = config.IDLE_MS, production = config.PRODUCTION, limits = {},
+    setupMs = config.SETUP_MS, awayMs = config.AWAY_MS, emptyMs = config.EMPTY_MS,
+    pauseVoteMs = config.PAUSE_VOTE_MS, resumeMs = config.RESUME_MS, pauseRetryMs = config.PAUSE_RETRY_MS, maxHumans = config.MAX_HUMANS, idleMs = config.IDLE_MS, production = config.PRODUCTION, limits = {},
     trustProxy = config.TRUST_PROXY, stallMs = config.HEALTH_STALL_MS, drafts = config.DRAFT_SCENARIOS,
 } = {}) {
     const db = openDb(dbPath);
@@ -88,7 +90,7 @@ export function createApp({
     // no message from a page needs more than a few KB (a command is at most 8,000 characters, socket.js): 64 KB, not the default 1 MB
     const io = new Server(server, { allowRequest: allowSocketRequest(log), perMessageDeflate: { threshold: 512 }, maxHttpBufferSize: 64 * 1024 });
     const achievements = createAchievements({ db, scenarios, io, log });
-    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, emptyMs, maxHumans, idleMs, achievements });
+    const rooms = createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupMs, awayMs, emptyMs, maxHumans, idleMs, achievements, pauseVoteMs, resumeMs, pauseRetryMs });
     const healthCheck = health({ db, rooms, log, dbPath, stallMs });
     app.use("/api", authRoutes({ db, sessions, throttles, io }));
     app.use("/api", gameRoutes(rooms, scenarios));

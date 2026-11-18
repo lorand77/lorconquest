@@ -258,7 +258,7 @@ Up to 4 people in one game, signed in.
 
 **Done.** Accounts (name and password, scrypt, a session cookie the database knows only by its hash, the same-origin check and
 throttles), the lobby (open a table, take a free country, start with the computer in the rest, or play alone), and the rules
-for people as RULES.md §1 has them: the setup minute, no pauses, a caretaker the moment a player is away and the full computer
+for people as RULES.md §1 has them: the setup minute, no pauses (a pause by vote came later), a caretaker the moment a player is away and the full computer
 player after two minutes (shortened to a few hundred milliseconds in the tests), the country back at once when they return,
 quitting, the game ending when nobody is left, and a restart that leaves every player away until they reconnect. Chat per
 game. `npm test` plays these over real sockets with several users: tables and seats, each player seeing only their own

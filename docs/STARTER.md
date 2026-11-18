@@ -11,7 +11,8 @@ half. If nobody gets there by the end year, the country with the most wins. If a
 ## Time
 
 A day passes every tenth of a second, a year in about 36 seconds. Alone you can pause at any time and play at ½×, 1×, 2× or
-4×; with other people the clock never stops, except for a minute at the start to look around. Orders take effect at once,
+4×; with other people the clock stands still for a minute at the start to look around, and after that stops only when more
+than half of the players vote for a pause — and any one of them may continue it. Orders take effect at once,
 but armies take months to march.
 
 ## Money

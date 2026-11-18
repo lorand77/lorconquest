@@ -26,8 +26,13 @@ start of each month" is its 1st; "the start of each year" is 1 January.
 **Single player:** free pause, and four speeds: ½×, 1× (the table above), 2× and 4×. The speed changes only how
 fast the days go by, never what happens in them. Leaving pauses the game, and it can be resumed later, at 1×.
 **Multiplayer:** up to **4 human players**; the computer runs every other country. For the first
-minute the clock stands still while players look around and give their first orders; after that
-there are no pauses.
+minute the clock stands still while players look around and give their first orders. After that
+the game **pauses only by vote**: a player asks, and the game runs on while the others answer, for 10 seconds at most; it
+stops once **more than half of the players here** say yes — the one asking counts as a yes, and players away do not count (of
+two, both; of three or four, two or three; alone here, at once). A request turned down may not be made again by the same
+player for a minute. While paused, orders are given as in the first minute, and **any player continues the game** when they
+like, asking no one: the clock starts again 3 seconds later. A pause has no time limit; when every player has left, it ends,
+and the game waits for them as below.
 
 - **A player who disconnects** is replaced at once by a **caretaker**. It defends with the
   armies the country already has and joins wars its allies call it into, but buys nothing,

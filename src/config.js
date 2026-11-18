@@ -40,6 +40,11 @@ export default {
     AWAY_MS: intEnv("AWAY_MS", 2 * 60 * 1000),
     // a game with several people that has nobody in it pauses, and waits this long for one of them to come back before it ends
     EMPTY_MS: intEnv("EMPTY_MS", 10 * 60 * 1000),
+    // a pause with other people: how long its vote is open, the countdown once a player continues, and how long one whose request
+    // was turned down waits to ask again
+    PAUSE_VOTE_MS: intEnv("PAUSE_VOTE_MS", 10 * 1000),
+    RESUME_MS: intEnv("RESUME_MS", 3 * 1000),
+    PAUSE_RETRY_MS: intEnv("PAUSE_RETRY_MS", 60 * 1000),
     // a single-player game whose player has gone is let go from memory after this long, and brought back when they return
     IDLE_MS: intEnv("IDLE_MS", 10 * 60 * 1000),
     // the proxy in front of the server (Caddy): how many hops to trust for the client's address, which the login throttle

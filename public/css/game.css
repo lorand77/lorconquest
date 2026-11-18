@@ -371,6 +371,7 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .status .treasury { color: var(--text); font-size: 13px; font-variant-numeric: tabular-nums; }
 .status .treasury.bad { color: var(--bad); }
 .status .setup { display: block; margin-top: 8px; background: var(--warn-bg); color: var(--warn); padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+.status .hold button { margin-left: 0.3em; padding: 0 0.6em; }
 .status .people { display: flex; flex-wrap: wrap; gap: 0.3em 0.9em; margin-top: 8px; font-size: 13px; }
 .status .people:empty { display: none; }
 .status .person.present { color: var(--good); }

@@ -114,7 +114,7 @@ test("the host starts with seats open: those seated are told, the game is theirs
     }
 });
 
-test("the clock stands still for the setup minute while orders are given, then runs and never pauses again", async () => {
+test("the clock stands still for the setup minute while orders are given, then runs, and a player leaving does not stop it", async () => {
     const server = await startServer({ root, dbPath: tempDb(), setupMs: 400 });
     try {
         const id = await makeTable(server, ALICE_BOB);
@@ -128,11 +128,11 @@ test("the clock stands still for the setup minute while orders are given, then r
         assert.equal((await emitAck(a.socket, "command", { cmd: { type: "setTax", tax: 2.5 } })).ok, true);
         assert.equal((await emitAck(b.socket, "command", { cmd: { type: "setTax", tax: 2.2 } })).ok, true);
         assert.ok(ticks.every((d) => d === 0), "no day has passed");
+        assert.match((await emitAck(a.socket, "pause", { paused: true })).error, /the clock has not started yet/);
         await go;
         await until(() => ticks.length > 20, "days to pass");
         assert.equal((await emitAck(a.socket, "join", { gameId: id })).setup, 0);
-        // nobody can pause it, and a player leaving does not
-        assert.deepEqual((({ ok, error }) => [ok, error])(await emitAck(a.socket, "pause", { paused: true })), [false, "a game with other people never pauses"]);
+        // one speed for all, and a player leaving does not pause it (a pause is by vote: see below)
         assert.deepEqual((({ ok, error }) => [ok, error])(await emitAck(a.socket, "speed", { speed: 2 })), [false, "a game with other people runs at one speed"]);
         const before = ticks.length;
         b.socket.close();
@@ -361,7 +361,8 @@ test("a game everyone has left for now waits for them, paused, and is in the lob
 });
 
 test("a union: two people's countries made one, ruled by both — either gives orders, and the computer has it only when both are away", async () => {
-    const server = await startServer({ root, dbPath: tempDb(), setupMs: 0, awayMs: 1000 });
+    // 20 ms days: an offer lapses in 6 months, which at the usual 2 ms is gone before a busy machine has read it
+    const server = await startServer({ root, dbPath: tempDb(), tickMs: 20, setupMs: 0, awayMs: 1000 });
     try {
         // carol, in Saxony, stays: a game nobody is in waits, paused, and the computer plays nobody
         const three = [...ALICE_BOB, ["carol", "SAX"]];
@@ -436,6 +437,59 @@ test("a union grows only with every ruler's yes: proposing and accepting wait fo
         assert.equal(await offerTo(server, room, "BAV"), undefined, "refused");
         assert.equal(room.seats.get("SAX").plays, "SAX");
         assert.deepEqual(server.app.rooms.consentsOf(room, "BAV"), [], "nothing left waiting");
+    } finally {
+        await server.close();
+    }
+});
+
+test("a pause with other people: asked, voted on by those here — more than half — and continued by any one of them, unasked", async () => {
+    const server = await startServer({ root, dbPath: tempDb(), tickMs: 20, setupMs: 0, awayMs: 100000, pauseVoteMs: 1500, resumeMs: 100, pauseRetryMs: 300 });
+    try {
+        const PLAYERS = [["alice", "BAV"], ["bobby", "ULM"], ["carol", "SAX"]];
+        const id = await makeTable(server, PLAYERS);
+        const [a, b, c] = await play(server, id, PLAYERS);
+        const room = server.app.rooms.get(id);
+        assert.equal(a.joined.hold.by, null);
+        let hold = null;
+        a.socket.on("hold", (h) => { hold = h; });
+        await until(() => !room.paused, "the clock to start");
+        // asked: the game runs on while the others vote; two of three are needed, and two noes lose it
+        assert.equal((await emitAck(a.socket, "pause", { paused: true })).ok, true);
+        await until(() => hold?.vote, "the request to be heard");
+        assert.deepEqual([hold.vote.by, hold.vote.yes, hold.vote.needed, hold.vote.voters], ["alice", ["alice"], 2, 3]);
+        assert.equal(room.paused, false);
+        assert.match((await emitAck(b.socket, "pause", { paused: true })).error, /asked for already/);
+        await emitAck(c.socket, "pauseVote", { yes: false });
+        assert.ok(room.vote, "one no: still open");
+        await emitAck(b.socket, "pauseVote", { yes: false });
+        assert.equal(room.vote, null);
+        assert.equal(room.hold, null);
+        assert.match((await emitAck(a.socket, "pause", { paused: true })).error, /turned down: ask again/);
+        await wait(320);
+        // asked again, and a yes carries it: paused, orders still taken, no second request
+        await emitAck(a.socket, "pause", { paused: true });
+        await emitAck(b.socket, "pauseVote", { yes: true });
+        await until(() => room.paused && hold?.by === "alice", "the pause");
+        assert.equal((await emitAck(c.socket, "command", { cmd: { type: "setTax", tax: 2.5 } })).ok, true);
+        assert.match((await emitAck(b.socket, "pause", { paused: true })).error, /paused already/);
+        const day = room.day;
+        await wait(100);
+        assert.equal(room.day, day, "the clock stands still");
+        // any one continues it, unasked: a moment's countdown, then it runs
+        assert.equal((await emitAck(c.socket, "pause", { paused: false })).ok, true);
+        await until(() => hold?.resumeBy === "carol" && hold.resumeIn !== null, "the countdown");
+        await until(() => !room.paused && hold?.by === null, "the game to go on");
+        // nobody answers: lost when the time is up
+        await emitAck(b.socket, "pause", { paused: true });
+        await until(() => hold?.vote, "the request");
+        await until(() => !hold?.vote && !room.vote, "the vote to run out", 5000);
+        assert.equal(room.paused, false);
+        // the others away: one alone here is all of those voting, and is paused at once
+        b.socket.close();
+        c.socket.close();
+        await until(() => [...room.seats.values()].filter((s) => s.state === "away").length === 2, "the two to be away");
+        await emitAck(a.socket, "pause", { paused: true });
+        await until(() => room.paused && room.hold?.by === "alice", "a pause asked alone");
     } finally {
         await server.close();
     }

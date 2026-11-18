@@ -125,7 +125,8 @@ dependencies.
   for its answer and to anyone else is answered at once: a replay must be given the same humans.
 - Who is away or back is not saved (`rooms.js`): a resumed game with several people starts with every player away, from that
   moment — paused, waiting for one of them. The two minutes, the ten minutes a game nobody is in waits, and the setup minute are
-  settings (`AWAY_MS`, `EMPTY_MS`, `SETUP_MS`), which the tests shorten to milliseconds.
+  settings (`AWAY_MS`, `EMPTY_MS`, `SETUP_MS`), which the tests shorten to milliseconds; so are a pause's vote, countdown and
+  wait after a refusal (`PAUSE_VOTE_MS`, `RESUME_MS`, `PAUSE_RETRY_MS`), none of which is saved either.
 - A replay is only exact under the rules version the game was played under: `RULES_VERSION` is stored with each game, and the replay
   route refuses the others. The replay page compares a fingerprint of the final state (`src/engine/hash.js`) with the server's.
 - No dependency may be added for accounts: passwords use `node:crypto` scrypt and sessions are our own (`src/auth/`).
