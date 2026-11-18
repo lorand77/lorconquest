@@ -15,7 +15,7 @@ import { capture } from "./fighting.js";
 import { retreat } from "./movement.js";
 import { NEAR_VICTORY, agreementAnswer, bordering, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
 import { random } from "./random.js";
-import { faithRegard } from "./religion.js";
+import { WORST_FAITH, faithRegard } from "./religion.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
 import { armyList, atWar, canEnter, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
@@ -352,15 +352,21 @@ export function proposeEmpire(game, proposer, events) {
 
 // a vassal of 10 years may be made part of its overlord's country, for the price of a courthouse a settlement, while neither
 // is at war — with a country, or with its own peasants; a person's country is asked first (RULES.md §10, Integration)
-export const INTEGRATE_DAYS = 10 * YEAR_DAYS;
+export const INTEGRATE_DAYS = 15 * YEAR_DAYS;
+// how long a vassal must be one before it may be integrated (RULES.md §10, Integration): 15 years, longer across faiths — × (1 + how
+// far apart the two rulers' faiths are, 0 to 1: religion.js), so up to 30 years for Catholic and Sunni
+export const integrateDays = (game, overlord, subject) => {
+    const regard = faithRegard(game.state.countries[overlord]?.religion, game.state.countries[subject]?.religion);
+    return Math.round(INTEGRATE_DAYS * (1 + Math.min(1, Math.max(0, regard / WORST_FAITH))));
+};
 export const integratePrice = (game, subject) => Object.values(game.state.settlements).filter((s) => s.owner === subject).length * BUILDING_PRICE.courthouse;
 
 // why `overlord` may not integrate `subject` now, or null
 export function integrateError(game, overlord, subject) {
     const st = game.state, c = st.countries[subject];
     if (!c || c.overlord !== overlord || c.subjectKind !== "vassal") return `${subject} is not your vassal`;
-    const from = (c.vassalSince ?? 0) + INTEGRATE_DAYS;
-    if (st.day < from) return `a vassal may be integrated after 10 years: ${subject} on ${longDate(from)}`;
+    const days = integrateDays(game, overlord, subject), from = (c.vassalSince ?? 0) + days;
+    if (st.day < from) return `a vassal may be integrated after ${Math.round(days / YEAR_DAYS)} years: ${subject} on ${longDate(from)}`;
     // at war with a country, or with the peasants of either of the two; the peasants of another country (at war with anyone at
     // war with it: rebelWars) do not count
     const blocks = (other) => !st.countries[other]?.rebel || [overlord, subject].includes(st.countries[other].of);

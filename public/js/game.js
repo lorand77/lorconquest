@@ -384,7 +384,13 @@ function planMove(army, to) {
         const target = state.settlements[game.map.nodes.get(to)?.land]?.owner;
         const then = target && target !== me && !country(target)?.rebel && !atWar(me, target) ? routeAsAtWar(game, army, to, target, routeFor) : null;
         if (then) { plan = { army: army.id, to, path: then.path, days: then.days, premove: target }; renderAll(); return; }
-        plan = null; notice(`No way to ${name(to)} through land army ${army.id} may enter.`, "refused"); renderAll(); return;
+        plan = null;
+        // a country we are at peace with and could not reach even at war (over the sea, say): its Diplomacy, to open the way
+        if (target && target !== me && !country(target)?.rebel && !atWar(me, target)) {
+            notice(`Your army may not enter ${country(target).name}'s land: declare war, or ask it for military access.`, "refused");
+            ui.target = target; setTab("diplomacy"); return;
+        }
+        notice(`No way to ${name(to)} through land your army may enter.`, "refused"); renderAll(); return;
     }
     plan = { army: army.id, to, path: found.path, days: found.days };
     // what the player chose a click to do (notices.js, marchFor): show the route and ask, or march — and storm — at once
@@ -749,11 +755,13 @@ function armyPanel(a) {
     if (plan && plan.army === a.id && plan.premove) {
         // a march into a country we are at peace with: planned, to go when the war with it breaks out
         const node = game.map.nodes.get(plan.to), town = node.kind === "settlement";
-        const keep = (storm) => { premoves.set(a.id, { to: plan.to, storm, target: plan.premove, path: plan.path, days: plan.days }); plan = null; renderAll(); };
+        // kept, and that country's Diplomacy opened: its war button sends the march with the declaration
+        const keep = (storm) => { const target = plan.premove; premoves.set(a.id, { to: plan.to, storm, target, path: plan.path, days: plan.days }); plan = null; ui.target = target; setTab("diplomacy"); };
         out.push(make("div", { class: "plan" },
             make("p", {}, `To ${name(plan.to)}, in ${country(plan.premove).name}'s land, closed while you are at peace: ${Math.ceil(plan.days)} days once at war. Planned now, the march goes the moment war with ${country(plan.premove).name} breaks out.`),
             make("button", { class: "primary", onclick: () => keep(false) }, "Plan the march"),
             ...(town ? [make("button", { onclick: () => keep(true) }, "Plan march and storm")] : []),
+            make("button", { onclick: () => { const target = plan.premove; plan = null; ui.target = target; setTab("diplomacy"); } }, `Diplomacy with ${country(plan.premove).name}…`),
             make("button", { onclick: () => { plan = null; renderAll(); } }, "Cancel")));
         return out;
     }

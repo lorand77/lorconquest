@@ -286,13 +286,14 @@ test("the war score and what a peace asks, worked out by hand", () => {
     const year = economyOf(game, "BBB").moneyPerYear;                           // BBB, with one settlement left: 18,800 civilians × 2, less 1,200 × 5
     near(year, 41600);                                                           // the capital's 10,000 included
     near(asks({ money: year }), 10);                                            // ten for a year of its money
-    near(asks({ makeSubject: "vassal" }), 50);
-    near(asks({ makeSubject: "protectorate" }), 25);
+    // a subject: 50 for a vassal, 25 for a protectorate, × (1 + its settlements ÷ AAA's) — BBB has 1 left, AAA 4: × 1.25
+    near(asks({ makeSubject: "vassal" }), 62.5);
+    near(asks({ makeSubject: "protectorate" }), 31.25);
     near(asks({ take: [4], give: [1] }), 0);                                    // what the proposer gives counts the same way against it
     assert.equal(peaceAnswer(game, "BBB", "AAA", {}).accept, true);             // a plain peace: any score of 0 or more
     assert.equal(peaceAnswer(game, "BBB", "AAA", { take: [4] }).accept, false); // 66.7 against a score of 36.7
-    assert.equal(peaceAnswer(game, "BBB", "AAA", { makeSubject: "protectorate" }).accept, true);    // 25 ≤ 36.7
-    assert.equal(peaceAnswer(game, "BBB", "AAA", { makeSubject: "vassal" }).accept, false);         // 50 > 36.7
+    assert.equal(peaceAnswer(game, "BBB", "AAA", { makeSubject: "protectorate" }).accept, true);    // 31.25 ≤ 36.7
+    assert.equal(peaceAnswer(game, "BBB", "AAA", { makeSubject: "vassal" }).accept, false);         // 62.5 > 36.7
 });
 
 test("a guarantee runs out after 20 years, as one given at the start does", () => {

@@ -882,7 +882,7 @@ in these wars unless listed — a military alliance only calls an ally into wars
 | **War of the Neapolitan Succession** (since 1435) | ARA Aragon | NAP Naples, GEN Genoa | Alfonso V of Aragon against René of Anjou for Naples, with Genoa on René's side; Alfonso took the city in 1442. |
 | **Hungarian civil war** (1440) | HUN Hungary | JIS Upper Hungary | Władysław III against the party of the infant Ladislaus Posthumus; Jan Jiskra held the north for Ladislaus until 1462. |
 | **Old Zürich War** (1440) | SWI Swiss Confederacy | ZUR Zürich | Schwyz and the cantons against Zürich over the Toggenburg inheritance; peace in 1450. |
-| **Ottoman–Hungarian war** (since 1437) | OTT Ottoman Empire | HUN Hungary, SER Serbia | Murad II had taken Smederevo in 1439 and besieged Belgrade in 1440; the despot of Serbia fought on from Hungary. Varna, 1444. |
+| **Ottoman–Hungarian war** (since 1437) | OTT Ottoman Empire | HUN Hungary, SER Serbia, POL Poland | Murad II had taken Smederevo in 1439 and besieged Belgrade in 1440; the despot of Serbia fought on from Hungary. Władysław III, king of Poland, was crowned king of Hungary in 1440 and led both to Varna, 1444. |
 
 ### Agreements
 

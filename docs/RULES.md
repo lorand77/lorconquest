@@ -746,13 +746,14 @@ your own — the overlord's forces only, not those of its other subjects. This i
 agreement. Raising unarmed men never frees a subject — it has to arm them, and an overlord with
 better weapons stays ahead with fewer men.
 
-**Integration.** A country that has been your **vassal for 10 years** (counted from when it became your vassal; a
-protectorate made a vassal counts from then) may be **integrated** into yours, while **neither of you is at war** — with
+**Integration.** A country that has been your **vassal for 15 years** — longer if its ruler is of another faith: **15 × (1 +
+the faiths' gap)** (§2, Religion), so 21 years for Catholic and Orthodox, 30 for Catholic and Sunni — (counted from when it
+became your vassal; a protectorate made a vassal counts from then) may be **integrated** into yours, while **neither of you is at war** — with
 a country, or with your own peasants or its own (the peasants of another country, at war with you only because you are at war
 with that country, do not count). It costs the price of a **courthouse for each of its settlements** (0.05M each). Its settlements
 become yours and **core** for you at once; its armies, fleets, sharpshooters, soldiers and mercenaries being raised, weapons,
 treasury, bank deposit, loans and research pool become yours, and its own subjects become your subjects (a vassal among them
-counting its 10 years afresh). It is then out of the game — integrated, not defeated: nothing of it vanishes. Your warmonger
+counting its years afresh). It is then out of the game — integrated, not defeated: nothing of it vanishes. Your warmonger
 score rises by **1 for each settlement** (× the warmonger scale, *Warmongers* below). A computer-run vassal has no say; a person's is **asked**, and their yes counts
 only if all of this still holds when they give it. A person whose country is integrated has lost it, as if eliminated.
 
@@ -872,7 +873,9 @@ war score = % of its pop you have taken in this war − % of your pop it has tak
 cost      = settlements you ask for, as % of its pop
             + 10 for each year of its money (§2) you ask for — a year counted as at least a quarter of
               what its settlements yield, so one deep in debt does not sell peace for a few coins
-            + 50 to make it your vassal · 25 to make it your protectorate
+            + 50 to make it your vassal · 25 to make it your protectorate, × (1 + its settlements ÷ yours) — a
+              country as large as you twice that — and twice that again for a rival (SCENARIO.md, Rivalries): a
+              rival bows only to a crushing defeat
             − the same for what you give: settlements, and 10 for each year of money you pay it — counted in years
               of your money or its, whichever is the more
 ```

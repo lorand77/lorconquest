@@ -215,9 +215,9 @@ test("your own vassal shows Integrate: why not until it may, then the button", a
     let nodes = diplomacyTab(ctx);
     assert.match(textOf(nodes), /Your vassal since 1 January 1440/);
     assert.equal(button(nodes, "Integrate").attrs.disabled, "disabled");
-    assert.match(textOf(nodes), /after 10 years: ULM on 1 January 1450/);
+    assert.match(textOf(nodes), /after 15 years: ULM on 1 January 1455/);
     let sent;
-    ({ ctx, sent } = setup((game) => { vassal(game); game.state.day = 3650; }, "ULM"));
+    ({ ctx, sent } = setup((game) => { vassal(game); game.state.day = 15 * 365; }, "ULM"));
     nodes = diplomacyTab(ctx);
     assert.equal(button(nodes, "Integrate").attrs.disabled, undefined);
     globalThis.confirm = () => true;
@@ -257,4 +257,19 @@ test("a protectorate's war can be joined from the Diplomacy tab, on its side", a
     await join.handlers.click();
     assert.deepEqual(sent.at(-1), { type: "joinWar", ally: "ULM", enemy: "STU" });
     delete globalThis.confirm;
+});
+
+test("a demand goes at once, with no question to answer: the button says what a refusal costs", async () => {
+    const { ctx, sent } = setup(() => {}, "SWI");
+    const asked = globalThis.confirm;
+    globalThis.confirm = () => { throw new Error("no question for a demand"); };
+    try {
+        const nodes = diplomacyTab(ctx);
+        const demand = button(nodes, "Demand a protectorate");
+        assert.match(demand.props?.title ?? demand.attrs?.title ?? "", /A refusal makes Switzerland hostile for 10 years/);
+        await demand.handlers.click();
+        assert.deepEqual(sent, [{ type: "demandSubject", target: "SWI", kind: "protectorate" }]);
+    } finally {
+        globalThis.confirm = asked;
+    }
 });

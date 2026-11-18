@@ -9,7 +9,7 @@
 // the target of choice, and it is never proposed anything. They do not make it attack at worse odds or fight longer — tried,
 // that turned every war between rivals into one between alliances (experiments/, 5). They are the AI's preferences, not
 // rules: a rival's proposal is still answered by the engine's formula, like anyone's.
-import { NEAR_VICTORY, YEAR_DAYS, agreementAnswer, bordering, need, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
+import { NEAR_VICTORY, YEAR_DAYS, agreementAnswer, areRivals, bordering, need, hasAgreement, hreSettlementsOf, isVassal, mayPropose, militaryPowerOf, neighboursOf, overlordOf,
     peaceAnswer, scores, sizeOf, subjectChance, subjectsOf, validateTerms, warJoiners, warScore } from "../engine/index.js";
 import { agreementsBetween, alliesOf, friendly } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
@@ -81,8 +81,8 @@ function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury,
         terms.money = -offer * share;
         if (ok(terms)) return terms;
     }
-    // to a country twice our size: its protectorate, before any land
-    if (sizeOf(st, foe) >= 2 * sizeOf(st, code) && ok({ ...terms, money: 0, becomeSubject: "protectorate" })) return { ...terms, money: 0, becomeSubject: "protectorate" };
+    // to a country twice our size: its protectorate, before any land — never to a rival, which it would sooner give land to
+    if (sizeOf(st, foe) >= 2 * sizeOf(st, code) && !areRivals(game, code, foe) && ok({ ...terms, money: 0, becomeSubject: "protectorate" })) return { ...terms, money: 0, becomeSubject: "protectorate" };
     terms.money = 0;                                                            // land is offered alone, not with the money as well
     const spare = ownSettlements(st, code).sort((a, b) => a.cores.includes(code) - b.cores.includes(code) || a.pop - b.pop || a.id - b.id);
     // one settlement that will do, the least of them, rather than several: each counts as one for victory, whatever its people

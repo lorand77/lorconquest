@@ -743,7 +743,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   worked out as if at war with that country (`mirror.js`, `routeAsAtWar`; anyone else's closed land stays closed), drawn dashed in
   red, and sent the moment war with it breaks out — right after the player's own declaration, in the same tick (Declare war says how
   many go with it), or when that country declares or an ally's call brings the war (`game.js`, `premoves`; `premovesDue`). Plans are
-  kept by the page while it is open; any other order to the army ends its plan.
+  kept by the page while it is open; any other order to the army ends its plan. Planning it — or the panel's *Diplomacy with …* —
+  opens that country's Diplomacy, where war is declared; and a click on a country the army could not reach even at war (over the
+  sea, say) opens it at once, with a note: declare war, or ask for military access.
 - **Orders:** click an army to select it; with one of your own selected, click a settlement, a
   pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy

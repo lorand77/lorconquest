@@ -225,6 +225,12 @@ body.shell > .page.rules-page { max-width: 1100px; }
 .stat.lead { grid-column: span 2; border-color: var(--accent); }
 .stat.lead b { font-size: 30px; }
 .stat-table { margin-top: 12px; max-width: 520px; }
+/* the replay's sidebar scrolls when what it holds does not fit — on a phone its sheet has no tabs to choose a part, as the game's
+   has: the standing, the export and the events one below the other */
+body.replay .side { overflow-y: auto; }
+body.replay .side > .events { flex-shrink: 0; }
+body.replay .side > .head { order: -2; }                  /* first, whatever the phone layout orders below */
+body.replay .side > .status { order: -1; }                 /* then the date, the slider and Play */
 /* the replay's Export (replay.js) */
 .export { padding: 0 12px 8px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
 .export .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }

@@ -327,7 +327,7 @@ test("at the end date the most settlements win, a tie going to the larger popula
     assert.equal(pop.state.winner, "CCC");
 });
 
-test("integration: a vassal of 10 years, neither at war, for a courthouse a settlement — its land core, its forces and money the overlord's", () => {
+test("integration: a vassal of 15 years, neither at war, for a courthouse a settlement — its land core, its forces and money the overlord's", () => {
     const make = (humans = []) => {
         const game = tinyGame(1, () => {}, humans);
         setSubject(game, "BBB", "AAA", "vassal", []);
@@ -336,7 +336,7 @@ test("integration: a vassal of 10 years, neither at war, for a courthouse a sett
     let game = make();
     const b = game.state.countries.BBB, a = game.state.countries.AAA;
     assert.equal(b.vassalSince, 0);
-    assert.match(refused(game, cmd("AAA", "integrate", { target: "BBB" })), /after 10 years: BBB on 1 January 1450/);
+    assert.match(refused(game, cmd("AAA", "integrate", { target: "BBB" })), /after 15 years: BBB on 1 January 1455/);
     assert.match(refused(game, cmd("AAA", "integrate", { target: "CCC" })), /CCC is not your vassal/);
     game.state.day = INTEGRATE_DAYS;
     a.treasury = 99999;
@@ -485,4 +485,23 @@ test("a war joined by choice: an overlord joins its protectorate's, a protectora
     // a vassal has no such choice: it is in its overlord's wars already, and has no diplomacy
     st.countries.CCC.subjectKind = "vassal";
     assert.match(refused(game, cmd("CCC", "joinWar", { ally: "AAA", enemy: "EEE" })), /no diplomacy/);
+});
+
+test("a subject's price in a peace grows with its size, twice for a rival; a vassal of another faith takes longer to integrate", async () => {
+    const { peaceCost, integrateDays } = await import("../../src/engine/index.js");
+    const rivals = tinyGame(1, (sc) => { sc.rivalries = [["AAA", "BBB"]]; }), plain = tinyGame();
+    for (const g of [rivals, plain]) order(g, cmd("AAA", "declareWar", { target: "BBB" }));
+    // BBB, 2 settlements, under AAA, 3: × (1 + 2/3); a rival twice that
+    const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-9, `${a} is not ${b}`);
+    near(peaceCost(plain, "AAA", "BBB", { makeSubject: "vassal" }), 50 * 5 / 3);
+    near(peaceCost(rivals, "AAA", "BBB", { makeSubject: "vassal" }), 100 * 5 / 3);
+    near(peaceCost(rivals, "AAA", "BBB", { makeSubject: "protectorate" }), 50 * 5 / 3);
+    // a one-town country (DDD, 1) under AAA: little more than the base; AAA under one-town DDD: four times it
+    order(plain, cmd("AAA", "declareWar", { target: "DDD" }));
+    near(peaceCost(plain, "AAA", "DDD", { makeSubject: "vassal" }), 50 * (1 + 1 / 3));
+    near(peaceCost(plain, "DDD", "AAA", { makeSubject: "vassal" }), 50 * (1 + 3 / 1));
+    // 15 years for the same faith (or none), × (1 + the gap): 21 for Catholic over Orthodox, 30 for Catholic over Sunni
+    const faiths = tinyGame(1, (sc) => { for (const c of sc.countries) c.religion = { AAA: "catholic", BBB: "sunni", CCC: "orthodox" }[c.code] ?? "catholic"; });
+    assert.deepEqual(["BBB", "CCC", "EEE"].map((c) => integrateDays(faiths, "AAA", c) / 365), [30, 21, 15]);
+    assert.equal(integrateDays(plain, "AAA", "BBB"), INTEGRATE_DAYS);
 });

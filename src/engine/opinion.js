@@ -131,9 +131,20 @@ export function peaceCost(game, mine, other, terms) {
         + pop((terms.release ?? []).flatMap((c) => Object.values(st.settlements).filter((s) => s.owner === c).map((s) => s.id)));
     const paid = terms.money < 0 ? 10 * -terms.money / Math.max(yearOf(game, mine), yearOf(game, other)) : 0;
     let cost = asked - (terms.makeSubject ? Math.min(paid, asked) : paid) - pop(terms.give ?? []);
-    cost += { vassal: 50, protectorate: 25 }[terms.makeSubject] ?? 0;
-    cost -= { vassal: 50, protectorate: 25 }[terms.becomeSubject] ?? 0;
+    // a rival bows only to a crushing defeat: twice the price (SCENARIO.md, Rivalries)
+    if (terms.makeSubject) cost += subjectPrice(game, other, mine, terms.makeSubject) * (areRivals(game, mine, other) ? 2 : 1);
+    if (terms.becomeSubject) cost -= subjectPrice(game, mine, other, terms.becomeSubject);
     return cost;
+}
+
+// what making `subject` the subject of `over` weighs in a peace (RULES.md §10, Peace): 50 for a vassal, 25 for a protectorate, ×
+// (1 + its settlements ÷ the overlord's) — a town a quarter its size costs little more than the base, a country as large as the
+// victor twice it: a great realm is not made a subject in a peace as lightly as a town
+const SUBJECT_PRICE = { vassal: 50, protectorate: 25 };
+const settlementsOf = (st, code) => { let n = 0; for (const id in st.settlements) if (st.settlements[id].owner === code) n++; return n; };
+export function subjectPrice(game, subject, over, kind) {
+    const st = game.state;
+    return (SUBJECT_PRICE[kind] ?? 0) * (1 + settlementsOf(st, subject) / Math.max(1, settlementsOf(st, over)));
 }
 
 // does the computer country `holder` accept `proposer`'s peace?

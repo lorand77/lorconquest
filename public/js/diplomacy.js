@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -204,11 +204,11 @@ function dealWith(ctx, t) {
                 if (confirm(`Propose a union to ${them.name}? If its player agrees, ${them.name} becomes part of your country, and they rule it with you for the rest of the game.`)) { await ctx.send({ type: "proposeUnion", with: t }); ctx.redraw(); }
             } }, unionLabel(ctx, `propose:${t}`, "Propose a union…")), why ? mk("span", { class: "hint" }, why) : "")));
     }
-    // your vassal of 10 years may become part of your country (RULES.md §10, Integration)
+    // your vassal of 15 years — longer across faiths — may become part of your country (RULES.md §10, Integration)
     if (vassal && them.overlord === me) {
         const why = integrateError(game, me, t), since = them.vassalSince ?? 0;
         out.push(section(ctx, "Integrate",
-            mk("p", { class: "hint" }, `Your vassal since ${longDate(since)}. After 10 years, while neither of you is at war, it may become part of your country for ${n(integratePrice(game, t))} (a courthouse a settlement): its settlements become your core, its armies, fleets and treasury yours. +${game.map.warmongerScale} warmonger score a settlement.${human ? " A person plays it: they are asked." : ""}`),
+            mk("p", { class: "hint" }, `Your vassal since ${longDate(since)}. After ${Math.round(integrateDays(game, me, t) / 365)} years${integrateDays(game, me, t) > INTEGRATE_DAYS ? " (longer for a vassal of another faith)" : ""}, while neither of you is at war, it may become part of your country for ${n(integratePrice(game, t))} (a courthouse a settlement): its settlements become your core, its armies, fleets and treasury yours. +${game.map.warmongerScale} warmonger score a settlement.${human ? " A person plays it: they are asked." : ""}`),
             row(ctx, mk("button", { class: "primary", disabled: why ? "disabled" : undefined, onclick: async () => { if (confirm(`Integrate ${them.name}?`)) { await ctx.send({ type: "integrate", target: t }); ctx.redraw(); } } }, "Integrate"),
                 why ? mk("span", { class: "hint" }, why) : "")));
     }
@@ -268,12 +268,13 @@ function dealWith(ctx, t) {
     // demands
     if (!atWar && (!them.overlord || (them.overlord === me && them.subjectKind === "protectorate"))) {
         const kinds = them.overlord === me ? ["vassal"] : ["vassal", "protectorate"];
-        // a rival never agrees, nor anyone to a country near victory; one that does adds to the asker's warmonger score (RULES.md §10)
+        // a rival never agrees, nor anyone to a country near victory; one that does adds to the asker's warmonger score (RULES.md §10).
+        // Sent at once, with no question: the button's line says the odds, and its title what a refusal costs
         const upgrade = them.overlord === me;
         out.push(section(ctx, "Demand", ...kinds.map((kind) => {
             const ch = human ? null : subjectChance(game, t, me, kind), score = kind === "vassal" && !upgrade ? 5 : 2.5;
             const odds = !ch ? "a person will answer" : ch.why === "rival" ? "never: your rival" : ch.why === "victory" ? `refused: you hold ${n(ch.count)} of the ${ch.target} that win${ch.count >= NEAR_VICTORY * ch.target ? "" : ", and this would take you there"}` : `${ch.chance.toFixed(0)}% chance`;
-            return row(ctx, mk("button", { onclick: async () => { if (confirm(`Demand that ${them.name} become your ${kind}? A refusal makes it hostile for 10 years; a yes adds ${score} to your warmonger score.`)) { await ctx.send({ type: "demandSubject", target: t, kind }); ctx.redraw(); } } }, `Demand a ${kind}`),
+            return row(ctx, mk("button", { title: `A refusal makes ${them.name} hostile for 10 years; a yes adds ${score} to your warmonger score.`, onclick: async () => { await ctx.send({ type: "demandSubject", target: t, kind }); ctx.redraw(); } }, `Demand a ${kind}`),
                 mk("span", { class: `hint ${ch && !ch.chance ? "bad" : ""}` }, `${odds} · +${score} warmonger if it agrees`));
         }), human ? "" : mk("p", { class: "hint" }, `No country agrees to become the subject of one at ${NEAR_VICTORY * 100}% of victory, or that it would carry past it.`)));
     }

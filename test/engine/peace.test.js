@@ -83,9 +83,9 @@ test("peace terms: settlements, money, subjects — checked, applied, and scored
     assert.match(refused(game, cmd("AAA", "proposePeace", { with: "BBB", terms: { money: 1e9 } })), /cannot pay/);
     assert.match(refused(game, cmd("AAA", "proposePeace", { with: "BBB", terms: { makeSubject: "king" } })), /vassal or protectorate/);
     assert.match(refused(game, cmd("AAA", "proposePeace", { with: "CCC" })), /not at war/);
-    const money = Math.floor(game.state.countries.BBB.treasury / 2);
+    const money = Math.floor(game.state.countries.BBB.treasury / 6);
     const events = order(game, cmd("AAA", "proposePeace", { with: "BBB", terms: { money, makeSubject: "protectorate" } }));
-    assert.equal(ofType(events, "answer")[0].accepted, true);                  // costs ~10 + 25 against a score of ~37 (at least)
+    assert.equal(ofType(events, "answer")[0].accepted, true);                  // costs ~2.4 + 31.25 (BBB 1 settlement, AAA 4) against a score of ~37
     assert.deepEqual([game.state.countries.BBB.overlord, game.state.countries.BBB.subjectKind], ["AAA", "protectorate"]);
     assert.equal(game.state.countries.AAA.treasury, 80000 + money);
     // 5 declared + 10 for the settlement held + 5 for a protectorate made, as the attacking side
@@ -250,9 +250,11 @@ test("money in a peace: what is asked in years of the loser's money, what is pai
     assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: -X }) + 10 * X / year("BBB")) < 1e-9 && year("BBB") > year("AAA"));
     assert.ok(peaceCost(game, "AAA", "BBB", { money: -X }) > before, "worth less to the richer receiver");
     for (const id of [4, 5]) game.state.settlements[id].pop /= 10;
-    // however much AAA pays, BBB as its vassal costs 50; paid money offsets only what else is asked
-    assert.equal(peaceCost(game, "AAA", "BBB", { money: -1e9, makeSubject: "vassal" }), 50);
+    // however much AAA pays, BBB as its vassal costs its price — 50 × (1 + its 2 settlements ÷ AAA's 3); paid money offsets only
+    // what else is asked
+    const vassal = 50 * (1 + 2 / 3), protectorate = 25 * (1 + 2 / 3);
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { money: -1e9, makeSubject: "vassal" }) - vassal) < 1e-9);
     const five = 10000 / Math.max(1, game.state.warInfo["AAA|BBB"].startPop.BBB) * 100;  // settlement 5, as % of BBB's people
-    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], money: -1e9, makeSubject: "protectorate" }) - 25) < 1e-9, "the land bought, the protectorate not");
-    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], makeSubject: "protectorate" }) - (five + 25)) < 1e-9);
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], money: -1e9, makeSubject: "protectorate" }) - protectorate) < 1e-9, "the land bought, the protectorate not");
+    assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], makeSubject: "protectorate" }) - (five + protectorate)) < 1e-9);
 });
