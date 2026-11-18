@@ -69,7 +69,7 @@ export function scenarioPage(sc, name) {
     const faiths = [...new Set(sc.countries.map((c) => c.religion).filter(Boolean))];
     if (faiths.length) {
         out.push("## Religions",
-            "A country's faith sets part of the computer's opinion of it; land of another faith takes longer to comply and rises more readily ([the rules](#rules-2)). A settlement's people keep the faith of its owner in 1440.",
+            `A country's faith sets part of the computer's opinion of it; land of another faith takes longer to comply and rises more readily ([the rules](#rules-2)). A settlement's people keep the faith of its owner in 1440, unless the scenario gives them their own: ${sc.settlements.filter((x) => x.faith).length} settlements here.`,
             "| Faith | Countries |", "|---|---|",
             ...faiths.map((f) => {
                 const of = sc.countries.filter((c) => c.religion === f);

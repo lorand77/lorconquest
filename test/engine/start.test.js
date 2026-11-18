@@ -66,3 +66,26 @@ test("coastal countries start with their ships as cogs in one fleet, in the capi
     }
     assert.equal(Object.values(game.state.countries).every((c) => c.tax === 2 && c.slider === 50 && c.law === "feudal" && c.bank === 0 && c.loans === 0), true);
 });
+
+test("a scenario may open with subjects: Europe's five, from the first day, a vassal's years counted from the start", async () => {
+    const fs = await import("node:fs"), path = await import("node:path");
+    const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
+    const { Game: G } = await import("../../src/engine/index.js");
+    const st = G.create(europe, { seed: 1, humans: [] }).state;
+    const of = (c) => [st.countries[c].overlord, st.countries[c].subjectKind];
+    assert.deepEqual(["WAL", "BOS", "MOL", "RAG", "LIV"].map(of), [["OTT", "protectorate"], ["OTT", "protectorate"], ["POL", "protectorate"], ["HUN", "protectorate"], ["TEU", "vassal"]]);
+    assert.equal(st.countries.LIV.vassalSince, 0);
+    assert.ok(!st.agreements.some((x) => [x.a, x.b].includes("LIV") && ["defensive", "military"].includes(x.kind)), "a vassal has no alliances");
+});
+
+test("a settlement's people may have a faith of their own: the Ottoman Balkans and the Ruthenian lands Orthodox, Plzeň Catholic", async () => {
+    const fs = await import("node:fs"), path = await import("node:path");
+    const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
+    const { Game: G } = await import("../../src/engine/index.js");
+    const st = G.create(europe, { seed: 1, humans: [] }).state;
+    const faith = (name) => st.settlements[europe.settlements.find((s) => s.name === name).id].faith;
+    assert.deepEqual(["Sofia", "Edirne", "Kiev", "Vilnius", "Candia", "Venice", "Plzeň", "Prague"].map(faith),
+        ["orthodox", "sunni", "orthodox", "catholic", "orthodox", "catholic", "catholic", "hussite"]);
+    // the ruler's faith is its own still: the Ottomans Sunni, Venice Catholic
+    assert.deepEqual([st.countries.OTT.religion, st.countries.VEN.religion], ["sunni", "catholic"]);
+});

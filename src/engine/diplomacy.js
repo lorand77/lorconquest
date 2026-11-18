@@ -231,6 +231,27 @@ export function joinByChoice(game, joiner, ally, enemy, events) {
 
 // peace terms: { take: [settlements of the other], give: [of mine], money: + to me, − to the other, makeSubject: the other
 // becomes my "vassal" | "protectorate", becomeSubject: I become the other's, release: [subjects of the other freed] }
+// of the settlements `ids`, those `gainer` could not be given in a peace (validateTerms): reached from its land and its subjects'
+// over roads, passes and straits, through the others of `ids` — or under its siege — are within reach; the rest are not
+export function outOfReach(game, gainer, ids) {
+    const st = game.state, want = new Set(ids.map(String)), mine = new Set([gainer, ...subjectsOf(st, gainer)]);
+    const reached = new Set(), seen = new Set(), todo = [];
+    for (const key in st.settlements) if (mine.has(st.settlements[key].owner)) { seen.add(key); todo.push(key); }
+    for (const id of want) if (st.settlements[id]?.siege?.by === gainer && !seen.has(id)) { seen.add(id); reached.add(id); todo.push(id); }
+    while (todo.length) {
+        const at = todo.pop();
+        for (const e of game.map.adj.get(at) ?? []) {
+            if (seen.has(e.to)) continue;
+            const pass = game.map.nodes.get(e.to)?.kind === "pass";
+            if (!pass && !want.has(e.to)) continue;                               // through a pass, or a settlement of the peace
+            seen.add(e.to);
+            if (!pass) reached.add(e.to);
+            todo.push(e.to);
+        }
+    }
+    return ids.filter((id) => !reached.has(String(id)));
+}
+
 export function validateTerms(game, mine, other, terms) {
     const st = game.state, t = terms ?? {};
     // lists, each naming a thing once: a settlement given twice would count twice in the price (opinion.js, peaceCost)
@@ -243,6 +264,12 @@ export function validateTerms(game, mine, other, terms) {
     }
     for (const [key, owner] of [["take", other], ["give", mine]]) {
         for (const id of t[key] ?? []) if (st.settlements[id]?.owner !== owner) return `${id} is not ${owner}'s`;
+    }
+    // only what lies within the receiver's reach: next to its land or its subjects', under its siege, or joined to them through
+    // the others of the same peace — no town across the map (RULES.md §10, Peace)
+    for (const [key, gainer] of [["take", mine], ["give", other]]) {
+        const far = outOfReach(game, gainer, t[key] ?? []);
+        if (far.length) return `${far[0]} is out of ${gainer}'s reach: a peace hands over only what borders its land or its subjects', or what it besieges`;
     }
     // a peace leaves each side at least one settlement: it does not wipe a country off the map (RULES.md §10)
     const kept = (c, lose, gain) => Object.values(st.settlements).filter((s) => s.owner === c).length - (lose ?? []).length + (gain ?? []).length;
@@ -260,6 +287,15 @@ export function validateTerms(game, mine, other, terms) {
     return null;
 }
 
+// what making `subject` a vassal adds to the warmonger score (RULES.md §10, Warmongers): `flat` (10), or —
+// if more — half of what taking its settlements would cost (× the scenario's scale); a protectorate half of either. A great realm
+// made a subject is no cheaper in the world's eyes than half its conquest
+export function subjectWarmonger(game, subject, kind, flat) {
+    let pop = 0;
+    for (const id in game.state.settlements) if (game.state.settlements[id].owner === subject) pop += game.state.settlements[id].pop;
+    return Math.max(flat, 0.5 * pop / 1000 * game.map.warmongerScale) * (kind === "vassal" ? 1 : 0.5);
+}
+
 // the warmonger score at a peace (RULES.md §10): +1 per 1,000 people of each settlement held that was taken in the war or
 // given in the peace — half on the defending side, × the scenario's warmonger scale — unless it was one's own core; +10/+5 for
 // a vassal made, +5/+2.5 for a protectorate
@@ -272,8 +308,8 @@ function scoreWarmongers(game, a, b, info, terms, gainer) {
         if (s.owner !== taker || (taker !== a && taker !== b) || s.cores.includes(taker)) continue;
         credit(taker, s.pop / 1000 * side(taker) * game.map.warmongerScale);
     }
-    if (terms.makeSubject) credit(terms.who, { vassal: 10, protectorate: 5 }[terms.makeSubject] * side(terms.who));
-    if (terms.becomeSubject) credit(terms.other, { vassal: 10, protectorate: 5 }[terms.becomeSubject] * side(terms.other));
+    if (terms.makeSubject) credit(terms.who, subjectWarmonger(game, terms.other, terms.makeSubject, 10) * side(terms.who));
+    if (terms.becomeSubject) credit(terms.other, subjectWarmonger(game, terms.who, terms.becomeSubject, 10) * side(terms.other));
 }
 
 // sign a peace between `mine` (who proposed) and `other` with the terms; both have agreed (RULES.md §10)
@@ -489,11 +525,20 @@ export function demandSubject(game, demander, target, kind, events) {
     return false;
 }
 
-// a subject agreed to on demand: the world takes note — +2.5 warmonger score for a protectorate, +5 for a vassal, +2.5 for
-// a protectorate made a vassal (half what a peace's terms give an attacker: RULES.md §10)
+// may `demander` demand that `target` become its subject (RULES.md §10, Subjects): only of a neighbour of its land or of its
+// subjects' — by land or across a strait, as Gotland is Sweden's — no realm across the map is made a subject by asking
+const touches = (game, a, b) => bordering(game, a, b) || game.map.scenario.routes.some((r) => {
+    if (r.type !== "strait") return false;
+    const x = game.state.settlements[r.from]?.owner, y = game.state.settlements[r.to]?.owner;
+    return (x === a && y === b) || (x === b && y === a);
+});
+export const withinDemandReach = (game, demander, target) => touches(game, demander, target) || subjectsOf(game.state, demander).some((s) => touches(game, s, target));
+
+// a subject agreed to on demand: the world takes note — half what a peace's terms give an attacker (subjectWarmonger): +5 for a
+// vassal, +2.5 for a protectorate or a protectorate made a vassal, or more for a large one (RULES.md §10)
 export function takeSubject(game, target, demander, kind, events) {
     const st = game.state, upgrade = st.countries[target].overlord === demander;
-    st.countries[demander].warmonger += kind === "vassal" && !upgrade ? 5 : 2.5;
+    st.countries[demander].warmonger += subjectWarmonger(game, target, kind === "vassal" && !upgrade ? "vassal" : "protectorate", 10) * 0.5;
     setSubject(game, target, demander, kind, events);
 }
 
@@ -506,6 +551,8 @@ export function applyStart(game) {
     for (const w of start.wars) for (const a of w.attackers) for (const d of w.defenders) openWar(game, a, d, a);
     const days = (x) => (x.yearsLeft ? x.yearsLeft * YEAR_DAYS : x.kind === "pact" ? PACT_DAYS : x.kind === "guarantee" ? GUARANTEE_DAYS : x.kind === "defensive" || x.kind === "military" ? START_ALLIANCE_DAYS : null);
     for (const x of start.agreements) addAgreement(game, x.kind, x.a, x.b, days(x));
+    // and its subjects, subjects since the start (a vassal of the start may be integrated as one of any other)
+    for (const x of start.subjects ?? []) setSubject(game, x.subject, x.overlord, x.kind, []);
 }
 
 // ---------- answering ----------

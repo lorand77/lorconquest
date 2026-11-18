@@ -63,11 +63,12 @@ test("the tab shows your standing, a neighbour to deal with, and what each propo
     assert.equal(twenty.length, 2, "a defensive and a military alliance, each for 10 or 20 years");
     await twenty[0].handlers.click();
     await button(nodes, "Ask for military access").handlers.click();
-    await button(nodes, "Demand a vassal").handlers.click();
     assert.deepEqual(sent, [{ type: "proposeAgreement", with: "SWI", kind: "guarantee" }, { type: "proposeAgreement", with: "SWI", kind: "defensive", years: 10 },
         { type: "proposeAgreement", with: "SWI", kind: "defensive", years: 20 },
-        { type: "proposeAgreement", with: "SWI", kind: "access" }, { type: "demandSubject", target: "SWI", kind: "vassal" }]);
-    assert.match(text, /\d+% chance/);
+        { type: "proposeAgreement", with: "SWI", kind: "access" }]);
+    // Switzerland borders neither Bavaria nor its subjects: no demand (a neighbour's, with its odds: the tests below)
+    assert.match(text, /a subject is demanded only of a neighbour/);
+    assert.match(textOf(diplomacyTab(setup(() => {}, "TYR").ctx)), /\d+% chance/);
 });
 
 test("declaring war says who would join and what it breaks", async () => {
@@ -186,12 +187,12 @@ test("agreements you hold can be broken or cancelled; a vassal is not dealt with
 test("peace terms name settlements without their numbers: in a question, in the form and in the news", () => {
     const { ctx } = setup((g) => {
         g.command({ type: "declareWar", country: "BAV", target: "ULM" });
-        g.command({ type: "proposePeace", country: "ULM", with: "BAV", terms: { take: [36] } });
+        g.command({ type: "proposePeace", country: "ULM", with: "BAV", terms: { take: [38] } });   // Memmingen, next to Ulm
     });
     const nodes = diplomacyTab({ ...ctx, ui: { target: "ULM" } }), text = textOf(nodes);
-    assert.match(text, /Ulm proposes peace: it takes Passau\./);
+    assert.match(text, /Ulm proposes peace: it takes Memmingen\./);
     assert.match(text, /Ulm \(\d[\d,]*\)/);                                     // the form's box: name and people, no number
-    assert.ok(!/\b(36|48) (Passau|Ulm)/.test(text), text);
+    assert.ok(!/\b(38|48) (Memmingen|Ulm)/.test(text), text);
     assert.equal(describeEvent(ctx.game.map, { type: "peace", country: "ULM", with: "BAV", terms: { take: [36], give: [48] } }),
         "ULM and BAV make peace, ULM takes Passau, ULM gives Ulm");
 });
@@ -229,12 +230,14 @@ test("a rival is shown as one, and never agrees to become your subject; every de
     const { ctx } = setup(() => {}, "AUS");                                   // Bavaria and Austria are rivals in the scenario
     const text = textOf(diplomacyTab(ctx));
     assert.match(text, /Rivals: (.+, )?you(, .+)? — it will never agree to become your subject/);
-    assert.match(text, /Demand a vassal\s*never: your rival · \+5 warmonger if it agrees/);
-    assert.match(text, /Demand a protectorate\s*never: your rival · \+2.5 warmonger if it agrees/);
-    const other = textOf(diplomacyTab(setup(() => {}, "SWI").ctx));
+    assert.match(text, /Demand a vassal\s*never: your rival · \+[\d.]+ warmonger if it agrees/);
+    assert.match(text, /Demand a protectorate\s*never: your rival · \+[\d.]+ warmonger if it agrees/);
+    const other = textOf(diplomacyTab(setup(() => {}, "TYR").ctx));
     assert.doesNotMatch(other, /never: your rival/);
-    assert.match(other, /Rivals: .*Tyrol/);
+    assert.match(other, /Rivals: .*Switzerland/);
     assert.match(other, /No country agrees to become the subject of one at 75% of victory/);
+    // a country Bavaria does not border: no demand, and why
+    assert.match(textOf(diplomacyTab(setup(() => {}, "SWI").ctx)), /Switzerland borders neither you nor your subjects: a subject is demanded only of a neighbour/);
 });
 
 test("Declare war says how many planned marches go with it", () => {
@@ -260,15 +263,15 @@ test("a protectorate's war can be joined from the Diplomacy tab, on its side", a
 });
 
 test("a demand goes at once, with no question to answer: the button says what a refusal costs", async () => {
-    const { ctx, sent } = setup(() => {}, "SWI");
+    const { ctx, sent } = setup(() => {}, "TYR");
     const asked = globalThis.confirm;
     globalThis.confirm = () => { throw new Error("no question for a demand"); };
     try {
         const nodes = diplomacyTab(ctx);
         const demand = button(nodes, "Demand a protectorate");
-        assert.match(demand.props?.title ?? demand.attrs?.title ?? "", /A refusal makes Switzerland hostile for 10 years/);
+        assert.match(demand.props?.title ?? demand.attrs?.title ?? "", /A refusal makes Tyrol hostile for 10 years/);
         await demand.handlers.click();
-        assert.deepEqual(sent, [{ type: "demandSubject", target: "SWI", kind: "protectorate" }]);
+        assert.deepEqual(sent, [{ type: "demandSubject", target: "TYR", kind: "protectorate" }]);
     } finally {
         globalThis.confirm = asked;
     }

@@ -13,7 +13,7 @@
 //   proposeUnion { with }            two people's countries made one, ruled by both (RULES.md §10, Union): the other is asked
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
-import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
+import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, takeSubject, validateTerms, joinWar, GUARANTEE_DAYS, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
@@ -168,6 +168,7 @@ export const diplomacyCommands = {
         if (atWar(st, cmd.country, c)) return refuse(`you cannot demand this of ${c} while at war: make it a term of the peace`);
         const upgrade = overlordOf(st, c) === cmd.country && st.countries[c].subjectKind === "protectorate" && cmd.kind === "vassal";
         if (overlordOf(st, c) && !upgrade) return refuse(`${c} is already ${overlordOf(st, c) === cmd.country ? "your subject" : "a subject"}`);
+        if (!upgrade && !withinDemandReach(game, cmd.country, c)) return refuse(`${c} borders neither you nor your subjects: a subject is demanded only of a neighbour`);
         if (wouldCycle(st, c, cmd.country)) return refuse(`${cmd.country} is itself a subject of ${c}'s side: there can be no ring of overlords`);
         const events = [];
         if (isHuman(st, c)) return asking(game, "demand", cmd.country, c, { subject: cmd.kind }, { subject: cmd.kind });

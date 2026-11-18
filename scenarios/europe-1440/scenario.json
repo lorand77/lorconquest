@@ -8247,7 +8247,8 @@
    "borders": [],
    "straits": [
     370
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 191,
@@ -8279,7 +8280,8 @@
    ],
    "straits": [
     194
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 192,
@@ -8307,7 +8309,8 @@
    "borders": [
     369
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 193,
@@ -8335,7 +8338,8 @@
    "borders": [
     194
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 194,
@@ -8365,7 +8369,8 @@
    ],
    "straits": [
     191
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 195,
@@ -8456,7 +8461,8 @@
    "borders": [],
    "straits": [
     376
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 198,
@@ -8486,7 +8492,8 @@
    ],
    "straits": [
     391
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 199,
@@ -10620,7 +10627,8 @@
     277,
     281
    ],
-   "straits": []
+   "straits": [],
+   "faith": "catholic"
   },
   {
    "id": 267,
@@ -11837,7 +11845,8 @@
     337,
     366
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 305,
@@ -11872,7 +11881,8 @@
     366,
     367
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 306,
@@ -12077,7 +12087,8 @@
     312,
     314
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 312,
@@ -12112,7 +12123,8 @@
     313,
     314
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 313,
@@ -12151,7 +12163,8 @@
     320,
     322
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 314,
@@ -12189,7 +12202,8 @@
     317,
     320
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 315,
@@ -12224,7 +12238,8 @@
     316,
     421
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 316,
@@ -12258,7 +12273,8 @@
     317,
     318
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 317,
@@ -12293,7 +12309,8 @@
     320,
     321
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 318,
@@ -12330,7 +12347,8 @@
     421,
     423
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 319,
@@ -12364,7 +12382,8 @@
     322,
     426
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 320,
@@ -12399,7 +12418,8 @@
     319,
     321
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 321,
@@ -12435,7 +12455,8 @@
     424,
     426
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 322,
@@ -12471,7 +12492,8 @@
     368,
     426
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 323,
@@ -13128,7 +13150,8 @@
     345,
     348
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 342,
@@ -13164,7 +13187,8 @@
     349,
     359
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 343,
@@ -13197,7 +13221,8 @@
     355,
     364
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 344,
@@ -13228,7 +13253,8 @@
     364,
     365
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 345,
@@ -13263,7 +13289,8 @@
     346,
     364
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 346,
@@ -13296,7 +13323,8 @@
     353,
     364
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 347,
@@ -13326,7 +13354,8 @@
     350,
     352
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 348,
@@ -13357,7 +13386,8 @@
     347,
     349
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 349,
@@ -13392,7 +13422,8 @@
     350,
     359
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 350,
@@ -13427,7 +13458,8 @@
     351,
     352
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 351,
@@ -13458,7 +13490,8 @@
     352,
     370
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 352,
@@ -13491,7 +13524,8 @@
     369,
     370
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 353,
@@ -13525,7 +13559,8 @@
     346,
     361
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 354,
@@ -14044,7 +14079,8 @@
     352,
     358
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 370,
@@ -14076,7 +14112,8 @@
    ],
    "straits": [
     190
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 371,
@@ -14104,7 +14141,8 @@
    "borders": [],
    "straits": [
     375
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 372,
@@ -15147,7 +15185,8 @@
    "borders": [
     198
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 403,
@@ -15175,7 +15214,8 @@
    "borders": [],
    "straits": [
     404
-   ]
+   ],
+   "faith": "orthodox"
   },
   {
    "id": 404,
@@ -42417,8 +42457,7 @@
     ],
     "defenders": [
      "HUN",
-     "SER",
-     "POL"
+     "SER"
     ]
    }
   ],
@@ -42447,11 +42486,6 @@
     "kind": "defensive",
     "a": "SWE",
     "b": "NOR"
-   },
-   {
-    "kind": "military",
-    "a": "TEU",
-    "b": "LIV"
    },
    {
     "kind": "military",
@@ -42531,6 +42565,33 @@
     "a": "OTT",
     "b": "KAR",
     "yearsLeft": 3
+   }
+  ],
+  "subjects": [
+   {
+    "subject": "WAL",
+    "overlord": "OTT",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "BOS",
+    "overlord": "OTT",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "MOL",
+    "overlord": "POL",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "RAG",
+    "overlord": "HUN",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "LIV",
+    "overlord": "TEU",
+    "kind": "vassal"
    }
   ]
  },

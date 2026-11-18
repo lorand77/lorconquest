@@ -866,7 +866,7 @@ point; the other columns are generated from the map.*
 
 ## The situation in 1440
 
-The game opens in the middle of eight wars, and with the alliances of 1440 already signed. They count exactly as if declared
+The game opens in the middle of eight wars, with the alliances of 1440 already signed and five countries already others' subjects. They count exactly as if declared
 and signed in play (RULES.md §10): the sides below are at war from the first day, the agreements are in force, and every
 warmonger score still starts at 0. War score in these wars counts populations as they were at the start. Allies are **not**
 in these wars unless listed — a military alliance only calls an ally into wars declared from now on.
@@ -882,7 +882,7 @@ in these wars unless listed — a military alliance only calls an ally into wars
 | **War of the Neapolitan Succession** (since 1435) | ARA Aragon | NAP Naples, GEN Genoa | Alfonso V of Aragon against René of Anjou for Naples, with Genoa on René's side; Alfonso took the city in 1442. |
 | **Hungarian civil war** (1440) | HUN Hungary | JIS Upper Hungary | Władysław III against the party of the infant Ladislaus Posthumus; Jan Jiskra held the north for Ladislaus until 1462. |
 | **Old Zürich War** (1440) | SWI Swiss Confederacy | ZUR Zürich | Schwyz and the cantons against Zürich over the Toggenburg inheritance; peace in 1450. |
-| **Ottoman–Hungarian war** (since 1437) | OTT Ottoman Empire | HUN Hungary, SER Serbia, POL Poland | Murad II had taken Smederevo in 1439 and besieged Belgrade in 1440; the despot of Serbia fought on from Hungary. Władysław III, king of Poland, was crowned king of Hungary in 1440 and led both to Varna, 1444. |
+| **Ottoman–Hungarian war** (since 1437) | OTT Ottoman Empire | HUN Hungary, SER Serbia | Murad II had taken Smederevo in 1439 and besieged Belgrade in 1440; the despot of Serbia fought on from Hungary. Varna, 1444 — where Władysław III fought as king of Hungary, against the wishes of the Polish lords: Poland stays out, Hungary's military ally. |
 
 ### Agreements
 
@@ -891,7 +891,6 @@ in these wars unless listed — a military alliance only calls an ally into wars
 | Military alliance | POL Poland – HUN Hungary | Władysław III is king of both. |
 | Defensive alliance | POL Poland – LIT Lithuania | The Jagiellon brothers: Władysław in Kraków, Casimir in Vilnius. |
 | Defensive alliances | DEN Denmark – SWE Sweden – NOR Norway (each pair) | One king, Christopher of Bavaria — the Kalmar Union. |
-| Military alliance | TEU Teutonic Order – LIV Livonian Order | Two branches of one Order. |
 | Military alliances | STY Inner Austria – AUS Austria – TYR Tyrol (each pair) | Frederick III rules all three Habsburg lands: his own, and two as guardian. |
 | Guarantee | STY Inner Austria → JIS Upper Hungary | Frederick holds the infant Ladislaus — and the Holy Crown of Hungary. |
 | Defensive alliance | BRA Brandenburg – ANS Ansbach-Kulmbach | The Hohenzollern brothers Frederick Irontooth and Albert Achilles. |
@@ -905,6 +904,19 @@ in these wars unless listed — a military alliance only calls an ally into wars
 | Non-aggression pact, 7 years left | ENG England – SCO Scotland | The truce of 1438. |
 | Non-aggression pact, 3 years left | CAS Castile – GRA Granada | The truce of 1439. |
 | Non-aggression pact, 3 years left | OTT Ottoman Empire – KAR Karaman | The peace of 1437; Karaman attacked again in 1443. |
+
+### Subjects
+
+Subjects from the first day, as if made so in play (RULES.md §10, Subjects): a protectorate keeps its own diplomacy and pays 10%,
+a vassal has none and pays 40%. A vassal of the start may be integrated as any other.
+
+| Subject | Overlord | Kind | Why |
+|---|---|---|---|
+| WAL Wallachia | OTT Ottoman Empire | protectorate | Vlad II Dracul paid the Sultan tribute, and sent him his sons. |
+| BOS Bosnia | OTT Ottoman Empire | protectorate | Tvrtko II paid tribute to the Porte from 1435. |
+| MOL Moldavia | POL Poland | protectorate | Its voivodes had sworn fealty to the Polish king since 1387. |
+| RAG Ragusa | HUN Hungary | protectorate | Under the Hungarian crown since 1358, paying it a yearly tribute. |
+| LIV Livonian Order | TEU Teutonic Order | vassal | The Order's Livonian branch, under the Grand Master. |
 
 ## The Holy Roman Empire
 
@@ -970,6 +982,19 @@ From 31 October 1517 a Catholic or Hussite country may adopt the Reformation and
 computer does only where it did: in the lands of the countries leaning to it below — the north of the Empire, Scandinavia, the
 Baltic, Britain, the Swiss and Dutch towns, Béarn and Bohemia — a country most of whose core land lay in them in 1440, until
 1600; never a bulwark of the Church.
+
+### The people's faith
+
+Where a land's people were not of their ruler's faith, their own (RULES.md §2, Religion): a conqueror of their faith finds them
+willing, one of another faith slow to win over. Every settlement not listed has the faith of the country that held it in 1440.
+
+| Faith | Settlements | Why |
+|---|---|---|
+| Orthodox | 341–353 | The Ottoman Balkans: Bulgarians, Serbs and Greeks under the Sultan. Edirne and Gallipoli, settled by Turks, are Sunni. |
+| Orthodox | 311–322 | Lithuania's Ruthenian lands, Orthodox under a Catholic grand duke. |
+| Orthodox | 304, 305 | Poland's Red Ruthenia: Halicz and Podolia. |
+| Orthodox | 190–194, 197, 198, 369–371, 402, 403 | The Greeks under Latin rulers: Venice's Corfu, Modon, Negroponte and Crete, Genoa's Chios and Famagusta, Mytilene, Athens, Arta, Cyprus and Rhodes. |
+| Catholic | 266 | Plzeň, the Catholic stronghold in Hussite Bohemia. |
 
 **Lean to the Reformation:** SWE, DEN, NOR, ENG, SCO, LIV, TEU, SHO, LUB, HAM, MEC, POM, BRE, BRU, MAG, BRA, HES, SAX, LUS, SIL, ANS, NUR, PAL, STR, WRT, ULM, BAS, ZUR, UTR, GEL, FRI, FOI, BOH
 

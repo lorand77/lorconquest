@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -271,8 +271,10 @@ function dealWith(ctx, t) {
         // a rival never agrees, nor anyone to a country near victory; one that does adds to the asker's warmonger score (RULES.md §10).
         // Sent at once, with no question: the button's line says the odds, and its title what a refusal costs
         const upgrade = them.overlord === me;
-        out.push(section(ctx, "Demand", ...kinds.map((kind) => {
-            const ch = human ? null : subjectChance(game, t, me, kind), score = kind === "vassal" && !upgrade ? 5 : 2.5;
+        // only of a neighbour of yours or of your subjects' (RULES.md §10); and what a yes adds to the warmonger score, by its size
+        if (!upgrade && !withinDemandReach(game, me, t)) out.push(section(ctx, "Demand", mk("p", { class: "hint" }, `${them.name} borders neither you nor your subjects: a subject is demanded only of a neighbour. A peace may still make it one.`)));
+        else out.push(section(ctx, "Demand", ...kinds.map((kind) => {
+            const ch = human ? null : subjectChance(game, t, me, kind), score = Math.round(subjectWarmonger(game, t, kind === "vassal" && !upgrade ? "vassal" : "protectorate", 10) * 5) / 10;
             const odds = !ch ? "a person will answer" : ch.why === "rival" ? "never: your rival" : ch.why === "victory" ? `refused: you hold ${n(ch.count)} of the ${ch.target} that win${ch.count >= NEAR_VICTORY * ch.target ? "" : ", and this would take you there"}` : `${ch.chance.toFixed(0)}% chance`;
             return row(ctx, mk("button", { title: `A refusal makes ${them.name} hostile for 10 years; a yes adds ${score} to your warmonger score.`, onclick: async () => { await ctx.send({ type: "demandSubject", target: t, kind }); ctx.redraw(); } }, `Demand a ${kind}`),
                 mk("span", { class: `hint ${ch && !ch.chance ? "bad" : ""}` }, `${odds} · +${score} warmonger if it agrees`));
@@ -294,7 +296,10 @@ function rivalsLine(ctx, t) {
 // a peace with terms: what to take and give, money, a subject — and what the other side makes of it
 function peaceForm(ctx, t) {
     const { state, game, me, make: mk } = ctx, them = state.countries[t];
-    const theirs = Object.values(state.settlements).filter((s) => s.owner === t), mine = Object.values(state.settlements).filter((s) => s.owner === me);
+    // only what a peace can hand over (RULES.md §10, Peace): within the receiver's reach, if need be through the others of the same
+    // peace — so all of theirs that could be reached were all of them taken, and the like of ours (the preview says if a choice is not)
+    const reachable = (owner, gainer) => { const ids = Object.values(state.settlements).filter((s) => s.owner === owner).map((s) => s.id), far = new Set(outOfReach(game, gainer, ids)); return ids.filter((id) => !far.has(id)).map((id) => state.settlements[id]); };
+    const theirs = reachable(t, me), mine = reachable(me, t);
     const human = state.humans.includes(t);
     // the terms being drawn up live in ctx.ui, not in the form: the panel is rebuilt as the war score moves, almost daily
     if (ctx.ui.peace?.with !== t) ctx.ui.peace = { with: t, take: [], give: [], money: 0, subject: "", giveOpen: false };

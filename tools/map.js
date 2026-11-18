@@ -307,8 +307,9 @@ const VICTORY = {}, EMPIRE = {};
     for (const f of FORMABLES) if (w && (f.needs?.count ?? f.settlements.length) >= VICTORY.settlements - 1) err(`Special coring: ${f.name} needs ${f.needs?.count ?? f.settlements.length} settlements; victory is ${VICTORY.settlements}, so it could only be proclaimed as the game is won`);
 }
 
-// how the game opens (RULES.md §10), if the scenario says: "### Wars" and "### Agreements" tables under "## The
-// situation in …". Wars list the countries of each side; an agreement between several countries is one between each pair.
+// how the game opens (RULES.md §10), if the scenario says: "### Wars", "### Agreements" and "### Subjects" tables under "## The
+// situation in …". Wars list the countries of each side; an agreement between several countries is one between each pair; a
+// subject is a country, its overlord and the kind (vassal or protectorate), subjects from the first day.
 const START = { wars: [], agreements: [] };
 {
     const codesIn = (text) => [...new Set([...text.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]).filter((c) => CN.has(c)))];
@@ -336,6 +337,17 @@ const START = { wars: [], agreements: [] };
         if (kind === "guarantee") START.agreements.push({ kind, a: codes[0], b: codes[1] });          // the guarantor, then the guaranteed
         else for (let i = 0; i < codes.length; i++) for (let j = i + 1; j < codes.length; j++) START.agreements.push({ kind, a: codes[i], b: codes[j], ...(yearsLeft ? { yearsLeft: Number(yearsLeft) } : {}) });
     }
+    const subjects = [];
+    for (const r of sub("Subjects")) {
+        const [subject] = codesIn(r.Subject ?? ""), [overlord] = codesIn(r.Overlord ?? ""), kind = (r.Kind ?? "").toLowerCase();
+        if (!subject || !overlord || subject === overlord) { err(`Subjects line ${r._line}: needs a subject and its overlord, by code`); continue; }
+        if (!["vassal", "protectorate"].includes(kind)) { err(`Subjects line ${r._line}: the kind is vassal or protectorate, not '${r.Kind}'`); continue; }
+        if (subjects.some((x) => x.subject === subject)) err(`Subjects line ${r._line}: ${subject} has two overlords`);
+        if (START.wars.some((w) => (w.attackers.includes(subject) && w.defenders.includes(overlord)) || (w.attackers.includes(overlord) && w.defenders.includes(subject)))) err(`Subjects line ${r._line}: ${subject} and ${overlord} are at war at the start`);
+        subjects.push({ subject, overlord, kind });
+    }
+    for (const x of subjects) if (subjects.some((y) => y.subject === x.overlord && y.overlord === x.subject)) err(`Subjects: ${x.subject} and ${x.overlord} are each other's subjects`);
+    if (subjects.length) START.subjects = subjects;
 }
 
 // how the computer plays each country, and whom it holds a grudge against (design.md, Characters and rivalries), if the
@@ -389,7 +401,7 @@ if (doc.some((l) => /^## About\s*$/.test(l))) {
 // country not in it is Catholic, and none may be listed twice. Without the section the scenario has no religions at all. A line
 // "**Lean to the Reformation:** SWE, DEN, …" in it names the countries whose land the computer may make Protestant, and one
 // "**Bulwarks of the Church:** PAP, CAS, …" those it never does (src/ai/economy.js).
-const RELIGION = new Map(), LEANS = new Set(), BULWARKS = new Set();
+const RELIGION = new Map(), LEANS = new Set(), BULWARKS = new Set(), FAITH = new Map();     // FAITH: settlement -> its people's own
 if (doc.some((l) => /^## Religions\s*$/.test(l))) {
     for (const code of CORDER) RELIGION.set(code, "catholic");
     const listed = new Set();
@@ -405,6 +417,28 @@ if (doc.some((l) => /^## Religions\s*$/.test(l))) {
         }
     }
     const [s, e] = section("Religions");
+    // "### The people's faith": settlements whose people are not of their ruler's faith (Faith, Settlements, Why)
+    const at = doc.findIndex((l, i) => i > s && i <= e && l.trim() === "### The people's faith");
+    if (at >= 0) {
+        let i = at + 1;
+        while (i <= e && !doc[i].startsWith("|")) i++;
+        const h = cells(doc[i]);
+        for (let j = i + 2; j <= e && doc[j].startsWith("|"); j++) {
+            const c = cells(doc[j]), r = {};
+            h.forEach((k, n) => { r[k] = c[n] ?? ""; });
+            const faith = (r.Faith ?? "").toLowerCase();
+            if (!RELIGIONS.includes(faith)) { err(`The people's faith line ${j + 1}: '${r.Faith}' is none of ${RELIGIONS.join(", ")}`); continue; }
+            for (const raw of (r.Settlements ?? "").split(",").map((x) => x.trim()).filter(Boolean)) {
+                const m = /^(\d+)(?:\s*[–-]\s*(\d+))?$/.exec(raw);
+                if (!m) { err(`The people's faith line ${j + 1}: '${raw}' is not a settlement number or range`); continue; }
+                for (let id = Number(m[1]); id <= Number(m[2] ?? m[1]); id++) {
+                    if (!S.has(id)) err(`The people's faith line ${j + 1}: no settlement ${id}`);
+                    else if (FAITH.has(id)) err(`The people's faith line ${j + 1}: settlement ${id} is listed twice`);
+                    else FAITH.set(id, faith);
+                }
+            }
+        }
+    }
     const lean = doc.slice(s, e + 1).find((l) => /^\*\*Lean to the Reformation:\*\*/.test(l));
     for (const code of lean ? [...lean.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]) : []) {
         if (!CN.has(code)) err(`Religions: no country ${code} to lean to the Reformation`);
@@ -1602,7 +1636,8 @@ const json = {
     settlements: SIDS.map((id) => {
         const s = S.get(id);
         return { id, name: s.name, abbr: ABBR.get(id), label: LANDLABEL.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre,
-            x: s.x, y: s.y, land: `land-${id}`, seaZone: s.zone ? s.zone.id : null, borders: s.nb.map(Number).sort(num), straits: s.st.map(Number).sort(num) };
+            x: s.x, y: s.y, land: `land-${id}`, seaZone: s.zone ? s.zone.id : null, borders: s.nb.map(Number).sort(num), straits: s.st.map(Number).sort(num),
+            ...(FAITH.has(id) ? { faith: FAITH.get(id) } : {}) };
     }),
     routes: [...LAND, ...STRAIT].sort(byKey).map((e) => {
         const [a, b] = e.split("-").map(Number), strait = STRAIT.has(e), legs = RLEGS.get(e);

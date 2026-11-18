@@ -89,7 +89,8 @@ test("what a demand is worth: mostly size, a little opinion, at most 75%, none f
 });
 
 test("a rival never agrees to be your subject, nor anyone to one at 75% of victory or whom it would carry there; a yes adds warmonger", () => {
-    const game = tinyGame(1, (sc) => { sc.rivalries = [["AAA", "DDD"]]; sc.victory.settlements = 5; }), st = game.state;
+    // (with a road from 2 to 6, AAA borders CCC: a subject is demanded only of a neighbour)
+    const game = neighbours(1, (sc) => { sc.rivalries = [["AAA", "DDD"]]; sc.victory.settlements = 5; }), st = game.state;
     assert.deepEqual(subjectChance(game, "DDD", "AAA", "protectorate"), { chance: 0, opinion: opinion(game, "DDD", "AAA"), why: "rival" });
     assert.ok(demandChance(game, "DDD", "AAA", "protectorate").chance > 0, "which the plain formula (the Empire's vote) does not ask");
     // AAA holds 3 of the 5 that win (60%): CCC as a vassal makes 4, BBB's 2 as a vassal would make 5, as a protectorate 4
@@ -105,20 +106,20 @@ test("a rival never agrees to be your subject, nor anyone to one at 75% of victo
     order(game, cmd("AAA", "demandSubject", { target: "BBB", kind: "protectorate" }));
     assert.equal(st.countries.BBB.overlord, null);
     // a person asked answers for itself; a yes adds to the warmonger score all the same
-    const human = tinyGame(1, () => {}, ["CCC"]);
+    const human = neighbours(1, () => {}, ["CCC"]);
     order(human, cmd("AAA", "demandSubject", { target: "CCC", kind: "protectorate" }));
     order(human, cmd("CCC", "answerOffer", { id: human.state.offers[0].id, accept: true }));
     assert.deepEqual([human.state.countries.CCC.subjectKind, human.state.countries.AAA.warmonger], ["protectorate", 2.5]);
 });
 
 test("a demand to a computer is rolled once; a refusal is remembered 10 years and cannot be repeated for 5", () => {
-    const game = tinyGame();
+    const game = neighbours();                                                  // AAA borders CCC by the road from 2 to 6
     rigRoll(game, 20, false);                                                   // a roll of 20 or more: CCC refuses a vassal (20%)
     let events = order(game, cmd("AAA", "demandSubject", { target: "CCC", kind: "vassal" }));
     assert.deepEqual([ofType(events, "refused").length, ofType(events, "answer").length], [1, 0]);
     assert.equal(game.state.countries.CCC.overlord, null);
     assert.equal(game.state.memory.refused["CCC>AAA"], 0);
-    near(opinion(game, "CCC", "AAA"), -30);
+    near(opinion(game, "CCC", "AAA"), -45);                                    // refused you: −30; neighbours: −15
     assert.match(refused(game, cmd("AAA", "demandSubject", { target: "CCC", kind: "vassal" })), /less than 5 years ago/);
     runTo(game, 5 * 365);
     rigRoll(game, 20, true);                                                    // the roll is below the chance (now ~21%... under 20)
@@ -504,4 +505,30 @@ test("a subject's price in a peace grows with its size, twice for a rival; a vas
     const faiths = tinyGame(1, (sc) => { for (const c of sc.countries) c.religion = { AAA: "catholic", BBB: "sunni", CCC: "orthodox" }[c.code] ?? "catholic"; });
     assert.deepEqual(["BBB", "CCC", "EEE"].map((c) => integrateDays(faiths, "AAA", c) / 365), [30, 21, 15]);
     assert.equal(integrateDays(plain, "AAA", "BBB"), INTEGRATE_DAYS);
+});
+
+test("a demand only of a neighbour; a subject's warmonger by its size; a peace hands over only what is within reach", async () => {
+    const { outOfReach, subjectWarmonger, validateTerms } = await import("../../src/engine/diplomacy.js");
+    // AAA borders BBB by land and CCC across the strait 3-6: it may ask either; EEE (only next to DDD) it may not
+    const game = tinyGame(), st = game.state;
+    assert.match(refused(game, cmd("AAA", "demandSubject", { target: "EEE", kind: "protectorate" })), /borders neither you nor your subjects/);
+    const across = game.command(cmd("AAA", "demandSubject", { target: "CCC", kind: "protectorate" }));
+    assert.ok(across.ok, across.error);
+    // DDD borders CCC (6-7): once CCC is AAA's subject — made so here — AAA reaches DDD through it
+    assert.match(refused(game, cmd("AAA", "demandSubject", { target: "DDD", kind: "protectorate" })), /borders neither/);
+    if (!st.countries.CCC.overlord) setSubject(game, "CCC", "AAA", "protectorate", []);
+    const through = game.command(cmd("AAA", "demandSubject", { target: "DDD", kind: "protectorate" }));
+    assert.ok(through.ok, through.error);
+    // the warmonger of a subject: at least the flat 10, or half of taking it — BBB's 30,000 people: 15
+    assert.equal(subjectWarmonger(game, "EEE", "vassal", 10), 10);
+    assert.equal(subjectWarmonger(game, "BBB", "vassal", 10), 15);
+    assert.equal(subjectWarmonger(game, "BBB", "protectorate", 10), 7.5);
+    // a peace: EEE's settlement 8 is beyond AAA's reach (EEE borders only DDD); DDD's 7 borders CCC
+    const g2 = tinyGame();
+    order(g2, cmd("AAA", "declareWar", { target: "BBB" }));
+    assert.deepEqual(outOfReach(g2, "AAA", [4, 5]), [], "5 borders 3 (by the pass); 4 borders 2");
+    assert.deepEqual(outOfReach(g2, "CCC", [4]), [], "4 borders 6");
+    assert.deepEqual(outOfReach(g2, "AAA", [7, 8]), [7, 8], "far off, and not joined to AAA through the peace");
+    assert.match(validateTerms(g2, "BBB", "AAA", { take: [1] }), /out of BBB's reach/ );
+    void st;
 });

@@ -128,7 +128,8 @@ keeps its walls, library, workshop and market. It **stays core for every country
 so retaking it makes it core again at once.
 
 **Religion.** Each country has a faith — Catholic, Orthodox, Hussite or Sunni, and from 1517 Protestant — given by its scenario
-([Religions](../scenarios/europe-1440/SCENARIO.md#religions)); a settlement's people have the faith of the country that held it in 1440.
+([Religions](../scenarios/europe-1440/SCENARIO.md#religions)); a settlement's people have the faith of the country that held it in 1440, unless the scenario gives them their own — the
+Orthodox of the Ottoman Balkans or of Lithuania's Ruthenian lands, the Greeks under Venice.
 Two faiths regard each other by one number, which the computer adds to its opinion (§10):
 
 |  | Catholic | Orthodox | Hussite | Sunni | Protestant |
@@ -739,7 +740,10 @@ drops by **40 for 10 years** (see *Computer countries*).
 | Counts as your military ally (§5) | yes | only if it chooses to join the war |
 
 A country becomes your subject through a peace treaty, by agreeing to your demand, or — protectorates
-only — through the Holy Roman Empire ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)).
+only — through the Holy Roman Empire ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)). **A demand is
+made only of a neighbour** — a country that borders you or one of your subjects, by land or across a strait (a protectorate of
+yours made a vassal aside); a
+realm across the map is made a subject by a peace or not at all. A scenario may begin with some countries already subjects.
 
 **Breaking free.** A subject breaks free the moment its **military power** (§5) is greater than
 your own — the overlord's forces only, not those of its other subjects. This is not breaking an
@@ -790,10 +794,10 @@ go to war for gain:
 |---|---|---|
 | Declare a war | +5 | — |
 | End a war holding a settlement you took in it — captured, or given to you in the peace | +1 per 1,000 of its pop (a town ≈ +10, a city ≈ +20) × the warmonger scale | **half**: +1 per 2,000 (a town ≈ +5, a city ≈ +10) × the warmonger scale |
-| Make a country your vassal in a peace | +10 | +5 |
-| Make a country your protectorate in a peace | +5 | +2.5 |
-| Make a country your vassal on demand (or your protectorate a vassal) | +5 (+2.5) | — |
-| Make a country your protectorate on demand | +2.5 | — |
+| Make a country your vassal in a peace | +10, or half what taking its settlements would cost, whichever is more | half of that |
+| Make a country your protectorate in a peace | half the vassal's | half of that |
+| Make a country your vassal on demand (or your protectorate a vassal) | half the peace's (a quarter) | — |
+| Make a country your protectorate on demand | a quarter of the peace's vassal | — |
 
 **The defending side** is the country that was declared on and everyone who joined the war on its
 side — defensive allies, guarantors and military allies it called in. The world sees it as the
@@ -963,15 +967,17 @@ countries, and **their allies make their own peace**. A vassal's wars end with i
 other its vassal or protectorate, become the other's, and free subjects of the other. A computer accepts if its war
 score is at least the price. The price is what is asked, in the units of §10 — and **what the proposer gives counts the
 same way against it**: a country losing a war can buy peace with a city. A settlement's people are those at the start of
-the war. **A peace leaves each side at least one settlement**: terms that would take a country's last one — or give away the
+the war. **A peace hands over only what lies within reach** of the one who gets it: a settlement that borders its land or its
+subjects' — by a road, a pass or a strait — or that it besieges, or that is joined to those through the others of the same peace.
+No town across the map changes hands at a table. **A peace leaves each side at least one settlement**: terms that would take a country's last one — or give away the
 proposer's last — are refused, whoever proposes them; the last one is taken by force or not at all. Each settlement, and
 each subject freed, is named once. A vassal does not sign peace: its
 overlord does. A peace starts a **truce** of 5 years between the two, and sends every army left in land now closed to it
 home. Offered to a human, terms wait 6 months for an answer and lapse after.
 
 **The warmonger score at a peace** counts each settlement held that was taken in the war or given in the peace, unless it
-is the holder's own core, at +1 per 1,000 people (half for the defending side of that pair); and +10 / +5 for a vassal made,
-+5 / +2.5 for a protectorate. Each pair at war is scored on its own sides: a country that joined a war is scored for its war with the principal it fought.
+is the holder's own core, at +1 per 1,000 people (half for the defending side of that pair); and for a vassal made +10, or half
+what taking its settlements would cost if that is more (half of it on the defending side), a protectorate half of a vassal. Each pair at war is scored on its own sides: a country that joined a war is scored for its war with the principal it fought.
 
 **Proposals.** The same proposal to the same country once in 5 years — peace, each kind of agreement, and each kind of
 demand — whether it was accepted or not. An agreement cannot be proposed while at war, nor to a vassal. A guarantee is
@@ -1021,8 +1027,8 @@ Otherwise, at the start of the end year, the most settlements win, then the most
 own and its subjects'), then the lower code. When the game is won it stops: nothing more happens and nothing is accepted. A
 computer country may win, and then every human has lost.
 
-**Starting wars and agreements** of a scenario count as if declared and signed in play: the wars are on from the first day,
-the agreements are in force, a pact has the years it has left, an alliance 20 years (or the years the scenario says it has left),
+**Starting wars, agreements and subjects** of a scenario count as if declared, signed and made in play: the wars are on from
+the first day, the agreements are in force, the subjects are subjects (a vassal counting its years from the start), a pact has the years it has left, an alliance 20 years (or the years the scenario says it has left),
 and every warmonger score is 0.
 
 ## 11. RANDOM EVENTS
