@@ -4,7 +4,7 @@
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
-    TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost } from "/engine/index.js";
+    TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost, trainingRoom } from "/engine/index.js";
 import { FAITH_COLOURS } from "./mapdraw.js";
 import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
@@ -188,10 +188,14 @@ export function shopTab(ctx) {
     // where to raise and to hire: the settlement chosen last (kept in ctx.ui while the page is open) while it is still a core of
     // ours, or else the capital, or the first core settlement
     const kept = (key) => (core.some((s) => s.id === ctx.ui?.[key]) ? ctx.ui[key] : capital ?? core[0]?.id);
-    // by the thousand, or by the hundred while there is room for fewer than 1000 more (RULES.md §8)
-    const few = e.raiseRoom < 1000, per = few ? 100 : 1000;
-    const rs = select(ctx, settlementOptions(core), kept("raiseAt")), rl = numberInput(ctx, few ? Math.max(1, Math.floor(e.raiseRoom / 100)) : 1, 1, few ? 9 : 50);
-    rs.addEventListener("change", () => { if (ctx.ui) ctx.ui.raiseAt = Number(rs.value); });
+    // each settlement trains at most a tenth of its people at once, its room shown by its name; by the thousand, or by the hundred
+    // while there is room for fewer than 1000 more — under the law, or in the settlement chosen (RULES.md §8)
+    const roomAt = (id) => trainingRoom(state, me, state.settlements[id]);
+    const raiseAt = kept("raiseAt"), room = raiseAt !== undefined ? Math.min(e.raiseRoom, roomAt(raiseAt)) : e.raiseRoom;
+    const few = room < 1000, per = few ? 100 : 1000;
+    const rs = select(ctx, settlementOptions(core).map(([id, label]) => [id, `${label} — room ${n(Math.floor(roomAt(id) / 100) * 100)}`]), raiseAt);
+    const rl = numberInput(ctx, few ? Math.max(1, Math.floor(room / 100)) : 1, 1, few ? 9 : Math.max(1, Math.floor(room / 1000)));
+    rs.addEventListener("change", () => { if (ctx.ui) ctx.ui.raiseAt = Number(rs.value); ctx.redraw(); });     // its room sets the lots
     const armable = [...WEAPONS, "cannons"].filter((w) => w === "unarmed" || c.techs.includes(w));
     const price = (w) => (w === "cannons" ? CANNON_PRICE : WEAPON_PRICE[w]);
     const rw = select(ctx, armable.map((w) => [w, w === "unarmed" ? "unarmed"
@@ -208,7 +212,7 @@ export function shopTab(ctx) {
     rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
         row(ctx, rs, rl, make("span", {}, `× ${per}`), rw),
-        make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere; weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
+        make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere, at most a tenth of its people at once; weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
         raise));
 
     // mercenaries

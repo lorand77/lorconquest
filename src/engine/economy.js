@@ -24,6 +24,10 @@ export const manpowerOf = (state, code) => sum(ownedBy(state, code), (s) => (isC
 export const lawOf = (state, code) => LAWS[state.countries[code].law ?? "feudal"];
 // each capital a country holds brings its money and soldiers (RULES.md §2, §9) — a union's every member's; peasant rebels have none
 export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(state, code) + capitalsOf(state, code).length * CAPITAL_SOLDIERS;
+// what a settlement may still train at once (RULES.md §8): a tenth of its people, less the men in training there now — so a
+// large army is raised in several places, or over a long time, not in a season at the capital alone
+export const TRAINING_SHARE = 0.1;
+export const trainingRoom = (state, code, s) => Math.max(0, TRAINING_SHARE * s.pop - sum(state.countries[code].training.filter((t) => t.settlement === s.id), (t) => t.n));
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code);
 export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);

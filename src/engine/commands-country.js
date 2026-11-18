@@ -15,7 +15,7 @@ import { afford, done, money, ownArmy, positive, refuse, whole } from "./command
 import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_CHUNK, lawChangeDay, MAX_LIBRARIES, MERCENARY_DAYS,
     MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTER_PRICE, SHARPSHOOTERS_PER_PASS, SHIPS, SHIP_PRICE, TECHS, TRAIN_CAPITAL_DAYS,
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
-import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, unlockTech } from "./economy.js";
+import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, trainingRoom, unlockTech } from "./economy.js";
 import { capitalsOf, newFleet, isCore, ownerOf } from "./state.js";
 import { proclaimCheck } from "./regions.js";
 import { coringDays, reformationError } from "./religion.js";
@@ -246,7 +246,8 @@ export const countryCommands = {
     // soldiers, free, trained in a core settlement: 3 months in the capital, 6 elsewhere (RULES.md §8). Cannon crew are not
     // raised: an army's own soldiers man its cannons (equipCannons). Raised with a weapon, the men are set aside its
     // weapons now — from the reserve, the lots missing bought — and arrive carrying them; raised with cannons, one cannon
-    // for every 10 men, and they arrive as its crew. By the thousand; by the hundred only while fewer than 1000 can be raised.
+    // for every 10 men, and they arrive as its crew. By the thousand; by the hundred only while fewer than 1000 can be raised —
+    // by the law, the civilians, or the settlement, which trains at most a tenth of its people at once (trainingRoom).
     raise(game, cmd) {
         const st = game.state, c = mine(game, cmd), weapon = cmd.weapon ?? "unarmed";
         if ((cmd.kind ?? "soldiers") !== "soldiers") return refuse("only soldiers are raised: they man cannons themselves");
@@ -258,9 +259,11 @@ export const countryCommands = {
         if (error) return refuse(error);
         if (!isCore(st, s, c.code)) return refuse(`${s.id} is not core: men are trained only in core settlements`);
         const n = hundreds ? cmd.hundreds * 100 : cmd.lots * 1000;
-        if (hundreds && economyOf(game, c.code).raiseRoom >= 1000) return refuse("there is room for 1000: raise by the thousand");
+        const room = trainingRoom(st, c.code, s);
+        if (hundreds && Math.min(economyOf(game, c.code).raiseRoom, room) >= 1000) return refuse("there is room for 1000: raise by the thousand");
         if (armySoldiersOf(st, c.code) + n > armyCapOf(st, c.code)) return refuse("that is more soldiers than your law allows");
         if (economyOf(game, c.code).civilians < n) return refuse("not enough civilians");
+        if (n > room) return refuse(`${s.id} can train only ${Math.floor(room / 100) * 100} more men at once: a tenth of its people`);
         if (weapon !== "unarmed") {
             // raised by the hundred, the weapons missing are bought by the hundred too (cannons by the ten), at a tenth of a lot
             const k = weapon === "cannons" ? n / CREW_PER_CANNON : n, part = hundreds ? 10 : 1;

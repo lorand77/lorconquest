@@ -387,3 +387,22 @@ test("a conquest's compliance: the bar, and what it pays meanwhile — half its 
     assert.match(find([block], () => true).map((e) => e.text ?? "").join(" "), /Compliance 50% · pays 25% of a core's money/);
     assert.equal(complianceBlock(ctx, { ...s, cores: [s.owner] }), "", "a core: nothing to show");
 });
+
+test("the Shop tab shows what each settlement may still train, and raises by the hundred where the one chosen has less than 1000", async () => {
+    // Bavaria under the mass levy, its law with room to spare; its capital training 1,500 already, of its tenth
+    const { ctx, sent } = setup((game) => {
+        game.state.countries.BAV.law = "mass";
+        const s = game.state.settlements[game.state.countries.BAV.capital];
+        game.state.countries.BAV.training.push({ settlement: s.id, kind: "soldiers", weapon: "unarmed", n: 0.1 * s.pop - 600, ready: 999 });
+    });
+    ctx.ui = { target: null, raiseWeapon: null, raiseAt: null, hireAt: null };
+    const nodes = shopTab(ctx);
+    const [raiseAt] = find(nodes, (e) => e.tag === "select" && / — room /.test(e.text));
+    assert.ok(raiseAt, "the raise list says each settlement's room");
+    assert.match(raiseAt.text, /★ capital — room 600/);
+    assert.match(nodes.map((x) => x.text).join(" | "), /at most a tenth of its people at once/);
+    const [count] = find(nodes, (e) => e.attrs.type === "number" && e.attrs.max === 9);
+    assert.equal(count.attrs.value, 6, "the capital's room, by the hundred");
+    await button(nodes, "Raise").handlers.click();
+    assert.equal(sent[0].hundreds, 6);
+});

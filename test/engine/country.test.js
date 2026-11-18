@@ -252,6 +252,22 @@ test("soldiers are raised by the hundred only while there is room for fewer than
     order(game, cmd("raise", { settlement: 1, lots: 1 }));
 });
 
+test("a settlement trains at most a tenth of its people at once: room again once they are ready, by the hundred where it has less", async () => {
+    const { trainingRoom } = await import("../../src/engine/index.js");
+    const game = tinyGame(), st = game.state, c = AAA(game);
+    order(game, cmd("setLaw", { law: "mass" }));
+    assert.deepEqual([trainingRoom(st, "AAA", st.settlements[1]), trainingRoom(st, "AAA", st.settlements[2])], [2000, 1000]);   // a city, a town
+    order(game, cmd("raise", { settlement: 1, lots: 2 }));
+    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1 })), /1 can train only 0 more men at once/);
+    st.settlements[2].pop = 8500;                                              // room for 850: by the hundred, though the law has room
+    assert.match(refused(game, cmd("raise", { settlement: 2, lots: 1 })), /can train only 800 more/);
+    order(game, cmd("raise", { settlement: 2, hundreds: 8 }));
+    assert.deepEqual(c.training.map((t) => [t.settlement, t.n]), [[1, 2000], [2, 800]]);
+    assert.match(refused(game, cmd("raise", { settlement: 3, hundreds: 5 })), /raise by the thousand/);   // a town of 10,000 has room for 1000
+    runTo(game, 91);                                                           // the capital's are ready: room again
+    order(game, cmd("raise", { settlement: 1, lots: 1 }));
+});
+
 test("training in a settlement that falls is cancelled", () => {
     const game = tinyGame();
     order(game, cmd("setLaw", { law: "standing" }));
@@ -272,7 +288,10 @@ test("soldiers raised with a weapon take it from the reserve, buy the lots missi
     assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "ships" })), /no weapon/);
     order(game, cmd("raise", { settlement: 1, lots: 1, weapon: "pikes" }));      // 700 missing: one lot of 1000 bought
     assert.deepEqual([c.treasury, c.reserve.pikes], [5000000 - 30000, 300]);
-    order(game, cmd("raise", { settlement: 2, lots: 2, weapon: "swords" }));     // none in reserve: two lots
+    // a town trains a tenth of its 10,000 at once: two lots are raised in two of them
+    assert.match(refused(game, cmd("raise", { settlement: 2, lots: 2, weapon: "swords" })), /2 can train only 1000 more men at once: a tenth of its people/);
+    order(game, cmd("raise", { settlement: 2, lots: 1, weapon: "swords" }));     // none in reserve: a lot each
+    order(game, cmd("raise", { settlement: 3, lots: 1, weapon: "swords" }));
     assert.deepEqual([c.treasury, c.reserve.swords], [5000000 - 30000 - 50000, 0]);
     c.treasury = 1000;
     assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1, weapon: "cavalry" })), /that costs/);
@@ -280,9 +299,9 @@ test("soldiers raised with a weapon take it from the reserve, buy the lots missi
     assert.equal(c.reserve.pikes, 300);
     runTo(game, 91);
     assert.deepEqual([game.state.armies[1].men.pikes, game.state.armies[1].men.unarmed], [1000, 0]);
-    game.state.settlements[2].owner = "BBB";                                    // the swords' settlement falls: they go back
+    game.state.settlements[2].owner = "BBB";                                    // one swords' settlement falls: its lot goes back
     runTo(game, 183);
-    assert.equal(c.reserve.swords, 2000);
+    assert.equal(c.reserve.swords, 1000);
 });
 
 test("soldiers raised with cannons get one for every 10 of them, and arrive as its crew", () => {
@@ -292,15 +311,15 @@ test("soldiers raised with cannons get one for every 10 of them, and arrive as i
     c.reserve.cannons = 30;
     order(game, cmd("raise", { settlement: 1, lots: 1, weapon: "cannons" }));    // 100 cannons: 30 in reserve, a lot of 100 bought
     assert.deepEqual([c.treasury, c.reserve.cannons], [5000000 - 100000, 30]);
-    order(game, cmd("raise", { settlement: 2, lots: 2, weapon: "cannons" }));    // 200 more: 30 in reserve, two lots bought
-    assert.deepEqual([c.treasury, c.reserve.cannons], [5000000 - 300000, 30]);
+    order(game, cmd("raise", { settlement: 2, lots: 1, weapon: "cannons" }));    // 100 more: 30 in reserve, a lot bought
+    assert.deepEqual([c.treasury, c.reserve.cannons], [5000000 - 200000, 30]);
     const before = { ...game.state.armies[1] };
     runTo(game, 91);
     const a = game.state.armies[1];
     assert.deepEqual([a.cannons - before.cannons, a.crew - before.crew, a.men.unarmed], [100, 1000, 0]);
     game.state.settlements[2].owner = "BBB";                                   // the second lot's settlement falls: its cannons go back
     runTo(game, 183);
-    assert.equal(c.reserve.cannons, 230);
+    assert.equal(c.reserve.cannons, 130);
 });
 
 test("mercenaries arrive in a month with pikes, up to the army cap, and add no soldiers", () => {

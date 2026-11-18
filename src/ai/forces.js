@@ -8,7 +8,7 @@
 // (tidyOrders).
 import { menOf } from "../engine/army.js";
 import { CANNON_PRICE, MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
-import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf } from "../engine/index.js";
+import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf, trainingRoom } from "../engine/index.js";
 import { exposed, inland, ownArmies, ownSettlements, stagingSettlement, threatsOf } from "./util.js";
 import { routeFor } from "../engine/index.js";
 import { threatRatio } from "./economy.js";
@@ -76,21 +76,32 @@ export function forceOrders(game, code, fl, ctx) {
     }
     const raising = lots * 1000 || hundreds * 100;
     if (raising > 0) {
+        // where: the capital (twice as quick), then the town its armies gather at, then the largest — each training at most a
+        // tenth of its people at once (RULES.md §8), so a large levy is spread over several of them, by the thousand where a
+        // settlement has room for it, by the hundred where it has less
         const own = ownSettlements(st, code).filter((s) => s.cores.includes(code));
         const capital = own.find((s) => s.id === c.capital), staging = stagingSettlement(game, code);
-        const site = capital ?? (staging && own.includes(staging) ? staging : own.sort((a, b) => b.pop - a.pop || a.id - b.id)[0]);
-        if (site) {
-            // raised armed (RULES.md §8): pikes while they are under a third of the armed men, else the best shot it has — the
-            // weapons from the reserve, the lots missing bought now — or unarmed, to be armed later, if the money is not there
-            let pikesNow = 0, armedNow = 0;
-            for (const a of ownArmies(st, code)) { pikesNow += a.men.pikes; armedNow += menOf(a) - a.men.unarmed; }
-            const best = SHOT.find((w) => c.techs.includes(w));
-            const weapon = musketsOnly ? "muskets" : !best || pikesNow < (armedNow + raising) / 3 ? "pikes" : best;
+        const sites = [capital, staging && own.includes(staging) ? staging : null, ...own.sort((a, b) => b.pop - a.pop || a.id - b.id)]
+            .filter((s, i, all) => s && all.indexOf(s) === i);
+        // raised armed (RULES.md §8): pikes while they are under a third of the armed men, else the best shot it has — the
+        // weapons from the reserve, the lots missing bought now — or unarmed, to be armed later, if the money is not there
+        let pikesNow = 0, armedNow = 0;
+        for (const a of ownArmies(st, code)) { pikesNow += a.men.pikes; armedNow += menOf(a) - a.men.unarmed; }
+        const best = SHOT.find((w) => c.techs.includes(w));
+        const weapon = musketsOnly ? "muskets" : !best || pikesNow < (armedNow + raising) / 3 ? "pikes" : best;
+        let left = raising, reserve = c.reserve[weapon];
+        for (const site of sites) {
+            if (left < 100) break;
+            const room = trainingRoom(st, code, site);
+            const n = room >= 1000 && left >= 1000 ? 1000 * Math.floor(Math.min(left, room) / 1000)
+                : room < 1000 || e.raiseRoom < 1000 ? 100 * Math.min(9, Math.floor(Math.min(left, room) / 100)) : 0;
+            if (n < 100) continue;
             // what the reserve lacks is bought by the lot of 1000, or raising by the hundred, by the hundred at a tenth of the price
-            const lot = lots ? 1000 : 100, cost = Math.ceil(Math.max(0, raising - c.reserve[weapon]) / lot) * WEAPON_PRICE[weapon] * lot / 1000;
-            const armed = cost <= ctx.budget - 0.3 * e.settlementMoney;
-            cmd("raise", { settlement: site.id, kind: "soldiers", ...(lots ? { lots } : { hundreds }), ...(armed ? { weapon } : {}) });
-            if (armed) ctx.budget -= cost;
+            const byLots = n >= 1000, lot = byLots ? 1000 : 100, bought = Math.ceil(Math.max(0, n - reserve) / lot) * lot;
+            const cost = bought * WEAPON_PRICE[weapon] / 1000, armed = cost <= ctx.budget - 0.3 * e.settlementMoney;
+            cmd("raise", { settlement: site.id, kind: "soldiers", ...(byLots ? { lots: n / 1000 } : { hundreds: n / 100 }), ...(armed ? { weapon } : {}) });
+            if (armed) { ctx.budget -= cost; reserve += bought - n; }               // (the next site's weapons: what is left of the reserve)
+            left -= n;
         }
     }
 
