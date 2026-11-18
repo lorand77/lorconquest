@@ -106,12 +106,14 @@ export function agreementAnswer(game, holder, proposer, kind, years = 10) {
 
 // the war between two countries and how it stands for `winner`, against `other`: % of its people taken, less the %
 // it took of one's own, plus 10 × (strength − 1), the last at most +30. Populations as at the start of the war.
+// the strength part counts as far as the war has been fought (RULES.md §10, Peace): not at all while nothing has changed hands,
+// in full once either side has lost a tenth of its people in it — no land is won at the table by an army that has taken none
 export function warScore(game, mine, other) {
     const st = game.state, w = st.warInfo[warKey(mine, other)];
     if (!w) return 0;
-    const taken = (w.taken[mine] ?? 0) / Math.max(1, w.startPop[other]) * 100 - (w.taken[other] ?? 0) / Math.max(1, w.startPop[mine]) * 100;
-    const strength = ratio(militaryPowerOf(st, mine), militaryPowerOf(st, other), 4);
-    return taken + Math.min(30, 10 * (strength - 1));
+    const won = (w.taken[mine] ?? 0) / Math.max(1, w.startPop[other]) * 100, lost = (w.taken[other] ?? 0) / Math.max(1, w.startPop[mine]) * 100;
+    const strength = ratio(militaryPowerOf(st, mine), militaryPowerOf(st, other), 4), fought = Math.min(1, Math.max(won, lost) / 10);
+    return won - lost + Math.min(30, 10 * (strength - 1)) * fought;
 }
 
 // what a set of peace terms asks of `other`, in the units of the formula: % of its people in the settlements

@@ -42,12 +42,14 @@ test("a war that calls its allies in: Hungary on Poland's side, the Teutonic Ord
     const joins = events.filter((e) => e.type === "joins").map((e) => [e.country, e.enemy, e.side]);
     assert.deepEqual(joins, [["HUN", "LIV", "att"], ["TEU", "POL", "def"]]);      // Lithuania, a defensive ally of the attacker, is not called
     assert.deepEqual(events.filter((e) => e.type === "answer").map((e) => [e.country, e.what, e.accepted]),
-        [["LIV", "peace", true], ["POL", "peace", false], ["FRA", "pact", true], ["SAX", "defensive", false]]);
+        [["LIV", "peace", true], ["POL", "peace", true], ["FRA", "pact", true], ["SAX", "defensive", false]]);
     assert.deepEqual(events.filter((e) => e.type === "refused").map((e) => [e.country, e.from]), [["GOT", "SWE"]]);
-    // Poland and Livonia made peace in March 1440 and their truce ran out five years later; their allies' wars go on, as do the
-    // wars the game opened with
-    assert.deepEqual(st.wars, ["BUR|HAM", "BUR|LUB", "HUN|JIS", "HUN|LIV", "MIL|VEN", "POL|TEU", "SWI|ZUR"]);
-    assert.deepEqual(events.filter((e) => e.type === "expired").map((e) => [e.kind, e.a, e.b, e.day]), [["pact", "POL", "TEU", 1825], ["truce", "LIV", "POL", 1825 + 59]]);
+    // Poland made peace with Livonia and with the Teutonic Order in March 1440 — two months in, nothing taken, so Poland's
+    // strength won it nothing — and the truces ran out five years later; Hungary's war on Livonia goes on, as do the wars the
+    // game opened with
+    assert.deepEqual(st.wars, ["BUR|HAM", "BUR|LUB", "HUN|JIS", "HUN|LIV", "MIL|VEN", "SWI|ZUR"]);
+    assert.deepEqual(events.filter((e) => e.type === "expired").map((e) => [e.kind, e.a, e.b, e.day]),
+        [["pact", "POL", "TEU", 1825], ["truce", "LIV", "POL", 1825 + 59], ["truce", "POL", "TEU", 1825 + 59]]);
     assert.ok(st.agreements.some((x) => x.kind === "pact" && x.a === "DEN" && x.b === "FRA"));
     assert.equal(st.countries.POL.warmonger >= 0, true);
 });

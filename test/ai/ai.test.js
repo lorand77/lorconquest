@@ -563,7 +563,8 @@ test("an army marching on a country it is no longer at war with stops; access gi
 });
 
 test("peace far ahead: a small loser becomes its subject; soldiers are raised armed when the money is there", () => {
-    let game = tinyGame(), st = game.state;
+    // a road from 2 to 7 makes DDD AAA's neighbour: a peace makes a subject only of one
+    let game = tinyGame(1, (sc) => { sc.routes.push({ id: "route-2-7", from: 2, to: 7, type: "land", length: 0, crossesRiver: false, seaZone: null, points: [], pass: null, years: 0.2, legs: null }); }), st = game.state;
     game.command({ type: "declareWar", country: "AAA", target: "DDD" });          // DDD: one town, AAA four times its size
     st.day = 800;
     st.warInfo["AAA|DDD"].start = 0;

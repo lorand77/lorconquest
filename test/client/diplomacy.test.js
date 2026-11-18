@@ -67,7 +67,7 @@ test("the tab shows your standing, a neighbour to deal with, and what each propo
         { type: "proposeAgreement", with: "SWI", kind: "defensive", years: 20 },
         { type: "proposeAgreement", with: "SWI", kind: "access" }]);
     // Switzerland borders neither Bavaria nor its subjects: no demand (a neighbour's, with its odds: the tests below)
-    assert.match(text, /a subject is demanded only of a neighbour/);
+    assert.match(text, /a subject is made only of a neighbour/);
     assert.match(textOf(diplomacyTab(setup(() => {}, "TYR").ctx)), /\d+% chance/);
 });
 
@@ -115,11 +115,20 @@ test("at war: the war score, and a peace form whose preview is the computer's ow
     takes.checked = false;
     money.value = "1000";
     await money.handlers.input();
-    assert.match(preview.text, /it will accept/);
+    assert.match(preview.text, /it will refuse/);                                               // nothing taken yet: strength alone wins nothing
     await button(nodes, "Propose peace").handlers.click();
     assert.deepEqual(sent, [{ type: "proposePeace", with: "ULM", terms: { take: [], give: [], money: 1000 } }]);
     assert.equal(button(nodes, "Declare war"), undefined);
     assert.match(textOf(find(nodes, (e) => e.tag === "section" && e.text.includes("Agreements"))), /Not while at war/);
+});
+
+test("a peace makes a subject only of a neighbour: the form offers none with a country out of reach", () => {
+    const near = textOf(diplomacyTab({ ...setup((game) => { game.command({ type: "declareWar", country: "BAV", target: "ULM" }); }).ctx, ui: { target: "ULM" } }));
+    assert.match(near, /Ulm becomes your vassal/);
+    assert.match(near, /you become Ulm's protectorate/);
+    const far = textOf(diplomacyTab({ ...setup((game) => { game.command({ type: "declareWar", country: "BAV", target: "HUN" }); }).ctx, ui: { target: "HUN" } }));
+    assert.match(far, /Peace with Hungary/);
+    assert.doesNotMatch(far, /becomes your vassal|Hungary's protectorate/);
 });
 
 test("a peace can give money as well as ask it: who pays, how much — and a quarter, half or all of the treasury at a click", async () => {
@@ -237,7 +246,7 @@ test("a rival is shown as one, and never agrees to become your subject; every de
     assert.match(other, /Rivals: .*Switzerland/);
     assert.match(other, /No country agrees to become the subject of one at 75% of victory/);
     // a country Bavaria does not border: no demand, and why
-    assert.match(textOf(diplomacyTab(setup(() => {}, "SWI").ctx)), /Switzerland borders neither you nor your subjects: a subject is demanded only of a neighbour/);
+    assert.match(textOf(diplomacyTab(setup(() => {}, "SWI").ctx)), /Switzerland borders neither you nor your subjects: a subject is made only of a neighbour/);
 });
 
 test("Declare war says how many planned marches go with it", () => {

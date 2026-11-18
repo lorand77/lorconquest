@@ -281,6 +281,9 @@ export function validateTerms(game, mine, other, terms) {
     for (const k of ["makeSubject", "becomeSubject"]) if (t[k] && !["vassal", "protectorate"].includes(t[k])) return `${k} is vassal or protectorate`;
     if (t.makeSubject && t.becomeSubject) return "one of you cannot be the subject of the other and have the other as a subject";
     for (const c of t.release ?? []) if (overlordOf(st, c) !== other) return `${c} is not a subject of ${other}`;
+    // a subject only of a neighbour of the overlord's or its subjects', by land or strait, as on demand (RULES.md §10)
+    if (t.makeSubject && !withinDemandReach(game, mine, other)) return `${other} borders neither you nor your subjects: a subject is made only of a neighbour`;
+    if (t.becomeSubject && !withinDemandReach(game, other, mine)) return `you border neither ${other} nor its subjects: a subject is made only of a neighbour`;
     // a subject has one overlord, and there is no ring of them
     if (t.makeSubject && ((overlordOf(st, other) && overlordOf(st, other) !== mine) || wouldCycle(st, other, mine))) return `${other} cannot become your subject`;
     if (t.becomeSubject && ((overlordOf(st, mine) && overlordOf(st, mine) !== other) || wouldCycle(st, mine, other))) return "you cannot become its subject";

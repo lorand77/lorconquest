@@ -507,7 +507,7 @@ test("a subject's price in a peace grows with its size, twice for a rival; a vas
     assert.equal(integrateDays(plain, "AAA", "BBB"), INTEGRATE_DAYS);
 });
 
-test("a demand only of a neighbour; a subject's warmonger by its size; a peace hands over only what is within reach", async () => {
+test("a demand only of a neighbour; a subject's warmonger by its size; a peace hands over only what is within reach, and makes a subject only of a neighbour", async () => {
     const { outOfReach, subjectWarmonger, validateTerms } = await import("../../src/engine/diplomacy.js");
     // AAA borders BBB by land and CCC across the strait 3-6: it may ask either; EEE (only next to DDD) it may not
     const game = tinyGame(), st = game.state;
@@ -530,5 +530,13 @@ test("a demand only of a neighbour; a subject's warmonger by its size; a peace h
     assert.deepEqual(outOfReach(g2, "CCC", [4]), [], "4 borders 6");
     assert.deepEqual(outOfReach(g2, "AAA", [7, 8]), [7, 8], "far off, and not joined to AAA through the peace");
     assert.match(validateTerms(g2, "BBB", "AAA", { take: [1] }), /out of BBB's reach/ );
+    // nor is a subject made in a peace of a country out of reach, either way round; CCC, across the strait, may be
+    const g3 = tinyGame();
+    order(g3, cmd("AAA", "declareWar", { target: "EEE" }));
+    order(g3, cmd("AAA", "declareWar", { target: "CCC" }));
+    assert.match(validateTerms(g3, "AAA", "EEE", { makeSubject: "protectorate" }), /EEE borders neither you nor your subjects/);
+    assert.match(validateTerms(g3, "EEE", "AAA", { becomeSubject: "protectorate" }), /you border neither AAA nor its subjects/);
+    assert.equal(validateTerms(g3, "AAA", "CCC", { makeSubject: "protectorate" }), null);
+    assert.equal(validateTerms(g3, "CCC", "AAA", { becomeSubject: "protectorate" }), null);
     void st;
 });

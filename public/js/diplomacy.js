@@ -272,7 +272,7 @@ function dealWith(ctx, t) {
         // Sent at once, with no question: the button's line says the odds, and its title what a refusal costs
         const upgrade = them.overlord === me;
         // only of a neighbour of yours or of your subjects' (RULES.md §10); and what a yes adds to the warmonger score, by its size
-        if (!upgrade && !withinDemandReach(game, me, t)) out.push(section(ctx, "Demand", mk("p", { class: "hint" }, `${them.name} borders neither you nor your subjects: a subject is demanded only of a neighbour. A peace may still make it one.`)));
+        if (!upgrade && !withinDemandReach(game, me, t)) out.push(section(ctx, "Demand", mk("p", { class: "hint" }, `${them.name} borders neither you nor your subjects: a subject is made only of a neighbour, on demand or by a peace.`)));
         else out.push(section(ctx, "Demand", ...kinds.map((kind) => {
             const ch = human ? null : subjectChance(game, t, me, kind), score = Math.round(subjectWarmonger(game, t, kind === "vassal" && !upgrade ? "vassal" : "protectorate", 10) * 5) / 10;
             const odds = !ch ? "a person will answer" : ch.why === "rival" ? "never: your rival" : ch.why === "victory" ? `refused: you hold ${n(ch.count)} of the ${ch.target} that win${ch.count >= NEAR_VICTORY * ch.target ? "" : ", and this would take you there"}` : `${ch.chance.toFixed(0)}% chance`;
@@ -315,8 +315,10 @@ function peaceForm(ctx, t) {
     const money = mk("input", { type: "number", min: 0, step: 1000, value: Math.abs(draft.money) });
     const treasury = state.countries[me].treasury ?? 0;
     const offer = (share) => () => { payer.value = "you"; money.value = String(Math.floor(Math.max(0, treasury) * share / 1000) * 1000); update(); };
-    const subject = mk("select", {}, ...[["", "no subject"], ["makeSubject:vassal", `${them.name} becomes your vassal`], ["makeSubject:protectorate", `${them.name} becomes your protectorate`],
-        ["becomeSubject:vassal", `you become ${them.name}'s vassal`], ["becomeSubject:protectorate", `you become ${them.name}'s protectorate`]].map(([v, l]) => mk("option", { value: v, selected: v === draft.subject ? "selected" : undefined }, l)));
+    // a subject either way only between neighbours, counting each side's subjects (RULES.md §10)
+    const ours = withinDemandReach(game, me, t), theirsToo = withinDemandReach(game, t, me);
+    const subject = mk("select", {}, ...[["", "no subject"], ours && ["makeSubject:vassal", `${them.name} becomes your vassal`], ours && ["makeSubject:protectorate", `${them.name} becomes your protectorate`],
+        theirsToo && ["becomeSubject:vassal", `you become ${them.name}'s vassal`], theirsToo && ["becomeSubject:protectorate", `you become ${them.name}'s protectorate`]].filter(Boolean).map(([v, l]) => mk("option", { value: v, selected: v === draft.subject ? "selected" : undefined }, l)));
     const preview = mk("p", { class: "preview" }, "");
     const terms = () => {
         const t2 = { take: takes.filter(([, b]) => b.checked).map(([id]) => id), give: gives.filter(([, b]) => b.checked).map(([id]) => id), money: (payer.value === "you" ? -1 : 1) * Math.max(0, Number(money.value) || 0) };
@@ -350,5 +352,5 @@ function peaceForm(ctx, t) {
         row(ctx, subject),
         preview,
         mk("button", { class: "primary", onclick: async () => { const r = await ctx.send({ type: "proposePeace", with: t, terms: terms() }); if (r.ok) { ctx.ui.peace = null; ctx.redraw(); } } }, "Propose peace"),
-        mk("p", { class: "hint" }, "Price: what you ask, in % of its people, 10 for a year of its money, 50 for a vassal or 25 for a protectorate — less what you give. A peace leaves each side at least one settlement. War score: the share of its people you took, less the share of yours it took, plus how much stronger you are."))];
+        mk("p", { class: "hint" }, "Price: what you ask, in % of its people, 10 for a year of its money, 50 for a vassal or 25 for a protectorate — less what you give. A peace leaves each side at least one settlement. War score: the share of its people you took, less the share of yours it took, plus how much stronger you are — counted only as far as the war has been fought: in full once a side has lost a tenth of its people."))];
 }

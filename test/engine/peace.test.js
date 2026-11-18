@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { capture } from "../../src/engine/fighting.js";
 import { addAgreement, setSubject } from "../../src/engine/diplomacy.js";
-import { Game, economyOf, hasAgreement, isCore, peaceCost, routeFor, situation } from "../../src/engine/index.js";
+import { Game, economyOf, hasAgreement, isCore, peaceAnswer, peaceCost, routeFor, situation } from "../../src/engine/index.js";
 import { tinyGame, setArmy, runTo, order, refused } from "../helpers/tiny.js";
 
 const cmd = (country, type, rest = {}) => ({ type, country, ...rest });
@@ -55,11 +55,15 @@ test("a declaration during a truce breaks it; a computer refuses a peace it is w
     order(game, cmd("AAA", "declareWar", { target: "BBB" }));
     take(game, 5, "AAA");
     order(game, cmd("AAA", "proposePeace", { with: "BBB" }));
+    game.state.settlements[3].owner = "BBB";
     const events = order(game, cmd("AAA", "declareWar", { target: "BBB" }));    // through the truce
     assert.deepEqual(ofType(events, "broke").map((e) => e.country), ["AAA"]);
     assert.equal(hasAgreement(game.state, "truce", "AAA", "BBB"), false);
-    // BBB, weaker and with a third of its people gone, asks for a plain peace and is refused; it gives its city and is not
+    // a new war, its tally fresh: nothing taken in it yet, so strength alone wins AAA nothing — a plain peace would do
     game.state.countries.AAA.warmonger = 0;
+    assert.equal(peaceAnswer(game, "BBB", "AAA", {}).accept, true);
+    // AAA takes a town in this war; BBB, weaker and with a third of its people gone, asks for a plain peace and is refused; it gives its city and is not
+    take(game, 3, "AAA");
     const plain = order(game, cmd("BBB", "proposePeace", { with: "AAA" }));
     assert.equal(ofType(plain, "answer")[0].accepted, false);
     assert.deepEqual(game.state.wars, ["AAA|BBB"]);

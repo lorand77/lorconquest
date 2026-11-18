@@ -740,8 +740,8 @@ drops by **40 for 10 years** (see *Computer countries*).
 | Counts as your military ally (§5) | yes | only if it chooses to join the war |
 
 A country becomes your subject through a peace treaty, by agreeing to your demand, or — protectorates
-only — through the Holy Roman Empire ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)). **A demand is
-made only of a neighbour** — a country that borders you or one of your subjects, by land or across a strait (a protectorate of
+only — through the Holy Roman Empire ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)). **A subject is
+made only of a neighbour**, by a peace or on demand — a country that borders you or one of your subjects, by land or across a strait (a protectorate of
 yours made a vassal aside); a
 realm across the map is made a subject by a peace or not at all. A scenario may begin with some countries already subjects.
 
@@ -873,7 +873,9 @@ the sum of everything below that applies:
 **Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:
 ```
 war score = % of its pop you have taken in this war − % of your pop it has taken
-            + 10 × (strength − 1), this part at most +30
+            + 10 × (strength − 1), this part at most +30 — and counted only as far as the war has been
+              fought: not at all while no settlement has changed hands, in full once either side has
+              lost 10% of its people in it
 cost      = settlements you ask for, as % of its pop
             + 10 for each year of its money (§2) you ask for — a year counted as at least a quarter of
               what its settlements yield, so one deep in debt does not sell peace for a few coins
@@ -887,7 +889,9 @@ cost      = settlements you ask for, as % of its pop
 is the more — no more than it costs you, nor than it is worth to it: an empire's coin is no small country's treasure, and a small
 country's coin is no empire's. And **a subject is won by the war, never bought**: money you pay offsets only
 the settlements, money and freedom you ask in the same terms, never the 50 or 25 of making it your vassal or protectorate.
-Pops are counted as they were when the war began. A plain peace (cost 0) is accepted whenever your
+And **strength on paper wins nothing**: until a war has been fought — settlements taken, a tenth of
+someone's people — the stronger side's armies count for little at the table, so a war declared and not yet fought ends, if it
+ends, in a plain peace. Pops are counted as they were when the war began. A plain peace (cost 0) is accepted whenever your
 war score is 0 or more.
 
 **Alliances, guarantees and pacts** — opinion, plus how threatened it feels by its neighbours.
