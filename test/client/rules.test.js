@@ -65,6 +65,9 @@ test("a scenario's page: what wins, what its x costs, the start, and faiths and 
     assert.match(eu, /\| Hand cannons \| Swords \| 4\.5M R \|/);
     assert.match(eu, /Crossing a strait: \*\*30\*\*/);
     assert.match(eu, /Hundred Years' War: England against France/);
+    assert.match(eu, /- Wallachia, protectorate of Ottoman Empire/);
+    assert.match(eu, /Walled from the start:\*\* [^.]*Belgrade/);
+    assert.doesNotMatch(me, /Walled from the start/);
     assert.match(eu, /## Religions/);
     assert.doesNotMatch(eu, /## The Holy Roman Empire/);
     assert.match(eu, /All of Europe in 1440/, "its About");

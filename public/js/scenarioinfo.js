@@ -39,13 +39,15 @@ export function scenarioPage(sc, name) {
         `- A mountain pass holds at most **${fmt(SHARPSHOOTERS_PER_PASS * x)}** sharpshooters; every **${fmt(100 * x)}** cannons a besieger brings weaken the walls.`);
 
     // 1440
-    const wars = sc.start?.wars ?? [], agreements = sc.start?.agreements ?? [];
-    if (wars.length || agreements.length) {
+    const wars = sc.start?.wars ?? [], agreements = sc.start?.agreements ?? [], subjects = sc.start?.subjects ?? [], walled = sc.settlements.filter((s) => s.walls);
+    if (wars.length || agreements.length || subjects.length || walled.length) {
         out.push("## The situation at the start");
         if (wars.length) out.push("**Wars**", "", ...wars.map((w) => `- ${w.name}: ${list(w.attackers, countryName)} against ${list(w.defenders, countryName)}`), "");
         if (agreements.length) out.push("**Agreements**", "", ...agreements.map((a) => a.kind === "guarantee"
             ? `- ${countryName(a.a)} guarantees ${countryName(a.b)}`
-            : `- ${AGREEMENTS[a.kind] ?? a.kind}: ${countryName(a.a)} and ${countryName(a.b)}${a.yearsLeft ? `, ${a.yearsLeft} years left` : ""}`));
+            : `- ${AGREEMENTS[a.kind] ?? a.kind}: ${countryName(a.a)} and ${countryName(a.b)}${a.yearsLeft ? `, ${a.yearsLeft} years left` : ""}`), "");
+        if (subjects.length) out.push("**Subjects**", "", ...subjects.map((x) => `- ${countryName(x.subject)}, ${x.kind} of ${countryName(x.overlord)}`), "");
+        if (walled.length) out.push(`**Walled from the start:** ${walled.map((s) => s.name).join(", ")}.`);
     }
 
     // the regions to proclaim

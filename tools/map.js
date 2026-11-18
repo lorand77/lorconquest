@@ -309,8 +309,9 @@ const VICTORY = {}, EMPIRE = {};
 
 // how the game opens (RULES.md §10), if the scenario says: "### Wars", "### Agreements" and "### Subjects" tables under "## The
 // situation in …". Wars list the countries of each side; an agreement between several countries is one between each pair; a
-// subject is a country, its overlord and the kind (vassal or protectorate), subjects from the first day.
-const START = { wars: [], agreements: [] };
+// subject is a country, its overlord and the kind (vassal or protectorate), subjects from the first day. "### Walls" (Settlements,
+// Why) lists the settlements that begin walled: the great fortresses of the day, not every town with a wall round it.
+const START = { wars: [], agreements: [] }, WALLS = new Set();
 {
     const codesIn = (text) => [...new Set([...text.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]).filter((c) => CN.has(c)))];
     const sub = (heading) => {
@@ -348,6 +349,14 @@ const START = { wars: [], agreements: [] };
     }
     for (const x of subjects) if (subjects.some((y) => y.subject === x.overlord && y.overlord === x.subject)) err(`Subjects: ${x.subject} and ${x.overlord} are each other's subjects`);
     if (subjects.length) START.subjects = subjects;
+    for (const r of sub("Walls")) {
+        for (const raw of (r.Settlements ?? "").split(",").map((x) => x.trim()).filter(Boolean)) {
+            const id = Number(/^\d+/.exec(raw)?.[0]);
+            if (!S.has(id)) err(`Walls line ${r._line}: '${raw}' is no settlement number`);
+            else if (WALLS.has(id)) err(`Walls line ${r._line}: settlement ${id} is listed twice`);
+            else WALLS.add(id);
+        }
+    }
 }
 
 // how the computer plays each country, and whom it holds a grudge against (design.md, Characters and rivalries), if the
@@ -1637,7 +1646,7 @@ const json = {
         const s = S.get(id);
         return { id, name: s.name, abbr: ABBR.get(id), label: LANDLABEL.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre,
             x: s.x, y: s.y, land: `land-${id}`, seaZone: s.zone ? s.zone.id : null, borders: s.nb.map(Number).sort(num), straits: s.st.map(Number).sort(num),
-            ...(FAITH.has(id) ? { faith: FAITH.get(id) } : {}) };
+            ...(FAITH.has(id) ? { faith: FAITH.get(id) } : {}), ...(WALLS.has(id) ? { walls: true } : {}) };
     }),
     routes: [...LAND, ...STRAIT].sort(byKey).map((e) => {
         const [a, b] = e.split("-").map(Number), strait = STRAIT.has(e), legs = RLEGS.get(e);

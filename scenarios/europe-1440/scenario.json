@@ -4847,7 +4847,8 @@
    ],
    "straits": [
     36
-   ]
+   ],
+   "walls": true
   },
   {
    "id": 84,
@@ -7757,7 +7758,8 @@
     175,
     176
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 175,
@@ -7973,7 +7975,8 @@
     209,
     284
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 182,
@@ -8521,7 +8524,8 @@
    "borders": [
     426
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 200,
@@ -11063,7 +11067,8 @@
     282,
     324
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 281,
@@ -12348,7 +12353,8 @@
     423
    ],
    "straits": [],
-   "faith": "orthodox"
+   "faith": "orthodox",
+   "walls": true
   },
   {
    "id": 319,
@@ -12978,7 +12984,8 @@
     353,
     361
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 337,
@@ -13560,7 +13567,8 @@
     361
    ],
    "straits": [],
-   "faith": "orthodox"
+   "faith": "orthodox",
+   "walls": true
   },
   {
    "id": 354,
@@ -13592,7 +13600,8 @@
    ],
    "straits": [
     372
-   ]
+   ],
+   "walls": true
   },
   {
    "id": 355,
@@ -13782,7 +13791,8 @@
     361,
     362
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 361,
@@ -13876,7 +13886,8 @@
     189,
     362
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 364,
@@ -14049,7 +14060,8 @@
     365,
     367
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 369,
@@ -15215,7 +15227,8 @@
    "straits": [
     404
    ],
-   "faith": "orthodox"
+   "faith": "orthodox",
+   "walls": true
   },
   {
    "id": 404,
@@ -15824,7 +15837,8 @@
     414,
     415
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 422,

@@ -8,7 +8,7 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 65;
+export const RULES_VERSION = 66;
 // bump when the shape of the state changes
 export const FORMAT = 12;
 
@@ -52,7 +52,7 @@ export function initialState(map, seed, humans = []) {
             // faith: its people's (RULES.md §2, Religion) — the scenario's for them if it gives one, else their 1440 ruler's; changed only
             // by the Reformation of the land's own ruler
             id: s.id, owner: s.country, pop: s.pop, cores: [s.country], heldSince: 0, siege: null, faith: s.faith ?? faithOf.get(s.country) ?? null,
-            walls: false, library: false, workshop: false, market: false, courthouse: false,
+            walls: s.walls === true, library: false, workshop: false, market: false, courthouse: false,
         };
         state.nextId = Math.max(state.nextId, s.id + 1);
     }

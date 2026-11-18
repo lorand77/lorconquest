@@ -89,3 +89,13 @@ test("a settlement's people may have a faith of their own: the Ottoman Balkans a
     // the ruler's faith is its own still: the Ottomans Sunni, Venice Catholic
     assert.deepEqual([st.countries.OTT.religion, st.countries.VEN.religion], ["sunni", "catholic"]);
 });
+
+test("the great fortresses begin walled where the scenario says, and nothing else has a building", async () => {
+    const fs = await import("node:fs"), path = await import("node:path");
+    const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
+    const { Game: G } = await import("../../src/engine/index.js");
+    const st = G.create(europe, { seed: 1, humans: [] }).state, named = (name) => st.settlements[europe.settlements.find((s) => s.name === name).id];
+    assert.deepEqual(["Belgrade", "Constantinople", "Rhodes", "Buda", "Szeged"].map((n) => named(n).walls), [true, true, true, false, false]);
+    assert.equal(Object.values(st.settlements).filter((s) => s.walls).length, 14);
+    assert.equal(Object.values(st.settlements).some((s) => s.library || s.workshop || s.market || s.courthouse), false);
+});

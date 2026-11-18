@@ -200,6 +200,7 @@ interest, research or debt — whatever its treasury or loans stood at when its 
 | Soldiers | pop ÷ 25, equipped with swords — a garrison in every settlement of its own pop ÷ 25: 400 in a town, 800 in a city |
 | Ships | pop ÷ 2000 cogs — **coastal countries only** |
 | Cores | **every starting settlement is core** |
+| Buildings | none — except **Walls** where the scenario says: the great fortresses of its day (its SCENARIO.md, *The situation*) |
 
 **Capital.** Each country starts with the capital its scenario names — a city if it owns one. If
 the capital is lost, name a new one from any city you own; if you own no city, any settlement. Take back the capital you

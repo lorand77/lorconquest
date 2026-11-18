@@ -918,6 +918,28 @@ a vassal has none and pays 40%. A vassal of the start may be integrated as any o
 | RAG Ragusa | HUN Hungary | protectorate | Under the Hungarian crown since 1358, paying it a yearly tribute. |
 | LIV Livonian Order | TEU Teutonic Order | vassal | The Order's Livonian branch, under the Grand Master. |
 
+### Walls
+
+The great fortresses of 1440 begin with **Walls** (RULES.md §3 and §6: ×1.8 in defence, a siege twice as long — both worn down by cannons),
+as if built in play. Every other settlement begins without; walls may be bought anywhere as the game goes on.
+
+| Settlements | Why |
+|---|---|
+| 336 Belgrade | Hungary's gate to the Balkans: Murad II besieged it for six months in 1440 and failed, Mehmed II again in 1456. |
+| 353 Smederevo | Đurađ Branković's great river fortress, finished in 1430, the Ottomans' since 1439. |
+| 354 Constantinople | The Theodosian Walls, unbroken for a thousand years until the cannons of 1453. |
+| 403 Rhodes | The Knights Hospitaller's fortress: it held against the Mamluks in 1444 and the Ottomans in 1480. |
+| 363 Ragusa | Its walls, among the strongest of the Adriatic, kept the republic free between Venice and the Sultan. |
+| 360 Jajce | The Bosnian kings' fortress, held for Hungary against the Ottomans from 1463 to 1527. |
+| 368 Akkerman | Moldavia's fortress on the Dniester mouth, which held in 1476 and fell only in 1484. |
+| 199 Caffa | Genoa's walled colony in the Crimea, the Black Sea's great market until 1475. |
+| 280 Vienna | The walls that held against Suleiman in 1529. |
+| 181 Venice | The lagoon itself: no enemy took the city in a thousand years. |
+| 318 Smolensk | Lithuania's fortress on the Dnieper, fought over by Moscow for a century. |
+| 421 Pskov | Its stone walls held against Stefan Báthory in 1581. |
+| 174 Granada | The Alhambra: Granada fell only after the ten years' war of 1482–1492. |
+| 83 Calais | England's fortress in France, held until 1558. |
+
 ## The Holy Roman Empire
 
 > **Not on this map yet.** As on the historical map, there is no demand of the Empire: settlements marked **HRE** only make two
