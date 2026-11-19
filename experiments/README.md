@@ -705,3 +705,22 @@ The baseline, raising its whole levy in one place, is refused 50.8 orders a game
 19.0 microseconds a country-day) is the one-country artefact of sections 20 and 22: timed whole, 60 years of seed 101 take
 the computer 14.7 s on the candidate and 16.8 s on the baseline, with about the same armies (121 and 126, 127,000 and 119,000
 men).
+
+## 26. Sea lanes (2026-11-19)
+
+**What changed.** Armies sail from port to port up to three sea zones away, with 10 × x ships at both ends and no enemy fleet at sea
+on the way, 2 months a zone, at ×0.75 the day they land unless their side blockades the port (RULES.md §8); straits take 2 months.
+The computer's march estimates count voyages, and against the nearest enemy it cannot reach by land or strait its navy holds both
+ends of the shortest voyage.
+
+**Run.** `node tools/strength.js --baseline 8db9ae2 --candidate working --seeds 20 --years 210 --jobs 4 --label sea-lanes`
+(Mitteleuropa, seeds 101–120; the baseline the computer before sea lanes, both on today's rules — the baseline's armies may sail
+too, the engine finding the routes, but its navy never holds a landing's ends): `strength/2026-11-19-sea-lanes.json`.
+
+**What it showed: nothing for the inland countries, a loss for Prussia.** One country on the candidate ends −1.05 settlements
+[−2.33, +0.23]; wins 12 against 17 of 120. Saxony plays the very same games (+0.00), Bavaria, Austria, Brandenburg and Gdańsk
+within a settlement of zero; Prussia −6.47 [−13.67, +0.72], winning 1 game against 4 and surviving in 5 against 8. Refused orders
+the same (0.59 and 0.65). On this map, of six zones and 21 ports, a landing is rare; where it costs, it is the Baltic coast, whose
+navy now holds the ends of a voyage against enemies across the sea — cogs bought, ships kept at sea — while its land front is
+next door. (Europe, 3 games of 50 years: 92–161 landings a game, the Ottomans, England and Castile most; the computer's day no
+slower, 7.6 against 7.9 ms, its slowest 47–57 against 44–49.)
