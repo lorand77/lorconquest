@@ -920,6 +920,48 @@ a vassal has none and pays 40%. A vassal of the start may be integrated as any o
 | ATH Athens | OTT Ottoman Empire | protectorate | The Acciaioli dukes held Athens as the Sultan's tributaries. |
 | MAZ Masovia | POL Poland | vassal | Its Piast dukes held Masovia as a fief of the Polish crown from 1351 until it was joined to it in 1526. |
 
+### Fleets
+
+What each sea power had afloat, in place of the rule's people ÷ 2000 cogs (RULES.md §2): Venice and Genoa, the Hanse and Denmark
+far above it, France and the inland realms with a coast far below. A country given more than the rule has its navy cap raised in
+the same proportion for the whole game (RULES.md §9), so that it may sail what it starts with. Every coastal country not listed
+has the rule's.
+
+| Country | Ships | Why |
+|---|---|---|
+| VEN Venice | 200 | The greatest navy of the Mediterranean: some 3,000 merchant ships and 45 war galleys in the 1420s. |
+| OTT Ottoman Empire | 140 | The Sultan's galleys at Gallipoli, still learning the sea; a hundred and more sailed in 1453. |
+| ARA Aragon | 120 | Alfonso V's fleets, carrying his war to Naples. |
+| CAS Castile | 110 | The Cantabrian fleet that beat the Hanse off La Rochelle in 1419. |
+| GEN Genoa | 100 | The Mediterranean's second sea power, with colonies from Chios to Caffa. |
+| BUR Burgundy | 90 | Holland and Zeeland, at war with the Hanse for the Baltic trade. |
+| ENG England | 80 | Henry V's royal ships sold off by the 1420s; merchantmen pressed into service. |
+| DEN Denmark | 60 | The Union's fleet, guarding the Sound and its tolls. |
+| LUB Lübeck | 60 | The head of the Hanse, master of the Baltic trade. |
+| POR Portugal | 60 | Caravels on the African coast, and the fleet that took Ceuta in 1415. |
+| FRA France | 40 | Barely a navy in 1440: its coast in English hands or its vassals'. |
+| TEU Teutonic Order | 40 | Danzig and the Prussian ports. |
+| HAM Hamburg | 30 | The Hanse's North Sea partner. |
+| KRH Knights of Rhodes | 30 | A small galley squadron, feared from Egypt to Anatolia. |
+| NAP Naples | 30 | René's galleys, with Genoa's help. |
+| SWE Sweden | 30 | Few ships of its own under the Union. |
+| TUN Tunis | 30 | The Hafsid corsairs. |
+| MRC Morocco | 20 | Its coast's best ports lost, Ceuta to Portugal. |
+| RAG Ragusa | 20 | A merchant republic of the sea. |
+| BRE Bremen | 15 | A Hanse town. |
+| CAN Candar | 15 | The corsairs of Sinop. |
+| FLO Florence | 15 | Its own galleys from Porto Pisano since 1421. |
+| GRA Granada | 15 | A few galleys, and the Marinid alliance. |
+| ISL Lordship of the Isles | 15 | The galleys of the Isles. |
+| LIV Livonian Order | 15 | The ports of Riga and Reval. |
+| GOT Gotland | 10 | A pirates' nest. |
+| LES Lesbos | 10 | The Gattilusio, Genoese lords of the island. |
+| PAP Papal States | 10 | A few galleys at Ancona. |
+| KAR Karaman | 5 | Hardly a coast. |
+| SAV Savoy | 5 | One port, Nice. |
+| STY Inner Austria | 5 | Trieste only. |
+| GHO Great Horde | 0 | No fleet. |
+
 ### Walls
 
 The great fortresses of 1440 begin with **Walls** (RULES.md §3 and §6: ×1.8 in defence, a siege twice as long — both worn down by cannons),

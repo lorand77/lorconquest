@@ -28,7 +28,8 @@ export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(s
 // large army is raised in several places, or over a long time, not in a season at the capital alone
 export const TRAINING_SHARE = 0.1;
 export const trainingRoom = (state, code, s) => Math.max(0, TRAINING_SHARE * s.pop - sum(state.countries[code].training.filter((t) => t.settlement === s.id), (t) => t.n));
-export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code);
+// a sea power's raised in proportion to the fleet its scenario gives it (RULES.md §9; state.js, navy)
+export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code) * (state.countries[code].navy ?? 1);
 export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
 

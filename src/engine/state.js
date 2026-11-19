@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 70;
+export const RULES_VERSION = 71;
 // bump when the shape of the state changes
-export const FORMAT = 13;
+export const FORMAT = 14;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -35,6 +35,9 @@ export function initialState(map, seed, humans = []) {
             // its faith (RULES.md §2, Religion), from the scenario, or null on a map without religions; and the day it adopted the
             // Reformation, or null
             religion: c.religion ?? null, reformed: null,
+            // its navy cap × this (RULES.md §9): a sea power the scenario gives a fleet larger than people ÷ 2000, in proportion, so
+            // that it starts at its cap as every other coastal country does; 1 for everyone else
+            navy: c.navy ?? 1,
             // treasury x × pop × 2 (RULES.md §2)
             treasury: sc.scaleX * c.pop * 2, bank: 0, loans: 0, noBorrowUntil: 0, debtSince: null,
             tax: 2, taxSum: 0, harvest: false, slider: 50, law: "feudal", lawDay: null,

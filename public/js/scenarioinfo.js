@@ -40,14 +40,17 @@ export function scenarioPage(sc, name) {
 
     // 1440
     const wars = sc.start?.wars ?? [], agreements = sc.start?.agreements ?? [], subjects = sc.start?.subjects ?? [], walled = sc.settlements.filter((s) => s.walls);
-    if (wars.length || agreements.length || subjects.length || walled.length) {
+    const seaPowers = sc.countries.filter((c) => c.navy > 1).sort((a, b) => b.ships - a.ships || (a.code < b.code ? -1 : 1));
+    if (wars.length || agreements.length || subjects.length || walled.length || seaPowers.length) {
         out.push("## The situation at the start");
         if (wars.length) out.push("**Wars**", "", ...wars.map((w) => `- ${w.name}: ${list(w.attackers, countryName)} against ${list(w.defenders, countryName)}`), "");
         if (agreements.length) out.push("**Agreements**", "", ...agreements.map((a) => a.kind === "guarantee"
             ? `- ${countryName(a.a)} guarantees ${countryName(a.b)}`
             : `- ${AGREEMENTS[a.kind] ?? a.kind}: ${countryName(a.a)} and ${countryName(a.b)}${a.yearsLeft ? `, ${a.yearsLeft} years left` : ""}`), "");
         if (subjects.length) out.push("**Subjects**", "", ...subjects.map((x) => `- ${countryName(x.subject)}, ${x.kind} of ${countryName(x.overlord)}`), "");
-        if (walled.length) out.push(`**Walled from the start:** ${walled.map((s) => s.name).join(", ")}.`);
+        if (walled.length) out.push(`**Walled from the start:** ${walled.map((s) => s.name).join(", ")}.`, "");
+        // the sea powers: their fleets, and a navy cap to sail them (RULES.md §9)
+        if (seaPowers.length) out.push(`**Sea powers**, with a navy cap raised to sail their fleets ([the rules](#rules-9)): ${seaPowers.map((c) => `${c.name} (${c.ships} ships)`).join(", ")}.`);
     }
 
     // the regions to proclaim

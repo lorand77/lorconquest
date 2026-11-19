@@ -203,7 +203,7 @@ interest, research or debt — whatever its treasury or loans stood at when its 
 |---|---|
 | Treasury | **x × pop × 2** — about one year of money from its people (a 10K town 20K, a 50K country 100K) |
 | Soldiers | pop ÷ 25, equipped with swords — a garrison in every settlement of its own pop ÷ 25: 400 in a town, 800 in a city |
-| Ships | pop ÷ 2000 cogs — **coastal countries only** |
+| Ships | pop ÷ 2000 cogs — **coastal countries only** — unless the scenario gives a country its own fleet (its SCENARIO.md, *Fleets*) |
 | Cores | **every starting settlement is core** |
 | Buildings | none — except **Walls** where the scenario says: the great fortresses of its day (its SCENARIO.md, *The situation*) |
 
@@ -700,12 +700,16 @@ on one cannot be moved to the other.
 - **Army cap:** soldiers, men in training (§8), cannon crew and sharpshooters. Mercenaries do
   not count, but you may hire at most as many as your army cap (§8). **The capital adds 500** to it (each capital of a union, §2), whatever the law, while
   you hold it: the same for every country, so a small one may hold out where its people alone would not let it.
-- **Navy cap:** ship crew at sea (50 per ship). Ships in port need no crew, so you may own more
+- **Navy cap:** ship crew at sea (50 per ship). **A sea power** — a country the scenario gives a larger fleet than pop ÷ 2000
+  (*Fleets*) — has its navy cap raised in the same proportion, for the whole game: Venice, given 200 ships where the rule would
+  give 85, has a navy cap 200 ÷ 85 times anyone else's, so that it too starts at its cap and can sail what it has. The army cap is
+  untouched. Ships in port need no crew, so you may own more
   ships than you can crew — only the crewed ones can sail.
 
 The navy cap comes **on top of** the army cap, so a fleet never takes men from the army. At
 Feudal levy, ships of pop ÷ 2000 with 50 crew each are 2.5% — coastal countries start exactly at
-their navy cap. The starting army of pop ÷ 25 is 4%, below the 5% army cap (§2).
+their navy cap, a sea power at its raised one; a country the scenario gives fewer ships than the rule (France, in 1440) starts
+below it, and may build up to it. The starting army of pop ÷ 25 is 4%, below the 5% army cap (§2).
 
 ---
 

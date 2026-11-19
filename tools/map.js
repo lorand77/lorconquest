@@ -310,8 +310,10 @@ const VICTORY = {}, EMPIRE = {};
 // how the game opens (RULES.md §10), if the scenario says: "### Wars", "### Agreements" and "### Subjects" tables under "## The
 // situation in …". Wars list the countries of each side; an agreement between several countries is one between each pair; a
 // subject is a country, its overlord and the kind (vassal or protectorate), subjects from the first day. "### Walls" (Settlements,
-// Why) lists the settlements that begin walled: the great fortresses of the day, not every town with a wall round it.
-const START = { wars: [], agreements: [] }, WALLS = new Set();
+// Why) lists the settlements that begin walled: the great fortresses of the day, not every town with a wall round it. "### Fleets"
+// (Country, Ships, Why) gives a coastal country its own fleet in place of people ÷ 2000 — the sea powers their navies, the rest
+// what they really had — and one given more than the formula a navy cap raised in the same proportion (RULES.md §9).
+const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map();
 {
     const codesIn = (text) => [...new Set([...text.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]).filter((c) => CN.has(c)))];
     const sub = (heading) => {
@@ -349,6 +351,13 @@ const START = { wars: [], agreements: [] }, WALLS = new Set();
     }
     for (const x of subjects) if (subjects.some((y) => y.subject === x.overlord && y.overlord === x.subject)) err(`Subjects: ${x.subject} and ${x.overlord} are each other's subjects`);
     if (subjects.length) START.subjects = subjects;
+    for (const r of sub("Fleets")) {
+        const code = codesIn(r.Country ?? "")[0], ships = Number(r.Ships);
+        if (!code) { err(`Fleets line ${r._line}: no country`); continue; }
+        if (!Number.isInteger(ships) || ships < 0) { err(`Fleets line ${r._line}: ${code}'s ships are a whole number, not '${r.Ships}'`); continue; }
+        if (FLEETS.has(code)) err(`Fleets line ${r._line}: ${code} is listed twice`);
+        FLEETS.set(code, ships);
+    }
     for (const r of sub("Walls")) {
         for (const raw of (r.Settlements ?? "").split(",").map((x) => x.trim()).filter(Boolean)) {
             const id = Number(/^\d+/.exec(raw)?.[0]);
@@ -1418,9 +1427,13 @@ for (const id of SIDS) {
     if (s.port) c.ports.push(id);
     if (s.hre) c.hre++;
 }
-for (const c of C.values()) {
+for (const [code, c] of C) {
     c.army = c.pop / 25;
     c.ships = c.ports.length ? c.pop / 2000 : 0;
+    if (FLEETS.has(code)) {
+        if (!c.ports.length) err(`Fleets: ${code} has no port for a fleet`);
+        else { if (FLEETS.get(code) > c.ships) c.navy = FLEETS.get(code) / c.ships; c.ships = FLEETS.get(code); }
+    }
     c.hrestate = c.hre === c.ids.length ? "all" : c.hre ? "part" : "none";
 }
 const cname = (c) => `${c} ${CN.get(c)}`;
@@ -1639,7 +1652,7 @@ const json = {
     map: { svg: "map.svg", width: W, height: H },
     countries: CORDER.map((code) => {
         const c = C.get(code);
-        return { code, name: CN.get(code), capital: CAP.get(code), colour: COLOUR.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, hre: c.hrestate,
+        return { code, name: CN.get(code), capital: CAP.get(code), colour: COLOUR.get(code), settlements: c.ids, pop: c.pop, army: c.army, ships: c.ships, ...(c.navy ? { navy: c.navy } : {}), hre: c.hrestate,
             ...(CHARACTER.has(code) ? { character: CHARACTER.get(code) } : {}), ...(RELIGION.has(code) ? { religion: RELIGION.get(code) } : {}), ...(LEANS.has(code) ? { leans: true } : {}), ...(BULWARKS.has(code) ? { bulwark: true } : {}) };
     }),
     settlements: SIDS.map((id) => {

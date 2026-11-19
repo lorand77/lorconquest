@@ -68,6 +68,8 @@ test("a scenario's page: what wins, what its x costs, the start, and faiths and 
     assert.match(eu, /- Wallachia, protectorate of Ottoman Empire/);
     assert.match(eu, /Walled from the start:\*\* [^.]*Belgrade/);
     assert.doesNotMatch(me, /Walled from the start/);
+    assert.match(eu, /Sea powers\*\*[^.]*Venice \(200 ships\)/);
+    assert.doesNotMatch(me, /Sea powers/);
     assert.match(eu, /## Religions/);
     assert.doesNotMatch(eu, /## The Holy Roman Empire/);
     assert.match(eu, /All of Europe in 1440/, "its About");

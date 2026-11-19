@@ -91,6 +91,20 @@ test("a settlement's people may have a faith of their own: the Ottoman Balkans a
     assert.deepEqual([st.countries.OTT.religion, st.countries.VEN.religion], ["sunni", "catholic"]);
 });
 
+test("a scenario's fleets: the sea powers above the rule, with a navy cap raised to sail them; France below it, building up to its own", async () => {
+    const fs = await import("node:fs"), path = await import("node:path");
+    const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
+    const { Game: G, economyOf: eco, shipCount } = await import("../../src/engine/index.js");
+    const game = G.create(europe, { seed: 1, humans: [] }), st = game.state;
+    const ships = (c) => Object.values(st.fleets).filter((f) => f.owner === c).reduce((n, f) => n + shipCount(f), 0);
+    assert.deepEqual(["VEN", "GEN", "LUB", "FRA", "GHO"].map(ships), [200, 100, 60, 40, 0]);
+    // Venice: its cap 200 ÷ 85 times the rule's, so its 200 ships' crew (50 each) exactly; France's the rule's, 160 ships
+    const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-6, `${a} is not ${b}`);
+    near(eco(game, "VEN").navyCap, 200 * 50);
+    near(eco(game, "FRA").navyCap, 160 * 50);
+    assert.equal(st.countries.FRA.navy, 1);
+});
+
 test("the great fortresses begin walled where the scenario says, and nothing else has a building", async () => {
     const fs = await import("node:fs"), path = await import("node:path");
     const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
