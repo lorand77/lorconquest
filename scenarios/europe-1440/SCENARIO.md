@@ -49,52 +49,52 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | Code | Country | Capital | Colour | Settlements | Pop | Army | Ships | HRE |
 |---|---|---|---|---|---|---|---|---|
 | NOR | Norway | 2 Bergen | #e6bcd4 | 1, 2, 3, 4 | 40K | 1,600 | 20 | — |
-| SWE | Sweden | 5 Stockholm | #a8c4ec | 5, 6, 7, 8, 9, 10, 11, 12, 13 | 90K | 3,600 | 45 | — |
-| DEN | Denmark | 14 Copenhagen | #f0a8a0 | 14, 15, 16, 17, 18 | 50K | 2,000 | 25 | — |
-| GOT | Gotland | 19 Visby |  | 19 | 10K | 400 | 5 | — |
-| LIV | Livonian Order | 20 Riga | #c4cce0 | 20, 21, 22, 23 | 50K | 2,000 | 25 | — |
-| TEU | Teutonic Order | 24 Danzig | #d4d4d4 | 24, 25, 26, 27 | 50K | 2,000 | 25 | — |
-| ENG | England | 28 London | #ea9999 | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 83, 84, 85, 86, 87, 88, 89 | 290K | 11,600 | 145 | — |
+| SWE | Sweden | 5 Stockholm | #a8c4ec | 5, 6, 7, 8, 9, 10, 11, 12, 13 | 90K | 3,600 | 30 | — |
+| DEN | Denmark | 14 Copenhagen | #f0a8a0 | 14, 15, 16, 17, 18 | 50K | 2,000 | 60 | — |
+| GOT | Gotland | 19 Visby |  | 19 | 10K | 400 | 10 | — |
+| LIV | Livonian Order | 20 Riga | #c4cce0 | 20, 21, 22, 23 | 50K | 2,000 | 15 | — |
+| TEU | Teutonic Order | 24 Danzig | #d4d4d4 | 24, 25, 26, 27 | 50K | 2,000 | 40 | — |
+| ENG | England | 28 London | #ea9999 | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 83, 84, 85, 86, 87, 88, 89 | 290K | 11,600 | 80 | — |
 | SCO | Scotland | 49 Edinburgh | #b8d8f0 | 49, 50, 51, 52 | 40K | 1,600 | 20 | — |
-| ISL | Lordship of the Isles | 53 Inverness |  | 53 | 10K | 400 | 5 | — |
+| ISL | Lordship of the Isles | 53 Inverness |  | 53 | 10K | 400 | 15 | — |
 | TRN | Tyrone | 46 Dungannon |  | 46 | 10K | 400 | — | — |
 | THO | Thomond | 47 Ennis |  | 45, 47 | 20K | 800 | 10 | — |
 | DES | Desmond | 48 Tralee |  | 44, 48 | 20K | 800 | 10 | — |
-| FRA | France | 54 Paris | #8fb4ea | 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82 | 320K | 12,800 | 160 | — |
+| FRA | France | 54 Paris | #8fb4ea | 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82 | 320K | 12,800 | 40 | — |
 | BUR | Burgundy | 98 Brussels | #c4a0d8 | 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104 | 180K | 7,200 | 90 | part |
 | BRI | Brittany | 106 Nantes | #d8d8cc | 105, 106, 107, 108 | 50K | 2,000 | 25 | — |
 | ANJ | Anjou | 110 Marseille | #f2c7a6 | 109, 110, 111, 112 | 50K | 2,000 | 25 | part |
 | BOU | Bourbon | 113 Moulins | #d6e39c | 113, 114 | 20K | 800 | — | — |
 | ARM | Armagnac | 115 Rodez |  | 115, 116 | 20K | 800 | — | — |
 | FOI | Foix-Béarn | 117 Pau |  | 117, 118 | 20K | 800 | — | — |
-| SAV | Savoy | 120 Chambéry | #9fd6c4 | 120, 121, 122, 123, 124, 125 | 60K | 2,400 | 30 | ✓ |
+| SAV | Savoy | 120 Chambéry | #9fd6c4 | 120, 121, 122, 123, 124, 125 | 60K | 2,400 | 5 | ✓ |
 | LIE | Liège | 126 Liège |  | 126 | 20K | 800 | — | ✓ |
 | UTR | Utrecht | 127 Utrecht |  | 127 | 10K | 400 | — | ✓ |
 | GEL | Guelders | 128 Nijmegen |  | 128 | 10K | 400 | — | ✓ |
 | FRI | Frisia | 129 Groningen |  | 129 | 10K | 400 | 5 | ✓ |
 | LUX | Luxembourg | 130 Luxembourg |  | 130 | 10K | 400 | — | ✓ |
-| CAS | Castile | 131 Toledo | #f2d06b | 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154 | 290K | 11,600 | 145 | — |
-| ARA | Aragon | 155 Zaragoza | #f4b073 | 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229 | 280K | 11,200 | 140 | — |
-| POR | Portugal | 166 Lisbon | #9fd29a | 166, 167, 168, 169, 170, 171, 172 | 80K | 3,200 | 40 | — |
+| CAS | Castile | 131 Toledo | #f2d06b | 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154 | 290K | 11,600 | 110 | — |
+| ARA | Aragon | 155 Zaragoza | #f4b073 | 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229 | 280K | 11,200 | 120 | — |
+| POR | Portugal | 166 Lisbon | #9fd29a | 166, 167, 168, 169, 170, 171, 172 | 80K | 3,200 | 60 | — |
 | NAV | Navarre | 173 Pamplona |  | 173 | 10K | 400 | — | — |
-| GRA | Granada | 174 Granada | #d4e8a0 | 174, 175, 176 | 40K | 1,600 | 20 | — |
+| GRA | Granada | 174 Granada | #d4e8a0 | 174, 175, 176 | 40K | 1,600 | 15 | — |
 | MIL | Milan | 177 Milan | #f0aaaa | 177, 178, 179, 180, 208 | 70K | 2,800 | — | part |
-| VEN | Venice | 181 Venice | #8fd4d4 | 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194 | 170K | 6,800 | 85 | — |
-| GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 35 | — |
-| FLO | Florence | 200 Florence | #f6cf9e | 200, 201, 202 | 40K | 1,600 | 20 | — |
+| VEN | Venice | 181 Venice | #8fd4d4 | 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194 | 170K | 6,800 | 200 | — |
+| GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 100 | — |
+| FLO | Florence | 200 Florence | #f6cf9e | 200, 201, 202 | 40K | 1,600 | 15 | — |
 | SIE | Siena | 203 Siena |  | 203 | 10K | 400 | — | — |
-| PAP | Papal States | 204 Rome | #f4eba0 | 119, 204, 205, 206, 207 | 60K | 2,400 | 30 | — |
+| PAP | Papal States | 204 Rome | #f4eba0 | 119, 204, 205, 206, 207 | 60K | 2,400 | 10 | — |
 | FER | Ferrara | 209 Ferrara |  | 209, 210 | 20K | 800 | — | part |
 | MAN | Mantua | 211 Mantua |  | 211 | 10K | 400 | — | ✓ |
 | MON | Montferrat | 212 Casale |  | 212 | 10K | 400 | — | ✓ |
 | RIM | Rimini | 213 Rimini |  | 213 | 10K | 400 | 5 | — |
-| NAP | Naples | 214 Naples | #cdb4e6 | 214, 215, 216 | 40K | 1,600 | 20 | — |
+| NAP | Naples | 214 Naples | #cdb4e6 | 214, 215, 216 | 40K | 1,600 | 30 | — |
 | SHO | Schleswig-Holstein | 230 Schleswig |  | 230 | 10K | 400 | 5 | — |
-| LUB | Lübeck | 231 Lübeck |  | 231 | 20K | 800 | 10 | ✓ |
-| HAM | Hamburg | 232 Hamburg |  | 232 | 20K | 800 | 10 | ✓ |
+| LUB | Lübeck | 231 Lübeck |  | 231 | 20K | 800 | 60 | ✓ |
+| HAM | Hamburg | 232 Hamburg |  | 232 | 20K | 800 | 30 | ✓ |
 | MEC | Mecklenburg | 233 Schwerin |  | 233, 234 | 20K | 800 | 10 | ✓ |
 | POM | Pomerania | 235 Stettin |  | 235, 236 | 20K | 800 | 10 | ✓ |
-| BRE | Bremen | 237 Bremen |  | 237 | 10K | 400 | 5 | ✓ |
+| BRE | Bremen | 237 Bremen |  | 237 | 10K | 400 | 15 | ✓ |
 | BRU | Brunswick-Lüneburg | 239 Brunswick |  | 238, 239 | 30K | 1,200 | — | ✓ |
 | MAG | Magdeburg | 240 Magdeburg |  | 240 | 20K | 800 | — | ✓ |
 | BRA | Brandenburg | 241 Berlin | #cfc4b0 | 241, 242, 243 | 30K | 1,200 | — | ✓ |
@@ -130,42 +130,42 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | ZUR | Zürich | 287 Zürich |  | 287 | 10K | 400 | — | ✓ |
 | SWI | Swiss Confederacy | 288 Bern |  | 288, 289 | 20K | 800 | — | ✓ |
 | SAL | Salzburg | 290 Salzburg |  | 290 | 10K | 400 | — | ✓ |
-| STY | Inner Austria | 291 Graz |  | 291, 292, 293 | 30K | 1,200 | 15 | ✓ |
+| STY | Inner Austria | 291 Graz |  | 291, 292, 293 | 30K | 1,200 | 5 | ✓ |
 | POL | Poland | 294 Kraków | #f2b0c0 | 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305 | 140K | 5,600 | — | — |
 | MAZ | Masovia | 306 Warsaw |  | 306, 307 | 20K | 800 | — | — |
 | LIT | Lithuania | 308 Vilnius | #b8a4dc | 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322 | 170K | 6,800 | — | — |
 | HUN | Hungary | 323 Buda | #e2b88a | 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336 | 150K | 6,000 | — | — |
 | JIS | Upper Hungary | 337 Kassa |  | 337, 338 | 20K | 800 | — | — |
-| OTT | Ottoman Empire | 339 Edirne | #8cc68c | 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386 | 320K | 12,800 | 160 | — |
+| OTT | Ottoman Empire | 339 Edirne | #8cc68c | 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386 | 320K | 12,800 | 140 | — |
 | BYZ | Byzantium | 354 Constantinople | #b89ad8 | 354, 355 | 30K | 1,200 | 15 | — |
 | MOR | Morea | 356 Mistra | #d8c0ec | 356, 357, 358 | 30K | 1,200 | 15 | — |
 | SER | Serbia | 359 Novo Brdo |  | 359 | 10K | 400 | — | — |
 | BOS | Bosnia | 360 Jajce |  | 360, 361 | 20K | 800 | — | — |
 | HER | Herzegovina | 362 Blagaj |  | 362 | 10K | 400 | — | — |
-| RAG | Ragusa | 363 Ragusa |  | 363 | 10K | 400 | 5 | — |
+| RAG | Ragusa | 363 Ragusa |  | 363 | 10K | 400 | 20 | — |
 | WAL | Wallachia | 364 Târgoviște | #a8d0e8 | 364, 365 | 20K | 800 | — | — |
 | MOL | Moldavia | 366 Suceava | #c8e8d0 | 366, 367, 368 | 30K | 1,200 | 15 | — |
 | ATH | Athens | 369 Athens |  | 369 | 10K | 400 | 5 | — |
 | EPI | Epirus | 370 Arta |  | 370 | 10K | 400 | — | — |
-| LES | Lesbos | 371 Mytilene |  | 371 | 10K | 400 | 5 | — |
-| KAR | Karaman | 387 Konya | #e8c49a | 387, 388, 389, 390, 391, 392 | 70K | 2,800 | 35 | — |
-| CAN | Candar | 393 Kastamonu |  | 393, 394 | 20K | 800 | 10 | — |
+| LES | Lesbos | 371 Mytilene |  | 371 | 10K | 400 | 10 | — |
+| KAR | Karaman | 387 Konya | #e8c49a | 387, 388, 389, 390, 391, 392 | 70K | 2,800 | 5 | — |
+| CAN | Candar | 393 Kastamonu |  | 393, 394 | 20K | 800 | 15 | — |
 | TRE | Trebizond | 395 Trebizond |  | 395 | 10K | 400 | 5 | — |
 | DUL | Dulkadir | 396 Elbistan |  | 396, 397 | 20K | 800 | — | — |
 | RAM | Ramadan | 398 Adana |  | 398 | 10K | 400 | — | — |
 | AQQ | Aq Qoyunlu | 399 Diyarbakır | #dcb0b0 | 399, 400, 401 | 30K | 1,200 | — | — |
 | CYP | Cyprus | 402 Nicosia |  | 402 | 10K | 400 | — | — |
-| KRH | Knights of Rhodes | 403 Rhodes |  | 403, 404 | 20K | 800 | 10 | — |
+| KRH | Knights of Rhodes | 403 Rhodes |  | 403, 404 | 20K | 800 | 30 | — |
 | MOS | Muscovy | 405 Moscow | #b0dca0 | 405, 406, 407, 408, 409, 410, 411, 412, 413 | 100K | 4,000 | — | — |
 | NOV | Novgorod | 414 Novgorod | #dcc090 | 414, 415, 416, 417, 418, 419, 420 | 80K | 3,200 | — | — |
 | PSK | Pskov | 421 Pskov |  | 421 | 10K | 400 | — | — |
 | TVE | Tver | 422 Tver |  | 422, 423 | 20K | 800 | — | — |
 | RYA | Ryazan | 424 Ryazan |  | 424 | 10K | 400 | — | — |
 | THE | Theodoro | 425 Mangup |  | 425 | 10K | 400 | — | — |
-| GHO | Great Horde | 426 Azak | #e8de9c | 426 | 10K | 400 | 5 | — |
-| MRC | Morocco | 427 Fez | #e0a888 | 427, 428, 429, 430, 431, 432, 433, 434 | 100K | 4,000 | 50 | — |
+| GHO | Great Horde | 426 Azak | #e8de9c | 426 | 10K | 400 | — | — |
+| MRC | Morocco | 427 Fez | #e0a888 | 427, 428, 429, 430, 431, 432, 433, 434 | 100K | 4,000 | 20 | — |
 | TLE | Tlemcen | 435 Tlemcen | #d8cc9c | 435, 436, 437 | 40K | 1,600 | 20 | — |
-| TUN | Tunis | 438 Tunis | #b8d8b0 | 438, 439, 440, 441, 442, 443, 444, 445 | 90K | 3,600 | 45 | — |
+| TUN | Tunis | 438 Tunis | #b8d8b0 | 438, 439, 440, 441, 442, 443, 444, 445 | 90K | 3,600 | 30 | — |
 
 ## Settlements
 
@@ -719,59 +719,58 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Sea of Azov, are 17 hops (34 months).
 
-**Naval powers:** 49 countries, 1675 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there. A voyage by sea lane, to a port up to three zones off, needs 30 at each end, and no enemy fleet at sea on the way.
+**Naval powers:** 48 countries, 1645 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there. A voyage by sea lane, to a port up to three zones off, needs 30 at each end, and no enemy fleet at sea on the way.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
-| FRA France | 61, 71 | Bay of Biscay, Western Mediterranean | 160 | yes: 159-165, 196-229 |
-| OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 160 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 |
-| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 145 | yes: 36-83, 38-42 |
-| CAS Castile | 133, 136, 138, 152, 154 | Atlantic, Bay of Biscay, Gulf of Cádiz, Western Mediterranean | 145 | yes: 136-430, 159-165, 196-229 |
-| ARA Aragon | 159, 160, 163, 164, 165, 218, 219, 222, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 140 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
+| VEN Venice | 181, 187, 188, 189, 190, 191, 192, 193, 194 | Ionian Sea, Adriatic Sea, Aegean Sea | 200 | yes: 190-370, 191-194, 197-376, 222-225, 371-375 |
+| OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 140 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 |
+| ARA Aragon | 159, 160, 163, 164, 165, 218, 219, 222, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 120 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
+| CAS Castile | 133, 136, 138, 152, 154 | Atlantic, Bay of Biscay, Gulf of Cádiz, Western Mediterranean | 110 | yes: 136-430, 159-165, 196-229 |
+| GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 100 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 |
 | BUR Burgundy | 96, 99, 102, 103, 104 | North Sea | 90 | no — no strait in its zones |
-| VEN Venice | 181, 187, 188, 189, 190, 191, 192, 193, 194 | Ionian Sea, Adriatic Sea, Aegean Sea | 85 | yes: 190-370, 191-194, 197-376, 222-225, 371-375 |
-| MRC Morocco | 430, 431, 432, 433 | Gulf of Cádiz | 50 | yes: 136-430 |
-| SWE Sweden | 5, 8, 9, 10, 11, 12, 13 | Kattegat, Baltic Sea, Northern Baltic, Gulf of Bothnia, Gulf of Finland | 45 | yes: 8-19, 14-15 — one zone at a time (30 ships in each) |
-| TUN Tunis | 438, 439, 441, 443, 444, 445 | Western Mediterranean, Tyrrhenian Sea, Strait of Sicily | 45 | yes: 159-165, 196-229 |
-| POR Portugal | 166, 167, 171, 172 | Gulf of Cádiz, Alboran Sea | 40 | yes: 136-430 |
-| GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 35 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 — one zone at a time (30 ships in each) |
-| KAR Karaman | 391, 392 | Levantine Sea | 35 | yes: 198-391, 403-404 |
-| SAV Savoy | 125 | Ligurian Sea | 30 | **exactly**: 196-201 |
-| PAP Papal States | 207 | Adriatic Sea | 30 | no — no strait in its zones |
-| DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 25 | no — too few ships for 14-15, 14-16, 16-17 |
-| LIV Livonian Order | 20, 21, 23 | Gulf of Riga, Gulf of Finland | 25 | no — no strait in its zones |
-| TEU Teutonic Order | 24, 25, 27 | Baltic Sea | 25 | no — too few ships for 8-19 |
+| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 80 | yes: 36-83, 38-42 |
+| DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 60 | yes: 14-15, 14-16, 16-17 |
+| POR Portugal | 166, 167, 171, 172 | Gulf of Cádiz, Alboran Sea | 60 | yes: 136-430 |
+| LUB Lübeck | 231 | Belt Sea | 60 | yes: 14-16, 16-17 |
+| TEU Teutonic Order | 24, 25, 27 | Baltic Sea | 40 | yes: 8-19 |
+| FRA France | 61, 71 | Bay of Biscay, Western Mediterranean | 40 | yes: 159-165, 196-229 |
+| SWE Sweden | 5, 8, 9, 10, 11, 12, 13 | Kattegat, Baltic Sea, Northern Baltic, Gulf of Bothnia, Gulf of Finland | 30 | **exactly**: 8-19, 14-15 — one zone at a time (30 ships in each) |
+| NAP Naples | 214, 215 | Tyrrhenian Sea | 30 | no — no strait in its zones |
+| HAM Hamburg | 232 | North Sea | 30 | no — no strait in its zones |
+| KRH Knights of Rhodes | 403, 404 | Aegean Sea, Levantine Sea | 30 | **exactly**: 197-376, 198-391, 371-375, 403-404 — one zone at a time (30 ships in each) |
+| TUN Tunis | 438, 439, 441, 443, 444, 445 | Western Mediterranean, Tyrrhenian Sea, Strait of Sicily | 30 | **exactly**: 159-165, 196-229 |
 | BRI Brittany | 106, 107, 108 | English Channel, Bay of Biscay | 25 | no — too few ships for 36-83 |
 | ANJ Anjou | 110 | Western Mediterranean | 25 | no — too few ships for 159-165, 196-229 |
 | NOR Norway | 1, 2, 3, 4 | Norwegian Sea, North Sea, Skagerrak | 20 | no — no strait in its zones |
 | SCO Scotland | 49, 51 | North Sea | 20 | no — no strait in its zones |
-| GRA Granada | 175, 176 | Alboran Sea | 20 | no — no strait in its zones |
-| FLO Florence | 201 | Ligurian Sea | 20 | no — too few ships for 196-201 |
-| NAP Naples | 214, 215 | Tyrrhenian Sea | 20 | no — no strait in its zones |
+| RAG Ragusa | 363 | Adriatic Sea | 20 | no — no strait in its zones |
+| MRC Morocco | 430, 431, 432, 433 | Gulf of Cádiz | 20 | no — too few ships for 136-430 |
 | TLE Tlemcen | 436, 437 | Western Mediterranean | 20 | no — too few ships for 159-165, 196-229 |
-| STY Inner Austria | 293 | Adriatic Sea | 15 | no — no strait in its zones |
+| LIV Livonian Order | 20, 21, 23 | Gulf of Riga, Gulf of Finland | 15 | no — no strait in its zones |
+| ISL Lordship of the Isles | 53 | North Sea | 15 | no — no strait in its zones |
+| GRA Granada | 175, 176 | Alboran Sea | 15 | no — no strait in its zones |
+| FLO Florence | 201 | Ligurian Sea | 15 | no — too few ships for 196-201 |
+| BRE Bremen | 237 | North Sea | 15 | no — no strait in its zones |
 | BYZ Byzantium | 354, 355 | Sea of Marmara, Western Black Sea | 15 | no — too few ships for 340-375, 354-372 |
 | MOR Morea | 357, 358 | Ionian Sea, Aegean Sea | 15 | no — too few ships for 190-370, 191-194, 197-376, 222-225, 371-375 |
 | MOL Moldavia | 368 | Western Black Sea | 15 | no — no strait in its zones |
+| CAN Candar | 394 | Eastern Black Sea | 15 | no — no strait in its zones |
+| GOT Gotland | 19 | Northern Baltic | 10 | no — no strait in its zones |
 | THO Thomond | 45 | Atlantic | 10 | no — no strait in its zones |
 | DES Desmond | 44, 48 | Atlantic | 10 | no — no strait in its zones |
-| LUB Lübeck | 231 | Belt Sea | 10 | no — too few ships for 14-16, 16-17 |
-| HAM Hamburg | 232 | North Sea | 10 | no — no strait in its zones |
+| PAP Papal States | 207 | Adriatic Sea | 10 | no — no strait in its zones |
 | MEC Mecklenburg | 234 | Belt Sea | 10 | no — too few ships for 14-16, 16-17 |
 | POM Pomerania | 235, 236 | Baltic Sea | 10 | no — too few ships for 8-19 |
-| CAN Candar | 394 | Eastern Black Sea | 10 | no — no strait in its zones |
-| KRH Knights of Rhodes | 403, 404 | Aegean Sea, Levantine Sea | 10 | no — too few ships for 197-376, 198-391, 371-375, 403-404 |
-| GOT Gotland | 19 | Northern Baltic | 5 | no — no strait in its zones |
-| ISL Lordship of the Isles | 53 | North Sea | 5 | no — no strait in its zones |
+| LES Lesbos | 371 | Aegean Sea | 10 | no — too few ships for 197-376, 371-375 |
+| SAV Savoy | 125 | Ligurian Sea | 5 | no — too few ships for 196-201 |
 | FRI Frisia | 129 | North Sea | 5 | no — no strait in its zones |
 | RIM Rimini | 213 | Adriatic Sea | 5 | no — no strait in its zones |
 | SHO Schleswig-Holstein | 230 | Belt Sea | 5 | no — too few ships for 14-16, 16-17 |
-| BRE Bremen | 237 | North Sea | 5 | no — no strait in its zones |
-| RAG Ragusa | 363 | Adriatic Sea | 5 | no — no strait in its zones |
+| STY Inner Austria | 293 | Adriatic Sea | 5 | no — no strait in its zones |
 | ATH Athens | 369 | Aegean Sea | 5 | no — too few ships for 197-376, 371-375 |
-| LES Lesbos | 371 | Aegean Sea | 5 | no — too few ships for 197-376, 371-375 |
+| KAR Karaman | 391, 392 | Levantine Sea | 5 | no — too few ships for 198-391, 403-404 |
 | TRE Trebizond | 395 | Eastern Black Sea | 5 | no — no strait in its zones |
-| GHO Great Horde | 426 | Sea of Azov | 5 | no — no strait in its zones |
 <!-- /generated -->
 
 ## Special coring
