@@ -1053,7 +1053,32 @@ human is asked, and a yes from one that has become someone's subject since chang
 refuses** — at once, a person too, and a person who is at war with it by the time they say yes has refused: joining is no way
 out of a war. The refusers form the League: a defensive alliance between each pair — except two at war with each other,
 and a member that has since become a vassal or gone out of the game (a human refusing later joins the League as it then is). A scenario with no such number has no
-proposal. (The historical scenario's Emperor, Imperial Authority, elections, ban and reforms are not built.)
+proposal.
+
+**The Emperor.** A scenario with **electors** (its SCENARIO.md, *The Holy Roman Empire* — the historical map and Europe) has a crown
+instead: one German state wears it, and **seven votes**, each belonging to a settlement, choose who — **whoever holds the settlement
+casts its vote**, so a vote is taken with its town. An election is held **every 25 years** from the start (1465, 1490 … 1640),
+called at the start of the year before; and **at once whenever the throne falls vacant** — the Emperor holding no settlement in
+the Empire any more, out of the game, or someone's vassal. **Candidates:** the reigning Emperor while it is a German state, and
+every German state of **20,000 people** or more and every outsider of **100,000** or more — none of them anyone's vassal.
+- **A person's electors** all vote as the person chooses (in the Diplomacy tab), or, if they have not chosen, as a computer's would.
+- **A computer's** vote goes to the other candidate it scores highest — or to itself, if it stands and wears the crown already, or
+  has more people than that candidate:
+  ```
+  elector's score = its opinion of the candidate
+                  + 20 for the reigning Emperor
+                  + 1 for each 2,000 × x money the candidate has promised it, at most +30
+                  − 20 for a candidate of 150,000 people or more
+                  − 50 for one at war with it
+                  − 20 for one of another faith (on a map with religions)
+  ```
+- **Promises.** Once an election is called, a candidate may promise money for the vote of an elector held by another — no more in
+  all than its treasury holds then — and change or take it back until the vote. Every promise is **paid when the votes are cast,
+  whoever wins**, as far as the candidate's treasury goes, to whoever holds that settlement then. Promises and choices are public.
+
+The most votes win; a tie goes to the reigning Emperor if it is tied, then to the larger people, then the lower code. For now the
+crown brings no power: Imperial Authority, the crown's rights, the ban and the reforms of the historical map's design are still to
+come.
 
 **Winning** is checked every day: a country with the scenario's number of settlements — its own and its vassals' count 1, its
 protectorates' ½, and so on up a chain of subjects (a vassal's vassal counts 1 for the top, a protectorate's vassal ½) — wins

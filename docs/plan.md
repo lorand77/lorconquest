@@ -305,4 +305,6 @@ geography by `tools/make-base.js`; religions and the Reformation, 35 regions to 
 17 achievements of its own. Balanced by experiment (experiments/README.md, 24): 227 settlements win, about half the map as on
 the others, the warmonger scale 0.5, x = 3. Checked by machine: the suite's computer-only games on it (60 years, 6 seeds:
 invariants every month, exact replay, the time per day) and simulations of whole games. Not checked by machine: that it plays
-well in a browser — played by hand. Not in it: the Empire's demand (as on the historical map).
+well in a browser — played by hand. Since then, on it and the historical map, the Empire's crown in stages (design.md, *Open
+questions*): stage 1, the Emperor, the seven electors and the elections with promises, is built; Imperial Authority, Defender of
+the Empire and the free cities' dues (stage 2), and the ban and the reforms (stage 3) are not.

@@ -69,6 +69,13 @@ export function scenarioPage(sc, name) {
         out.push("## The Holy Roman Empire",
             `${inside} settlements lie in the Empire. Hold **${sc.empire.needed}** of them and you may demand it, once in a game: every German state becomes your protectorate or joins a league against you ([the rules](#rules-10)).`);
     }
+    // the crown, where there are electors: the Emperor of the start, and the seven votes with their towns
+    if (sc.empire?.electors?.length) {
+        const inside = sc.settlements.filter((s) => s.hre).length, place = new Map(sc.settlements.map((s) => [s.id, s.name]));
+        out.push("## The Holy Roman Empire",
+            `${inside} settlements lie in the Empire. Its crown is elected: at the start the Emperor is **${countryName(sc.empire.emperor)}**, and an election is held every 25 years, or at once if the throne falls vacant ([the rules](#rules-10)). Seven votes choose, each cast by whoever holds its town:`,
+            "", ...sc.empire.electors.map((e) => `- ${e.vote}: ${place.get(e.settlement) ?? e.settlement}`));
+    }
 
     // the faiths
     const faiths = [...new Set(sc.countries.map((c) => c.religion).filter(Boolean))];

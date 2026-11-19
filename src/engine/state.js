@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 71;
+export const RULES_VERSION = 72;
 // bump when the shape of the state changes
-export const FORMAT = 14;
+export const FORMAT = 15;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -25,6 +25,8 @@ export function initialState(map, seed, humans = []) {
         // remembers, questions waiting for a human's answer, and the winner once there is one
         humans: [...humans], agreements: [], warInfo: {}, memory: { lastWar: {}, broke: {}, refused: {}, proposed: {}, empire: {}, unions: [] },
         offers: [], offerSeq: 0, winner: null,
+        // the Holy Roman Empire's crown and its elections, or null on a map without electors: set by Game.create (empire.js)
+        empire: null,
     };
     for (const c of sc.countries) {
         state.countries[c.code] = {

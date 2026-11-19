@@ -2,8 +2,8 @@
 // army and fleet, the sharpshooter posts and the wars are public, and so is a settlement with its buildings; a
 // country's money, bank, loans, tax, slider, law, research, reserve and queues are private to it. Never the random
 // state or the seed: with them the dice could be foreseen. Diplomacy is public — agreements, wars and how they
-// stand, subjects, warmonger scores, the winner — except the questions waiting for a human's answer, which only the
-// two countries concerned see. Runs in the game's worker.
+// stand, subjects, warmonger scores, the winner, the Empire's crown with its electors' promises and choices — except the
+// questions waiting for a human's answer, which only the two countries concerned see. Runs in the game's worker.
 
 // The day's events, split as the state is: most are public, but a question put to a person (and its lapsing), research, a
 // change of law, a default on loans and soldiers' training cancelled are only for the countries concerned — the state keeps
@@ -38,7 +38,7 @@ export function viewFor(state, country) {
     for (const c of Object.values(state.countries)) countries[c.code] = c.code === country ? { ...publicCountry(c), ...privateCountry(c, state) } : publicCountry(c);
     return {
         day: state.day, countries, settlements: state.settlements, armies: state.armies, fleets: state.fleets, posts: state.posts, wars: state.wars,
-        agreements: state.agreements, warInfo: state.warInfo, memory: state.memory, humans: state.humans, winner: state.winner,
+        agreements: state.agreements, warInfo: state.warInfo, memory: state.memory, humans: state.humans, winner: state.winner, empire: state.empire ?? null,
     };
 }
 
@@ -70,7 +70,7 @@ export class Changes {
         const wars = JSON.stringify(state.wars);
         if (wars !== this.seen.wars) { this.seen.wars = wars; pub.wars = [...state.wars]; }
         // small whole things sent whole when they change
-        for (const name of ["agreements", "warInfo", "memory", "winner"]) {
+        for (const name of ["agreements", "warInfo", "memory", "winner", "empire"]) {
             const json = JSON.stringify(state[name]);
             if (this.seen.blobs.get(name) !== json) { this.seen.blobs.set(name, json); pub[name] = JSON.parse(json); }
         }

@@ -351,6 +351,23 @@ const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map(
     }
     for (const x of subjects) if (subjects.some((y) => y.subject === x.overlord && y.overlord === x.subject)) err(`Subjects: ${x.subject} and ${x.overlord} are each other's subjects`);
     if (subjects.length) START.subjects = subjects;
+    // the Empire's crown (SCENARIO.md, The Holy Roman Empire): "At the start the Emperor is **CODE …**" and a "### The electors"
+    // table (Vote, Settlement, Holder at start) — the votes, each cast by whoever holds its settlement (src/engine/empire.js)
+    const electors = sub("The electors");
+    if (electors.length) {
+        EMPIRE.electors = [];
+        for (const r of electors) {
+            const id = Number(/^\d+/.exec(r.Settlement ?? "")?.[0]);
+            if (!S.has(id)) { err(`The electors line ${r._line}: '${r.Settlement}' is no settlement number`); continue; }
+            if (!S.get(id).hre) err(`The electors line ${r._line}: ${id} is not in the Empire`);
+            if (EMPIRE.electors.some((e) => e.settlement === id)) err(`The electors line ${r._line}: ${id} casts two votes`);
+            EMPIRE.electors.push({ vote: r.Vote, settlement: id });
+        }
+        const emperor = /At the start the Emperor is ([A-Z]{2,4})\b/.exec(PROSE)?.[1];
+        if (!emperor || !CN.has(emperor)) err("The Holy Roman Empire: no 'At the start the Emperor is CODE' naming a country");
+        else if (![...S.values()].some((x) => x.country === emperor && x.hre)) err(`The Holy Roman Empire: the Emperor ${emperor} holds no settlement in the Empire`);
+        else EMPIRE.emperor = emperor;
+    }
     for (const r of sub("Fleets")) {
         const code = codesIn(r.Country ?? "")[0], ships = Number(r.Ships);
         if (!code) { err(`Fleets line ${r._line}: no country`); continue; }

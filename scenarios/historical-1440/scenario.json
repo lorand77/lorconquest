@@ -17090,7 +17090,39 @@
   "settlements": 85,
   "endYear": 1650
  },
- "empire": {},
+ "empire": {
+  "electors": [
+   {
+    "vote": "Archbishop of Mainz",
+    "settlement": 103
+   },
+   {
+    "vote": "Archbishop of Trier",
+    "settlement": 101
+   },
+   {
+    "vote": "Archbishop of Cologne",
+    "settlement": 80
+   },
+   {
+    "vote": "King of Bohemia",
+    "settlement": 112
+   },
+   {
+    "vote": "Count Palatine of the Rhine",
+    "settlement": 110
+   },
+   {
+    "vote": "Duke of Saxony",
+    "settlement": 88
+   },
+   {
+    "vote": "Margrave of Brandenburg",
+    "settlement": 53
+   }
+  ],
+  "emperor": "STY"
+ },
  "start": {
   "wars": [
    {

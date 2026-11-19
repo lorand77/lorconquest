@@ -285,3 +285,27 @@ test("a demand goes at once, with no question to answer: the button says what a 
         globalThis.confirm = asked;
     }
 });
+
+test("the crown, where the scenario has electors: the Emperor, the next election, each vote and its leaning; your vote; your promises", async () => {
+    const fs = await import("node:fs"), path = await import("node:path");
+    const hist = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "historical-1440", "scenario.json"), "utf8"));
+    // Bohemia, a person: it holds Prague's vote and stands
+    const game = Game.create(hist, { seed: 2, humans: ["BOH"] });
+    game.state.empire.called = true;                                           // an election called
+    const mirror = JSON.parse(JSON.stringify(viewFor(game.state, "BOH"))), sent = [];
+    const ctx = {
+        make, swatch: (code) => make("span", {}, code), state: mirror, game: new Game(buildMap(hist), mirror), me: "BOH", sel: null, ui: { target: null },
+        send: async (cmd) => { sent.push(cmd); return { ok: true, events: [] }; }, redraw: () => {}, name: (key) => `place ${key}`,
+    };
+    const nodes = diplomacyTab(ctx), text = textOf(nodes);
+    assert.match(text, /Emperor: Inner Austria\. An election is called for 1 January 1465\./);
+    assert.match(text, /Archbishop of Mainz, Mainz: Mainz — would vote for Inner Austria/);
+    assert.match(text, /King of Bohemia, Prague: you — would vote for you/);
+    const vote = find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.text === "as a computer elector would"))[0];
+    vote.value = "STY";
+    await vote.handlers.change();
+    assert.deepEqual(sent.at(-1), { type: "electorVote", candidate: "STY" });
+    assert.match(text, /You stand\. Promise electors money/);
+    await button(nodes, "Promise").handlers.click();
+    assert.equal(sent.at(-1).type, "promise");
+});

@@ -14,6 +14,7 @@ import { NEAR_VICTORY, YEAR_DAYS, agreementAnswer, areRivals, bordering, need, h
 import { agreementsBetween, alliesOf, friendly } from "../engine/relations.js";
 import { warKey } from "../engine/state.js";
 import { dice, enemiesOf, hash, leaderFor, ownSettlements, reachFrom, restlessOf, rivalsOf, stagingSettlement, thinksOn } from "./util.js";
+import { promiseOrders } from "./empire.js";
 import { faithOpinion } from "../engine/religion.js";
 
 // the most subjects a computer country asks for on demand (it may have more, from its peace terms): 3, one more for every 10
@@ -302,5 +303,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     const needed = game.map.scenario.empire?.needed, target = game.map.scenario.victory?.settlements;
     const near = target && (scores(st)[code]?.settlements ?? 0) >= NEAR_VICTORY * target;
     if (needed && !near && !foes.length && !declaring && !st.memory.empire[code] && hreSettlementsOf(game, code) >= needed) cmd("proposeEmpire", {});
+    // the crown, where the scenario has electors: an election called, its bid for the votes (empire.js)
+    out.push(...promiseOrders(game, code));
     return { orders: out, prepare: plans.has(code) };
 }

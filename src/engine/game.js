@@ -5,6 +5,7 @@
 import { applyCommand } from "./commands.js";
 import { advanceDay } from "./day.js";
 import { applyStart } from "./diplomacy.js";
+import { startEmpire } from "./empire.js";
 import { buildMap } from "./map.js";
 import { FORMAT, RULES_VERSION, initialState } from "./state.js";
 
@@ -20,6 +21,7 @@ export class Game {
         const map = buildMap(scenario);
         const game = new Game(map, initialState(map, seed, humans));
         applyStart(game);                                  // the wars and agreements the scenario opens with
+        game.state.empire = startEmpire(scenario);         // the Emperor of the start, and the first election 25 years on
         return game;
     }
 

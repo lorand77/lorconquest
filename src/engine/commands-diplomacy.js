@@ -11,11 +11,14 @@
 //   answerOffer { id, accept }       a call to arms, or anything a human was asked
 //   joinWar { ally, enemy }          a war your protectorate fights (or, a protectorate, your overlord's), joined on its side
 //   proposeUnion { with }            two people's countries made one, ruled by both (RULES.md §10, Union): the other is asked
+//   promise { elector, money }       a candidate's promise to the vote of an elector's settlement, paid at the election (empire.js)
+//   electorVote { candidate }        whom a person's electors vote for (null: as a computer would)
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
 import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, takeSubject, validateTerms, joinWar, GUARANTEE_DAYS, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
+import { candidatesOf, electorsOf, promiseError } from "./empire.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
 import { hasAgreement, isVassal, overlordOf, wouldCycle } from "./relations.js";
 import { atWar, isRebel } from "./state.js";
@@ -188,6 +191,28 @@ export const diplomacyCommands = {
         const events = [];
         proposeEmpire(game, cmd.country, events);
         return done(events);
+    },
+
+    // a candidate promises an elector money for its vote (RULES.md §10, The Emperor): kept until the election, paid then — 0 takes
+    // the promise back
+    promise(game, cmd) {
+        const st = game.state, settlement = Number(cmd.elector), money = Number(cmd.money);
+        const why = promiseError(game, cmd.country, settlement, money);
+        if (why) return refuse(why);
+        const mine = (st.empire.promises[cmd.country] ??= {});
+        if (money > 0) mine[settlement] = money; else delete mine[settlement];
+        if (!Object.keys(mine).length) delete st.empire.promises[cmd.country];
+        return done([{ type: "promised", day: st.day, country: cmd.country, settlement, money, to: electorsOf(game).find((e) => e.settlement === settlement).holder }]);
+    },
+
+    // whom a person's electors vote for — every vote it holds alike; null leaves it to the formula a computer elector follows
+    electorVote(game, cmd) {
+        const st = game.state, c = cmd.candidate ?? null;
+        if (!st.empire) return refuse("this scenario has no Emperor");
+        if (!electorsOf(game).some((e) => e.holder === cmd.country)) return refuse("you hold no elector's vote");
+        if (c !== null && !candidatesOf(game).includes(c)) return refuse(`${c} does not stand`);
+        if (c === null) delete st.empire.choices[cmd.country]; else st.empire.choices[cmd.country] = c;
+        return done();
     },
 
     // a vassal of 10 years becomes part of its overlord's country (RULES.md §10, Integration): a computer's vassal has no say, a

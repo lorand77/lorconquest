@@ -353,7 +353,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   of 1 − 0.3 × aggression, one that attacked at 1.5 − 0.3 × aggression, our two countries against everyone fighting it, if it
   borders the enemy or the protectorate, has money, breaks no agreement, and is in no more wars than it would start; a
   protectorate joins its overlord's war only with a neighbour, at peace, the two of them twice as strong), the Empire proposed
-  once when it holds enough (not at three quarters of victory, where every state would refuse), and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
+  once when it holds enough (not at three quarters of victory, where every state would refuse), a bid for the crown where a
+  scenario has electors (`src/ai/empire.js`: once an election is called, a candidate that could buy a majority with the cheapest
+  promises, for at most 30% of its treasury, promises them — and nothing otherwise, a promise being paid whoever wins), and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
   come home) are merged at the end of each think, the smallest into the largest, down to three — none given another order that
   think (`forces.js`, `tidyOrders`). A settlement every route from which leads to its own land (or a subject's or its overlord's) keeps no garrison — not
   the capital, nor while its own peasants are up — and its idle armies march to the staging settlement (`util.js`, `inland`).
@@ -631,7 +633,9 @@ would break that.
   `fighting` (arrivals, sieges, storms, sorties, relief, passes, head-on meetings), `supply`
   (monthly disease and hunger), `economy` (soldiers, caps, money, the monthly step), `forces`
   (training and hires), `naval` (fleets, patrols, blockades, straits, the way of a voyage), `passes` (sharpshooters),
-  `events` (harvest, plague, uprisings and the rebels), `relations` (who is allied, guaranteed, subject or
+  `events` (harvest, plague, uprisings and the rebels), `empire` (the Empire's crown: the Emperor, the electors — each vote cast by
+  whoever holds its settlement — elections every 25 years or when the throne falls vacant, candidates' promises, and how a
+  computer elector votes, a formula of the engine's like every computer answer), `relations` (who is allied, guaranteed, subject or
   friend — pure questions over the state), `opinion` (military power, neighbours, opinion, and the formulas by which a
   computer answers), `regions` (whether a country may proclaim a region now — all of it held, or what its Needs say — one
   answer for the command, the computer and the Country tab), `religion` (each country's and settlement's faith, read from the scenario and never state: what
@@ -851,7 +855,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   and the computer's own answer shown as you edit. The Empire has a section of its own, whoever is picked: how much of
   it the player holds, a button that dims every land outside it on the map, each demand made and what came of it (the
   proposer's protectorates in it now, the League as it stands), and — once they hold enough of it — the player's own
-  demand with how many computer states would join if made now; until then a single line. A settlement in the Empire says so. A game that is won shows who won and stops.
+  demand with how many computer states would join if made now; until then a single line. Where the scenario has electors, it
+  shows the crown: the Emperor, the next election, each vote with its holder and whom it would vote for now, the player's own
+  vote if they hold one, and — once an election is called and they stand — a promise to each elector. A settlement in the Empire says so. A game that is won shows who won and stops.
 - **Looking:** a settlement shows its owner, people, any siege and the armies there; a country's
   land shows the country, its wars and — until diplomacy in milestone 4 — a [Declare war] button.
 - **Events:** the player's own and their wars', newest first (and every diplomatic event that concerns them); clicking one shows its place. A war
@@ -970,11 +976,11 @@ map's, and Europe's); its projection is the data's (`PROJECTION`). The repo has 
 Settled answers move into §1, or into RULES.md where they are rules. Each is needed by the milestone
 named (see [plan.md](plan.md)).
 
-1. **The historical scenario's Empire** (not scheduled). Its SCENARIO.md describes an Emperor, Imperial Authority,
-   electors and elections, the imperial ban, dues and five reforms. Milestone 4 builds the plain proposal (RULES.md §10)
-   and the scenario's starting wars and agreements, not this; since its proposal is Renovatio Imperii, the fourth reform,
-   the historical scenario has no proposal at all until it is built — its Empire is only +10 between German states. It is a subsystem of its own
-   — worth its own milestone if that scenario is to be played in earnest.
+1. **The historical scenario's Empire** (in stages). Its SCENARIO.md describes an Emperor, Imperial Authority, electors and
+   elections, the imperial ban, dues and five reforms. **Stage 1 is built**, for the historical map and Europe: the Emperor,
+   the seven electors and the elections with their promises (`empire.js`, RULES.md §10, *The Emperor*). Still to come: stage 2,
+   Imperial Authority, Defender of the Empire and the free cities' dues; stage 3, the ban and the reforms — Renovatio Imperii,
+   the fourth, is those maps' proposal, so until then they have none, and the crown brings no power.
 2. **A computer navy that seeks battle** (not scheduled). The computer fights at sea only where it is clearly the stronger,
    builds warships only against a stronger enemy fleet, and cannot hunt fleets in port (the rules keep them safe). Going out
    to win command of a sea would be the next thing to teach it.

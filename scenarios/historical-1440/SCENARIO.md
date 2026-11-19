@@ -492,9 +492,9 @@ declared from now on.
 
 ## The Holy Roman Empire
 
-> **Not built yet.** The engine plays none of this section: there is no Emperor, no election and no demand of the
-> Empire in this scenario; two German states only think 10 better of each other (RULES.md §10). It is the design for
-> when it is built (docs/design.md, *Open questions*).
+> **Built in part.** The Emperor, the electors and the elections are played (RULES.md §10, *The Emperor*), with the promises.
+> Imperial Authority, what the crown gives, the ban and the reforms are the design still to be built (docs/design.md, *Open
+> questions*): until then the crown brings no power, and two German states think 10 better of each other (RULES.md §10).
 
 The Empire is every settlement marked **HRE** above (listed in the *Overview*). A **German state** is any country
 that holds at least one HRE settlement; an **outsider** is any country that holds none. The Empire is not a

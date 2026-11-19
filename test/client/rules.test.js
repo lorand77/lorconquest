@@ -70,8 +70,11 @@ test("a scenario's page: what wins, what its x costs, the start, and faiths and 
     assert.doesNotMatch(me, /Walled from the start/);
     assert.match(eu, /Sea powers\*\*[^.]*Venice \(200 ships\)/);
     assert.doesNotMatch(me, /Sea powers/);
+    assert.match(eu, /at the start the Emperor is \*\*Inner Austria\*\*/);
+    assert.match(eu, /- King of Bohemia: Prague/);
+    assert.doesNotMatch(me, /the Emperor is/);
     assert.match(eu, /## Religions/);
-    assert.doesNotMatch(eu, /## The Holy Roman Empire/);
+    assert.match(eu, /## The Holy Roman Empire/, "its crown and electors");
     assert.match(eu, /All of Europe in 1440/, "its About");
     assert.match(me, /\| Hand cannons \| Swords \| 1\.5M R \|/);
     assert.match(me, /Hold \*\*10\*\* of them/);

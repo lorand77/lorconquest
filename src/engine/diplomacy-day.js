@@ -3,6 +3,7 @@
 // (RULES.md §10).
 import { YEAR_DAYS } from "./calendar.js";
 import { callStands, coalitions, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
+import { empireDay } from "./empire.js";
 import { militaryPowerOf } from "./opinion.js";
 import { atWar, isRebel } from "./state.js";
 
@@ -41,6 +42,8 @@ export function diplomacyDay(game, events) {
         lapseCoalitions(game, events);
         coalitions(game, events);
     }
+    // the Empire's crown: an election called, held, or the throne filled when it falls vacant (empire.js)
+    empireDay(game, events);
 }
 
 // a human state that refuses the Empire joins the others that did in the League

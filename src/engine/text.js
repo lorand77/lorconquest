@@ -1,6 +1,8 @@
 // How the game reads in English: events as lines of text and places by name, for the runner in the terminal and
 // the event feed on screen alike.
 
+import { longDate } from "./calendar.js";
+
 const fmt = (n) => Math.round(n).toLocaleString("en-GB");
 
 // "48 Ulm", "pass P6", "the road 37 Munich–48 Ulm" for a leg key, or a sea zone's name
@@ -61,6 +63,13 @@ export function describeEvent(map, e) {
         case "mergeFleet": return `fleet ${e.fleet} (${e.owner}) joins fleet ${e.into}`;
         case "sharpshooters": return `the post at ${place(e.pass)} shoots ${fmt(e.dead)} men of army ${e.army} (${e.owner})`;
         case "postLost": return `the sharpshooters at ${place(e.pass)} die: ${fmt(e.dead)} men of ${e.owner}`;
+        case "electionCalled": return `an election of the Emperor is called, to be held on ${longDate(e.on)}`;
+        case "vacant": return `the imperial throne falls vacant${e.country ? `: ${e.country} can wear the crown no longer` : ""}`;
+        case "elected": {
+            const tally = Object.entries(e.votes).sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c} ${n}`).join(", ");
+            return e.country ? `${e.country} is elected Emperor${e.country === e.previous ? " again" : ""} (${tally || "no votes"})` : "no Emperor is elected";
+        }
+        case "promised": return `${e.country} promises ${e.to} ${fmt(e.money)} for its vote at the election`;
         case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the sea in ${place(e.zone)}: ${e.why}`;
         case "joins": return `${e.country} joins the war against ${e.enemy}, on the ${e.side === "att" ? "attacking" : "defending"} side`;
         case "offer": return `${e.from} asks ${e.country}: ${e.what}`;
@@ -107,6 +116,7 @@ export function eventCountries(e) {
         case "league": return e.members;
         case "surrender": return [e.owner, e.by];
         case "battle": return [...e.a.countries, ...e.b.countries];
-        default: return e.owner ? [e.owner] : e.country ? [e.country] : [];
+        case "promised": return [e.country, e.to];
+        default: if (e.concern) return e.concern; return e.owner ? [e.owner] : e.country ? [e.country] : [];
     }
 }

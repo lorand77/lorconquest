@@ -139,7 +139,7 @@ test("a player sees the game without its dice and without other countries' treas
         assert.equal((await emitAck(s, "join", { gameId: 999 })).ok, false);
         const j = await emitAck(s, "join", { gameId: id });
         assert.deepEqual([j.ok, j.me, j.paused, j.scenario, j.tickMs, j.view.day], [true, "BAV", true, "mitteleuropa", 2, 0]);
-        assert.deepEqual(Object.keys(j.view).sort(), ["agreements", "armies", "countries", "day", "fleets", "humans", "memory", "posts", "settlements", "warInfo", "wars", "winner"]);
+        assert.deepEqual(Object.keys(j.view).sort(), ["agreements", "armies", "countries", "day", "empire", "fleets", "humans", "memory", "posts", "settlements", "warInfo", "wars", "winner"]);
         assert.equal(j.view.countries.BAV.treasury, 100000);
         assert.equal(j.view.countries.ULM.treasury, undefined);
         assert.equal(Object.keys(j.view.armies).length, 87);

@@ -985,8 +985,42 @@ as if built in play. Every other settlement begins without; walls may be bought 
 
 ## The Holy Roman Empire
 
-> **Not on this map yet.** As on the historical map, there is no demand of the Empire: settlements marked **HRE** only make two
-> German states think 10 better of each other (RULES.md §10).
+The Empire is every settlement marked **HRE** above. A **German state** is any country that holds one; an **outsider** any that
+holds none. The Empire is a **crown**, worn by one German state and won by election (RULES.md §10, *The Emperor*). As on the
+historical map, only the Emperor, the electors and the elections are built yet: the crown brings no power until Imperial
+Authority, the crown's rights and the reforms of that map's design come (docs/design.md, *Open questions*); two German states
+think 10 better of each other (RULES.md §10).
+
+### The Emperor
+
+At the start the Emperor is **STY Inner Austria**: Frederick III, elected King of the Romans on 2 February 1440. The Emperor must
+stay a German state, standing and nobody's vassal; otherwise the throne falls vacant and an election is held at once.
+
+### The electors
+
+Seven votes choose the Emperor. Each belongs to a settlement, and **whoever holds that settlement casts the vote** — conquer it
+and the vote is yours. One country may hold several.
+
+| Vote | Settlement | Holder at start |
+|---|---|---|
+| Archbishop of Mainz | 259 Mainz | MAI Mainz |
+| Archbishop of Trier | 258 Trier | TRI Trier |
+| Archbishop of Cologne | 247 Cologne | COL Electorate of Cologne |
+| King of Bohemia | 265 Prague | BOH Bohemia |
+| Count Palatine of the Rhine | 263 Heidelberg | PAL Palatinate |
+| Duke of Saxony | 250 Wittenberg | SAX Saxony |
+| Margrave of Brandenburg | 242 Brandenburg | BRA Brandenburg |
+
+### Elections
+
+Every **25 years** — 1465, 1490, 1515, 1540, 1565, 1590, 1615 and 1640 — and whenever the throne falls vacant; each scheduled one
+is called at the start of the year before. **Candidates:** the reigning Emperor, every German state of 20,000 people or more and
+every outsider of 100,000 or more, none of them anyone's vassal. A person's electors vote as the person chooses; a computer's for
+itself if it stands, otherwise for the candidate it scores highest — its opinion of it, +20 for the reigning Emperor, +1 for
+each 6,000 money promised (2,000 × x) up to +30, −20 for a candidate of 150,000 people or more, −50 for one at war with it, and
+−20 for one of another faith: Hussite Bohemia's vote is no Catholic's for the asking, and after 1517 no Protestant wears the crown
+easily. Promises are paid when the votes are cast, whoever they go to. The most votes win; a tie, the reigning Emperor, then the
+larger people.
 
 ## Victory
 

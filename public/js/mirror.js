@@ -16,7 +16,7 @@ export function applyChanges(state, changes) {
         else state.countries[code] = { ...state.countries[code], ...c };
     }
     if (changes.wars) state.wars = changes.wars;
-    for (const name of ["agreements", "warInfo", "memory"]) if (changes[name]) state[name] = changes[name];
+    for (const name of ["agreements", "warInfo", "memory", "empire"]) if (changes[name]) state[name] = changes[name];
     if ("winner" in changes) state.winner = changes.winner;
 }
 

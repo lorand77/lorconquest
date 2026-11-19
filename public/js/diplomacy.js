@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -118,6 +118,7 @@ function empireSection(ctx) {
     // one line and the map button, and more only where there is more to say: demands made, and yours once you could make it
     const out = [row(ctx, mk("span", { class: "w" }, `You hold ${held} of its ${inside} settlements${needed && !state.memory.empire[me] ? `; a demand needs ${needed}` : ""}.`),
         mk("button", { onclick: () => { ctx.ui.empire = !ctx.ui.empire; ctx.redraw(); } }, ctx.ui.empire ? "Whole map" : "Show on map"))];
+    if (state.empire) out.push(...crownParts(ctx));
     if (!needed) return section(ctx, "The Holy Roman Empire", ...out);
     // the demands made so far: the proposer's protectorates inside the Empire now, and the League as it stands
     for (const p of Object.keys(state.memory.empire)) {
@@ -148,6 +149,40 @@ function empireSection(ctx) {
             : `Now: about ${Math.round(Math.min(expect, most))} of ${rolled.length} computer states would join${capped ? ` (at most ${most} before you are near victory)` : ""}${people.length ? `, and ${list(people)} would be asked` : ""}${foes.length ? `; ${list(foes)}, at war with you, would refuse` : ""}.`),
         row(ctx, mk("button", { class: "danger", onclick: async () => { if (confirm("Demand the Empire? You may do this only once, ever.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand the Empire")));
     return section(ctx, "The Holy Roman Empire", ...out);
+}
+
+// the crown, where the scenario has electors (RULES.md §10, The Emperor): who wears it, when the next election is, the seven votes —
+// who holds each and whom it would vote for now — your own vote if you hold one, and your promises if you stand and one is called
+function crownParts(ctx) {
+    const { state, game, me, make: mk } = ctx, emp = state.empire;
+    const name = (code) => state.countries[code]?.name ?? code, town = (id) => game.map.nodes.get(String(id))?.name ?? String(id);
+    const candidates = candidatesOf(game), electors = electorsOf(game), unit = PROMISE_MONEY * game.map.x;
+    const out = [mk("p", {}, `Emperor: ${emp.emperor ? (emp.emperor === me ? "you" : name(emp.emperor)) : "none — the throne is vacant"}. `
+        + (emp.called ? `An election is called for ${longDate(emp.next)}.` : `The next election: ${longDate(emp.next)}, called a year before.`))];
+    out.push(mk("div", {}, ...electors.map((e) => {
+        const v = voteOf(game, e, candidates);
+        return row(ctx, mk("span", { class: "w" }, `${e.vote}, ${town(e.settlement)}: ${e.holder ? (e.holder === me ? "you" : name(e.holder)) : "nobody"}${v ? ` — would vote for ${v === me ? "you" : name(v)}` : ""}`));
+    })));
+    // your vote: every elector you hold votes alike — as you choose, or as a computer would
+    if (electors.some((e) => e.holder === me)) {
+        const choice = mk("select", {}, mk("option", { value: "", ...(!emp.choices[me] ? { selected: "selected" } : {}) }, "as a computer elector would"),
+            ...candidates.map((c) => mk("option", { value: c, ...(emp.choices[me] === c ? { selected: "selected" } : {}) }, c === me ? "yourself" : name(c))));
+        choice.addEventListener("change", async () => { await ctx.send({ type: "electorVote", candidate: choice.value || null }); ctx.redraw(); });
+        out.push(row(ctx, mk("span", {}, "Your vote: "), choice));
+    }
+    if (!candidates.includes(me)) out.push(mk("p", { class: "hint" }, `You do not stand: a German state of ${n(CANDIDATE_GERMAN)} people or an outsider of ${n(CANDIDATE_OUTSIDER)}, nobody's vassal.`));
+    else if (emp.called) {
+        // promises: to each vote held by another, paid when the votes are cast whoever wins — each 2,000 × x counts 1 with its elector,
+        // at most 30
+        const mine = emp.promises[me] ?? {};
+        out.push(mk("p", { class: "hint" }, `You stand. Promise electors money for their votes: paid when the votes are cast, whoever wins; each ${n(unit)} counts 1 with the elector, at most 30.`));
+        for (const e of electors.filter((x) => x.holder && x.holder !== me)) {
+            const input = mk("input", { type: "number", min: 0, step: unit, value: mine[e.settlement] ?? 0 });
+            out.push(row(ctx, mk("span", { class: "w" }, `${town(e.settlement)} (${name(e.holder)})`), input,
+                mk("button", { onclick: act(ctx, () => ({ type: "promise", elector: e.settlement, money: Math.max(0, Number(input.value) || 0) })) }, "Promise")));
+        }
+    }
+    return out;
 }
 
 // who a country is at war with, and since when: you first, then the others by name; peasant rebels as an uprising

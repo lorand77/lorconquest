@@ -135,6 +135,8 @@ function randomCommand(game, r) {
         case "cancelAccess": return { ...a, with: pick(codes) };
         case "demandSubject": return { ...a, target: pick(codes), kind: pick(["vassal", "protectorate"]) };
         case "proposeEmpire": return a;
+        case "promise": return { ...a, elector: place ? place.id : 1, money: int(0, 200000) };               // only where there are electors
+        case "electorVote": return { ...a, candidate: r() < 0.2 ? null : pick(codes) };
         case "integrate": { const mine = Object.keys(st.countries).filter((c) => st.countries[c].overlord === country); return { ...a, target: mine.length && r() < 0.8 ? pick(mine) : pick(codes) }; }
         case "joinWar": {                                                // mostly a subject (or the overlord) and one of its enemies
             const kin = Object.keys(st.countries).filter((c) => st.countries[c].overlord === country || st.countries[country].overlord === c);
@@ -215,5 +217,5 @@ test("random play: 45 countries giving every kind of command keep the state sane
     const never = COMMAND_TYPES.filter((t) => !accepted.has(t));
     // (joinWar needs a protectorate at war, which random play seldom makes: subjects.test.js covers it; a union two people at
     // peace with the same enemies: union.test.js)
-    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire", "integrate", "joinWar", "proposeUnion", "adoptReformation"].includes(t)), [], "never accepted");
+    assert.deepEqual(never.filter((t) => !["stormPost", "setCapital", "proclaim", "blockade", "cancelAccess", "proposeEmpire", "integrate", "joinWar", "proposeUnion", "adoptReformation", "promise", "electorVote"].includes(t)), [], "never accepted");
 });

@@ -19,6 +19,7 @@ export { positionOf, progress, routeFor } from "./movement.js";
 export { START_YEAR, YEAR_DAYS, MONTH_NAMES, dateOf, dayOf, formatDate, longDate, parseDate } from "./calendar.js";
 export { describeEvent, eventCountries, placeName } from "./text.js";
 export { buildMap, isVoyage, legKey, portsInReach } from "./map.js";
+export { CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, ELECTION_YEARS, PROMISE_MAX, PROMISE_MONEY, candidatesOf, electorScore, electorsOf, promiseError, voteOf } from "./empire.js";
 export { proclaimCheck } from "./regions.js";
 export { withMemo } from "./memo.js";
 export { REFORMATION_DAY, RELIGIONS, RELIGION_NAMES, reformationError, coringDays, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, religionOf } from "./religion.js";
