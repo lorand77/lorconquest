@@ -217,7 +217,7 @@ export function meetings(game, events) {
     for (const a of armyList(st)) {
         if (!a.march) continue;
         const k = legKey(a.march.from, a.march.to);
-        if (straits.has(k)) continue;                    // armies on a strait are at sea: they pass each other
+        if (straits.has(k) || a.march.sea) continue;     // armies on a strait or a sea lane are at sea: they pass each other
         if (!legs.has(k)) legs.set(k, []);
         legs.get(k).push(a);
     }
@@ -299,12 +299,13 @@ function carryOn(game, army, events) {
         }
         army.path = found.path;
     }
-    if (!mayDepart(game, army, army.at, army.path[0], events)) {
+    const go = mayDepart(game, army, army.at, army.path[0], events);
+    if (!go) {
         army.path = [];
         if (army.retreating) retreat(game, army, events);
         return;
     }
-    startLeg(game, army, army.at, army.path.shift(), army.arrived);
+    startLeg(game, army, army.at, army.path.shift(), army.arrived, Array.isArray(go) ? go : null);
 }
 
 // a retreating army takes nothing and stops for nothing on its way; enemies standing in the field where it passes

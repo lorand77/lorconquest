@@ -32,6 +32,7 @@ export function advanceDay(game) {
         if (!isAlive(st, a) || !a.march || a.march.end > st.day) continue;     // turned round or beaten by an earlier arrival
         a.at = a.march.to;
         a.arrived = a.march.end;
+        if (a.march.sea) a.landed = st.day;                                     // ashore from the sea today (battle.js, LANDING)
         a.march = null;
         arrive(game, a, events);
     }

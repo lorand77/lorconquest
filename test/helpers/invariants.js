@@ -16,6 +16,11 @@ export function check(game, where) {
         assert.ok(st.countries[a.owner], `${where}: army ${id} of nobody`);
         assert.ok(a.at ? nodes.has(a.at) : a.march && nodes.has(a.march.from) && nodes.has(a.march.to), `${where}: army ${id} is nowhere`);
         assert.ok(!(a.at && a.march), `${where}: army ${id} is at a place and on a road`);
+        if (a.march?.sea) {
+            // a voyage (RULES.md §8, Sea lanes): port to port, one to three zones, from the zone of the one to the zone of the other
+            const z = a.march.sea, from = nodes.get(a.march.from), to = nodes.get(a.march.to);
+            assert.ok(from.port && to.port && z.length >= 1 && z.length <= 3 && z[0] === from.zone && z.at(-1) === to.zone, `${where}: army ${id}'s voyage ${a.march.from}>${a.march.to} by ${z}`);
+        }
         for (const w of WEAPONS) assert.ok(Number.isInteger(a.men[w]) && a.men[w] >= 0, `${where}: army ${id} has ${a.men[w]} ${w}`);
         assert.ok(a.cannons >= 0 && Number.isInteger(a.cannons) && a.crew >= 0 && Number.isInteger(a.crew), `${where}: army ${id} cannons/crew`);
         assert.ok(a.mercs >= 0 && a.mercs <= menOf(a), `${where}: army ${id} has ${a.mercs} mercenaries of ${menOf(a)} men`);

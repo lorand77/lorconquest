@@ -4,8 +4,8 @@
 // The dice are the AI's own, seeded from the game's seed, the country, the day and a label — never the game's state.rng
 // (docs/design.md, "The computer players"): the AI's commands are logged and a replay applies them without running it.
 import { combine } from "../engine/army.js";
-import { findRoute } from "../engine/map.js";
-import { straitClear } from "../engine/naval.js";
+import { findRoute, stepsOf, waypoint } from "../engine/map.js";
+import { contested, straitClear } from "../engine/naval.js";
 import { YEAR_DAYS, armyList, atWar, canEnter, dayOf, isRebel, power, scores } from "../engine/index.js";
 import { CHARACTERS, NOISE } from "./characters.js";
 
@@ -139,16 +139,23 @@ export const ownArmies = (st, code) => armyList(st).filter((a) => a.owner === co
 // money to keep in hand: a third of a year's income
 export const reserveOf = (e) => 0.3 * e.settlementMoney;
 
-// the days an army of `country` takes to march from a place to another, through land it may enter; Infinity if it cannot.
-// Remembered for the length of one think.
+// may an army of `country` take this step: a strait or sea lane only with its ships there and no enemy fleet at sea (RULES.md
+// §8) — a sea lane's zones between only clear of enemies, as the engine's own route search (movement.js)
+export const stepOk = (game, country) => (from, e) => {
+    if (e.sea) return e.sea.sail ? !contested(game.state, country, e.sea.sail) : straitClear(game, country, e.sea.board ?? e.sea.land);
+    return !e.strait || straitClear(game, country, e.strait);
+};
+
+// the days an army of `country` takes to march from a place to another, through land it may enter, and by sea where it holds
+// both ends; Infinity if it cannot. Remembered for the length of one think.
 export function daysFn(game, country) {
     const cache = new Map();
     const ok = (k) => canEnter(game, country, k);
-    const edgeOk = (from, e) => !e.strait || straitClear(game, country, e.strait);
+    const edgeOk = stepOk(game, country);
     return (from, to) => {
         if (from === to) return 0;
         const key = `${from}>${to}`;
-        if (!cache.has(key)) cache.set(key, findRoute(game.map, { node: from }, to, ok, edgeOk)?.days ?? Infinity);
+        if (!cache.has(key)) cache.set(key, findRoute(game.map, { node: from }, to, ok, edgeOk, true)?.days ?? Infinity);
         return cache.get(key);
     };
 }
@@ -212,17 +219,18 @@ export function stagingSettlement(game, code) {
     return front ?? capital ?? core.sort((a, b) => b.pop - a.pop || a.id - b.id)[0] ?? null;
 }
 
-// the days from a place to every place a country's armies may reach from it, in one sweep (Dijkstra over the legs)
+// the days from a place to every place a country's armies may reach from it, in one sweep (Dijkstra over the legs, and the sea
+// lanes where its ships allow — their zones, waypoints, left out of what it returns)
 export function reachFrom(game, country, from) {
     const dist = new Map([[from, 0]]), done = new Set();
-    const ok = (k) => canEnter(game, country, k);
+    const ok = (k) => canEnter(game, country, k), edgeOk = stepOk(game, country);
     for (;;) {
         let best = null;
         for (const [k, d] of dist) if (!done.has(k) && (best === null || d < dist.get(best) || (d === dist.get(best) && k < best))) best = k;
-        if (best === null) return dist;
+        if (best === null) { for (const k of [...dist.keys()]) if (waypoint(k)) dist.delete(k); return dist; }
         done.add(best);
-        for (const e of game.map.adj.get(best)) {
-            if (done.has(e.to) || !ok(e.to) || (e.strait && !straitClear(game, country, e.strait))) continue;
+        for (const e of stepsOf(game.map, best, true)) {
+            if (done.has(e.to) || (!waypoint(e.to) && !ok(e.to)) || !edgeOk(best, e)) continue;
             const d = dist.get(best) + e.days;
             if (!dist.has(e.to) || d < dist.get(e.to)) dist.set(e.to, d);
         }

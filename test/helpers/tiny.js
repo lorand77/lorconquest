@@ -6,11 +6,11 @@
 //       37                                 73
 //        |                                  \
 //        3 ---91--- P1 (pass, land of 3) ---91--- 5
-//        3 - - - - - - strait (zone "north", 91 days) - - - - - - 6 ---37--- 7 ---37--- 8
+//        3 - - - - - - strait (zone "north", 61 days) - - - - - - 6 ---37--- 7 ---37--- 8
 //
 // Numbers are marching days. Settlement 3 is AAA's, 5 BBB's, 6 CCC's. Every settlement starts with its garrison
 // of pop ÷ 25 swords (400 in a town, 800 in a city), numbered like the settlement. 1 is a port in the sea zone
-// "north", 4 a port in "south"; the zones are next to each other; the strait 3-6 lies in "north". No country has
+// "north", 4 a port in "south"; the zones are next to each other (a voyage from 1 to 4 by sea lane: 122 days); the strait 3-6 lies in "north". No country has
 // ships at the start. AAA's capital is 1, BBB's 4, CCC's 6, DDD's 7 (a town) and EEE's 8 (a town). Neighbours by land
 // route: AAA-BBB, BBB-CCC, CCC-DDD, DDD-EEE. The region "AAA lands" is 1, 2 and 3. No settlement is in the Empire, the
 // scenario opens at peace; nobody can win by settlements (99 are needed), only by the end of 1500.

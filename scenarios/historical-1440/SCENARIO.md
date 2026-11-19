@@ -380,7 +380,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, North Sea and Gulf of Riga, are 5 hops (10 months).
 
-**Naval powers:** 14 countries, 245 ships. Crossing a strait needs 10 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there.
+**Naval powers:** 14 countries, 245 ships. Crossing a strait needs 10 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there. A voyage by sea lane, to a port up to three zones off, needs 10 at each end, and no enemy fleet at sea on the way.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
@@ -446,7 +446,7 @@ country's — `tools/map.js` checks them.*
 
 Seven zones, split by the dashed lines in the sea. A fleet operates in one zone at a time (RULES.md §7). A port
 belongs to the zone its coast faces; crossing a strait needs 10 ships in the zone the strait lies in (RULES.md
-§8). *Zone, X and Y are data — X, Y is where the name is drawn, and the zone it names is the one around that
+§8). An army may also sail by sea lane to a port up to three zones away, with 10 × x ships in the zone it leaves and the zone it lands in (RULES.md §8, Sea lanes). *Zone, X and Y are data — X, Y is where the name is drawn, and the zone it names is the one around that
 point; the other columns are generated from the map.*
 
 | Zone | X | Y | Ports | Straits | Next to |

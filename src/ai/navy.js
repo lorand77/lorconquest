@@ -2,6 +2,9 @@
 //   straits    10 ships of a country in the sea zone of a strait let its armies cross it (RULES.md §8): for every strait
 //              between its land and the enemy's it gets that many there — the smallest fleet of its own that will do, split
 //              off a bigger one if need be, sailing a zone at a time; else cogs bought in a port it holds there;
+//   landings   so do 10 ships at each end of a sea lane (RULES.md §8): against the nearest enemy it cannot reach by land or
+//              strait, the two zones of the shortest way by sea from a port of its own to one of theirs are held the same way,
+//              and its armies, finding the way open, sail (war.js needs nothing more);
 //   at sea     where its side is clearly the stronger (1.3 times the enemy's ships in the zone, in port or at sea) a fleet puts
 //              out: it blockades the richest enemy port in the zone (halving its money, RULES.md §7), or, every port there
 //              blockaded already, patrols, to fall on whatever comes out; outmatched, or with nothing left to do, it goes back
@@ -10,7 +13,8 @@
 //              then researches carracks, galleons and men-of-war (navalNeed, economy.js) — otherwise cogs only.
 // Fleets of its own idle at the same place are merged. Fleets in port cannot be fought (RULES.md §7): there is nothing to hunt.
 import { CREW_PER_SHIP as CREW, SHIPS, SHIP_PRICE } from "../engine/costs.js";
-import { economyOf, fleetPower, shipCount, shipsIn } from "../engine/index.js";
+import { SEA_ZONES_MAX } from "../engine/costs.js";
+import { economyOf, fleetPower, shipCount, shipsIn, withinDemandReach } from "../engine/index.js";
 import { fleetsHome } from "./forces.js";
 import { threatsOf } from "./util.js";
 
@@ -45,6 +49,28 @@ export function navalNeed(game, code) {
     });
 }
 
+// the two zones to hold for a landing (RULES.md §8, Sea lanes): against the nearest enemy that neither it nor its subjects border by
+// land or strait, the fewest zones from one of its ports' zones to one of the enemy's, at most SEA_ZONES_MAX — the zone it sets
+// out from and the zone it lands in (one, if the same). None if every enemy is in reach by land, or none by sea
+function landingZones(game, code, foes) {
+    const zonesOf = (c) => new Set(portsOf(game, c).map((s) => game.map.nodes.get(String(s.id)).zone).filter(Boolean));
+    const ours = [...zonesOf(code)].sort();
+    let best = null;
+    for (const foe of [...foes].sort()) {
+        if (withinDemandReach(game, code, foe)) continue;
+        const theirs = zonesOf(foe);
+        for (const from of ours) {
+            const back = new Map([[from, null]]);
+            for (let ring = [from], d = 1; ring.length && d <= SEA_ZONES_MAX; d++) {
+                const hit = ring.filter((z) => theirs.has(z)).sort()[0];
+                if (hit !== undefined) { if (!best || d < best.d) best = { d, zones: [from, hit] }; break; }
+                ring = ring.flatMap((z) => game.map.sea.next.get(z) ?? []).filter((z) => !back.has(z) && back.set(z, true));
+            }
+        }
+    }
+    return best ? [...new Set(best.zones)] : [];
+}
+
 export function navyOrders(game, code, ctx = { budget: 0 }) {
     const st = game.state, zones = game.map.zones, out = [], keep = new Set();
     const cmd = (type, rest) => out.push({ type, country: code, ...rest });
@@ -58,9 +84,9 @@ export function navyOrders(game, code, ctx = { budget: 0 }) {
     // straits: those between our land and an enemy's, and the ships they need
     const need = game.map.scenario.straitShips;
     const owner = (id) => st.settlements[id]?.owner;
-    const wanted = !foes.length ? [] : [...new Set((game.map.scenario.routes ?? []).filter((r) => r.type === "strait" && r.seaZone
+    const wanted = !foes.length ? [] : [...new Set([...(game.map.scenario.routes ?? []).filter((r) => r.type === "strait" && r.seaZone
         && ((owner(r.from) === code && foes.includes(owner(r.to))) || (owner(r.to) === code && foes.includes(owner(r.from)))))
-        .map((r) => r.seaZone))].sort();
+        .map((r) => r.seaZone), ...landingZones(game, code, foes)])].sort();
     const short = wanted.some((z) => shipsIn(st, code, z) < need);
 
     // idle fleets at the same place become one (the lowest-numbered keeps the ships) — but not while a strait is short of

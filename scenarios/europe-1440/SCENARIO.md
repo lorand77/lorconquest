@@ -719,7 +719,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Sea of Azov, are 17 hops (34 months).
 
-**Naval powers:** 49 countries, 1675 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there.
+**Naval powers:** 49 countries, 1675 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there. A voyage by sea lane, to a port up to three zones off, needs 30 at each end, and no enemy fleet at sea on the way.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
@@ -826,9 +826,9 @@ you take later is core the day it falls. If you later lose one and retake it, it
 
 ## Sea zones
 
-Seven zones, split by the dashed lines in the sea. A fleet operates in one zone at a time (RULES.md §7). A port
-belongs to the zone its coast faces; crossing a strait needs 10 ships in the zone the strait lies in (RULES.md
-§8). *Zone, X and Y are data — X, Y is where the name is drawn, and the zone it names is the one around that
+Twenty-nine zones, split by the dashed lines in the sea. A fleet operates in one zone at a time (RULES.md §7). A port
+belongs to the zone its coast faces; crossing a strait needs 30 ships (10 × x) in the zone the strait lies in (RULES.md
+§8). An army may also sail by sea lane to a port up to three zones away, with 10 × x ships in the zone it leaves and the zone it lands in (RULES.md §8, Sea lanes). *Zone, X and Y are data — X, Y is where the name is drawn, and the zone it names is the one around that
 point; the other columns are generated from the map.*
 
 | Zone | X | Y | Ports | Straits | Next to |
@@ -915,7 +915,7 @@ a vassal has none and pays 40%. A vassal of the start may be integrated as any o
 | BOS Bosnia | OTT Ottoman Empire | protectorate | Tvrtko II paid tribute to the Porte from 1435. |
 | MOL Moldavia | POL Poland | protectorate | Its voivodes had sworn fealty to the Polish king since 1387. |
 | RAG Ragusa | HUN Hungary | protectorate | Under the Hungarian crown since 1358, paying it a yearly tribute. |
-| LIV Livonian Order | TEU Teutonic Order | vassal | The Order's Livonian branch, under the Grand Master. |
+| LIV Livonian Order | TEU Teutonic Order | protectorate | The Order's Livonian branch: it chose its own master and kept its own policy, owing the Grand Master obedience in name and help in war. |
 | BYZ Byzantium | OTT Ottoman Empire | protectorate | John VIII paid the Sultan tribute from 1424, and went west in 1438 to beg a crusade. |
 | ATH Athens | OTT Ottoman Empire | protectorate | The Acciaioli dukes held Athens as the Sultan's tributaries. |
 | MAZ Masovia | POL Poland | vassal | Its Piast dukes held Masovia as a fief of the Polish crown from 1351 until it was joined to it in 1526. |

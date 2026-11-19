@@ -1,6 +1,6 @@
 // Fleets (RULES.md §7, §8): a fleet is in a port or at sea in one sea zone, sails to a neighbouring zone in 2
 // months, and while sailing is neither fought nor fights. Patrols engage enemy fleets at sea; a blockade halves
-// the money of an enemy port; armies may cross a strait only where their country has the ships.
+// the money of an enemy port; armies may cross a strait, or sail a sea lane, only where their country has the ships.
 //
 // Ships need 50 crew at sea (not in port), who are soldiers: they pay upkeep, are not civilians, and count on the
 // navy cap. Crew of ships sunk are lost from the population.
@@ -8,7 +8,7 @@
 import { shareOut } from "./army.js";
 import { COOLDOWN_DAYS, damage, mayFight } from "./battle.js";
 import { MONTH } from "./calendar.js";
-import { CREW_PER_SHIP, SHIPS, SHIP_POWER } from "./costs.js";
+import { CREW_PER_SHIP, SEA_ZONES_MAX, SHIPS, SHIP_POWER } from "./costs.js";
 import { battleRoll } from "./random.js";
 import { atWar, fleetList, killPeople } from "./state.js";
 
@@ -163,6 +163,43 @@ export function navalDay(game, events) {
             }
         }
     }
+}
+
+// the way by sea from the port `from` to the port `to` for the country's armies (RULES.md §8, Sea lanes): the zones it sails
+// through, the first and the last its own to cross (straitClear), none between with an enemy fleet at sea — the fewest, up to
+// SEA_ZONES_MAX, the first by id among equals. `clear` false: the way whatever the fleets (for the reach of a peace, the screen).
+// Null if there is none.
+export function voyage(game, country, from, to, clear = true) {
+    const map = game.map, a = map.nodes.get(from)?.zone, b = map.nodes.get(to)?.zone;
+    if (!a || !b) return null;
+    if (clear && (!straitClear(game, country, a) || !straitClear(game, country, b))) return null;
+    const prev = new Map([[a, null]]);
+    for (let ring = [a], depth = 1; ring.length && depth <= SEA_ZONES_MAX; depth++) {
+        if (prev.has(b)) break;
+        const next = [];
+        for (const z of ring) for (const y of map.sea.next.get(z) ?? []) {
+            if (prev.has(y) || (clear && y !== b && contested(game.state, country, y))) continue;
+            prev.set(y, z);
+            next.push(y);
+        }
+        ring = next;
+    }
+    if (!prev.has(b)) return null;
+    const zones = [];
+    for (let z = b; z !== null; z = prev.get(z)) zones.unshift(z);
+    return zones.length <= SEA_ZONES_MAX ? zones : null;
+}
+
+// an army is about to set out by sea lane (RULES.md §8): the ships at both ends, no enemy fleet at sea on the way. Returns the
+// zones of its voyage, or null with the reason in `events`
+export function crossSea(game, army, from, to, events) {
+    const st = game.state, owner = army.owner, map = game.map;
+    const fail = (zone, why) => { events.push({ type: "crossFailed", day: st.day, army: army.id, owner, zone, why }); return null; };
+    for (const zone of new Set([map.nodes.get(from).zone, map.nodes.get(to).zone])) {
+        if (!crossable(game, owner, zone)) return fail(zone, "too few ships");
+        if (contested(st, owner, zone)) return fail(zone, "an enemy fleet is at sea in the zone");
+    }
+    return voyage(game, owner, from, to) ?? fail(map.nodes.get(to).zone, "an enemy fleet is at sea on the way");
 }
 
 // an army is about to set out across a strait (RULES.md §8): the country must have the ships there, and if an enemy

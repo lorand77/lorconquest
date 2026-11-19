@@ -529,7 +529,8 @@ test("a demand only of a neighbour; a subject's warmonger by its size; a peace h
     assert.deepEqual(outOfReach(g2, "AAA", [4, 5]), [], "5 borders 3 (by the pass); 4 borders 2");
     assert.deepEqual(outOfReach(g2, "CCC", [4]), [], "4 borders 6");
     assert.deepEqual(outOfReach(g2, "AAA", [7, 8]), [7, 8], "far off, and not joined to AAA through the peace");
-    assert.match(validateTerms(g2, "BBB", "AAA", { take: [1] }), /out of BBB's reach/ );
+    // One is a port, and Four is BBB's: a landing away, two zones, so within its reach (RULES.md §8, Sea lanes)
+    assert.equal(validateTerms(g2, "BBB", "AAA", { take: [1] }), null);
     // nor is a subject made in a peace of a country out of reach, either way round; CCC, across the strait, may be
     const g3 = tinyGame();
     order(g3, cmd("AAA", "declareWar", { target: "EEE" }));

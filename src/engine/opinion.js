@@ -149,9 +149,24 @@ export function subjectPrice(game, subject, over, kind) {
     return (SUBJECT_PRICE[kind] ?? 0) * (1 + settlementsOf(st, subject) / Math.max(1, settlementsOf(st, over)));
 }
 
-// does the computer country `holder` accept `proposer`'s peace?
+// land is won in the war, not at the table (RULES.md §10, Peace): what a peace hands either side, in people, is at most what it
+// took in this war less what it lost — the strength part of the war score buys money, freedom, a subject or a plain peace, never
+// towns. Terms asking more are refused; land given beyond it is a gift that pays nothing. { gain, won }: the people the proposer
+// would gain (less if it gives) and the people it has taken net — both negative where it is the other way round
+export function landOf(game, proposer, holder, terms) {
+    const st = game.state, w = st.warInfo[warKey(proposer, holder)];
+    const people = (ids) => sum(ids ?? [], (id) => st.settlements[id].pop);
+    return { gain: people(terms.take) - people(terms.give), won: w ? (w.taken[proposer] ?? 0) - (w.taken[holder] ?? 0) : 0 };
+}
+
+// does the computer country `holder` accept `proposer`'s peace? `land`: refused for asking more land than was won
 export function peaceAnswer(game, holder, proposer, terms) {
-    const score = warScore(game, proposer, holder), cost = peaceCost(game, proposer, holder, terms);
+    const score = warScore(game, proposer, holder), { gain, won } = landOf(game, proposer, holder, terms);
+    let cost = peaceCost(game, proposer, holder, terms);
+    if (gain > 0 && gain > Math.max(0, won)) return { accept: false, score, cost, land: { gain, won: Math.max(0, won) } };
+    // what the holder would be given beyond the land it has won counts for nothing: back onto the price it went off
+    const w = game.state.warInfo[warKey(proposer, holder)];
+    if (gain < 0 && -gain > Math.max(0, -won)) cost += (-gain - Math.max(0, -won)) / Math.max(1, w ? w.startPop[holder] : popOf(game.state, holder)) * 100;
     return { accept: score >= cost, score, cost };
 }
 

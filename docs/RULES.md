@@ -644,14 +644,29 @@ Fleets likewise.
 
 **Straits (dashed lines).** An army may cross only if you **control the sea zone completely** (see
 [Sea zones](../scenarios/mitteleuropa/SCENARIO.md#sea-zones)): **≥10 × x ships** of yours in it, and **no enemy ship at sea** in it
-when the crossing starts. Crossing takes **3 months**.
+when the crossing starts. Crossing takes **2 months**.
 
 **Counting the ships.** All the country's ships in the zone count — in port or at sea, not sailing. An
 army sets out only if they are at least **10 × x** and no fleet of a country at war with it is at sea in the zone (one in
 port, or only on its way through, sailing, does not count). No battle is fought for a strait: the enemy's fleets at sea must
 be beaten first (§7), or the army stays where it is — and no route is found through a strait whose sea is not wholly the
-country's. The crossing takes 3 months whatever the length of the dashed line, and armies on a
+country's. The crossing takes 2 months whatever the length of the dashed line, and armies on a
 strait are at sea: they do not meet one another.
+
+**Sea lanes.** Beyond the straits, an army in a port may sail to **any port up to three sea zones away** — the zone it sets out
+in counted, so its own zone, one next to it, or one beyond that — and land there. A voyage needs **10 × x ships of yours in the
+zone it sets out in and 10 × x in the zone it lands in** (the same ships, if the two are one), counted as for a strait, and **no
+enemy fleet at sea** in either, nor in any zone it sails through; the fewest zones are taken, the first by name among equals. It
+is checked when the army sets out, and takes **2 months for each zone** of the way (a fleet's sailing time): 2 months in its own
+zone, 4 to the next, 6 to the one beyond. Further than three zones, it lands on the way and sails again. Armies at sea do not
+meet or fight, and a fleet that arrives behind them does not stop them. An army sets out from a port of its own, an ally's or
+one it has military access to, and lands where it could march to: an enemy's port, or its own, an ally's or one it has access
+to — never a neutral's. It lands whoever holds the port when it arrives, as an army arriving by road.
+
+**Landing.** On the day it lands an army fights at **×0.75** — storming, in the field, or attacked in a sortie — unless a fleet of
+its own side is blockading that port (§7): the blockade has cut the port off and covers the landing. A side with landed and other
+armies counts the 0.75 for the landed men's share. **A beaten army never retreats by sea**: it falls back by road and strait,
+or not at all. Straits are crossed with no such penalty.
 
 ---
 
@@ -750,7 +765,7 @@ drops by **40 for 10 years** (see *Computer countries*).
 
 A country becomes your subject through a peace treaty, by agreeing to your demand, or — protectorates
 only — through the Holy Roman Empire ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)). **A subject is
-made only of a neighbour**, by a peace or on demand — a country that borders you or one of your subjects, by land or across a strait (a protectorate of
+made only of a neighbour**, by a peace or on demand — a country that borders you or one of your subjects, by land or across a strait — a sea lane does not count — (a protectorate of
 yours made a vassal aside); a
 realm across the map is made a subject by a peace or not at all. A scenario may begin with some countries already subjects.
 
@@ -898,6 +913,10 @@ cost      = settlements you ask for, as % of its pop
 is the more — no more than it costs you, nor than it is worth to it: an empire's coin is no small country's treasure, and a small
 country's coin is no empire's. And **a subject is won by the war, never bought**: money you pay offsets only
 the settlements, money and freedom you ask in the same terms, never the 50 or 25 of making it your vassal or protectorate.
+**Land is won in the field, not at the table**: the settlements a peace gives a side may hold at most as many people as it
+has taken from the other in this war, less those it has lost to it — whatever its war score. Terms asking more are refused; and
+land a loser offers beyond that counts for nothing toward the price, so the rest of what the war score asks is paid in money,
+freedom for its subjects, or itself as a subject. One town taken by storm may bring one more of its size at the peace, not four.
 And **strength on paper wins nothing**: until a war has been fought — settlements taken, a tenth of
 someone's people — the stronger side's armies count for little at the table, so a war declared and not yet fought ends, if it
 ends, in a plain peace. Pops are counted as they were when the war began. A plain peace (cost 0) is accepted whenever your
@@ -981,7 +1000,8 @@ other its vassal or protectorate, become the other's, and free subjects of the o
 score is at least the price. The price is what is asked, in the units of §10 — and **what the proposer gives counts the
 same way against it**: a country losing a war can buy peace with a city. A settlement's people are those at the start of
 the war. **A peace hands over only what lies within reach** of the one who gets it: a settlement that borders its land or its
-subjects' — by a road, a pass or a strait — or that it besieges, or that is joined to those through the others of the same peace.
+subjects' — by a road, a pass or a strait, or a port it could land at by sea lane (§8) from a port of its own or its subjects',
+whatever the fleets — or that it besieges, or that is joined to those through the others of the same peace.
 No town across the map changes hands at a table. **A peace leaves each side at least one settlement**: terms that would take a country's last one — or give away the
 proposer's last — are refused, whoever proposes them; the last one is taken by force or not at all. Each settlement, and
 each subject freed, is named once. A vassal does not sign peace: its

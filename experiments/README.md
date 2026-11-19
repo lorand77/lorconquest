@@ -687,3 +687,21 @@ the scale, decides that. Chosen: 0.5. Then 0.5 with 180 (seeds 1–6): FRA 3, LI
 exposure 8.5% → 4.3% → 4.4%, land churn 0.91 → 0.37 → 0.35, the computer 8.8 ms a day, 119 ms at its slowest. The victory number
 was then set to 227, half the map as on the other two (52% and 51%): nobody held half of Europe in these two centuries, so a
 game is mostly decided in 1650, by the most.
+
+## 25. Training a tenth of a settlement at once, and land only for land won (2026-11-19)
+
+**What changed.** A settlement trains at most a tenth of its people at once (RULES.md §8), and the computer spreads a levy over
+its capital, the town its armies gather at and its largest settlements; a peace gives land only up to what was taken in the war
+(RULES.md §10), the strength part of the war score buying money, freedom or a subject, and a losing computer offers one
+settlement and money together.
+
+**Run.** `node tools/strength.js --baseline fc4fc02 --candidate working --seeds 20 --years 210 --jobs 6 --label raise-land`
+(Mitteleuropa, seeds 101–120; the baseline is the computer before the levy was spread, both on today's rules), 140 games in 32
+minutes: `strength/2026-11-19-raise-land.json`.
+
+**What it showed: a little stronger, within the noise, and the old computer stumbling.** One country on the candidate ends
++1.73 settlements [−1.59, +5.04]; wins 19 against 15 of 120; Brandenburg (+9.4) and Saxony (+6.5) gain most, none loses clearly.
+The baseline, raising its whole levy in one place, is refused 50.8 orders a game, the candidate 2.0. The cost line (60.8 against
+19.0 microseconds a country-day) is the one-country artefact of sections 20 and 22: timed whole, 60 years of seed 101 take
+the computer 14.7 s on the candidate and 16.8 s on the baseline, with about the same armies (121 and 126, 127,000 and 119,000
+men).

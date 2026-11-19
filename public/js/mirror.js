@@ -49,7 +49,34 @@ export function buildLegs(scenario) {
             }
         } else add(a, b, r.points);
     }
+    // a voyage by sea lane (RULES.md §8): from the port out to its zone, along the lanes fleets sail between the zones of the way,
+    // and in to the port it lands at — through the zones given (a march's), or the fewest (a route planned)
+    const zones = new Map((scenario.seaZones ?? []).map((z) => [z.id, z])), zoneOf = new Map(scenario.settlements.map((s) => [String(s.id), s.seaZone]));
+    legs.voyage = (a, b, way = null) => {
+        const path = way ?? shortestZones(zones, zoneOf.get(a), zoneOf.get(b));
+        const pts = [xy.get(a)];
+        if (!path?.length) return [...pts, xy.get(b)];
+        const label = (z) => [zones.get(z).label.x, zones.get(z).label.y];
+        pts.push(label(path[0]));
+        for (let i = 0; i + 1 < path.length; i++) pts.push(...(zones.get(path[i]).lanes?.[path[i + 1]]?.slice(1) ?? [label(path[i + 1])]));
+        return [...pts, xy.get(b)];
+    };
     return legs;
+}
+
+// the fewest zones from one sea zone to another, both counted, by the zones next to each (first by id among equals); null if none
+function shortestZones(zones, from, to) {
+    if (!from || !to) return null;
+    const back = new Map([[from, null]]);
+    for (let ring = [from]; ring.length && !back.has(to);) {
+        const next = [];
+        for (const z of ring) for (const n of [...(zones.get(z)?.next ?? [])].sort()) if (!back.has(n)) { back.set(n, z); next.push(n); }
+        ring = next;
+    }
+    if (!back.has(to)) return null;
+    const out = [];
+    for (let z = to; z !== null; z = back.get(z)) out.unshift(z);
+    return out;
 }
 
 const clamp01 = (f) => Math.min(1, Math.max(0, f));
@@ -75,7 +102,7 @@ export const progress = (march, day) => clamp01((day - march.start) / (march.end
 // where an army is drawn on `day` (a fraction of a day between ticks): its place, or along its leg
 export function armyPoint(army, day, legs, nodes) {
     if (army.at) { const n = nodes.get(army.at); return [n.x, n.y]; }
-    const pts = legs.get(`${army.march.from}>${army.march.to}`);
+    const pts = army.march.sea ? legs.voyage?.(army.march.from, army.march.to, army.march.sea) : legs.get(`${army.march.from}>${army.march.to}`);
     return pts ? along(pts, progress(army.march, day)).at : [nodes.get(army.march.to).x, nodes.get(army.march.to).y];
 }
 
@@ -90,13 +117,16 @@ export function routeLine(army, path, day, legs, nodes) {
     } else {
         const m = army.march, f = progress(m, day);
         const back = path[0] === m.from;
-        const leg = back ? legs.get(`${m.to}>${m.from}`) : legs.get(`${m.from}>${m.to}`);
+        const leg = m.sea ? (back ? legs.voyage(m.to, m.from, [...m.sea].reverse()) : legs.voyage(m.from, m.to, m.sea))
+            : back ? legs.get(`${m.to}>${m.from}`) : legs.get(`${m.from}>${m.to}`);
         pts.push(...along(leg, back ? 1 - f : f).rest);
         from = path[0];
         path = path.slice(1);
     }
     for (const k of path) {
-        const leg = legs.get(`${from}>${k}`) ?? [[nodes.get(from).x, nodes.get(from).y], [nodes.get(k).x, nodes.get(k).y]];
+        // no leg between two ports: a voyage, drawn by sea (buildLegs)
+        const leg = legs.get(`${from}>${k}`) ?? (nodes.get(from).port && nodes.get(k).port && legs.voyage?.(from, k))
+            ?? [[nodes.get(from).x, nodes.get(from).y], [nodes.get(k).x, nodes.get(k).y]];
         pts.push(...leg.slice(1));
         from = k;
     }

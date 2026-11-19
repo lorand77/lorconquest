@@ -31,7 +31,8 @@ export function describeEvent(map, e) {
         case "merge": return `army ${e.army} (${e.owner}) joins army ${e.into}`;
         case "battle": {
             const win = e.winner === "a" ? e.a : e.b, lose = e.winner === "a" ? e.b : e.a;
-            const extra = e.kind === "storm" && e.winner === "a" ? ` The garrison rolls ${e.escape}: ${e.escape <= 3 ? "it escapes" : "it is lost"}.` : "";
+            const ashore = [e.a, e.b].filter((x) => x.landing).map((x) => ` ${x.countries.join("+")}, just ashore from the sea, fights at ${Math.round(x.landing * 100)}%.`).join("");
+            const extra = (e.kind === "storm" && e.winner === "a" ? ` The garrison rolls ${e.escape}: ${e.escape <= 3 ? "it escapes" : "it is lost"}.` : "") + ashore;
             return `${e.kind} at ${place(e.place)}: ${side(e.a)} against ${side(e.b)} — ${win.countries.join("+")} wins; dead ${win.countries.join("+")} ${fmt(win.dead)}, ${lose.countries.join("+")} ${fmt(lose.dead)}.${extra}`;
         }
         case "law": return `${e.country} changes its law to ${e.law}`;
@@ -60,7 +61,7 @@ export function describeEvent(map, e) {
         case "mergeFleet": return `fleet ${e.fleet} (${e.owner}) joins fleet ${e.into}`;
         case "sharpshooters": return `the post at ${place(e.pass)} shoots ${fmt(e.dead)} men of army ${e.army} (${e.owner})`;
         case "postLost": return `the sharpshooters at ${place(e.pass)} die: ${fmt(e.dead)} men of ${e.owner}`;
-        case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the strait in ${place(e.zone)}: ${e.why}`;
+        case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the sea in ${place(e.zone)}: ${e.why}`;
         case "joins": return `${e.country} joins the war against ${e.enemy}, on the ${e.side === "att" ? "attacking" : "defending"} side`;
         case "offer": return `${e.from} asks ${e.country}: ${e.what}`;
         case "lapsed": return `${e.from}'s ${e.kind === "call" ? "call to arms" : e.kind} to ${e.country} lapses${e.kind === "call" ? ": it joins" : ""}`;

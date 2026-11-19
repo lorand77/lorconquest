@@ -333,7 +333,9 @@ function peaceForm(ctx, t) {
         if (bad) { preview.textContent = `Not possible: ${bad}.`; preview.className = "preview bad"; return; }
         if (human) { preview.textContent = "A person will answer."; preview.className = "preview"; return; }
         const a = peaceAnswer(game, t, me, terms());
-        preview.textContent = `War score ${a.score.toFixed(1)} against a price of ${a.cost.toFixed(1)}: ${a.accept ? "it will accept" : "it will refuse"}.`;
+        // land beyond what this war has won is refused whatever the score (RULES.md §10, Peace)
+        preview.textContent = a.land ? `You ask for settlements of ${n(a.land.gain)} people, and have taken ${a.land.won ? `only ${n(a.land.won)}` : "none"} in this war: land is won in the field, not at the table — it will refuse.`
+            : `War score ${a.score.toFixed(1)} against a price of ${a.cost.toFixed(1)}: ${a.accept ? "it will accept" : "it will refuse"}.`;
         preview.className = `preview ${a.accept ? "good" : "bad"}`;
     };
     for (const [, b] of [...takes, ...gives]) b.addEventListener("change", update);
@@ -352,5 +354,5 @@ function peaceForm(ctx, t) {
         row(ctx, subject),
         preview,
         mk("button", { class: "primary", onclick: async () => { const r = await ctx.send({ type: "proposePeace", with: t, terms: terms() }); if (r.ok) { ctx.ui.peace = null; ctx.redraw(); } } }, "Propose peace"),
-        mk("p", { class: "hint" }, "Price: what you ask, in % of its people, 10 for a year of its money, 50 for a vassal or 25 for a protectorate — less what you give. A peace leaves each side at least one settlement. War score: the share of its people you took, less the share of yours it took, plus how much stronger you are — counted only as far as the war has been fought: in full once a side has lost a tenth of its people."))];
+        mk("p", { class: "hint" }, "Price: what you ask, in % of its people, 10 for a year of its money, 50 for a vassal or 25 for a protectorate — less what you give. A peace leaves each side at least one settlement. War score: the share of its people you took, less the share of yours it took, plus how much stronger you are — counted only as far as the war has been fought: in full once a side has lost a tenth of its people. Settlements, though, only up to the people you have taken in this war, less those you lost: strength buys money, freedom or a subject, never land."))];
 }

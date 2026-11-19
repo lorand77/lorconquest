@@ -1,10 +1,11 @@
 // Marching (RULES.md §8): an army is either at a place or on a leg between two, moving at an even pace from its
 // start day to its end day — so where it is on any day is simple arithmetic, for the engine and for the screen.
-// Setting an army on its way, turning it back, retreats, and armies destroyed with nowhere to go.
+// Setting an army on its way, turning it back, retreats, and armies destroyed with nowhere to go. A voyage by sea lane is a
+// march too, from port to port, its zones in `march.sea`: a fleet's hop a zone, at sea all the way.
 
 import { menOf, peopleLost } from "./army.js";
-import { findNearest, findRoute, legKey } from "./map.js";
-import { crossStrait, straitClear } from "./naval.js";
+import { findNearest, findRoute, isVoyage, legKey } from "./map.js";
+import { contested, crossSea, crossStrait, straitClear, voyage } from "./naval.js";
 import { atWar, canEnter, isFriend, isRebel, killPeople, removeArmy } from "./state.js";
 
 // how far along its leg a march is on `day`: 0 at the start, 1 on arrival (not clamped)
@@ -18,13 +19,23 @@ export function positionOf(army, day) {
     return { from: m.from, to: m.to, f: clamp01(progress(m, day)), days: m.end - m.start };
 }
 
-export function startLeg(game, army, from, to, start) {
+// on its way along the leg, or by sea lane from port to port (the zones given, or the clear way's)
+export function startLeg(game, army, from, to, start, zones = null) {
     army.at = null;
+    if (isVoyage(game.map, from, to)) {
+        const sea = zones ?? voyage(game, army.owner, from, to) ?? voyage(game, army.owner, from, to, false);
+        army.march = { from, to, start, end: start + sea.length * game.map.sea.hopDays, sea };
+        return;
+    }
     army.march = { from, to, start, end: start + game.map.legDays.get(legKey(from, to)) };
 }
 
-// a strait is open to an army only where its country has the ships and no enemy has any (RULES.md §8)
-const straitOpen = (game, country) => (from, edge) => !edge.strait || straitClear(game, country, edge.strait);
+// a strait is open to an army only where its country has the ships and no enemy has any (RULES.md §8); so is a sea lane, at
+// the zone it sets out in and the one it lands in, and none between may hold an enemy fleet at sea
+const straitOpen = (game, country) => (from, edge) => {
+    if (edge.sea) return edge.sea.sail ? !contested(game.state, country, edge.sea.sail) : straitClear(game, country, edge.sea.board ?? edge.sea.land);
+    return !edge.strait || straitClear(game, country, edge.strait);
+};
 
 // may the army pass through `key`? Land it may enter — and an army sent home (retreating "home": land closed to it by a peace,
 // the end of an agreement, a capture) may also cross land that is not an enemy's on its way out, or it could never leave
@@ -35,11 +46,14 @@ export function mayPass(game, army, key) {
     return !atWar(game.state, army.owner, game.state.settlements[land].owner);
 }
 
-// the fastest way for an army from where it is to `to`, through land it may pass
-export const routeFor = (game, army, to) => findRoute(game.map, positionOf(army, game.state.day), to, (k) => mayPass(game, army, k), straitOpen(game, army.owner));
+// the fastest way for an army from where it is to `to`, through land it may pass, and by sea where its ships allow — never for
+// one retreating: a beaten army falls back by land and strait (RULES.md §8)
+export const routeFor = (game, army, to) => findRoute(game.map, positionOf(army, game.state.day), to, (k) => mayPass(game, army, k), straitOpen(game, army.owner), !army.retreating);
 
-// may the army set out from `from` to `to`? A strait needs its ships there, and a battle if an enemy fleet holds it
+// may the army set out from `from` to `to`? A strait needs its ships there, a sea lane its ships at both ends and a clear
+// way. Returns false, or true — or the zones of the voyage it may set out on
 export function mayDepart(game, army, from, to, events) {
+    if (isVoyage(game.map, from, to)) return crossSea(game, army, from, to, events) ?? false;
     const zone = game.map.straits.get(legKey(from, to));
     return !zone || crossStrait(game, army, zone, events);
 }
@@ -51,15 +65,16 @@ export function follow(game, army, path, events) {
     const day = game.state.day;
     if (army.at) {
         if (!path.length) return true;
-        if (!mayDepart(game, army, army.at, path[0], events)) return false;
-        startLeg(game, army, army.at, path[0], day);
+        const go = mayDepart(game, army, army.at, path[0], events);
+        if (!go) return false;
+        startLeg(game, army, army.at, path[0], day, Array.isArray(go) ? go : null);
         army.path = path.slice(1);
         return true;
     }
     const m = army.march;
     if (path[0] === m.from) {
         const days = m.end - m.start, start = day - (1 - clamp01(progress(m, day))) * days;
-        army.march = { from: m.to, to: m.from, start, end: start + days };
+        army.march = { from: m.to, to: m.from, start, end: start + days, ...(m.sea ? { sea: [...m.sea].reverse() } : {}) };
     }
     army.path = path.slice(1);
     return true;

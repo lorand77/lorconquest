@@ -10,7 +10,7 @@ export { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, nearVictory, areRiv
 export { GUARANTEE_DAYS, OFFER_DAYS, PACT_DAYS, PROPOSAL_DAYS, TRUCE_DAYS, germanStates, hreSettlementsOf, INTEGRATE_DAYS, integrateDays, integrateError, integratePrice, mayPropose, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, validateTerms, warJoiners } from "./diplomacy.js";
 export { checkVictory, scores } from "./victory.js";
 export { TRAINING_SHARE, TRIBUTE, armyCapOf, armySoldiersOf, economyOf, trainingRoom, manpowerOf, mercenariesOf, navyCapOf, ownedBy, popOf, rebelsOf, soldiersOf, techCost } from "./economy.js";
-export { blockaded, contested, crossable, crewAtSea, fleetPower, shipCount, shipsIn, straitClear } from "./naval.js";
+export { blockaded, contested, crossable, crewAtSea, fleetPower, shipCount, shipsIn, straitClear, voyage } from "./naval.js";
 export * from "./costs.js";
 export { CREW_PER_CANNON, WEAPONS, MULTIPLIER, menOf, militaryPower, power } from "./army.js";
 export { COOLDOWN_DAYS } from "./battle.js";
@@ -18,7 +18,7 @@ export { besiegedIn, siegeDays, situation, wallDefence } from "./fighting.js";
 export { positionOf, progress, routeFor } from "./movement.js";
 export { START_YEAR, YEAR_DAYS, MONTH_NAMES, dateOf, dayOf, formatDate, longDate, parseDate } from "./calendar.js";
 export { describeEvent, eventCountries, placeName } from "./text.js";
-export { buildMap, legKey } from "./map.js";
+export { buildMap, isVoyage, legKey, portsInReach } from "./map.js";
 export { proclaimCheck } from "./regions.js";
 export { withMemo } from "./memo.js";
 export { REFORMATION_DAY, RELIGIONS, RELIGION_NAMES, reformationError, coringDays, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, religionOf } from "./religion.js";

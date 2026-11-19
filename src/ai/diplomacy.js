@@ -83,10 +83,11 @@ function peaceTerms(game, code, foe, cash = game.state.countries[code].treasury,
     }
     // to a country twice our size: its protectorate, before any land — never to a rival, which it would sooner give land to
     if (sizeOf(st, foe) >= 2 * sizeOf(st, code) && !areRivals(game, code, foe) && ok({ ...terms, money: 0, becomeSubject: "protectorate" })) return { ...terms, money: 0, becomeSubject: "protectorate" };
-    terms.money = 0;                                                            // land is offered alone, not with the money as well
+    terms.money = 0;                                                            // land is offered alone first
     const spare = ownSettlements(st, code).sort((a, b) => a.cores.includes(code) - b.cores.includes(code) || a.pop - b.pop || a.id - b.id);
-    // one settlement that will do, the least of them, rather than several: each counts as one for victory, whatever its people
-    if (spare.length > 1) for (const s of spare) if (ok({ ...terms, give: [s.id] })) return { ...terms, give: [s.id] };
+    // one settlement that will do, the least of them, rather than several: each counts as one for victory, whatever its people —
+    // and with money besides if that is what it takes, land paying only as far as the winner has taken land (RULES.md §10)
+    if (spare.length > 1) for (const share of [0, 0.5, 1]) for (const s of spare) if (ok({ ...terms, give: [s.id], money: -offer * share })) return { ...terms, give: [s.id], money: -offer * share };
     for (const s of spare) {
         if (terms.give.length >= Math.min(6, spare.length - 1)) break;            // and leaves us one
         terms.give.push(s.id);

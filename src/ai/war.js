@@ -6,7 +6,7 @@
 // Everything is read from the state, nothing is remembered: a restarted game plays on as before. An army's id is only
 // known once its split has been applied, so musters take two thinks (the second a tick after the first, see index.js).
 import { mayFight } from "../engine/battle.js";
-import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, armyCapOf, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, wallDefence } from "../engine/index.js";
+import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, armyCapOf, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, voyage, wallDefence } from "../engine/index.js";
 import { WEAPONS, emptyMen } from "../engine/army.js";
 import { legKey } from "../engine/map.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, reserveOf, stagingSettlement, threatsOf, winChance } from "./util.js";
@@ -32,7 +32,8 @@ const placeOf = (a) => a.at ?? a.march?.to ?? null;
 // to find again)
 const destinationOf = (a) => (a.path.length ? a.path[a.path.length - 1] : a.march?.to ?? a.at);
 const arrivalOf = (game, a) => {
-    const legDays = (from, to) => game.map.legDays.get(legKey(from, to)) ?? 0;
+    // a voyage in the path: a fleet's hop for each zone of the way by sea (RULES.md §8)
+    const legDays = (from, to) => game.map.legDays.get(legKey(from, to)) ?? (voyage(game, a.owner, from, to, false)?.length ?? 1) * game.map.sea.hopDays;
     let d = a.march.end, at = a.march.to;
     for (const k of a.path) { d += legDays(at, k); at = k; }
     return d;

@@ -211,7 +211,7 @@ test("fleets split and merge in the same place", () => {
     assert.deepEqual([f.ships.cogs, game.state.fleets[part.id]], [10, undefined]);
 });
 
-test("an army crosses a strait in 3 months, only where its country has 10 ships in the zone", () => {
+test("an army crosses a strait in 2 months, only where its country has 10 ships in the zone", () => {
     const game = tinyGame();
     order(game, cmd("declareWar", { target: "CCC" }));
     assert.match(refused(game, cmd("move", { army: 3, to: 6 })), /no way/);   // no ships
@@ -219,8 +219,8 @@ test("an army crosses a strait in 3 months, only where its country has 10 ships 
     assert.match(refused(game, cmd("move", { army: 3, to: 6 })), /no way/);   // 9 are not 10
     giveFleet(game, "AAA", { cogs: 1 });                                       // in port counts, if it is in the zone
     order(game, cmd("move", { army: 3, to: 6 }));
-    assert.deepEqual([game.state.armies[3].march.from, game.state.armies[3].march.to, game.state.armies[3].march.end], ["3", "6", 91]);
-    const events = runTo(game, 91);
+    assert.deepEqual([game.state.armies[3].march.from, game.state.armies[3].march.to, game.state.armies[3].march.end], ["3", "6", 61]);
+    const events = runTo(game, 61);
     assert.deepEqual(ofType(events, "siegeStart").map((e) => [e.settlement, e.by]), [[6, "AAA"]]);
 });
 

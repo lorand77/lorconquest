@@ -67,4 +67,8 @@ export const lawChangeDay = (country, to) => (country.lawDay === null || country
 export const DEFAULT_BAN_DAYS = 20 * YEAR_DAYS;
 export const DEBT_DAYS = 10 * YEAR_DAYS;
 export const CORING_DAYS = 20 * YEAR_DAYS;
-export const STRAIT_DAYS = days(3);
+export const STRAIT_DAYS = days(2);
+// a voyage by sea lane (RULES.md §8): through at most this many sea zones, the one it sets out in counted; an army fights at
+// this share of its strength on the day it lands, unless its side blockades the port
+export const SEA_ZONES_MAX = 3;
+export const LANDING = 0.75;

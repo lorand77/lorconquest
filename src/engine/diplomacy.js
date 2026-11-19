@@ -12,6 +12,7 @@ import { money } from "./command-util.js";
 import { BUILDING_PRICE } from "./costs.js";
 import { popOf } from "./economy.js";
 import { capture } from "./fighting.js";
+import { portsInReach } from "./map.js";
 import { retreat } from "./movement.js";
 import { NEAR_VICTORY, agreementAnswer, bordering, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
 import { random } from "./random.js";
@@ -232,7 +233,8 @@ export function joinByChoice(game, joiner, ally, enemy, events) {
 // peace terms: { take: [settlements of the other], give: [of mine], money: + to me, − to the other, makeSubject: the other
 // becomes my "vassal" | "protectorate", becomeSubject: I become the other's, release: [subjects of the other freed] }
 // of the settlements `ids`, those `gainer` could not be given in a peace (validateTerms): reached from its land and its subjects'
-// over roads, passes and straits, through the others of `ids` — or under its siege — are within reach; the rest are not
+// over roads, passes, straits and sea lanes (a port it could land at, whatever the fleets), through the others of `ids` — or
+// under its siege — are within reach; the rest are not
 export function outOfReach(game, gainer, ids) {
     const st = game.state, want = new Set(ids.map(String)), mine = new Set([gainer, ...subjectsOf(st, gainer)]);
     const reached = new Set(), seen = new Set(), todo = [];
@@ -240,7 +242,7 @@ export function outOfReach(game, gainer, ids) {
     for (const id of want) if (st.settlements[id]?.siege?.by === gainer && !seen.has(id)) { seen.add(id); reached.add(id); todo.push(id); }
     while (todo.length) {
         const at = todo.pop();
-        for (const e of game.map.adj.get(at) ?? []) {
+        for (const e of [...(game.map.adj.get(at) ?? []), ...portsInReach(game.map, at).map((to) => ({ to }))]) {
             if (seen.has(e.to)) continue;
             const pass = game.map.nodes.get(e.to)?.kind === "pass";
             if (!pass && !want.has(e.to)) continue;                               // through a pass, or a settlement of the peace

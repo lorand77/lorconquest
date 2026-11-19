@@ -36,8 +36,8 @@ const COMMANDS = {
         if (!found) return refuse(`army ${army.id} has no way to ${to} through land it may enter`);
         const left = army.at, events = [];
         if (!follow(game, army, found.path, events)) {
-            // a strait it may not cross yet: refused if nothing happened, else a naval battle was fought
-            if (events.length === 1 && events[0].type === "crossFailed") return refuse(`army ${army.id} cannot cross the strait: ${events[0].why}`);
+            // a strait or sea lane it may not cross yet: refused if nothing happened, else a naval battle was fought
+            if (events.length === 1 && events[0].type === "crossFailed") return refuse(`army ${army.id} cannot cross by sea: ${events[0].why}`);
             return done(events);
         }
         army.relief = false;

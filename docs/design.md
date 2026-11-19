@@ -287,7 +287,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   and storms counts them. A host at a pass held by an enemy post storms it when clearly the stronger, and one whose way runs
   through such a pass stops there first to do so. A country that loses its capital names its largest city the new one. At
   sea it builds only cogs, and only for the straits between its land and an enemy's — 10 ships in the strait's zone,
-  sailed there a zone at a time or bought in a port it holds there — and patrols only where enemy ships are at sea and its
+  sailed there a zone at a time or bought in a port it holds there — and for a landing: against the nearest enemy it cannot
+  reach by land or strait, the two ends of the shortest way by sea from a port of its own to one of theirs are held the same way,
+  and its armies, finding the route open, sail (its march estimates count voyages wherever its ships hold the sea) — and patrols only where enemy ships are at sea and its
   side has 1.3 times their power, going back to port when outmatched or alone; it researches no warships it would not build.
   An army counts as a garrison only in a settlement of its own country: one at a pass or before an enemy town is a host,
   given orders like any (`util.js`, `garrisons`).
@@ -622,11 +624,13 @@ would break that.
   rounded separately and each takes 10 crew with it. Population, treasury and money keep their
   fractions inside the engine and are only rounded for people.
 - **The modules:** `calendar`, `random`, `costs` (prices, techs, laws and durations as data), `army` (what
-  an army is worth, losses, mercenaries), `map` (places, legs, straits, sea zones), `state`,
-  `movement` (marching, turning back, retreats, straits), `battle` (one battle and the cooldown),
+  an army is worth, losses, mercenaries), `map` (places, legs, straits, sea zones, and the route search — whose sea lanes are
+  waypoints of its own, a zone at a depth, never places: a path names only places, and two ports in a row with no leg between
+  them are a voyage, `march.sea` its zones), `state`,
+  `movement` (marching, turning back, retreats, straits, voyages), `battle` (one battle and the cooldown),
   `fighting` (arrivals, sieges, storms, sorties, relief, passes, head-on meetings), `supply`
   (monthly disease and hunger), `economy` (soldiers, caps, money, the monthly step), `forces`
-  (training and hires), `naval` (fleets, patrols, blockades, straits), `passes` (sharpshooters),
+  (training and hires), `naval` (fleets, patrols, blockades, straits, the way of a voyage), `passes` (sharpshooters),
   `events` (harvest, plague, uprisings and the rebels), `relations` (who is allied, guaranteed, subject or
   friend — pure questions over the state), `opinion` (military power, neighbours, opinion, and the formulas by which a
   computer answers), `regions` (whether a country may proclaim a region now — all of it held, or what its Needs say — one

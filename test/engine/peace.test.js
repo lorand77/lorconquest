@@ -67,15 +67,20 @@ test("a declaration during a truce breaks it; a computer refuses a peace it is w
     const plain = order(game, cmd("BBB", "proposePeace", { with: "AAA" }));
     assert.equal(ofType(plain, "answer")[0].accepted, false);
     assert.deepEqual(game.state.wars, ["AAA|BBB"]);
-    // its city is all it has left, and a peace leaves it one settlement; with a town besides, it may give the city
+    // its city is all it has left, and a peace leaves it one settlement; with a town besides, it may give one
     assert.match(refused(game, cmd("BBB", "proposePeace", { with: "AAA", terms: { give: [4] } })), /you would be left with no settlement/);
     game.state.settlements[3].owner = "BBB";
     assert.match(refused(game, cmd("BBB", "proposePeace", { with: "AAA", terms: { give: [4] } })), /less than 5 years ago/);
     game.state.memory.proposed = {};
-    const gift = order(game, cmd("BBB", "proposePeace", { with: "AAA", terms: { give: [4] } }));
+    // land pays only as far as AAA took land in this war (RULES.md §10): the city's 20,000 count no more than the town's 10,000 it
+    // took — 25 of BBB's 40,000 at the start, short of the 35.8 its war score asks; the rest is paid in money
+    const city = peaceAnswer(game, "AAA", "BBB", { give: [4] }), town = peaceAnswer(game, "AAA", "BBB", { give: [3] });
+    assert.deepEqual([city.accept, city.cost, town.cost], [false, -25, -25]);
+    game.state.countries.BBB.treasury = 100000;
+    const gift = order(game, cmd("BBB", "proposePeace", { with: "AAA", terms: { give: [3], money: -70000 } }));
     assert.equal(ofType(gift, "answer")[0].accepted, true);
-    assert.equal(game.state.settlements[4].owner, "AAA");
-    assert.equal(game.state.settlements[4].heldSince, game.day);
+    assert.equal(game.state.settlements[3].owner, "AAA");
+    assert.equal(game.state.settlements[3].heldSince, game.day);
 });
 
 test("peace terms: settlements, money, subjects — checked, applied, and scored", () => {

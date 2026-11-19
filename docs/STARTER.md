@@ -34,8 +34,9 @@ cost it unlocks — better guns (hand cannons, arquebuses, muskets), sharpshoote
    of its people at once, so raise a big army in several places.
 2. **Arm them**: soldiers without weapons are worth nothing in battle. Buy swords, pikes, cavalry, guns and cannons, and
    give them to an army anywhere.
-3. **Move**: select an army and click where it should go. It follows roads, over passes and across straits (which need
-   your ships in that sea).
+3. **Move**: select an army and click where it should go. It follows roads, over passes and across straits — and sails from
+   port to port up to three sea zones away — wherever your ships hold that sea. An army is weaker the day it lands, unless your
+   fleet blockades the port.
 
 Two enemy armies in one place fight a **battle**; the loser retreats. An empty enemy settlement falls the moment you enter
 it. A defended one is **besieged** — it falls when the siege ends, unless relieved — or **stormed** at once, at a price.

@@ -1832,7 +1832,8 @@ generated("overview",
     ...[...bypop.keys()].sort((a, b) => b - a).map((p) => `| ${Math.trunc(p / 1000)}K | ${bypop.get(p).length}: ${bypop.get(p).map(cname).join(" · ")} |`), "",
     sailing, "",
     `**Naval powers:** ${naval.length} countries, ${ships} ships. Crossing a strait needs ${STRAITN} ships (10 × x) in the sea zone the strait lies in (RULES.md §8), `
-        + `so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail ${STRAITN} ships there.`, "",
+        + `so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail ${STRAITN} ships there. `
+        + `A voyage by sea lane, to a port up to three zones off, needs ${STRAITN} at each end, and no enemy fleet at sea on the way.`, "",
     "| Country | Ports held | Home zones | Ships | Can cross straits? |", "|---|---|---|---|---|",
     ...navalRows);
 fs.writeFileSync(DOC, doc.map((l) => l + "\n").join(""));
