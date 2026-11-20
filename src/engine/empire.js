@@ -3,11 +3,13 @@
 // the start of the year before, and at once whenever the throne falls vacant: the Emperor no longer a German state, out of the
 // game or someone's vassal. Candidates may promise electors money, paid when the votes are cast whoever they go to. A person's
 // electors vote as the person chooses; a computer's by a formula, as the computer answers everything else (opinion.js), so the
-// votes are the engine's own and replay exactly. A scenario without electors has no crown (Mitteleuropa's plain proposal is
+// votes are the engine's own and replay exactly. The crown's Imperial Authority (0 to 100) rises with years of peace among the German
+// states and falls with years of their wars, and with the crown changing hands; the rest of what moves it is in diplomacy.js
+// (an Emperor's wars and peaces, Defender of the Empire). A scenario without electors has no crown (Mitteleuropa's plain proposal is
 // another thing: diplomacy.js, proposeEmpire).
 
 import { YEAR_DAYS } from "./calendar.js";
-import { germanStates, hreSettlementsOf } from "./diplomacy.js";
+import { AUTHORITY, addAuthority, germanStates, hreSettlementsOf } from "./diplomacy.js";
 import { popOf } from "./economy.js";
 import { opinion } from "./opinion.js";
 import { atWar, isRebel } from "./state.js";
@@ -23,7 +25,7 @@ export const REIGNING = 20, PROMISE_MONEY = 2000, PROMISE_MAX = 30, TOO_BIG = 15
 export function startEmpire(scenario) {
     const e = scenario.empire;
     if (!e?.electors?.length) return null;
-    return { emperor: e.emperor ?? null, next: ELECTION_YEARS * YEAR_DAYS, called: false, promises: {}, choices: {}, last: null };
+    return { emperor: e.emperor ?? null, authority: AUTHORITY.START, next: ELECTION_YEARS * YEAR_DAYS, called: false, promises: {}, choices: {}, last: null };
 }
 
 // the electors as they stand: each vote, its settlement, and who holds it (null for nobody, or rebels)
@@ -130,6 +132,7 @@ export function holdElection(game, events, why) {
     emp.called = false;
     emp.last = { day: st.day, votes, ...(runoff ? { runoff } : {}) };
     events.push({ type: "elected", day: st.day, country: emp.emperor, previous: before, votes, ...(runoff ? { runoff } : {}), cast, why, concern });
+    if (before && emp.emperor && emp.emperor !== before) addAuthority(game, AUTHORITY.PASSED, "passed", events);
 }
 
 // whom an election concerns, for the news (text.js, eventCountries): every German state, every candidate and every elector
@@ -145,6 +148,12 @@ const vacant = (game) => {
 export function empireDay(game, events) {
     const st = game.state, emp = st.empire;
     if (!emp) return;
+    // at the start of each year: a year with no war between German states raises the crown's authority, three or more lower it
+    if (st.day > 0 && st.day % YEAR_DAYS === 0) {
+        const german = new Set(germanStates(game)), wars = st.wars.filter((k) => k.split("|").every((c) => german.has(c))).length;
+        if (wars === 0) addAuthority(game, AUTHORITY.PEACE_YEAR, "peace", events);
+        else if (wars >= 3) addAuthority(game, AUTHORITY.WARS_YEAR, "wars", events);
+    }
     if (!emp.called && st.day >= emp.next - YEAR_DAYS && st.day < emp.next) {
         emp.called = true;
         events.push({ type: "electionCalled", day: st.day, on: emp.next, candidates: candidatesOf(game), concern: concerned(game) });

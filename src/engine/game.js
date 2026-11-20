@@ -20,8 +20,8 @@ export class Game {
     static create(scenario, { seed = 1, humans = [] } = {}) {
         const map = buildMap(scenario);
         const game = new Game(map, initialState(map, seed, humans));
-        applyStart(game);                                  // the wars and agreements the scenario opens with
         game.state.empire = startEmpire(scenario);         // the Emperor of the start, and the first election 25 years on
+        applyStart(game);                                  // the wars and agreements the scenario opens with
         return game;
     }
 

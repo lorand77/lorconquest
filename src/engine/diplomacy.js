@@ -14,7 +14,7 @@ import { popOf } from "./economy.js";
 import { capture } from "./fighting.js";
 import { portsInReach } from "./map.js";
 import { retreat } from "./movement.js";
-import { NEAR_VICTORY, agreementAnswer, bordering, demandChance, nearVictory, neighboursOf, subjectChance } from "./opinion.js";
+import { NEAR_VICTORY, agreementAnswer, bordering, demandChance, militaryPowerOf, nearVictory, neighboursOf, subjectChance, warScore } from "./opinion.js";
 import { random } from "./random.js";
 import { WORST_FAITH, faithRegard } from "./religion.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
@@ -40,7 +40,9 @@ export function openWar(game, a, b, attacker) {
     if (st.wars.includes(key)) return;
     st.wars.push(key);
     st.wars.sort();
-    st.warInfo[key] = { start: st.day, attacker, startPop: { [a]: popOf(st, a), [b]: popOf(st, b) }, taken: { [a]: 0, [b]: 0 }, gained: {} };
+    st.warInfo[key] = { start: st.day, attacker, startPop: { [a]: popOf(st, a), [b]: popOf(st, b) }, taken: { [a]: 0, [b]: 0 }, gained: {},
+        // where the scenario has an Emperor, which of the two was a German state as the war began (crownAtPeace)
+        ...(st.empire ? { german: { [a]: isGerman(game, a), [b]: isGerman(game, b) } } : {}) };
 }
 
 // it ends; the world remembers when
@@ -176,8 +178,67 @@ export function joinWar(game, joiner, side, principal, other, events) {
 // still stand, and the ally be free to fight that enemy — not its overlord or subject, not at war with the caller
 export function callStands(game, o) {
     const st = game.state;
-    return atWar(st, o.from, o.enemy) && hasAgreement(st, "military", o.from, o.to) && !atWar(st, o.to, o.from)
+    // a call to defend the Empire stands while the one called still wears the crown; a call to arms while the alliance holds
+    const bond = o.defender ? st.empire?.emperor === o.to : hasAgreement(st, "military", o.from, o.to);
+    return atWar(st, o.from, o.enemy) && bond && !atWar(st, o.to, o.from)
         && overlordOf(st, o.to) !== o.enemy && overlordOf(st, o.enemy) !== o.to && st.countries[o.to].out === null;
+}
+
+// ---------- the crown's authority (RULES.md §10, The Emperor) ----------
+
+// Imperial Authority, 0 to 100, the crown's not a country's: what moves it
+export const AUTHORITY = { START: 20, PEACE_YEAR: 2, WARS_YEAR: -2, DEFENDED: 5, KEPT: -5, REFUSED: -10, ATTACKED: -15, PASSED: -10 };
+export function addAuthority(game, delta, why, events) {
+    const emp = game.state.empire;
+    if (!emp || !delta) return;
+    const before = emp.authority;
+    emp.authority = Math.max(0, Math.min(100, before + delta));
+    if (emp.authority !== before) events.push({ type: "authority", day: game.state.day, country: emp.emperor, delta: emp.authority - before, now: emp.authority, why });
+}
+const isGerman = (game, c) => hreSettlementsOf(game, c) > 0;
+
+// the crown in a new war: an Emperor attacking a German state loses authority; an outsider attacking one calls the Emperor in as
+// Defender of the Empire — a computer Emperor comes if it is at least half the attacker's strength and bound to it by no pact,
+// truce or alliance, and refusing costs it authority; a person is asked, as for a call to arms
+function crownAtWar(game, a, b, events) {
+    const st = game.state, emp = st.empire?.emperor;
+    if (!emp || !st.countries[emp]) return;
+    const germanB = isGerman(game, b);
+    if (a === emp && germanB) addAuthority(game, AUTHORITY.ATTACKED, "attacked", events);
+    if (!germanB || isGerman(game, a) || emp === a || emp === b || atWar(st, emp, a) || atWar(st, emp, b)) return;
+    if (isVassal(st, emp) || overlordOf(st, emp) === a || overlordOf(st, a) === emp || st.countries[emp].out !== null) return;
+    if (isHuman(st, emp)) {
+        st.offers.push({ id: ++st.offerSeq, kind: "call", from: b, to: emp, enemy: a, side: "def", defender: true, deadline: st.day + OFFER_DAYS });
+        events.push({ type: "offer", day: st.day, country: emp, from: b, what: "a call to defend the Empire" });
+        return;
+    }
+    const bound = agreementsBetween(st, emp, a).some((x) => ["pact", "truce", "defensive", "military"].includes(x.kind));
+    if (!bound && militaryPowerOf(st, emp) >= 0.5 * militaryPowerOf(st, a)) defendEmpire(game, emp, b, a, events);
+    else refuseDefence(game, emp, b, a, events);
+}
+
+// the Emperor joins as Defender of the Empire — the war marked, for its peace (makePeace) — or refuses, at a cost
+export function defendEmpire(game, emp, ally, enemy, events) {
+    if (joinWar(game, emp, "def", ally, enemy, events)) game.state.warInfo[warKey(emp, enemy)].defender = true;
+}
+export function refuseDefence(game, emp, ally, enemy, events) {
+    events.push({ type: "defenderRefuses", day: game.state.day, country: emp, ally, enemy });
+    addAuthority(game, AUTHORITY.REFUSED, "refused", events);
+}
+
+// the crown at a peace: the Emperor's war as Defender won (a war score of 0 or more) raises it; every settlement of the Empire an
+// outsider keeps of a German state's — one whose people count it core — lowers it, outsider and German state as the war began
+// (an outsider that took land of the Empire holds some now). `before` is taken as the peace begins
+function crownAtPeace(game, mine, other, before, events) {
+    const st = game.state, emp = st.empire?.emperor;
+    if (!emp) return;
+    if (before.defended) addAuthority(game, AUTHORITY.DEFENDED, "defended", events);
+    const hre = new Set(game.map.scenario.settlements.filter((s) => s.hre).map((s) => s.id));
+    for (const [o, g] of [[mine, other], [other, mine]]) {
+        if (before.german[o] || !before.german[g]) continue;
+        const kept = Object.values(st.settlements).filter((s) => s.owner === o && hre.has(s.id) && s.cores.includes(g)).length;
+        if (kept) addAuthority(game, AUTHORITY.KEPT * kept, "kept", events);
+    }
 }
 
 // a country calls its military ally: a computer joins; a human is asked, and joins if it does not answer in 6 months
@@ -209,6 +270,7 @@ export function declareWar(game, a, b, events) {
     const { auto, calls } = warJoiners(game, a, b);
     for (const [c, side] of auto) joinWar(game, c, side, side === "att" ? a : b, side === "att" ? b : a, events);
     for (const [c, caller, side] of calls) call(game, c, caller, side, a, b, events);
+    crownAtWar(game, a, b, events);
     evictClosed(game, events);
 }
 
@@ -320,6 +382,11 @@ function scoreWarmongers(game, a, b, info, terms, gainer) {
 // sign a peace between `mine` (who proposed) and `other` with the terms; both have agreed (RULES.md §10)
 export function makePeace(game, mine, other, terms, events) {
     const st = game.state, t = terms ?? {}, info = st.warInfo[warKey(mine, other)];
+    // the crown as the peace begins: whether the Emperor ends a war it defended, winning; which side was a German state
+    const emp = st.empire?.emperor, crown = st.empire ? {
+        defended: Boolean(info?.defender) && (emp === mine || emp === other) && warScore(game, emp, emp === mine ? other : mine) >= 0,
+        german: info?.german ?? { [mine]: isGerman(game, mine), [other]: isGerman(game, other) },
+    } : null;
     const gained = {};
     for (const id of t.take ?? []) { capture(game, st.settlements[id], mine, events, "peace"); gained[id] = mine; }
     for (const id of t.give ?? []) { capture(game, st.settlements[id], other, events, "peace"); gained[id] = other; }
@@ -334,6 +401,7 @@ export function makePeace(game, mine, other, terms, events) {
     if (t.becomeSubject) setSubject(game, mine, other, t.becomeSubject, events);
     addAgreement(game, "truce", mine, other, TRUCE_DAYS);
     events.push({ type: "peace", day: st.day, country: mine, with: other, terms: t });
+    if (crown) crownAtPeace(game, mine, other, crown, events);
     evictClosed(game, events);
 }
 

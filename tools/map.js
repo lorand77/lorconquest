@@ -367,6 +367,10 @@ const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map(
         if (!emperor || !CN.has(emperor)) err("The Holy Roman Empire: no 'At the start the Emperor is CODE' naming a country");
         else if (![...S.values()].some((x) => x.country === emperor && x.hre)) err(`The Holy Roman Empire: the Emperor ${emperor} holds no settlement in the Empire`);
         else EMPIRE.emperor = emperor;
+        // the free cities that pay the Emperor their dues: "Every free city — CODE, CODE … and CODE — pays"
+        const cities = /every free city — ([^—]+) — pays/i.exec(PROSE)?.[1];
+        EMPIRE.freeCities = cities ? [...new Set([...cities.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]))].sort() : [];
+        for (const c of EMPIRE.freeCities) if (!CN.has(c)) err(`The Holy Roman Empire: no free city ${c}`);
     }
     for (const r of sub("Fleets")) {
         const code = codesIn(r.Country ?? "")[0], ships = Number(r.Ships);

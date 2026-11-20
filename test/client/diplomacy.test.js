@@ -299,6 +299,7 @@ test("the crown, where the scenario has electors: the Emperor, the next election
     };
     const nodes = diplomacyTab(ctx), text = textOf(nodes);
     assert.match(text, /Emperor: Inner Austria\. An election is called for 1 January 1465\./);
+    assert.match(text, /Imperial Authority: 20 — German states think 4 better of the Emperor\. The free cities pay it 5% of their money: Augsburg, Basel/);
     assert.match(text, /Archbishop of Mainz, Mainz: Mainz — would vote for Inner Austria/);
     assert.match(text, /King of Bohemia, Prague: you — would vote for you/);
     const vote = find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.text === "as a computer elector would"))[0];

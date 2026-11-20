@@ -10,7 +10,7 @@ import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUI
     MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
-import { armyList, capitalsOf, isCore, isRebel, killPeople, removeArmy } from "./state.js";
+import { armyList, atWar, capitalsOf, isCore, isRebel, killPeople, removeArmy } from "./state.js";
 import { coringDays } from "./religion.js";
 import { memo } from "./memo.js";
 
@@ -29,6 +29,8 @@ export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(s
 export const TRAINING_SHARE = 0.1;
 export const trainingRoom = (state, code, s) => Math.max(0, TRAINING_SHARE * s.pop - sum(state.countries[code].training.filter((t) => t.settlement === s.id), (t) => t.n));
 // a sea power's raised in proportion to the fleet its scenario gives it (RULES.md §9; state.js, navy)
+// the share of its money a free city pays the Emperor each year (RULES.md §10, The Emperor)
+export const DUES = 0.05;
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code) * (state.countries[code].navy ?? 1);
 export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
@@ -61,7 +63,12 @@ export function economyOf(game, code) { return memo("economy", code, () => econo
 function economyOfNow(game, code) {
     const e = economyBase(game, code), st = game.state;
     const share = (c) => { if (!st.countries[c].overlord) return 0; const b = economyBase(game, c); return TRIBUTE[subjectKind(st, c)] * Math.max(0, b.moneyPerYear - b.capitalMoney); };
-    const paid = share(code), received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0);
+    // a free city's dues to the Emperor (RULES.md §10, The Emperor): 5% of its money, when positive, while the two are not at war —
+    // tribute as a subject's is, on top of any it pays an overlord
+    const emperor = st.empire?.emperor, cities = game.map.scenario.empire?.freeCities ?? [];
+    const dues = (c) => (emperor && c !== emperor && cities.includes(c) && st.countries[c] && st.countries[emperor] && !atWar(st, c, emperor)
+        ? DUES * Math.max(0, economyBase(game, c).moneyPerYear) : 0);
+    const paid = share(code) + dues(code), received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0) + (code === emperor ? cities.reduce((n, c) => n + dues(c), 0) : 0);
     const moneyPerYear = e.moneyPerYear + received - paid;
     const investable = Math.max(0, moneyPerYear);
     const slider = (st.countries[code].slider ?? 50) / 100;

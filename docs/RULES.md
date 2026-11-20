@@ -1079,9 +1079,28 @@ every German state of **20,000 people** or more and every outsider of **100,000*
 **A majority of the votes cast wins** — 4 of 7. Without one, the electors **vote again between the two leaders**: a person's
 electors as the person chose if it is one of the two, else as a computer's would; one of the two votes for itself; the rest for
 the one they score higher. The more votes then win. A tie — for the lead, or in the second round — goes to the reigning Emperor
-if it is tied, then to the larger people, then the lower code. For now the
-crown brings no power: Imperial Authority, the crown's rights, the ban and the reforms of the historical map's design are still to
-come.
+if it is tied, then to the larger people, then the lower code.
+
+**Imperial Authority** (0 to 100) belongs to the crown, not to a country: a new Emperor takes over the old one's. It starts at
+**20**. Every German state thinks **authority ÷ 5** better of the Emperor (rounded down; +4 at the start, up to +20).
+
+| When | Authority |
+|---|---|
+| A year (counted on 1 January) with no two German states at war with each other | +2 |
+| A year with three or more wars between German states being fought | −2 |
+| The Emperor makes peace in a war it joined as Defender of the Empire, with a war score of 0 or more | +5 |
+| A peace between an outsider and a German state (as they were when the war began) leaves the outsider holding settlements of the Empire that are the German state's core | −5 each |
+| The Emperor refuses to defend the Empire | −10 |
+| The Emperor declares war on a German state | −15 |
+| The crown passes to another country | −10 |
+
+**Defender of the Empire.** When an outsider declares war on a German state, the Emperor — if it is neither of them, at war with
+neither, nobody's vassal and no subject or overlord of the attacker — is called into the war on the German state's side, like a
+military ally. A person is asked, and no answer in 6 months is a yes; a computer Emperor comes if its military power is at least
+half the attacker's and no pact, truce or alliance binds it to the attacker, and otherwise refuses. Refusing costs the crown 10.
+**The free cities' dues.** Each free city the scenario names pays the Emperor **5% of its yearly money**, when positive, while the
+two are not at war — tribute, as a subject's is (on top of any it pays an overlord). The imperial ban and the reforms of the
+historical map's design are still to come.
 
 **Winning** is checked every day: a country with the scenario's number of settlements — its own and its vassals' count 1, its
 protectorates' ½, and so on up a chain of subjects (a vassal's vassal counts 1 for the top, a protectorate's vassal ½) — wins

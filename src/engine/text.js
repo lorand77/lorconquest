@@ -70,6 +70,12 @@ export function describeEvent(map, e) {
             const how = e.runoff ? `first round ${tally(e.votes)}; second round ${tally(e.runoff)}` : tally(e.votes) || "no votes";
             return e.country ? `${e.country} is elected Emperor${e.country === e.previous ? " again" : ""} (${how})` : "no Emperor is elected";
         }
+        case "authority": {
+            const why = { peace: "a year with no war between German states", wars: "a year of wars between German states", defended: "the Emperor's defence of the Empire",
+                kept: "land of the Empire kept by an outsider", refused: "the Emperor refusing to defend the Empire", attacked: "the Emperor attacking a German state", passed: "the crown changing hands" }[e.why] ?? e.why;
+            return `the Emperor's authority ${e.delta > 0 ? "rises" : "falls"} to ${e.now} (${e.delta > 0 ? "+" : ""}${e.delta}: ${why})`;
+        }
+        case "defenderRefuses": return `${e.country}, the Emperor, refuses to defend ${e.ally} against ${e.enemy}`;
         case "promised": return `${e.country} promises ${e.to} ${fmt(e.money)} for its vote at the election`;
         case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the sea in ${place(e.zone)}: ${e.why}`;
         case "joins": return `${e.country} joins the war against ${e.enemy}, on the ${e.side === "att" ? "attacking" : "defending"} side`;
@@ -118,6 +124,7 @@ export function eventCountries(e) {
         case "surrender": return [e.owner, e.by];
         case "battle": return [...e.a.countries, ...e.b.countries];
         case "promised": return [e.country, e.to];
+        case "defenderRefuses": return [e.country, e.ally, e.enemy];
         default: if (e.concern) return e.concern; return e.owner ? [e.owner] : e.country ? [e.country] : [];
     }
 }

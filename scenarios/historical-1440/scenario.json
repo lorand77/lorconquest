@@ -17121,7 +17121,24 @@
     "settlement": 53
    }
   ],
-  "emperor": "STY"
+  "emperor": "STY",
+  "freeCities": [
+   "AUG",
+   "BAS",
+   "BRE",
+   "COL",
+   "DEC",
+   "ERF",
+   "FFM",
+   "HAM",
+   "KON",
+   "LUB",
+   "MET",
+   "NUR",
+   "REG",
+   "STR",
+   "ULM"
+  ]
  },
  "start": {
   "wars": [

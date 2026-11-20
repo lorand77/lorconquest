@@ -60,6 +60,8 @@ export function opinion(game, holder, other) {
     // both hold HRE settlements
     const holdsHre = (c) => Object.values(st.settlements).some((s) => s.owner === c && game.map.scenario.settlements.find((x) => x.id === s.id).hre);
     if (holdsHre(holder) && holdsHre(other)) o += 10;
+    // a German state's regard for the Emperor: the crown's authority ÷ 5, up to +20 (RULES.md §10, The Emperor)
+    if (st.empire?.emperor === other && holdsHre(holder)) o += Math.floor(st.empire.authority / 5);
     // a year of peace, +1, up to 20
     o += Math.min(20, Math.floor(daysSinceWar(st, holder, other) / YEAR_DAYS));
     const border = bordering(game, holder, other);

@@ -2,7 +2,7 @@
 // that grow strong enough to break free, and on 1 January the warmonger score falling and coalitions forming
 // (RULES.md §10).
 import { YEAR_DAYS } from "./calendar.js";
-import { callStands, coalitions, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
+import { callStands, coalitions, defendEmpire, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
 import { empireDay } from "./empire.js";
 import { militaryPowerOf } from "./opinion.js";
 import { atWar, isRebel } from "./state.js";
@@ -26,7 +26,10 @@ export function diplomacyDay(game, events) {
     if (due.length) {
         st.offers = st.offers.filter((o) => !due.includes(o));
         for (const o of due) {
-            if (o.kind === "call" && callStands(game, o)) joinWar(game, o.to, o.side, o.from, o.enemy, events);
+            if (o.kind === "call" && callStands(game, o)) {
+                if (o.defender) defendEmpire(game, o.to, o.from, o.enemy, events);
+                else joinWar(game, o.to, o.side, o.from, o.enemy, events);
+            }
             else if (o.kind === "empire") refuseEmpire(game, o, events);
             events.push({ type: "lapsed", day: st.day, country: o.to, from: o.from, kind: o.kind });
         }

@@ -15,7 +15,7 @@
 //   electorVote { candidate }        whom a person's electors vote for (null: as a computer would)
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
-import { OFFER_DAYS, addAgreement, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
+import { OFFER_DAYS, addAgreement, defendEmpire, refuseDefence, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, takeSubject, validateTerms, joinWar, GUARANTEE_DAYS, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { candidatesOf, electorsOf, promiseError } from "./empire.js";
@@ -241,7 +241,11 @@ export const diplomacyCommands = {
         st.offers = st.offers.filter((o) => o !== offer);
         const events = [], accept = Boolean(cmd.accept);
         events.push({ type: "answer", day: st.day, country: offer.to, from: offer.from, what: offer.kind === "agreement" ? offer.agreement : offer.kind, accepted: accept });
-        if (offer.kind === "call") {
+        if (offer.kind === "call" && offer.defender) {
+            // the Emperor called to defend the Empire: refusing costs the crown 10 authority (RULES.md §10, The Emperor)
+            if (accept) { if (callStands(game, offer)) defendEmpire(game, offer.to, offer.from, offer.enemy, events); }
+            else if (st.empire?.emperor === offer.to) refuseDefence(game, offer.to, offer.from, offer.enemy, events);
+        } else if (offer.kind === "call") {
             if (accept) { if (callStands(game, offer)) joinWar(game, offer.to, offer.side, offer.from, offer.enemy, events); }
             else {
                 removeAgreements(game, (x) => x.kind === "military" && ((x.a === offer.to && x.b === offer.from) || (x.a === offer.from && x.b === offer.to)));

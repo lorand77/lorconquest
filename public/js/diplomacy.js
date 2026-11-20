@@ -35,6 +35,7 @@ function unionLabel(ctx, what, label) {
 function offerText(ctx, o) {
     const who = (c) => ctx.state.countries[c].name;
     const union = (a, b) => { const into = unionInto(ctx.state, a, b), other = into === a ? b : a; return { into, name: `${who(into)}–${who(other)}` }; };
+    if (o.kind === "call" && o.defender) return `${who(o.enemy)}, from outside the Empire, has attacked ${who(o.from)}: as Emperor you are called to defend the Empire. Refusing costs the crown 10 authority; no answer by ${longDate(o.deadline)} is a yes.`;
     if (o.kind === "call") return `${who(o.from)} calls you to arms against ${who(o.enemy)} (${o.side === "att" ? "their attack" : "their defence"}). Refusing ends the alliance; no answer by ${longDate(o.deadline)} is a yes.`;
     if (o.kind === "agreement") return `${who(o.from)} proposes a ${AGREEMENT_NAMES[o.agreement]}${o.years ? ` for ${o.years} years` : ""}.`;
     if (o.kind === "demand") return `${who(o.from)} demands that you become its ${o.subject}.`;
@@ -59,7 +60,7 @@ export function diplomacyTab(ctx) {
         out.push(section(ctx, "Waiting for your answer", ...asked.map((o) => mk("div", { class: "offer" }, mk("p", {}, offerText(ctx, o)),
             row(ctx, mk("button", { class: "primary", disabled: o.kind === "union" && agreedBy(ctx, `answer:${o.id}`).mine ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: true })) },
                 o.kind === "call" ? "Join" : o.kind === "union" ? unionLabel(ctx, `answer:${o.id}`, "Accept") : "Accept"),
-                mk("button", { onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: false })) }, o.kind === "call" ? "Refuse (the alliance ends)" : "Refuse"))))));
+                mk("button", { onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: false })) }, o.kind === "call" ? (o.defender ? "Refuse (−10 authority)" : "Refuse (the alliance ends)") : "Refuse"))))));
     }
     const waiting = offers.filter((o) => o.from === me);
     if (waiting.length) out.push(section(ctx, "Waiting for an answer", ...waiting.map((o) => mk("p", {}, `${name(o.to)}: ${offerText(ctx, o).replace(`${name(o.from)} `, "you ")}`))));
@@ -158,7 +159,9 @@ function crownParts(ctx) {
     const name = (code) => state.countries[code]?.name ?? code, town = (id) => game.map.nodes.get(String(id))?.name ?? String(id);
     const candidates = candidatesOf(game), electors = electorsOf(game), unit = PROMISE_MONEY * game.map.x;
     const out = [mk("p", {}, `Emperor: ${emp.emperor ? (emp.emperor === me ? "you" : name(emp.emperor)) : "none — the throne is vacant"}. `
-        + (emp.called ? `An election is called for ${longDate(emp.next)}.` : `The next election: ${longDate(emp.next)}, called a year before.`))];
+        + (emp.called ? `An election is called for ${longDate(emp.next)}.` : `The next election: ${longDate(emp.next)}, called a year before.`)),
+        // the crown's authority, and what it is worth: German states' regard for the Emperor, and the free cities' dues
+        mk("p", {}, `Imperial Authority: ${emp.authority} — German states think ${Math.floor(emp.authority / 5)} better of the Emperor. The free cities pay it 5% of their money: ${(game.map.scenario.empire?.freeCities ?? []).map(name).join(", ") || "none"}.`)];
     out.push(mk("div", {}, ...electors.map((e) => {
         const v = voteOf(game, e, candidates);
         return row(ctx, mk("span", { class: "w" }, `${e.vote}, ${town(e.settlement)}: ${e.holder ? (e.holder === me ? "you" : name(e.holder)) : "nobody"}${v ? ` — would vote for ${v === me ? "you" : name(v)}` : ""}`));

@@ -42443,7 +42443,19 @@
     "settlement": 242
    }
   ],
-  "emperor": "STY"
+  "emperor": "STY",
+  "freeCities": [
+   "AUG",
+   "BAS",
+   "BRE",
+   "HAM",
+   "LUB",
+   "MET",
+   "NUR",
+   "REG",
+   "STR",
+   "ULM"
+  ]
  },
  "start": {
   "wars": [

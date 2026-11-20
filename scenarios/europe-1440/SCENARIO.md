@@ -987,9 +987,17 @@ as if built in play. Every other settlement begins without; walls may be bought 
 
 The Empire is every settlement marked **HRE** above. A **German state** is any country that holds one; an **outsider** any that
 holds none. The Empire is a **crown**, worn by one German state and won by election (RULES.md §10, *The Emperor*). As on the
-historical map, only the Emperor, the electors and the elections are built yet: the crown brings no power until Imperial
-Authority, the crown's rights and the reforms of that map's design come (docs/design.md, *Open questions*); two German states
-think 10 better of each other (RULES.md §10).
+historical map, the Emperor, the electors, the elections, Imperial Authority, Defender of the Empire and the free cities' dues are
+built; the imperial ban and the reforms of that map's design are not yet (docs/design.md, *Open questions*). Two German states
+think 10 better of each other (RULES.md §10), and every German state thinks the crown's authority ÷ 5 better of the Emperor.
+
+**Imperial Authority** starts at **20**, Frederick III being the Empire's "arch-sleepyhead", and moves as RULES.md §10 has it: up
+with years of peace among the German states and the Emperor's defence of them, down with their wars, the Emperor's attacks on
+them, land outsiders keep, refusals to defend and the crown changing hands.
+
+**What the crown gives.** **Defender of the Empire**: an outsider attacking a German state calls the Emperor into the war on its
+side. **The imperial cities pay their dues**: every free city — LUB, HAM, BRE, NUR, AUG, ULM, REG, MET, STR and BAS — pays the
+Emperor 5% of its yearly money, when positive, while the two are not at war.
 
 ### The Emperor
 
