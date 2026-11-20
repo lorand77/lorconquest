@@ -1,6 +1,6 @@
 // The Empire's crown (RULES.md §10, The Emperor; src/engine/empire.js) on the tiny map made an Empire: every settlement in it, AAA
-// the Emperor, seven votes on settlements 2 to 8 — AAA holds two (2, 3), BBB two (4, 5), CCC, DDD and EEE one each. Only AAA (40,000
-// people) and BBB (30,000) are big enough to stand.
+// the Emperor, seven votes on settlements 2 to 8 — AAA holds two (2, 3), BBB two (4, 5), CCC, DDD and EEE one each. Two and Five are
+// made a city's size, so that only AAA (50,000 people) and BBB (40,000) are big enough to stand, AAA the greater.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { ELECTION_YEARS, YEAR_DAYS, candidatesOf, electorsOf, voteOf } from "../../src/engine/index.js";
@@ -10,6 +10,8 @@ const cmd = (country, type, rest = {}) => ({ type, country, ...rest });
 const ofType = (events, type) => events.filter((e) => e.type === type);
 const empire = (seed = 1, change = () => {}, humans = []) => tinyGame(seed, (sc) => {
     for (const s of sc.settlements) s.hre = true;
+    sc.settlements[1].pop = 20000;
+    sc.settlements[4].pop = 20000;
     sc.empire = { emperor: "AAA", electors: [2, 3, 4, 5, 6, 7, 8].map((id) => ({ vote: `vote ${id}`, settlement: id })) };
     change(sc);
 }, humans);
@@ -73,7 +75,7 @@ test("another faith costs a candidate 20 with a computer elector", () => {
 test("no majority of the votes cast: a second round between the two leaders, each elector choosing the one it scores higher", async () => {
     const { holdElection } = await import("../../src/engine/empire.js");
     // CCC made big enough to stand; BBB, CCC and DDD people, who choose: BBB and DDD for BBB, CCC for itself
-    const game = empire(1, (sc) => { sc.settlements[5].pop = 20000; }, ["BBB", "CCC", "DDD"]), st = game.state;
+    const game = empire(1, (sc) => { sc.settlements[5].pop = 40000; }, ["BBB", "CCC", "DDD"]), st = game.state;
     order(game, cmd("BBB", "electorVote", { candidate: "BBB" }));
     order(game, cmd("DDD", "electorVote", { candidate: "BBB" }));
     order(game, cmd("CCC", "electorVote", { candidate: "CCC" }));
@@ -94,7 +96,7 @@ test("no majority of the votes cast: a second round between the two leaders, eac
 // EEE made an outsider (its one town, 8, taken out of the Empire); CCC a free city
 const outsider = (humans = []) => empire(1, (sc) => { sc.settlements[7].hre = false; sc.empire.freeCities = ["CCC"]; }, humans);
 
-test("authority: 20 at the start, a German state's regard for the Emperor ÷ 5; a year of peace +2, of three German wars −2", async () => {
+test("authority: 20 at the start, a German state's regard for the Emperor ÷ 5; a year of peace +1, a year of wars −1 for each", async () => {
     const { opinion } = await import("../../src/engine/index.js");
     const game = empire(), st = game.state;
     assert.equal(st.empire.authority, 20);
@@ -103,13 +105,13 @@ test("authority: 20 at the start, a German state's regard for the Emperor ÷ 5; 
     assert.equal(regard(100) - regard(0), 20);
     st.empire.authority = 20;
     const year = runTo(game, 365);
-    assert.deepEqual([st.empire.authority, ofType(year, "authority").map((e) => e.why)], [22, ["peace"]]);
+    assert.deepEqual([st.empire.authority, ofType(year, "authority").map((e) => e.why)], [21, ["peace"]]);
     // three wars between German states (AAA, the Emperor, in none of them)
     order(game, cmd("BBB", "declareWar", { target: "CCC" }));
     order(game, cmd("DDD", "declareWar", { target: "EEE" }));
     order(game, cmd("CCC", "declareWar", { target: "DDD" }));
     runTo(game, 2 * 365);
-    assert.equal(st.empire.authority, 20);
+    assert.equal(st.empire.authority, 18);
 });
 
 test("authority: the Emperor attacking a German state −15; the crown passing −10; never below 0 nor above 100", async () => {

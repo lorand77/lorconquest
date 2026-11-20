@@ -15,8 +15,8 @@ import { opinion } from "./opinion.js";
 import { atWar, isRebel } from "./state.js";
 
 export const ELECTION_YEARS = 25;
-// who may stand: a German state of this many people, or an outsider of this many
-export const CANDIDATE_GERMAN = 20000, CANDIDATE_OUTSIDER = 100000;
+// who may stand: a German state of this many people — two cities' worth: no single town or free city — or an outsider of this many
+export const CANDIDATE_GERMAN = 40000, CANDIDATE_OUTSIDER = 100000;
 // a computer elector's score of a candidate (electorScore): +20 for the reigning Emperor, 1 for each 2,000 × x promised up to
 // +30, −20 for one of 150,000 people or more, −50 for one at war with it, −20 for one of another faith
 export const REIGNING = 20, PROMISE_MONEY = 2000, PROMISE_MAX = 30, TOO_BIG = 150000, TOO_BIG_MALUS = 20, AT_WAR_MALUS = 50, FAITH_MALUS = 20;
@@ -39,8 +39,8 @@ export function electorsOf(game) {
 
 const standing = (st, code) => Boolean(st.countries[code]) && !isRebel(st, code) && st.countries[code].out === null && st.countries[code].subjectKind !== "vassal";
 
-// who may stand, in order of their codes: the reigning Emperor while it is a German state, and every German state of 20,000
-// people or more and every outsider of 100,000 or more — none of them anyone's vassal
+// who may stand, in order of their codes: the reigning Emperor while it is a German state, and every German state of 40,000
+// people or more (CANDIDATE_GERMAN) and every outsider of 100,000 or more — none of them anyone's vassal
 export function candidatesOf(game) {
     const st = game.state, german = new Set(germanStates(game)), emperor = st.empire?.emperor;
     return Object.keys(st.countries).sort().filter((c) => standing(st, c)
@@ -148,11 +148,12 @@ const vacant = (game) => {
 export function empireDay(game, events) {
     const st = game.state, emp = st.empire;
     if (!emp) return;
-    // at the start of each year: a year with no war between German states raises the crown's authority, three or more lower it
+    // at the start of each year: a year with no war between German states raises the crown's authority by 1; otherwise each such
+    // war being fought lowers it by 1
     if (st.day > 0 && st.day % YEAR_DAYS === 0) {
         const german = new Set(germanStates(game)), wars = st.wars.filter((k) => k.split("|").every((c) => german.has(c))).length;
         if (wars === 0) addAuthority(game, AUTHORITY.PEACE_YEAR, "peace", events);
-        else if (wars >= 3) addAuthority(game, AUTHORITY.WARS_YEAR, "wars", events);
+        else addAuthority(game, AUTHORITY.WAR_YEAR * wars, "wars", events);
     }
     if (!emp.called && st.day >= emp.next - YEAR_DAYS && st.day < emp.next) {
         emp.called = true;
@@ -173,7 +174,7 @@ export function promiseError(game, code, settlement, money) {
     const st = game.state, emp = st.empire;
     if (!emp) return "this scenario has no Emperor";
     if (!emp.called) return "no election has been called";
-    if (!candidatesOf(game).includes(code)) return "you do not stand: a German state of 20,000 people or an outsider of 100,000, nobody's vassal";
+    if (!candidatesOf(game).includes(code)) return "you do not stand: a German state of 40,000 people or an outsider of 100,000, nobody's vassal";
     const e = electorsOf(game).find((x) => x.settlement === settlement);
     if (!e) return `${settlement} casts no vote`;
     if (!e.holder || e.holder === code) return "nobody else holds that vote";

@@ -1060,7 +1060,8 @@ instead: one German state wears it, and **seven votes**, each belonging to a set
 casts its vote**, so a vote is taken with its town. An election is held **every 25 years** from the start (1465, 1490 … 1640),
 called at the start of the year before; and **at once whenever the throne falls vacant** — the Emperor holding no settlement in
 the Empire any more, out of the game, or someone's vassal. **Candidates:** the reigning Emperor while it is a German state, and
-every German state of **20,000 people** or more and every outsider of **100,000** or more — none of them anyone's vassal.
+every German state of **40,000 people** or more — two cities' worth, so no single town or free city — and every outsider of
+**100,000** or more, none of them anyone's vassal.
 - **A person's electors** all vote as the person chooses (in the Diplomacy tab), or, if they have not chosen, as a computer's would.
 - **A computer's** vote goes to the other candidate it scores highest — or to itself, if it stands and wears the crown already, or
   has more people than that candidate:
@@ -1086,8 +1087,8 @@ if it is tied, then to the larger people, then the lower code.
 
 | When | Authority |
 |---|---|
-| A year (counted on 1 January) with no two German states at war with each other | +2 |
-| A year with three or more wars between German states being fought | −2 |
+| A year (counted on 1 January) with no two German states at war with each other | +1 |
+| Otherwise, each war between German states being fought then | −1 |
 | The Emperor makes peace in a war it joined as Defender of the Empire, with a war score of 0 or more | +5 |
 | A peace between an outsider and a German state (as they were when the war began) leaves the outsider holding settlements of the Empire that are the German state's core | −5 each |
 | The Emperor refuses to defend the Empire | −10 |

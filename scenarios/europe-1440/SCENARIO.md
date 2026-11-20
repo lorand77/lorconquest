@@ -1022,7 +1022,7 @@ and the vote is yours. One country may hold several.
 ### Elections
 
 Every **25 years** — 1465, 1490, 1515, 1540, 1565, 1590, 1615 and 1640 — and whenever the throne falls vacant; each scheduled one
-is called at the start of the year before. **Candidates:** the reigning Emperor, every German state of 20,000 people or more and
+is called at the start of the year before. **Candidates:** the reigning Emperor, every German state of 40,000 people or more and
 every outsider of 100,000 or more, none of them anyone's vassal. A person's electors vote as the person chooses; a computer's for
 itself if it stands, otherwise for the candidate it scores highest — its opinion of it, +20 for the reigning Emperor, +1 for
 each 6,000 money promised (2,000 × x) up to +30, −20 for a candidate of 150,000 people or more, −50 for one at war with it, and

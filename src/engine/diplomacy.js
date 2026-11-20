@@ -187,7 +187,7 @@ export function callStands(game, o) {
 // ---------- the crown's authority (RULES.md §10, The Emperor) ----------
 
 // Imperial Authority, 0 to 100, the crown's not a country's: what moves it
-export const AUTHORITY = { START: 20, PEACE_YEAR: 2, WARS_YEAR: -2, DEFENDED: 5, KEPT: -5, REFUSED: -10, ATTACKED: -15, PASSED: -10 };
+export const AUTHORITY = { START: 20, PEACE_YEAR: 1, WAR_YEAR: -1, DEFENDED: 5, KEPT: -5, REFUSED: -10, ATTACKED: -15, PASSED: -10 };
 export function addAuthority(game, delta, why, events) {
     const emp = game.state.empire;
     if (!emp || !delta) return;

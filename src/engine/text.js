@@ -71,7 +71,7 @@ export function describeEvent(map, e) {
             return e.country ? `${e.country} is elected Emperor${e.country === e.previous ? " again" : ""} (${how})` : "no Emperor is elected";
         }
         case "authority": {
-            const why = { peace: "a year with no war between German states", wars: "a year of wars between German states", defended: "the Emperor's defence of the Empire",
+            const why = { peace: "a year with no war between German states", wars: "a year of wars between German states, 1 for each", defended: "the Emperor's defence of the Empire",
                 kept: "land of the Empire kept by an outsider", refused: "the Emperor refusing to defend the Empire", attacked: "the Emperor attacking a German state", passed: "the crown changing hands" }[e.why] ?? e.why;
             return `the Emperor's authority ${e.delta > 0 ? "rises" : "falls"} to ${e.now} (${e.delta > 0 ? "+" : ""}${e.delta}: ${why})`;
         }

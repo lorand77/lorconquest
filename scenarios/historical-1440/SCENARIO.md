@@ -515,8 +515,8 @@ over the old one's. It starts at **20**: Frederick III was mocked as the Empire'
 
 | When | IA |
 |---|---|
-| Each year (at its start) in which no two German states are at war with each other | +2 |
-| Each year in which three or more wars between German states are being fought | −2 |
+| Each year (at its start) in which no two German states are at war with each other | +1 |
+| Each year otherwise: for each war between German states being fought | −1 |
 | The Emperor wins a war as Defender of the Empire (below) | +5 |
 | The Emperor wins a war of execution (below) | +10 |
 | An outsider keeps an HRE settlement in a peace | −5 per settlement |
@@ -548,7 +548,7 @@ throne falls vacant. The reigning Emperor stands again; this is how the Habsburg
 the Romans in their own lifetime. Each scheduled election is **announced at the start of the year before**, so
 there is a year to court the electors — or to take their settlements.
 
-**Candidates:** the reigning Emperor, every German state of **20K pop or more**, and any outsider of **100K or
+**Candidates:** the reigning Emperor, every German state of **40K pop or more** (no single town or free city), and any outsider of **100K or
 more** (Francis I of France stood in 1519).
 
 An elector held by a player votes as that player chooses. One held by a computer country votes for itself if it
