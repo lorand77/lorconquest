@@ -634,7 +634,8 @@ would break that.
   (monthly disease and hunger), `economy` (soldiers, caps, money, the monthly step), `forces`
   (training and hires), `naval` (fleets, patrols, blockades, straits, the way of a voyage), `passes` (sharpshooters),
   `events` (harvest, plague, uprisings and the rebels), `empire` (the Empire's crown: the Emperor, the electors — each vote cast by
-  whoever holds its settlement — elections every 25 years or when the throne falls vacant, candidates' promises, and how a
+  whoever holds its settlement — elections every 25 years or when the throne falls vacant — a majority, or a second round between the two leaders —
+  candidates' promises, and how a
   computer elector votes, a formula of the engine's like every computer answer), `relations` (who is allied, guaranteed, subject or
   friend — pure questions over the state), `opinion` (military power, neighbours, opinion, and the formulas by which a
   computer answers), `regions` (whether a country may proclaim a region now — all of it held, or what its Needs say — one

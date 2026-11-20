@@ -79,9 +79,22 @@ export function voteOf(game, elector, candidates = candidatesOf(game)) {
     return best;
 }
 
+// in a second round, whom an elector's vote goes to of the two left: a person's as they chose, if it is one of them; one of the two
+// itself; else the one it scores higher (the first by code if equal)
+export function voteBetween(game, elector, pair) {
+    const st = game.state, holder = elector.holder;
+    if (!holder) return null;
+    const chosen = st.empire?.choices[holder];
+    if (st.humans.includes(holder) && pair.includes(chosen)) return chosen;
+    if (pair.includes(holder)) return holder;
+    const [a, b] = pair, sa = electorScore(game, holder, a, elector.settlement), sb = electorScore(game, holder, b, elector.settlement);
+    return sb > sa ? b : a;
+}
+
 // the election: every promise paid from its candidate's treasury to whoever holds that vote now, as far as the treasury goes;
-// the votes counted; the most wins — a tie the reigning Emperor's if it is among them, else the larger people's, else the first by
-// code. The promises and choices are spent with it
+// the votes counted. A majority of the votes cast — 4 of 7 — wins; without one, the electors vote again between the two leaders
+// (voteBetween), and the more votes win. Ties — for the lead, or in the second round — go to the reigning Emperor if it is among
+// them, else to the larger people, else to the first by code. The promises and choices are spent with it
 export function holdElection(game, events, why) {
     const st = game.state, emp = st.empire, candidates = candidatesOf(game), electors = electorsOf(game);
     for (const cand of Object.keys(emp.promises).sort()) {
@@ -99,14 +112,24 @@ export function holdElection(game, events, why) {
         cast.push({ settlement: e.settlement, holder: e.holder, vote: v });
         if (v) votes[v] = (votes[v] ?? 0) + 1;
     }
-    const before = emp.emperor;
-    const ranked = Object.keys(votes).sort((x, y) => votes[y] - votes[x] || (y === before) - (x === before) || popOf(st, y) - popOf(st, x) || (x < y ? -1 : 1));
+    const before = emp.emperor, total = Object.values(votes).reduce((n, v) => n + v, 0);
+    const rank = (tally) => Object.keys(tally).sort((x, y) => tally[y] - tally[x] || (y === before) - (x === before) || popOf(st, y) - popOf(st, x) || (x < y ? -1 : 1));
+    let ranked = rank(votes), runoff = null;
+    if (ranked.length > 1 && votes[ranked[0]] < Math.floor(total / 2) + 1) {
+        const pair = ranked.slice(0, 2).sort();
+        runoff = {};
+        for (const e of electors) {
+            const v = voteBetween(game, e, pair);
+            if (v) runoff[v] = (runoff[v] ?? 0) + 1;
+        }
+        ranked = rank(runoff);
+    }
     emp.emperor = ranked[0] ?? (candidates.includes(before) ? before : null);
     emp.promises = {};
     emp.choices = {};
     emp.called = false;
-    emp.last = { day: st.day, votes };
-    events.push({ type: "elected", day: st.day, country: emp.emperor, previous: before, votes, cast, why, concern });
+    emp.last = { day: st.day, votes, ...(runoff ? { runoff } : {}) };
+    events.push({ type: "elected", day: st.day, country: emp.emperor, previous: before, votes, ...(runoff ? { runoff } : {}), cast, why, concern });
 }
 
 // whom an election concerns, for the news (text.js, eventCountries): every German state, every candidate and every elector

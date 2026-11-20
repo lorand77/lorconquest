@@ -66,8 +66,9 @@ export function describeEvent(map, e) {
         case "electionCalled": return `an election of the Emperor is called, to be held on ${longDate(e.on)}`;
         case "vacant": return `the imperial throne falls vacant${e.country ? `: ${e.country} can wear the crown no longer` : ""}`;
         case "elected": {
-            const tally = Object.entries(e.votes).sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c} ${n}`).join(", ");
-            return e.country ? `${e.country} is elected Emperor${e.country === e.previous ? " again" : ""} (${tally || "no votes"})` : "no Emperor is elected";
+            const tally = (t) => Object.entries(t).sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c} ${n}`).join(", ");
+            const how = e.runoff ? `first round ${tally(e.votes)}; second round ${tally(e.runoff)}` : tally(e.votes) || "no votes";
+            return e.country ? `${e.country} is elected Emperor${e.country === e.previous ? " again" : ""} (${how})` : "no Emperor is elected";
         }
         case "promised": return `${e.country} promises ${e.to} ${fmt(e.money)} for its vote at the election`;
         case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the sea in ${place(e.zone)}: ${e.why}`;

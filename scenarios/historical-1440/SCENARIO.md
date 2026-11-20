@@ -564,8 +564,8 @@ elector's score = its opinion of the candidate (RULES.md §10)
 it — the Fuggers lent Charles V about 850,000 florins to buy the vote of 1519. A candidate may not promise more
 than it holds.
 
-The candidate with the most votes wins. A tie goes to the reigning Emperor if it is tied; otherwise to the larger
-population.
+A majority of the votes cast wins, 4 of 7; without one, the electors vote again between the two leaders, each for the one it
+scores higher (one of the two for itself). A tie goes to the reigning Emperor if it is tied; otherwise to the larger population.
 
 ### What the crown gives
 

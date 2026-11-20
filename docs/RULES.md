@@ -1076,7 +1076,10 @@ every German state of **20,000 people** or more and every outsider of **100,000*
   all than its treasury holds then — and change or take it back until the vote. Every promise is **paid when the votes are cast,
   whoever wins**, as far as the candidate's treasury goes, to whoever holds that settlement then. Promises and choices are public.
 
-The most votes win; a tie goes to the reigning Emperor if it is tied, then to the larger people, then the lower code. For now the
+**A majority of the votes cast wins** — 4 of 7. Without one, the electors **vote again between the two leaders**: a person's
+electors as the person chose if it is one of the two, else as a computer's would; one of the two votes for itself; the rest for
+the one they score higher. The more votes then win. A tie — for the lead, or in the second round — goes to the reigning Emperor
+if it is tied, then to the larger people, then the lower code. For now the
 crown brings no power: Imperial Authority, the crown's rights, the ban and the reforms of the historical map's design are still to
 come.
 

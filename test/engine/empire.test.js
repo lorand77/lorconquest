@@ -69,3 +69,23 @@ test("another faith costs a candidate 20 with a computer elector", () => {
     // a Hussite Emperor: the small Catholic electors' votes now go to BBB, Catholic like them — AAA's +20 crowned no longer enough
     assert.deepEqual(votes(game).slice(4), ["BBB", "BBB", "BBB"]);
 });
+
+test("no majority of the votes cast: a second round between the two leaders, each elector choosing the one it scores higher", async () => {
+    const { holdElection } = await import("../../src/engine/empire.js");
+    // CCC made big enough to stand; BBB, CCC and DDD people, who choose: BBB and DDD for BBB, CCC for itself
+    const game = empire(1, (sc) => { sc.settlements[5].pop = 20000; }, ["BBB", "CCC", "DDD"]), st = game.state;
+    order(game, cmd("BBB", "electorVote", { candidate: "BBB" }));
+    order(game, cmd("DDD", "electorVote", { candidate: "BBB" }));
+    order(game, cmd("CCC", "electorVote", { candidate: "CCC" }));
+    const events = [];
+    holdElection(game, events, "due");
+    const [e] = ofType(events, "elected");
+    // the first round: AAA 3 (its two, and EEE's for the reigning Emperor), BBB 3, CCC 1 — no 4. The second, AAA against BBB: CCC's
+    // own choice is out, and it scores AAA higher (BBB is its neighbour, −15)
+    assert.deepEqual([e.votes, e.runoff, e.country], [{ AAA: 3, BBB: 3, CCC: 1 }, { AAA: 4, BBB: 3 }, "AAA"]);
+    assert.deepEqual(st.empire.last.runoff, { AAA: 4, BBB: 3 });
+    // a majority in the first round needs no second
+    const plain = empire(), out = [];
+    holdElection(plain, out, "due");
+    assert.equal(ofType(out, "elected")[0].runoff, undefined);
+});

@@ -1019,8 +1019,8 @@ every outsider of 100,000 or more, none of them anyone's vassal. A person's elec
 itself if it stands, otherwise for the candidate it scores highest — its opinion of it, +20 for the reigning Emperor, +1 for
 each 6,000 money promised (2,000 × x) up to +30, −20 for a candidate of 150,000 people or more, −50 for one at war with it, and
 −20 for one of another faith: Hussite Bohemia's vote is no Catholic's for the asking, and after 1517 no Protestant wears the crown
-easily. Promises are paid when the votes are cast, whoever they go to. The most votes win; a tie, the reigning Emperor, then the
-larger people.
+easily. Promises are paid when the votes are cast, whoever they go to. A majority of the votes cast wins, 4 of 7; without one, the
+electors vote again between the two leaders. A tie goes to the reigning Emperor, then the larger people.
 
 ## Victory
 
