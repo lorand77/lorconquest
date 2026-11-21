@@ -80,7 +80,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | GRA | Granada | 174 Granada | #d4e8a0 | 174, 175, 176 | 40K | 1,600 | 15 | — |
 | MIL | Milan | 177 Milan | #f0aaaa | 177, 178, 179, 180, 208 | 70K | 2,800 | — | part |
 | VEN | Venice | 181 Venice | #8fd4d4 | 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194 | 170K | 6,800 | 200 | — |
-| GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 100 | — |
+| GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 130 | — |
 | FLO | Florence | 200 Florence | #f6cf9e | 200, 201, 202 | 40K | 1,600 | 15 | — |
 | SIE | Siena | 203 Siena |  | 203 | 10K | 400 | — | — |
 | PAP | Papal States | 204 Rome | #f4eba0 | 119, 204, 205, 206, 207 | 60K | 2,400 | 10 | — |
@@ -136,7 +136,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | LIT | Lithuania | 308 Vilnius | #b8a4dc | 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322 | 170K | 6,800 | — | — |
 | HUN | Hungary | 323 Buda | #e2b88a | 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336 | 150K | 6,000 | — | — |
 | JIS | Upper Hungary | 337 Kassa |  | 337, 338 | 20K | 800 | — | — |
-| OTT | Ottoman Empire | 339 Edirne | #8cc68c | 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386 | 320K | 12,800 | 140 | — |
+| OTT | Ottoman Empire | 339 Edirne | #8cc68c | 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 372, 373, 374, 375, 376, 377, 378, 379, 380, 381, 382, 383, 384, 385, 386 | 320K | 12,800 | 70 | — |
 | BYZ | Byzantium | 354 Constantinople | #b89ad8 | 354, 355 | 30K | 1,200 | 15 | — |
 | MOR | Morea | 356 Mistra | #d8c0ec | 356, 357, 358 | 30K | 1,200 | 15 | — |
 | SER | Serbia | 359 Novo Brdo |  | 359 | 10K | 400 | — | — |
@@ -719,17 +719,17 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Sea of Azov, are 17 hops (34 months).
 
-**Naval powers:** 48 countries, 1645 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there. A voyage by sea lane, to a port up to three zones off, needs 30 at each end, and no enemy fleet at sea on the way.
+**Naval powers:** 48 countries, 1605 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there. A voyage by sea lane, to a port up to three zones off, needs 30 at each end, and no enemy fleet at sea on the way.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
 | VEN Venice | 181, 187, 188, 189, 190, 191, 192, 193, 194 | Ionian Sea, Adriatic Sea, Aegean Sea | 200 | yes: 190-370, 191-194, 197-376, 222-225, 371-375 |
-| OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 140 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 |
+| GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 130 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 |
 | ARA Aragon | 159, 160, 163, 164, 165, 218, 219, 222, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 120 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
 | CAS Castile | 133, 136, 138, 152, 154 | Atlantic, Bay of Biscay, Gulf of Cádiz, Western Mediterranean | 110 | yes: 136-430, 159-165, 196-229 |
-| GEN Genoa | 195, 196, 197, 198, 199 | Ligurian Sea, Tyrrhenian Sea, Aegean Sea, Levantine Sea, Eastern Black Sea | 100 | yes: 196-201, 197-376, 198-391, 371-375, 403-404 |
 | BUR Burgundy | 96, 99, 102, 103, 104 | North Sea | 90 | no — no strait in its zones |
 | ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 80 | yes: 36-83, 38-42 |
+| OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 70 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 — one zone at a time (30 ships in each) |
 | DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 60 | yes: 14-15, 14-16, 16-17 |
 | POR Portugal | 166, 167, 171, 172 | Gulf of Cádiz, Alboran Sea | 60 | yes: 136-430 |
 | LUB Lübeck | 231 | Belt Sea | 60 | yes: 14-16, 16-17 |
@@ -929,12 +929,12 @@ has the rule's.
 | Country | Ships | Why |
 |---|---|---|
 | VEN Venice | 200 | The greatest navy of the Mediterranean: some 3,000 merchant ships and 45 war galleys in the 1420s. |
-| OTT Ottoman Empire | 140 | The Sultan's galleys at Gallipoli, still learning the sea; a hundred and more sailed in 1453. |
+| GEN Genoa | 130 | The Mediterranean's second sea power, with colonies from Chios to Caffa; it beat Aragon's fleet off Ponza in 1435. |
 | ARA Aragon | 120 | Alfonso V's fleets, carrying his war to Naples. |
 | CAS Castile | 110 | The Cantabrian fleet that beat the Hanse off La Rochelle in 1419. |
-| GEN Genoa | 100 | The Mediterranean's second sea power, with colonies from Chios to Caffa. |
 | BUR Burgundy | 90 | Holland and Zeeland, at war with the Hanse for the Baltic trade. |
 | ENG England | 80 | Henry V's royal ships sold off by the 1420s; merchantmen pressed into service. |
+| OTT Ottoman Empire | 70 | Still learning the sea: Venice destroyed its fleet off Gallipoli in 1416, and the great fleet came only with Mehmed II in the 1450s. |
 | DEN Denmark | 60 | The Union's fleet, guarding the Sound and its tolls. |
 | LUB Lübeck | 60 | The head of the Hanse, master of the Baltic trade. |
 | POR Portugal | 60 | Caravels on the African coast, and the fleet that took Ceuta in 1415. |

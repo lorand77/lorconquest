@@ -97,7 +97,7 @@ test("a scenario's fleets: the sea powers above the rule, with a navy cap raised
     const { Game: G, economyOf: eco, shipCount } = await import("../../src/engine/index.js");
     const game = G.create(europe, { seed: 1, humans: [] }), st = game.state;
     const ships = (c) => Object.values(st.fleets).filter((f) => f.owner === c).reduce((n, f) => n + shipCount(f), 0);
-    assert.deepEqual(["VEN", "GEN", "LUB", "FRA", "GHO"].map(ships), [200, 100, 60, 40, 0]);
+    assert.deepEqual(["VEN", "GEN", "OTT", "LUB", "FRA", "GHO"].map(ships), [200, 130, 70, 60, 40, 0]);
     // Venice: its cap 200 ÷ 85 times the rule's, so its 200 ships' crew (50 each) exactly; France's the rule's, 160 ships
     const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-6, `${a} is not ${b}`);
     near(eco(game, "VEN").navyCap, 200 * 50);
