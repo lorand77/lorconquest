@@ -18,7 +18,7 @@
 //   ban { target }                   the Emperor puts a German state under the imperial ban: a war of execution (diplomacy.js)
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
-import { OFFER_DAYS, addAgreement, banWar, defendEmpire, refuseDefence, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
+import { OFFER_DAYS, addAgreement, banWar, defendEmpire, freeSubject, refuseDefence, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, takeSubject, validateTerms, joinWar, GUARANTEE_DAYS, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { banError, candidatesOf, electorsOf, promiseError, proposeReform, reformError } from "./empire.js";
@@ -74,9 +74,16 @@ export const diplomacyCommands = {
         const st = game.state, { c, error } = other(game, cmd, cmd.target);
         if (error) return refuse(error);
         if (atWar(st, cmd.country, c)) return refuse(`${cmd.country} is already at war with ${c}`);
-        if (overlordOf(st, cmd.country) === c || overlordOf(st, c) === cmd.country) return refuse("a subject and its overlord do not make war on each other: it breaks free instead");
+        if (overlordOf(st, cmd.country) === c) return refuse("a subject does not make war on its overlord: it breaks free instead");
+        if (overlordOf(st, c) === cmd.country && isVassal(st, c)) return refuse(`${c} is your vassal: a vassal is integrated, not attacked`);
         if (isVassal(st, c)) return refuse(`${c} is a vassal of ${overlordOf(st, c)}: its overlord answers for it — declare war on ${overlordOf(st, c)}`);
         const events = [];
+        // an overlord turning on its own protectorate (RULES.md §10, Subjects): the protection ends, and it is a broken agreement
+        if (overlordOf(st, c) === cmd.country) {
+            freeSubject(game, c, events);
+            events.push({ type: "betrayed", day: st.day, country: cmd.country, subject: c });
+            punishBreak(game, cmd.country, events);
+        }
         declareWar(game, cmd.country, c, events);
         return done(events);
     },

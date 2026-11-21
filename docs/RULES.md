@@ -996,8 +996,9 @@ countries, and **their allies make their own peace**. A vassal's wars end with i
 - *A country that would fight an ally* — called by both sides, or allied with both — joins one side only, and the
   alliance with the other ends. That is no break of faith.
 - *Declaring war* on a country you have a pact, a truce or an alliance with, or guarantee, breaks it (see below). You
-  cannot declare war on your overlord or your subject: a subject breaks free instead. Only the one who declares gets the
-  +5 warmonger score.
+  cannot declare war on your overlord — a subject breaks free instead — nor on your vassal, which is integrated, not attacked.
+  You may **turn on your own protectorate**: the protection ends at once, and it is **a broken agreement** (below) — as Mehmed II
+  renounced Constantinople's tribute in 1452. Only the one who declares gets the +5 warmonger score.
 
 **Peace terms.** The proposer may take settlements of the other, give settlements of its own, ask or pay money, make the
 other its vassal or protectorate, become the other's, and free subjects of the other. A computer accepts if its war

@@ -213,6 +213,15 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
         if (t) plans.set(code, { target: t.target, since: day });
     }
 
+    // its own protectorate turned on (RULES.md §10, Subjects: a broken agreement): only while at peace otherwise and planning no
+    // other war, only one of another faith on its border and three times weaker — and rarely, a decade's patience on average, as
+    // the Sultans kept Constantinople a tributary for thirty years before Mehmed took it
+    if (calm && !foes.length && !plans.has(code) && !out.some((o) => o.type === "declareWar")) {
+        const prey = subjectsOf(st, code).filter((p) => !isVassal(st, p) && st.countries[p].religion && c.religion && st.countries[p].religion !== c.religion
+            && bordering(game, code, p) && militaryPowerOf(st, code) >= 3 * militaryPowerOf(st, p)).sort()[0];
+        if (prey && r() < 0.003 + 0.004 * fl.aggression) cmd("declareWar", { target: prey });
+    }
+
     // a protectorate's war joined, or the overlord's — one a think, and not on one that declares a war of its own
     if (!out.some((o) => o.type === "declareWar")) {
         const join = protectorateWar(game, code, fl, limit);

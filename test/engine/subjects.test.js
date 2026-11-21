@@ -554,3 +554,14 @@ test("found by the fuzz: a vassal integrated while leftover peasants of a fallen
     assert.equal(st.countries.BBB.out, st.day);
     assert.deepEqual(st.wars.filter((w) => w.split("|").includes("BBB")), []);
 });
+
+test("an overlord may turn on its own protectorate — the protection ends and it is a broken agreement — but not on its vassal", () => {
+    const game = tinyGame(), st = game.state;
+    setSubject(game, "BBB", "AAA", "protectorate", []);
+    assert.match(refused(game, cmd("BBB", "declareWar", { target: "AAA" })), /does not make war on its overlord/);
+    const events = order(game, cmd("AAA", "declareWar", { target: "BBB" }));
+    assert.deepEqual([st.countries.BBB.overlord, atWar(st, "AAA", "BBB"), ofType(events, "betrayed").length, ofType(events, "broke").map((e) => e.country)], [null, true, 1, ["AAA"]]);
+    const vassal = tinyGame();
+    setSubject(vassal, "BBB", "AAA", "vassal", []);
+    assert.match(refused(vassal, cmd("AAA", "declareWar", { target: "BBB" })), /integrated, not attacked/);
+});

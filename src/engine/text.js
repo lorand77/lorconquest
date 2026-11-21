@@ -82,6 +82,7 @@ export function describeEvent(map, e) {
             const college = (k, name) => `${name} ${e.vote[k].yes}–${e.vote[k].no}`;
             return `${e.country} puts the ${e.name} to the Diet: ${e.passed ? "it passes" : "voted down"} (${college("electors", "electors")}, ${college("princes", "princes")}, ${college("cities", "cities")})`;
         }
+        case "betrayed": return `${e.country} turns on ${e.subject}, its own protectorate: the protection is broken`;
         case "landfriede": return `${e.country} breaks the Eternal Public Peace, declaring war on ${e.target}`;
         case "defenderRefuses": return `${e.country}, the Emperor, refuses to defend ${e.ally} against ${e.enemy}`;
         case "promised": return `${e.country} promises ${e.to} ${fmt(e.money)} for its vote at the election`;
@@ -134,6 +135,7 @@ export function eventCountries(e) {
         case "promised": return [e.country, e.to];
         case "defenderRefuses": return [e.country, e.ally, e.enemy];
         case "landfriede": return [e.country, e.target];
+        case "betrayed": return [e.country, e.subject];
         default: if (e.concern) return e.concern; return e.owner ? [e.owner] : e.country ? [e.country] : [];
     }
 }
