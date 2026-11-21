@@ -63,7 +63,9 @@ export function describeEvent(map, e) {
         case "mergeFleet": return `fleet ${e.fleet} (${e.owner}) joins fleet ${e.into}`;
         case "sharpshooters": return `the post at ${place(e.pass)} shoots ${fmt(e.dead)} men of army ${e.army} (${e.owner})`;
         case "postLost": return `the sharpshooters at ${place(e.pass)} die: ${fmt(e.dead)} men of ${e.owner}`;
-        case "electionCalled": return `an election of the Emperor is called, to be held on ${longDate(e.on)}`;
+        case "electionCalled": return `the throne is empty${e.country ? ` (${e.country})` : ""}: the electors will meet on ${longDate(e.on)}`;
+        case "emperorDies": return `${e.country}'s Emperor dies`;
+        case "chest": return `the Empire's war chest pays ${e.country}, the Emperor, ${fmt(e.money)} for its defence`;
         case "vacant": return `the imperial throne falls vacant${e.country ? `: ${e.country} can wear the crown no longer` : ""}`;
         case "elected": {
             const tally = (t) => Object.entries(t).sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c} ${n}`).join(", ");
@@ -72,11 +74,14 @@ export function describeEvent(map, e) {
         }
         case "authority": {
             const why = { peace: "a year with no war between German states", wars: "a year of wars between German states, 1 for each", defended: "the Emperor's defence of the Empire",
-                kept: "land of the Empire kept by an outsider", executed: "a war of execution won", ban: "the imperial ban", league: "the League against Renovatio Imperii", refused: "the Emperor refusing to defend the Empire", attacked: "the Emperor attacking a German state", passed: "the crown changing hands" }[e.why] ?? e.why;
+                kept: "land of the Empire kept by an outsider", executed: "a war of execution won", ban: "the imperial ban", capitulation: "the new Emperor's capitulation", refused: "the Emperor refusing to defend the Empire", attacked: "the Emperor attacking a German state", passed: "the crown changing hands" }[e.why] ?? e.why;
             return `the Emperor's authority ${e.delta > 0 ? "rises" : "falls"} to ${e.now} (${e.delta > 0 ? "+" : ""}${e.delta}: ${why})`;
         }
         case "ban": return `${e.country}, the Emperor, puts ${e.target} under the imperial ban: a war of execution`;
-        case "reform": return `${e.country}, the Emperor, proposes the ${e.name}: ${e.passed ? "it passes" : "voted down"}, ${e.yes} of 7 votes for it`;
+        case "reform": {
+            const college = (k, name) => `${name} ${e.vote[k].yes}–${e.vote[k].no}`;
+            return `${e.country} puts the ${e.name} to the Diet: ${e.passed ? "it passes" : "voted down"} (${college("electors", "electors")}, ${college("princes", "princes")}, ${college("cities", "cities")})`;
+        }
         case "landfriede": return `${e.country} breaks the Eternal Public Peace, declaring war on ${e.target}`;
         case "defenderRefuses": return `${e.country}, the Emperor, refuses to defend ${e.ally} against ${e.enemy}`;
         case "promised": return `${e.country} promises ${e.to} ${fmt(e.money)} for its vote at the election`;

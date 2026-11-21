@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 77;
+export const RULES_VERSION = 78;
 // bump when the shape of the state changes
-export const FORMAT = 17;
+export const FORMAT = 18;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -153,6 +153,16 @@ export function canEnter(game, country, key) {
     return owner === country || atWar(st, country, owner) || friendly(st, country, owner) || grantsAccess(st, owner, country)
         // the Imperial Circles: every German state gives the Emperor military access — to each settlement of the Empire's land
         || (st.empire?.reforms >= 3 && st.empire.emperor === country && game.map.hre.has(game.map.nodes.get(key).land));
+}
+
+// is `code` a German state (RULES.md §10, The Emperor): where the scenario has an Emperor, one with a capital inside the Empire — an
+// outsider holding a town of it is no German state; on a map with only the plain proposal, any holder of a settlement in it
+export function isGermanState(game, code) {
+    const st = game.state;
+    if (!st.countries[code] || st.countries[code].rebel) return false;
+    if (st.empire) return capitalsOf(st, code).some((id) => game.map.hre.has(id));
+    for (const id in st.settlements) if (st.settlements[id].owner === code && game.map.hre.has(Number(id))) return true;
+    return false;
 }
 
 // is `b` a friend of `a`: the same country, an ally, a subject or an overlord

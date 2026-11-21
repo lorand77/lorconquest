@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { BAN_COST, BAN_WARMONGER, REFORMS, banError, reformError, reformVotes, CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -160,46 +160,54 @@ function empireSection(ctx) {
 function crownParts(ctx) {
     const { state, game, me, make: mk } = ctx, emp = state.empire;
     const name = (code) => state.countries[code]?.name ?? code, town = (id) => game.map.nodes.get(String(id))?.name ?? String(id);
-    const candidates = candidatesOf(game), electors = electorsOf(game), unit = PROMISE_MONEY * game.map.x;
-    const out = [mk("p", {}, `Emperor: ${emp.emperor ? (emp.emperor === me ? "you" : name(emp.emperor)) : "none — the throne is vacant"}. `
-        + (emp.called ? `An election is called for ${longDate(emp.next)}.` : `The next election: ${longDate(emp.next)}, called a year before.`)),
+    const candidates = candidatesOf(game), electors = electorsOf(game), unit = PROMISE_MONEY * game.map.x, who = (c) => (c === me ? "you" : name(c));
+    // the Emperor for life, or the throne empty and the day the electors meet
+    const out = [mk("p", {}, emp.emperor ? `Emperor: ${who(emp.emperor)}, for life. An election follows his death or a vacancy.`
+        : `The throne is empty${emp.late ? ` (the late Emperor: ${who(emp.late)})` : ""}: the electors meet on ${longDate(emp.next)}.`),
         // the crown's authority, and what it is worth: German states' regard for the Emperor, and the free cities' dues
         mk("p", {}, `Imperial Authority: ${emp.authority} — German states think ${Math.floor(emp.authority / 5)} better of the Emperor. The free cities pay it 5% of their money: ${(game.map.scenario.empire?.freeCities ?? []).map(name).join(", ") || "none"}.`)];
+    // the seven votes: who casts each — a church vote silent in a conqueror's hands — and whom it would vote for now
     out.push(mk("div", {}, ...electors.map((e) => {
-        const v = voteOf(game, e, candidates);
-        return row(ctx, mk("span", { class: "w" }, `${e.vote}, ${town(e.settlement)}: ${e.holder ? (e.holder === me ? "you" : name(e.holder)) : "nobody"}${v ? ` — would vote for ${v === me ? "you" : name(v)}` : ""}`));
+        const v = voteOf(game, e, candidates), held = state.settlements[e.settlement]?.owner;
+        return row(ctx, mk("span", { class: "w" }, `${e.vote}, ${town(e.settlement)}: ${e.holder ? who(e.holder) : e.church && held ? `silent (${name(held)} holds it)` : "nobody"}${v ? ` — would vote for ${who(v)}` : ""}`));
     })));
-    // the reforms: those passed, and the next with the authority it needs (RULES.md §10, Imperial reform); the states under the ban
+    // the estates' reforms: those passed, the next with the authority it needs, the war chest; the states under the ban
     const passed = REFORMS.slice(0, emp.reforms).map((r) => r.name), next = REFORMS[emp.reforms];
-    out.push(mk("p", {}, `Reforms: ${passed.length ? passed.join(", ") : "none yet"}.${next ? ` Next: the ${next.name}, at authority ${next.authority}.` : ""}${emp.banned.length ? ` Under the ban: ${emp.banned.map(name).join(", ")}.` : ""}`));
-    // the Emperor's own: the next reform, the ban, Renovatio Imperii
-    if (emp.emperor === me) {
-        const why = reformError(game, me), yes = reformVotes(game).filter((v) => v.yes).length;
-        out.push(row(ctx, mk("span", { class: "w" }, why ? `Propose a reform: ${why}.` : `Propose the ${next.name}: ${yes} of 7 electors would vote for it (4 needed).`),
+    out.push(mk("p", {}, `Reforms: ${passed.length ? passed.join(", ") : "none yet"}.${next ? ` Next: the ${next.name}, at authority ${next.authority}.` : ""}`
+        + `${emp.reforms >= 2 ? ` The war chest: ${n(emp.chest)}, paid to the Emperor while he defends the Empire.` : ""}${emp.banned.length ? ` Under the ban: ${emp.banned.map(name).join(", ")}.` : ""}`));
+    // putting the next reform to the Diet: the Emperor's or the Archbishop of Mainz's, with how the three colleges would vote
+    const why = reformError(game, me);
+    if (!why || !/only the Emperor or the Archbishop/.test(why)) {
+        const v = !why ? dietVotes(game, me) : null, college = (k) => `${v[k].yes}–${v[k].no}`;
+        out.push(row(ctx, mk("span", { class: "w" }, why ? `Put a reform to the Diet: ${why}.` : `Put the ${next.name} to the Diet: electors ${college("electors")}, princes ${college("princes")}, cities ${college("cities")} — ${v.passed ? "it would pass" : "it would fail"} (two colleges of three).`),
             mk("button", { disabled: why ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "proposeReform" })) }, "Propose")));
+    }
+    // the Emperor's ban
+    if (emp.emperor === me) {
         const bannable = germanStates(game).filter((c) => !banError(game, me, c));
         if (bannable.length) {
             const pick = mk("select", {}, ...bannable.map((c) => mk("option", { value: c }, `${name(c)} (warmonger ${Math.round(state.countries[c].warmonger ?? 0)})`)));
             out.push(row(ctx, mk("span", { class: "w" }, `The imperial ban, for ${BAN_COST} authority: a war of execution, the German states called to your side.`), pick,
                 mk("button", { class: "danger", onclick: async () => { if (confirm(`Put ${name(pick.value)} under the ban? You go to war with it.`)) { await ctx.send({ type: "ban", target: pick.value }); ctx.redraw(); } } }, "Ban")));
-        } else out.push(mk("p", { class: "hint" }, `The ban (${BAN_COST} authority): a German state with a warmonger score of ${BAN_WARMONGER} or more, or that took land of the Empire from another within 10 years. None now.`));
-        if (emp.reforms >= 4 && !state.memory.empire[me]) out.push(row(ctx, mk("span", { class: "w" }, "Renovatio Imperii: every German state becomes your protectorate or joins the League against you, once."),
-            mk("button", { class: "danger", onclick: async () => { if (confirm("Demand Renovatio Imperii? You may do this only once.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand")));
+        } else out.push(mk("p", { class: "hint" }, `The ban (${BAN_COST} authority): a German state with a warmonger score of ${BAN_WARMONGER} or more, or that took land of the Empire from another within 10 years — and no truce or pact with you. None now.`));
     }
-    // your vote: every elector you hold votes alike — as you choose, or as a computer would
-    if (electors.some((e) => e.holder === me)) {
-        const said = emp.reformChoices[me], stance = mk("select", {}, ...[["", "as a computer elector would"], ["yes", "yes"], ["no", "no"]]
+    // your stand in the Diet, as a German state and with any electors' votes you cast
+    if (isGermanState(game, me) || electors.some((e) => e.holder === me)) {
+        const said = emp.reformChoices[me], stance = mk("select", {}, ...[["", "as a computer would"], ["yes", "yes"], ["no", "no"]]
             .map(([v, l]) => mk("option", { value: v, ...((said === undefined ? "" : said ? "yes" : "no") === v ? { selected: "selected" } : {}) }, l)));
         stance.addEventListener("change", async () => { await ctx.send({ type: "reformVote", yes: stance.value === "" ? null : stance.value === "yes" }); ctx.redraw(); });
-        out.push(row(ctx, mk("span", {}, "On reforms: "), stance));
+        out.push(row(ctx, mk("span", {}, "On reforms, in the Diet: "), stance));
+    }
+    // your vote for Emperor: every elector you hold votes alike — as you choose, or as a computer would
+    if (electors.some((e) => e.holder === me)) {
         const choice = mk("select", {}, mk("option", { value: "", ...(!emp.choices[me] ? { selected: "selected" } : {}) }, "as a computer elector would"),
             ...candidates.map((c) => mk("option", { value: c, ...(emp.choices[me] === c ? { selected: "selected" } : {}) }, c === me ? "yourself" : name(c))));
         choice.addEventListener("change", async () => { await ctx.send({ type: "electorVote", candidate: choice.value || null }); ctx.redraw(); });
-        out.push(row(ctx, mk("span", {}, "Your vote: "), choice));
+        out.push(row(ctx, mk("span", {}, "Your vote for Emperor: "), choice));
     }
-    if (!candidates.includes(me)) out.push(mk("p", { class: "hint" }, `You do not stand: a German state of ${n(CANDIDATE_GERMAN)} people or an outsider of ${n(CANDIDATE_OUTSIDER)}, nobody's vassal.`));
+    if (!candidates.includes(me)) out.push(mk("p", { class: "hint" }, `You do not stand: a Catholic (after 1517, also Protestant) German state of ${n(CANDIDATE_GERMAN)} people or outsider of ${n(CANDIDATE_OUTSIDER)}, nobody's vassal.`));
     else if (emp.called) {
-        // promises: to each vote held by another, paid when the votes are cast whoever wins — each 2,000 × x counts 1 with its elector,
+        // promises: to each vote cast by another, paid when the votes are cast whoever wins — each 2,000 × x counts 1 with its elector,
         // at most 30
         const mine = emp.promises[me] ?? {};
         out.push(mk("p", { class: "hint" }, `You stand. Promise electors money for their votes: paid when the votes are cast, whoever wins; each ${n(unit)} counts 1 with the elector, at most 30.`));

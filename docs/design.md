@@ -978,13 +978,16 @@ Settled answers move into §1, or into RULES.md where they are rules. Each is ne
 named (see [plan.md](plan.md)).
 
 1. **The historical scenario's Empire** (in stages). Its SCENARIO.md describes an Emperor, Imperial Authority, electors and
-   elections, the imperial ban, dues and five reforms. **It is built**, in three stages, for the historical map and Europe: the
-   Emperor, the seven electors and the elections with their promises; Imperial Authority, Defender of the Empire and the free
-   cities' dues; the ban and the reforms (RULES.md §10). `empire.js` holds the crown, the elections, the reforms' votes and the
-   ban's conditions; `diplomacy.js` what happens in wars and peaces (authority, the defender's and the Circles' calls, the war of
-   execution, Renovatio Imperii as the plain proposal with +10); `economy.js` the dues and the Common Penny as tribute;
-   `state.js` the Circles' access; `opinion.js` the Hereditary Empire's +20; `fighting.js` the day a German state last took
-   land of the Empire from another. The computer as Emperor: `src/ai/empire.js`.
+   elections, the imperial ban, dues and reforms. **It is built**, for the historical map and Europe, and was then reworked to fit
+   the history better: a German state is one with a capital inside the Empire (`state.js`, `isGermanState`); the Emperor rules
+   for life, dying by a yearly roll of the game's dice, an election six months after a death or a vacancy; church votes are silent
+   away from their see; only Catholics (and after 1517 Protestants) stand; from 1519 each election costs a capitulation; and the
+   reforms are the estates', put to a Diet of three colleges by the Emperor or the Archbishop of Mainz, binding the Emperor too —
+   the Public Peace, a Common Penny into a war chest, the Circles and a Chamber Court (RULES.md §10). `empire.js` holds the crown,
+   the elections, the Diet's vote and the ban's conditions; `diplomacy.js` what happens in wars and peaces (authority, the
+   defender's and the Circles' calls, the war of execution); `economy.js` the dues as tribute and the Penny into the chest, paid out
+   to an Emperor at war for the Empire; `state.js` the Circles' access; `opinion.js` the Chamber Court; `fighting.js` the day a
+   German state last took land of the Empire from another. The computer as Emperor or Archbishop of Mainz: `src/ai/empire.js`.
 2. **A computer navy that seeks battle** (not scheduled). The computer fights at sea only where it is clearly the stronger,
    builds warships only against a stronger enemy fleet, and cannot hunt fleets in port (the rules keep them safe). Going out
    to win command of a sea would be the next thing to teach it.

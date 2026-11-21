@@ -10,7 +10,7 @@ import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUI
     MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
-import { armyList, atWar, capitalsOf, isCore, isRebel, killPeople, removeArmy } from "./state.js";
+import { armyList, atWar, capitalsOf, isCore, isGermanState, isRebel, killPeople, removeArmy } from "./state.js";
 import { coringDays } from "./religion.js";
 import { memo } from "./memo.js";
 
@@ -30,7 +30,7 @@ export const TRAINING_SHARE = 0.1;
 export const trainingRoom = (state, code, s) => Math.max(0, TRAINING_SHARE * s.pop - sum(state.countries[code].training.filter((t) => t.settlement === s.id), (t) => t.n));
 // a sea power's raised in proportion to the fleet its scenario gives it (RULES.md §9; state.js, navy)
 // the share of its money a free city pays the Emperor each year (RULES.md §10, The Emperor)
-export const DUES = 0.05, PENNY = 0.02;
+export const DUES = 0.05, PENNY = 0.01;
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code) * (state.countries[code].navy ?? 1);
 export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
@@ -65,17 +65,17 @@ function economyOfNow(game, code) {
     const share = (c) => { if (!st.countries[c].overlord) return 0; const b = economyBase(game, c); return TRIBUTE[subjectKind(st, c)] * Math.max(0, b.moneyPerYear - b.capitalMoney); };
     // a free city's dues to the Emperor (RULES.md §10, The Emperor): 5% of its money, when positive, while the two are not at war —
     // tribute as a subject's is, on top of any it pays an overlord
-    // and, once the Common Penny has passed (RULES.md §10, Imperial reform), every German state pays it 2% besides
-    const emperor = st.empire?.emperor, cities = game.map.scenario.empire?.freeCities ?? [], penny = (st.empire?.reforms ?? 0) >= 2;
-    const german = penny ? new Set(Object.values(st.settlements).filter((s) => game.map.hre.has(s.id)).map((s) => s.owner)) : null;
-    const dues = (c) => (emperor && c !== emperor && (cities.includes(c) || german?.has(c)) && st.countries[c] && st.countries[emperor] && !isRebel(st, c) && !atWar(st, c, emperor)
-        ? ((cities.includes(c) ? DUES : 0) + (german?.has(c) ? PENNY : 0)) * Math.max(0, economyBase(game, c).moneyPerYear) : 0);
-    const payers = code === emperor ? [...new Set([...cities, ...(german ?? [])])].sort() : [];
-    const paid = share(code) + dues(code), received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0) + payers.reduce((n, c) => n + dues(c), 0);
+    const emperor = st.empire?.emperor, cities = game.map.scenario.empire?.freeCities ?? [];
+    const dues = (c) => (emperor && c !== emperor && cities.includes(c) && st.countries[c] && st.countries[emperor] && !isRebel(st, c) && !atWar(st, c, emperor)
+        ? DUES * Math.max(0, economyBase(game, c).moneyPerYear) : 0);
+    // the Common Penny, once passed (RULES.md §10, Imperial reform): every German state but the Emperor pays 1% of its money, when
+    // positive, into the Empire's war chest — no one's tribute (monthly, below, keeps the chest)
+    const penny = (st.empire?.reforms ?? 0) >= 2 && code !== emperor && isGermanState(game, code) ? PENNY * Math.max(0, e.moneyPerYear) : 0;
+    const paid = share(code) + dues(code) + penny, received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0) + (code === emperor ? cities.reduce((n, c) => n + dues(c), 0) : 0);
     const moneyPerYear = e.moneyPerYear + received - paid;
     const investable = Math.max(0, moneyPerYear);
     const slider = (st.countries[code].slider ?? 50) / 100;
-    return { ...e, tributePaid: paid, tributeReceived: received, moneyPerYear, investable, rPerYear: (2 * slider * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * e.libraries) };
+    return { ...e, tributePaid: paid, tributeReceived: received, pennyPaid: penny, moneyPerYear, investable, rPerYear: (2 * slider * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * e.libraries) };
 }
 
 // (remembered while the computer players think: memo.js)
@@ -198,6 +198,7 @@ export function monthly(game, events) {
         const e = economyOf(game, code), m = e.moneyPerYear / 12, invest = Math.max(0, m);
         // what goes to research and what stays: slider 50% leaves the full money, each 10% above moves a fifth of it
         c.treasury += m + (1 - 2 * c.slider / 100) * invest;
+        if (st.empire && e.pennyPaid) st.empire.chest += e.pennyPaid / 12;          // the Common Penny into the war chest
         c.bank += c.bank * BANK_RATE_MONTHLY;
         c.r += (2 * (c.slider / 100) * invest + x * 10000 / 12) * (1 + LIBRARY_BONUS * e.libraries);
         unlockTech(game, code, events);
@@ -212,6 +213,13 @@ export function monthly(game, events) {
                 events.push({ type: "cored", day: st.day, country: code, settlement: s.id });
             }
         }
+    }
+    // the war chest paid out, month by month, to an Emperor fighting as Defender of the Empire or in a war of execution
+    const emp = st.empire, chief = emp?.emperor;
+    if (emp && chief && emp.chest > 0 && st.wars.some((k) => k.split("|").includes(chief) && (st.warInfo[k]?.defender || st.warInfo[k]?.execution))) {
+        st.countries[chief].treasury += emp.chest;
+        events.push({ type: "chest", day: st.day, country: chief, money: emp.chest });
+        emp.chest = 0;
     }
 }
 

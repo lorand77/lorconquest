@@ -14,7 +14,7 @@ import { destroy, mayDepart, mayPass, progress, retreat, routeFor, startLeg } fr
 import { leavePort, payOffPortless } from "./naval.js";
 import { fireSharpshooters, postsLost, stormPost } from "./passes.js";
 import { d6 } from "./random.js";
-import { armiesAt, armyList, atWar, canEnter, isAlive, isFriend, isRebel, ownerOf, removeArmy } from "./state.js";
+import { armiesAt, armyList, atWar, canEnter, isAlive, isFriend, isGermanState, isRebel, ownerOf, removeArmy } from "./state.js";
 import { menOf } from "./army.js";
 
 export function situation(game, key) {
@@ -58,8 +58,8 @@ export function capture(game, s, country, events, how) {
     const from = s.owner, st0 = game.state;
     if (how !== "peace") recordCapture(game, s, from, country);
     // a German state taking a settlement of the Empire from another, by force or in a peace: the day, for the imperial ban (empire.js)
-    if (st0.empire && game.map.hre.has(s.id) && from !== country && !isRebel(st0, country) && !isRebel(st0, from)
-        && Object.values(st0.settlements).some((x) => x.owner === country && game.map.hre.has(x.id))) st0.empire.seized[country] = st0.day;
+    if (st0.empire && game.map.hre.has(s.id) && from !== country && isGermanState(game, country) && isGermanState(game, from) && !st0.empire.banned.includes(from))
+        st0.empire.seized[country] = st0.day;
     s.owner = country;
     s.siege = null;
     s.heldSince = game.state.day;

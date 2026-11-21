@@ -541,3 +541,16 @@ test("a demand only of a neighbour; a subject's warmonger by its size; a peace h
     assert.equal(validateTerms(g3, "CCC", "AAA", { becomeSubject: "protectorate" }), null);
     void st;
 });
+
+test("found by the fuzz: a vassal integrated while leftover peasants of a fallen country fight it is at war with nobody once out", async () => {
+    const { integrate } = await import("../../src/engine/diplomacy.js");
+    const game = tinyGame(), st = game.state;
+    setSubject(game, "BBB", "AAA", "vassal", []);
+    // a rebel band whose own country is gone: at war with every country still in the game (events.js, rebelWars)
+    st.countries.REB1 = { ...st.countries.EEE, code: "REB1", name: "Peasants", rebel: true, of: "ZZZ" };
+    st.wars.push("BBB|REB1");
+    st.wars.sort();
+    integrate(game, "AAA", "BBB", []);
+    assert.equal(st.countries.BBB.out, st.day);
+    assert.deepEqual(st.wars.filter((w) => w.split("|").includes("BBB")), []);
+});

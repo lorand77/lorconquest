@@ -985,16 +985,16 @@ as if built in play. Every other settlement begins without; walls may be bought 
 
 ## The Holy Roman Empire
 
-The Empire is every settlement marked **HRE** above. A **German state** is any country that holds one; an **outsider** any that
-holds none. The Empire is a **crown**, worn by one German state and won by election (RULES.md §10, *The Emperor*). As on the
-historical map, the whole of its design is played: the Emperor, the electors and elections, Imperial Authority, Defender of the
-Empire, the free cities' dues, the imperial ban and the five reforms, Renovatio Imperii and the Hereditary Empire among them
-(RULES.md §10). Two German states
-think 10 better of each other (RULES.md §10), and every German state thinks the crown's authority ÷ 5 better of the Emperor.
+The Empire is every settlement marked **HRE** above. A **German state** is a country with a capital inside it (RULES.md §10, *The
+Emperor*): Milan and Savoy are German states, Burgundy and Anjou are not, and an outsider taking a town of the Empire stays one.
+The Empire is a **crown**, worn for life by one German state and won by election; the whole of RULES.md §10's crown is played —
+the Emperor and his electors, Imperial Authority, Defender of the Empire, the free cities' dues, the imperial ban, and the
+estates' four reforms put to the Diet. Two German states think 10 better of each other, and every German state thinks the crown's
+authority ÷ 5 better of the Emperor.
 
 **Imperial Authority** starts at **20**, Frederick III being the Empire's "arch-sleepyhead", and moves as RULES.md §10 has it: up
 with years of peace among the German states and the Emperor's defence of them, down with their wars, the Emperor's attacks on
-them, land outsiders keep, refusals to defend and the crown changing hands.
+them, land outsiders keep, refusals to defend, the crown changing hands and, from 1519, each new Emperor's capitulation.
 
 **What the crown gives.** **Defender of the Empire**: an outsider attacking a German state calls the Emperor into the war on its
 side. **The imperial cities pay their dues**: every free city — LUB, HAM, BRE, NUR, AUG, ULM, REG, MET, STR and BAS — pays the
@@ -1002,13 +1002,16 @@ Emperor 5% of its yearly money, when positive, while the two are not at war.
 
 ### The Emperor
 
-At the start the Emperor is **STY Inner Austria**: Frederick III, elected King of the Romans on 2 February 1440. The Emperor must
-stay a German state, standing and nobody's vassal; otherwise the throne falls vacant and an election is held at once.
+At the start the Emperor is **STY Inner Austria**: Frederick III, elected King of the Romans on 2 February 1440. He rules for life —
+each year there is a 4% chance he dies — and the throne falls vacant if his country is no longer a German state, is out of the game
+or becomes someone's vassal. Either way the electors meet six months later.
 
 ### The electors
 
-Seven votes choose the Emperor. Each belongs to a settlement, and **whoever holds that settlement casts the vote** — conquer it
-and the vote is yours. One country may hold several.
+Seven votes choose the Emperor, each belonging to a settlement. The **King of Bohemia**, the **Count Palatine**, the **Duke of
+Saxony** and the **Margrave of Brandenburg** vote with their towns — conquer one and its vote is yours. The three **archbishops**
+vote only while their see holds the town: Mainz, Trier or Cologne taken by anyone else is a silent vote, as Mainz was under the
+Swedes in 1631.
 
 | Vote | Settlement | Holder at start |
 |---|---|---|
@@ -1022,14 +1025,13 @@ and the vote is yours. One country may hold several.
 
 ### Elections
 
-Every **25 years** — 1465, 1490, 1515, 1540, 1565, 1590, 1615 and 1640 — and whenever the throne falls vacant; each scheduled one
-is called at the start of the year before. **Candidates:** the reigning Emperor, every German state of 40,000 people or more and
-every outsider of 100,000 or more, none of them anyone's vassal. A person's electors vote as the person chooses; a computer's for
-itself if it stands, otherwise for the candidate it scores highest — its opinion of it, +20 for the reigning Emperor, +1 for
-each 6,000 money promised (2,000 × x) up to +30, −20 for a candidate of 150,000 people or more, −50 for one at war with it, and
-−20 for one of another faith: Hussite Bohemia's vote is no Catholic's for the asking, and after 1517 no Protestant wears the crown
-easily. Promises are paid when the votes are cast, whoever they go to. A majority of the votes cast wins, 4 of 7; without one, the
-electors vote again between the two leaders. A tie goes to the reigning Emperor, then the larger people.
+**Candidates:** the reigning or late Emperor's country, every German state of 40,000 people or more and every outsider of 100,000
+or more, none of them anyone's vassal, and **only Catholics** — Protestants too after 1517: no Sultan, Tsar or Hussite king wears
+this crown. A person's electors vote as the person chooses; a computer's for the candidate it scores highest — its opinion of it,
++20 for the reigning or late Emperor's country, +1 for each 6,000 money promised (2,000 × x) up to +30, −20 for a candidate of
+150,000 people or more, −50 for one at war with it, and −20 for one of another faith — or for itself if it is that country or the
+greater. Promises are paid when the votes are cast, whoever they go to. A majority of the votes cast wins; without one, the
+electors vote again between the two leaders. A tie goes to the reigning or late Emperor's country, then the larger people.
 
 ## Victory
 

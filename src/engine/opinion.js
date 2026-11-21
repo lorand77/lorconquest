@@ -8,7 +8,7 @@ import { YEAR_DAYS } from "./calendar.js";
 import { economyOf, popOf } from "./economy.js";
 import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
 import { faithOpinion } from "./religion.js";
-import { armyList, atWar, isRebel, warKey } from "./state.js";
+import { armyList, atWar, isGermanState, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
 import { memo } from "./memo.js";
 
@@ -58,10 +58,12 @@ export function opinion(game, holder, other) {
     // both at war with the same country
     if (enemiesOf(holder).some((e) => e !== other && atWar(st, other, e))) o += 20;
     // both hold HRE settlements
-    const holdsHre = (c) => Object.values(st.settlements).some((s) => s.owner === c && game.map.scenario.settlements.find((x) => x.id === s.id).hre);
+    const holdsHre = (c) => isGermanState(game, c);
     if (holdsHre(holder) && holdsHre(other)) o += 10;
     // a German state's regard for the Emperor: the crown's authority ÷ 5, up to +20 (RULES.md §10, The Emperor)
     if (st.empire?.emperor === other && holdsHre(holder)) o += Math.floor(st.empire.authority / 5);
+    // the Imperial Chamber Court: a German state that took land of the Empire from another without the ban, in the last 10 years
+    if ((st.empire?.reforms ?? 0) >= 4 && holdsHre(holder) && within(st, st.empire.seized[other], 10)) o -= 10;
     // a year of peace, +1, up to 20
     o += Math.min(20, Math.floor(daysSinceWar(st, holder, other) / YEAR_DAYS));
     const border = bordering(game, holder, other);
@@ -203,10 +205,7 @@ export function nearVictory(game, holder, demander, kind) {
 // rival, and none near victory (nearVictory; `why` says which, `count` and `target` how near). The Empire's vote asks the
 // second, state by state, and not the first (diplomacy.js, proposeEmpire).
 export function subjectChance(game, holder, demander, kind) {
-    // a Hereditary Empire: the Emperor's own protectorates inside the Empire are asked to become vassals with +20 (RULES.md §10)
-    const st = game.state, heir = (st.empire?.reforms ?? 0) >= 5 && st.empire.emperor === demander && kind === "vassal"
-        && st.countries[holder]?.overlord === demander && Object.values(st.settlements).some((s) => s.owner === holder && game.map.hre.has(s.id));
-    const base = demandChance(game, holder, demander, kind, heir ? 20 : 0);
+    const base = demandChance(game, holder, demander, kind);
     if (areRivals(game, holder, demander)) return { ...base, chance: 0, why: "rival" };
     const near = nearVictory(game, holder, demander, kind);
     return near ? { ...base, chance: 0, why: "victory", ...near } : base;

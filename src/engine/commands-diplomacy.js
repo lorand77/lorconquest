@@ -13,18 +13,18 @@
 //   proposeUnion { with }            two people's countries made one, ruled by both (RULES.md §10, Union): the other is asked
 //   promise { elector, money }       a candidate's promise to the vote of an elector's settlement, paid at the election (empire.js)
 //   electorVote { candidate }        whom a person's electors vote for (null: as a computer would)
-//   proposeReform {}                 the Emperor proposes the next imperial reform, put to the electors at once (empire.js)
-//   reformVote { yes }               how a person's electors vote on reforms (null: as a computer would)
+//   proposeReform {}                 the Emperor or the Archbishop of Mainz puts the next reform to the Diet at once (empire.js)
+//   reformVote { yes }               how a person votes on reforms in the Diet (null: as a computer would)
 //   ban { target }                   the Emperor puts a German state under the imperial ban: a war of execution (diplomacy.js)
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
 import { OFFER_DAYS, addAgreement, banWar, defendEmpire, refuseDefence, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, takeSubject, validateTerms, joinWar, GUARANTEE_DAYS, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
-import { banError, candidatesOf, electorsOf, hasReform, promiseError, proposeReform, reformError } from "./empire.js";
+import { banError, candidatesOf, electorsOf, promiseError, proposeReform, reformError } from "./empire.js";
 import { ALLIANCE_YEARS, agreementAnswer, isAlliance, peaceAnswer } from "./opinion.js";
 import { hasAgreement, isVassal, overlordOf, wouldCycle } from "./relations.js";
-import { atWar, isRebel } from "./state.js";
+import { atWar, isGermanState, isRebel } from "./state.js";
 
 const KINDS = ["defensive", "military", "guarantee", "pact", "access"];
 const isHuman = (st, c) => st.humans.includes(c);
@@ -187,16 +187,6 @@ export const diplomacyCommands = {
 
     proposeEmpire(game, cmd) {
         const st = game.state, needed = game.map.scenario.empire?.needed;
-        // with electors, the demand is Renovatio Imperii: the Emperor's, once the fourth reform has passed, once per country that
-        // wears the crown, each state's chance 10 better (RULES.md §10, Imperial reform)
-        if (st.empire) {
-            if (st.empire.emperor !== cmd.country) return refuse("only the Emperor may demand Renovatio Imperii");
-            if (!hasReform(st, "renovatio")) return refuse("Renovatio Imperii is not yet a reform of the Empire");
-            if (st.memory.empire[cmd.country]) return refuse("you may demand Renovatio Imperii only once");
-            const events = [];
-            proposeEmpire(game, cmd.country, events, { bonus: 10, renovatio: true });
-            return done(events);
-        }
         if (!needed) return refuse("this scenario has no plain proposal of the Empire");
         if (st.memory.empire[cmd.country]) return refuse("you may propose the Empire only once, ever");
         const held = hreSettlementsOf(game, cmd.country);
@@ -233,15 +223,16 @@ export const diplomacyCommands = {
         const why = reformError(game, cmd.country);
         if (why) return refuse(why);
         const events = [];
-        proposeReform(game, events);
+        proposeReform(game, cmd.country, events);
         return done(events);
     },
 
-    // how a person's electors vote on reforms: yes, no, or (null) as a computer elector would
+    // how a person votes on reforms in the Diet — as a German state, and with any electors' votes it casts: yes, no, or (null) as
+    // a computer would
     reformVote(game, cmd) {
         const st = game.state, yes = cmd.yes === undefined ? null : cmd.yes;
         if (!st.empire) return refuse("this scenario has no Emperor");
-        if (!electorsOf(game).some((e) => e.holder === cmd.country)) return refuse("you hold no elector's vote");
+        if (!isGermanState(game, cmd.country) && !electorsOf(game).some((e) => e.holder === cmd.country)) return refuse("you have no seat in the Diet");
         if (yes !== null && typeof yes !== "boolean") return refuse("vote yes or no, or leave it to the formula");
         if (yes === null) delete st.empire.reformChoices[cmd.country]; else st.empire.reformChoices[cmd.country] = yes;
         return done();

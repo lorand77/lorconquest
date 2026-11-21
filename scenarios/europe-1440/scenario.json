@@ -42416,15 +42416,22 @@
   "electors": [
    {
     "vote": "Archbishop of Mainz",
-    "settlement": 259
+    "settlement": 259,
+    "church": true,
+    "see": "MAI",
+    "chancellor": true
    },
    {
     "vote": "Archbishop of Trier",
-    "settlement": 258
+    "settlement": 258,
+    "church": true,
+    "see": "TRI"
    },
    {
     "vote": "Archbishop of Cologne",
-    "settlement": 247
+    "settlement": 247,
+    "church": true,
+    "see": "COL"
    },
    {
     "vote": "King of Bohemia",

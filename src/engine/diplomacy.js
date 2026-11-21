@@ -18,7 +18,7 @@ import { NEAR_VICTORY, agreementAnswer, bordering, demandChance, militaryPowerOf
 import { random } from "./random.js";
 import { WORST_FAITH, faithRegard } from "./religion.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
-import { armyList, atWar, canEnter, isRebel, warKey } from "./state.js";
+import { armyList, atWar, canEnter, isGermanState, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
 
 export const OFFER_DAYS = Math.round(6 * 365 / 12);     // a human has 6 months to answer
@@ -189,7 +189,7 @@ export function callStands(game, o) {
 // ---------- the crown's authority (RULES.md §10, The Emperor) ----------
 
 // Imperial Authority, 0 to 100, the crown's not a country's: what moves it
-export const AUTHORITY = { START: 20, PEACE_YEAR: 1, WAR_YEAR: -1, DEFENDED: 5, EXECUTED: 10, KEPT: -5, REFUSED: -10, ATTACKED: -15, PASSED: -10, BAN: -10, LEAGUE: -20 };
+export const AUTHORITY = { START: 20, PEACE_YEAR: 1, WAR_YEAR: -1, DEFENDED: 5, EXECUTED: 10, KEPT: -5, REFUSED: -10, ATTACKED: -15, PASSED: -10, BAN: -10, CAPITULATION: -10 };
 const reforms = (st) => st.empire?.reforms ?? 0;                       // how many reforms have passed (empire.js, REFORMS)
 // may `c` join a war on `enemy` at the crown's call: a German state of its own, thinking 0 or better of the Emperor, not yet in it,
 // nobody's vassal, not the enemy's subject or overlord, and bound to it by no pact, truce, alliance or guarantee
@@ -214,7 +214,7 @@ export function addAuthority(game, delta, why, events) {
     emp.authority = Math.max(0, Math.min(100, before + delta));
     if (emp.authority !== before) events.push({ type: "authority", day: game.state.day, country: emp.emperor, delta: emp.authority - before, now: emp.authority, why });
 }
-const isGerman = (game, c) => hreSettlementsOf(game, c) > 0;
+const isGerman = (game, c) => isGermanState(game, c);
 
 // the crown in a new war: an Emperor attacking a German state loses authority; an outsider attacking one calls the Emperor in as
 // Defender of the Empire — a computer Emperor comes if it is at least half the attacker's strength and bound to it by no pact,
@@ -465,8 +465,8 @@ export function makePeace(game, mine, other, terms, events) {
 
 // the German states: every country that holds an HRE settlement
 export function germanStates(game) {
-    const st = game.state, hre = new Set(game.map.scenario.settlements.filter((s) => s.hre).map((s) => s.id));
-    return Object.keys(st.countries).sort().filter((c) => real(st, c) && Object.values(st.settlements).some((s) => s.owner === c && hre.has(s.id)));
+    const st = game.state;
+    return Object.keys(st.countries).sort().filter((c) => real(st, c) && st.countries[c].out === null && isGermanState(game, c));
 }
 
 export const hreSettlementsOf = (game, code) => {
@@ -491,10 +491,10 @@ const allied = (st, a, b) => hasAgreement(st, "defensive", a, b) || hasAgreement
 // once the proposer holds three quarters of the number that wins, or the next would carry it there, the rest refuse unrolled.
 // A state at war with the proposer refuses at once, a person too: joining would end the war with no peace (a demand is not
 // made in a war either). `joined` in the event counts those that joined now, not the subjects it had already.
-export function proposeEmpire(game, proposer, events, { bonus = 0, renovatio = false } = {}) {
+export function proposeEmpire(game, proposer, events, { bonus = 0 } = {}) {
     const st = game.state, refused = [], asked = [];
     let joined = 0;
-    st.memory.empire[proposer] = { league: [], ...(renovatio ? { renovatio: true } : {}) };
+    st.memory.empire[proposer] = { league: [] };
     for (const c of germanStates(game)) {
         if (c === proposer || st.countries[c].overlord || wouldCycle(st, c, proposer)) continue;
         if (atWar(st, c, proposer)) { refused.push(c); continue; }
@@ -511,8 +511,6 @@ export function proposeEmpire(game, proposer, events, { bonus = 0, renovatio = f
     st.memory.empire[proposer].league = refused;
     formLeague(game, refused, events);
     events.push({ type: "empire", day: st.day, country: proposer, joined, refused: refused.length, asked: asked.length });
-    // Renovatio Imperii refused by any: the crown loses 20, once (a person refusing later pays it if nobody did: diplomacy-day.js)
-    if (renovatio && refused.length) { addAuthority(game, AUTHORITY.LEAGUE, "league", events); st.memory.empire[proposer].paid = true; }
 }
 
 // ---------- integrating a vassal ----------
@@ -588,6 +586,9 @@ function absorb(game, overlord, subject, events) {
     }
     removeAgreements(game, (x) => x.a === subject || x.b === subject);
     st.offers = st.offers.filter((x) => x.from !== subject && x.to !== subject);
+    // its wars end with it: only peasants' can be left (integrateError, unionError), and the rebels' bookkeeping (events.js,
+    // rebelWars) gives the country it joined the ones that are now its own — a country out of the game is at war with nobody
+    for (const w of [...st.wars]) { const [x, y] = w.split("|"); if (x === subject || y === subject) closeWar(game, x, y); }
     c.out = st.day;
     c.overlord = null;
     c.subjectKind = null;

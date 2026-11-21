@@ -352,7 +352,8 @@ const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map(
     for (const x of subjects) if (subjects.some((y) => y.subject === x.overlord && y.overlord === x.subject)) err(`Subjects: ${x.subject} and ${x.overlord} are each other's subjects`);
     if (subjects.length) START.subjects = subjects;
     // the Empire's crown (SCENARIO.md, The Holy Roman Empire): "At the start the Emperor is **CODE …**" and a "### The electors"
-    // table (Vote, Settlement, Holder at start) — the votes, each cast by whoever holds its settlement (src/engine/empire.js)
+    // table (Vote, Settlement, Holder at start) — the votes, each cast by whoever holds its settlement but an archbishop's, by its see
+    // alone (src/engine/empire.js)
     const electors = sub("The electors");
     if (electors.length) {
         EMPIRE.electors = [];
@@ -361,7 +362,10 @@ const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map(
             if (!S.has(id)) { err(`The electors line ${r._line}: '${r.Settlement}' is no settlement number`); continue; }
             if (!S.get(id).hre) err(`The electors line ${r._line}: ${id} is not in the Empire`);
             if (EMPIRE.electors.some((e) => e.settlement === id)) err(`The electors line ${r._line}: ${id} casts two votes`);
-            EMPIRE.electors.push({ vote: r.Vote, settlement: id });
+            // an archbishop's vote is the church's: cast only by its see, the country holding its settlement at the start (src/engine/
+            // empire.js); the Archbishop of Mainz is the arch-chancellor, who may propose the estates' reforms
+            const church = /^Archbishop\b/.test(r.Vote ?? "");
+            EMPIRE.electors.push({ vote: r.Vote, settlement: id, ...(church ? { church: true, see: S.get(id).country } : {}), ...(church && /Mainz/.test(r.Vote) ? { chancellor: true } : {}) });
         }
         const emperor = /At the start the Emperor is ([A-Z]{2,4})\b/.exec(PROSE)?.[1];
         if (!emperor || !CN.has(emperor)) err("The Holy Roman Empire: no 'At the start the Emperor is CODE' naming a country");

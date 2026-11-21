@@ -1056,31 +1056,38 @@ and a member that has since become a vassal or gone out of the game (a human ref
 proposal.
 
 **The Emperor.** A scenario with **electors** (its SCENARIO.md, *The Holy Roman Empire* — the historical map and Europe) has a crown
-instead: one German state wears it, and **seven votes**, each belonging to a settlement, choose who — **whoever holds the settlement
-casts its vote**, so a vote is taken with its town. An election is held **every 25 years** from the start (1465, 1490 … 1640),
-called at the start of the year before; and **at once whenever the throne falls vacant** — the Emperor holding no settlement in
-the Empire any more, out of the game, or someone's vassal. **Candidates:** the reigning Emperor while it is a German state, and
-every German state of **40,000 people** or more — two cities' worth, so no single town or free city — and every outsider of
-**100,000** or more, none of them anyone's vassal.
+instead. There a **German state** is a country with **a capital inside the Empire** (on a map with only the plain proposal, any
+holder of an Empire settlement): Milan and Savoy are German states, Burgundy and Anjou are not, and an outsider that takes a town
+of the Empire stays an outsider. One German state wears the crown, **for life**: each year (counted on 1 January) there is a
+**4% chance the Emperor dies**, and the throne also falls **vacant** when the Emperor is out of the game, someone's vassal, or no
+longer a German state. Either way the throne is empty and the electors meet **six months later** — the interregnum, when
+candidates make their promises. **Seven votes** choose, each belonging to a settlement. A **secular vote** (the King of Bohemia,
+the Count Palatine, the Duke of Saxony, the Margrave of Brandenburg) is cast by **whoever holds its settlement**, so it is taken
+with its town; a **church vote** (the Archbishops of Mainz, Trier and Cologne) only by **the country that held it at the start** —
+the archbishop's own, chosen by its chapter — and is **silent** in anyone else's hands. **Candidates:** the reigning (or late)
+Emperor's country while it is a German state, and every German state of **40,000 people** or more — two cities' worth, so no single
+town or free city — and every outsider of **100,000** or more, none of them anyone's vassal, and on a map with religions **only
+Catholics — and, after 31 October 1517, Protestants**.
 - **A person's electors** all vote as the person chooses (in the Diplomacy tab), or, if they have not chosen, as a computer's would.
-- **A computer's** vote goes to the other candidate it scores highest — or to itself, if it stands and wears the crown already, or
-  has more people than that candidate:
+- **A computer's** vote goes to the other candidate it scores highest — or to itself, if it stands and is the reigning or late
+  Emperor's country, or has more people than that candidate:
   ```
   elector's score = its opinion of the candidate
-                  + 20 for the reigning Emperor
+                  + 20 for the reigning or late Emperor's country     the electors kept to a house they knew
                   + 1 for each 2,000 × x money the candidate has promised it, at most +30
                   − 20 for a candidate of 150,000 people or more
                   − 50 for one at war with it
                   − 20 for one of another faith (on a map with religions)
   ```
-- **Promises.** Once an election is called, a candidate may promise money for the vote of an elector held by another — no more in
+- **Promises.** Once the throne is empty, a candidate may promise money for the vote of an elector cast by another — no more in
   all than its treasury holds then — and change or take it back until the vote. Every promise is **paid when the votes are cast,
-  whoever wins**, as far as the candidate's treasury goes, to whoever holds that settlement then. Promises and choices are public.
+  whoever wins**, as far as the candidate's treasury goes, to whoever casts that vote then. Promises and choices are public.
 
-**A majority of the votes cast wins** — 4 of 7. Without one, the electors **vote again between the two leaders**: a person's
-electors as the person chose if it is one of the two, else as a computer's would; one of the two votes for itself; the rest for
-the one they score higher. The more votes then win. A tie — for the lead, or in the second round — goes to the reigning Emperor
-if it is tied, then to the larger people, then the lower code.
+**A majority of the votes cast wins.** Without one, the electors **vote again between the two leaders**: a person's electors as
+the person chose if it is one of the two, else as a computer's would; one of the two votes for itself; the rest for the one they
+score higher. The more votes then win. A tie — for the lead, or in the second round — goes to the reigning or late Emperor's
+country if it is tied, then to the larger people, then the lower code. **From 1519 every Emperor elected signs a capitulation** to
+the electors: the crown loses **10 authority** at each election.
 
 **Imperial Authority** (0 to 100) belongs to the crown, not to a country: a new Emperor takes over the old one's. It starts at
 **20**. Every German state thinks **authority ÷ 5** better of the Emperor (rounded down; +4 at the start, up to +20).
@@ -1090,13 +1097,13 @@ if it is tied, then to the larger people, then the lower code.
 | A year (counted on 1 January) with no two German states at war with each other | +1 |
 | Otherwise, each war between German states being fought then | −1 |
 | The Emperor makes peace in a war it joined as Defender of the Empire, with a war score of 0 or more | +5 |
+| The Emperor wins a war of execution (below) | +10 |
 | A peace between an outsider and a German state (as they were when the war began) leaves the outsider holding settlements of the Empire that are the German state's core | −5 each |
 | The Emperor refuses to defend the Empire | −10 |
-| The Emperor declares war on a German state | −15 |
-| The Emperor wins a war of execution (below) | +10 |
 | The Emperor puts a state under the ban (below) | −10 |
-| Renovatio Imperii refused by any state (below) | −20 |
+| The Emperor declares war on a German state | −15 |
 | The crown passes to another country | −10 |
+| An Emperor elected from 1519 signs his capitulation | −10 |
 
 **Defender of the Empire.** When an outsider declares war on a German state, the Emperor — if it is neither of them, at war with
 neither, nobody's vassal and no subject or overlord of the attacker — is called into the war on the German state's side, like a
@@ -1106,27 +1113,31 @@ half the attacker's and no pact, truce or alliance binds it to the attacker, and
 two are not at war — tribute, as a subject's is (on top of any it pays an overlord).
 
 **The imperial ban.** For **10 authority** the Emperor may put a German state under the ban — one with a **warmonger score of 30**
-or more, or that has **taken a settlement of the Empire from another German state in the last 10 years** (by force or in a peace);
-not one it is at war with already, nor its subject or overlord. The Emperor is then at war with it: a **war of execution**, in
-which the Emperor counts as the **defending side** — no warmonger score, no authority lost for attacking a German state. The two
-sides' vassals, defensive allies and guarantors come in as in any war, and their military allies are called. **Every German
-state that thinks 0 or better of the Emperor is called to its side** — a computer comes, if no pact, truce, alliance or guarantee
-binds it to the banned state; a person is asked, and no answer in 6 months is a no — as the defending side too, with no
-warmonger score. The ban ends at the Emperor's peace with the banned state; a war score of 0 or more then is a war of execution
-won: **+10 authority**.
+or more, or that has **taken a settlement of the Empire from another German state in the last 10 years** (by force or in a peace,
+and not from one under the ban); not one it is at war with already, **bound to by a truce or a pact**, nor its subject or overlord.
+The Emperor is then at war with it: a **war of execution**, in which the Emperor counts as the **defending side** — no warmonger
+score, no authority lost for attacking a German state. The two sides' vassals, defensive allies and guarantors come in as in any
+war, and their military allies are called. **Every German state that thinks 0 or better of the Emperor is called to its side** —
+a computer comes, if no pact, truce, alliance or guarantee binds it to the banned state; a person is asked, and no answer in 6 months
+is a no — as the defending side too, with no warmonger score. **The ban lasts as long as its war**, however that ends — a peace, the
+banned state out of the game; the reigning Emperor's own peace with a war score of 0 or more is a war of execution won: **+10
+authority**.
 
-**Imperial reform.** The Emperor may propose the next reform in order once the crown's authority reaches its level. It is put to
-the electors at once and passes with **4 of the 7 votes**: a person's electors vote as the person has said (yes, no, or as a
-computer's), a computer's yes if it is the Emperor's own or thinks 0 or better of the Emperor. A reform voted down may be proposed
-again after 5 years. A reform passed stands for good, whoever wears the crown and whatever its authority later.
+**Imperial reform: the estates'.** The reforms were pushed by the estates, led by the Archbishop of Mainz, to bind the Emperor as
+much as to strengthen the Empire. **The Emperor or the Archbishop of Mainz** (whoever casts that church vote) may put the next
+reform in order to the **Diet** once the crown's authority reaches its level. The Diet votes at once in **three colleges**: the
+**electors** (every vote cast), the **princes** (each German state but the free cities, a vote each) and the **cities** (each free
+city that is a German state). A person votes in each as they have said in the Diplomacy tab (yes, no, or as a computer would); a
+computer votes yes if it proposed the reform or thinks 0 or better of the one who did. A college is for it with more yes than no,
+and **the reform passes with two colleges of the three**. A reform voted down may be put again after 5 years. A reform passed
+stands for good, whoever wears the crown and whatever its authority later.
 
 | Reform | Authority | Effect |
 |---|---|---|
-| **1. Eternal Public Peace** | 40 | A German state that declares war on another **breaks an agreement** (§10) — unless the target is under the ban. Wars already fought go on. |
-| **2. Common Penny** | 55 | Every German state pays the Emperor **2%** of its yearly money, when positive, while not at war with it (the free cities their 5% on top). |
+| **1. Eternal Public Peace** | 40 | A German state that declares war on another — **the Emperor too** — **breaks an agreement** (§10), unless the target is under the ban. Wars already fought go on. |
+| **2. Common Penny** | 55 | Every German state but the Emperor pays **1%** of its yearly money, when positive, into the Empire's **war chest**, not to anyone — barely collected, as it was. The chest is paid out each month to the Emperor while he fights **as Defender of the Empire or in a war of execution**, and waits otherwise. |
 | **3. Imperial Circles** | 70 | Every German state gives the Emperor **military access** (to every settlement of the Empire). When an outsider declares war on a German state, **every German state that thinks 0 or better of the Emperor joins the defence** — a computer at once, unless bound to the attacker; a person is asked, and no answer is a yes. |
-| **4. Renovatio Imperii** | 85 | The Emperor may demand, **once per country that wears the crown**, that every German state become its protectorate: each rolls as for a protectorate demand **with +10%** (at most 75%, none at below −50 or near victory, a person asked); those that refuse form the **League**, and the crown loses **20 authority**. The subjects it brings add no warmonger score. |
-| **5. Hereditary Empire** | 100 | **Elections end**: the crown stays with the Emperor's country (a throne fallen vacant is still filled by election). Its protectorates inside the Empire are asked to become its vassals with **+20%**. |
+| **4. Imperial Chamber Court** | 85 | A German state that has **taken a settlement of the Empire from another German state** in the last 10 years (by force or in a peace, not from one under the ban) is thought **10 worse** of by every German state. |
 
 **Winning** is checked every day: a country with the scenario's number of settlements — its own and its vassals' count 1, its
 protectorates' ½, and so on up a chain of subjects (a vassal's vassal counts 1 for the top, a protectorate's vassal ½) — wins

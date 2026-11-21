@@ -2,7 +2,7 @@
 // that grow strong enough to break free, and on 1 January the warmonger score falling and coalitions forming
 // (RULES.md §10).
 import { YEAR_DAYS } from "./calendar.js";
-import { AUTHORITY, addAuthority, callStands, coalitions, defendEmpire, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
+import { callStands, coalitions, defendEmpire, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
 import { empireDay } from "./empire.js";
 import { militaryPowerOf } from "./opinion.js";
 import { atWar, isRebel } from "./state.js";
@@ -56,7 +56,5 @@ export function refuseEmpire(game, offer, events) {
     if (!memory) return;
     memory.league.push(offer.to);
     formLeague(game, memory.league, events);
-    // Renovatio Imperii: the first refusal costs the crown 20 (diplomacy.js, proposeEmpire)
-    if (memory.renovatio && !memory.paid) { memory.paid = true; addAuthority(game, AUTHORITY.LEAGUE, "league", events); }
 }
 
