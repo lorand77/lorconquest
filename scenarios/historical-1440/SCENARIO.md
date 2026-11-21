@@ -541,9 +541,10 @@ majority of the votes cast wins; without one, the two leaders face a second roun
 
 ### What the crown gives
 
-- **The imperial cities pay their dues.** Every free city — LUB, HAM, BRE, COL, FFM, NUR, AUG, ULM, REG, MET, STR,
-  KON, BAS, DEC and ERF — pays the Emperor **5%** of its yearly money (RULES.md §2), when positive, while the two
-  are not at war. It counts as tribute (RULES.md §10).
+- **The imperial cities pay their dues.** Every free city — LUB, COL, FFM, NUR, AUG, ULM, REG, MET, STR, KON, BAS,
+  DEC and ERF — pays the Emperor **5%** of its yearly money (RULES.md §2), when positive, while the two are not at war.
+  It counts as tribute (RULES.md §10). Hamburg and Bremen were not imperial cities in 1440 — Hamburg nominally the
+  counts of Holstein's until 1510, Bremen its archbishop's until 1646 — and pay nothing.
 - **Defender of the Empire.** When an outsider declares war on a German state, the Emperor is called into the war on the German
   state's side, like a military ally. It may refuse, at a cost to its authority.
 - **The imperial ban.** The Emperor may put a German warmonger, or one that took land of the Empire from another German state,

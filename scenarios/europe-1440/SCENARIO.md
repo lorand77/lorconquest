@@ -997,8 +997,9 @@ with years of peace among the German states and the Emperor's defence of them, d
 them, land outsiders keep, refusals to defend, the crown changing hands and, from 1519, each new Emperor's capitulation.
 
 **What the crown gives.** **Defender of the Empire**: an outsider attacking a German state calls the Emperor into the war on its
-side. **The imperial cities pay their dues**: every free city — LUB, HAM, BRE, NUR, AUG, ULM, REG, MET, STR and BAS — pays the
-Emperor 5% of its yearly money, when positive, while the two are not at war.
+side. **The imperial cities pay their dues**: every free city — LUB, NUR, AUG, ULM, REG, MET, STR and BAS — pays the Emperor 5% of
+its yearly money, when positive, while the two are not at war. Hamburg and Bremen, free in all but name, were not imperial cities
+in 1440 — Hamburg nominally the counts of Holstein's until 1510, Bremen its archbishop's until 1646 — and pay nothing.
 
 ### The Emperor
 
