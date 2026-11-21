@@ -82,7 +82,7 @@ export const diplomacyCommands = {
         if (overlordOf(st, c) === cmd.country) {
             freeSubject(game, c, events);
             events.push({ type: "betrayed", day: st.day, country: cmd.country, subject: c });
-            punishBreak(game, cmd.country, events);
+            punishBreak(game, cmd.country, events, c);
         }
         declareWar(game, cmd.country, c, events);
         return done(events);
@@ -158,7 +158,7 @@ export const diplomacyCommands = {
         if (!st.agreements.some(mine)) return refuse(`there is no such ${kind} between you and ${c}`);
         removeAgreements(game, mine);
         const events = [{ type: "ended", day: st.day, country: cmd.country, with: c, kind }];
-        punishBreak(game, cmd.country, events);
+        punishBreak(game, cmd.country, events, c);
         evictClosed(game, events);
         return done(events);
     },

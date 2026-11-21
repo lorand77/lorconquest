@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { betrayalPenalty, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -90,7 +90,7 @@ export function diplomacyTab(ctx) {
     out.push(section(ctx, "Agreements", mine.length ? mk("div", {}, ...mine.map((x) => {
         const [text, cmd, label] = line(x);
         return row(ctx, mk("span", { class: "w" }, text), cmd ? mk("button", { class: "danger", onclick: async () => {
-            const breaks = cmd.type === "breakAgreement" ? " Breaking an agreement ends all your alliances and every computer country's opinion of you falls by 40 for 10 years." : "";
+            const breaks = cmd.type === "breakAgreement" ? ` Breaking an agreement ends all your alliances, and ${breachText(ctx, cmd.with)}.` : "";
             if (confirm(`${label}: ${text}?${breaks}`)) { await ctx.send(cmd); ctx.redraw(); }
         } }, label) : "");
     })) : mk("p", { class: "hint" }, "None.")));
@@ -220,6 +220,19 @@ function crownParts(ctx) {
     return out;
 }
 
+// what breaking faith with `victim` costs the player in the world's eyes (RULES.md §10, Opinion): 40 for 10 years, weighed by faith —
+// each faith's computer countries' figure, the same for all of one faith; on a map without religions, the plain 40
+function breachText(ctx, victim) {
+    const { state, game, me } = ctx, figures = new Map();
+    for (const c of Object.values(state.countries)) {
+        if (c.code === me || c.code === victim || c.rebel || (c.out ?? null) !== null || state.humans.includes(c.code)) continue;
+        const f = religionOf(game, c.code);
+        if (f && !figures.has(f)) figures.set(f, Math.round(betrayalPenalty(game, c.code, me, victim)));
+    }
+    if (!figures.size) return "every computer country's opinion of you falls by 40 for 10 years";
+    return `the world's opinion of you falls for 10 years — ${[...figures].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)).map(([f, p]) => `${RELIGION_NAMES[f]} countries −${p}`).join(", ")}`;
+}
+
 // who a country is at war with, and since when: you first, then the others by name; peasant rebels as an uprising
 function warsOf(ctx, t) {
     const { state, me, make: mk } = ctx;
@@ -312,7 +325,9 @@ function dealWith(ctx, t) {
             sidesOf("def").length ? mk("p", {}, `Would join ${them.name}: ${join(sidesOf("def"))}${calls.some((e) => e[2] === "def") ? " (some may refuse)" : ""}.`) : "",
             sidesOf("att").length ? mk("p", {}, `Would join you: ${join(sidesOf("att"))}.`) : "",
             mk("p", { class: score >= 30 ? "bad" : "hint" }, `Your warmonger score: ${score}. At 30 or more, the computer countries that border you and each other, and do not loathe each other's faith, ally against you each year — those alliances bring them in only when you attack, and end once your score is under 30 again.`),
-            bound.length ? mk("p", { class: "bad" }, `This breaks ${bound.map((x) => (x.kind === "truce" ? "your truce" : AGREEMENT_NAMES[x.kind])).join(", ")}: your alliances end and the world's opinion of you falls by 40 for 10 years.`) : "",
+            bound.length ? mk("p", { class: "bad" }, `This breaks ${bound.map((x) => (x.kind === "truce" ? "your truce" : AGREEMENT_NAMES[x.kind])).join(", ")}: your alliances end, and ${breachText(ctx, t)}.`) : "",
+            // your own protectorate: turning on it breaks its protection (RULES.md §10, Subjects)
+            state.countries[t].overlord === me ? mk("p", { class: "bad" }, `${them.name} is your protectorate: turning on it ends its protection and breaks faith — your alliances end, and ${breachText(ctx, t)}.`) : "",
             // with the marches planned for this war, sent the moment it is declared (game.js, premoves)
             mk("button", { class: "danger", onclick: async () => { if (confirm(`Declare war on ${them.name}? It adds 5 to your warmonger score.${ctx.planned?.(t) ? ` Your ${ctx.planned(t)} planned march${ctx.planned(t) > 1 ? "es go" : " goes"} at once.` : ""}`)) { await ctx.send({ type: "declareWar", target: t }); ctx.redraw(); } } },
                 ctx.planned?.(t) ? `Declare war — and send ${ctx.planned(t)} planned march${ctx.planned(t) > 1 ? "es" : ""}` : "Declare war")));

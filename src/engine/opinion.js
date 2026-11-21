@@ -7,7 +7,7 @@ import { militaryPower } from "./army.js";
 import { YEAR_DAYS } from "./calendar.js";
 import { economyOf, popOf } from "./economy.js";
 import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
-import { faithOpinion } from "./religion.js";
+import { faithOpinion, faithRegard, religionOf } from "./religion.js";
 import { armyList, atWar, isGermanState, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
 import { memo } from "./memo.js";
@@ -50,6 +50,15 @@ export const bordering = (game, a, b) => neighboursOf(game, a).includes(b);
 const daysSinceWar = (st, a, b) => (atWar(st, a, b) ? 0 : st.day - (st.memory.lastWar[warKey(a, b)] ?? 0));
 const within = (st, since, years) => since !== undefined && st.day - since < years * YEAR_DAYS;
 
+// what `observer` holds against `betrayer` for breaking an agreement with `victim` (RULES.md §10, Opinion): 40, × 1 + (its regard for the
+// victim's faith − its regard for the betrayer's) ÷ 40, between ×0 and ×2 — a Sunni shrugs at a faithless Christian vassal punished,
+// an Orthodox state does not forgive it; on a map without religions, or a breach of no one in particular, the plain 40
+export function betrayalPenalty(game, observer, betrayer, victim) {
+    const st = game.state, faith = (c) => (st.countries[c] ? religionOf(game, c) : null), o = faith(observer), b = faith(betrayer), v = victim ? faith(victim) : null;
+    if (!o || !b || !v) return 40;
+    return 40 * Math.max(0, Math.min(2, 1 + (faithRegard(o, v) - faithRegard(o, b)) / 40));
+}
+
 // `holder`'s opinion of `other`, from −100 to +100: the sum of everything that applies (RULES.md §10)
 export function opinion(game, holder, other) {
     const st = game.state, m = st.memory;
@@ -73,8 +82,8 @@ export function opinion(game, holder, other) {
     if ([...friends].some((f) => f !== other && atWar(st, other, f))) o -= 30;
     // fought a war against it in the last 20 years (one going on counts)
     if (atWar(st, holder, other) || within(st, m.lastWar[warKey(holder, other)], 20)) o -= 25;
-    // broke an agreement with anyone in the last 10 years
-    if (within(st, m.broke[other], 10)) o -= 40;
+    // broke an agreement in the last 10 years: 40, weighed by whom it betrayed (betrayalPenalty)
+    if (within(st, m.broke[other], 10)) o -= betrayalPenalty(game, holder, other, m.betrayed?.[other] ?? null);
     // refused your demand to become your subject in the last 10 years
     if (within(st, m.refused[`${holder}>${other}`], 10)) o -= 30;
     // the two faiths (religion.js): +15 the same, down to −25 for Catholic and Sunni

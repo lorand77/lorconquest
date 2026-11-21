@@ -78,11 +78,13 @@ export function removeAgreements(game, pred) {
 }
 
 // breaking an agreement: every alliance of the country ends, and the world remembers for 10 years (RULES.md §10)
-export function punishBreak(game, code, events) {
+export function punishBreak(game, code, events, victim = null) {
     const st = game.state;
     removeAgreements(game, (x) => (x.kind === "defensive" || x.kind === "military") && (x.a === code || x.b === code));
     st.memory.broke[code] = st.day;
-    events.push({ type: "broke", day: st.day, country: code });
+    // whom it betrayed: the world weighs the breach by the two faiths (opinion.js, betrayalPenalty)
+    (st.memory.betrayed ??= {})[code] = victim;
+    events.push({ type: "broke", day: st.day, country: code, ...(victim ? { victim } : {}) });
 }
 
 // armies standing in land that has closed to them go home (RULES.md §10)
@@ -227,7 +229,7 @@ function crownAtWar(game, a, b, events) {
     // the Eternal Public Peace: a German state declaring war on another breaks an agreement, unless the target is under the ban
     if (reforms(st) >= 1 && germanB && isGerman(game, a) && !st.empire.banned.includes(b)) {
         events.push({ type: "landfriede", day: st.day, country: a, target: b });
-        punishBreak(game, a, events);
+        punishBreak(game, a, events, b);
     }
     // the Imperial Circles: an outsider attacking a German state brings every German state that thinks 0 or better of the Emperor in
     if (reforms(st) >= 3 && germanB && !isGerman(game, a)) {
@@ -315,7 +317,7 @@ export function declareWar(game, a, b, events) {
         .concat(st.agreements.filter((x) => x.kind === "guarantee" && x.a === a && x.b === b));
     if (bound.length) {
         removeAgreements(game, (x) => bound.includes(x));
-        punishBreak(game, a, events);
+        punishBreak(game, a, events, b);
     }
     removeAgreements(game, (x) => (x.kind === "access" && x.a === b && x.b === a) || (x.kind === "access" && x.a === a && x.b === b));
     openWar(game, a, b, a);
@@ -337,7 +339,7 @@ export function joinByChoice(game, joiner, ally, enemy, events) {
         .concat(st.agreements.filter((x) => x.kind === "guarantee" && x.a === joiner && x.b === enemy));
     if (bound.length) {
         removeAgreements(game, (x) => bound.includes(x));
-        punishBreak(game, joiner, events);
+        punishBreak(game, joiner, events, enemy);
     }
     removeAgreements(game, (x) => x.kind === "access" && ((x.a === enemy && x.b === joiner) || (x.a === joiner && x.b === enemy)));
     joinWar(game, joiner, side, ally, enemy, events);

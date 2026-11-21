@@ -565,3 +565,20 @@ test("an overlord may turn on its own protectorate — the protection ends and i
     setSubject(vassal, "BBB", "AAA", "vassal", []);
     assert.match(refused(vassal, cmd("AAA", "declareWar", { target: "BBB" })), /integrated, not attacked/);
 });
+
+test("a broken agreement weighed by faith: 40 × (1 + regard for the victim's faith − regard for the betrayer's) ÷ 40, ×0 to ×2", async () => {
+    const { betrayalPenalty } = await import("../../src/engine/index.js");
+    // AAA Sunni turns on BBB, its Orthodox protectorate; CCC is Sunni, DDD Catholic, EEE Orthodox
+    const faiths = { AAA: "sunni", BBB: "orthodox", CCC: "sunni", DDD: "catholic", EEE: "orthodox" };
+    const game = tinyGame(1, (sc) => { for (const c of sc.countries) c.religion = faiths[c.code]; }), st = game.state;
+    assert.deepEqual(["CCC", "DDD", "EEE"].map((c) => betrayalPenalty(game, c, "AAA", "BBB")), [5, 55, 75]);
+    setSubject(game, "BBB", "AAA", "protectorate", []);
+    const plain = { CCC: opinion(game, "CCC", "AAA"), EEE: opinion(game, "EEE", "AAA") };
+    order(game, cmd("AAA", "declareWar", { target: "BBB" }));
+    st.countries.AAA.warmonger = 0;                                            // the declaration's +5 aside: the betrayal alone
+    assert.equal(st.memory.betrayed.AAA, "BBB");
+    near(opinion(game, "CCC", "AAA") - plain.CCC, -5);
+    assert.ok(opinion(game, "EEE", "AAA") - plain.EEE <= -75);
+    // no faiths: the plain 40
+    assert.equal(betrayalPenalty(tinyGame(), "CCC", "AAA", "BBB"), 40);
+});

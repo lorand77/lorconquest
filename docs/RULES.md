@@ -887,16 +887,22 @@ the sum of everything below that applies:
 | Between it and you | Opinion |
 |---|---|
 | You are both at war with the same country | +20 |
-| You both hold HRE settlements | +10 |
+| You are both German states (§10, The Emperor; any holder of an HRE settlement where there is no Emperor) | +10 |
 | Each full year since you were last at war with each other (or since the start) | +1, up to +20 |
 | You share a border (a land route joins your settlements) | −15 |
 | You are at war with one of its allies or subjects | −30 |
 | You fought a war against it in the last 20 years | −25 |
-| You broke an agreement with anyone in the last 10 years | −40 |
+| You broke an agreement with anyone in the last 10 years | −40, weighed by faith (below) |
 | It refused your demand to become your subject in the last 10 years (not the HRE vote) | −30 |
 | Your faiths (Religion, §2): the same | +15 |
 | … or Catholic and Orthodox −10, Catholic and Hussite −20, Catholic and Sunni −25, Orthodox and Hussite 0, Orthodox and Sunni −20, Hussite and Sunni −15 | as given |
 | Your warmonger score — in full if you share a border, half if you do not | −score, at most −60 |
+
+**A broken agreement is weighed by faith.** On a map with religions the −40 is multiplied by **1 + (its regard for the faith of
+the one you betrayed − its regard for yours) ÷ 40**, between ×0 and ×2, the regards from the faith table above: a betrayal of
+those it holds dear costs more, of those it scorns little or nothing. The Ottomans turning on Byzantium cost them about −5 with a
+Sunni country, −55 with a Catholic one and −75 with an Orthodox one; one Catholic betraying another costs −40 with a Catholic.
+The last breach in 10 years is the one weighed. On a map without religions it is −40 always.
 
 **Peace** — strength and war progress. The computer accepts if `war score ≥ cost`:
 ```
