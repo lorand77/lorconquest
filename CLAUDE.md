@@ -13,6 +13,8 @@ dependencies.
 - [docs/design.md](docs/design.md) — how the software works and why. Read it before changing
   `src/engine/`; when a decision changes, change it there in the same commit.
 - [docs/plan.md](docs/plan.md) — the milestones and where we are.
+- [TODO.md](TODO.md) — what is still to do, by priority, each item numbered for good. Finishing an item deletes it in the same
+  commit; a new request takes the next free number; a reviewer's notes go in as a line or two each, not pasted whole.
 - [docs/setup.md](docs/setup.md) — running it, putting it online (EC2, pm2, Caddy), backups, accounts by hand, monitoring.
 - `scenarios/` — every scenario, a folder each, its id the folder's name (`node tools/map.js scenarios/<name>`, which may leave out the
   folder of the default, `mitteleuropa`). A folder with a `DRAFT` file is a scenario still being made: the server leaves it out unless
