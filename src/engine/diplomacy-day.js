@@ -2,7 +2,7 @@
 // that grow strong enough to break free, and on 1 January the warmonger score falling and coalitions forming
 // (RULES.md §10).
 import { YEAR_DAYS } from "./calendar.js";
-import { callStands, coalitions, defendEmpire, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
+import { AUTHORITY, addAuthority, callStands, coalitions, defendEmpire, evictClosed, formLeague, freeSubject, joinWar, lapseCoalitions, removeAgreements } from "./diplomacy.js";
 import { empireDay } from "./empire.js";
 import { militaryPowerOf } from "./opinion.js";
 import { atWar, isRebel } from "./state.js";
@@ -26,7 +26,8 @@ export function diplomacyDay(game, events) {
     if (due.length) {
         st.offers = st.offers.filter((o) => !due.includes(o));
         for (const o of due) {
-            if (o.kind === "call" && callStands(game, o)) {
+            // a call to arms or to defend the Empire unanswered is a yes; one to a war of execution, a no
+            if (o.kind === "call" && !o.execution && callStands(game, o)) {
                 if (o.defender) defendEmpire(game, o.to, o.from, o.enemy, events);
                 else joinWar(game, o.to, o.side, o.from, o.enemy, events);
             }
@@ -55,5 +56,7 @@ export function refuseEmpire(game, offer, events) {
     if (!memory) return;
     memory.league.push(offer.to);
     formLeague(game, memory.league, events);
+    // Renovatio Imperii: the first refusal costs the crown 20 (diplomacy.js, proposeEmpire)
+    if (memory.renovatio && !memory.paid) { memory.paid = true; addAuthority(game, AUTHORITY.LEAGUE, "league", events); }
 }
 

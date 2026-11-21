@@ -178,3 +178,122 @@ test("the free cities' dues: 5% of a free city's money to the Emperor, as tribut
     order(game, cmd("AAA", "declareWar", { target: "CCC" }));
     assert.deepEqual([economyOf(game, "CCC").tributePaid, economyOf(game, "AAA").tributeReceived], [0, 0], "not at war");
 });
+
+// ---------- stage 3: the imperial ban and the reforms ----------
+
+test("the ban: only on a warmonger of 30 or one who took the Empire's land from a German state; a war of execution, the German states called", async () => {
+    const { banError, opinion } = await import("../../src/engine/index.js");
+    const game = empire(), st = game.state;
+    assert.match(banError(game, "BBB", "CCC"), /only the Emperor/);
+    assert.match(banError(game, "AAA", "BBB"), /warmonger score under 30/);
+    st.countries.BBB.warmonger = 30;
+    st.empire.authority = 9;
+    assert.match(banError(game, "AAA", "BBB"), /costs 10/);
+    st.empire.authority = 20;
+    assert.equal(banError(game, "AAA", "BBB"), null);
+    const willing = ["CCC", "DDD", "EEE"].filter((c) => opinion(game, c, "AAA") >= 0);
+    const events = order(game, cmd("AAA", "ban", { target: "BBB" }));
+    assert.deepEqual([st.empire.banned, st.empire.authority, st.warInfo["AAA|BBB"].execution, st.warInfo["AAA|BBB"].attacker], [["BBB"], 10, true, "BBB"]);
+    assert.equal(st.countries.AAA.warmonger, 0, "the Emperor is the defending side: no warmonger score");
+    assert.deepEqual(ofType(events, "joins").map((e) => e.country).sort(), willing, "every German state that thinks 0 or better of it");
+    assert.match(refused(game, cmd("AAA", "ban", { target: "BBB" })), /at war with BBB already/);
+});
+
+test("the ban lifted at the Emperor's peace with the banned: a war of execution won raises the crown 10", () => {
+    const game = empire(), st = game.state;
+    st.countries.BBB.warmonger = 40;
+    order(game, cmd("AAA", "ban", { target: "BBB" }));
+    st.countries.AAA.warmonger = 0;
+    order(game, cmd("BBB", "proposePeace", { with: "AAA" }));                   // BBB, the weaker, asks a plain peace; AAA ahead
+    assert.deepEqual([st.wars.includes("AAA|BBB"), st.empire.banned, st.empire.authority], [false, [], 20]);
+});
+
+test("taking a settlement of the Empire from a German state, by force or in a peace, marks the taker for 10 years", async () => {
+    const { capture } = await import("../../src/engine/fighting.js");
+    const { banError } = await import("../../src/engine/index.js");
+    const game = empire(), st = game.state;
+    order(game, cmd("BBB", "declareWar", { target: "CCC" }));
+    capture(game, st.settlements[6], "BBB", [], "storm");
+    assert.equal(st.empire.seized.BBB, st.day);
+    st.countries.BBB.warmonger = 0;
+    assert.equal(banError(game, "AAA", "BBB"), null);
+    st.day += 10 * YEAR_DAYS;
+    assert.match(banError(game, "AAA", "BBB"), /warmonger score under 30/);
+});
+
+test("reforms: proposed in order at their authority, passed by 4 of 7 votes, voted down tried again only after 5 years", () => {
+    const game = empire(1, () => {}, ["BBB", "CCC", "DDD"]), st = game.state;
+    assert.match(refused(game, cmd("AAA", "proposeReform")), /needs Imperial Authority 40; it is 20/);
+    assert.match(refused(game, cmd("BBB", "proposeReform")), /only the Emperor/);
+    st.empire.authority = 45;
+    // AAA's two votes and EEE's: three; the people BBB, CCC and DDD say no — voted down
+    for (const c of ["BBB", "CCC", "DDD"]) order(game, cmd(c, "reformVote", { yes: false }));
+    const down = order(game, cmd("AAA", "proposeReform"));
+    assert.deepEqual([ofType(down, "reform")[0].passed, ofType(down, "reform")[0].yes, st.empire.reforms, st.empire.tried], [false, 3, 0, st.day]);
+    assert.match(refused(game, cmd("AAA", "proposeReform")), /less than 5 years ago/);
+    // five years on, DDD says yes: four
+    st.day += 5 * YEAR_DAYS;
+    order(game, cmd("DDD", "reformVote", { yes: true }));
+    const up = order(game, cmd("AAA", "proposeReform"));
+    assert.deepEqual([ofType(up, "reform")[0].name, ofType(up, "reform")[0].passed, st.empire.reforms], ["Eternal Public Peace", true, 1]);
+    assert.match(refused(game, cmd("AAA", "proposeReform")), /Common Penny needs Imperial Authority 55/);
+});
+
+test("the Eternal Public Peace: a German state declaring war on another breaks an agreement — not on one under the ban", () => {
+    const game = empire(), st = game.state;
+    st.empire.reforms = 1;
+    const events = order(game, cmd("BBB", "declareWar", { target: "CCC" }));
+    assert.deepEqual([ofType(events, "landfriede").length, ofType(events, "broke").map((e) => e.country)], [1, ["BBB"]]);
+    const banned = empire(), s2 = banned.state;
+    s2.empire.reforms = 1;
+    s2.empire.banned = ["CCC"];
+    assert.equal(ofType(order(banned, cmd("BBB", "declareWar", { target: "CCC" })), "broke").length, 0);
+});
+
+test("the Common Penny: every German state pays the Emperor 2%, the free cities their 5% besides", async () => {
+    const { economyOf } = await import("../../src/engine/index.js");
+    const game = outsider(), st = game.state, base = (c) => economyOf(game, c).moneyPerYear + economyOf(game, c).tributePaid;
+    st.empire.reforms = 2;
+    assert.ok(Math.abs(economyOf(game, "BBB").tributePaid - 0.02 * base("BBB")) < 1e-6);
+    assert.ok(Math.abs(economyOf(game, "CCC").tributePaid - 0.07 * base("CCC")) < 1e-6, "a free city: 5% and 2%");
+    assert.equal(economyOf(game, "EEE").tributePaid, 0, "an outsider pays nothing");
+});
+
+test("the Imperial Circles: the Emperor may enter every German state's land; an outsider's attack brings every willing German state in", async () => {
+    const { canEnter, opinion } = await import("../../src/engine/index.js");
+    const game = outsider(), st = game.state;
+    assert.equal(canEnter(game, "AAA", "6"), false, "CCC's land, at peace, no access");
+    st.empire.reforms = 3;
+    assert.equal(canEnter(game, "AAA", "6"), true);
+    assert.equal(canEnter(game, "AAA", "8"), false, "EEE's town is not the Empire's");
+    const willing = ["BBB", "CCC"].filter((c) => opinion(game, c, "AAA") >= 0);
+    const events = order(game, cmd("EEE", "declareWar", { target: "DDD" }));
+    assert.deepEqual(ofType(events, "joins").map((e) => e.country).sort(), ["AAA", ...willing].sort(), "the Emperor as Defender, and the Circles");
+});
+
+test("Renovatio Imperii: the Emperor's, once the fourth reform has passed — each German state its protectorate or in the League, a League costing 20", () => {
+    const game = empire(), st = game.state;
+    assert.match(refused(game, cmd("AAA", "proposeEmpire")), /not yet a reform/);
+    st.empire.reforms = 4;
+    assert.match(refused(game, cmd("BBB", "proposeEmpire")), /only the Emperor/);
+    order(game, cmd("AAA", "proposeEmpire"));
+    const joined = ["BBB", "CCC", "DDD", "EEE"].filter((c) => st.countries[c].overlord === "AAA"), league = st.memory.empire.AAA.league;
+    assert.deepEqual([...joined, ...league].sort(), ["BBB", "CCC", "DDD", "EEE"], "every state answers");
+    assert.equal(st.empire.authority, league.length ? 0 : 20);
+    assert.equal(st.countries.AAA.warmonger, 0, "its subjects add no warmonger score");
+    assert.match(refused(game, cmd("AAA", "proposeEmpire")), /only once/);
+});
+
+test("a Hereditary Empire: no more elections, and the Emperor's protectorates in the Empire asked to be vassals with +20", async () => {
+    const { subjectChance } = await import("../../src/engine/index.js");
+    const { setSubject } = await import("../../src/engine/diplomacy.js");
+    const game = empire(), st = game.state;
+    setSubject(game, "CCC", "AAA", "protectorate", []);
+    const before = subjectChance(game, "CCC", "AAA", "vassal").chance;
+    st.empire.reforms = 5;
+    assert.equal(subjectChance(game, "CCC", "AAA", "vassal").chance, Math.min(75, before + 20));
+    st.empire.next = st.day + 10;
+    st.empire.called = false;
+    const events = runTo(game, st.day + 20);
+    assert.deepEqual([ofType(events, "electionCalled").length, ofType(events, "elected").length, st.empire.emperor], [0, 0, "AAA"]);
+});

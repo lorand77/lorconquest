@@ -65,6 +65,8 @@ export function buildMap(scenario) {
         sea.next.set(z.id, [...(z.next ?? [])].sort(byKey));
     }
     return { scenario, nodes, adj, legDays, straits, zones, sea, keys: [...nodes.keys()].sort(byKey), x: scenario.scaleX,
+        // the settlements in the Holy Roman Empire, by id: whoever holds one is a German state (RULES.md §10)
+        hre: new Set(scenario.settlements.filter((s) => s.hre).map((s) => s.id)),
         // the warmonger score a settlement taken or integrated adds, × this (RULES.md §10, Warmongers): 1 but on a larger map
         warmongerScale: scenario.warmongerScale ?? 1 };
 }

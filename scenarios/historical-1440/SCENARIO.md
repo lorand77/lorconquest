@@ -492,9 +492,9 @@ declared from now on.
 
 ## The Holy Roman Empire
 
-> **Built in part.** The Emperor, the electors and the elections are played (RULES.md §10, *The Emperor*), with the promises; so
-> are Imperial Authority (all but the war of execution's +10), Defender of the Empire and the imperial cities' dues. The imperial
-> ban and the reforms are the design still to be built (docs/design.md, *Open questions*).
+> **Built.** All of this section is played (RULES.md §10, *The Emperor*, *The imperial ban*, *Imperial reform*), as RULES.md words
+> it where the two differ: a person's electors vote on a reform as the person has said beforehand, a computer elector agrees if it
+> thinks 0 or better of the Emperor, and German states called to a war of execution come only if bound to the banned state by nothing.
 
 The Empire is every settlement marked **HRE** above (listed in the *Overview*). A **German state** is any country
 that holds at least one HRE settlement; an **outsider** is any country that holds none. The Empire is not a

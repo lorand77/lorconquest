@@ -1093,6 +1093,9 @@ if it is tied, then to the larger people, then the lower code.
 | A peace between an outsider and a German state (as they were when the war began) leaves the outsider holding settlements of the Empire that are the German state's core | −5 each |
 | The Emperor refuses to defend the Empire | −10 |
 | The Emperor declares war on a German state | −15 |
+| The Emperor wins a war of execution (below) | +10 |
+| The Emperor puts a state under the ban (below) | −10 |
+| Renovatio Imperii refused by any state (below) | −20 |
 | The crown passes to another country | −10 |
 
 **Defender of the Empire.** When an outsider declares war on a German state, the Emperor — if it is neither of them, at war with
@@ -1100,8 +1103,30 @@ neither, nobody's vassal and no subject or overlord of the attacker — is calle
 military ally. A person is asked, and no answer in 6 months is a yes; a computer Emperor comes if its military power is at least
 half the attacker's and no pact, truce or alliance binds it to the attacker, and otherwise refuses. Refusing costs the crown 10.
 **The free cities' dues.** Each free city the scenario names pays the Emperor **5% of its yearly money**, when positive, while the
-two are not at war — tribute, as a subject's is (on top of any it pays an overlord). The imperial ban and the reforms of the
-historical map's design are still to come.
+two are not at war — tribute, as a subject's is (on top of any it pays an overlord).
+
+**The imperial ban.** For **10 authority** the Emperor may put a German state under the ban — one with a **warmonger score of 30**
+or more, or that has **taken a settlement of the Empire from another German state in the last 10 years** (by force or in a peace);
+not one it is at war with already, nor its subject or overlord. The Emperor is then at war with it: a **war of execution**, in
+which the Emperor counts as the **defending side** — no warmonger score, no authority lost for attacking a German state. The two
+sides' vassals, defensive allies and guarantors come in as in any war, and their military allies are called. **Every German
+state that thinks 0 or better of the Emperor is called to its side** — a computer comes, if no pact, truce, alliance or guarantee
+binds it to the banned state; a person is asked, and no answer in 6 months is a no — as the defending side too, with no
+warmonger score. The ban ends at the Emperor's peace with the banned state; a war score of 0 or more then is a war of execution
+won: **+10 authority**.
+
+**Imperial reform.** The Emperor may propose the next reform in order once the crown's authority reaches its level. It is put to
+the electors at once and passes with **4 of the 7 votes**: a person's electors vote as the person has said (yes, no, or as a
+computer's), a computer's yes if it is the Emperor's own or thinks 0 or better of the Emperor. A reform voted down may be proposed
+again after 5 years. A reform passed stands for good, whoever wears the crown and whatever its authority later.
+
+| Reform | Authority | Effect |
+|---|---|---|
+| **1. Eternal Public Peace** | 40 | A German state that declares war on another **breaks an agreement** (§10) — unless the target is under the ban. Wars already fought go on. |
+| **2. Common Penny** | 55 | Every German state pays the Emperor **2%** of its yearly money, when positive, while not at war with it (the free cities their 5% on top). |
+| **3. Imperial Circles** | 70 | Every German state gives the Emperor **military access** (to every settlement of the Empire). When an outsider declares war on a German state, **every German state that thinks 0 or better of the Emperor joins the defence** — a computer at once, unless bound to the attacker; a person is asked, and no answer is a yes. |
+| **4. Renovatio Imperii** | 85 | The Emperor may demand, **once per country that wears the crown**, that every German state become its protectorate: each rolls as for a protectorate demand **with +10%** (at most 75%, none at below −50 or near victory, a person asked); those that refuse form the **League**, and the crown loses **20 authority**. The subjects it brings add no warmonger score. |
+| **5. Hereditary Empire** | 100 | **Elections end**: the crown stays with the Emperor's country (a throne fallen vacant is still filled by election). Its protectorates inside the Empire are asked to become its vassals with **+20%**. |
 
 **Winning** is checked every day: a country with the scenario's number of settlements — its own and its vassals' count 1, its
 protectorates' ½, and so on up a chain of subjects (a vassal's vassal counts 1 for the top, a protectorate's vassal ½) — wins

@@ -203,7 +203,10 @@ export function nearVictory(game, holder, demander, kind) {
 // rival, and none near victory (nearVictory; `why` says which, `count` and `target` how near). The Empire's vote asks the
 // second, state by state, and not the first (diplomacy.js, proposeEmpire).
 export function subjectChance(game, holder, demander, kind) {
-    const base = demandChance(game, holder, demander, kind);
+    // a Hereditary Empire: the Emperor's own protectorates inside the Empire are asked to become vassals with +20 (RULES.md §10)
+    const st = game.state, heir = (st.empire?.reforms ?? 0) >= 5 && st.empire.emperor === demander && kind === "vassal"
+        && st.countries[holder]?.overlord === demander && Object.values(st.settlements).some((s) => s.owner === holder && game.map.hre.has(s.id));
+    const base = demandChance(game, holder, demander, kind, heir ? 20 : 0);
     if (areRivals(game, holder, demander)) return { ...base, chance: 0, why: "rival" };
     const near = nearVictory(game, holder, demander, kind);
     return near ? { ...base, chance: 0, why: "victory", ...near } : base;

@@ -8,9 +8,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 75;
+export const RULES_VERSION = 76;
 // bump when the shape of the state changes
-export const FORMAT = 16;
+export const FORMAT = 17;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -149,8 +149,10 @@ export const isCore = (state, s, code) => s.cores.includes(code) || isRebel(stat
 // neutral land is closed (RULES.md §10): an army may enter land that is its own country's, its subjects' or
 // overlord's, its allies' (either kind), a country's that gives it military access, or an enemy's
 export function canEnter(game, country, key) {
-    const owner = ownerOf(game, key);
-    return owner === country || atWar(game.state, country, owner) || friendly(game.state, country, owner) || grantsAccess(game.state, owner, country);
+    const owner = ownerOf(game, key), st = game.state;
+    return owner === country || atWar(st, country, owner) || friendly(st, country, owner) || grantsAccess(st, owner, country)
+        // the Imperial Circles: every German state gives the Emperor military access — to each settlement of the Empire's land
+        || (st.empire?.reforms >= 3 && st.empire.emperor === country && game.map.hre.has(game.map.nodes.get(key).land));
 }
 
 // is `b` a friend of `a`: the same country, an ally, a subject or an overlord

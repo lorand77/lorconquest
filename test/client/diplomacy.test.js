@@ -302,7 +302,7 @@ test("the crown, where the scenario has electors: the Emperor, the next election
     assert.match(text, /Imperial Authority: 20 — German states think 4 better of the Emperor\. The free cities pay it 5% of their money: Augsburg, Basel/);
     assert.match(text, /Archbishop of Mainz, Mainz: Mainz — would vote for Inner Austria/);
     assert.match(text, /King of Bohemia, Prague: you — would vote for you/);
-    const vote = find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.text === "as a computer elector would"))[0];
+    const vote = find(nodes, (e) => e.tag === "select" && e.children.some((o) => o.attrs?.value === "STY"))[0];
     vote.value = "STY";
     await vote.handlers.change();
     assert.deepEqual(sent.at(-1), { type: "electorVote", candidate: "STY" });

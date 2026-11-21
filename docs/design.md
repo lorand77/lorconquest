@@ -978,11 +978,13 @@ Settled answers move into §1, or into RULES.md where they are rules. Each is ne
 named (see [plan.md](plan.md)).
 
 1. **The historical scenario's Empire** (in stages). Its SCENARIO.md describes an Emperor, Imperial Authority, electors and
-   elections, the imperial ban, dues and five reforms. **Stages 1 and 2 are built**, for the historical map and Europe: the
-   Emperor, the seven electors and the elections with their promises (`empire.js`), and Imperial Authority, Defender of the Empire
-   and the free cities' dues (the authority's changes in wars and peaces, and the defender's call, in `diplomacy.js`; the dues
-   in `economy.js` as tribute; RULES.md §10, *The Emperor*). Still to come: stage 3, the ban and the reforms — Renovatio
-   Imperii, the fourth, is those maps' proposal, so until then they have none.
+   elections, the imperial ban, dues and five reforms. **It is built**, in three stages, for the historical map and Europe: the
+   Emperor, the seven electors and the elections with their promises; Imperial Authority, Defender of the Empire and the free
+   cities' dues; the ban and the reforms (RULES.md §10). `empire.js` holds the crown, the elections, the reforms' votes and the
+   ban's conditions; `diplomacy.js` what happens in wars and peaces (authority, the defender's and the Circles' calls, the war of
+   execution, Renovatio Imperii as the plain proposal with +10); `economy.js` the dues and the Common Penny as tribute;
+   `state.js` the Circles' access; `opinion.js` the Hereditary Empire's +20; `fighting.js` the day a German state last took
+   land of the Empire from another. The computer as Emperor: `src/ai/empire.js`.
 2. **A computer navy that seeks battle** (not scheduled). The computer fights at sea only where it is clearly the stronger,
    builds warships only against a stronger enemy fleet, and cannot hunt fleets in port (the rules keep them safe). Going out
    to win command of a sea would be the next thing to teach it.

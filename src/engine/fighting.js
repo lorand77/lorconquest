@@ -14,7 +14,7 @@ import { destroy, mayDepart, mayPass, progress, retreat, routeFor, startLeg } fr
 import { leavePort, payOffPortless } from "./naval.js";
 import { fireSharpshooters, postsLost, stormPost } from "./passes.js";
 import { d6 } from "./random.js";
-import { armiesAt, armyList, atWar, canEnter, isAlive, isFriend, ownerOf, removeArmy } from "./state.js";
+import { armiesAt, armyList, atWar, canEnter, isAlive, isFriend, isRebel, ownerOf, removeArmy } from "./state.js";
 import { menOf } from "./army.js";
 
 export function situation(game, key) {
@@ -55,8 +55,11 @@ export const wallDefence = (walls, cannons, x) => (walls ? Math.max(1.2, 1.8 - 0
 // was the old owner's last port, all its fleets are paid off (§7). It keeps its walls, library, workshop and market,
 // and stays core for every country that had it core, so retaking it makes it core again.
 export function capture(game, s, country, events, how) {
-    const from = s.owner;
+    const from = s.owner, st0 = game.state;
     if (how !== "peace") recordCapture(game, s, from, country);
+    // a German state taking a settlement of the Empire from another, by force or in a peace: the day, for the imperial ban (empire.js)
+    if (st0.empire && game.map.hre.has(s.id) && from !== country && !isRebel(st0, country) && !isRebel(st0, from)
+        && Object.values(st0.settlements).some((x) => x.owner === country && game.map.hre.has(x.id))) st0.empire.seized[country] = st0.day;
     s.owner = country;
     s.siege = null;
     s.heldSince = game.state.day;

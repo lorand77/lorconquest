@@ -4,8 +4,14 @@
 // count (30). If the cheapest of them would give it a majority for at most 30% of its treasury, it promises those; otherwise it
 // spends nothing, for a promise is paid whoever wins. Electors who vote for themselves, and a person's who has chosen, are not for
 // sale. How electors vote is the engine's (voteOf), not the computer's: nothing here decides an election, it only bids.
+//
+// As Emperor (emperorOrders) it proposes the next reform whenever it may and the electors would pass it (the engine counts them by
+// the very function it asks, reformVotes); demands Renovatio Imperii once that reform has passed, at peace and not near victory; and
+// bans the worst warmonger it may — with authority to spare, at war with at most one country, and at least 1.25 times its strength.
 
-import { PROMISE_MAX, PROMISE_MONEY, candidatesOf, electorScore, electorsOf, voteOf } from "../engine/index.js";
+import { BAN_COST, NEAR_VICTORY, PROMISE_MAX, PROMISE_MONEY, REFORM_VOTES, atWar, banError, candidatesOf, electorScore, electorsOf, germanStates, hasReform,
+    militaryPowerOf, reformError, reformVotes, scores, voteOf } from "../engine/index.js";
+import { threatsOf } from "./util.js";
 
 // the most of its treasury a computer candidate spends on an election
 const BUDGET = 0.3;
@@ -32,4 +38,22 @@ export function promiseOrders(game, code) {
     const buy = offers.sort((a, b) => a.money - b.money || a.settlement - b.settlement).slice(0, need);
     if (buy.reduce((n, o) => n + o.money, 0) > BUDGET * Math.max(0, st.countries[code].treasury)) return [];
     return buy.map((o) => ({ type: "promise", country: code, elector: o.settlement, money: o.money }));
+}
+
+// what a computer Emperor does with its crown, a think at a time: one order at most
+export function emperorOrders(game, code) {
+    const st = game.state, emp = st.empire;
+    if (!emp || emp.emperor !== code || st.humans.includes(code)) return [];
+    const cmd = (type, rest = {}) => [{ type, country: code, ...rest }];
+    if (!reformError(game, code) && reformVotes(game).filter((v) => v.yes).length >= REFORM_VOTES) return cmd("proposeReform");
+    const foes = threatsOf(st, code).filter((c) => !st.countries[c].rebel), target = game.map.scenario.victory?.settlements;
+    const near = target && (scores(st)[code]?.settlements ?? 0) >= NEAR_VICTORY * target;
+    if (hasReform(st, "renovatio") && !st.memory.empire[code] && !foes.length && !near) return cmd("proposeEmpire");
+    if (emp.authority >= BAN_COST + 15 && foes.length <= 1) {
+        const mine = militaryPowerOf(st, code);
+        const banned = germanStates(game).filter((c) => !banError(game, code, c) && !atWar(st, code, c) && 1.25 * militaryPowerOf(st, c) <= mine)
+            .sort((a, b) => (st.countries[b].warmonger ?? 0) - (st.countries[a].warmonger ?? 0) || (a < b ? -1 : 1))[0];
+        if (banned) return cmd("ban", { target: banned });
+    }
+    return [];
 }

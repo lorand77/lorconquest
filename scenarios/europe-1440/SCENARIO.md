@@ -987,8 +987,9 @@ as if built in play. Every other settlement begins without; walls may be bought 
 
 The Empire is every settlement marked **HRE** above. A **German state** is any country that holds one; an **outsider** any that
 holds none. The Empire is a **crown**, worn by one German state and won by election (RULES.md §10, *The Emperor*). As on the
-historical map, the Emperor, the electors, the elections, Imperial Authority, Defender of the Empire and the free cities' dues are
-built; the imperial ban and the reforms of that map's design are not yet (docs/design.md, *Open questions*). Two German states
+historical map, the whole of its design is played: the Emperor, the electors and elections, Imperial Authority, Defender of the
+Empire, the free cities' dues, the imperial ban and the five reforms, Renovatio Imperii and the Hereditary Empire among them
+(RULES.md §10). Two German states
 think 10 better of each other (RULES.md §10), and every German state thinks the crown's authority ÷ 5 better of the Emperor.
 
 **Imperial Authority** starts at **20**, Frederick III being the Empire's "arch-sleepyhead", and moves as RULES.md §10 has it: up

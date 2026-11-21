@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { BAN_COST, BAN_WARMONGER, REFORMS, banError, reformError, reformVotes, CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -35,6 +35,8 @@ function unionLabel(ctx, what, label) {
 function offerText(ctx, o) {
     const who = (c) => ctx.state.countries[c].name;
     const union = (a, b) => { const into = unionInto(ctx.state, a, b), other = into === a ? b : a; return { into, name: `${who(into)}–${who(other)}` }; };
+    if (o.kind === "call" && o.execution) return `The Emperor, ${who(o.from)}, calls the German states to its war of execution against ${who(o.enemy)}, under the imperial ban. Joining costs you no warmonger score; refusing costs nothing, and no answer by ${longDate(o.deadline)} is a no.`;
+    if (o.kind === "call" && o.circle) return `${who(o.enemy)}, from outside the Empire, has attacked ${who(o.from)}: the Imperial Circles call you to its defence. Refusing costs nothing; no answer by ${longDate(o.deadline)} is a yes.`;
     if (o.kind === "call" && o.defender) return `${who(o.enemy)}, from outside the Empire, has attacked ${who(o.from)}: as Emperor you are called to defend the Empire. Refusing costs the crown 10 authority; no answer by ${longDate(o.deadline)} is a yes.`;
     if (o.kind === "call") return `${who(o.from)} calls you to arms against ${who(o.enemy)} (${o.side === "att" ? "their attack" : "their defence"}). Refusing ends the alliance; no answer by ${longDate(o.deadline)} is a yes.`;
     if (o.kind === "agreement") return `${who(o.from)} proposes a ${AGREEMENT_NAMES[o.agreement]}${o.years ? ` for ${o.years} years` : ""}.`;
@@ -60,7 +62,7 @@ export function diplomacyTab(ctx) {
         out.push(section(ctx, "Waiting for your answer", ...asked.map((o) => mk("div", { class: "offer" }, mk("p", {}, offerText(ctx, o)),
             row(ctx, mk("button", { class: "primary", disabled: o.kind === "union" && agreedBy(ctx, `answer:${o.id}`).mine ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: true })) },
                 o.kind === "call" ? "Join" : o.kind === "union" ? unionLabel(ctx, `answer:${o.id}`, "Accept") : "Accept"),
-                mk("button", { onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: false })) }, o.kind === "call" ? (o.defender ? "Refuse (−10 authority)" : "Refuse (the alliance ends)") : "Refuse"))))));
+                mk("button", { onclick: act(ctx, () => ({ type: "answerOffer", id: o.id, accept: false })) }, o.kind === "call" ? (o.defender ? "Refuse (−10 authority)" : o.execution || o.circle ? "Refuse" : "Refuse (the alliance ends)") : "Refuse"))))));
     }
     const waiting = offers.filter((o) => o.from === me);
     if (waiting.length) out.push(section(ctx, "Waiting for an answer", ...waiting.map((o) => mk("p", {}, `${name(o.to)}: ${offerText(ctx, o).replace(`${name(o.from)} `, "you ")}`))));
@@ -120,6 +122,7 @@ function empireSection(ctx) {
     const out = [row(ctx, mk("span", { class: "w" }, `You hold ${held} of its ${inside} settlements${needed && !state.memory.empire[me] ? `; a demand needs ${needed}` : ""}.`),
         mk("button", { onclick: () => { ctx.ui.empire = !ctx.ui.empire; ctx.redraw(); } }, ctx.ui.empire ? "Whole map" : "Show on map"))];
     if (state.empire) out.push(...crownParts(ctx));
+    // (with electors the demand is Renovatio Imperii: the crown's section has it)
     if (!needed) return section(ctx, "The Holy Roman Empire", ...out);
     // the demands made so far: the proposer's protectorates inside the Empire now, and the League as it stands
     for (const p of Object.keys(state.memory.empire)) {
@@ -166,8 +169,29 @@ function crownParts(ctx) {
         const v = voteOf(game, e, candidates);
         return row(ctx, mk("span", { class: "w" }, `${e.vote}, ${town(e.settlement)}: ${e.holder ? (e.holder === me ? "you" : name(e.holder)) : "nobody"}${v ? ` — would vote for ${v === me ? "you" : name(v)}` : ""}`));
     })));
+    // the reforms: those passed, and the next with the authority it needs (RULES.md §10, Imperial reform); the states under the ban
+    const passed = REFORMS.slice(0, emp.reforms).map((r) => r.name), next = REFORMS[emp.reforms];
+    out.push(mk("p", {}, `Reforms: ${passed.length ? passed.join(", ") : "none yet"}.${next ? ` Next: the ${next.name}, at authority ${next.authority}.` : ""}${emp.banned.length ? ` Under the ban: ${emp.banned.map(name).join(", ")}.` : ""}`));
+    // the Emperor's own: the next reform, the ban, Renovatio Imperii
+    if (emp.emperor === me) {
+        const why = reformError(game, me), yes = reformVotes(game).filter((v) => v.yes).length;
+        out.push(row(ctx, mk("span", { class: "w" }, why ? `Propose a reform: ${why}.` : `Propose the ${next.name}: ${yes} of 7 electors would vote for it (4 needed).`),
+            mk("button", { disabled: why ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "proposeReform" })) }, "Propose")));
+        const bannable = germanStates(game).filter((c) => !banError(game, me, c));
+        if (bannable.length) {
+            const pick = mk("select", {}, ...bannable.map((c) => mk("option", { value: c }, `${name(c)} (warmonger ${Math.round(state.countries[c].warmonger ?? 0)})`)));
+            out.push(row(ctx, mk("span", { class: "w" }, `The imperial ban, for ${BAN_COST} authority: a war of execution, the German states called to your side.`), pick,
+                mk("button", { class: "danger", onclick: async () => { if (confirm(`Put ${name(pick.value)} under the ban? You go to war with it.`)) { await ctx.send({ type: "ban", target: pick.value }); ctx.redraw(); } } }, "Ban")));
+        } else out.push(mk("p", { class: "hint" }, `The ban (${BAN_COST} authority): a German state with a warmonger score of ${BAN_WARMONGER} or more, or that took land of the Empire from another within 10 years. None now.`));
+        if (emp.reforms >= 4 && !state.memory.empire[me]) out.push(row(ctx, mk("span", { class: "w" }, "Renovatio Imperii: every German state becomes your protectorate or joins the League against you, once."),
+            mk("button", { class: "danger", onclick: async () => { if (confirm("Demand Renovatio Imperii? You may do this only once.")) { await ctx.send({ type: "proposeEmpire" }); ctx.redraw(); } } }, "Demand")));
+    }
     // your vote: every elector you hold votes alike — as you choose, or as a computer would
     if (electors.some((e) => e.holder === me)) {
+        const said = emp.reformChoices[me], stance = mk("select", {}, ...[["", "as a computer elector would"], ["yes", "yes"], ["no", "no"]]
+            .map(([v, l]) => mk("option", { value: v, ...((said === undefined ? "" : said ? "yes" : "no") === v ? { selected: "selected" } : {}) }, l)));
+        stance.addEventListener("change", async () => { await ctx.send({ type: "reformVote", yes: stance.value === "" ? null : stance.value === "yes" }); ctx.redraw(); });
+        out.push(row(ctx, mk("span", {}, "On reforms: "), stance));
         const choice = mk("select", {}, mk("option", { value: "", ...(!emp.choices[me] ? { selected: "selected" } : {}) }, "as a computer elector would"),
             ...candidates.map((c) => mk("option", { value: c, ...(emp.choices[me] === c ? { selected: "selected" } : {}) }, c === me ? "yourself" : name(c))));
         choice.addEventListener("change", async () => { await ctx.send({ type: "electorVote", candidate: choice.value || null }); ctx.redraw(); });
