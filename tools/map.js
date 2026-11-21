@@ -147,9 +147,10 @@ const S = new Map();                                  // id -> { name country ci
         if (!CN.has(r.Country)) err(`settlement ${id}: unknown country '${r.Country}'`);
         if (!/^(town|city)$/.test(r.Type)) err(`settlement ${id}: Type must be town or city`);
         if (!/^(port|)$/.test(r.Port)) err(`settlement ${id}: Port must be 'port' or empty`);
-        if (!/^(HRE|)$/.test(r.HRE)) err(`settlement ${id}: HRE must be 'HRE' or empty`);
+        // 'Italy': Imperial Italy — land of the Empire, whose holders are no German states for the crown (RULES.md §10, The Emperor)
+        if (!/^(HRE|Italy|)$/.test(r.HRE)) err(`settlement ${id}: HRE must be 'HRE', 'Italy' or empty`);
         if (!whole(r.X, r.Y)) err(`settlement ${id}: X and Y must be whole numbers`);
-        S.set(id, { name: r.Name, country: r.Country, city: r.Type === "city", port: r.Port === "port", hre: r.HRE === "HRE",
+        S.set(id, { name: r.Name, country: r.Country, city: r.Type === "city", port: r.Port === "port", hre: r.HRE === "HRE" || r.HRE === "Italy", italy: r.HRE === "Italy",
             x: Number(r.X), y: Number(r.Y), nb: ids(r.Borders), st: ids(r.Straits) });
     }
 }
@@ -1682,7 +1683,7 @@ const json = {
     }),
     settlements: SIDS.map((id) => {
         const s = S.get(id);
-        return { id, name: s.name, abbr: ABBR.get(id), label: LANDLABEL.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre,
+        return { id, name: s.name, abbr: ABBR.get(id), label: LANDLABEL.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre, ...(s.italy ? { italy: true } : {}),
             x: s.x, y: s.y, land: `land-${id}`, seaZone: s.zone ? s.zone.id : null, borders: s.nb.map(Number).sort(num), straits: s.st.map(Number).sort(num),
             ...(FAITH.has(id) ? { faith: FAITH.get(id) } : {}), ...(WALLS.has(id) ? { walls: true } : {}) };
     }),

@@ -111,6 +111,6 @@ test("the great fortresses begin walled where the scenario says, and nothing els
     const { Game: G } = await import("../../src/engine/index.js");
     const st = G.create(europe, { seed: 1, humans: [] }).state, named = (name) => st.settlements[europe.settlements.find((s) => s.name === name).id];
     assert.deepEqual(["Belgrade", "Constantinople", "Rhodes", "Buda", "Szeged"].map((n) => named(n).walls), [true, true, true, false, false]);
-    assert.equal(Object.values(st.settlements).filter((s) => s.walls).length, 14);
+    assert.equal(Object.values(st.settlements).filter((s) => s.walls).length, 18);
     assert.equal(Object.values(st.settlements).some((s) => s.library || s.workshop || s.market || s.courthouse), false);
 });

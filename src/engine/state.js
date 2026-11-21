@@ -8,7 +8,7 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 78;
+export const RULES_VERSION = 79;
 // bump when the shape of the state changes
 export const FORMAT = 18;
 
@@ -155,12 +155,13 @@ export function canEnter(game, country, key) {
         || (st.empire?.reforms >= 3 && st.empire.emperor === country && game.map.hre.has(game.map.nodes.get(key).land));
 }
 
-// is `code` a German state (RULES.md §10, The Emperor): where the scenario has an Emperor, one with a capital inside the Empire — an
-// outsider holding a town of it is no German state; on a map with only the plain proposal, any holder of a settlement in it
+// is `code` a German state (RULES.md §10, The Emperor): where the scenario has an Emperor, one with a capital inside the Empire and
+// outside Imperial Italy — an outsider holding a town of it is no German state, nor is Milan; on a map with only the plain proposal,
+// any holder of a settlement in it
 export function isGermanState(game, code) {
     const st = game.state;
     if (!st.countries[code] || st.countries[code].rebel) return false;
-    if (st.empire) return capitalsOf(st, code).some((id) => game.map.hre.has(id));
+    if (st.empire) return capitalsOf(st, code).some((id) => game.map.hre.has(id) && !game.map.italy.has(id));
     for (const id in st.settlements) if (st.settlements[id].owner === code && game.map.hre.has(Number(id))) return true;
     return false;
 }

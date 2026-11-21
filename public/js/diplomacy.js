@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -205,7 +205,7 @@ function crownParts(ctx) {
         choice.addEventListener("change", async () => { await ctx.send({ type: "electorVote", candidate: choice.value || null }); ctx.redraw(); });
         out.push(row(ctx, mk("span", {}, "Your vote for Emperor: "), choice));
     }
-    if (!candidates.includes(me)) out.push(mk("p", { class: "hint" }, `You do not stand: a Catholic (after 1517, also Protestant) German state of ${n(CANDIDATE_GERMAN)} people or outsider of ${n(CANDIDATE_OUTSIDER)}, nobody's vassal.`));
+    if (!candidates.includes(me)) out.push(mk("p", { class: "hint" }, `You do not stand: a Catholic (after 1517, also Protestant) German state of ${n(CANDIDATE_GERMAN)} people, nobody's vassal.`));
     else if (emp.called) {
         // promises: to each vote cast by another, paid when the votes are cast whoever wins — each 2,000 × x counts 1 with its elector,
         // at most 30

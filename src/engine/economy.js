@@ -214,9 +214,11 @@ export function monthly(game, events) {
             }
         }
     }
-    // the war chest paid out, month by month, to an Emperor fighting as Defender of the Empire or in a war of execution
+    // the war chest paid out, month by month, to an Emperor at war with an outsider — the Empire's foreign wars, as the Penny was raised
+    // against the Turks — or in a war of execution
     const emp = st.empire, chief = emp?.emperor;
-    if (emp && chief && emp.chest > 0 && st.wars.some((k) => k.split("|").includes(chief) && (st.warInfo[k]?.defender || st.warInfo[k]?.execution))) {
+    const foreign = (k) => { const [x, y] = k.split("|"), foe = x === chief ? y : x; return !isRebel(st, foe) && !isGermanState(game, foe); };
+    if (emp && chief && emp.chest > 0 && st.wars.some((k) => k.split("|").includes(chief) && (foreign(k) || st.warInfo[k]?.execution))) {
         st.countries[chief].treasury += emp.chest;
         events.push({ type: "chest", day: st.day, country: chief, money: emp.chest });
         emp.chest = 0;

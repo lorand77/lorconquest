@@ -533,8 +533,8 @@ conqueror's hands, as Mainz's was under the Swedes in 1631.
 
 ### Elections
 
-**Candidates:** the reigning or late Emperor's country, every German state of 40,000 people or more and every outsider of 100,000
-or more (Francis I of France stood in 1519), none of them anyone's vassal. This map has no religions, so the faith rule of RULES.md
+**Candidates:** the reigning or late Emperor's country and every German state of 40,000 people or more, none of them anyone's
+vassal. Francis I of France stood in 1519 and lost; here an outsider never stands — the Emperor must be a German state. This map has no religions, so the faith rule of RULES.md
 §10 does not apply. The electors weigh opinion, the house they know, money promised (the Fuggers lent Charles V about 850,000
 florins to buy the vote of 1519), and a candidate's size and wars; promises are paid when the votes are cast, whoever wins. A
 majority of the votes cast wins; without one, the two leaders face a second round.

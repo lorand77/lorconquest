@@ -1056,9 +1056,10 @@ and a member that has since become a vassal or gone out of the game (a human ref
 proposal.
 
 **The Emperor.** A scenario with **electors** (its SCENARIO.md, *The Holy Roman Empire* — the historical map and Europe) has a crown
-instead. There a **German state** is a country with **a capital inside the Empire** (on a map with only the plain proposal, any
-holder of an Empire settlement): Milan and Savoy are German states, Burgundy and Anjou are not, and an outsider that takes a town
-of the Empire stays an outsider. One German state wears the crown, **for life**: each year (counted on 1 January) there is a
+instead. There a **German state** is a country with **a capital inside the Empire**, outside **Imperial Italy** (the scenario
+marks it; on a map with only the plain proposal, any holder of an Empire settlement is one): Savoy is a German state, Milan,
+Burgundy and Anjou are not, and an outsider that takes a town of the Empire stays an outsider. Imperial Italy is land of the
+Empire all the same — for the Circles' access, and for land taken from a German state. One German state wears the crown, **for life**: each year (counted on 1 January) there is a
 **4% chance the Emperor dies**, and the throne also falls **vacant** when the Emperor is out of the game, someone's vassal, or no
 longer a German state. Either way the throne is empty and the electors meet **six months later** — the interregnum, when
 candidates make their promises. **Seven votes** choose, each belonging to a settlement. A **secular vote** (the King of Bohemia,
@@ -1066,8 +1067,9 @@ the Count Palatine, the Duke of Saxony, the Margrave of Brandenburg) is cast by 
 with its town; a **church vote** (the Archbishops of Mainz, Trier and Cologne) only by **the country that held it at the start** —
 the archbishop's own, chosen by its chapter — and is **silent** in anyone else's hands. **Candidates:** the reigning (or late)
 Emperor's country while it is a German state, and every German state of **40,000 people** or more — two cities' worth, so no single
-town or free city — and every outsider of **100,000** or more, none of them anyone's vassal, and on a map with religions **only
-Catholics — and, after 31 October 1517, Protestants**.
+town or free city — none of them anyone's vassal, and on a map with religions **only Catholics — and, after 31 October 1517,
+Protestants**. **An outsider never stands**: the Emperor must be a German state; an outsider holding a secular vote casts it for
+another.
 - **A person's electors** all vote as the person chooses (in the Diplomacy tab), or, if they have not chosen, as a computer's would.
 - **A computer's** vote goes to the other candidate it scores highest — or to itself, if it stands and is the reigning or late
   Emperor's country, or has more people than that candidate:
@@ -1135,7 +1137,7 @@ stands for good, whoever wears the crown and whatever its authority later.
 | Reform | Authority | Effect |
 |---|---|---|
 | **1. Eternal Public Peace** | 40 | A German state that declares war on another — **the Emperor too** — **breaks an agreement** (§10), unless the target is under the ban. Wars already fought go on. |
-| **2. Common Penny** | 55 | Every German state but the Emperor pays **1%** of its yearly money, when positive, into the Empire's **war chest**, not to anyone — barely collected, as it was. The chest is paid out each month to the Emperor while he fights **as Defender of the Empire or in a war of execution**, and waits otherwise. |
+| **2. Common Penny** | 55 | Every German state but the Emperor pays **1%** of its yearly money, when positive, into the Empire's **war chest**, not to anyone — barely collected, as it was. The chest is paid out each month to the Emperor while he is **at war with an outsider** — the Empire's foreign wars, as the Penny was raised against the Turks — **or in a war of execution**, and waits otherwise. |
 | **3. Imperial Circles** | 70 | Every German state gives the Emperor **military access** (to every settlement of the Empire). When an outsider declares war on a German state, **every German state that thinks 0 or better of the Emperor joins the defence** — a computer at once, unless bound to the attacker; a person is asked, and no answer is a yes. |
 | **4. Imperial Chamber Court** | 85 | A German state that has **taken a settlement of the Empire from another German state** in the last 10 years (by force or in a peace, not from one under the ban) is thought **10 worse** of by every German state. |
 

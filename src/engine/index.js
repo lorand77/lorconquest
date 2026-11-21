@@ -19,7 +19,7 @@ export { positionOf, progress, routeFor } from "./movement.js";
 export { START_YEAR, YEAR_DAYS, MONTH_NAMES, dateOf, dayOf, formatDate, longDate, parseDate } from "./calendar.js";
 export { describeEvent, eventCountries, placeName } from "./text.js";
 export { buildMap, isVoyage, legKey, portsInReach } from "./map.js";
-export { CANDIDATE_GERMAN, CANDIDATE_OUTSIDER, CAPITULATION_DAY, DEATH_CHANCE, INTERREGNUM_DAYS, PROMISE_MAX, PROMISE_MONEY, candidatesOf, electorScore, electorsOf, promiseError, voteBetween, voteOf, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, hasReform, reformError, reformsPassed } from "./empire.js";
+export { CANDIDATE_GERMAN, CAPITULATION_DAY, DEATH_CHANCE, INTERREGNUM_DAYS, PROMISE_MAX, PROMISE_MONEY, candidatesOf, electorScore, electorsOf, promiseError, voteBetween, voteOf, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, hasReform, reformError, reformsPassed } from "./empire.js";
 export { proclaimCheck } from "./regions.js";
 export { withMemo } from "./memo.js";
 export { REFORMATION_DAY, RELIGIONS, RELIGION_NAMES, reformationError, coringDays, faithGap, faithOpinion, faithRegard, faithUnrest, landReligion, religionOf } from "./religion.js";

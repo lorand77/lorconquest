@@ -23,8 +23,9 @@ import { REFORMATION_DAY } from "./religion.js";
 import { agreementsBetween } from "./relations.js";
 import { atWar, isGermanState, isRebel } from "./state.js";
 
-// who may stand: a German state of this many people — two cities' worth: no single town or free city — or an outsider of this many
-export const CANDIDATE_GERMAN = 40000, CANDIDATE_OUTSIDER = 100000;
+// who may stand: a German state of this many people — two cities' worth: no single town or free city. An outsider never stands: the
+// Emperor must be a German state, and an outsider holding a secular vote casts it for another
+export const CANDIDATE_GERMAN = 40000;
 // a computer elector's score of a candidate (electorScore): +20 for the reigning or late Emperor's country, 1 for each 2,000 × x
 // promised up to +30, −20 for one of 150,000 people or more, −50 for one at war with it, −20 for one of another faith
 export const REIGNING = 20, PROMISE_MONEY = 2000, PROMISE_MAX = 30, TOO_BIG = 150000, TOO_BIG_MALUS = 20, AT_WAR_MALUS = 50, FAITH_MALUS = 20;
@@ -83,12 +84,11 @@ const crownFaith = (st, code) => {
     return !r || r === "catholic" || (r === "protestant" && st.day >= REFORMATION_DAY);
 };
 
-// who may stand, in order of their codes: the reigning (or late) Emperor's country while it is a German state, and every German state
-// of 40,000 people or more and every outsider of 100,000 or more — none of them anyone's vassal, all of a faith that may be crowned
+// who may stand, in order of their codes: the reigning (or late) Emperor's country, and every German state of 40,000 people or more —
+// German states all, none of them anyone's vassal, all of a faith that may be crowned
 export function candidatesOf(game) {
-    const st = game.state, german = new Set(germanStates(game)), known = house(st);
-    return Object.keys(st.countries).sort().filter((c) => standing(st, c) && crownFaith(st, c)
-        && ((c === known && german.has(c)) || popOf(st, c) >= (german.has(c) ? CANDIDATE_GERMAN : CANDIDATE_OUTSIDER)));
+    const st = game.state, known = house(st);
+    return germanStates(game).filter((c) => standing(st, c) && crownFaith(st, c) && (c === known || popOf(st, c) >= CANDIDATE_GERMAN));
 }
 
 // what the candidate has promised the vote of this settlement
@@ -234,7 +234,7 @@ export function promiseError(game, code, settlement, money) {
     const st = game.state, emp = st.empire;
     if (!emp) return "this scenario has no Emperor";
     if (!emp.called) return "no election has been called";
-    if (!candidatesOf(game).includes(code)) return "you do not stand: a Catholic (or, after 1517, Protestant) German state of 40,000 people or outsider of 100,000, nobody's vassal";
+    if (!candidatesOf(game).includes(code)) return "you do not stand: a Catholic (or, after 1517, Protestant) German state of 40,000 people, nobody's vassal";
     const e = electorsOf(game).find((x) => x.settlement === settlement);
     if (!e) return `${settlement} casts no vote`;
     if (!e.holder || e.holder === code) return "nobody else casts that vote";

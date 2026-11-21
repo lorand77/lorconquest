@@ -314,3 +314,20 @@ test("the Imperial Chamber Court: a German state that took the Empire's land fro
     st.empire.seized.BBB = st.day - 10 * YEAR_DAYS;
     assert.equal(opinion(game, "DDD", "BBB"), without, "after 10 years, no more");
 });
+
+test("an outsider never stands, however large; Imperial Italy is the Empire's land, but its holders are no German states", () => {
+    const game = outsider(), st = game.state;
+    st.settlements[8].pop = 200000;
+    assert.deepEqual(candidatesOf(game).includes("EEE"), false, "EEE, an outsider of 200,000, does not stand");
+    // Six, CCC's capital, made Imperial Italy: CCC no German state — still land of the Empire
+    const italy = empire(1, (sc) => { sc.settlements[5].italy = true; });
+    assert.deepEqual([isGermanState(italy, "CCC"), italy.map.hre.has(6)], [false, true]);
+});
+
+test("the war chest is paid to an Emperor at war with any outsider, not only as Defender of the Empire", () => {
+    const game = outsider(), st = game.state;
+    st.empire.chest = 5000;
+    order(game, cmd("AAA", "declareWar", { target: "EEE" }));
+    const paid = ofType(runTo(game, 31), "chest");
+    assert.deepEqual([paid.length, st.empire.chest], [1, 0]);
+});

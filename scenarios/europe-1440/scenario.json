@@ -712,7 +712,7 @@
    "army": 2800,
    "ships": 130,
    "navy": 3.7142857142857144,
-   "hre": "none",
+   "hre": "part",
    "character": "merchant",
    "religion": "catholic",
    "bulwark": true
@@ -730,7 +730,7 @@
    "pop": 40000,
    "army": 1600,
    "ships": 15,
-   "hre": "none",
+   "hre": "all",
    "character": "merchant",
    "religion": "catholic",
    "bulwark": true
@@ -746,7 +746,7 @@
    "pop": 10000,
    "army": 400,
    "ships": 0,
-   "hre": "none",
+   "hre": "all",
    "character": "merchant",
    "religion": "catholic",
    "bulwark": true
@@ -2813,7 +2813,8 @@
    "borders": [],
    "straits": [
     8
-   ]
+   ],
+   "walls": true
   },
   {
    "id": 20,
@@ -4420,7 +4421,8 @@
     118,
     162
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 70,
@@ -6150,6 +6152,7 @@
    "port": false,
    "river": true,
    "hre": true,
+   "italy": true,
    "x": 1110,
    "y": 1907,
    "land": "land-124",
@@ -6184,6 +6187,7 @@
    "port": true,
    "river": false,
    "hre": true,
+   "italy": true,
    "x": 1078,
    "y": 1995,
    "land": "land-125",
@@ -7860,6 +7864,7 @@
    "port": false,
    "river": true,
    "hre": true,
+   "italy": true,
    "x": 1184,
    "y": 1887,
    "land": "land-177",
@@ -7894,6 +7899,7 @@
    "port": false,
    "river": false,
    "hre": true,
+   "italy": true,
    "x": 1181,
    "y": 1863,
    "land": "land-178",
@@ -7922,6 +7928,7 @@
    "port": false,
    "river": true,
    "hre": true,
+   "italy": true,
    "x": 1222,
    "y": 1912,
    "land": "land-179",
@@ -7951,6 +7958,7 @@
    "port": false,
    "river": true,
    "hre": true,
+   "italy": true,
    "x": 1236,
    "y": 1936,
    "land": "land-180",
@@ -8411,7 +8419,8 @@
    "pop": 20000,
    "port": true,
    "river": false,
-   "hre": false,
+   "hre": true,
+   "italy": true,
    "x": 1166,
    "y": 1954,
    "land": "land-195",
@@ -8560,7 +8569,8 @@
    "pop": 20000,
    "port": false,
    "river": false,
-   "hre": false,
+   "hre": true,
+   "italy": true,
    "x": 1277,
    "y": 2008,
    "land": "land-200",
@@ -8592,7 +8602,8 @@
    "pop": 10000,
    "port": true,
    "river": false,
-   "hre": false,
+   "hre": true,
+   "italy": true,
    "x": 1235,
    "y": 2009,
    "land": "land-201",
@@ -8626,7 +8637,8 @@
    "pop": 10000,
    "port": false,
    "river": false,
-   "hre": false,
+   "hre": true,
+   "italy": true,
    "x": 1307,
    "y": 2031,
    "land": "land-202",
@@ -8660,7 +8672,8 @@
    "pop": 10000,
    "port": false,
    "river": false,
-   "hre": false,
+   "hre": true,
+   "italy": true,
    "x": 1279,
    "y": 2039,
    "land": "land-203",
@@ -8878,6 +8891,7 @@
    "port": false,
    "river": false,
    "hre": true,
+   "italy": true,
    "x": 1264,
    "y": 1948,
    "land": "land-210",
@@ -8907,6 +8921,7 @@
    "port": false,
    "river": true,
    "hre": true,
+   "italy": true,
    "x": 1260,
    "y": 1912,
    "land": "land-211",
@@ -8940,6 +8955,7 @@
    "port": false,
    "river": true,
    "hre": true,
+   "italy": true,
    "x": 1147,
    "y": 1906,
    "land": "land-212",
@@ -10715,7 +10731,8 @@
     281,
     324
    ],
-   "straits": []
+   "straits": [],
+   "faith": "catholic"
   },
   {
    "id": 269,
@@ -10748,7 +10765,8 @@
     294,
     324
    ],
-   "straits": []
+   "straits": [],
+   "faith": "catholic"
   },
   {
    "id": 270,
@@ -11799,7 +11817,8 @@
     304,
     337
    ],
-   "straits": []
+   "straits": [],
+   "faith": "orthodox"
   },
   {
    "id": 303,
@@ -11905,7 +11924,8 @@
     367
    ],
    "straits": [],
-   "faith": "orthodox"
+   "faith": "orthodox",
+   "walls": true
   },
   {
    "id": 306,
@@ -13003,6 +13023,7 @@
     361
    ],
    "straits": [],
+   "faith": "orthodox",
    "walls": true
   },
   {
@@ -13739,7 +13760,8 @@
     369,
     370
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 359,
@@ -42454,8 +42476,6 @@
   "freeCities": [
    "AUG",
    "BAS",
-   "BRE",
-   "HAM",
    "LUB",
    "MET",
    "NUR",
@@ -42683,6 +42703,21 @@
    },
    {
     "subject": "ATH",
+    "overlord": "OTT",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "EPI",
+    "overlord": "OTT",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "HER",
+    "overlord": "OTT",
+    "kind": "protectorate"
+   },
+   {
+    "subject": "CAN",
     "overlord": "OTT",
     "kind": "protectorate"
    },

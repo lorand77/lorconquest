@@ -80,9 +80,9 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | GRA | Granada | 174 Granada | #d4e8a0 | 174, 175, 176 | 40K | 1,600 | 15 | — |
 | MIL | Milan | 177 Milan | #f0aaaa | 177, 178, 179, 180, 208 | 70K | 2,800 | — | part |
 | VEN | Venice | 181 Venice | #8fd4d4 | 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194 | 170K | 6,800 | 200 | — |
-| GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 130 | — |
-| FLO | Florence | 200 Florence | #f6cf9e | 200, 201, 202 | 40K | 1,600 | 15 | — |
-| SIE | Siena | 203 Siena |  | 203 | 10K | 400 | — | — |
+| GEN | Genoa | 195 Genoa | #c8c8e8 | 195, 196, 197, 198, 199 | 70K | 2,800 | 130 | part |
+| FLO | Florence | 200 Florence | #f6cf9e | 200, 201, 202 | 40K | 1,600 | 15 | ✓ |
+| SIE | Siena | 203 Siena |  | 203 | 10K | 400 | — | ✓ |
 | PAP | Papal States | 204 Rome | #f4eba0 | 119, 204, 205, 206, 207 | 60K | 2,400 | 10 | — |
 | FER | Ferrara | 209 Ferrara |  | 209, 210 | 20K | 800 | — | part |
 | MAN | Mantua | 211 Mantua |  | 211 | 10K | 400 | — | ✓ |
@@ -172,7 +172,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 - **Type** — `town` (red circle, 10,000 pop) or `city` (red square, 20,000 pop). The 66 cities are the largest
   towns of the map around 1440.
 - **Port** — the settlement sits on the coast.
-- **HRE** — inside the Holy Roman Empire.
+- **HRE** — inside the Holy Roman Empire; **Italy** — in Imperial Italy, the Empire's land south of the Alps, whose holders are no German states (RULES.md §10).
 - **X, Y** — marker centre, in map units (the coordinates of map.svg). The settlement's land is the shape
   `land-ID` in map-base.svg; country borders are drawn wherever two lands belong to different countries.
 - **Borders** — settlements an army can march to in one step (every route is listed under both ends). Routes
@@ -304,8 +304,8 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 121 | Bourg-en-Bresse | SAV | town |  | HRE | 1003 | 1816 | 75, 90, 91, 120, 122 |  |
 | 122 | Geneva | SAV | town |  | HRE | 1046 | 1822 | 120, 121, 123, 124 |  |
 | 123 | Lausanne | SAV | town |  | HRE | 1070 | 1803 | 91, 122, 124, 288 |  |
-| 124 | Turin | SAV | town |  | HRE | 1110 | 1907 | 77, 120, 122, 123, 125, 195, 212 |  |
-| 125 | Nice | SAV | town | port | HRE | 1078 | 1995 | 77, 110, 119, 124, 195 |  |
+| 124 | Turin | SAV | town |  | Italy | 1110 | 1907 | 77, 120, 122, 123, 125, 195, 212 |  |
+| 125 | Nice | SAV | town | port | Italy | 1078 | 1995 | 77, 110, 119, 124, 195 |  |
 | 126 | Liège | LIE | city |  | HRE | 1057 | 1520 | 80, 81, 98, 99, 101, 130, 246, 247, 258 |  |
 | 127 | Utrecht | UTR | town |  | HRE | 1050 | 1419 | 103, 104, 128, 129, 245 |  |
 | 128 | Nijmegen | GEL | town |  | HRE | 1079 | 1440 | 99, 127, 244 |  |
@@ -357,10 +357,10 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 174 | Granada | GRA | city |  |  | 440 | 2339 | 134, 135, 175, 176 |  |
 | 175 | Málaga | GRA | town | port |  | 388 | 2355 | 133, 134, 136, 174 |  |
 | 176 | Almería | GRA | town | port |  | 496 | 2374 | 135, 137, 138, 174 |  |
-| 177 | Milan | MIL | city |  | HRE | 1184 | 1887 | 178, 185, 195, 212 |  |
-| 178 | Como | MIL | town |  | HRE | 1181 | 1863 | 177, 185, 212, 289 |  |
-| 179 | Cremona | MIL | town |  | HRE | 1222 | 1912 | 180, 184, 185, 195, 211 |  |
-| 180 | Parma | MIL | town |  | HRE | 1236 | 1936 | 179, 195, 201, 210, 211 |  |
+| 177 | Milan | MIL | city |  | Italy | 1184 | 1887 | 178, 185, 195, 212 |  |
+| 178 | Como | MIL | town |  | Italy | 1181 | 1863 | 177, 185, 212, 289 |  |
+| 179 | Cremona | MIL | town |  | Italy | 1222 | 1912 | 180, 184, 185, 195, 211 |  |
+| 180 | Parma | MIL | town |  | Italy | 1236 | 1936 | 179, 195, 201, 210, 211 |  |
 | 181 | Venice | VEN | city | port |  | 1333 | 1895 | 182, 186, 209, 284 |  |
 | 182 | Padua | VEN | town |  |  | 1313 | 1898 | 181, 183, 209, 284 |  |
 | 183 | Verona | VEN | city |  |  | 1270 | 1894 | 182, 184, 209, 211, 284 |  |
@@ -375,24 +375,24 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 192 | Negroponte | VEN | town | port |  | 1927 | 2356 | 369 |  |
 | 193 | Candia | VEN | city | port |  | 2040 | 2562 | 194 |  |
 | 194 | Canea | VEN | town | port |  | 1976 | 2557 | 193 | 191 |
-| 195 | Genoa | GEN | city | port |  | 1166 | 1954 | 124, 125, 177, 179, 180, 201, 212 |  |
+| 195 | Genoa | GEN | city | port | Italy | 1166 | 1954 | 124, 125, 177, 179, 180, 201, 212 |  |
 | 196 | Bastia | GEN | town | port |  | 1179 | 2079 |  | 201, 229 |
 | 197 | Chios | GEN | town | port |  | 2063 | 2340 |  | 376 |
 | 198 | Famagusta | GEN | town | port |  | 2536 | 2474 | 402 | 391 |
 | 199 | Caffa | GEN | city | port |  | 2430 | 1790 | 426 |  |
-| 200 | Florence | FLO | city |  |  | 1277 | 2008 | 201, 202, 203, 208, 213 |  |
-| 201 | Pisa | FLO | town | port |  | 1235 | 2009 | 180, 195, 200, 203, 210 | 196 |
-| 202 | Arezzo | FLO | town |  |  | 1307 | 2031 | 200, 203, 206, 213 |  |
-| 203 | Siena | SIE | town |  |  | 1279 | 2039 | 200, 201, 202, 205, 206 |  |
+| 200 | Florence | FLO | city |  | Italy | 1277 | 2008 | 201, 202, 203, 208, 213 |  |
+| 201 | Pisa | FLO | town | port | Italy | 1235 | 2009 | 180, 195, 200, 203, 210 | 196 |
+| 202 | Arezzo | FLO | town |  | Italy | 1307 | 2031 | 200, 203, 206, 213 |  |
+| 203 | Siena | SIE | town |  | Italy | 1279 | 2039 | 200, 201, 202, 205, 206 |  |
 | 204 | Rome | PAP | city |  |  | 1334 | 2139 | 205, 216, 223 |  |
 | 205 | Viterbo | PAP | town |  |  | 1315 | 2103 | 203, 204, 206, 216 |  |
 | 206 | Perugia | PAP | town |  |  | 1332 | 2056 | 202, 203, 205, 207, 213, 216 |  |
 | 207 | Ancona | PAP | town | port |  | 1384 | 2025 | 206, 216 |  |
 | 208 | Bologna | MIL | city |  |  | 1284 | 1959 | 200, 209, 210, 213 |  |
 | 209 | Ferrara | FER | town |  |  | 1298 | 1936 | 181, 182, 183, 208, 210, 211, 213 |  |
-| 210 | Modena | FER | town |  | HRE | 1264 | 1948 | 180, 201, 208, 209, 211 |  |
-| 211 | Mantua | MAN | town |  | HRE | 1260 | 1912 | 179, 180, 183, 184, 209, 210 |  |
-| 212 | Casale | MON | town |  | HRE | 1147 | 1906 | 124, 177, 178, 195 |  |
+| 210 | Modena | FER | town |  | Italy | 1264 | 1948 | 180, 201, 208, 209, 211 |  |
+| 211 | Mantua | MAN | town |  | Italy | 1260 | 1912 | 179, 180, 183, 184, 209, 210 |  |
+| 212 | Casale | MON | town |  | Italy | 1147 | 1906 | 124, 177, 178, 195 |  |
 | 213 | Rimini | RIM | town | port |  | 1338 | 1992 | 200, 202, 206, 208, 209 |  |
 | 214 | Naples | NAP | city | port |  | 1424 | 2211 | 215, 217, 223 |  |
 | 215 | Salerno | NAP | town | port |  | 1450 | 2222 | 214, 217, 218, 219, 221 |  |
@@ -687,7 +687,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 <!-- generated:overview -->
 **Cities (20K):** 20, 24, 28, 29, 30, 31, 54, 67, 75, 84, 88, 96, 97, 98, 106, 110, 126, 131, 133, 134, 147, 148, 155, 159, 163, 166, 174, 177, 181, 183, 193, 195, 199, 200, 204, 208, 214, 224, 231, 232, 239, 240, 247, 255, 262, 265, 270, 271, 274, 275, 280, 294, 303, 308, 318, 323, 339, 354, 372, 387, 405, 414, 427, 434, 435, 438 — all other settlements are towns (10K).
 
-**HRE settlements (91):** 91, 98–104, 111, 112, 120–130, 177–180, 210–212, 231–293 — held by 53 of the 118 countries.
+**HRE settlements (96):** 91, 98–104, 111, 112, 120–130, 177–180, 195, 200–203, 210–212, 231–293 — held by 56 of the 118 countries.
 
 **Ports (143):** 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 23, 24, 25, 27, 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 44, 45, 48, 49, 51, 53, 61, 71, 83, 84, 85, 86, 88, 89, 96, 99, 102, 103, 104, 106, 107, 108, 110, 125, 129, 133, 136, 138, 152, 154, 159, 160, 163, 164, 165, 166, 167, 171, 172, 175, 176, 181, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 201, 207, 213, 214, 215, 218, 219, 222, 223, 224, 225, 226, 227, 228, 230, 231, 232, 234, 235, 236, 237, 293, 340, 344, 347, 354, 355, 357, 358, 363, 368, 369, 371, 374, 376, 382, 386, 391, 392, 394, 395, 403, 404, 426, 430, 431, 432, 433, 436, 437, 438, 439, 441, 443, 444, 445 — on the coast; grow +0.5% more (RULES.md §2).
 
@@ -864,7 +864,7 @@ point; the other columns are generated from the map.*
 
 ## The situation in 1440
 
-The game opens in the middle of eight wars, with the alliances of 1440 already signed and eight countries already others' subjects. They count exactly as if declared
+The game opens in the middle of eight wars, with the alliances of 1440 already signed and eleven countries already others' subjects. They count exactly as if declared
 and signed in play (RULES.md §10): the sides below are at war from the first day, the agreements are in force, and every
 warmonger score still starts at 0. War score in these wars counts populations as they were at the start. Allies are **not**
 in these wars unless listed — a military alliance only calls an ally into wars declared from now on.
@@ -917,6 +917,9 @@ a vassal has none and pays 40%. A vassal of the start may be integrated as any o
 | LIV Livonian Order | TEU Teutonic Order | protectorate | The Order's Livonian branch: it chose its own master and kept its own policy, owing the Grand Master obedience in name and help in war. |
 | BYZ Byzantium | OTT Ottoman Empire | protectorate | John VIII paid the Sultan tribute from 1424, and went west in 1438 to beg a crusade. |
 | ATH Athens | OTT Ottoman Empire | protectorate | The Acciaioli dukes held Athens as the Sultan's tributaries. |
+| EPI Epirus | OTT Ottoman Empire | protectorate | Carlo II Tocco held Arta as the Sultan's vassal from 1430. |
+| HER Herzegovina | OTT Ottoman Empire | protectorate | Stjepan Vukčić Kosača paid the Porte tribute for his lands. |
+| CAN Candar | OTT Ottoman Empire | protectorate | The İsfendiyarids of Kastamonu and Sinop, the Sultan's vassals since the 1420s. |
 | MAZ Masovia | POL Poland | vassal | Its Piast dukes held Masovia as a fief of the Polish crown from 1351 until it was joined to it in 1526. |
 
 ### Fleets
@@ -982,6 +985,10 @@ as if built in play. Every other settlement begins without; walls may be bought 
 | 421 Pskov | Its stone walls held against Stefan Báthory in 1581. |
 | 174 Granada | The Alhambra: Granada fell only after the ten years' war of 1482–1492. |
 | 83 Calais | England's fortress in France, held until 1558. |
+| 305 Kamieniec | Podolia's fortress on its river loop, the Polish crown's bulwark against the steppe. |
+| 358 Corinth | Acrocorinth, and the Hexamilion wall across the isthmus that the despots rebuilt against the Turks. |
+| 19 Visby | Gotland's ring wall, which still stands whole. |
+| 69 Carcassonne | La Cité, the double-walled fortress of Languedoc. |
 
 ## The Holy Roman Empire
 
@@ -1026,9 +1033,9 @@ Swedes in 1631.
 
 ### Elections
 
-**Candidates:** the reigning or late Emperor's country, every German state of 40,000 people or more and every outsider of 100,000
-or more, none of them anyone's vassal, and **only Catholics** — Protestants too after 1517: no Sultan, Tsar or Hussite king wears
-this crown. A person's electors vote as the person chooses; a computer's for the candidate it scores highest — its opinion of it,
+**Candidates:** the reigning or late Emperor's country and every German state of 40,000 people or more — never an outsider — none
+of them anyone's vassal, and **only Catholics**, Protestants too after 1517: no Sultan, Tsar or Hussite king wears this crown, nor
+the King of France. A person's electors vote as the person chooses; a computer's for the candidate it scores highest — its opinion of it,
 +20 for the reigning or late Emperor's country, +1 for each 6,000 money promised (2,000 × x) up to +30, −20 for a candidate of
 150,000 people or more, −50 for one at war with it, and −20 for one of another faith — or for itself if it is that country or the
 greater. Promises are paid when the votes are cast, whoever they go to. A majority of the votes cast wins; without one, the
@@ -1103,9 +1110,10 @@ willing, one of another faith slow to win over. Every settlement not listed has 
 |---|---|---|
 | Orthodox | 341–353 | The Ottoman Balkans: Bulgarians, Serbs and Greeks under the Sultan. Edirne and Gallipoli, settled by Turks, are Sunni. |
 | Orthodox | 311–322 | Lithuania's Ruthenian lands, Orthodox under a Catholic grand duke. |
-| Orthodox | 304, 305 | Poland's Red Ruthenia: Halicz and Podolia. |
+| Orthodox | 302, 304, 305 | Poland's Red Ruthenia: Przemyśl, Halicz and Podolia. |
+| Orthodox | 336 | Belgrade, its people largely Serbian under the Hungarian crown. |
 | Orthodox | 190–194, 197, 198, 369–371, 402, 403 | The Greeks under Latin rulers: Venice's Corfu, Modon, Negroponte and Crete, Genoa's Chios and Famagusta, Mytilene, Athens, Arta, Cyprus and Rhodes. |
-| Catholic | 266 | Plzeň, the Catholic stronghold in Hussite Bohemia. |
+| Catholic | 266, 268, 269 | Plzeň, the Catholic stronghold in Hussite Bohemia, and the Moravian royal towns Brno and Olomouc, which held out against the Hussites. |
 
 **Lean to the Reformation:** SWE, DEN, NOR, ENG, SCO, LIV, TEU, SHO, LUB, HAM, MEC, POM, BRE, BRU, MAG, BRA, HES, SAX, LUS, SIL, ANS, NUR, PAL, STR, WRT, ULM, BAS, ZUR, UTR, GEL, FRI, FOI, BOH
 
@@ -1315,10 +1323,16 @@ What a reader who knows 1440 will miss, and why it is missing — choices, not m
   powers would pull the game toward a Mediterranean it is not about, and their land is mostly empty at this scale.
 - **The March of Ancona** is the Pope's, though Francesco Sforza held it as his own from 1433 to 1447: a condottiero's
   conquest, lost within the decade.
-- **Walls** stand only in the fourteen great fortresses of *The situation in 1440*; most towns had a wall of some kind, but one
+- **Walls** stand only in the eighteen great fortresses of *The situation in 1440*; most towns had a wall of some kind, but one
   that doubled a siege only where these were.
-- **Ships** at the start follow the rule of RULES.md §2 (people ÷ 2000, coastal countries only), not the real fleets of Venice,
-  Genoa or the Hansa.
+- **Ships** at the start follow the *Fleets* table for the sea powers and the rule of RULES.md §2 for the rest.
+- **The Teutonic Order's capital is Danzig**, though the Grand Master sat at Marienburg until 1457: Marienburg, too near Danzig to
+  be a settlement of its own, lies within Danzig's land.
+- **The Great Horde holds only Azak** (Tana): the horde itself lived on the Volga, beyond the map's eastern edge, and Azak stands
+  for its reach to the Sea of Azov.
+- **Imperial Italy** — Milan, Mantua, Montferrat, Modena, Piedmont and Nice, Tuscany and Genoa, all legally the Emperor's — is
+  marked *Italy*: land of the Empire whose holders are no German states (RULES.md §10). They had no seat in the Diet nor a Circle;
+  Milan does not stand for Emperor. Savoy, whose capital Chambéry lies north of the Alps and which sat in the Diet, is a German state.
 
 ### Colours
 
