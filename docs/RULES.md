@@ -557,7 +557,7 @@ along in proportion to the men taken; merging joins them. Desertion takes a tent
 rounded up, and a default half; an army that loses all its men is gone.
 
 - they are **not** taken from your civilians and do **not** count toward your army cap (§9) — but
-  you may have at most as many mercenaries as your army cap;
+  you may have at most as many mercenaries as your army cap — the Emperor more (§10, *The Emperor's mercenaries*);
 - their upkeep is **15 a year** each, three times a soldier's (§2);
 - their dead cost you **no population** (§2).
 
@@ -1126,6 +1126,9 @@ the electors: the crown loses **10 authority** at each election.
 neither, nobody's vassal and no subject or overlord of the attacker — is called into the war on the German state's side, like a
 military ally. A person is asked, and no answer in 6 months is a yes; a computer Emperor comes if its military power is at least
 half the attacker's and no pact, truce or alliance binds it to the attacker, and otherwise refuses. Refusing costs the crown 10.
+**The Emperor's mercenaries.** The Emperor may have as many mercenaries as his army cap **and Imperial Authority's share of every
+other German state's army cap** — half of theirs at authority 50, all of it at 100: the Empire's contingents, paid in coin. The
+companies for hire in the world and each settlement's room (§8) bind him as anyone.
 **The free cities' dues.** Each free city the scenario names pays the Emperor **5% of its yearly money**, when positive, while the
 two are not at war — tribute, as a subject's is (on top of any it pays an overlord).
 

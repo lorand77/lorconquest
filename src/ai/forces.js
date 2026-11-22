@@ -8,7 +8,7 @@
 // (tidyOrders).
 import { menOf } from "../engine/army.js";
 import { CANNON_PRICE, MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
-import { armiesAt, armyCapOf, armySoldiersOf, economyOf, hireRoom, mercenariesOf, militaryPowerOf, trainingRoom } from "../engine/index.js";
+import { armiesAt, armyCapOf, armySoldiersOf, economyOf, hireRoom, mercenariesOf, mercenaryCapOf, militaryPowerOf, trainingRoom } from "../engine/index.js";
 import { exposed, inland, ownArmies, ownSettlements, stagingSettlement, threatsOf } from "./util.js";
 import { routeFor } from "../engine/index.js";
 import { threatRatio } from "./economy.js";
@@ -184,7 +184,8 @@ export function forceOrders(game, code, fl, ctx) {
     const mine = Math.max(1, militaryPowerOf(st, code));
     const strongest = Math.max(0, ...foes.filter((f) => !st.countries[f].rebel).map((f) => militaryPowerOf(st, f)), ...(preparing ? [militaryPowerOf(st, ctx.plan.target)] : []));
     const hired = mercenariesOf(st, code) + c.hires.reduce((n, h) => n + h.n, 0);
-    if ((atWarNow || preparing) && hired + 1000 <= cap && e.moneyPerYear > 2 * MERCENARY_UPKEEP * 1000) {              // 1000 more cost 15 a year each: income must cover it twice over
+    const mercCap = mercenaryCapOf(game, code);                   // the army cap — and the Emperor's share of the members'
+    if ((atWarNow || preparing) && hired + 1000 <= mercCap && e.moneyPerYear > 2 * MERCENARY_UPKEEP * 1000) {              // 1000 more cost 15 a year each: income must cover it twice over
         const rich = ctx.budget >= 3 * MERCENARY_PRICE, badly = strongest > 1.2 * mine && ctx.budget >= MERCENARY_PRICE;
         // preparing, where the war will be: a core town of ours on the target's border, the largest; else the staging settlement
         const border = preparing ? ownSettlements(st, code).filter((s) => s.cores.includes(code) && game.map.adj.get(String(s.id)).some((e) => st.settlements[game.map.nodes.get(e.to)?.land]?.owner === ctx.plan.target))
@@ -193,7 +194,7 @@ export function forceOrders(game, code, fl, ctx) {
         if ((rich || badly) && site && site.cores.includes(code)) {
             // no more than the world has for hire (what this tick's other hirers have not taken: index.js, market) and the town has room for
             const market = ctx.market ?? { left: st.mercenaries };
-            const lotsToHire = Math.min(rich ? 2 : 1, Math.floor((cap - hired) / 1000), Math.floor(ctx.budget / MERCENARY_PRICE), Math.floor(market.left / 1000), Math.floor(hireRoom(game, code, site) / 1000));
+            const lotsToHire = Math.min(rich ? 2 : 1, Math.floor((mercCap - hired) / 1000), Math.floor(ctx.budget / MERCENARY_PRICE), Math.floor(market.left / 1000), Math.floor(hireRoom(game, code, site) / 1000));
             if (lotsToHire > 0) { cmd("hireMercenaries", { settlement: site.id, lots: lotsToHire }); ctx.budget -= lotsToHire * MERCENARY_PRICE; market.left -= lotsToHire * 1000; }
         }
     } else if (!atWarNow && !preparing) {

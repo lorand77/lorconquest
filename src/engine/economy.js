@@ -34,6 +34,15 @@ export const trainingRoom = (state, code, s) => Math.max(0, (capitalsOf(state, c
 // the share of its money a free city pays the Emperor each year (RULES.md §10, The Emperor)
 export const DUES = 0.05, PENNY = 0.01;
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code) * (state.countries[code].navy ?? 1);
+// how many mercenaries a country may have (RULES.md §8): as many as its army cap — and the Emperor, besides, Imperial Authority's share
+// of every other German state's army cap: the Empire's contingents, paid in coin (RULES.md §10, The Emperor)
+export function mercenaryCapOf(game, code) {
+    const st = game.state, own = armyCapOf(st, code), emp = st.empire;
+    if (!emp || emp.emperor !== code) return own;
+    let members = 0;
+    for (const c of Object.keys(st.countries).sort()) if (c !== code && st.countries[c].out === null && isGermanState(game, c)) members += armyCapOf(st, c);
+    return own + emp.authority / 100 * members;
+}
 export const mercenariesOf = (state, code) => sum(armiesOf(state, code), (a) => a.mercs ?? 0);
 
 // the mercenaries for hire (RULES.md §8). The world's companies: a share of its people, 1% until 1490 and 2% from 1600, rising between;
@@ -142,7 +151,7 @@ function economyBaseNow(game, code) {
         pop, soldiers, armySoldiers, crewAtSea: crewAtSea(st, code), mercenaries, rebels, civilians,
         settlementMoney, capitalMoney, upkeep, mercenaryUpkeep, interest, moneyPerYear, investable, rPerYear, libraries,
         // how many men may still be raised: room under the army cap, and civilians to raise them from (RULES.md §8)
-        armyCap, raiseRoom: Math.max(0, Math.min(armyCap - armySoldiers, civilians)), navyCap: navyCapOf(st, code), loanLimit: 2 * settlementMoney,
+        armyCap, mercenaryCap: mercenaryCapOf(game, code), raiseRoom: Math.max(0, Math.min(armyCap - armySoldiers, civilians)), navyCap: navyCapOf(st, code), loanLimit: 2 * settlementMoney,
     };
 }
 

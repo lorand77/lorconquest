@@ -6,7 +6,7 @@
 // Everything is read from the state, nothing is remembered: a restarted game plays on as before. An army's id is only
 // known once its split has been applied, so musters take two thinks (the second a tick after the first, see index.js).
 import { mayFight } from "../engine/battle.js";
-import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, armyCapOf, hireRoom, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, voyage, wallDefence } from "../engine/index.js";
+import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, hireRoom, mercenaryCapOf, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, voyage, wallDefence } from "../engine/index.js";
 import { WEAPONS, emptyMen } from "../engine/army.js";
 import { legKey } from "../engine/map.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, reserveOf, stagingSettlement, threatsOf, winChance } from "./util.js";
@@ -337,7 +337,7 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     if (!defend) {
         const c = st.countries[code], e = economyOf(game, code);
         const forHire = market ?? { left: st.mercenaries };
-        let money = (cash ?? c.treasury) - reserveOf(e), room = armyCapOf(st, code) - mercenariesOf(st, code) - c.hires.reduce((n, h) => n + h.n, 0) - hired;
+        let money = (cash ?? c.treasury) - reserveOf(e), room = mercenaryCapOf(game, code) - mercenariesOf(st, code) - c.hires.reduce((n, h) => n + h.n, 0) - hired;
         for (const t of threatened) {
             if (covered.has(t.key) || !t.s.cores.includes(code) || t.arrives - st.day <= MERCENARY_DAYS) continue;
             let lots = 1;

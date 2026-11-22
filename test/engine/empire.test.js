@@ -331,3 +331,18 @@ test("the war chest is paid to an Emperor at war with any outsider, not only as 
     const paid = ofType(runTo(game, 31), "chest");
     assert.deepEqual([paid.length, st.empire.chest], [1, 0]);
 });
+
+test("the Emperor may hire mercenaries up to his army cap and Imperial Authority's share of every other German state's", async () => {
+    const { armyCapOf, mercenaryCapOf } = await import("../../src/engine/index.js");
+    const game = empire(), st = game.state, emp = st.empire.emperor;
+    const others = Object.keys(st.countries).filter((c) => c !== emp && isGermanState(game, c)).reduce((n, c) => n + armyCapOf(st, c), 0);
+    assert.ok(emp && others > 0);
+    st.empire.authority = 50;
+    assert.equal(mercenaryCapOf(game, emp), armyCapOf(st, emp) + others / 2);
+    st.empire.authority = 0;
+    assert.equal(mercenaryCapOf(game, emp), armyCapOf(st, emp));
+    // anyone else: their own army cap alone
+    const other = Object.keys(st.countries).find((c) => c !== emp && isGermanState(game, c));
+    st.empire.authority = 100;
+    assert.equal(mercenaryCapOf(game, other), armyCapOf(st, other));
+});

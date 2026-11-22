@@ -82,7 +82,7 @@ export function countryTab(ctx) {
         line(ctx, "People", n(e.pop)),
         line(ctx, "Soldiers", `${n(e.armySoldiers)} of ${n(e.armyCap)} allowed`, e.armySoldiers > e.armyCap ? "bad" : ""),
         e.crewAtSea ? line(ctx, "Ship crew at sea", `${n(e.crewAtSea)} of ${n(e.navyCap)} allowed`) : "",
-        e.mercenaries ? line(ctx, "Mercenaries", `${n(e.mercenaries)} (at most ${n(e.armyCap)})`) : "",
+        e.mercenaries ? line(ctx, "Mercenaries", `${n(e.mercenaries)} (at most ${n(e.mercenaryCap ?? e.armyCap)})`) : "",
         e.rebels ? line(ctx, "Rebels under arms", n(e.rebels), "bad") : "",
         row(ctx, law), wait ? make("p", { class: "hint" }, `Changing the law: ${wait}.`) : ""));
 

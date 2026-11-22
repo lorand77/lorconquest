@@ -15,7 +15,7 @@ import { afford, done, money, ownArmy, positive, refuse, whole } from "./command
 import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_CHUNK, lawChangeDay, MAX_LIBRARIES, MERCENARY_DAYS,
     MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTER_PRICE, SHARPSHOOTERS_PER_PASS, SHIPS, SHIP_PRICE, TECHS, TRAIN_CAPITAL_DAYS,
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
-import { armyCapOf, armySoldiersOf, desert, economyOf, hireRoom, mercenariesOf, ownedBy, techCost, trainingRoom, unlockTech } from "./economy.js";
+import { armyCapOf, armySoldiersOf, desert, economyOf, hireRoom, mercenariesOf, mercenaryCapOf, ownedBy, techCost, trainingRoom, unlockTech } from "./economy.js";
 import { capitalsOf, newFleet, isCore, ownerOf } from "./state.js";
 import { proclaimCheck } from "./regions.js";
 import { coringDays, reformationError } from "./religion.js";
@@ -287,7 +287,8 @@ export const countryCommands = {
         if (error) return refuse(error);
         if (!isCore(st, s, c.code)) return refuse(`${s.id} is not core`);
         const n = cmd.lots * 1000, hiring = c.hires.reduce((x, h) => x + h.n, 0);
-        if (mercenariesOf(st, c.code) + hiring + n > armyCapOf(st, c.code)) return refuse("you may hire at most as many mercenaries as your army cap");
+        if (mercenariesOf(st, c.code) + hiring + n > mercenaryCapOf(game, c.code)) return refuse(st.empire?.emperor === c.code
+            ? "you may hire at most as many mercenaries as your army cap and Imperial Authority's share of the German states'" : "you may hire at most as many mercenaries as your army cap");
         if (n > st.mercenaries) return refuse(`only ${Math.floor(st.mercenaries).toLocaleString("en-GB")} mercenaries are for hire in the world`);
         const room = hireRoom(game, c.code, s);
         if (n > room) return refuse(`${s.id} can take ${room.toLocaleString("en-GB")} more mercenaries being hired at once`);
