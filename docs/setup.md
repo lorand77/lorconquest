@@ -190,7 +190,7 @@ rclone config            # a remote named b2, bucket lorconquest-backups
 ```
 
 then `crontab -e`, and add the nightly job (`scripts/backup.sh` makes the copy, sends it to B2, and deletes B2 copies older than
-30 days — the privacy page promises no more than that):
+90 days — what the privacy page says):
 
 ```
 0 3 * * * /home/lorconquest/lorconquest/scripts/backup.sh >> /home/lorconquest/backups/backup.log 2>&1 && curl -fsS -m 10 --retry 3 -o /dev/null <heartbeat URL>
@@ -229,7 +229,7 @@ renames the account `deleted-<id>`, deletes its chat and sessions, puts away its
 and frees the name; games with other people stay in their records, and in replays, without the name. It **refuses** while the
 person is in a game with other people that is still going. Before deleting, make sure the request comes from the account's
 owner: there is no email to check, so ask them to prove it from inside the account, for example by sending a chat message you
-name in one of their games. Copies in B2 backups expire with the backups (30 days).
+name in one of their games. Copies in B2 backups expire with the backups (90 days).
 
 ## updating Node
 

@@ -381,6 +381,12 @@ test("what the privacy page says is what the server does: no password or chat te
         const page = fs.readFileSync(path.join(import.meta.dirname, "..", "..", "public", "privacy.html"), "utf8");
         assert.equal(config.CHAT_RETENTION_DAYS, 30);
         assert.match(page, /deleted 30 days after the game ends/);
+        // backups: the nightly job deletes B2 copies at the age the page gives them
+        const job = fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scripts", "backup.sh"), "utf8");
+        const days = Number(/--min-age (\d+)d/.exec(job)?.[1]);
+        assert.equal(days, 90);
+        assert.match(page, new RegExp(`each backup\\s+is kept for ${days} days`));
+        assert.match(page, new RegExp(`as those backups expire, within ${days} days`));
         // and what it says is kept in the browser: the sign-in cookie, and in local storage the colour scheme and the notices chosen
         const js = path.join(import.meta.dirname, "..", "..", "public", "js");
         const storing = fs.readdirSync(js).filter((x) => /localStorage|sessionStorage|indexedDB|document\.cookie/.test(fs.readFileSync(path.join(js, x), "utf8")));

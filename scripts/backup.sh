@@ -10,7 +10,7 @@ cd "$(dirname "$0")/.."
 FILE=$(node --env-file-if-exists=.env tools/backup.js "$HOME/backups" --keep-days 7)
 rclone copy "$FILE" b2:lorconquest-backups/
 
-# and 30 days there (the privacy page promises at most 90)
-rclone delete b2:lorconquest-backups/ --min-age 30d --b2-hard-delete
+# and 90 days there (the privacy page says 90)
+rclone delete b2:lorconquest-backups/ --min-age 90d --b2-hard-delete
 
 echo "$(date) backup OK: $FILE"
