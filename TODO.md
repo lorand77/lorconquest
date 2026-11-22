@@ -9,7 +9,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 
 ## Next
 
-- [ ] #11 Faster computer players: the slow-day spikes (47–57 ms on Europe), and the time a day overall — AI, M
 - [ ] #30 Hard and normal computer players — AI, L
 - [ ] #31 Smarter computer players: more aggressive late in the game, better troop movement with allies — AI, L
 - [ ] #14 Coalitions open to people, not only the computer — rules, screen, M

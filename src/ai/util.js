@@ -6,7 +6,8 @@
 import { combine } from "../engine/army.js";
 import { findRoute, stepsOf, waypoint } from "../engine/map.js";
 import { contested, straitClear } from "../engine/naval.js";
-import { YEAR_DAYS, armyList, atWar, canEnter, dayOf, isRebel, power, scores } from "../engine/index.js";
+import { YEAR_DAYS, armiesOf, armyList, atWar, canEnter, dayOf, isRebel, power, scores, settlementsOf } from "../engine/index.js";
+import { memo } from "../engine/memo.js";
 import { CHARACTERS, NOISE } from "./characters.js";
 
 export function hash(text) {
@@ -78,8 +79,10 @@ export function racing(game, code) {
 }
 
 // the leader the others gang up on (design.md, "The computer players"): the country with the most settlements as victory
-// counts them, once it holds 75% of those to win — before that a front-runner is let run; null if none
-export function leaderOf(game) {
+// counts them, once it holds 75% of those to win — before that a front-runner is let run; null if none. Worked out once a think
+// (memo.js): the same for every country that asks
+export function leaderOf(game) { return memo("leader", "", () => leaderNow(game)); }
+function leaderNow(game) {
     const v = game.map.scenario.victory, st = game.state;
     if (!v) return null;
     const table = scores(st);
@@ -95,7 +98,8 @@ export function endgame(game) {
 }
 
 // the countries still in the game, first by settlements as victory counts them (then people, then code)
-export function standings(game) {
+export function standings(game) { return memo("standings", "", () => standingsNow(game)); }
+function standingsNow(game) {
     const st = game.state, table = scores(st);
     return Object.keys(table).filter((c) => st.countries[c].out === null).sort((a, b) => table[b].settlements - table[a].settlements || table[b].pop - table[a].pop || (a < b ? -1 : 1));
 }
@@ -129,12 +133,12 @@ export function leaderFor(game, code) {
     return rank >= 1 && rank <= 4 ? order[0] : null;
 }
 
-export const enemiesOf = (st, code) => Object.keys(st.countries).filter((c) => atWar(st, code, c));
+export const enemiesOf = (st, code) => memo("enemies", code, () => Object.keys(st.countries).filter((c) => atWar(st, code, c)));
 // the enemies that put a country on a war footing (taxes, spending, raising): real countries, and its own peasants — not other
 // countries' peasants, with whom it is at war only as their country's enemy or because their country is gone (RULES.md §11)
 export const threatsOf = (st, code) => enemiesOf(st, code).filter((c) => !st.countries[c].rebel || st.countries[c].of === code);
-export const ownSettlements = (st, code) => Object.values(st.settlements).filter((s) => s.owner === code);
-export const ownArmies = (st, code) => armyList(st).filter((a) => a.owner === code);
+export const ownSettlements = (st, code) => settlementsOf(st, code);
+export const ownArmies = (st, code) => armiesOf(st, code);
 
 // money to keep in hand: a third of a year's income
 export const reserveOf = (e) => 0.3 * e.settlementMoney;

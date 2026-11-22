@@ -10,7 +10,7 @@ import { COOLDOWN_DAYS, damage, mayFight } from "./battle.js";
 import { MONTH } from "./calendar.js";
 import { CREW_PER_SHIP, SEA_ZONES_MAX, SHIPS, SHIP_POWER } from "./costs.js";
 import { battleRoll } from "./random.js";
-import { atWar, fleetList, killPeople } from "./state.js";
+import { atWar, fleetList, fleetsOf, killPeople } from "./state.js";
 
 export const shipCount = (fleet) => SHIPS.reduce((n, k) => n + fleet.ships[k], 0);
 export const fleetPower = (fleet) => SHIPS.reduce((n, k) => n + fleet.ships[k] * SHIP_POWER[k], 0);
@@ -20,10 +20,10 @@ const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
 export const atSea = (f) => !f.port && !f.moving;
 
 // ship crew at sea, for upkeep, civilians and the navy cap
-export const crewAtSea = (state, country) => sum(fleetList(state).filter((f) => f.owner === country && !f.port), (f) => shipCount(f) * CREW_PER_SHIP);
+export const crewAtSea = (state, country) => sum(fleetsOf(state, country).filter((f) => !f.port), (f) => shipCount(f) * CREW_PER_SHIP);
 
 // the country's ships in a sea zone, at sea or in its ports, not counting fleets on their way
-export const shipsIn = (state, country, zone) => sum(fleetList(state).filter((f) => f.owner === country && f.zone === zone && !f.moving), shipCount);
+export const shipsIn = (state, country, zone) => sum(fleetsOf(state, country).filter((f) => f.zone === zone && !f.moving), shipCount);
 
 export const sailDays = (game) => Math.round(game.map.scenario.fleetHopMonths * MONTH);
 

@@ -8,7 +8,7 @@ import { YEAR_DAYS } from "./calendar.js";
 import { economyOf, popOf } from "./economy.js";
 import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
 import { faithOpinion, faithRegard, religionOf } from "./religion.js";
-import { armyList, atWar, isGermanState, isRebel, warKey } from "./state.js";
+import { armiesOf, atWar, isGermanState, isRebel, warKey } from "./state.js";
 import { scores } from "./victory.js";
 import { memo } from "./memo.js";
 
@@ -18,7 +18,7 @@ const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
 // without weapons and in training count 0, ships do not count
 export function militaryPowerOf(state, code) { return memo("power", code, () => militaryPowerNow(state, code)); }
 function militaryPowerNow(state, code) {
-    return sum(armyList(state).filter((a) => a.owner === code), militaryPower)
+    return sum(armiesOf(state, code), militaryPower)
         + sum(Object.values(state.posts).filter((p) => p.owner === code), (p) => p.n * 2.5);
 }
 

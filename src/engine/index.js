@@ -4,7 +4,7 @@
 export { Game, replay, resume } from "./game.js";
 export { fingerprint } from "./hash.js";
 export { COMMAND_TYPES, applyCommand } from "./commands.js";
-export { RULES_VERSION, FORMAT, atWar, armiesAt, armyList, canEnter, capitalsOf, fleetList, isCore, isFriend, isGermanState, isRebel, ownerOf } from "./state.js";
+export { RULES_VERSION, FORMAT, atWar, armiesAt, armiesOf, armyList, canEnter, capitalsOf, fleetList, fleetsOf, isCore, isFriend, isGermanState, isRebel, ownerOf, settlementsOf } from "./state.js";
 export { agreementsBetween, allied, alliesOf, friendly, grantsAccess, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectKind, subjectsOf, wouldCycle } from "./relations.js";
 export { ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, betrayalPenalty, nearVictory, areRivals, isAlliance, subjectPrice, subjectChance, bordering, demandChance, militaryPowerOf, need, neighboursOf, opinion, peaceAnswer, peaceCost, sizeOf, warScore } from "./opinion.js";
 export { GUARANTEE_DAYS, OFFER_DAYS, PACT_DAYS, PROPOSAL_DAYS, TRUCE_DAYS, germanStates, hreSettlementsOf, INTEGRATE_DAYS, integrateDays, integrateError, integratePrice, mayPropose, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, validateTerms, warJoiners } from "./diplomacy.js";

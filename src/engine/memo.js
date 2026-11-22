@@ -15,6 +15,15 @@ export function withMemo(fn) {
 
 const copy = (v) => (Array.isArray(v) ? v.slice() : v && typeof v === "object" ? { ...v } : v);
 
+// a table worked out once while the memory is on and handed out as it is, not copied — for the helpers that copy what they give
+// out of it (state.js: armiesOf, armiesAt, fleetsOf, settlementsOf; relations.js: subjectsOf); null outside one
+export function memoTable(name, compute) {
+    if (!cache) return null;
+    const k = `${name}|`;
+    if (!cache.has(k)) cache.set(k, compute());
+    return cache.get(k);
+}
+
 // the answer to `name` for `key`: remembered while the memory is on, worked out by `compute` otherwise or the first time
 export function memo(name, key, compute) {
     if (!cache) return compute();

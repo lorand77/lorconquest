@@ -221,6 +221,10 @@ for its player to come back.
   neighbours and the scores are worked out once and handed out as copies to every country that asks that day. Outside it
   nothing is remembered. The commands are the same, to the hash; on Europe a game runs about a quarter faster (the computer's
   own thinking about 40%).
+  Besides answers, tables made once and handed out as they are to the helpers that copy what they give out of them
+  (`memoTable`): the armies of each owner and at each place, its fleets and settlements, each overlord's subjects, each country's
+  rebels — every one in the order a look through the whole state would give, so nothing comes out otherwise — and the leader and
+  standings once for everyone. That halved the computer's time again on Europe (experiments/, section 28).
 - **Three layers**, so the expensive thinking is rare and the reactions are fast:
 
 | Layer | How often | Decides |

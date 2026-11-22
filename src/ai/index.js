@@ -38,7 +38,16 @@ function touched(game, events) {
     return out;
 }
 
-export function createAI({ seed, humans = [] }) {
+// `profile` (tools/simulate.js --slow): { now, record } — a clock, passed in so that nothing here reads one, and what each country
+// cost on a day, by part. It changes no order.
+export function createAI({ seed, humans = [], profile = null }) {
+    let parts = null;
+    const lap = (name, f) => {
+        if (!profile) return f();
+        const t0 = profile.now(), out = f();
+        parts[name] = (parts[name] ?? 0) + profile.now() - t0;
+        return out;
+    };
     const memory = { plans: new Map(), asked: new Map() }, caretaken = new Map(), again = new Set(), flavors = new Map();
     // a country's character: the scenario's for it, varied by the seed (characters.js)
     const flavor = (game, code) => {
@@ -60,19 +69,19 @@ export function createAI({ seed, humans = [] }) {
         // `plan`: the war it is preparing, if any (diplomacy.js) — its forces arm for it before it is declared
         const ctx = { budget: c.treasury - (atWarNow ? 0.1 : 1) * reserveOf(e), asked: memory.asked, plan: memory.plans.get(code) ?? null }, start = ctx.budget;
         ctx.start = start;                                 // what was there to spend, so the economy knows what is left (the bank)
-        const out = [...answerOffers(game, code), ...forceOrders(game, code, fl, ctx), ...economyOrders(game, code, fl, ctx)];
+        const out = [...lap("offers", () => answerOffers(game, code)), ...lap("forces", () => forceOrders(game, code, fl, ctx)), ...lap("economy", () => economyOrders(game, code, fl, ctx))];
         // money offered for peace is what the treasury will hold once this think's spending is applied before it
         const cash = c.treasury - (start - ctx.budget);
-        const { orders, prepare } = isVassal(st, code) && !atWarNow ? { orders: [], prepare: false } : diplomacyOrders(game, code, fl, memory, cash);
+        const { orders, prepare } = isVassal(st, code) && !atWarNow ? { orders: [], prepare: false } : lap("diplomacy", () => diplomacyOrders(game, code, fl, memory, cash));
         // armies this think's orders change already (men disbanded, mercenaries dismissed, weapons changed) are not split by the
         // muster: its numbers would be the ones from before — it splits them on the next think
         const thinned = new Set(out.filter((o) => ["disband", "dismissMercenaries", "equip"].includes(o.type)).map((o) => o.army));
         // the war's mercenaries for a threatened town come out of what is left, after this think's own hiring
         const hired = out.filter((o) => o.type === "hireMercenaries").reduce((n, o) => n + o.lots * 1000, 0);
-        out.push(...orders, ...warOrders(game, code, fl, { prepare, thinned, cash, hired }), ...navyOrders(game, code, ctx));
+        out.push(...orders, ...lap("war", () => warOrders(game, code, fl, { prepare, thinned, cash, hired })), ...lap("navy", () => navyOrders(game, code, ctx)));
         // armies piled up in a settlement, merged — those this think left alone (forces.js, tidyOrders)
         const busy = new Set(out.filter((o) => o.army !== undefined).flatMap((o) => [o.army, o.into]).filter((x) => x !== undefined));
-        out.push(...tidyOrders(game, code, busy));
+        out.push(...lap("tidy", () => tidyOrders(game, code, busy)));
         if (out.some((o) => ["split", "merge", "equip", "raise"].includes(o.type))) again.add(code);
         return out;
     }
@@ -97,13 +106,19 @@ export function createAI({ seed, humans = [] }) {
                 if (!mode) continue;
                 const source = human ? "caretaker" : "computer";
                 const give = (cmds) => { for (const cmd of cmds) out.push({ country: code, source, cmd }); };
-                const before = out.length;
-                if (thinksOn(code, st.day, game.map.scenario)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : think(game, code));
-                else if (wake.has(code) || followUp.has(code) || (looksOn(code, st.day, game.map.scenario) && threatsOf(st, code).length)) give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) }));
+                const before = out.length, t0 = profile ? profile.now() : 0;
+                let why = null;
+                parts = {};
+                if (thinksOn(code, st.day, game.map.scenario)) { why = "think"; give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : think(game, code)); }
+                else if (wake.has(code) || followUp.has(code) || (looksOn(code, st.day, game.map.scenario) && threatsOf(st, code).length)) {
+                    why = wake.has(code) ? "woken" : followUp.has(code) ? "follow-up" : "look";
+                    give(mode === "caretaker" ? caretakerOrders(game, code, flavor(game, code)) : lap("war", () => warOrders(game, code, flavor(game, code), { muster: false, prepare: memory.plans.has(code) })));
+                }
                 // every day, whether it thinks or not: a besieged town of its about to fall makes a last sortie (war.js, lastSorties)
                 const last = [];
-                lastSorties(game, code, last);
+                lap("sorties", () => lastSorties(game, code, last));
                 give(last.filter((o) => !out.slice(before).some((x) => x.cmd.army === o.army)));
+                if (profile) profile.record({ code, why, ms: profile.now() - t0, parts });
             }
             return out;
         },

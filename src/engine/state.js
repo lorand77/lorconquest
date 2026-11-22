@@ -2,6 +2,7 @@
 // string — and holds everything that changes; the map (map.js) holds what does not. Also the questions every
 // other module asks of it: who owns a place, who is at war, where an army may go.
 
+import { memoTable } from "./memo.js";
 import { emptyMen } from "./army.js";
 import { START_TECHS } from "./costs.js";
 import { seedRandom } from "./random.js";
@@ -119,13 +120,28 @@ export const isAlive = (state, army) => state.armies[army.id] === army;
 // every army, in id order (the state's object keys are whole numbers, which JavaScript keeps in order)
 export const armyList = (state) => Object.values(state.armies);
 export const fleetList = (state) => Object.values(state.fleets);
+// the armies, fleets and settlements of one owner, in id order: while the memory is on (memo.js) from a table of every owner's made
+// once, asked for again and again by the computer players, each a copy; else by a look through them all
+const groupBy = (list, keyOf) => {
+    const m = new Map();
+    for (const x of list) { const k = keyOf(x); if (!m.has(k)) m.set(k, []); m.get(k).push(x); }
+    return m;
+};
+const ofOwner = (name, list, code) => {
+    const t = memoTable(name, () => groupBy(list(), (x) => x.owner));
+    return t ? (t.get(code) ?? []).slice() : list().filter((x) => x.owner === code);
+};
+export const armiesOf = (state, code) => ofOwner("armiesByOwner", () => armyList(state), code);
+export const fleetsOf = (state, code) => ofOwner("fleetsByOwner", () => fleetList(state), code);
+export const settlementsOf = (state, code) => ofOwner("settlementsByOwner", () => Object.values(state.settlements), code);
 // the armies at a place, in id order. Within `withPlacesIndexed` they come from an index of every place made once: for a loop over
 // many places in which no army arrives anywhere — the day's battles and settling (day.js), where armies only leave (a retreat is
-// a march) or die — each one still checked to be there, and alive, when asked for
+// a march) or die — each one still checked to be there, and alive, when asked for; while the memory is on (memo.js), from a table made once
 let byPlace = null;
 export function armiesAt(state, key) {
     if (byPlace?.armies === state.armies) return (byPlace.map.get(key) ?? []).filter((a) => a.at === key && state.armies[a.id] === a);
-    return armyList(state).filter((a) => a.at === key);
+    const t = memoTable("armiesByPlace", () => groupBy(armyList(state).filter((a) => a.at), (a) => a.at));
+    return t ? (t.get(key) ?? []).slice() : armyList(state).filter((a) => a.at === key);
 }
 export function withPlacesIndexed(state, fn) {
     if (byPlace) return fn();

@@ -737,3 +737,31 @@ train a fifth of a capital's people at once): `strength/2026-11-22-landings.json
 **What it showed: the loss is gone.** Prussia ends +1.25 settlements [−3.83, +6.33] (−6.47 in section 26), surviving in 5 games
 against 2; no country is below zero beyond the noise — Bavaria +0.88, Brandenburg +0.76, Austria −0.05, Saxony +1.48, Gdańsk +2.05.
 All: +1.06 [−0.05, +2.17] settlements a country, wins 15 against 15 of 120, refused orders the same (1.97 and 1.94).
+
+## 28. A faster computer: worked out once a think (2026-11-22)
+
+**What changed.** No decision: the computer gives the same orders, to the fingerprint, and only works them out with less
+repetition (TODO.md #11). Measured first with `node tools/simulate.js --slow N` (a new flag: the computer's time by part and by why a
+country acted, and the slowest days with who cost most) and Node's CPU profiler on a Europe game. What the profile showed: the
+leader and the standings sorted afresh for every country that asked, several times a think (13% of the computer's time), and the
+whole state looked through again and again for one country's armies, fleets, settlements, subjects, enemies and rebels (about a
+quarter). These are now worked out once a think (`memo.js`, `memoTable`), each handed out in the order a look through everything would
+give; and a region with none of a country's capitals in it is not checked in full for a proclamation.
+
+It also showed that the spikes on the 1st of each month were not the computer's: simulate.js had counted its own war measures,
+which look at every country's economy monthly, as the computer's time. It no longer does — figures for the computer's time before
+this section are a little high, most of all their slowest days.
+
+**Check.** Four AI-only games played before and after — Mitteleuropa seeds 1–3 for 100 years, Europe seed 1 for 20 — end in the
+same state, fingerprint for fingerprint (f21997bb, afdb4ca1, c5f97160, bf73c646), with the same 9,568, 8,919, 9,822 and 11,839 orders.
+
+**What it showed.** The computer's time a day:
+
+| | Before | After |
+|---|---|---|
+| Mitteleuropa, mean (3 games of 100 years) | 0.68–0.74 ms | 0.42–0.45 ms |
+| Europe, mean (seed 1, 20 years) | 7.55 ms | 3.31 ms |
+| Europe 1440–1455: mean, p95, p99, slowest | 7.5, 13.8, 17.8, 35 ms | 3.1, 6.5, 9.6, 21 ms |
+
+The slowest days left are one great power's full think — France on its first, Hungary's diplomacy at 6 ms — not anything
+shared: the time is now spread over the war (38%), diplomacy (29%), the economy (15%) and the forces (10%).

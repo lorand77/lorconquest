@@ -5,6 +5,8 @@
 // state.agreements: [{ kind, a, b, since, until }] — kind "defensive", "military", "pact" and "truce" are between
 // both; "guarantee": a guarantees b; "access": a gives b military access. `until` is a day or null for ever.
 
+import { memoTable } from "./memo.js";
+
 const both = (x, a, b) => (x.a === a && x.b === b) || (x.a === b && x.b === a);
 
 // Each country's agreements, in the order of state.agreements — so every answer below comes out as a scan of the whole list
@@ -33,7 +35,15 @@ export const guarantorsOf = (state, code) => involving(state, code).filter((x) =
 
 export const overlordOf = (state, code) => state.countries[code]?.overlord ?? null;
 export const subjectKind = (state, code) => state.countries[code]?.subjectKind ?? null;
-export const subjectsOf = (state, code) => Object.keys(state.countries).sort().filter((c) => state.countries[c].overlord === code);
+// in code order; while the memory is on (memo.js), from a table of every overlord's made once
+export function subjectsOf(state, code) {
+    const t = memoTable("subjectsByOverlord", () => {
+        const m = new Map();
+        for (const c of Object.keys(state.countries).sort()) { const o = state.countries[c].overlord; if (o) { if (!m.has(o)) m.set(o, []); m.get(o).push(c); } }
+        return m;
+    });
+    return t ? (t.get(code) ?? []).slice() : Object.keys(state.countries).sort().filter((c) => state.countries[c].overlord === code);
+}
 export const isVassal = (state, code) => subjectKind(state, code) === "vassal";
 
 // would making `subject` a subject of `overlord` make a ring of overlords: is `overlord` itself, or a subject of

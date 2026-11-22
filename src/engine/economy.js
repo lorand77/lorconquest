@@ -10,14 +10,14 @@ import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUI
     MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
-import { armyList, atWar, capitalsOf, isCore, isGermanState, isRebel, killPeople, removeArmy } from "./state.js";
+import { armiesOf, armyList, atWar, capitalsOf, settlementsOf, isCore, isGermanState, isRebel, killPeople, removeArmy } from "./state.js";
 import { coringDays } from "./religion.js";
-import { memo } from "./memo.js";
+import { memo, memoTable } from "./memo.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
 const realCountries = (state) => Object.keys(state.countries).sort().filter((c) => !isRebel(state, c));
 
-export const ownedBy = (state, code) => Object.values(state.settlements).filter((s) => s.owner === code);
+export const ownedBy = (state, code) => settlementsOf(state, code);
 export const popOf = (state, code) => sum(ownedBy(state, code), (s) => s.pop);
 // core manpower plus half of non-core (RULES.md §9): what the law's percentages apply to
 export const manpowerOf = (state, code) => sum(ownedBy(state, code), (s) => (isCore(state, s, code) ? s.pop : s.pop / 2));
@@ -33,12 +33,12 @@ export const trainingRoom = (state, code, s) => Math.max(0, (capitalsOf(state, c
 // the share of its money a free city pays the Emperor each year (RULES.md §10, The Emperor)
 export const DUES = 0.05, PENNY = 0.01;
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code) * (state.countries[code].navy ?? 1);
-export const mercenariesOf = (state, code) => sum(armyList(state).filter((a) => a.owner === code), (a) => a.mercs ?? 0);
+export const mercenariesOf = (state, code) => sum(armiesOf(state, code), (a) => a.mercs ?? 0);
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
 
 // men on the army cap: regular soldiers, cannon crew, sharpshooters, and men in training — not mercenaries
 export function armySoldiersOf(state, code) {
-    const own = armyList(state).filter((a) => a.owner === code);
+    const own = armiesOf(state, code);
     return sum(own, (a) => menOf(a) - (a.mercs ?? 0) + a.crew)
         + sum(Object.values(state.posts).filter((p) => p.owner === code), (p) => p.n)
         + sum(state.countries[code].training ?? [], (t) => t.n);
@@ -47,7 +47,15 @@ export function armySoldiersOf(state, code) {
 export const soldiersOf = (state, code) => armySoldiersOf(state, code) + crewAtSea(state, code);
 
 // rebels are your own people under arms (RULES.md §11): the men of the armies of the countries risen against you
+// — while the memory is on (memo.js), from a table of every country's made once, summed in the same order
 export function rebelsOf(state, code) {
+    const t = memoTable("rebelsByCountry", () => {
+        const m = new Map();
+        for (const a of armyList(state)) { const of = state.countries[a.owner]?.of; if (of) m.set(of, (m.get(of) ?? 0) + menOf(a)); }
+        return m;
+    });
+    if (t) return t.get(code) ?? 0;
+    if (!Object.values(state.countries).some((c) => c.of === code)) return 0;
     let n = 0;                                                      // (one pass over the armies: asked with every country's economy)
     for (const a of armyList(state)) if (state.countries[a.owner]?.of === code) n += menOf(a);
     return n;

@@ -86,7 +86,9 @@ export function economyOrders(game, code, fl, ctx) {
 
     // regions: one it may proclaim — a capital of its in it, held whole by it and its vassals (or as its Needs say), not all its core
     // yet — is proclaimed (RULES.md, Special coring; the engine's own check, regions.js)
-    for (const f of game.map.scenario.formables ?? []) if (!proclaimCheck(game, code, f).error) cmd("proclaim", { region: f.id });
+    // a region with none of its capitals in it cannot be proclaimed (regions.js): not checked in full
+    const caps = capitalsOf(st, code);
+    for (const f of game.map.scenario.formables ?? []) if (f.settlements.some((id) => caps.includes(id)) && !proclaimCheck(game, code, f).error) cmd("proclaim", { region: f.id });
 
     // the Reformation (RULES.md §2, Religion), only where it was: a country most of whose core land lay in 1440 in a country its
     // scenario says leans to it — so whoever holds Saxony or the Dutch towns now — adopts it at 10% a year, a Hussite at twice that,
