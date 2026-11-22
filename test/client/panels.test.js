@@ -393,7 +393,7 @@ test("the Shop tab shows what each settlement may still train, and raises by the
     const { ctx, sent } = setup((game) => {
         game.state.countries.BAV.law = "mass";
         const s = game.state.settlements[game.state.countries.BAV.capital];
-        game.state.countries.BAV.training.push({ settlement: s.id, kind: "soldiers", weapon: "unarmed", n: 0.1 * s.pop - 600, ready: 999 });
+        game.state.countries.BAV.training.push({ settlement: s.id, kind: "soldiers", weapon: "unarmed", n: 0.2 * s.pop - 600, ready: 999 });                // a capital trains a fifth
     });
     ctx.ui = { target: null, raiseWeapon: null, raiseAt: null, hireAt: null };
     const nodes = shopTab(ctx);

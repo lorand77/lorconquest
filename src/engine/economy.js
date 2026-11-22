@@ -24,10 +24,11 @@ export const manpowerOf = (state, code) => sum(ownedBy(state, code), (s) => (isC
 export const lawOf = (state, code) => LAWS[state.countries[code].law ?? "feudal"];
 // each capital a country holds brings its money and soldiers (RULES.md §2, §9) — a union's every member's; peasant rebels have none
 export const armyCapOf = (state, code) => lawOf(state, code).army * manpowerOf(state, code) + capitalsOf(state, code).length * CAPITAL_SOLDIERS;
-// what a settlement may still train at once (RULES.md §8): a tenth of its people, less the men in training there now — so a
-// large army is raised in several places, or over a long time, not in a season at the capital alone
-export const TRAINING_SHARE = 0.1;
-export const trainingRoom = (state, code, s) => Math.max(0, TRAINING_SHARE * s.pop - sum(state.countries[code].training.filter((t) => t.settlement === s.id), (t) => t.n));
+// what a settlement may still train at once (RULES.md §8): a tenth of its people — a capital a fifth — less the men in training there
+// now: a large army is raised in several places, or over a long time, though most of all at the capital
+export const TRAINING_SHARE = 0.1, CAPITAL_TRAINING_SHARE = 0.2;
+export const trainingRoom = (state, code, s) => Math.max(0, (capitalsOf(state, code).includes(s.id) ? CAPITAL_TRAINING_SHARE : TRAINING_SHARE) * s.pop
+    - sum(state.countries[code].training.filter((t) => t.settlement === s.id), (t) => t.n));
 // a sea power's raised in proportion to the fleet its scenario gives it (RULES.md §9; state.js, navy)
 // the share of its money a free city pays the Emperor each year (RULES.md §10, The Emperor)
 export const DUES = 0.05, PENNY = 0.01;

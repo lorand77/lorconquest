@@ -232,7 +232,7 @@ country's lowest-numbered port.
 | **Workshop** | 0.075M | — | +7000 money from settlement |
 | **Market** | 0.075M | — | +15% money from settlement — its Workshop's 7000 included |
 | **Courthouse** | 0.05M | — | Makes the settlement core at once · only once its people are 100% compliant (20 years held), and not where it is your core already |
-| **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months, a tenth of a settlement's people at once (§8) |
+| **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months, a tenth of a settlement's people at once, a capital's fifth (§8) |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
 | **Pikes** (1000) | 0.03M | unlocked | ×1.2 · makes guns stronger in pike and shot (§5) |
@@ -517,9 +517,9 @@ time to appear:
 
 A country may only raise or hire up to its **army cap**, counting men in training, soldiers, crew and
 sharpshooters, and may not raise more men than it has civilians. **A settlement trains at most a tenth of its people at
-once** — 1,000 in a town of 10,000, 2,000 in a city — counting the men in training there; once they are ready it has room again.
-A large army is raised in several places at the same time, or over a long time: a town gives 2,000 men a year at most, a capital
-city 8,000. Mercenaries are hired, not trained, and have no such limit. Soldiers are raised by the thousand; while there is
+once** — 1,000 in a town of 10,000, 2,000 in a city — **and a capital a fifth** (4,000 in a capital city; each capital of a union),
+counting the men in training there; once they are ready it has room again. A large army is raised in several places at the same
+time, or over a long time: a town gives 2,000 men a year at most, a city 4,000, a capital city 16,000. Mercenaries are hired, not trained, and have no such limit. Soldiers are raised by the thousand; while there is
 room for fewer than 1000 more (under the cap, in civilians, or in the settlement), by the hundred instead. The men appear in their settlement and
 join an army of the country there that is not retreating and not outside the walls, or form a new one.
 

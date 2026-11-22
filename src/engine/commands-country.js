@@ -247,7 +247,7 @@ export const countryCommands = {
     // raised: an army's own soldiers man its cannons (equipCannons). Raised with a weapon, the men are set aside its
     // weapons now — from the reserve, the lots missing bought — and arrive carrying them; raised with cannons, one cannon
     // for every 10 men, and they arrive as its crew. By the thousand; by the hundred only while fewer than 1000 can be raised —
-    // by the law, the civilians, or the settlement, which trains at most a tenth of its people at once (trainingRoom).
+    // by the law, the civilians, or the settlement, which trains at most a tenth of its people at once, a capital a fifth (trainingRoom).
     raise(game, cmd) {
         const st = game.state, c = mine(game, cmd), weapon = cmd.weapon ?? "unarmed";
         if ((cmd.kind ?? "soldiers") !== "soldiers") return refuse("only soldiers are raised: they man cannons themselves");
@@ -263,7 +263,7 @@ export const countryCommands = {
         if (hundreds && Math.min(economyOf(game, c.code).raiseRoom, room) >= 1000) return refuse("there is room for 1000: raise by the thousand");
         if (armySoldiersOf(st, c.code) + n > armyCapOf(st, c.code)) return refuse("that is more soldiers than your law allows");
         if (economyOf(game, c.code).civilians < n) return refuse("not enough civilians");
-        if (n > room) return refuse(`${s.id} can train only ${Math.floor(room / 100) * 100} more men at once: a tenth of its people`);
+        if (n > room) return refuse(`${s.id} can train only ${Math.floor(room / 100) * 100} more men at once: a tenth of its people, a capital a fifth`);
         if (weapon !== "unarmed") {
             // raised by the hundred, the weapons missing are bought by the hundred too (cannons by the ten), at a tenth of a lot
             const k = weapon === "cannons" ? n / CREW_PER_CANNON : n, part = hundreds ? 10 : 1;

@@ -252,17 +252,17 @@ test("soldiers are raised by the hundred only while there is room for fewer than
     order(game, cmd("raise", { settlement: 1, lots: 1 }));
 });
 
-test("a settlement trains at most a tenth of its people at once: room again once they are ready, by the hundred where it has less", async () => {
+test("a settlement trains at most a tenth of its people at once, a capital a fifth: room again once they are ready, by the hundred where it has less", async () => {
     const { trainingRoom } = await import("../../src/engine/index.js");
     const game = tinyGame(), st = game.state, c = AAA(game);
-    order(game, cmd("setLaw", { law: "mass" }));
-    assert.deepEqual([trainingRoom(st, "AAA", st.settlements[1]), trainingRoom(st, "AAA", st.settlements[2])], [2000, 1000]);   // a city, a town
-    order(game, cmd("raise", { settlement: 1, lots: 2 }));
-    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 1 })), /1 can train only 0 more men at once/);
+    order(game, cmd("setLaw", { law: "barrel" }));                              // the law's cap well out of the way
+    assert.deepEqual([trainingRoom(st, "AAA", st.settlements[1]), trainingRoom(st, "AAA", st.settlements[2])], [4000, 1000]);   // the capital city, a town
+    order(game, cmd("raise", { settlement: 1, lots: 3 }));
+    assert.match(refused(game, cmd("raise", { settlement: 1, lots: 2 })), /1 can train only 1000 more men at once/);
     st.settlements[2].pop = 8500;                                              // room for 850: by the hundred, though the law has room
     assert.match(refused(game, cmd("raise", { settlement: 2, lots: 1 })), /can train only 800 more/);
     order(game, cmd("raise", { settlement: 2, hundreds: 8 }));
-    assert.deepEqual(c.training.map((t) => [t.settlement, t.n]), [[1, 2000], [2, 800]]);
+    assert.deepEqual(c.training.map((t) => [t.settlement, t.n]), [[1, 3000], [2, 800]]);
     assert.match(refused(game, cmd("raise", { settlement: 3, hundreds: 5 })), /raise by the thousand/);   // a town of 10,000 has room for 1000
     runTo(game, 91);                                                           // the capital's are ready: room again
     order(game, cmd("raise", { settlement: 1, lots: 1 }));

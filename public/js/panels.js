@@ -212,7 +212,7 @@ export function shopTab(ctx) {
     rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
         row(ctx, rs, rl, make("span", {}, `× ${per}`), rw),
-        make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere, at most a tenth of its people at once; weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
+        make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere, at most a tenth of its people at once (the capital a fifth); weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
         raise));
 
     // mercenaries

@@ -31,7 +31,7 @@ cost it unlocks — better guns (hand cannons, arquebuses, muskets), sharpshoote
 
 1. **Raise soldiers** in a core settlement — free, but they train for 3 months in your capital, 6 elsewhere, and how many
    you may have is capped by your **conscription law** (5% of your people at the start). A settlement trains at most a tenth
-   of its people at once, so raise a big army in several places.
+   of its people at once — your capital a fifth — so raise a big army in several places.
 2. **Arm them**: soldiers without weapons are worth nothing in battle. Buy swords, pikes, cavalry, guns and cannons, and
    give them to an army anywhere.
 3. **Move**: select an army and click where it should go. It follows roads, over passes and across straits — and sails from

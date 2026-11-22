@@ -7,7 +7,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 ## Now
 
 - [ ] #25 The computer's landings only when it has no land front, and never buying ships for a landing — Prussia lost in the sea-lane strength test (experiments/README.md, 26) — AI, S
-- [ ] #27 Capital recruiting doesn't work (bug: to reproduce) — rules, S
 - [ ] #28 Tests for land only for land won: a peace asking more land than was taken is refused — tests, S
 - [ ] #29 Flaky server test "a player's country is played by the computer while it is handed over": the hand-back races the 2 ms days — tests, S
 
