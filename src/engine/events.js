@@ -5,7 +5,9 @@
 // that country's people, armed with swords, outside its capital. They are its own people: they pay no tax while
 // under arms, their dead are lost from its population, and survivors with nowhere to fall back scatter home. An uprising may be
 // a religious one, as much as faith made the chance: then its people rise in the settlements of another faith than their ruler's,
-// each a band of 3% of its people, and fight for the land of their faith alone.
+// each a band of 3% of its people, and fight for the land of their faith alone. Rebels recruit each month: a tenth of the people of
+// a town they hold over ten months, and as much as the unrest that raised them (tax and law, or faith) goes on making. Rebels who
+// hold land for 5 years — or any, once their country is out — rise as a state, a country like any, which the computer plays.
 //
 // The rebels' behaviour is a rule, not a player's choice: every 10 days each idle rebel army storms the town it besieges once it
 // is 1.35 times the garrison, or else marches on a settlement of its country it is at least 1.2 times as strong as, on a way no
@@ -18,13 +20,16 @@ import { inheritCooldowns, mayFight } from "./battle.js";
 import { YEAR_DAYS } from "./calendar.js";
 import { LAWS } from "./costs.js";
 import { ownedBy, plague, popOf } from "./economy.js";
-import { evictClosed } from "./diplomacy.js";
+import { evictClosed, openWar } from "./diplomacy.js";
 import { settle, situation, storm, wallDefence } from "./fighting.js";
 import { joinArmy } from "./forces.js";
 import { follow, routeFor } from "./movement.js";
 import { random } from "./random.js";
 import { RELIGION_NAMES, faithUnrest, religionOf } from "./religion.js";
-import { armiesAt, armyList, atWar, isCore, isRebel, newArmy, removeArmy, warKey } from "./state.js";
+import { armiesAt, armyList, atWar, isCore, isRebel, makeCountry, newArmy, removeArmy, warKey } from "./state.js";
+
+// the part of the chance of an uprising that tax and the law make (RULES.md §11)
+const taxUnrest = (c, tax) => (tax - 2) ** 2 * 0.25 + (LAWS[c.law ?? "feudal"]?.unrest ?? 0);
 
 export function yearly(game, events) {
     const st = game.state;
@@ -39,7 +44,7 @@ export function yearly(game, events) {
         if (sick < 0.05) plague(game, code, 0.10, events);
         const average = c.taxSum / YEAR_DAYS;
         c.taxSum = 0;
-        const faith = faithUnrest(game, code), chance = (average - 2) ** 2 * 0.25 + (LAWS[c.law ?? "feudal"]?.unrest ?? 0) + faith;
+        const faith = faithUnrest(game, code), chance = taxUnrest(c, average) + faith;
         // a religious uprising as much as faith made the chance, where any of its people are of another faith; a tax one otherwise
         if (rise < chance) (kind * chance < faith && religiousUprising(game, code, events)) || uprising(game, code, events);
     }
@@ -56,7 +61,7 @@ export function uprising(game, code, events) {
     const bands = Object.keys(st.countries).filter((x) => st.countries[x].rebel && st.countries[x].of === code && !st.countries[x].faith).sort((a, b) => Number(a.slice(3)) - Number(b.slice(3)));
     const joined = bands.length > 0, rebel = joined ? bands[0] : `REB${++st.rebels}`;
     if (!joined) {
-        st.countries[rebel] = { code: rebel, name: `Rebels of ${c.name}`, capital: null, rebel: true, of: code, treasury: 0 };
+        st.countries[rebel] = { code: rebel, name: `Rebels of ${c.name}`, capital: null, rebel: true, of: code, treasury: 0, raised: {}, holding: null };
         st.wars.push(warKey(rebel, code));
         st.wars.sort();
     }
@@ -79,7 +84,7 @@ export function religiousUprising(game, code, events) {
             .sort((a, b) => Number(a.slice(3)) - Number(b.slice(3)))[0];
         const rebel = band ?? `REB${++st.rebels}`;
         if (!band) {
-            st.countries[rebel] = { code: rebel, name: `${RELIGION_NAMES[faith] ?? faith} rebels of ${c.name}`, capital: null, rebel: true, of: code, faith, treasury: 0 };
+            st.countries[rebel] = { code: rebel, name: `${RELIGION_NAMES[faith] ?? faith} rebels of ${c.name}`, capital: null, rebel: true, of: code, faith, treasury: 0, raised: {}, holding: null };
             st.wars.push(warKey(rebel, code));
             st.wars.sort();
         }
@@ -172,6 +177,91 @@ function holdBack(game, army) {
     const part = newArmy(st, army.owner, army.at, men);
     part.arrived = army.arrived;
     inheritCooldowns(st, army.id, part.id);
+}
+
+// the rebels' recruits (RULES.md §11), each month: a town they hold gives 1% of its people to the band in it, up to a tenth of them
+// in all; and the unrest that raised them goes on feeding them — 0.3% of their country's people a month for each 100% of the
+// chance of an uprising: the tax and the law's part to the tax rebels, the faith's to those of the faith, by their share of the
+// country's people of another faith. A recruit is a peasant with a sword, taken from his country's civilians like the first band.
+const TOWN_SHARE = 0.01, TOWN_MAX = 0.1, FEED = 0.003;
+export function rebelRecruits(game) {
+    const st = game.state;
+    for (const code of Object.keys(st.countries).sort()) {
+        const rebel = st.countries[code];
+        if (!rebel.rebel) continue;
+        const raised = (rebel.raised ??= {});
+        for (const s of ownedBy(st, code)) {
+            const n = Math.floor(Math.min(TOWN_SHARE * s.pop, TOWN_MAX * s.pop - (raised[s.id] ?? 0)));
+            if (n <= 0) continue;
+            raised[s.id] = (raised[s.id] ?? 0) + n;
+            const men = emptyMen();
+            men.swords = n;
+            joinArmy(st, code, String(s.id), { men });
+        }
+        const c = st.countries[rebel.of];
+        if (!c || c.out !== null) continue;
+        let chance = taxUnrest(c, c.tax);
+        if (rebel.faith) {
+            const ruler = religionOf(game, rebel.of), other = ownedBy(st, rebel.of).filter((s) => s.faith && ruler && s.faith !== ruler);
+            const all = other.reduce((n, s) => n + s.pop, 0), theirs = other.filter((s) => s.faith === rebel.faith).reduce((n, s) => n + s.pop, 0);
+            chance = all ? faithUnrest(game, rebel.of) * theirs / all : 0;
+        }
+        const n = Math.floor(FEED * chance * popOf(st, rebel.of));
+        const largest = armyList(st).filter((a) => a.owner === code).sort((x, y) => menOf(y) - menOf(x) || x.id - y.id)[0];
+        if (n > 0 && largest) largest.men.swords += n;
+    }
+}
+
+// rebels who hold out become a state (RULES.md §11): at the start of each month, rebels holding land — religious rebels, all the land
+// of their faith, their country holding none of it — for 5 years on end, or holding any once their country is out of the game
+const RISE_YEARS = 5;
+export function rebelStates(game, events) {
+    const st = game.state;
+    for (const code of Object.keys(st.countries).sort()) {
+        const rebel = st.countries[code];
+        if (!rebel.rebel) continue;
+        const parent = st.countries[rebel.of], gone = !parent || parent.out !== null;
+        const holds = ownedBy(st, code).length > 0 && (!rebel.faith || gone || !ownedBy(st, rebel.of).some((s) => s.faith === rebel.faith));
+        if (!holds) { rebel.holding = null; continue; }
+        rebel.holding ??= st.day;
+        if (gone || st.day - rebel.holding >= RISE_YEARS * YEAR_DAYS) riseAsState(game, code, events);
+    }
+}
+
+// the rebels made a country: its capital their largest town, every town they hold its core, a treasury as a country of their people
+// begins with (x × pop × 2), their country's knowledge, its faith or theirs. Their wars, which nobody declared, end; with the country
+// they rose against, if it is still in the game, a war begins — a war like any, with a score and a peace. From now on it is a
+// computer country like the others, raising men from its own people (src/ai). On the map: a code from its capital's name, and a colour
+const RISEN_COLOURS = ["#6b8e23", "#b8860b", "#5f9ea0", "#9370db", "#cd853f", "#2e8b57", "#d2691e", "#4682b4", "#bc8f8f", "#808000"];
+export function riseAsState(game, code, events) {
+    const st = game.state, rebel = st.countries[code], of = rebel.of, parent = st.countries[of] ?? null;
+    const held = ownedBy(st, code).sort((a, b) => b.pop - a.pop || a.id - b.id), capital = held[0];
+    const town = game.map.nodes.get(String(capital.id)).name;
+    const name = rebel.faith ? `${RELIGION_NAMES[rebel.faith] ?? rebel.faith} League of ${town}` : `Peasant Republic of ${town}`;
+    const pop = held.reduce((n, s) => n + s.pop, 0);
+    const c = makeCountry({ code, name, capital: capital.id, religion: rebel.faith ?? parent?.religion ?? null,
+        treasury: game.map.scenario.scaleX * pop * 2, techs: parent?.techs });
+    c.taxSum = c.tax * (st.day % YEAR_DAYS);                  // the year so far at the tax it begins with, for the yearly roll
+    c.risen = { code: shortCode(game, town), colour: RISEN_COLOURS[(Number(code.slice(3)) - 1) % RISEN_COLOURS.length], of, day: st.day };
+    st.countries[code] = c;
+    for (const s of held) if (!s.cores.includes(code)) s.cores.push(code);
+    st.wars = st.wars.filter((w) => !w.split("|").includes(code));
+    const war = Boolean(parent && parent.out === null);
+    if (war) openWar(game, code, of, code);
+    evictClosed(game, events);
+    events.push({ type: "risen", day: st.day, country: code, of, name, capital: capital.id, settlements: held.length, ...(war ? { war } : {}) });
+}
+
+// three letters for the map, from the town's name, that no country is known by: its first three, or its first and two others in order
+function shortCode(game, town) {
+    const st = game.state, letters = town.normalize("NFD").replace(/[^A-Za-z]/g, "").toUpperCase();
+    const taken = new Set([...Object.keys(st.countries), ...Object.values(st.countries).map((x) => x.risen?.code),
+        ...(game.map.scenario.formables ?? []).map((f) => f.becomes?.code)]);
+    for (let i = 1; i < letters.length; i++) for (let j = i + 1; j < letters.length; j++) {
+        const t = letters[0] + letters[i] + letters[j];
+        if (!taken.has(t)) return t;
+    }
+    return `R${st.rebels}`;
 }
 
 // who peasant rebels are at war with (RULES.md §11): the country they rose against and every country at war with it — or, once

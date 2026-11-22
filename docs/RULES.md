@@ -1195,11 +1195,31 @@ country's own rebels; the two are separate bands, each joining only its own kind
 - with nothing it can attack, **joins the largest band** of the same rebels; and bands of the same rebels in one place
   **become one**.
 
+**The rebels recruit.** At the start of each month:
+- **a town they hold gives 1% of its people** to their band in it — a garrison forms if none stands there — up to **a tenth
+  of its people** in all, however long they hold it;
+- **the unrest that raised them goes on feeding them**: **0.3% of their country's people** a month for each 100% of the
+  chance of an uprising, as it stands that day — at tax 3 under the Feudal levy, 25%, so 0.075% a month. The tax and the
+  law's part go to the tax rebels, the faith's to the rebels of each faith, by their share of the country's people of another
+  faith. Lowering the tax, or changing the law, dries them up; land of another faith made core stops feeding its faithful.
+
+The unrest's recruits join the largest band. All are armed with swords and are the country's people like the first rebels (below).
+
 Rebels take no orders and make no peace. They are fed by their own people, but still sicken in a siege. If
 the country has lost its capital, they rise outside its largest settlement. The uprising is over when the
 rebels have no army and hold no settlement. **A new uprising while the country's rebels are still up joins them**: the
 new peasants are added to their army where they rise, if it stands there, or form a new army of the same rebels — not a
 band of their own.
+
+**Rebels who hold out become a state.** Rebels who have held land for **5 years on end** — religious rebels, all the land
+of their faith, the country they rose against holding none of it — or who hold any once that country is **out of the game**, rise
+as a country of their own: a *Peasant Republic of* their largest town, or for religious rebels an *Orthodox* (or other) *League of*
+it. That town is its capital and every town they hold its core; it begins with a treasury of x × pop × 2, as every country began
+(§2), the knowledge of the country it rose against, and that country's faith or its own. Its men are its own soldiers now, no
+longer the people of the country they rose from. Its wars as rebels end; with the country it rose against, if that is still in
+the game, it is at war — a war like any other, with a score, allies and a peace. From then on the computer plays it like any
+country: it raises men from its own people, trades, makes alliances and peace. On the map it has a code from its capital's name and
+a colour of its own. Losing all its land before the 5 years are up starts them again.
 
 **Who fights the rebels.** The rebels are at war with the country they rose against **and with every country at war with
 it**: its enemies may fight them and take the towns they hold, and they fight back. Once their country is out of the game,

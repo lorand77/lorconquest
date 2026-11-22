@@ -857,3 +857,26 @@ test("an overlord joins the war of a protectorate attacked where its side is the
     game.command({ type: "declareWar", country: "BBB", target: "AAA" });
     assert.equal(protectorateWar(game, "CCC", fl), null, "AAA is not next door");
 });
+
+test("rebels risen as a state are a computer country: they raise men from their own people", async () => {
+    const { riseAsState, uprising } = await import("../../src/engine/events.js");
+    const game = tinyGame(3, (s) => { s.victory.settlements = 99; }), st = game.state;
+    const ai = createAI({ seed: 3, humans: [] });
+    uprising(game, "AAA", []);
+    const reb = armyList(st).find((a) => st.countries[a.owner].rebel).owner;
+    // they hold Three, with a garrison of 100 and no other army: far below their cap
+    for (const a of armyList(st)) if (a.owner === reb || (a.at === "3" && a.id !== 3)) delete st.armies[a.id];
+    st.settlements[3].owner = reb;
+    setArmy(game, 3, { swords: 100 });
+    st.armies[3].owner = reb;
+    riseAsState(game, reb, []);
+    const raised = [];
+    while (game.day < 120) {
+        for (const o of ai.orders(game, game.advance())) {
+            const r = game.command({ ...o.cmd, country: o.country });
+            if (o.country === reb && o.cmd.type === "raise" && r.ok) raised.push(o.cmd);
+        }
+    }
+    assert.ok(raised.length > 0, "it raised soldiers");
+    assert.ok(armySoldiersOf(st, reb) > 100);
+});

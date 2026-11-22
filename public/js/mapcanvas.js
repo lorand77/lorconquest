@@ -34,12 +34,12 @@ export function exportSpan(fromText, toText, endDay, startYear = 1440, yearDays 
 
 // what a frame needs of a state, kept small — a whole game at a year a second is thousands of frames: the owner of each
 // settlement (in the order of the state's settlements), only the countries that differ from how they began (a subject, a
-// rebel band, one out of the game, a new state proclaimed), who united with whom (when anyone has), the capitals held, and the five with the most settlements. stateOf turns it back into what the map's
+// rebel band, one out of the game, a new state proclaimed or risen from rebels), who united with whom (when anyone has), the capitals held, and the five with the most settlements. stateOf turns it back into what the map's
 // drawing reads (mapdraw.js: landFill, countryLabels).
 export function frameOf(state, scores, day = state.day) {
     const owners = Object.values(state.settlements).map((s) => s.owner), changed = {}, capitals = capitalMarks(state).map((c) => c.id);
     for (const c of Object.values(state.countries)) {
-        if (c.overlord || c.rebel || (c.out ?? null) !== null || c.formed) changed[c.code] = { name: c.name, overlord: c.overlord ?? null, subjectKind: c.subjectKind ?? null, rebel: Boolean(c.rebel), out: c.out ?? null, formed: c.formed ?? null };
+        if (c.overlord || c.rebel || (c.out ?? null) !== null || c.formed || c.risen) changed[c.code] = { name: c.name, overlord: c.overlord ?? null, subjectKind: c.subjectKind ?? null, rebel: Boolean(c.rebel), out: c.out ?? null, formed: c.formed ?? null, ...(c.risen ? { risen: c.risen } : {}) };
     }
     const top = Object.entries(scores).filter(([code]) => state.countries[code] && !state.countries[code].rebel)
         .sort((a, b) => b[1].settlements - a[1].settlements || b[1].pop - a[1].pop || (a[0] < b[0] ? -1 : 1)).slice(0, 5)

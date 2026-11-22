@@ -27,7 +27,7 @@ const root = path.join(import.meta.dirname, "..");
 // one game to its end; the figures worth keeping
 export function simulate(scenario, { seed, years }) {
     const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [] }), wars = warSampler(game), losses = lossSampler(game);
-    const count = { war: 0, joins: 0, peace: 0, capture: 0, battle: 0, uprising: 0, agreement: 0, subject: 0, empire: 0, bankruptcy: 0, eliminated: 0 };
+    const count = { war: 0, joins: 0, peace: 0, capture: 0, battle: 0, uprising: 0, religious: 0, risen: 0, agreement: 0, subject: 0, empire: 0, bankruptcy: 0, eliminated: 0 };
     const refused = {}, starts = {}, aiMs = [], dayMs = [];
     let lastWar = 0, how = null;
     const end = Math.min(years * 365, 1e9);
@@ -51,6 +51,7 @@ export function simulate(scenario, { seed, years }) {
         losses.day(events);
         for (const e of events) {
             if (e.type in count) count[e.type]++;
+            if (e.type === "uprising" && e.faith) count.religious++;
             if (e.type === "war") { starts[e.country] = (starts[e.country] ?? 0) + 1; lastWar = game.day; }
             if (e.type === "victory") how = e.why === "end" ? "time" : "reached";
         }
@@ -128,7 +129,7 @@ function report(results, seconds) {
     const list = (rs) => rs.map((r) => `${r.winner} ${r.date.slice(0, 4)}`).join(", ") || "none";
     console.log(`by reaching the target: ${reached.length} (${list(reached)}); on time: ${onTime.length}`);
     const avg = (f) => (sum(f) / n).toFixed(1);
-    console.log(`per game: ${avg((r) => r.count.war)} wars declared (+${avg((r) => r.count.joins)} joined), ${avg((r) => r.count.peace)} peaces, ${avg((r) => r.count.capture)} captures, ${avg((r) => r.count.battle)} battles, ${avg((r) => r.count.agreement)} agreements, ${avg((r) => r.count.subject)} subjects, ${avg((r) => r.count.uprising)} uprisings, ${avg((r) => r.count.bankruptcy)} bankruptcies, ${avg((r) => r.count.eliminated)} countries eliminated, ${avg((r) => r.alive)} left`);
+    console.log(`per game: ${avg((r) => r.count.war)} wars declared (+${avg((r) => r.count.joins)} joined), ${avg((r) => r.count.peace)} peaces, ${avg((r) => r.count.capture)} captures, ${avg((r) => r.count.battle)} battles, ${avg((r) => r.count.agreement)} agreements, ${avg((r) => r.count.subject)} subjects, ${avg((r) => r.count.uprising)} uprisings (${avg((r) => r.count.religious ?? 0)} religious), ${avg((r) => r.count.risen ?? 0)} rebel states, ${avg((r) => r.count.bankruptcy)} bankruptcies, ${avg((r) => r.count.eliminated)} countries eliminated, ${avg((r) => r.alive)} left`);
     const starters = {};
     for (const r of results) for (const [c, k] of Object.entries(r.starts)) starters[c] = (starters[c] ?? 0) + k;
     console.log(`wars declared by: ${Object.entries(starters).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([c, k]) => `${c} ${k}`).join(", ")}`);

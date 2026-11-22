@@ -67,8 +67,9 @@ function finish(events, ended = null) {
     // how it was won, for the victory screen: by reaching the scenario's number of settlements, or on time — or "left": every
     // person gone, some of them eliminated (rooms.js, checkEnd)
     const why = ended ?? events.find((e) => e.type === "victory")?.why ?? null;
-    // the countries that ended under another name, having proclaimed a new state (RULES.md §2): kept with the game, for its lists
-    const names = Object.fromEntries(Object.values(game.state.countries).filter((c) => c.formed).map((c) => [c.code, c.name]));
+    // the countries that ended under another name, having proclaimed a new state (RULES.md §2) or risen from rebels (§11): kept with the
+    // game, for its lists
+    const names = Object.fromEntries(Object.values(game.state.countries).filter((c) => c.formed || c.risen).map((c) => [c.code, c.name]));
     post({ type: "over", day: game.day, winner: game.state.winner ?? null, why, defeated: !game.state.winner, scores: scores(game.state), hash, names });
     stopping = finished = true;
 }

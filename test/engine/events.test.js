@@ -253,3 +253,98 @@ test("a religious uprising: the people of another faith rise where they live, as
     // a country with no people of another faith has no religious uprising
     assert.equal(religiousUprising(tinyGame(), "AAA", []), false);
 });
+
+test("a town the rebels hold gives 1% of its people a month to the band in it, a tenth of them in all", async () => {
+    const { rebelRecruits } = await import("../../src/engine/events.js");
+    const game = tinyGame(), st = game.state;
+    uprising(game, "AAA", []);
+    const reb = rebelsAt(game, "1")[0].owner, three = st.settlements[3];
+    three.owner = reb;
+    for (const a of Object.values(st.armies)) if (a.at === "3") delete st.armies[a.id];
+    const month = Math.floor(0.01 * three.pop);
+    rebelRecruits(game);                                                         // at tax 2, under the Feudal levy: the town's alone
+    assert.deepEqual(rebelsAt(game, "3").map((a) => a.men.swords), [month]);
+    for (let i = 0; i < 20; i++) rebelRecruits(game);
+    assert.equal(rebelsAt(game, "3")[0].men.swords, Math.floor(0.1 * three.pop), "a tenth of the town, then no more");
+});
+
+test("unrest goes on feeding the rebels: 0.3% of the people a month for each 100% of the chance, the faith's part to the faithful", async () => {
+    const { rebelRecruits, religiousUprising } = await import("../../src/engine/events.js");
+    const game = tinyGame(1, (sc) => { for (const c of sc.countries) c.religion = "catholic"; sc.settlements[1].faith = "orthodox"; }), st = game.state;
+    religiousUprising(game, "AAA", []);
+    uprising(game, "AAA", []);
+    const band = (faith) => Object.values(st.armies).find((a) => st.countries[a.owner]?.rebel && Boolean(st.countries[a.owner].faith) === faith);
+    const before = [band(false).men.swords, band(true).men.swords];
+    rebelRecruits(game);
+    assert.deepEqual([band(false).men.swords, band(true).men.swords], before, "tax 2, the Feudal levy, Two a core: no unrest, none");
+    // tax 3: 25% — to the tax rebels alone; Two is core, so faith adds nothing
+    st.countries.AAA.tax = 3;
+    rebelRecruits(game);
+    assert.deepEqual([band(false).men.swords, band(true).men.swords], [before[0] + Math.floor(0.003 * 0.25 * popOf(game, "AAA")), before[1]]);
+    // Two not yet core: the faith's unrest feeds the Orthodox rebels, theirs all of the country's people of another faith
+    const { faithUnrest } = await import("../../src/engine/religion.js");
+    st.countries.AAA.tax = 2;
+    st.settlements[2].cores = [];
+    const faith = faithUnrest(game, "AAA"), was = band(true).men.swords;
+    assert.ok(faith > 0);
+    rebelRecruits(game);
+    assert.equal(band(true).men.swords, was + Math.floor(0.003 * faith * popOf(game, "AAA")));
+});
+
+test("rebels holding land for 5 years rise as a state: a country like any, at war with the one they rose against", async () => {
+    const { rebelStates } = await import("../../src/engine/events.js");
+    const game = tinyGame(), st = game.state;
+    uprising(game, "AAA", []);
+    const reb = rebelsAt(game, "1")[0].owner;
+    st.settlements[3].owner = reb;
+    st.day = 365;
+    rebelStates(game, []);
+    assert.equal(st.countries[reb].holding, 365);
+    st.day = 365 + 5 * 365 - 1;
+    rebelStates(game, []);
+    assert.ok(st.countries[reb].rebel, "not yet");
+    st.day = 365 + 5 * 365;
+    const events = [];
+    rebelStates(game, events);
+    const c = st.countries[reb];
+    assert.deepEqual([c.rebel, c.of, c.name, c.capital, c.risen.code, c.risen.of], [undefined, undefined, "Peasant Republic of Three", 3, "THR", "AAA"]);
+    assert.deepEqual(c.techs, st.countries.AAA.techs);
+    assert.ok(st.settlements[3].cores.includes(reb));
+    assert.ok(st.wars.includes(`AAA|${reb}`) && st.warInfo[`AAA|${reb}`], "a war like any, with a score and a peace");
+    assert.equal(rebelsOf(st, "AAA"), 0, "its men are its own soldiers now, not AAA's people under arms");
+    assert.deepEqual(ofType(events, "risen").map((e) => [e.country, e.name, e.war]), [[reb, "Peasant Republic of Three", true]]);
+});
+
+test("a band losing its land starts the 5 years again; rebels whose country is out rise at once, at war with nobody", async () => {
+    const { rebelStates } = await import("../../src/engine/events.js");
+    const game = tinyGame(), st = game.state;
+    uprising(game, "AAA", []);
+    const reb = rebelsAt(game, "1")[0].owner;
+    st.settlements[3].owner = reb;
+    rebelStates(game, []);
+    st.settlements[3].owner = "AAA";
+    st.day = 100;
+    rebelStates(game, []);
+    assert.equal(st.countries[reb].holding, null);
+    st.settlements[3].owner = reb;
+    st.countries.AAA.out = 100;
+    rebelStates(game, []);
+    assert.equal(st.countries[reb].rebel, undefined);
+    assert.ok(!st.wars.some((w) => w.split("|").includes(reb)));
+});
+
+test("religious rebels rise as a state only once their country holds none of the land of their faith", async () => {
+    const { religiousUprising, rebelStates } = await import("../../src/engine/events.js");
+    const game = tinyGame(1, (sc) => { for (const c of sc.countries) c.religion = "catholic"; sc.settlements[1].faith = "orthodox"; sc.settlements[2].faith = "orthodox"; }), st = game.state;
+    const events = [];
+    religiousUprising(game, "AAA", events);
+    const reb = events[0].rebels;
+    st.settlements[2].owner = reb;
+    rebelStates(game, []);
+    assert.equal(st.countries[reb].holding, null, "Three is still AAA's");
+    st.settlements[3].owner = reb;
+    rebelStates(game, []);
+    st.day = 5 * 365;
+    rebelStates(game, []);
+    assert.deepEqual([st.countries[reb].name, st.countries[reb].religion], ["Orthodox League of Two", "orthodox"]);
+});

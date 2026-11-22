@@ -65,8 +65,9 @@ export function paintMap(map, state, nodes, zones, legs, day, colourOf, options)
 }
 
 // a country as the map shows it: in the colour and under the code of the new state it proclaimed, if it did (SCENARIO.md,
-// Special coring: Becomes), else its own; peasants in arms in dark red
+// Special coring: Becomes), or that it took on rising from rebels (RULES.md §11), else its own; peasants in arms in dark red
 const becameOf = (state, scenario, code) => {
+    if (state.countries[code]?.risen) return state.countries[code].risen;
     const f = state.countries[code]?.formed;
     return f ? scenario.formables?.find((x) => x.id === f)?.becomes ?? null : null;
 };
@@ -76,7 +77,7 @@ export const mapCode = (state, scenario, code) => becameOf(state, scenario, code
 // an event's line (the engine's describeEvent, which names countries by code) with each country that proclaimed a new state under
 // the code the map shows it by — "GER takes 48 Ulm", not the "BAV" it began as
 export function inMapCodes(text, state, scenario) {
-    const formed = Object.values(state.countries).filter((c) => c.formed && mapCode(state, scenario, c.code) !== c.code);
+    const formed = Object.values(state.countries).filter((c) => (c.formed || c.risen) && mapCode(state, scenario, c.code) !== c.code);
     return formed.reduce((t, c) => t.replace(new RegExp(`\\b${c.code}\\b`, "g"), mapCode(state, scenario, c.code)), text);
 }
 

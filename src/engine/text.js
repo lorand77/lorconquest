@@ -47,6 +47,7 @@ export function describeEvent(map, e) {
         case "desertion": return `${fmt(e.men)} mercenaries of ${e.country} desert`;
         case "bankruptcy": return `${e.country} goes bankrupt: ${e.buildings} buildings and ${fmt(e.weapons)} weapons sold`;
         case "cored": return `${place(String(e.settlement))} becomes core for ${e.country}`;
+        case "risen": return `the rebels ${e.country} rise as a state: ${e.name}, with ${e.settlements} settlement${e.settlements === 1 ? "" : "s"}, its capital ${place(String(e.capital))}${e.war ? `, at war with ${e.of}` : ""}`;
         case "proclaimed": return `${e.country} proclaims ${e.region}: ${e.settlements} settlements become core${e.becomes ? `; ${e.was} is now ${e.becomes}` : ""}`;
         case "capital": return `${e.country} names ${place(String(e.settlement))} its capital`;
         case "ready": return `${fmt(e.n)} ${e.what} of ${e.country} are ready at ${place(String(e.settlement))} (army ${e.army})`;
@@ -121,6 +122,7 @@ export function eventCountries(e) {
         case "capture": return [e.from, e.to];
         case "siegeStart": case "siegeLifted": return [e.by];
         case "uprising": return [e.country, e.rebels];
+        case "risen": return [e.country, e.of];
         case "joins": case "offer": case "lapsed": case "answer": case "refused": return [e.country, e.enemy ?? e.from];
         case "peace": case "ended": return [e.country, e.with];
         case "agreement": case "expired": return [e.a, e.b];

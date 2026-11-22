@@ -668,13 +668,17 @@ would break that.
   countries it is core for, which a capture does not change. **A fleet** is in a port or at sea in a zone,
   with the ships of each kind, an optional order and, while sailing, `moving`. **Sharpshooter posts** are
   kept by pass: `posts[pass] = { owner, n }`. **Peasant rebels** are a country with `rebel: true` and
-  `of`, the country they rose against; casualties among them are casualties of that country's people.
+  `of`, the country they rose against, `raised`, the men each settlement they have held has given them, and `holding`, the day
+  since which they have held what makes them a state in 5 years; casualties among them are casualties of that country's people. Rebels
+  who rise as a state (`riseAsState`) are made a country in place, under the same key (`REB3`), so their armies, towns and
+  sieges need no renaming: `makeCountry` gives them every field a scenario's country has, and `risen` the code and colour the map
+  shows them by — as `formed` does for a proclaimed state — so the screen, the replay and the computer players take them as any country.
 - **Money, people and R keep their fractions;** only men, cannons, ships and crews are whole. Every
   yearly amount is paid at the start of each month, a twelfth at a time, from the state that day. The
   browser runs the same `economyOf` on its copy of the state to show a player their own figures.
-- **Events that need dice** (the yearly harvest, plague and uprising) draw three numbers from the game's
+- **Events that need dice** (the yearly harvest, plague and uprising) draw four numbers from the game's
   random state per country, always, so that what one country rolls never changes what another does.
-  The rebels' marches need none, so they are not logged.
+  The rebels' marches and recruits need none, so they are not logged.
 - **A replay needs only the commands:** everything else — rebels, training arriving, fleets sailing,
   the monthly step — follows from the state and the day.
 

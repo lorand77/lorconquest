@@ -5,7 +5,7 @@
 import { YEAR_DAYS, isMonthStart } from "./calendar.js";
 import { diplomacyDay } from "./diplomacy-day.js";
 import { monthly } from "./economy.js";
-import { endUprisings, rebelOrders, rebelWars, yearly } from "./events.js";
+import { endUprisings, rebelOrders, rebelRecruits, rebelStates, rebelWars, yearly } from "./events.js";
 import { arrive, meetings, placeBattles, settle, surrenders } from "./fighting.js";
 import { forcesDay } from "./forces.js";
 import { liftBlockades, navalDay } from "./naval.js";
@@ -43,6 +43,8 @@ export function advanceDay(game) {
         attrition(game, events);
         if (st.day % YEAR_DAYS === 0) yearly(game, events);
         monthly(game, events);
+        rebelRecruits(game);
+        rebelStates(game, events);
         endUprisings(game);
     }
     diplomacyDay(game, events);
