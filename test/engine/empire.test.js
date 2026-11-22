@@ -346,3 +346,25 @@ test("the Emperor may hire mercenaries up to his army cap and Imperial Authority
     st.empire.authority = 100;
     assert.equal(mercenaryCapOf(game, other), armyCapOf(st, other));
 });
+
+test("a region only the Emperor may proclaim (the Kaiserreich): authority enough, and the crown is hereditary — no death, until it falls vacant", () => {
+    const game = empire(1, (sc) => { sc.formables.push({ id: "kaiserreich", name: "Kaiserreich", settlements: [1, 2, 3, 5], needs: { settlements: [2], count: 3 }, emperor: { authority: 75 }, becomes: { name: "Kaiserreich", code: "KSR", colour: "#8a6d1f" } }); });
+    const st = game.state;
+    assert.equal(st.empire.emperor, "AAA");
+    assert.match(refused(game, cmd("BBB", "proclaim", { region: "kaiserreich" })), /only the Emperor may proclaim Kaiserreich/);
+    st.empire.authority = 74;
+    assert.match(refused(game, cmd("AAA", "proclaim", { region: "kaiserreich" })), /needs Imperial Authority of 75; it is 74/);
+    st.empire.authority = 75;
+    const [ev] = order(game, cmd("AAA", "proclaim", { region: "kaiserreich" }));
+    assert.deepEqual([ev.hereditary, st.countries.AAA.name, st.empire.hereditary, st.settlements[5].cores.includes("AAA")], [true, "Kaiserreich", true, true]);
+    // the year's death roll comes up, and the Kaiser lives on
+    rigBelow(game, 0.04);
+    st.day = 365 * 3;
+    const events = [];
+    empireDay(game, events);
+    assert.deepEqual([ofType(events, "emperorDies").length, st.empire.emperor], [0, "AAA"]);
+    // the crown falls vacant (the Kaiser no German state): elected again
+    for (const s of Object.values(st.settlements)) if (s.owner === "AAA") s.owner = "BBB";
+    empireDay(game, []);
+    assert.equal(st.empire.hereditary, false);
+});

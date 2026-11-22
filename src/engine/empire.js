@@ -60,6 +60,9 @@ export function startEmpire(scenario) {
         // the ban, the day each German state last took a settlement of the Empire from another not under the ban, the Common Penny's
         // war chest
         reforms: 0, tried: null, reformChoices: {}, banned: [], seized: {}, chest: 0,
+        // the crown made hereditary by the Emperor proclaiming a region only the Emperor may (SCENARIO.md, Special coring: the Kaiserreich):
+        // no death, no election, until it falls vacant
+        hereditary: false,
     };
 }
 
@@ -191,6 +194,7 @@ function callElection(game, events, why) {
     const st = game.state, emp = st.empire;
     emp.late = emp.emperor ?? emp.late;
     emp.emperor = null;
+    emp.hereditary = false;                                 // a crown fallen vacant is elected again
     emp.called = true;
     emp.next = st.day + INTERREGNUM_DAYS;
     events.push({ type: "electionCalled", day: st.day, on: emp.next, why, country: emp.late, candidates: candidatesOf(game), concern: concerned(game) });
@@ -214,8 +218,8 @@ export function empireDay(game, events) {
         const german = new Set(germanStates(game)), wars = st.wars.filter((k) => k.split("|").every((c) => german.has(c))).length;
         if (wars === 0) addAuthority(game, AUTHORITY.PEACE_YEAR, "peace", events);
         else addAuthority(game, AUTHORITY.WAR_YEAR * wars, "wars", events);
-        // the Emperor rules for life — and may die this year
-        if (emp.emperor && random(st) < DEATH_CHANCE) {
+        // the Emperor rules for life — and may die this year; a hereditary crown passes to his heir, in the same country
+        if (emp.emperor && random(st) < DEATH_CHANCE && !emp.hereditary) {
             events.push({ type: "emperorDies", day: st.day, country: emp.emperor, concern: concerned(game) });
             callElection(game, events, "death");
         }

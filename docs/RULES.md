@@ -123,7 +123,8 @@ proclaimed (*Becomes* in the scenario): the country takes its name, and its own 
 game — the same country, with all it had. Proclaiming another such region later renames it again; one without changes nothing. A region may **need only part of
 itself** (*Needs* in the scenario: the Roman Empire of Europe 1440 needs Rome, Constantinople and 100 of its 299 settlements): proclaimed
 with that part, **every** settlement of it becomes your core, held or not — each you take later is core the day it falls, and pays
-in full.
+in full. And a region may be **the Emperor's alone** (the Kaiserreich of Europe 1440): only the Emperor may proclaim it, with Imperial
+Authority at least as the scenario says, and proclaiming it makes the imperial crown **hereditary** (§10).
 
 **Conquest.** A captured settlement is held from the day it falls: the 20 years start again, its
 courthouse is lost, and any soldiers or mercenaries still being raised in it are cancelled (§8). It pays as its people
@@ -1075,7 +1076,8 @@ instead. There a **German state** is a country with **a capital inside the Empir
 marks it; on a map with only the plain proposal, any holder of an Empire settlement is one): Savoy is a German state, Milan,
 Burgundy and Anjou are not, and an outsider that takes a town of the Empire stays an outsider. Imperial Italy is land of the
 Empire all the same — for the Circles' access, and for land taken from a German state. One German state wears the crown, **for life**: each year (counted on 1 January) there is a
-**4% chance the Emperor dies**, and the throne also falls **vacant** when the Emperor is out of the game, someone's vassal, or no
+**4% chance the Emperor dies** — unless the crown is hereditary, from the Kaiserreich proclaimed (§2): then his heir follows him in the
+same country, with no election — and the throne also falls **vacant** (a hereditary crown too, and elected again from then on) when the Emperor is out of the game, someone's vassal, or no
 longer a German state. Either way the throne is empty and the electors meet **six months later** — the interregnum, when
 candidates make their promises. **Seven votes** choose, each belonging to a settlement. A **secular vote** (the King of Bohemia,
 the Count Palatine, the Duke of Saxony, the Margrave of Brandenburg) is cast by **whoever holds its settlement**, so it is taken

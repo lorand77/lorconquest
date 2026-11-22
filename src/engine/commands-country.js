@@ -398,6 +398,8 @@ export const countryCommands = {
         for (const id of fresh) st.settlements[id].cores.push(c.code);
         const was = c.name;
         if (region.becomes) Object.assign(c, { name: region.becomes.name, formed: region.id });
-        return done([{ type: "proclaimed", day: st.day, country: c.code, region: region.id, settlements: fresh.length, ...(region.becomes ? { was, becomes: region.becomes.name } : {}) }]);
+        // the Emperor's region (the Kaiserreich) makes the crown hereditary (empire.js)
+        if (region.emperor) st.empire.hereditary = true;
+        return done([{ type: "proclaimed", day: st.day, country: c.code, region: region.id, settlements: fresh.length, ...(region.becomes ? { was, becomes: region.becomes.name } : {}), ...(region.emperor ? { hereditary: true } : {}) }]);
     },
 };

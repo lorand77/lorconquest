@@ -275,9 +275,17 @@ const FORMABLES = [];
             if (!title || !/^[A-Z]{3}$/.test(code ?? "") || !/^#[0-9a-f]{6}$/.test(colour ?? "")) err(`Special coring line ${r._line}: Becomes must be like "Germany, GER, #e0b040"`);
             else becomes = { name: title, code, colour };
         }
-        let needs;
-        if (r.Needs && r.Needs !== "—") {
-            const m = /^(.*?)\s*(?:,\s*|\band\s+)?(\d+) in all$/.exec(r.Needs.trim());
+        // what it needs: some of its settlements — "Rome, Constantinople and 100 in all" — and, after a semicolon, that only the Emperor may
+        // proclaim it, with the crown's authority at least so high: "…; the Emperor, authority 75" (or "all; the Emperor" for every settlement)
+        let needs, emperor;
+        const [what, who] = (r.Needs ?? "").split(";").map((t) => t.trim());
+        if (who !== undefined) {
+            const e = /^the Emperor(?:, authority (\d+))?$/.exec(who);
+            if (!e) err(`Special coring line ${r._line}: after the semicolon, Needs must be like "the Emperor, authority 75"`);
+            else emperor = { authority: Number(e[1] ?? 0) };
+        }
+        if (what && what !== "—" && what !== "all") {
+            const m = /^(.*?)\s*(?:,\s*|\band\s+)?(\d+) in all$/.exec(what);
             if (!m) err(`Special coring line ${r._line}: Needs must be like "Rome, Constantinople and 100 in all"`);
             else {
                 const byName = (t) => [...S].find(([, x]) => x.name === t)?.[0];
@@ -288,7 +296,7 @@ const FORMABLES = [];
                 needs = { settlements: named.filter((id) => id !== undefined).sort(num), count };
             }
         }
-        FORMABLES.push({ id: slug(name), name, settlements: [...ids].sort(num), ...(needs ? { needs } : {}), ...(becomes ? { becomes } : {}) });
+        FORMABLES.push({ id: slug(name), name, settlements: [...ids].sort(num), ...(needs ? { needs } : {}), ...(emperor ? { emperor } : {}), ...(becomes ? { becomes } : {}) });
     }
     if (new Set(FORMABLES.map((f) => f.id)).size !== FORMABLES.length) err("Special coring: two regions have the same name");
 }
@@ -1501,6 +1509,7 @@ for (const k of [...PAIR.keys(), ...LAND, ...STRAIT]) {
 {
     const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
     const apart = (a, b) => Math.hypot(...rgb(a).map((x, i) => x - rgb(b)[i]));
+    for (const f of FORMABLES) if (f.emperor && !EMPIRE.electors?.length) err(`Special coring: only the Emperor may proclaim ${f.name}, but the scenario has no electors`);
     const made = FORMABLES.filter((f) => f.becomes);
     for (const f of made) {
         const { code, colour } = f.becomes;

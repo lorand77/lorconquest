@@ -48,7 +48,7 @@ export function describeEvent(map, e) {
         case "bankruptcy": return `${e.country} goes bankrupt: ${e.buildings} buildings and ${fmt(e.weapons)} weapons sold`;
         case "cored": return `${place(String(e.settlement))} becomes core for ${e.country}`;
         case "risen": return `the rebels ${e.country} rise as a state: ${e.name}, with ${e.settlements} settlement${e.settlements === 1 ? "" : "s"}, its capital ${place(String(e.capital))}${e.war ? `, at war with ${e.of}` : ""}`;
-        case "proclaimed": return `${e.country} proclaims ${e.region}: ${e.settlements} settlements become core${e.becomes ? `; ${e.was} is now ${e.becomes}` : ""}`;
+        case "proclaimed": return `${e.country} proclaims ${e.region}: ${e.settlements} settlements become core${e.becomes ? `; ${e.was} is now ${e.becomes}` : ""}${e.hereditary ? "; the imperial crown is hereditary" : ""}`;
         case "capital": return `${e.country} names ${place(String(e.settlement))} its capital`;
         case "ready": return `${fmt(e.n)} ${e.what} of ${e.country} are ready at ${place(String(e.settlement))} (army ${e.army})`;
         case "cancelled": return `${e.what === "hire" ? "the hire of" : "the training of"} ${fmt(e.n)} men of ${e.country} at ${place(String(e.settlement))} is cancelled`;

@@ -782,6 +782,11 @@ You may proclaim a region when **both** are true:
 2. You control **100%** of its settlements — or, for a region with *Needs*, the settlements it names and that many of its
    settlements in all (those named among them).
 
+A region whose *Needs* name **the Emperor** — the Kaiserreich — may be proclaimed only by the Emperor, with Imperial Authority at
+least as given; proclaiming it makes the imperial crown **hereditary** (RULES.md §10). Cologne stands for Aachen and Mainz for
+Frankfurt, neither of them on this map: Aachen lay in Cologne's archdiocese, and the Archbishop of Mainz called the elections held at
+Frankfurt.
+
 Every settlement in the region becomes core immediately — for a region with *Needs*, every one of them, held or not, so each
 you take later is core the day it falls. If you later lose one and retake it, it is core again on capture.
 
@@ -815,6 +820,7 @@ you take later is core the day it falls. If you later lose one and retake it, it
 | **Franconian Circle** | the bishops, margraves and free cities of Franconia | 260–262 | 3 | — | — |
 | **Lower Saxon Circle** | the Hanse cities, Holstein, Mecklenburg, Brunswick and Magdeburg | 230–234, 237–240 | 9 | — | — |
 | **Germany** | the German lands of the Empire as one realm | 230–253, 258–264, 271–279, 285 | 41 | — | Germany, GER, #6e7f99 |
+| **Kaiserreich** | the Empire made one realm under a hereditary Kaiser — what Maximilian's reforms reached for and never won | 91, 98–104, 111, 112, 120–123, 126–130, 231–293 | 82 | Cologne, Mainz and 41 in all; the Emperor, authority 75 | Kaiserreich, KSR, #8a6d1f |
 | **Roman Empire** | the Empire of Trajan, from Hadrian's Wall to the Euphrates — as far as this map goes | 28–41, 54–103, 105–128, 130–229, 247, 258, 259, 263, 270–293, 323, 325–327, 329, 332–336, 339–363, 369–398, 402–404, 427, 428, 430, 431, 435–445 | 299 | Rome, Constantinople and 100 in all | Roman Empire, ROM, #9c6fc8 |
 | **Kingdom of Ireland** | the island under one crown, as Henry VIII proclaimed it (1541): the Pale's towns and the Gaelic lords | 42–48 | 7 | — | Kingdom of Ireland, IRE, #3d8f5e |
 | **Iberian Union** | Spain and Portugal under one king (1580) | Spain + 166–172 | 53 | — | Iberian Union, IBR, #b9862a |

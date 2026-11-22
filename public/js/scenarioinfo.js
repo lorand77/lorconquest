@@ -60,7 +60,7 @@ export function scenarioPage(sc, name) {
             "Hold all of a region, with your capital in it, and you may proclaim it: every settlement in it becomes your core at once. Some make a new state, which renames your country. A region that needs only part of it is proclaimed with that part, and then every settlement in it is your core, held or not — each one you take later is core the day it falls.",
             "| Region | Settlements | Becomes |", "|---|---|---|",
             // a region proclaimed with part of it (its Needs) says what, and is too large to list
-            ...regions.map((f) => `| ${cell(f.name)} | ${f.needs ? `${f.settlements.length} settlements — hold **${f.needs.count}**, with ${f.needs.settlements.map((id) => place.get(id) ?? id).join(" and ")}` : cell(f.settlements.map((id) => place.get(id) ?? id).join(", "))} | ${f.becomes ? cell(f.becomes.name) : "—"} |`));
+            ...regions.map((f) => `| ${cell(f.name)} | ${f.needs ? `${f.settlements.length} settlements — hold **${f.needs.count}**, with ${f.needs.settlements.map((id) => place.get(id) ?? id).join(" and ")}` : cell(f.settlements.map((id) => place.get(id) ?? id).join(", "))}${f.emperor ? ` — **the Emperor alone**, with Imperial Authority of ${f.emperor.authority} or more; the crown becomes hereditary` : ""} | ${f.becomes ? cell(f.becomes.name) : "—"} |`));
     }
 
     // the Empire
