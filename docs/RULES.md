@@ -1171,7 +1171,9 @@ Rolled at the start of each year.
 | Plague | 5% | −10% pop |
 | Peasant uprising | (average tax − 2)² × 25% — **0%** at tax 2, **25%** at tax 3 (§2) — plus the law's unrest: +5% under Mass levy, +15% under Scrape the barrel (§9), plus the unrest of faith, up to +10%, and +5% for 5 years after adopting the Reformation (§2, Religion) | See below |
 
-**Peasant uprising.** Overtaxed peasants rise against you. A rebel country forms with soldiers
+**Peasant uprising.** Overtaxed peasants rise against you. Each country rolls once a year, on 1 January, against the chance in
+the table: at the starting tax of 2, under the Feudal levy, with no conquered land of another faith, it is **0%** — peasants rise
+only where tax, law or faith push them. A rebel country forms with soldiers
 equal to **3% of your total population** (every settlement you own, core and non-core), armed
 with swords, spawning outside your capital. It holds cores on everything and attacks towns and
 cities, favouring undefended ones and your core territory. **There is no peace with peasants.**

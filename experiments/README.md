@@ -724,3 +724,16 @@ the same (0.59 and 0.65). On this map, of six zones and 21 ports, a landing is r
 navy now holds the ends of a voyage against enemies across the sea — cogs bought, ships kept at sea — while its land front is
 next door. (Europe, 3 games of 50 years: 92–161 landings a game, the Ottomans, England and Castile most; the computer's day no
 slower, 7.6 against 7.9 ms, its slowest 47–57 against 44–49.)
+
+## 27. Landings only without a land front (2026-11-22)
+
+**What changed.** The computer plans a landing only when no enemy borders it or its subjects by land or strait, and buys cogs only
+for straits, never for a landing (TODO.md #25, after section 26's loss for Prussia).
+
+**Run.** `node tools/strength.js --baseline 8db9ae2 --candidate working --seeds 20 --years 210 --jobs 4 --label landings`
+(Mitteleuropa, seeds 101–120; the baseline the computer before sea lanes, both on today's rules — which since section 26 also
+train a fifth of a capital's people at once): `strength/2026-11-22-landings.json`.
+
+**What it showed: the loss is gone.** Prussia ends +1.25 settlements [−3.83, +6.33] (−6.47 in section 26), surviving in 5 games
+against 2; no country is below zero beyond the noise — Bavaria +0.88, Brandenburg +0.76, Austria −0.05, Saxony +1.48, Gdańsk +2.05.
+All: +1.06 [−0.05, +2.17] settlements a country, wins 15 against 15 of 120, refused orders the same (1.97 and 1.94).

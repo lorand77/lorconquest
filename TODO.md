@@ -33,7 +33,3 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 - [ ] #43 A world map — map, L
 - [ ] #44 Music — screen, M
 
-## Questions
-
-- [ ] #45 When do rebels spawn? (to answer from RULES.md §11 and the code, and say so on the Rules page if it is unclear)
-- [ ] #46 "Base tribute": what is meant — a minimum a subject pays, or tribute counted on its base money?
