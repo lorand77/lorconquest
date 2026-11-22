@@ -41,7 +41,7 @@
    ],
    "pop": 50000,
    "army": 2000,
-   "ships": 25,
+   "ships": 15,
    "hre": "none",
    "character": "opportunist"
   },
@@ -60,7 +60,8 @@
    ],
    "pop": 60000,
    "army": 2400,
-   "ships": 30,
+   "ships": 60,
+   "navy": 2,
    "hre": "none",
    "character": "conqueror"
   },
@@ -74,7 +75,8 @@
    ],
    "pop": 10000,
    "army": 400,
-   "ships": 5,
+   "ships": 10,
+   "navy": 2,
    "hre": "none",
    "character": "opportunist"
   },
@@ -91,7 +93,7 @@
    ],
    "pop": 40000,
    "army": 1600,
-   "ships": 20,
+   "ships": 15,
    "hre": "none",
    "character": "zealot"
   },
@@ -120,7 +122,8 @@
    ],
    "pop": 20000,
    "army": 800,
-   "ships": 10,
+   "ships": 60,
+   "navy": 6,
    "hre": "all",
    "character": "merchant"
   },
@@ -134,7 +137,8 @@
    ],
    "pop": 20000,
    "army": 800,
-   "ships": 10,
+   "ships": 30,
+   "navy": 3,
    "hre": "all",
    "character": "merchant"
   },
@@ -185,7 +189,8 @@
    ],
    "pop": 70000,
    "army": 2800,
-   "ships": 35,
+   "ships": 40,
+   "navy": 1.1428571428571428,
    "hre": "none",
    "character": "zealot"
   },
@@ -260,7 +265,8 @@
    ],
    "pop": 10000,
    "army": 400,
-   "ships": 5,
+   "ships": 15,
+   "navy": 3,
    "hre": "all",
    "character": "merchant"
   },
@@ -1303,7 +1309,8 @@
     4,
     6
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 6,
@@ -1405,7 +1412,8 @@
    ],
    "straits": [
     15
-   ]
+   ],
+   "walls": true
   },
   {
    "id": 9,
@@ -1562,7 +1570,8 @@
    "straits": [
     12,
     14
-   ]
+   ],
+   "walls": true
   },
   {
    "id": 14,
@@ -1624,7 +1633,8 @@
    "borders": [],
    "straits": [
     8
-   ]
+   ],
+   "walls": true
   },
   {
    "id": 16,
@@ -1655,7 +1665,8 @@
    "borders": [
     17
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 17,
@@ -2056,7 +2067,8 @@
     41,
     57
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 29,
@@ -4670,7 +4682,8 @@
     111,
     128
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 110,
@@ -4980,7 +4993,8 @@
     135,
     136
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 119,
@@ -5577,7 +5591,8 @@
     138,
     139
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 138,
@@ -6254,7 +6269,8 @@
     159,
     165
    ],
-   "straits": []
+   "straits": [],
+   "walls": true
   },
   {
    "id": 158,

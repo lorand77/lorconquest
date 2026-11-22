@@ -46,21 +46,21 @@ Central Europe as it stood in 1440: the Holy Roman Empire's patchwork of elector
 | Code | Country | Capital | Settlements | Pop | Army | Ships | HRE |
 |---|---|---|---|---|---|---|---|
 | NOR | Norway | 1 Oslo | 1, 2, 3 | 30K | 1,200 | 15 | — |
-| SWE | Sweden | 5 Stockholm | 4, 5, 6, 7, 8 | 50K | 2,000 | 25 | — |
-| DEN | Denmark | 13 Copenhagen | 9, 10, 11, 12, 13, 14 | 60K | 2,400 | 30 | — |
-| GOT | Gotland | 15 Visby | 15 | 10K | 400 | 5 | — |
-| LIV | Livonian Order | 18 Riga | 16, 17, 18, 19 | 40K | 1,600 | 20 | — |
+| SWE | Sweden | 5 Stockholm | 4, 5, 6, 7, 8 | 50K | 2,000 | 15 | — |
+| DEN | Denmark | 13 Copenhagen | 9, 10, 11, 12, 13, 14 | 60K | 2,400 | 60 | — |
+| GOT | Gotland | 15 Visby | 15 | 10K | 400 | 10 | — |
+| LIV | Livonian Order | 18 Riga | 16, 17, 18, 19 | 40K | 1,600 | 15 | — |
 | SHO | Schleswig-Holstein | 32 Schleswig | 32, 33 | 20K | 800 | 10 | part |
-| LUB | Lübeck | 34 Lübeck | 34 | 20K | 800 | 10 | ✓ |
-| HAM | Hamburg | 35 Hamburg | 35 | 20K | 800 | 10 | ✓ |
+| LUB | Lübeck | 34 Lübeck | 34 | 20K | 800 | 60 | ✓ |
+| HAM | Hamburg | 35 Hamburg | 35 | 20K | 800 | 30 | ✓ |
 | MEC | Mecklenburg | 36 Schwerin | 36, 37 | 20K | 800 | 10 | ✓ |
 | POM | Pomerania | 39 Stettin | 38, 39, 40, 41 | 40K | 1,600 | 20 | ✓ |
-| TEU | Teutonic Order | 28 Danzig | 26, 27, 28, 29, 30, 31 | 70K | 2,800 | 35 | — |
+| TEU | Teutonic Order | 28 Danzig | 26, 27, 28, 29, 30, 31 | 70K | 2,800 | 40 | — |
 | LIT | Lithuania | 22 Vilnius | 20, 21, 22, 23, 24, 25 | 60K | 2,400 | — | — |
 | FRI | Frisia | 42 Groningen | 42 | 10K | 400 | — | ✓ |
 | EFR | East Frisia | 43 Emden | 43 | 10K | 400 | 5 | ✓ |
 | OLD | Oldenburg | 44 Oldenburg | 44 | 10K | 400 | — | ✓ |
-| BRE | Bremen | 45 Bremen | 45 | 10K | 400 | 5 | ✓ |
+| BRE | Bremen | 45 Bremen | 45 | 10K | 400 | 15 | ✓ |
 | BRU | Brunswick-Lüneburg | 48 Brunswick | 46, 47, 48, 49 | 50K | 2,000 | — | ✓ |
 | MAG | Magdeburg | 50 Magdeburg | 50 | 20K | 800 | — | ✓ |
 | BRA | Brandenburg | 54 Berlin | 51, 52, 53, 54, 55 | 50K | 2,000 | — | ✓ |
@@ -380,24 +380,24 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, North Sea and Gulf of Riga, are 5 hops (10 months).
 
-**Naval powers:** 14 countries, 245 ships. Crossing a strait needs 10 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there. A voyage by sea lane, to a port up to three zones off, needs 10 at each end, and no enemy fleet at sea on the way.
+**Naval powers:** 14 countries, 350 ships. Crossing a strait needs 10 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 10 ships there. A voyage by sea lane, to a port up to three zones off, needs 10 at each end, and no enemy fleet at sea on the way.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
+| DEN Denmark | 9, 10, 11, 12, 13 | North Sea, Kattegat, Belt Sea | 60 | yes: 11-12, 12-13, 13-14 |
+| LUB Lübeck | 34 | Belt Sea | 60 | yes: 11-12, 12-13 |
 | BUR Burgundy | 67, 68, 69 | North Sea | 45 | no — no strait in its zones |
-| TEU Teutonic Order | 26, 27, 28 | Baltic Sea | 35 | yes: 8-15 |
-| DEN Denmark | 9, 10, 11, 12, 13 | North Sea, Kattegat, Belt Sea | 30 | yes: 11-12, 12-13, 13-14 |
-| SWE Sweden | 5, 7, 8 | Kattegat, Baltic Sea, Northern Baltic | 25 | yes: 8-15, 13-14 |
-| LIV Livonian Order | 16, 17, 18, 19 | Northern Baltic, Gulf of Riga | 20 | no — no strait in its zones |
+| TEU Teutonic Order | 26, 27, 28 | Baltic Sea | 40 | yes: 8-15 |
+| HAM Hamburg | 35 | North Sea | 30 | no — no strait in its zones |
 | POM Pomerania | 38, 39, 40 | Baltic Sea | 20 | yes: 8-15 |
 | NOR Norway | 1, 2, 3 | North Sea, Skagerrak | 15 | no — no strait in its zones |
+| SWE Sweden | 5, 7, 8 | Kattegat, Baltic Sea, Northern Baltic | 15 | yes: 8-15, 13-14 — one zone at a time (10 ships in each) |
+| LIV Livonian Order | 16, 17, 18, 19 | Northern Baltic, Gulf of Riga | 15 | no — no strait in its zones |
+| BRE Bremen | 45 | North Sea | 15 | no — no strait in its zones |
+| GOT Gotland | 15 | Northern Baltic | 10 | no — no strait in its zones |
 | SHO Schleswig-Holstein | 32, 33 | Belt Sea | 10 | **exactly**: 11-12, 12-13 |
-| LUB Lübeck | 34 | Belt Sea | 10 | **exactly**: 11-12, 12-13 |
-| HAM Hamburg | 35 | North Sea | 10 | no — no strait in its zones |
 | MEC Mecklenburg | 37 | Belt Sea | 10 | **exactly**: 11-12, 12-13 |
-| GOT Gotland | 15 | Northern Baltic | 5 | no — no strait in its zones |
 | EFR East Frisia | 43 | North Sea | 5 | no — no strait in its zones |
-| BRE Bremen | 45 | North Sea | 5 | no — no strait in its zones |
 <!-- /generated -->
 
 ## Special coring
@@ -489,6 +489,42 @@ declared from now on.
 | Defensive alliance | BRA Brandenburg – ANS Ansbach-Kulmbach | The Hohenzollern brothers Frederick Irontooth and Albert Achilles. |
 | Defensive alliance | LUB Lübeck – HAM Hamburg | The Wendish towns of the Hansa. |
 | Non-aggression pact, 5 years left | TEU Teutonic Order – POL Poland | The Peace of Brest (1435). |
+
+### Fleets
+
+What each sea power had afloat, in place of the rule's people ÷ 2000 cogs (RULES.md §2): the Hanse towns and Denmark far above it,
+Sweden and Livonia below. A country given more than the rule has its navy cap raised in the same proportion for the whole game
+(RULES.md §9), so that it may sail what it starts with. Every coastal country not listed has the rule's — Burgundy among them, whose
+Holland and Zeeland the rule already makes the North Sea's largest fleet.
+
+| Country | Ships | Why |
+|---|---|---|
+| LUB Lübeck | 60 | The head of the Hanse, whose fleets fought Eric of Pomerania for the Sound from 1426 to 1435. |
+| DEN Denmark | 60 | The Union's fleet, guarding the Sound and the toll Eric levied on it from 1429. |
+| TEU Teutonic Order | 40 | Danzig and the Prussian ports, the Order's own trade. |
+| HAM Hamburg | 30 | The Hanse's North Sea partner, holding Emden since 1433 against the Frisian pirates. |
+| BRE Bremen | 15 | A Hanse town on the Weser. |
+| SWE Sweden | 15 | Few ships of its own under the Union. |
+| LIV Livonian Order | 15 | The ports of Riga and Reval: merchants more than warships. |
+| GOT Gotland | 10 | A pirates' nest: the deposed Eric of Pomerania raided the Baltic from Visby from 1439. |
+
+### Walls
+
+The great fortresses of 1440 begin with **Walls** (RULES.md §3 and §6: ×1.8 in defence, a siege twice as long — both worn down by cannons),
+as if built in play. Every other settlement begins without; walls may be bought anywhere as the game goes on.
+
+| Settlements | Why |
+|---|---|
+| 137 Vienna | The walls that held against Suleiman in 1529. |
+| 15 Visby | Gotland's ring wall, which still stands whole. |
+| 16 Reval | Its walls and towers held against Ivan the Terrible's armies in 1570–1571 and 1577. |
+| 28 Danzig | The richest city of the Baltic, which held against Stefan Báthory in 1577. |
+| 13 Copenhagen | Its castle and the Queen's defence threw back the Hanse's fleet in 1428. |
+| 8 Kalmar | Kalmar Castle, the key of the realm on the Swedish–Danish border. |
+| 5 Stockholm | The castle of Tre Kronor, which Christian II besieged in vain in 1518. |
+| 118 Tábor | The Hussites' hill fortress, founded in 1420 and never taken by storm. |
+| 109 Nuremberg | The imperial city's double ring of walls, never taken by an enemy. |
+| 157 Salzburg | The fortress of Hohensalzburg, which the peasants besieged in vain in 1525. |
 
 ## The Holy Roman Empire
 

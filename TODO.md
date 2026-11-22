@@ -19,7 +19,7 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 ## Later
 
 - [ ] #37 More buildings, such as a university — rules, M
-- [ ] #38 Walls and Fleets tables for Mitteleuropa and Historical (Vienna's walls; Venice, the Hanse, Denmark at sea) — map, S
+- [ ] #38 Walls and Fleets tables for Mitteleuropa (Vienna's walls; the Hanse, Denmark at sea) — map, S
 - [ ] #39 Better replay — replay, M
 - [ ] #40 Better army icons — screen, M
 - [ ] #41 Better stats — site, M
