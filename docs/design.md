@@ -763,7 +763,12 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   player (peasants in arms too; `mapdraw.js`, `enemy`) — a column of them beside a place with
   several; marching armies glide along the roads between ticks; a ring round each besieged
   settlement fills as the siege runs; each capital's marker with a gold border while its country holds it (`mapdraw.js`, `capitalMarks`: capitals move, so the map's file cannot hold them), and in the panels "★ capital"
-  by its name. Drag to pan, wheel, +/- or two fingers to zoom (`mirror.js`, `pinchView`); a finger may
+  by its name. **A battle** shows for 3 s where it was fought — on a road, where the armies met — as a sign that pops up and
+  fades: red crossed swords, ringed in the winner's colour, in three sizes by the men
+  or ships in it; the player's own and their friends' at full size, the rest smaller and faded; several in one place on a day are
+  one sign, and at most 12 are up at once (6 on a phone), the oldest of others' going first (`mirror.js`, `addBattleSigns`;
+  `mapview.js`, `setBattles`). The replay shows them too, all at full size, but not at 1,000 days a second and up, where they would
+  only flicker. Drag to pan, wheel, +/- or two fingers to zoom (`mirror.js`, `pinchView`); a finger may
   stray 10 pixels in a tap, a mouse 5. With a fleet of the player's selected, a click on the sea sails it there, one on a port
   of theirs takes it in, one on an enemy's in its zone blockades it (`mirror.js`, `fleetOrder`; the zone a point is in from
   scenario.json's `seaGrid`, `seaZoneAt`); a fleet sails one zone at a time, so a click further off sends it the first hop and

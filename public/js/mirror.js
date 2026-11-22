@@ -587,3 +587,49 @@ export function premovesDue(premoves, state, me) {
     const war = (t) => state.wars.includes(me < t ? `${me}|${t}` : `${t}|${me}`);
     return [...premoves].filter(([, p]) => war(p.target)).map(([id, p]) => ({ army: id, ...p }));
 }
+
+// ---------- battle signs (design.md, "The game screen") ----------
+// a sign over the map for a moment where a battle was fought: red crossed swords, ringed in the winner's colour, 1 to 3 in size by
+// the men (or ships) in it. Several in one place on the same day are one sign; at most 12 are up at once, 6 on a phone, the oldest
+// that are not the player's own going first.
+export const BATTLE_MS = 3000, BATTLE_MAX = 12, BATTLE_MAX_PHONE = 6;
+
+// where on the map: on a road where the armies met (the battle's `along`), a sea zone's name, a settlement or pass; null if unknown
+export function battlePoint(e, nodes, zones, legs) {
+    if (e.along) {
+        const line = legs.get(`${e.along.from}>${e.along.to}`);
+        if (line) return along(line, e.along.f).at;
+    }
+    if (zones.has(e.place)) { const z = zones.get(e.place); return [z.label.x, z.label.y]; }
+    const n = nodes.get(String(e.place));
+    if (n) return [n.x, n.y];
+    const [a, b] = String(e.place).split("|"), line = b !== undefined ? legs.get(`${a}>${b}`) : null;
+    return line ? along(line, 0.5).at : null;
+}
+
+// 1 to 3: under 3,000 men in all, under 15,000, or more — at sea under 20 ships, under 60, or more
+export function battleSize(e) {
+    const n = e.a.men + e.b.men, [small, large] = e.kind === "naval" ? [20, 60] : [3000, 15000];
+    return n < small ? 1 : n < large ? 2 : 3;
+}
+
+// the signs up at `now` (ms): those still within BATTLE_MS, with the day's battles added. `mine(e)`: the player's or a friend's
+// battle, drawn at full size (the rest smaller and faded). Signs are new objects; the list given is not changed.
+export function addBattleSigns(signs, events, now, { nodes, zones, legs, colourOf, mine = () => true, max = BATTLE_MAX }) {
+    const out = signs.filter((s) => now - s.born < BATTLE_MS).map((s) => ({ ...s }));
+    for (const e of events) {
+        if (e.type !== "battle") continue;
+        const p = battlePoint(e, nodes, zones, legs);
+        if (!p) continue;
+        const id = `${e.day}|${e.place}`, win = e.winner === "a" ? e.a : e.b;
+        const sign = { id, x: p[0], y: p[1], size: battleSize(e), colour: colourOf(win.countries[0]), mine: Boolean(mine(e)), born: now };
+        const same = out.find((s) => s.id === id);
+        if (same) Object.assign(same, { size: Math.max(same.size, sign.size), colour: sign.colour, mine: same.mine || sign.mine, born: now });
+        else out.push(sign);
+    }
+    while (out.length > max) {
+        const i = out.findIndex((s) => !s.mine);
+        out.splice(i >= 0 ? i : 0, 1);
+    }
+    return out;
+}

@@ -602,3 +602,20 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 body.legal { max-width: 760px; margin: 2em auto; padding: 0 1em; }
 .legal-page { padding: 20px 32px 28px; background: var(--side-bg); border: 1px solid var(--border); border-radius: 8px; line-height: 1.6; }
 .legal-page h2 { margin-top: 1.4em; font-size: 17px; }
+/* a battle's sign (mapview.js, setBattles): pops up and fades within 3 s (mirror.js, BATTLE_MS, which sets the length); others' faded */
+.lc-battle { pointer-events: none; }
+.lc-battle:not(.mine) { opacity: 0.6; }
+.lc-battle-sign { transform-box: fill-box; transform-origin: center; animation: lc-battle 3s ease-out forwards; }
+.lc-battle-ring { fill: rgba(255, 255, 255, 0.92); stroke-width: 3; }
+.lc-battle-glyph { fill: none; stroke: #c9161f; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes lc-battle {
+    0% { transform: scale(0.3); opacity: 0; }
+    8% { transform: scale(1.15); opacity: 1; }
+    16% { transform: scale(1); }
+    80% { opacity: 1; }
+    100% { transform: scale(1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .lc-battle-sign { animation: lc-battle-still 3s linear forwards; }
+}
+@keyframes lc-battle-still { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }

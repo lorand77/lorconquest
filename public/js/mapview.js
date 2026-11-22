@@ -3,7 +3,7 @@
 // wheel or the +/- buttons to zoom, never out past the map's edges (mirror.js, fitView); a click (no drag) is reported as what it hit: an army, a place (a settlement
 // or pass marker), a land, or the sea; a right-click as onCancel (to deselect). Two fingers pinch to zoom. Pointer events, so mouse and touch take one path. Zoomed out, a settlement shows only the
 // short form in its marker; zoomed in to twice the whole map or more, its name too (the svg gets the class "zoomed").
-import { fitView, pinchView } from "./mirror.js";
+import { BATTLE_MS, fitView, pinchView } from "./mirror.js";
 
 const NS = "http://www.w3.org/2000/svg";
 // names show from this zoom on: the whole map's width over the width in view
@@ -13,6 +13,10 @@ const el = (name, attrs = {}) => {
     for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
     return e;
 };
+
+// a battle sign's picture, in a circle of radius 11 about 0,0: crossed swords — drawn, not the character ⚔, which some systems would
+// show as a coloured emoji
+const battleGlyph = () => el("path", { class: "lc-battle-glyph", d: "M-6.5 -6.5L6 6M6.5 -6.5L-6 6M2.2 6.8L6.8 2.2M-2.2 6.8L-6.8 2.2" });
 
 export async function createMapView(container, svgUrl, onPick, onCancel = () => {}) {
     container.innerHTML = await (await fetch(svgUrl)).text();
@@ -34,7 +38,8 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     svg.querySelector("#labels")?.setAttribute("display", "none");
     const premoveLayer = layer("lc-premoves");          // marches planned for a war to come (game.js, premoves)
     const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");
-    const markers = new Map(), ships = new Map();                    // army id -> <g>, fleet id -> <g>
+    const battleLayer = layer("lc-battles");             // battle signs, over everything (mirror.js, addBattleSigns)
+    const markers = new Map(), ships = new Map(), battles = new Map();      // army id -> <g>, fleet id -> <g>, battle sign id -> <g>
     let capitalKey = null, capitalsShown = [];                       // the settlement groups marked as capitals now
 
     // a subject's stripes: one pattern for each pair of colours and kind, made the first time it is needed. In map units, so
@@ -310,6 +315,30 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         // the marches planned for a war to come: a dashed red line each
         setPremoves(lines) {
             premoveLayer.replaceChildren(...lines.map((points) => el("polyline", { class: "lc-premove", points: points.map((p) => p.join(",")).join(" ") })));
+        },
+
+        // battle signs: [{ id, x, y, size, colour, mine }] (mirror.js, addBattleSigns) — each made when it first comes, so its pop and
+        // fade (game.css) run from then; one no longer in the list is taken away. The player's own at full size, the rest smaller and faded
+        setBattles(signs) {
+            const keep = new Set();
+            for (const b of signs) {
+                keep.add(b.id);
+                let g = battles.get(b.id);
+                if (!g) {
+                    g = el("g");
+                    const sign = el("g", { class: "lc-battle-sign" });
+                    sign.style.animationDuration = `${BATTLE_MS}ms`;              // as long as the sign is up
+                    sign.append(el("circle", { class: "lc-battle-ring", r: 11 }), battleGlyph());
+                    g.append(sign);
+                    battleLayer.append(g);
+                    battles.set(b.id, g);
+                }
+                const scale = [0.85, 1.1, 1.4][b.size - 1] * (b.mine ? 1 : 0.75);
+                g.setAttribute("transform", `translate(${b.x.toFixed(1)} ${b.y.toFixed(1)}) scale(${scale})`);
+                g.setAttribute("class", `lc-battle${b.mine ? " mine" : ""}`);
+                g.querySelector(".lc-battle-ring").style.stroke = b.colour;
+            }
+            for (const [id, g] of battles) if (!keep.has(id)) { g.remove(); battles.delete(id); }
         },
 
         // a planned route as a dashed line, or none

@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { BATTLE_MS, addBattleSigns, battlePoint, battleSize, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -434,4 +434,30 @@ test("the pause with other people: ask, wait for the vote, continue — and the 
     assert.equal(holdLine({ by: null, vote, resumeIn: null }, null).vote, false, "a watcher has no vote");
     assert.equal(holdLine({ by: "alice", vote: null, resumeIn: null }, "bobby").text, "Paused for alice — anyone may continue");
     assert.equal(holdLine({ by: "alice", vote: null, resumeBy: "bobby", resumeIn: 3000 }, "carol", 1200).text, "bobby continues the game: 2…");
+});
+
+test("battle signs: where, how large, one a place a day, gone after a moment, at most 12 — the player's own kept longest", () => {
+    const map = buildMap(scenario), legs = buildLegs(scenario), geo = { nodes: map.nodes, zones: map.zones, legs, colourOf: (c) => `#${c}` };
+    const side = (country, men) => ({ countries: [country], men });
+    const battle = (place, kind, a, b, extra = {}) => ({ type: "battle", kind, day: 10, place, winner: "a", a, b, ...extra });
+    const s37 = scenario.settlements.find((x) => x.id === 37), zone = map.zones.keys().next().value;
+    // a storm at a settlement: where the settlement is; a battle at sea: at the zone's name
+    assert.deepEqual(battlePoint(battle("37", "storm", side("BAV", 1), side("ULM", 1)), map.nodes, map.zones, legs), [s37.x, s37.y]);
+    assert.deepEqual(battlePoint(battle(zone, "naval", side("BAV", 1), side("ULM", 1)), map.nodes, map.zones, legs), [map.zones.get(zone).label.x, map.zones.get(zone).label.y]);
+    // on a road where the armies met, a quarter of the way along
+    const road = battle("37|48", "route", side("BAV", 1), side("ULM", 1), { along: { from: "37", to: "48", f: 0.25 } });
+    assert.deepEqual(battlePoint(road, map.nodes, map.zones, legs), along(legs.get("37>48"), 0.25).at);
+    assert.deepEqual([battleSize(battle("37", "relief", side("BAV", 1000), side("ULM", 1999))), battleSize(battle("37", "relief", side("BAV", 10000), side("ULM", 4999))),
+        battleSize(battle("37", "relief", side("BAV", 10000), side("ULM", 5000))), battleSize(battle(zone, "naval", side("BAV", 30), side("ULM", 29)))], [1, 2, 3, 2]);
+    // two battles in one place on one day are one sign — the larger size, the last winner's colour
+    let signs = addBattleSigns([], [battle("37", "storm", side("BAV", 500), side("ULM", 400)), battle("37", "relief", side("ULM", 9000), side("BAV", 9000))], 0, geo);
+    assert.deepEqual(signs.map((s) => [s.size, s.colour]), [[3, "#ULM"]]);
+    assert.equal(addBattleSigns(signs, [], BATTLE_MS, geo).length, 0, "gone after a moment");
+    // at most 12, the oldest of the others first, the player's own kept
+    const many = Array.from({ length: 14 }, (_, i) => battle(String(scenario.settlements[i].id), "relief", side(i === 0 ? "BAV" : "ULM", 100), side("SAX", 100)));
+    signs = addBattleSigns([], many, 0, { ...geo, mine: (e) => e.a.countries.includes("BAV") });
+    assert.equal(signs.length, 12);
+    assert.ok(signs.some((s) => s.mine), "the player's own stays");
+    assert.deepEqual(signs.filter((s) => !s.mine).map((s) => s.id), many.slice(3).map((e) => `10|${e.place}`));
+    assert.equal(addBattleSigns([], many, 0, { ...geo, max: 6 }).length, 6);
 });

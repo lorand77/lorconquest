@@ -2,8 +2,8 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { HOTKEYS, SPEEDS, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { Game, buildMap, describeEvent, friendly, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
+import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -195,6 +195,7 @@ function onTick(m) {
     if (me && m.events.some((e) => e.type === "union" && e.with === me)) { location.reload(); return; }
     applyChanges(state, m.changes);
     lastTick = performance.now();
+    if (m.events.some((e) => e.type === "battle")) battleSigns(m.events);
     news(m.events);
     onwards(m.events);
     // a war declared on us: the banner, and anyone joining it since is added to it
@@ -715,8 +716,18 @@ function renderMap() {
     map.setPremoves([...premoves].filter(([id]) => state.armies[id]).map(([id, p]) => routeLine(state.armies[id], p.path, displayDay(), legs, game.map.nodes)));
 }
 
-// marching armies glide between ticks
+// a sign over the map where each of the day's battles was fought (mirror.js, addBattleSigns): the player's own and their friends' — allies,
+// subjects, overlord — at full size, everyone's for a watcher; and the signs gone by taken away
+let battles = [];
+function battleSigns(events) {
+    battles = addBattleSigns(battles, events, performance.now(), { nodes: game.map.nodes, zones: game.map.zones, legs, colourOf,
+        mine: (e) => !me || [...e.a.countries, ...e.b.countries].some((c) => friendly(state, me, c)), max: isPhone() ? BATTLE_MAX_PHONE : BATTLE_MAX });
+    map.setBattles(battles);
+}
+
+// marching armies glide between ticks; battle signs whose moment is over go, paused or not
 function frame() {
+    if (battles.some((b) => performance.now() - b.born >= BATTLE_MS)) battleSigns([]);
     if (state && !paused) {
         for (const m of armyMarkers(displayDay())) if (state.armies[m.id]?.march) map.moveArmy(m.id, m.x, m.y);
         for (const m of drawFleets(state, game.map.nodes, game.map.zones, displayDay(), colourOf, markerOptions())) if (state.fleets[m.id]?.moving) map.moveFleet(m.id, m.x, m.y);

@@ -15,7 +15,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 - [ ] #32 Increase the win amount — balance, S
 - [ ] #33 Privacy policy: backups kept 90 days; test users only — site, S
 - [ ] #34 README like lorchess's and lorciv's, with a screenshot; bump the version to 0.9 — docs, S
-- [ ] #35 A battle sign over the map for a second or two when a battle is fought (crossed swords, or a burst) — screen, S
 
 ## Later
 

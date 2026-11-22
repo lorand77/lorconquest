@@ -8,7 +8,8 @@ import { requireUser } from "./auth.js";
 import { countryColour, countryLabels, inMapCodes, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoName, videoType } from "./mapcanvas.js";
-import { buildLegs, formatMen, scoreboard } from "./mirror.js";
+import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, addBattleSigns, buildLegs, formatMen, scoreboard } from "./mirror.js";
+import { isPhone } from "./notices.js";
 import { createReplayer } from "./replayer.js";
 
 const $ = (id) => document.getElementById(id);
@@ -96,6 +97,14 @@ function draw() {
     } else $("verdict").textContent = "";
 }
 
+// a sign where each battle was fought (mirror.js, addBattleSigns), all at full size — none at 1000 days a second and up, where they would
+// only flicker; and the signs gone by taken away
+let battles = [];
+function battleSigns(events) {
+    battles = addBattleSigns(battles, events, performance.now(), { nodes, zones, legs, colourOf, max: isPhone() ? BATTLE_MAX_PHONE : BATTLE_MAX });
+    map.setBattles(battles);
+}
+
 // as many days as the speed asks for since the last frame, within what a frame can spare: 12 ms at the slower speeds, so the page
 // stays smooth; at 1000 days a second and up, 40 ms, as the days themselves take time — and "max" plays days for 40 ms of every
 // frame, however many that is, the map drawn once a frame
@@ -105,10 +114,18 @@ function frame(now) {
         const speed = $("speed").value, max = speed === "max";
         owed += max ? Infinity : (now - last) / 1000 * Number(speed);
         const stop = performance.now() + (max || Number(speed) >= 1000 ? 40 : 12);
-        while (owed >= 1 && !replayer.done && performance.now() < stop) { feed(replayer.advance(1)); owed -= 1; }
+        const fought = [];
+        while (owed >= 1 && !replayer.done && performance.now() < stop) {
+            const events = replayer.advance(1);
+            feed(events);
+            if (!max && Number(speed) < 1000) fought.push(...events.filter((e) => e.type === "battle"));
+            owed -= 1;
+        }
+        if (fought.length) battleSigns(fought);
         if (owed > 3000) owed = 0;                     // a slow machine does not save up days
         if (replayer.day !== lastDraw) draw();
     }
+    if (battles.some((b) => performance.now() - b.born >= BATTLE_MS)) battleSigns([]);
     last = now;
     requestAnimationFrame(frame);
 }
@@ -131,6 +148,8 @@ $("seek").addEventListener("change", async () => {
     working = true;
     $("verdict").textContent = "Going there…";
     $("events").replaceChildren();
+    battles = [];
+    map.setBattles(battles);
     do {
         replayer.seek(day, 500);
         await new Promise((r) => setTimeout(r, 0));
