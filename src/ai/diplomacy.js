@@ -215,9 +215,12 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
 
     // its own protectorate turned on (RULES.md §10, Subjects: a broken agreement): only while at peace otherwise and planning no
     // other war, only one of another faith on its border and three times weaker — and rarely, a decade's patience on average, as
-    // the Sultans kept Constantinople a tributary for thirty years before Mehmed took it
-    if (calm && !foes.length && !plans.has(code) && !out.some((o) => o.type === "declareWar")) {
-        const prey = subjectsOf(st, code).filter((p) => !isVassal(st, p) && st.countries[p].religion && c.religion && st.countries[p].religion !== c.religion
+    // the Sultans kept Constantinople a tributary for thirty years before Mehmed took it. Never within 20 years of its last broken
+    // agreement of any kind, nor the one it betrayed last: a protectorate turned on, taken back and turned on again is not treachery
+    // but a habit (TODO.md #26 — four times Norway by Muscovy in sixty years)
+    const lastBreach = st.memory.broke[code], patient = lastBreach === undefined || day - lastBreach >= 20 * YEAR_DAYS;
+    if (calm && patient && !foes.length && !plans.has(code) && !out.some((o) => o.type === "declareWar")) {
+        const prey = subjectsOf(st, code).filter((p) => p !== st.memory.betrayed?.[code] && !isVassal(st, p) && st.countries[p].religion && c.religion && st.countries[p].religion !== c.religion
             && bordering(game, code, p) && militaryPowerOf(st, code) >= 3 * militaryPowerOf(st, p)).sort()[0];
         if (prey && r() < 0.003 + 0.004 * fl.aggression) cmd("declareWar", { target: prey });
     }

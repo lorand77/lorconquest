@@ -355,7 +355,9 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   protectorate joins its overlord's war only with a neighbour, at peace, the two of them twice as strong), the Empire proposed
   once when it holds enough (not at three quarters of victory, where every state would refuse), a bid for the crown where a
   scenario has electors (`src/ai/empire.js`: once an election is called, a candidate that could buy a majority with the cheapest
-  promises, for at most 30% of its treasury, promises them — and nothing otherwise, a promise being paid whoever wins), and a vassal of 10 years integrated (one a year, in its economy, when it can pay). Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
+  promises, for at most 30% of its treasury, promises them — and nothing otherwise, a promise being paid whoever wins), and a vassal of 10 years integrated (one a year, in its economy, when it can pay); its own protectorate turned on — a broken
+  agreement — only rarely: at peace, of another faith, on its border and three times weaker, never the one it betrayed last nor within
+  20 years of its last breach. Armies piling up in one of its settlements (soldiers raised and mercenaries hired arrive as armies of their own, raiders
   come home) are merged at the end of each think, the smallest into the largest, down to three — none given another order that
   think (`forces.js`, `tidyOrders`). A settlement every route from which leads to its own land (or a subject's or its overlord's) keeps no garrison — not
   the capital, nor while its own peasants are up — and its idle armies march to the staging settlement (`util.js`, `inland`).
