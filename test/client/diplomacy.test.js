@@ -216,7 +216,7 @@ test("the country dealt with shows who it is at war with, and since when — you
     assert.match(textOf(diplomacyTab({ ...ctx, ui: { target: "ULM" } })), /At peace\./);
 });
 
-test("your own vassal shows Integrate: why not until it may, then the button", async () => {
+test("your own vassal shows Integrate: why not until it may, then the button, which integrates at once, with no question", async () => {
     const vassal = (game) => {
         const u = game.state.countries.ULM;
         Object.assign(u, { overlord: "BAV", subjectKind: "vassal", vassalSince: 0 });
@@ -230,8 +230,13 @@ test("your own vassal shows Integrate: why not until it may, then the button", a
     ({ ctx, sent } = setup((game) => { vassal(game); game.state.day = 15 * 365; }, "ULM"));
     nodes = diplomacyTab(ctx);
     assert.equal(button(nodes, "Integrate").attrs.disabled, undefined);
-    globalThis.confirm = () => true;
-    await button(nodes, "Integrate").handlers.click();
+    const asked = globalThis.confirm;
+    globalThis.confirm = () => { throw new Error("no question for an integration"); };
+    try {
+        await button(nodes, "Integrate").handlers.click();
+    } finally {
+        globalThis.confirm = asked;
+    }
     assert.deepEqual(sent, [{ type: "integrate", target: "ULM" }]);
 });
 

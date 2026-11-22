@@ -292,7 +292,7 @@ function dealWith(ctx, t) {
         const why = integrateError(game, me, t), since = them.vassalSince ?? 0;
         out.push(section(ctx, "Integrate",
             mk("p", { class: "hint" }, `Your vassal since ${longDate(since)}. After ${Math.round(integrateDays(game, me, t) / 365)} years${integrateDays(game, me, t) > INTEGRATE_DAYS ? " (longer for a vassal of another faith)" : ""}, while neither of you is at war, it may become part of your country for ${n(integratePrice(game, t))} (a courthouse a settlement): its settlements become your core, its armies, fleets and treasury yours. +${game.map.warmongerScale} warmonger score a settlement.${human ? " A person plays it: they are asked." : ""}`),
-            row(ctx, mk("button", { class: "primary", disabled: why ? "disabled" : undefined, onclick: async () => { if (confirm(`Integrate ${them.name}?`)) { await ctx.send({ type: "integrate", target: t }); ctx.redraw(); } } }, "Integrate"),
+            row(ctx, mk("button", { class: "primary", disabled: why ? "disabled" : undefined, onclick: async () => { await ctx.send({ type: "integrate", target: t }); ctx.redraw(); } }, "Integrate"),
                 why ? mk("span", { class: "hint" }, why) : "")));
     }
     if (vassal || state.countries[t].rebel) return out;
