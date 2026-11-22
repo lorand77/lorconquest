@@ -6,7 +6,7 @@
 // Everything is read from the state, nothing is remembered: a restarted game plays on as before. An army's id is only
 // known once its split has been applied, so musters take two thinks (the second a tick after the first, see index.js).
 import { mayFight } from "../engine/battle.js";
-import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, armyCapOf, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, voyage, wallDefence } from "../engine/index.js";
+import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, armyCapOf, hireRoom, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, voyage, wallDefence } from "../engine/index.js";
 import { WEAPONS, emptyMen } from "../engine/army.js";
 import { legKey } from "../engine/map.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, reserveOf, stagingSettlement, threatsOf, winChance } from "./util.js";
@@ -188,7 +188,7 @@ function hostsOf(game, code) {
 // `defend`: a caretaker's war — only the armies it has, only within its own and its friends' land: to relieve a besieged
 // settlement or meet an enemy army that has come in. It musters, merges, gathers and attacks nothing.
 // `cash` and `hired`: the treasury once this think's other orders are paid, and the mercenaries they hire (index.js, think)
-export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false, thinned = new Set(), cash = null, hired = 0 } = {}) {
+export function warOrders(game, code, fl, { muster = true, prepare = false, defend = false, thinned = new Set(), cash = null, hired = 0, hiredAt = new Map(), market = null } = {}) {
     const st = game.state, out = [], foes = new Set(enemiesOf(st, code));
     sorties(game, code, out);
     if (!defend) turnBacks(game, code, fl, out);               // marches against odds that have turned hopeless
@@ -333,19 +333,22 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     }
 
     // a core town nobody marches to the defence of: mercenaries, if they arrive before the enemy (a month), as many as make it hold
-    // — what the money (above its reserve) and the army cap allow
+    // — what the money (above its reserve), the army cap, the world's companies for hire (index.js, market) and the town's room allow
     if (!defend) {
         const c = st.countries[code], e = economyOf(game, code);
+        const forHire = market ?? { left: st.mercenaries };
         let money = (cash ?? c.treasury) - reserveOf(e), room = armyCapOf(st, code) - mercenariesOf(st, code) - c.hires.reduce((n, h) => n + h.n, 0) - hired;
         for (const t of threatened) {
             if (covered.has(t.key) || !t.s.cores.includes(code) || t.arrives - st.day <= MERCENARY_DAYS) continue;
             let lots = 1;
             while (lots < 10 && t.inside + mercPower(lots * 1000) < 1.2 * t.against) lots++;
-            lots = Math.min(lots, Math.floor(money / MERCENARY_PRICE), Math.floor(room / 1000));
+            lots = Math.min(lots, Math.floor(money / MERCENARY_PRICE), Math.floor(room / 1000), Math.floor(forHire.left / 1000), Math.floor((hireRoom(game, code, t.s) - (hiredAt.get(t.s.id) ?? 0)) / 1000));
             if (lots < 1) continue;
             out.push({ type: "hireMercenaries", country: code, settlement: t.s.id, lots });
             money -= lots * MERCENARY_PRICE;
             room -= lots * 1000;
+            forHire.left -= lots * 1000;
+            hiredAt.set(t.s.id, (hiredAt.get(t.s.id) ?? 0) + lots * 1000);
         }
     }
 

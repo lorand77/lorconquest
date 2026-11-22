@@ -519,7 +519,7 @@ A country may only raise or hire up to its **army cap**, counting men in trainin
 sharpshooters, and may not raise more men than it has civilians. **A settlement trains at most a tenth of its people at
 once** — 1,000 in a town of 10,000, 2,000 in a city — **and a capital a fifth** (4,000 in a capital city; each capital of a union),
 counting the men in training there; once they are ready it has room again. A large army is raised in several places at the same
-time, or over a long time: a town gives 2,000 men a year at most, a city 4,000, a capital city 16,000. Mercenaries are hired, not trained, and have no such limit. Soldiers are raised by the thousand; while there is
+time, or over a long time: a town gives 2,000 men a year at most, a city 4,000, a capital city 16,000. Mercenaries are hired, not trained, and have a limit of their own (below). Soldiers are raised by the thousand; while there is
 room for fewer than 1000 more (under the cap, in civilians, or in the settlement), by the hundred instead. The men appear in their settlement and
 join an army of the country there that is not retreating and not outside the walls, or form a new one.
 
@@ -566,6 +566,14 @@ be re-equipped with your weapons (their pikes go to your reserve). **Dismissing*
 they leave, and the weapons they carry go to your reserve. **Unpaid mercenaries desert:** at the
 start of every month your treasury is below zero, **10%** of your mercenaries leave, taking their
 weapons with them.
+
+**Mercenaries for hire.** The companies are not endless. The whole world has **1% of its people** in companies for hire until
+1490, rising evenly to **2%** by 1600, as the Landsknechts came and war grew. Those in service — in an army, or on their way —
+are not for hire; what is, the Shop shows. Hiring takes from it; mercenaries **dismissed** or **deserting**, a hire cancelled,
+and those of a country out of the game are for hire again; the **dead are gone**, and the companies fill again by **a tenth of
+their size a year** (a twelfth of that each month), never past those not in service. And a settlement takes at most **1,000**
+being hired at once in a town, **2,000** in a city, **4,000** in a capital (each capital of a union) — those on their way there
+counting until they arrive.
 
 | Movement | |
 |---|---|

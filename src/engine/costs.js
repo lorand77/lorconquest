@@ -58,6 +58,11 @@ const days = (months) => Math.round(months * MONTH);
 export const TRAIN_CAPITAL_DAYS = days(3);
 export const TRAIN_OTHER_DAYS = days(6);
 export const MERCENARY_DAYS = days(1);
+// the mercenaries for hire in the whole world (RULES.md §8): 1% of its people until 1490, rising to 2% by 1600 (the Landsknechts, and
+// war growing); hired men are gone from it until dismissed or deserting, the dead for good — it fills again by a tenth of its size a
+// year. A settlement takes at most this many being hired at once
+export const MERCENARY_SHARE = 0.01, MERCENARY_SHARE_LATE = 0.02, MERCENARY_GROWS = [1490, 1600], MERCENARY_REFILL = 0.1;
+export const HIRE_ROOM = { town: 1000, city: 2000, capital: 4000 };
 export const LAW_DAYS = 5 * YEAR_DAYS;          // after a change, the next to a law allowing more soldiers
 export const LAW_DOWN_DAYS = YEAR_DAYS;         // … and to one allowing fewer: an emergency is cheap to leave (RULES.md §9)
 // the first day `country` may change its law to `to`: never sooner than LAW_DAYS after the last change for one allowing more

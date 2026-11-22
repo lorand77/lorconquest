@@ -765,3 +765,17 @@ same state, fingerprint for fingerprint (f21997bb, afdb4ca1, c5f97160, bf73c646)
 
 The slowest days left are one great power's full think — France on its first, Hungary's diplomacy at 6 ms — not anything
 shared: the time is now spread over the war (38%), diplomacy (29%), the economy (15%) and the forces (10%).
+
+## 29. Mercenaries for hire: the world's companies and a settlement's room (2026-11-22)
+
+**What changed.** The world has 1% of its people in companies for hire until 1490, rising to 2% by 1600; hiring takes from them,
+dismissals and desertion give back, the dead are gone, and they fill again by a tenth a year. A settlement takes at most 1,000
+being hired at once (a city 2,000, a capital 4,000). The computer hires within both, counting what countries that think earlier
+in the same tick have hired (TODO.md #36; RULES.md §8).
+
+**Run.** `node /tmp/probe/mercs.mjs mitteleuropa <seed> 210`, seeds 1–3: the companies sampled each month.
+
+**What it showed: they bind, now and then.** The computer hires a great many mercenaries over a game — 231,000, 454,000 and
+652,000 — with up to 50,000–100,000 in service at once, late, against companies of 55,000–114,000. Under 1,000 were for hire in
+1.3–2.2% of the months, under a quarter of the companies in 2.3–4.4%: in a general war the companies run out, otherwise there are
+enough. No hire was refused.

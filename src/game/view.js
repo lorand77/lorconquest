@@ -39,6 +39,7 @@ export function viewFor(state, country) {
     return {
         day: state.day, countries, settlements: state.settlements, armies: state.armies, fleets: state.fleets, posts: state.posts, wars: state.wars,
         agreements: state.agreements, warInfo: state.warInfo, memory: state.memory, humans: state.humans, winner: state.winner, empire: state.empire ?? null,
+        mercenaries: state.mercenaries,
     };
 }
 
@@ -70,7 +71,7 @@ export class Changes {
         const wars = JSON.stringify(state.wars);
         if (wars !== this.seen.wars) { this.seen.wars = wars; pub.wars = [...state.wars]; }
         // small whole things sent whole when they change
-        for (const name of ["agreements", "warInfo", "memory", "winner", "empire"]) {
+        for (const name of ["agreements", "warInfo", "memory", "winner", "empire", "mercenaries"]) {
             const json = JSON.stringify(state[name]);
             if (this.seen.blobs.get(name) !== json) { this.seen.blobs.set(name, json); pub[name] = JSON.parse(json); }
         }

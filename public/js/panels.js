@@ -4,7 +4,7 @@
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
-    TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, isCore, lawChangeDay, longDate, techCost, trainingRoom } from "/engine/index.js";
+    TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, hireRoom, isCore, lawChangeDay, longDate, techCost, trainingRoom } from "/engine/index.js";
 import { FAITH_COLOURS } from "./mapdraw.js";
 import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
 
@@ -217,9 +217,17 @@ export function shopTab(ctx) {
 
     // mercenaries
     const ms = select(ctx, settlementOptions(core), kept("hireAt")), ml = numberInput(ctx, 1, 1, 50);
-    ms.addEventListener("change", () => { if (ctx.ui) ctx.ui.hireAt = Number(ms.value); });
+    ms.addEventListener("change", () => { if (ctx.ui) ctx.ui.hireAt = Number(ms.value); hireText(); });
+    // what the world has for hire and what the chosen settlement can still take at once (RULES.md §8)
+    const hireHint = make("p", { class: "hint" });
+    const hireText = () => {
+        const s = state.settlements[Number(ms.value)];
+        hireHint.textContent = `In a month, with pikes; 15 a man a year. For hire in the world: ${n(Math.floor(state.mercenaries ?? 0))}.`
+            + (s ? ` ${ctx.name(String(s.id))} can take ${n(hireRoom(game, me, s))} more at once (a town 1,000, a city 2,000, a capital 4,000).` : "");
+    };
+    hireText();
     out.push(section(ctx, "Hire mercenaries",
-        row(ctx, ms, ml, make("span", {}, `× 1000 · ${money(MERCENARY_PRICE)}`)), make("p", { class: "hint" }, "In a month, with pikes; 15 a man a year."),
+        row(ctx, ms, ml, make("span", {}, `× 1000 · ${money(MERCENARY_PRICE)}`)), hireHint,
         make("button", { onclick: act(ctx, () => ({ type: "hireMercenaries", settlement: Number(ms.value), lots: Number(ml.value) })) }, "Hire")));
 
     // weapons into the reserve, as many lots at once as asked

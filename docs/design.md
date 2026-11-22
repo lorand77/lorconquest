@@ -616,7 +616,7 @@ would break that.
   one day (`day.js`) and returns its events; `snapshot()` is the state as JSON, `Game.restore` and
   `replay` rebuild a game from a snapshot or from its seed and log.
 - **The state is plain JSON:** countries, settlements, armies (by id; the starting garrisons are
-  numbered like their settlements), wars, battle cooldowns, the day and the random state
+  numbered like their settlements), wars, battle cooldowns, the mercenaries for hire in the world (`mercenaries`), the day and the random state
   (mulberry32, one 32-bit word). `RULES_VERSION` and `FORMAT` in `state.js` are stamped on every
   state and checked on restore.
 - **The map** (`map.js`) is the scenario as a graph: settlements and passes are places, keyed

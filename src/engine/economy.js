@@ -7,11 +7,12 @@
 
 import { WEAPONS, isEmpty, menOf, takeMen } from "./army.js";
 import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE,
-    MARKET_BONUS, MAX_LIBRARIES, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
+    HIRE_ROOM, MARKET_BONUS, MAX_LIBRARIES, MERCENARY_GROWS, MERCENARY_REFILL, MERCENARY_SHARE, MERCENARY_SHARE_LATE, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
 import { armiesOf, armyList, atWar, capitalsOf, settlementsOf, isCore, isGermanState, isRebel, killPeople, removeArmy } from "./state.js";
 import { coringDays } from "./religion.js";
+import { dateOf } from "./calendar.js";
 import { memo, memoTable } from "./memo.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
@@ -34,6 +35,27 @@ export const trainingRoom = (state, code, s) => Math.max(0, (capitalsOf(state, c
 export const DUES = 0.05, PENNY = 0.01;
 export const navyCapOf = (state, code) => lawOf(state, code).navy * manpowerOf(state, code) * (state.countries[code].navy ?? 1);
 export const mercenariesOf = (state, code) => sum(armiesOf(state, code), (a) => a.mercs ?? 0);
+
+// the mercenaries for hire (RULES.md §8). The world's companies: a share of its people, 1% until 1490 and 2% from 1600, rising between;
+// those in service — in armies and on their way — are not for hire. What is for hire is `state.mercenaries`: hiring takes from it,
+// dismissing and desertion give back, the dead are gone; at the start of each month it fills by a tenth of the companies' size a year,
+// never past what is not in service.
+export function mercenaryShare(day) {
+    const [from, to] = MERCENARY_GROWS, t = Math.min(1, Math.max(0, (dateOf(day).year - from) / (to - from)));
+    return MERCENARY_SHARE + (MERCENARY_SHARE_LATE - MERCENARY_SHARE) * t;
+}
+export const mercenaryCompanies = (state) => mercenaryShare(state.day) * sum(Object.values(state.settlements), (s) => s.pop);
+export const mercenariesInService = (state) => sum(armyList(state), (a) => a.mercs ?? 0) + sum(Object.values(state.countries), (c) => sum(c.hires ?? [], (h) => h.n));
+export function mercenariesMonth(game) {
+    const st = game.state, size = mercenaryCompanies(st);
+    st.mercenaries = Math.min(Math.max(0, size - mercenariesInService(st)), st.mercenaries + MERCENARY_REFILL * size / 12);
+}
+// what a settlement may still take of mercenaries being hired at once: 1,000 at a town, 2,000 at a city, 4,000 at a capital, less those
+// on their way there now
+export function hireRoom(game, code, s) {
+    const kind = capitalsOf(game.state, code).includes(s.id) ? "capital" : game.map.scenario.settlements.find((x) => x.id === s.id)?.type === "city" ? "city" : "town";
+    return Math.max(0, HIRE_ROOM[kind] - sum(game.state.countries[code].hires.filter((h) => h.settlement === s.id), (h) => h.n));
+}
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
 
 // men on the army cap: regular soldiers, cannon crew, sharpshooters, and men in training — not mercenaries
@@ -146,6 +168,7 @@ export function desert(game, code, share, events) {
         gone += n;
         if (isEmpty(a)) removeArmy(game.state, a);          // a company of mercenaries that all left
     }
+    game.state.mercenaries += gone;                         // for hire again
     if (gone) events.push({ type: "desertion", day: game.state.day, country: code, men: gone });
 }
 
@@ -200,6 +223,7 @@ export function monthly(game, events) {
         const n = game.map.nodes.get(String(s.id)), law = LAWS[st.countries[s.owner]?.law ?? "feudal"] ?? LAWS.feudal;
         s.pop *= 1 + (0.01 + (n.river || n.port ? 0.005 : 0)) * law.growth / 12;
     }
+    mercenariesMonth(game);
     for (const code of realCountries(st)) {
         const c = st.countries[code];
         if (!ownedBy(st, code).length) continue;                    // a country with no land left is out of the game: no money, no debt

@@ -15,7 +15,7 @@ import { afford, done, money, ownArmy, positive, refuse, whole } from "./command
 import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_CHUNK, lawChangeDay, MAX_LIBRARIES, MERCENARY_DAYS,
     MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTER_PRICE, SHARPSHOOTERS_PER_PASS, SHIPS, SHIP_PRICE, TECHS, TRAIN_CAPITAL_DAYS,
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
-import { armyCapOf, armySoldiersOf, desert, economyOf, mercenariesOf, ownedBy, techCost, trainingRoom, unlockTech } from "./economy.js";
+import { armyCapOf, armySoldiersOf, desert, economyOf, hireRoom, mercenariesOf, ownedBy, techCost, trainingRoom, unlockTech } from "./economy.js";
 import { capitalsOf, newFleet, isCore, ownerOf } from "./state.js";
 import { proclaimCheck } from "./regions.js";
 import { coringDays, reformationError } from "./religion.js";
@@ -278,7 +278,8 @@ export const countryCommands = {
         return done();
     },
 
-    // 1000 mercenaries, with pikes, a month later, at a core settlement; at most as many as the army cap (RULES.md §8)
+    // 1000 mercenaries, with pikes, a month later, at a core settlement; at most as many as the army cap, as are for hire in the world,
+    // and as the settlement has room for (RULES.md §8)
     hireMercenaries(game, cmd) {
         const st = game.state, c = mine(game, cmd);
         if (!positive(cmd.lots)) return refuse("hire a whole number of lots of 1000");
@@ -287,9 +288,13 @@ export const countryCommands = {
         if (!isCore(st, s, c.code)) return refuse(`${s.id} is not core`);
         const n = cmd.lots * 1000, hiring = c.hires.reduce((x, h) => x + h.n, 0);
         if (mercenariesOf(st, c.code) + hiring + n > armyCapOf(st, c.code)) return refuse("you may hire at most as many mercenaries as your army cap");
+        if (n > st.mercenaries) return refuse(`only ${Math.floor(st.mercenaries).toLocaleString("en-GB")} mercenaries are for hire in the world`);
+        const room = hireRoom(game, c.code, s);
+        if (n > room) return refuse(`${s.id} can take ${room.toLocaleString("en-GB")} more mercenaries being hired at once`);
         const why = afford(c, cmd.lots * MERCENARY_PRICE);
         if (why) return refuse(why);
         c.treasury -= cmd.lots * MERCENARY_PRICE;
+        st.mercenaries -= n;
         c.hires.push({ settlement: s.id, n, ready: st.day + MERCENARY_DAYS });
         return done();
     },
@@ -374,6 +379,7 @@ export const countryCommands = {
         const taken = takeMen(army, cmd.n, ["pikes", ...WEAPONS]);
         for (const w of WEAPONS) if (w !== "unarmed") c.reserve[w] += taken[w];
         army.mercs -= cmd.n;
+        game.state.mercenaries += cmd.n;                                // for hire again
         if (!menOf(army) && !army.cannons && !army.crew) delete game.state.armies[army.id];
         return done();
     },

@@ -325,6 +325,7 @@ test("soldiers raised with cannons get one for every 10 of them, and arrive as i
 test("mercenaries arrive in a month with pikes, up to the army cap, and add no soldiers", () => {
     const game = tinyGame(), c = AAA(game);
     rich(game);
+    game.state.mercenaries = 1e6;                                                   // companies enough in the world
     assert.match(refused(game, cmd("hireMercenaries", { settlement: 1, lots: 3 })), /army cap/);   // 3,000 over 2,000 and the capital's
     order(game, cmd("hireMercenaries", { settlement: 1, lots: 1 }));
     assert.equal(c.treasury, 5000000 - 50000);
@@ -396,4 +397,34 @@ test("naming a capital: only when the old one is lost, a city if you have one", 
     order(game, cmd("setLaw", { law: "mass" }));
     order(game, cmd("raise", { settlement: 3, kind: "soldiers", lots: 1 }));
     assert.equal(AAA(game).training[0].ready, 91);                             // the new capital trains fast
+});
+
+test("mercenaries for hire: 1% of the world's people, taken by hiring, given back by dismissing, filled a tenth a year; room by settlement", async () => {
+    const { mercenariesMonth, mercenaryCompanies, mercenaryShare } = await import("../../src/engine/economy.js");
+    const { dayOf } = await import("../../src/engine/calendar.js");
+    const game = tinyGame(), st = game.state;
+    rich(game);
+    assert.equal(st.mercenaries, 1000, "1% of the tiny map's 100,000 people");
+    st.mercenaries = 1500;
+    assert.match(refused(game, cmd("hireMercenaries", { settlement: 1, lots: 2 })), /only 1,500 mercenaries are for hire/);
+    order(game, cmd("hireMercenaries", { settlement: 2, lots: 1 }));
+    assert.equal(st.mercenaries, 500);
+    // a town takes 1,000 being hired at once
+    st.mercenaries = 1e6;
+    assert.match(refused(game, cmd("hireMercenaries", { settlement: 2, lots: 1 })), /2 can take 0 more mercenaries being hired at once/);
+    // arrived and dismissed: for hire again
+    runTo(game, 30);
+    st.mercenaries = 0;
+    const army = Object.values(st.armies).find((a) => a.mercs);
+    order(game, cmd("dismissMercenaries", { army: army.id, n: 400 }));
+    assert.equal(st.mercenaries, 400);
+    // each month a tenth of the companies' size a year, never past those not in service (the companies less the 600 still serving)
+    const size = mercenaryCompanies(st);
+    st.mercenaries = 100;
+    mercenariesMonth(game);
+    assert.ok(Math.abs(st.mercenaries - (100 + 0.1 * size / 12)) < 1e-6);
+    for (let i = 0; i < 40; i++) mercenariesMonth(game);                       // 300 more at 100 a year
+    assert.ok(Math.abs(st.mercenaries - (size - 600)) < 1e-6, "full: all but those in service");
+    // the companies grow with the age: 1% to 1490, 2% from 1600
+    assert.deepEqual([mercenaryShare(dayOf(1450)), mercenaryShare(dayOf(1545)), mercenaryShare(dayOf(1620))], [0.01, 0.015, 0.02]);
 });

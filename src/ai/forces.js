@@ -8,7 +8,7 @@
 // (tidyOrders).
 import { menOf } from "../engine/army.js";
 import { CANNON_PRICE, MERCENARY_PRICE, MERCENARY_UPKEEP, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SOLDIER_UPKEEP, WEAPON_PRICE } from "../engine/costs.js";
-import { armiesAt, armyCapOf, armySoldiersOf, economyOf, mercenariesOf, militaryPowerOf, trainingRoom } from "../engine/index.js";
+import { armiesAt, armyCapOf, armySoldiersOf, economyOf, hireRoom, mercenariesOf, militaryPowerOf, trainingRoom } from "../engine/index.js";
 import { exposed, inland, ownArmies, ownSettlements, stagingSettlement, threatsOf } from "./util.js";
 import { routeFor } from "../engine/index.js";
 import { threatRatio } from "./economy.js";
@@ -191,8 +191,10 @@ export function forceOrders(game, code, fl, ctx) {
             .sort((a, b) => b.pop - a.pop || a.id - b.id)[0] : null;
         const site = border ?? stagingSettlement(game, code);
         if ((rich || badly) && site && site.cores.includes(code)) {
-            const lotsToHire = Math.min(rich ? 2 : 1, Math.floor((cap - hired) / 1000), Math.floor(ctx.budget / MERCENARY_PRICE));
-            if (lotsToHire > 0) { cmd("hireMercenaries", { settlement: site.id, lots: lotsToHire }); ctx.budget -= lotsToHire * MERCENARY_PRICE; }
+            // no more than the world has for hire (what this tick's other hirers have not taken: index.js, market) and the town has room for
+            const market = ctx.market ?? { left: st.mercenaries };
+            const lotsToHire = Math.min(rich ? 2 : 1, Math.floor((cap - hired) / 1000), Math.floor(ctx.budget / MERCENARY_PRICE), Math.floor(market.left / 1000), Math.floor(hireRoom(game, code, site) / 1000));
+            if (lotsToHire > 0) { cmd("hireMercenaries", { settlement: site.id, lots: lotsToHire }); ctx.budget -= lotsToHire * MERCENARY_PRICE; market.left -= lotsToHire * 1000; }
         }
     } else if (!atWarNow && !preparing) {
         for (const a of ownArmies(st, code)) if (a.mercs > 0 && a.at && armiesAt(st, a.at).includes(a)) cmd("dismissMercenaries", { army: a.id, n: a.mercs });

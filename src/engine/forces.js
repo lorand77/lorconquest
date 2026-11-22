@@ -27,6 +27,7 @@ export function cancelAt(state, settlement) {
         if (isRebel(state, c.code)) continue;
         for (const t of c.training) if (t.settlement === settlement) unqueue(c, t);
         c.training = c.training.filter((t) => t.settlement !== settlement);
+        for (const h of c.hires) if (h.settlement === settlement) state.mercenaries += h.n;     // the companies for hire again
         c.hires = c.hires.filter((h) => h.settlement !== settlement);
     }
 }
@@ -46,6 +47,7 @@ export function forcesDay(game, events) {
                 if (s.owner !== code || (kind === "training" && !isCore(st, s, code))) {
                     events.push({ type: "cancelled", day: st.day, country: code, settlement: t.settlement, what: kind === "hires" ? "hire" : "training", n: t.n });
                     if (kind === "training") unqueue(c, t);
+                    else st.mercenaries += t.n;
                     continue;
                 }
                 let army;

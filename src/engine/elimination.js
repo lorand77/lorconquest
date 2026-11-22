@@ -25,10 +25,12 @@ function eliminate(game, code, events) {
     for (const a of armyList(st)) {
         if (a.owner !== code) continue;
         if (a.at) places.add(a.at);
+        st.mercenaries += a.mercs ?? 0;                      // its mercenaries go back to the companies for hire
         removeArmy(st, a);
     }
     for (const f of fleetList(st)) if (f.owner === code) delete st.fleets[f.id];
     c.training = [];
+    for (const h of c.hires) st.mercenaries += h.n;
     c.hires = [];
     for (const w of [...st.wars]) {
         const [x, y] = w.split("|");
