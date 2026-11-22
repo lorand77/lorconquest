@@ -1178,9 +1178,23 @@ equal to **3% of your total population** (every settlement you own, core and non
 with swords, spawning outside your capital. It holds cores on everything and attacks towns and
 cities, favouring undefended ones and your core territory. **There is no peace with peasants.**
 
+**Religious uprisings.** On a map with religions an uprising may be the faithful's rather than the overtaxed's: the
+year's roll comes up as a religious one in proportion to the part of the chance that faith made, if the country holds any
+settlement whose people are of another faith than its ruler's. Then those people **rise where they live**: in each such
+settlement a band of **3% of its people**, as the rebels of their faith — *Orthodox rebels of Poland* — and they fight only
+for **the settlements of their faith**, never marching on the rest. A tax uprising rises outside the capital as below, as the
+country's own rebels; the two are separate bands, each joining only its own kind when it rises again.
+
 **The rebels' behaviour.** The rebels are a country of their own, `REB1`, `REB2`…, with no money. Every
-10 days each idle rebel army marches on a settlement of the country it rose against: **undefended ones
-first, then core ones, then the nearest**; an army besieging one stays until it falls or the siege is lifted.
+10 days each rebel band:
+- **storms the town it besieges** once it is **1.35 times** the garrison behind its walls; below that it waits out the siege;
+- otherwise marches on a settlement of the country it rose against (of its faith alone, for religious rebels) that it is **at
+  least 1.2 times as strong as** behind its walls, by a way on which **no stronger enemy army** stands — **undefended ones
+  first, then the nearest, then core ones**;
+- leaving a town of its own empty, **leaves a fifth of its men to hold it**;
+- with nothing it can attack, **joins the largest band** of the same rebels; and bands of the same rebels in one place
+  **become one**.
+
 Rebels take no orders and make no peace. They are fed by their own people, but still sicken in a siege. If
 the country has lost its capital, they rise outside its largest settlement. The uprising is over when the
 rebels have no army and hold no settlement. **A new uprising while the country's rebels are still up joins them**: the

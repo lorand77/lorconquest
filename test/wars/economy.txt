@@ -1,6 +1,6 @@
 # Bavaria runs itself for three years under heavy tax: a loan pays for a library, swords, mercenaries and
 # 2,000 soldiers; it researches hand cannons, changes the law, and the peasants rise. Holland builds a fleet.
-seed 1
+seed 22
 1440-01-01 BAV borrow chunks=2
 1440-01-01 BAV set-tax tax=3
 1440-01-01 BAV set-law law=militarized

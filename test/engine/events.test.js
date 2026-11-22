@@ -116,6 +116,7 @@ test("scattering costs no lives, and rebels, fed by their own people, never go h
     uprising(big, "AAA", []);
     const army = Object.values(big.state.armies).find((a) => a.owner === "REB1");
     army.men.swords = 20000;
+    setArmy(big, 1, { swords: 20000 });                                        // a garrison they will not storm: the siege goes on
     const events = runTo(big, 31);
     const lost = ofType(events, "attrition").filter((e) => e.army === army.id);
     assert.deepEqual(lost.map((e) => [e.sick, e.hungry, e.dead]), [[true, false, 200]]);
@@ -171,4 +172,84 @@ test("a new uprising joins the country's rebels already up — their army where 
     const other = [];
     uprising(game, "AAA", other);
     assert.notEqual(other[0].rebels, reb);
+});
+
+// ---------- the rebels' wits, and religious rebels ----------
+
+const rebelsAt = (game, key) => Object.values(game.state.armies).filter((a) => a.owner.startsWith("REB") && a.at === key);
+
+test("rebels storm a town they besiege once they are 1.35 times its garrison, and wait out the siege below that", async () => {
+    const { rebelOrders } = await import("../../src/engine/events.js");
+    const game = tinyGame(), st = game.state;
+    uprising(game, "AAA", []);
+    const band = rebelsAt(game, "1")[0];
+    band.men.swords = 1000;                                                    // 1,000 against 800 behind the city's 1.2: no storm
+    st.day = 10;
+    rebelOrders(game, []);
+    assert.equal(st.settlements[1].owner, "AAA");
+    band.men.swords = 2000;                                                    // 2,000 against 960: storm, and the city falls
+    st.day = 20;
+    rebelOrders(game, []);
+    assert.equal(st.settlements[1].owner, band.owner);
+});
+
+test("rebels march only on a garrison they can beat, past no stronger army; leaving a town they hold, a fifth stays to hold it", async () => {
+    const { rebelOrders } = await import("../../src/engine/events.js");
+    const game = tinyGame(), st = game.state;
+    uprising(game, "AAA", []);
+    const band = rebelsAt(game, "1")[0], reb = band.owner;
+    // the band stands in Three, a town of its own; Two is held by 2,000, One by 800 — it can beat neither; Five is BBB's
+    st.settlements[1].siege = null;
+    st.settlements[3].owner = reb;
+    for (const a of Object.values(st.armies)) if (a.at === "3" && a.owner === "AAA") delete st.armies[a.id];
+    band.at = "3";
+    band.men.swords = 1000;
+    setArmy(game, 2, { swords: 2000 });
+    st.day = 10;
+    rebelOrders(game, []);
+    assert.equal(band.march ?? null, null, "nowhere it can win: it stays");
+    // Two's garrison down to 500: 1,000 against 600 — it marches, and 200 stay behind in Three
+    setArmy(game, 2, { swords: 500 });
+    st.day = 20;
+    rebelOrders(game, []);
+    assert.ok(band.march && band.path.concat(band.march.to).includes("2"), "on its way to Two");
+    assert.deepEqual(rebelsAt(game, "3").map((a) => a.men.swords), [200]);
+});
+
+test("bands of the same rebels in one place become one", async () => {
+    const { rebelOrders } = await import("../../src/engine/events.js");
+    const game = tinyGame(), st = game.state;
+    uprising(game, "AAA", []);
+    const band = rebelsAt(game, "1")[0];
+    const { newArmy } = await import("../../src/engine/state.js"), { emptyMen } = await import("../../src/engine/army.js");
+    setArmy(game, 1, { swords: 5000 });                                        // a garrison too strong to storm: they only gather
+    const men = emptyMen();
+    men.swords = 300;
+    newArmy(st, band.owner, "1", men);
+    const before = band.men.swords;
+    st.day = 10;
+    rebelOrders(game, []);
+    assert.deepEqual(rebelsAt(game, "1").map((a) => a.men.swords), [before + 300]);
+});
+
+test("a religious uprising: the people of another faith rise where they live, as their faith's rebels, and fight for their land alone", async () => {
+    const { religiousUprising, rebelOrders } = await import("../../src/engine/events.js");
+    // AAA Catholic; its Two Orthodox
+    const game = tinyGame(1, (sc) => { for (const c of sc.countries) c.religion = "catholic"; sc.settlements[1].faith = "orthodox"; }), st = game.state;
+    const events = [];
+    assert.equal(religiousUprising(game, "AAA", events), true);
+    const [ev] = ofType(events, "uprising"), reb = st.countries[ev.rebels];
+    assert.deepEqual([ev.at, ev.men, ev.faith, reb.faith, reb.name], [2, 300, "orthodox", "orthodox", "Orthodox rebels of AAA"]);
+    // a tax uprising later forms rebels of its own, not of that faith
+    uprising(game, "AAA", []);
+    assert.equal(Object.values(st.countries).filter((c) => c.rebel && c.of === "AAA").length, 2);
+    // they march on no settlement of another faith: Two is all theirs to fight for
+    const band = Object.values(st.armies).find((a) => a.owner === ev.rebels);
+    st.settlements[2].siege = null;
+    band.men.swords = 50000;
+    st.day = 10;
+    rebelOrders(game, []);
+    assert.ok(!band.march || band.march.to === "2");
+    // a country with no people of another faith has no religious uprising
+    assert.equal(religiousUprising(tinyGame(), "AAA", []), false);
 });
