@@ -267,3 +267,29 @@ test("money in a peace: what is asked in years of the loser's money, what is pai
     assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], money: -1e9, makeSubject: "protectorate" }) - protectorate) < 1e-9, "the land bought, the protectorate not");
     assert.ok(Math.abs(peaceCost(game, "AAA", "BBB", { take: [5], makeSubject: "protectorate" }) - (five + protectorate)) < 1e-9);
 });
+
+test("land is won in the field: a peace asks at most as many people's land as the war took, less what it lost — whatever the war score", async () => {
+    const { landOf } = await import("../../src/engine/opinion.js");
+    // BBB holds Three (10,000) besides its own Four (20,000) and Five (10,000) when the war begins
+    const game = tinyGame(), st = game.state;
+    st.settlements[3].owner = "BBB";
+    order(game, cmd("AAA", "declareWar", { target: "BBB" }));
+    st.countries.AAA.warmonger = 0;
+    // nothing taken yet: no land at all, however strong
+    const none = peaceAnswer(game, "BBB", "AAA", { take: [5] });
+    assert.deepEqual([none.accept, none.land], [false, { gain: 10000, won: 0 }]);
+    // Five taken by storm: 10,000 won — Three (10,000) may be asked, Four (20,000) may not
+    take(game, 5, "AAA");
+    assert.deepEqual(landOf(game, "AAA", "BBB", { take: [4] }), { gain: 20000, won: 10000 });
+    const four = peaceAnswer(game, "BBB", "AAA", { take: [4] });
+    assert.deepEqual([four.accept, four.land], [false, { gain: 20000, won: 10000 }]);
+    assert.equal(peaceAnswer(game, "BBB", "AAA", { take: [3] }).land, undefined, "within what was won: the score decides");
+    // what AAA gives counts against what it asks: Four (20,000) for Five and Two (10,000 each) is no gain at all
+    assert.deepEqual(landOf(game, "AAA", "BBB", { take: [4], give: [5, 2] }).gain, 0);
+    // BBB taking back a town of its own: what AAA won falls by as much
+    st.settlements[2].owner = "AAA";
+    take(game, 2, "BBB");
+    assert.deepEqual(landOf(game, "AAA", "BBB", {}).won, 0);
+    const refusedNow = peaceAnswer(game, "BBB", "AAA", { take: [3] });
+    assert.deepEqual([refusedNow.accept, refusedNow.land], [false, { gain: 10000, won: 0 }]);
+});

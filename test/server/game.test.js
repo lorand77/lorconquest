@@ -299,15 +299,17 @@ test("money orders go through the worker; a country's private part reaches only 
 test("a player's country is played by the computer while it is handed over, and by nobody once it is handed back", async () => {
     const dbPath = tempDb();
     const server = await startServer({ dbPath });
-    let id;
+    let id, from, back;
     try {
         id = await newGame(server);
         const s = await connect(server);
         await emitAck(s, "join", { gameId: id });
         const room = server.app.rooms.get(id);
-        await runUntil(s, 100);                                            // the player's country does nothing by itself
+        // handed over and back while the game stands paused, on the days it stopped at — not the days asked for, which a busy
+        // machine overshoots (TODO.md #29)
+        from = await runUntil(s, 100);                                     // the player's country does nothing by itself
         server.app.rooms.setCaretaker(room, "BAV", "full");
-        await runUntil(s, 400);
+        back = await runUntil(s, 400);
         server.app.rooms.setCaretaker(room, "BAV", null);
         await runUntil(s, 700);
     } finally {
@@ -317,7 +319,7 @@ test("a player's country is played by the computer while it is handed over, and 
     const rows = db.db.prepare("SELECT day, source, cmd FROM commands WHERE game_id = ? AND country = 'BAV' ORDER BY seq").all(id);
     db.close();
     assert.ok(rows.length > 0 && rows.every((r) => r.source === "caretaker"), "BAV's only commands are the computer's");
-    assert.ok(rows.every((r) => r.day > 100 && r.day <= 401), `from the day it was handed over to the day it was handed back (${rows.map((r) => r.day).slice(-3)})`);
+    assert.ok(rows.every((r) => r.day > from && r.day <= back + 1), `from the day it was handed over (${from}) to the day it was handed back (${back}): ${rows.map((r) => r.day).slice(-3)}`);
 });
 
 test("a game going on under rules the server no longer plays ends as outdated at start-up; a table starts under today's", async () => {

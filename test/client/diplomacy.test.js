@@ -310,3 +310,13 @@ test("the crown, where the scenario has electors: the Emperor, the next election
     await button(nodes, "Promise").handlers.click();
     assert.equal(sent.at(-1).type, "promise");
 });
+
+test("the peace form says why land not won in the field is refused: a town asked of a country nothing has been taken from", async () => {
+    const { ctx } = setup((game) => { game.command({ type: "declareWar", country: "BAV", target: "LGE" }); });
+    const nodes = diplomacyTab({ ...ctx, ui: { target: "LGE" } });
+    const town = find(nodes, (e) => e.attrs.type === "checkbox" && e.attrs.value === "47")[0];
+    town.checked = true;
+    await town.handlers.change();
+    const preview = find(nodes, (e) => e.attrs.class?.startsWith("preview"))[0];
+    assert.match(preview.text, /You ask for settlements of [\d,]+ people, and have taken none in this war: land is won in the field, not at the table — it will refuse\./);
+});
