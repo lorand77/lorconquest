@@ -287,9 +287,10 @@ the worker calls after each day and whose `setCaretaker(country, mode)` it passe
   and storms counts them. A host at a pass held by an enemy post storms it when clearly the stronger, and one whose way runs
   through such a pass stops there first to do so. A country that loses its capital names its largest city the new one. At
   sea it builds only cogs, and only for the straits between its land and an enemy's — 10 ships in the strait's zone,
-  sailed there a zone at a time or bought in a port it holds there — and for a landing: against the nearest enemy it cannot
-  reach by land or strait, the two ends of the shortest way by sea from a port of its own to one of theirs are held the same way,
-  and its armies, finding the route open, sail (its march estimates count voyages wherever its ships hold the sea) — and patrols only where enemy ships are at sea and its
+  sailed there a zone at a time or bought in a port it holds there — and for a landing, only when no enemy is in reach by land or
+  strait: the two ends of the shortest way by sea from a port of its own to the nearest enemy's are held with the fleet it has,
+  never with cogs bought for it, and its armies, finding the route open, sail (its march estimates count voyages wherever its
+  ships hold the sea) — and patrols only where enemy ships are at sea and its
   side has 1.3 times their power, going back to port when outmatched or alone; it researches no warships it would not build.
   An army counts as a garrison only in a settlement of its own country: one at a pass or before an enemy town is a host,
   given orders like any (`util.js`, `garrisons`).

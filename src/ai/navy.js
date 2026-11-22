@@ -2,9 +2,11 @@
 //   straits    10 ships of a country in the sea zone of a strait let its armies cross it (RULES.md §8): for every strait
 //              between its land and the enemy's it gets that many there — the smallest fleet of its own that will do, split
 //              off a bigger one if need be, sailing a zone at a time; else cogs bought in a port it holds there;
-//   landings   so do 10 ships at each end of a sea lane (RULES.md §8): against the nearest enemy it cannot reach by land or
-//              strait, the two zones of the shortest way by sea from a port of its own to one of theirs are held the same way,
-//              and its armies, finding the way open, sail (war.js needs nothing more);
+//   landings   so do 10 ships at each end of a sea lane (RULES.md §8): when no enemy at all is in reach by land or strait — no
+//              land front to hold — the two zones of the shortest way by sea from a port of its own to the nearest enemy's are
+//              held with the ships it has, never with ships bought for it, and its armies, finding the way open, sail (war.js
+//              needs nothing more). A country with a front next door keeps its money and its fleet for that (TODO.md #25:
+//              Prussia, buying cogs to land across the Baltic, lost its land war at home);
 //   at sea     where its side is clearly the stronger (1.3 times the enemy's ships in the zone, in port or at sea) a fleet puts
 //              out: it blockades the richest enemy port in the zone (halving its money, RULES.md §7), or, every port there
 //              blockaded already, patrols, to fall on whatever comes out; outmatched, or with nothing left to do, it goes back
@@ -49,10 +51,11 @@ export function navalNeed(game, code) {
     });
 }
 
-// the two zones to hold for a landing (RULES.md §8, Sea lanes): against the nearest enemy that neither it nor its subjects border by
-// land or strait, the fewest zones from one of its ports' zones to one of the enemy's, at most SEA_ZONES_MAX — the zone it sets
-// out from and the zone it lands in (one, if the same). None if every enemy is in reach by land, or none by sea
+// the two zones to hold for a landing (RULES.md §8, Sea lanes): when no enemy borders it or its subjects by land or strait, the
+// fewest zones from one of its ports' zones to one of the nearest enemy's, at most SEA_ZONES_MAX — the zone it sets out from and
+// the zone it lands in (one, if the same). None with a land front, or with no enemy in reach by sea
 function landingZones(game, code, foes) {
+    if (foes.some((foe) => withinDemandReach(game, code, foe))) return [];
     const zonesOf = (c) => new Set(portsOf(game, c).map((s) => game.map.nodes.get(String(s.id)).zone).filter(Boolean));
     const ours = [...zonesOf(code)].sort();
     let best = null;
@@ -84,9 +87,10 @@ export function navyOrders(game, code, ctx = { budget: 0 }) {
     // straits: those between our land and an enemy's, and the ships they need
     const need = game.map.scenario.straitShips;
     const owner = (id) => st.settlements[id]?.owner;
-    const wanted = !foes.length ? [] : [...new Set([...(game.map.scenario.routes ?? []).filter((r) => r.type === "strait" && r.seaZone
+    const straitZones = new Set(!foes.length ? [] : (game.map.scenario.routes ?? []).filter((r) => r.type === "strait" && r.seaZone
         && ((owner(r.from) === code && foes.includes(owner(r.to))) || (owner(r.to) === code && foes.includes(owner(r.from)))))
-        .map((r) => r.seaZone), ...landingZones(game, code, foes)])].sort();
+        .map((r) => r.seaZone));
+    const wanted = !foes.length ? [] : [...new Set([...straitZones, ...landingZones(game, code, foes)])].sort();
     const short = wanted.some((z) => shipsIn(st, code, z) < need);
 
     // idle fleets at the same place become one (the lowest-numbered keeps the ships) — but not while a strait is short of
@@ -123,8 +127,9 @@ export function navyOrders(game, code, ctx = { budget: 0 }) {
             keep.add(big.id);
             continue;
         }
+        // cogs bought only for a strait: a landing is made with the fleet it has
         const port = ownPort(z), lots = Math.ceil(lack / 10), cost = lots * SHIP_PRICE.cogs;
-        if (port !== undefined && ctx.budget >= cost + 0.3 * e.settlementMoney) {
+        if (port !== undefined && straitZones.has(z) && ctx.budget >= cost + 0.3 * e.settlementMoney) {
             cmd("buyShips", { port, kind: "cogs", lots });
             ctx.budget -= cost;
         }

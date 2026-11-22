@@ -6,7 +6,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 
 ## Now
 
-- [ ] #25 The computer's landings only when it has no land front, and never buying ships for a landing — Prussia lost in the sea-lane strength test (experiments/README.md, 26) — AI, S
 
 ## Next
 
