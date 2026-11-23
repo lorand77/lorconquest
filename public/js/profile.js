@@ -7,7 +7,7 @@
 // first opened. The tab is the page's hash (#stats, #games, #achievements, #friends), so the rail's links open it.
 import { longDate } from "/engine/calendar.js";          // calendar.js alone: index.js would bring the whole engine
 import { requireUser } from "./auth.js";
-import { countryLabel, gameLine, statsOf } from "./lobbylogic.js";
+import { countryLabel, gameRow, statsOf } from "./lobbylogic.js";
 import { mountShell, profileTab } from "./shell.js";
 import * as Friends from "./friends.js";
 import { card } from "./achievements.js";
@@ -100,10 +100,13 @@ $("stat-by-scenario").hidden = !s.scenarios.length;
 
 // ---------- Games ----------
 const played = games.filter((g) => g.status !== "lobby");
+// each with its result first, in its colour — won, lost, even, playing, over without one (lobbylogic.js, gameRow)
 $("game-list").replaceChildren(...played.map((g) => {
-    const line = gameLine(g, scenarioOf(g.scenario)?.name ?? g.scenario, countryLabel(scenarioOf(g.scenario), g.country, g.names), longDate(g.day), countryLabel(scenarioOf(g.scenario), g.winner, g.names));
-    return make("li", {}, line.open && own ? make("a", { href: `/game.html?id=${g.id}` }, line.text) : line.text,
-        line.replay ? make("span", {}, " — ", make("a", { href: `/replay.html?id=${g.id}` }, "watch the replay")) : "");
+    const row = gameRow(g, scenarioOf(g.scenario)?.name ?? g.scenario, countryLabel(scenarioOf(g.scenario), g.country, g.names), longDate(g.day), countryLabel(scenarioOf(g.scenario), g.winner, g.names));
+    return make("li", { class: `game-row ${row.result.kind}` }, make("span", { class: `result ${row.result.kind}` }, row.result.text),
+        make("span", { class: "what" }, row.open && own ? make("a", { href: `/game.html?id=${g.id}` }, row.what) : row.what),
+        make("span", { class: "when" }, row.detail ? `${row.when} · ${row.detail}` : row.when),
+        make("span", { class: "links" }, row.replay ? make("a", { href: `/replay.html?id=${g.id}` }, "replay") : row.open && own ? make("a", { href: `/game.html?id=${g.id}` }, "open") : ""));
 }));
 if (!played.length) $("game-list").textContent = own ? "None yet: start one under Play." : "None over yet.";
 

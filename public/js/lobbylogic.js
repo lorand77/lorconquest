@@ -68,6 +68,29 @@ export function gameLine(game, scenarioName, countryName, dateText, winnerName =
     return { text: where, open: true, replay: false };
 }
 
+// how a game went for the person, at a glance (My Games): { kind, text } — kind "won", "lost", "even" (no winner, and they outlasted
+// everyone: as statsOf, neither won nor lost), "playing", "abandoned" or "outdated", for its colour
+const ordinal = (n) => `${n}${[11, 12, 13].includes(n % 100) ? "th" : ["th", "st", "nd", "rd"][n % 10] ?? "th"}`;
+export function gameResult(game) {
+    if (game.status === "abandoned") return { kind: "abandoned", text: "Abandoned" };
+    if (game.status === "outdated") return { kind: "outdated", text: "Ended" };
+    if (game.status !== "finished") return { kind: "playing", text: game.paused ? "Paused" : "Playing" };
+    if (game.winner) return game.winner === game.country ? { kind: "won", text: "Won" } : { kind: "lost", text: "Lost" };
+    if (game.people > 1 && game.place === 1 && !game.out) return { kind: "even", text: `1st of ${game.people}` };
+    return { kind: "lost", text: game.people > 1 && game.place ? `${ordinal(game.place)} of ${game.people}` : "Lost" };
+}
+
+// a game as My Games lists it: its result, what it was (scenario, country, people), its date, and what more there is to say —
+// who won it, why it ended — with whether it opens or replays (as gameLine)
+export function gameRow(game, scenarioName, countryName, dateText, winnerName = game.winner) {
+    const result = gameResult(game), line = gameLine(game, scenarioName, countryName, dateText, winnerName);
+    const what = `${scenarioName}, ${countryName}${game.people > 1 ? `, ${game.people} people` : ""}`;
+    const detail = result.kind === "lost" && game.winner ? `won by ${winnerName}`
+        : game.status === "finished" && !game.winner ? (game.people > 1 ? "no winner" : "every country fell")
+            : game.status === "abandoned" ? "nobody was left" : game.status === "outdated" ? "unfinished: the rules changed" : "";
+    return { result, what, when: dateText, detail, open: line.open, replay: line.replay };
+}
+
 // a person's numbers, for My Profile's Stats: from their games (GET /api/games, each with the country they played and the
 // winner's) and their row of the leaderboard, if they have one (the places among people are worked out by the server)
 // a share in whole per cent, or null with nothing to take it of

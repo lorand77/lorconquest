@@ -180,3 +180,20 @@ test("a game everyone left with no winner, this person last (placed 1st, never e
     assert.deepEqual([s.finished, s.counted, s.won, s.winRate, s.winRateWithOthers], [4, 3, 1, 33, 33]);    // the second left out
     assert.equal(s.scenarios[0].winRate, 33);
 });
+
+test("My Games: each game's result at a glance — won, lost, even, playing, over without one — and what more there is to say", async () => {
+    const { gameResult, gameRow } = await import("../../public/js/lobbylogic.js");
+    const done = (rest) => ({ status: "finished", country: "BAV", people: 1, ...rest });
+    assert.deepEqual(gameResult(done({ winner: "BAV" })), { kind: "won", text: "Won" });
+    assert.deepEqual(gameResult(done({ winner: "AUS", people: 3, place: 2 })), { kind: "lost", text: "Lost" });
+    // no winner: outlasting everyone is even (as in the stats, neither won nor lost); otherwise the place, a loss
+    assert.deepEqual(gameResult(done({ winner: null, people: 3, place: 1 })), { kind: "even", text: "1st of 3" });
+    assert.deepEqual(gameResult(done({ winner: null, people: 3, place: 2, out: true })), { kind: "lost", text: "2nd of 3" });
+    assert.deepEqual(gameResult(done({ winner: null })), { kind: "lost", text: "Lost" });
+    assert.deepEqual([gameResult({ status: "active" }).text, gameResult({ status: "active", paused: true }).text, gameResult({ status: "abandoned" }).kind, gameResult({ status: "outdated" }).kind],
+        ["Playing", "Paused", "abandoned", "outdated"]);
+    const lost = gameRow(done({ winner: "AUS", people: 2, place: 2 }), "Mitteleuropa", "Bavaria", "1 January 1500", "Austria");
+    assert.deepEqual([lost.what, lost.when, lost.detail, lost.open, lost.replay], ["Mitteleuropa, Bavaria, 2 people", "1 January 1500", "won by Austria", false, true]);
+    assert.equal(gameRow(done({ winner: "BAV" }), "M", "B", "d").detail, "", "a win needs no more said");
+    assert.deepEqual([gameRow({ status: "active", people: 1 }, "M", "B", "d").open, gameRow({ status: "outdated", people: 1 }, "M", "B", "d").detail], [true, "unfinished: the rules changed"]);
+});

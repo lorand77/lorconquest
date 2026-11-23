@@ -756,7 +756,8 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   and a rail of sections on the left — Play (the lobby: a new game, rooms, games in progress, and in a column on its right, as in LorCiv, who is
   online — has the lobby or a game open, and whether playing, kept in memory by `socket.js` and sent to the lobby as it changes), My Profile with its two tabs
   Stats and My Games (`profile.html`: the numbers worked out by `lobbylogic.js`, `statsOf`, from your games and your
-  leaderboard row; every game, the finished ones with their replays), Customize (`customize.html`: the colours) and the
+  leaderboard row; every game, the finished ones with their replays, each led by its result in its colour — won green, lost red, even
+  amber, playing blue, abandoned or ended grey: `lobbylogic.js`, `gameResult`, `gameRow`), Customize (`customize.html`: the colours) and the
   Leaderboard, where a name opens that player's profile (`profile.html?name=…`, `GET /api/players/:name`): their stats and their
   games that are over, with the replays — what anyone signed in may already watch — never the games they are still playing.
   Each page reserves the shell's room (`body.shell`) so nothing moves when the script builds it. The game, the
@@ -797,7 +798,9 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   pass or a land, and the route is drawn with its days and arrival date, worked out by the engine in
   the browser; [March] (or Enter) sends it, [March and storm] where the destination is an enemy
   settlement, [Cancel] (or Escape) drops it. The selected army's panel has Stop, Storm, Sortie,
-  Split and Merge where they apply, and, when it has unarmed men, one button that arms them all with the best weapon
+  Split and Merge where they apply — Split in half at a click, as a fleet's panel has too (`mirror.js`, `halfArmy`, `halfFleet`: half of
+  every weapon or ship, rounded down, each cannon split off with its 10 crew and half the crew to spare), or Split… for the numbers
+  chosen — and, when it has unarmed men, one button that arms them all with the best weapon
   the treasury can buy the missing lots of (`mirror.js`, `bestArming`: a `buyWeapons` and an `equip`, sent one after the
   other), and, when it carries swords or guns older than the best one researched, Modernise (`modernising`: those men
   given the best gun, the worst-armed first, as many as the reserve and whole lots the treasury pays for allow — once there

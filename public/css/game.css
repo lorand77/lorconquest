@@ -631,3 +631,15 @@ body.legal { max-width: 760px; margin: 2em auto; padding: 0 1em; }
 .lc-badge path, .lc-badge circle, .lc-badge ellipse { filter: drop-shadow(0 0 0.8px #fff); }
 .lc-blockaded .lc-sign { stroke: #c9161f; stroke-width: 1.6; filter: drop-shadow(0 0 0.8px #fff); pointer-events: none; }
 .lc-army text.lc-stack, .lc-fleet text.lc-stack { font: bold 7px system-ui, sans-serif; text-anchor: end; fill: #111; stroke: #fff; stroke-width: 2; paint-order: stroke; }
+/* My Games (profile.js): each game a row, its result first in its colour (lobbylogic.js, gameResult) */
+.games li.game-row { display: grid; grid-template-columns: 6.5em minmax(0, 1fr) auto; gap: 0.15em 0.8em; align-items: baseline; padding: 0.45em 0.6em; margin: 0.3em 0;
+    background: var(--surface-2); border: 1px solid var(--border); border-left-width: 4px; border-radius: 6px; }
+.game-row .result { grid-row: span 2; font-weight: 600; }
+.game-row .what { color: var(--text-strong); }
+.game-row .links { grid-row: span 2; text-align: right; }
+.game-row .when { grid-column: 2; font-size: 0.85em; color: var(--text-muted); }
+.game-row.won { border-left-color: var(--good); } .result.won { color: var(--good); }
+.game-row.lost { border-left-color: var(--bad); } .result.lost { color: var(--bad); }
+.game-row.even { border-left-color: var(--warn); } .result.even { color: var(--warn); }
+.game-row.playing { border-left-color: var(--accent); } .result.playing { color: var(--accent); }
+.game-row.abandoned, .game-row.outdated { border-left-color: var(--border); } .result.abandoned, .result.outdated { color: var(--text-muted); }
