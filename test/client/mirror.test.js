@@ -3,8 +3,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
-import { buildMap } from "../../src/engine/index.js";
-import { BATTLE_MS, addBattleSigns, battlePoint, battleSize, hireAll, recruitAll, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { Game, buildMap } from "../../src/engine/index.js";
+import { BATTLE_MS, addBattleSigns, battlePoint, battleSize, halfArmy, halfFleet, hireAll, recruitAll, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -482,4 +482,25 @@ test("hire all: lots of 1000 as the cap, the companies for hire and the treasury
     assert.deepEqual(lots(hireAll({ ...base, capLeft: 1e6, forHire: 2999, treasury: 1e9 })), [[1, 2]], "the companies left");
     assert.deepEqual(lots(hireAll({ ...base, capLeft: 1e6, forHire: 1e6, treasury: 120000 })), [[1, 2]], "the money");
     assert.deepEqual(hireAll({ ...base, capLeft: 900, forHire: 1e6, treasury: 1e9 }), []);
+});
+
+test("split in half: half of every weapon and ship, each cannon with its crew — an order the engine takes", () => {
+    const game = Game.create(scenario, { seed: 1 }), st = game.state, army = st.armies[37], owner = army.owner;
+    Object.assign(army, { men: { ...army.men, swords: 801, pikes: 300, cavalry: 0 }, cannons: 3, crew: 35 });
+    const cmd = halfArmy(army);
+    // 400 of 801 swords, 150 pikes, one cannon with its 10 crew and half the 5 spare
+    assert.deepEqual([cmd.men, cmd.cannons, cmd.crew], [{ swords: 400, pikes: 150 }, 1, 12]);
+    const r = game.command({ ...cmd, country: owner });
+    assert.ok(r.ok, r.error);
+    assert.deepEqual([army.men.swords, army.men.pikes, army.cannons, army.crew], [401, 150, 2, 23]);
+    // one swordsman and one pikeman: one of them goes; a single man: nothing to split
+    assert.deepEqual(halfArmy({ id: 1, men: { swords: 1, pikes: 1 }, cannons: 0, crew: 0 }).men, { pikes: 1 });
+    assert.equal(halfArmy({ id: 1, men: { swords: 1 }, cannons: 0, crew: 0 }), null);
+    // a fleet: half of each kind
+    const f = Object.values(st.fleets)[0];
+    f.ships = { cogs: 5, carracks: 2, galleons: 0, menOfWar: 1 };
+    const split = halfFleet(f);
+    assert.deepEqual(split.ships, { cogs: 2, carracks: 1 });
+    assert.ok(game.command({ ...split, country: f.owner }).ok);
+    assert.equal(halfFleet({ id: 1, ships: { cogs: 1 } }), null);
 });

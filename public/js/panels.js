@@ -6,7 +6,7 @@
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, hireRoom, isCore, lawChangeDay, longDate, techCost, trainingRoom } from "/engine/index.js";
 import { FAITH_COLOURS } from "./mapdraw.js";
-import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, hireAll, modernising, pikesToMuskets, recruitAll } from "./mirror.js";
+import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, halfFleet, hireAll, modernising, pikesToMuskets, recruitAll } from "./mirror.js";
 
 const n = formatNumber;
 export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
@@ -354,6 +354,8 @@ export function fleetPanel(ctx, f) {
         if (f.order) buttons.push(make("button", { onclick: act(ctx, () => ({ type: "hold", fleet: f.id })) }, "Hold"));
     }
     if (total > 1) {
+        const half = !f.moving && halfFleet(f);
+        if (half) buttons.push(make("button", { onclick: act(ctx, () => half) }, "Split in half"));
         const inputs = SHIPS.filter((s) => f.ships[s]).map((s) => [s, numberInput(ctx, 0, 0, f.ships[s])]);
         buttons.push(make("details", {}, make("summary", {}, "Split…"),
             ...inputs.map(([s, i]) => make("label", {}, `${SHIP_NAMES[s]} `, i)),

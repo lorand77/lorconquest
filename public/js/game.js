@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, describeEvent, friendly, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, halfArmy, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -831,7 +831,11 @@ function armyPanel(a) {
         const here = armiesAt(a.at);
         if (s && atWar(me, s.owner) && here.some((x) => x.owner === s.owner && !x.relief)) buttons.push(make("button", { onclick: () => dispatch({ type: "storm", army: a.id }) }, "Storm"));
         if (s && s.owner === me && s.siege && !a.relief) buttons.push(make("button", { onclick: () => dispatch({ type: "sortie", army: a.id }) }, "Sortie"));
-        if (menOf(a) + a.cannons > 1) buttons.push(make("button", { onclick: () => { splitOpen = !splitOpen; renderPanel(); } }, "Split…"));
+        if (menOf(a) + a.cannons > 1) {
+            const half = halfArmy(a, CREW_PER_CANNON);
+            if (half) buttons.push(make("button", { onclick: () => send(half) }, "Split in half"));
+            buttons.push(make("button", { onclick: () => { splitOpen = !splitOpen; renderPanel(); } }, "Split…"));
+        }
         const post = state.posts[a.at];
         if (post && atWar(me, post.owner)) buttons.push(make("button", { onclick: () => dispatch({ type: "stormPost", army: a.id }) }, `Storm the post (${formatNumber(post.n)} sharpshooters)`));
         const others = here.filter((x) => x.owner === me && x.id !== a.id && x.relief === a.relief && !x.retreating);

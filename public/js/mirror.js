@@ -682,3 +682,30 @@ export function hireAll({ settlements, rooms, capLeft, forHire, treasury, price 
     }
     return out;
 }
+
+// ---------- splitting in half (the army's and the fleet's Split in half) ----------
+// the half to split off, each kind's number halved (rounded down), or one of the most numerous kind if that leaves nothing
+const halve = (counts) => {
+    const out = Object.fromEntries(Object.entries(counts).filter(([, n]) => n >= 2).map(([k, n]) => [k, Math.floor(n / 2)]));
+    if (!Object.keys(out).length) {
+        const [most] = Object.entries(counts).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
+        if (most) out[most[0]] = 1;
+    }
+    return out;
+};
+// the split order that takes half an army away: half its men of every weapon and half its cannons, each cannon with its 10 crew and
+// half the crew left over — so that both halves keep 10 for every cannon (RULES.md §8); null if it cannot be split
+export function halfArmy(a, crewPerCannon = 10) {
+    const men = Object.fromEntries(Object.entries(a.men).filter(([, n]) => n > 0));
+    const total = Object.values(men).reduce((k, n) => k + n, 0) + a.cannons;
+    if (total < 2) return null;
+    const cannons = Math.floor(a.cannons / 2), spare = Math.max(0, a.crew - a.cannons * crewPerCannon);
+    const crew = Math.min(a.crew, cannons * crewPerCannon + Math.floor(spare / 2));
+    return { type: "split", army: a.id, men: halve(men), cannons, crew };
+}
+// the split order that takes half a fleet away: half its ships of every kind; null if it cannot be split
+export function halfFleet(f) {
+    const ships = Object.fromEntries(Object.entries(f.ships).filter(([, n]) => n > 0));
+    if (Object.values(ships).reduce((k, n) => k + n, 0) < 2) return null;
+    return { type: "splitFleet", fleet: f.id, ships: halve(ships) };
+}
