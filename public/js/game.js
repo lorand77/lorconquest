@@ -707,9 +707,9 @@ function renderPhoneBar() {
     $("pb-year").classList.toggle("good", year !== null && year > 0);
 }
 
-// the open stack (one clicked to show its armies or fleets one by one) and the map's scale for the pips (mapdraw.js)
+// the open stack: one clicked to show its armies or fleets one by one (mapdraw.js)
 let openStack = null;
-const markerOptions = () => ({ me, selected: sel, open: openStack, x: game.map.x });
+const markerOptions = () => ({ me, selected: sel, open: openStack });
 const armyMarkers = (day) => drawArmies(state, game.map.nodes, legs, day, colourOf, markerOptions());
 
 let empireShown = false;

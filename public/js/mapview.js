@@ -59,21 +59,20 @@ function stateGlyph(state, angle) {
     if (state === "patrol") return [el("circle", { class: "lc-sign dashed", cx: 0, cy: 0, r: 2.8 })];
     return [];
 }
-// a marker's chip: its colour, its number, its signs, its pips, its state and its stack, the extras drawn again only when they change
+// a marker's chip: its colour, its number, its signs, its state and its stack, the extras drawn again only when they change
 function chip(g, m, w, signs, state) {                 // signs: a function making the signs, called only when they change
     const [rect, text, extra] = g.children;
     rect.setAttribute("width", w);
     rect.setAttribute("fill", m.colour);
     text.setAttribute("x", 11 + (w - 11) / 2);
     text.textContent = m.label;
-    const key = JSON.stringify([m.arm ?? m.best, m.cannons, m.atSea, m.pips, state, m.angle, m.count, w]);
+    const key = JSON.stringify([m.arm ?? m.best, m.cannons, m.atSea, state, m.angle, m.count, w]);
     if (extra.dataset.key !== key) {
         extra.dataset.key = key;
-        const pips = Array.from({ length: m.pips ?? 0 }, (_, i) => el("circle", { class: "lc-pip", cx: w / 2 + (i - ((m.pips ?? 0) - 1) / 2) * 4, cy: 9.5, r: 1.4 }));
         const badge = el("g", { class: "lc-badge", transform: `translate(${w + 5} 0)` });
         badge.append(...stateGlyph(state, m.angle ?? 0));
         const count = m.count ? [Object.assign(el("text", { class: "lc-stack", x: w + 1, y: -8 }), { textContent: `×${m.count}` })] : [];
-        extra.replaceChildren(...signs(), ...pips, badge, ...count);
+        extra.replaceChildren(...signs(), badge, ...count);
     }
     if (m.stack) g.dataset.stack = m.stack; else delete g.dataset.stack;
     g.classList.toggle("mine", m.mine);
@@ -267,7 +266,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
 
         // armies: [{ id, x, y, colour, label, mine, enemy, selected, retreating }]; markers are kept by id and moved
         // armies: the markers of mapdraw.js (armyMarkers) — a chip in the owner's colour, the main arm's sign on its left, the men on it,
-        // pips below, what it is doing on its right, "×3" over a stack
+        // what it is doing on its right, "×3" over a stack
         setArmies(armies) {
             const keep = new Set();
             for (const a of armies) {
