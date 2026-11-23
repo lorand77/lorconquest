@@ -14,7 +14,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 - [ ] #31 Smarter computer players: more aggressive late in the game, better troop movement with allies — AI, L
 - [ ] #14 Coalitions open to people, not only the computer — rules, screen, M
 - [ ] #32 Increase the win amount — balance, S
-- [ ] #34 README like lorchess's and lorciv's, with a screenshot; bump the version to 0.9 — docs, S
 - [ ] #51 A "Split in half" button for armies and fleets: half of every weapon and ship kind into a new one at a click — screen, S
 
 ## Later
