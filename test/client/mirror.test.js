@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { buildMap } from "../../src/engine/index.js";
-import { BATTLE_MS, addBattleSigns, battlePoint, battleSize, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { BATTLE_MS, addBattleSigns, battlePoint, battleSize, hireAll, recruitAll, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -460,4 +460,26 @@ test("battle signs: where, how large, one a place a day, gone after a moment, at
     assert.ok(signs.some((s) => s.mine), "the player's own stays");
     assert.deepEqual(signs.filter((s) => !s.mine).map((s) => s.id), many.slice(3).map((e) => `10|${e.place}`));
     assert.equal(addBattleSigns([], many, 0, { ...geo, max: 6 }).length, 6);
+});
+
+test("recruit all: the most there is room for in every settlement — by the thousand, the rest by the hundred — while the cap and the treasury allow", () => {
+    const rooms = new Map([[1, 4000], [2, 1500], [3, 700]]), base = { settlements: [1, 2, 3], rooms, weapon: "unarmed", reserve: {}, treasury: 0, price: 0 };
+    const sizes = (plan) => plan.map((o) => [o.settlement, o.lots ? o.lots * 1000 : o.hundreds * 100]);
+    // room under the cap for all of it: 4,000 + 1,000 and 500 + 700 by the hundred
+    assert.deepEqual(sizes(recruitAll({ ...base, raiseRoom: 10000 })), [[1, 4000], [2, 1000], [2, 500], [3, 700]]);
+    // the cap leaves 5,300: the capital's 4,000, then 1,000, then 300 by the hundred
+    assert.deepEqual(sizes(recruitAll({ ...base, raiseRoom: 5300 })), [[1, 4000], [2, 1000], [2, 300]]);
+    // armed with pikes, 2,000 in the reserve, and money for two lots more: 4,000 in the first, nothing it cannot pay for after
+    const pikes = recruitAll({ ...base, raiseRoom: 10000, weapon: "pikes", reserve: { pikes: 2000 }, treasury: 2 * 300, price: 300 });
+    assert.deepEqual(sizes(pikes), [[1, 4000]]);
+    assert.ok(pikes.every((o) => o.type === "raise" && o.kind === "soldiers" && o.weapon === "pikes"));
+});
+
+test("hire all: lots of 1000 as the cap, the companies for hire and the treasury allow, over the settlements' room", () => {
+    const rooms = new Map([[1, 4000], [2, 1000], [3, 2000]]), base = { settlements: [1, 2, 3], rooms, price: 50000 };
+    const lots = (plan) => plan.map((o) => [o.settlement, o.lots]);
+    assert.deepEqual(lots(hireAll({ ...base, capLeft: 6500, forHire: 1e6, treasury: 1e9 })), [[1, 4], [2, 1], [3, 1]]);
+    assert.deepEqual(lots(hireAll({ ...base, capLeft: 1e6, forHire: 2999, treasury: 1e9 })), [[1, 2]], "the companies left");
+    assert.deepEqual(lots(hireAll({ ...base, capLeft: 1e6, forHire: 1e6, treasury: 120000 })), [[1, 2]], "the money");
+    assert.deepEqual(hireAll({ ...base, capLeft: 900, forHire: 1e6, treasury: 1e9 }), []);
 });

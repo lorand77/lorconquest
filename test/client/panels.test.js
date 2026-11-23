@@ -406,3 +406,27 @@ test("the Shop tab shows what each settlement may still train, and raises by the
     await button(nodes, "Raise").handlers.click();
     assert.equal(sent[0].hundreds, 6);
 });
+
+test("Recruit all and Hire all: every core settlement at once, as many as each has room for, sent one by one", async () => {
+    const { ctx, sent } = setup((game) => { Object.assign(game.state.countries.BAV, { treasury: 1e8, law: "barrel" }); game.state.mercenaries = 1e6; });   // a cap with room for many
+    ctx.ui = { target: null, raiseWeapon: "unarmed", raiseAt: null, hireAt: null };
+    let nodes = shopTab(ctx);
+    const recruit = button(nodes, "Recruit all");
+    assert.ok(recruit && !recruit.disabled, recruit?.text);
+    await recruit.handlers.click();
+    const raised = sent.filter((o) => o.type === "raise");
+    assert.ok(new Set(raised.map((o) => o.settlement)).size > 1, "more than one settlement");
+    assert.equal(recruit.text, `Recruit all · ${raised.reduce((k, o) => k + (o.lots ? o.lots * 1000 : o.hundreds * 100), 0).toLocaleString("en-GB")}`);
+    nodes = shopTab(ctx);
+    const hire = button(nodes, "Hire all");
+    await hire.handlers.click();
+    const hired = sent.filter((o) => o.type === "hireMercenaries");
+    assert.ok(hired.length >= 1 && hired.every((o) => o.lots >= 1));
+    assert.equal(hire.text, `Hire all · ${hired.reduce((k, o) => k + o.lots * 1000, 0).toLocaleString("en-GB")}`);
+    // a refusal stops the rest
+    const { ctx: refusing, sent: tried } = setup((game) => { game.state.countries.BAV.treasury = 1e8; });
+    refusing.ui = { target: null, raiseWeapon: "unarmed", raiseAt: null, hireAt: null };
+    refusing.send = async (cmd) => { tried.push(cmd); return { ok: false, error: "no" }; };
+    await button(shopTab(refusing), "Recruit all").handlers.click();
+    assert.equal(tried.length, 1);
+});

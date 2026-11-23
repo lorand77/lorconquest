@@ -634,3 +634,51 @@ export function addBattleSigns(signs, events, now, { nodes, zones, legs, colourO
     }
     return out;
 }
+
+// ---------- raising and hiring everywhere at once (the Shop's Recruit all and Hire all) ----------
+// the orders that raise the most soldiers there is room for in every settlement given, in its order: each as many as its own room
+// (`rooms`, by id) allows, within the room left under the army cap and in civilians (`raiseRoom`), armed with `weapon` — from the
+// reserve, the missing lots bought (`price` a lot) while the treasury pays. By the thousand, and by the hundred where fewer than
+// 1000 are left, in the settlement or under the cap, as the engine takes them (RULES.md §8)
+export function recruitAll({ settlements, rooms, raiseRoom, weapon, reserve, treasury, price }) {
+    const out = [], stock = { ...reserve };
+    let left = raiseRoom, money = treasury;
+    const arm = (n, hundreds) => {
+        const { lots, cost } = armingCost(stock, weapon, n, price, hundreds);
+        if (cost > money) return false;
+        money -= cost;
+        if (weapon !== "unarmed") stock[weapon] = (stock[weapon] ?? 0) + lots * (weapon === "cannons" ? 100 : 1000) / (hundreds ? 10 : 1) - (weapon === "cannons" ? n / 10 : n);
+        left -= n;
+        return true;
+    };
+    for (const id of settlements) {
+        let room = rooms.get(id) ?? 0;
+        for (let k = Math.floor(Math.min(room, left) / 1000); k > 0; k--) {
+            if (!arm(k * 1000, false)) continue;
+            out.push({ type: "raise", settlement: id, kind: "soldiers", lots: k, weapon });
+            room -= k * 1000;
+            break;
+        }
+        if (Math.min(room, left) >= 1000) continue;                 // the thousands it could not pay for: no hundreds either
+        for (let h = Math.floor(Math.min(room, left) / 100); h > 0; h--) {
+            if (!arm(h * 100, true)) continue;
+            out.push({ type: "raise", settlement: id, kind: "soldiers", hundreds: h, weapon });
+            break;
+        }
+    }
+    return out;
+}
+
+// the orders that hire the most mercenaries: as many lots of 1000 as the cap leaves (`capLeft`), the world has for hire (`forHire`)
+// and the treasury pays for (`price` a lot), spread over the settlements given, in order, each up to its room (`rooms`, by id)
+export function hireAll({ settlements, rooms, capLeft, forHire, treasury, price }) {
+    const out = [];
+    let lots = Math.max(0, Math.min(Math.floor(capLeft / 1000), Math.floor(forHire / 1000), Math.floor(treasury / price)));
+    for (const id of settlements) {
+        const k = Math.min(lots, Math.floor((rooms.get(id) ?? 0) / 1000));
+        if (k <= 0) continue;
+        out.push({ type: "hireMercenaries", settlement: id, lots: k });
+        lots -= k;
+    }
+    return out;
+}

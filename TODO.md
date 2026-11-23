@@ -14,7 +14,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 - [ ] #14 Coalitions open to people, not only the computer — rules, screen, M
 - [ ] #32 Increase the win amount — balance, S
 - [ ] #34 README like lorchess's and lorciv's, with a screenshot; bump the version to 0.9 — docs, S
-- [ ] #47 "Recruit all" and "Hire all" buttons in the Shop: raise the most soldiers in every core settlement at once, each as much as its room allows, within the army cap, the civilians and the treasury; and hire the most mercenaries the cap, the companies for hire and the treasury allow, spread over the settlements' room — screen, S
 
 ## Later
 

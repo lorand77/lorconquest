@@ -6,7 +6,7 @@
 import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, hireRoom, isCore, lawChangeDay, longDate, techCost, trainingRoom } from "/engine/index.js";
 import { FAITH_COLOURS } from "./mapdraw.js";
-import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, modernising, pikesToMuskets } from "./mirror.js";
+import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, hireAll, modernising, pikesToMuskets, recruitAll } from "./mirror.js";
 
 const n = formatNumber;
 export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n(x));
@@ -27,6 +27,8 @@ const numberInput = (ctx, value, min, max, step = 1) => ctx.make("input", { type
 
 // a command sent, then the panels redrawn at once
 const act = (ctx, cmd) => async () => { const r = await ctx.send(cmd()); ctx.redraw(); return r; };
+// orders one after another, as the engine takes them, stopping at the first refused (the screen says why)
+const actAll = (ctx, plan) => async () => { for (const cmd of plan()) if (!(await ctx.send(cmd))?.ok) break; ctx.redraw(); };
 // an order that sends the selected fleet on its way: accepted, the screen lets the fleet go (ctx.dispatch, game.js)
 const go = (ctx, cmd) => (ctx.dispatch ? () => ctx.dispatch(cmd()) : act(ctx, cmd));
 
@@ -207,13 +209,21 @@ export function shopTab(ctx) {
         return cost ? `Raise · ${money(cost)} for weapons` : "Raise";
     };
     const raise = make("button", { class: "primary", onclick: act(ctx, () => ({ type: "raise", settlement: Number(rs.value), kind: "soldiers", [few ? "hundreds" : "lots"]: Number(rl.value), weapon: rw.value })) }, raiseLabel());
-    const relabel = () => { raise.textContent = raiseLabel(); };
+    // every core settlement at once, the capitals first: as many as each has room for, armed as chosen (mirror.js, recruitAll)
+    const everywhere = [...core].sort((a, b) => Number(capitals.includes(b.id)) - Number(capitals.includes(a.id)) || a.id - b.id).map((s) => s.id);
+    const recruitPlan = () => recruitAll({ settlements: everywhere, rooms: new Map(everywhere.map((id) => [id, roomAt(id)])), raiseRoom: e.raiseRoom,
+        weapon: rw.value, reserve: c.reserve, treasury: c.treasury, price: price(rw.value) });
+    const men = (plan) => plan.reduce((k, o) => k + (o.lots ? o.lots * 1000 : (o.hundreds ?? 0) * 100), 0);
+    const recruit = make("button", { onclick: actAll(ctx, recruitPlan) });
+    const recruitLabel = () => { const k = men(recruitPlan()); recruit.textContent = `Recruit all · ${n(k)}`; recruit.disabled = k === 0; };
+    const relabel = () => { raise.textContent = raiseLabel(); recruitLabel(); };
+    recruitLabel();
     rw.addEventListener("change", () => { if (ctx.ui) ctx.ui.raiseWeapon = rw.value; relabel(); });
     rl.addEventListener("input", relabel);
     out.push(section(ctx, "Raise soldiers (free)",
         row(ctx, rs, rl, make("span", {}, `× ${per}`), rw),
-        make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere, at most a tenth of its people at once (the capital a fifth); weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}.`),
-        raise));
+        make("p", { class: "hint" }, `In a core settlement: ${Math.round(TRAIN_CAPITAL_DAYS / 30.4)} months in the capital, ${Math.round(TRAIN_OTHER_DAYS / 30.4)} elsewhere, at most a tenth of its people at once (the capital a fifth); weapons from the reserve, the rest bought. Soldiers ${n(e.armySoldiers)} of ${n(e.armyCap)}. Recruit all raises as many as there is room for in every core settlement, with the weapon chosen.`),
+        make("div", { class: "buttons" }, raise, recruit)));
 
     // mercenaries
     const ms = select(ctx, settlementOptions(core), kept("hireAt")), ml = numberInput(ctx, 1, 1, 50);
@@ -226,9 +236,14 @@ export function shopTab(ctx) {
             + (s ? ` ${ctx.name(String(s.id))} can take ${n(hireRoom(game, me, s))} more at once (a town 1,000, a city 2,000, a capital 4,000).` : "");
     };
     hireText();
+    // as many as the cap, the world's companies and the treasury allow, over every core settlement's room, the capitals first (mirror.js, hireAll)
+    const hirePlan = () => hireAll({ settlements: everywhere, rooms: new Map(everywhere.map((id) => [id, hireRoom(game, me, state.settlements[id])])),
+        capLeft: (e.mercenaryCap ?? e.armyCap) - e.mercenaries - c.hires.reduce((k, h) => k + h.n, 0), forHire: state.mercenaries ?? 0, treasury: c.treasury, price: MERCENARY_PRICE });
+    const hiring = men(hirePlan());
     out.push(section(ctx, "Hire mercenaries",
         row(ctx, ms, ml, make("span", {}, `× 1000 · ${money(MERCENARY_PRICE)}`)), hireHint,
-        make("button", { onclick: act(ctx, () => ({ type: "hireMercenaries", settlement: Number(ms.value), lots: Number(ml.value) })) }, "Hire")));
+        make("div", { class: "buttons" }, make("button", { onclick: act(ctx, () => ({ type: "hireMercenaries", settlement: Number(ms.value), lots: Number(ml.value) })) }, "Hire"),
+            make("button", { onclick: actAll(ctx, hirePlan), disabled: hiring ? undefined : "disabled" }, `Hire all · ${n(hiring)}`))));
 
     // weapons into the reserve, as many lots at once as asked
     const wl = numberInput(ctx, 1, 1, 50);
