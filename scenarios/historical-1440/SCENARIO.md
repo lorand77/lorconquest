@@ -617,19 +617,19 @@ all at once, `keep` settlements held at the end, `eliminate` a country (take its
 
 | Achievement | Icon | Goal | Description |
 |---|---|---|---|
-| A.E.I.O.U. | 🦅 | `as STY AUS TYR; proclaim habsburg-austria; by 1500` | As a Habsburg — Inner Austria, Austria or Tyrol — proclaim Habsburg Austria before 1500. |
-| The Burgundian Dream | ⚜️ | `as BUR; proclaim kingdom-of-burgundy` | As Burgundy, proclaim the Kingdom of Burgundy. |
-| Queen of the Hanse | ⚓ | `as LUB HAM BRE COL; proclaim hanseatic-league` | As Lübeck, Hamburg, Bremen or Cologne, proclaim the Hanseatic League. |
+| A.E.I.O.U. | 🌍 | `as STY AUS TYR; proclaim habsburg-austria; by 1500` | As a Habsburg — Inner Austria, Austria or Tyrol — proclaim Habsburg Austria before 1500. |
+| The Burgundian Dream | 🐏 | `as BUR; proclaim kingdom-of-burgundy` | As Burgundy, proclaim the Kingdom of Burgundy. |
+| Queen of the Hanse | 🐟 | `as LUB HAM BRE COL; proclaim hanseatic-league` | As Lübeck, Hamburg, Bremen or Cologne, proclaim the Hanseatic League. |
 | Kalmar Union | ❄️ | `proclaim kalmar-union` | Unite the three northern crowns. |
 | Crown of Saint Wenceslas | 🔥 | `as BOH TAB; proclaim lands-of-the-bohemian-crown` | As Bohemia or Tábor, proclaim the Lands of the Bohemian Crown. |
-| Union of Lublin | 🐎 | `as POL LIT; proclaim polish-lithuanian-commonwealth` | As Poland or Lithuania, proclaim the Polish-Lithuanian Commonwealth. |
-| Brandenburg-Prussia | 🦅 | `as BRA; proclaim brandenburg-prussia` | As Brandenburg, proclaim Brandenburg-Prussia. |
+| Union of Lublin | 🤝 | `as POL LIT; proclaim polish-lithuanian-commonwealth` | As Poland or Lithuania, proclaim the Polish-Lithuanian Commonwealth. |
+| Brandenburg-Prussia | ⚫ | `as BRA; proclaim brandenburg-prussia` | As Brandenburg, proclaim Brandenburg-Prussia. |
 | Forest Cantons | 🏔️ | `as SWI ZUR; proclaim unite-the-swiss; by 1480` | As the Confederacy or Zürich, unite the Swiss before 1480. |
 | Teutonic Defiance | ✠ | `as TEU; survive; keep 27 28` | As the Teutonic Order, still hold Königsberg and Danzig at the end. |
 | City Air Makes Free | 🏙️ | `as LUB HAM BRE COL FFM NUR AUG ULM REG MET STR KON BAS DEC ERF; win` | Win as a free city. |
 | The Burgundian Inheritance | 💍 | `as STY AUS TYR; hold 67 70 167` | As a Habsburg, hold Amsterdam, Brussels and Besançon at once — Maximilian married into them in 1477. |
-| Lion of the North | 🦁 | `as SWE; hold 131` | As Sweden, hold Munich, as Gustavus Adolphus did in 1632. |
-| The Black Army | 🏴 | `as HUN; hold 137; by 1490` | As Hungary, hold Vienna before 1490 — Matthias Corvinus took it in 1485. |
+| The Snow King (was Lion of the North) | ⛄ | `as SWE; hold 131` | As Sweden, hold Munich, as Gustavus Adolphus did in 1632. |
+| The Black Army | 🪶 | `as HUN; hold 137; by 1490` | As Hungary, hold Vienna before 1490 — Matthias Corvinus took it in 1485. |
 | Highest Bidder | 💰 | `hold 103 101 80 112 110 88 53` | Hold all seven electors' seats at once: Mainz, Trier, Arnsberg, Prague, Heidelberg, Wittenberg and Brandenburg. Cheaper than the Fuggers' 850,000 florins. |
 | Bold Move | 🐂 | `as BUR; hold 121` | As Burgundy, take Nancy — where Charles the Bold fell in 1477. |
 | Five Centuries Early | 🕰️ | `proclaim germany` | Proclaim Germany within its borders of today — some 550 years before 1990. |

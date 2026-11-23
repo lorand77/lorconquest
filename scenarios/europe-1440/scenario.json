@@ -42308,7 +42308,7 @@
   {
    "id": "the-city-holds",
    "name": "The City Holds",
-   "icon": "🧱",
+   "icon": "⛓️",
    "desc": "As Byzantium, still hold Constantinople at the end. It fell in 1453.",
    "goal": {
     "as": [
@@ -42425,7 +42425,7 @@
   {
    "id": "vienna-falls",
    "name": "Vienna Falls",
-   "icon": "🐎",
+   "icon": "☕",
    "desc": "As the Ottomans, take Vienna.",
    "goal": {
     "as": [

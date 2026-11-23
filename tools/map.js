@@ -512,13 +512,16 @@ if (doc.some((l) => /^## Religions\s*$/.test(l))) {
 // ids (all at once, at some moment), "keep" settlement ids (all held at the end), "eliminate" codes (take each one's last settlement), "empire" n (demand the Empire and have at least n
 // German states join), "by" a year (every clause met before it begins); on a map with religions "reform" (adopt the
 // Reformation), "faith" a religion (yours at the end), "none" a religion (no country of it left at the end — one there during
-// the game: a faith that never appeared counts for nothing). src/achievements/catalogue.js reads them.
+// the game: a faith that never appeared counts for nothing). src/achievements/catalogue.js reads them. Its id, which the awards are
+// stored by, is made from its name; one renamed keeps the old: "Mistress of the Baltic (was Queen of the Hanse)" is shown by its new
+// name, its id still queen-of-the-hanse, so nobody loses it.
 const ACHIEVEMENTS = [];
 if (doc.some((l) => /^## Achievements\s*$/.test(l))) {
     const [, rows] = table("Achievements");
     const slugOf = (n) => n.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     for (const r of rows) {
-        const name = r.Achievement, at = `Achievements line ${r._line}`, goal = {};
+        const renamed = /^(.*?)\s*\(was (.+)\)$/.exec(r.Achievement ?? "");
+        const name = renamed ? renamed[1] : r.Achievement, at = `Achievements line ${r._line}`, goal = {};
         if (!name || !r.Icon || !r.Description) { err(`${at}: needs a name, an icon and a description`); continue; }
         for (const clause of (r.Goal ?? "").split(";").map((x) => x.replace(/`/g, "").trim()).filter(Boolean)) {
             const [word, ...rest] = clause.split(/\s+/);
@@ -546,8 +549,9 @@ if (doc.some((l) => /^## Achievements\s*$/.test(l))) {
             if (["empire", "by"].includes(word) && !Number.isInteger(goal[word])) err(`${at}: '${clause}' needs a whole number`);
         }
         if (!Object.keys(goal).some((k) => k !== "as" && k !== "by" && k !== "faith")) err(`${at}: the goal needs something to do, not only who and by when`);
-        const id = slugOf(name);
+        const id = slugOf(renamed ? renamed[2] : name);
         if (ACHIEVEMENTS.some((a) => a.id === id)) err(`${at}: two achievements are called '${name}'`);
+        if (renamed && ACHIEVEMENTS.some((a) => a.name === name)) err(`${at}: two achievements are called '${name}'`);
         ACHIEVEMENTS.push({ id, name, icon: r.Icon, desc: r.Description, goal });
     }
 }

@@ -16872,7 +16872,7 @@
   {
    "id": "a-e-i-o-u",
    "name": "A.E.I.O.U.",
-   "icon": "🦅",
+   "icon": "🌍",
    "desc": "As a Habsburg — Inner Austria, Austria or Tyrol — proclaim Habsburg Austria before 1500.",
    "goal": {
     "as": [
@@ -16887,7 +16887,7 @@
   {
    "id": "the-burgundian-dream",
    "name": "The Burgundian Dream",
-   "icon": "⚜️",
+   "icon": "🐏",
    "desc": "As Burgundy, proclaim the Kingdom of Burgundy.",
    "goal": {
     "as": [
@@ -16899,7 +16899,7 @@
   {
    "id": "queen-of-the-hanse",
    "name": "Queen of the Hanse",
-   "icon": "⚓",
+   "icon": "🐟",
    "desc": "As Lübeck, Hamburg, Bremen or Cologne, proclaim the Hanseatic League.",
    "goal": {
     "as": [
@@ -16936,7 +16936,7 @@
   {
    "id": "union-of-lublin",
    "name": "Union of Lublin",
-   "icon": "🐎",
+   "icon": "🤝",
    "desc": "As Poland or Lithuania, proclaim the Polish-Lithuanian Commonwealth.",
    "goal": {
     "as": [
@@ -16949,7 +16949,7 @@
   {
    "id": "brandenburg-prussia",
    "name": "Brandenburg-Prussia",
-   "icon": "🦅",
+   "icon": "⚫",
    "desc": "As Brandenburg, proclaim Brandenburg-Prussia.",
    "goal": {
     "as": [
@@ -17034,8 +17034,8 @@
   },
   {
    "id": "lion-of-the-north",
-   "name": "Lion of the North",
-   "icon": "🦁",
+   "name": "The Snow King",
+   "icon": "⛄",
    "desc": "As Sweden, hold Munich, as Gustavus Adolphus did in 1632.",
    "goal": {
     "as": [
@@ -17049,7 +17049,7 @@
   {
    "id": "the-black-army",
    "name": "The Black Army",
-   "icon": "🏴",
+   "icon": "🪶",
    "desc": "As Hungary, hold Vienna before 1490 — Matthias Corvinus took it in 1485.",
    "goal": {
     "as": [

@@ -8514,7 +8514,7 @@
   {
    "id": "north-star",
    "name": "North Star",
-   "icon": "❄️",
+   "icon": "⭐",
    "desc": "Proclaim Scandinavia united.",
    "goal": {
     "proclaim": "unite-scandinavia"
@@ -8523,7 +8523,7 @@
   {
    "id": "danube-monarchy",
    "name": "Danube Monarchy",
-   "icon": "🦅",
+   "icon": "🌊",
    "desc": "Proclaim AustroHungary.",
    "goal": {
     "proclaim": "austrohungary"
@@ -8550,7 +8550,7 @@
   {
    "id": "hegemon-of-the-empire",
    "name": "Hegemon of the Empire",
-   "icon": "🏛️",
+   "icon": "📯",
    "desc": "Demand the Empire and have at least 8 German states join.",
    "goal": {
     "empire": 8
@@ -8559,7 +8559,7 @@
   {
    "id": "three-capitals",
    "name": "Three Capitals",
-   "icon": "🏰",
+   "icon": "🗺️",
    "desc": "Hold Vienna, Prague and Berlin at once before 1500.",
    "goal": {
     "hold": [
@@ -8572,8 +8572,8 @@
   },
   {
    "id": "queen-of-the-hanse",
-   "name": "Queen of the Hanse",
-   "icon": "⚓",
+   "name": "Mistress of the Baltic",
+   "icon": "🚢",
    "desc": "As Hamburg, hold Hamburg, Danzig, Copenhagen and Stockholm at once.",
    "goal": {
     "as": [

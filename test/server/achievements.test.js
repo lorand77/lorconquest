@@ -9,6 +9,7 @@ import path from "node:path";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { Game, REFORMATION_DAY, fingerprint } from "../../src/engine/index.js";
 import { analyzeGame } from "../../src/achievements/analyze.js";
+import { ACHIEVEMENTS } from "../../src/achievements/catalogue.js";
 import { deleteAccount } from "../../src/accounts.js";
 import { tinyScenario } from "../helpers/tiny.js";
 import { api, connect, emitAck, startServer, tempDb, waitFor } from "./helpers.js";
@@ -156,4 +157,17 @@ test("a finished game is played over and awarded: the record, the result, a toas
     } finally {
         await server.close();
     }
+});
+
+test("on the profile page every achievement has its own name and its own emoji: the regular ones and every scenario's", () => {
+    const strip = (icon) => icon.replace(/️/g, "");                   // ⚔️ and ⚔ are one emoji
+    const root = path.join(import.meta.dirname, "..", "..", "scenarios");
+    const all = [...ACHIEVEMENTS.map((a) => ({ name: a.name, icon: a.icon, where: "regular" }))];
+    for (const id of fs.readdirSync(root).filter((d) => fs.existsSync(path.join(root, d, "scenario.json")))) {
+        const sc = JSON.parse(fs.readFileSync(path.join(root, id, "scenario.json"), "utf8"));
+        for (const a of sc.achievements ?? []) all.push({ name: a.name, icon: a.icon, where: id });
+    }
+    const twice = (key) => { const seen = new Map(); for (const a of all) seen.set(key(a), [...(seen.get(key(a)) ?? []), `${a.name} (${a.where})`]); return [...seen.values()].filter((l) => l.length > 1); };
+    assert.deepEqual(twice((a) => a.name.toLowerCase()), [], "a name twice");
+    assert.deepEqual(twice((a) => strip(a.icon)), [], "an emoji twice");
 });

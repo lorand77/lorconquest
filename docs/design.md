@@ -529,7 +529,9 @@ technology) and Milestones, tiered Bronze, Silver and Gold over a person's finis
 battles won). A **scenario's own** are a table in its SCENARIO.md, *Achievements* — a name, an icon, a description and a goal
 of clauses (`as` codes, `win`, `survive`, `proclaim` a region, `hold` settlements at once, `keep` them to the end, `eliminate`
 a country, `empire` n, `by` a year; on a map with religions `reform`, `faith` at the end, and `none` of a faith left at the end — one
-that was there during the game, or it counts for nothing) — which `tools/map.js` checks and writes into scenario.json; keyed `<scenario>:<id>`.
+that was there during the game, or it counts for nothing) — which `tools/map.js` checks and writes into scenario.json; keyed `<scenario>:<id>`. The id is made from
+the name, so one renamed says what it was — *Mistress of the Baltic (was Queen of the Hanse)* — and keeps its old id, and nobody
+loses it. No two achievements on the profile page share a name or an emoji (`test/server/achievements.test.js`).
 
 **Awarding** (`service.js`): when a game finishes, rooms.js queues it; a worker thread (`worker.js`) plays it over from its log
 (`analyze.js`: the engine, the seed, the humans and each day's commands, as the replay page does) and watches the events for

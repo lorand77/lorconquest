@@ -1071,14 +1071,14 @@ still has at the end — one some country had during the game: a faith that neve
 
 | Achievement | Icon | Goal | Description |
 |---|---|---|---|
-| The City Holds | 🧱 | `as BYZ; keep 354` | As Byzantium, still hold Constantinople at the end. It fell in 1453. |
+| The City Holds | ⛓️ | `as BYZ; keep 354` | As Byzantium, still hold Constantinople at the end. It fell in 1453. |
 | Fall of Constantinople | 🌙 | `as OTT; hold 354; by 1460` | As the Ottomans, take Constantinople before 1460, as Mehmed did in 1453. |
 | Third Rome | ☦️ | `as MOS; proclaim tsardom-of-russia; hold 354` | As Muscovy, proclaim Russia and hold Constantinople. |
 | Reconquista | ⛪ | `as CAS ARA; hold 174 175 176; by 1500` | As Castile or Aragon, hold Granada, Málaga and Almería at once before 1500. |
 | Two Crowns, One King | 🌹 | `as ENG; hold 54; keep 84 88` | As England, take Paris, and still hold Rouen and Bordeaux at the end. |
 | Out of France | ⚜️ | `as FRA; hold 83 84 85 86 87 88 89; by 1460` | As France, hold every English town in France — Calais, Rouen, Caen, Cherbourg, Le Mans, Bordeaux and Bayonne — at once before 1460. |
 | Varna Avenged | ✝️ | `as HUN POL; hold 339; by 1460` | As Hungary or Poland, take Edirne before 1460: the crusade of 1444, won. |
-| Vienna Falls | 🐎 | `as OTT; hold 280` | As the Ottomans, take Vienna. |
+| Vienna Falls | ☕ | `as OTT; hold 280` | As the Ottomans, take Vienna. |
 | Rhodes Stands | 🗼 | `as KRH; keep 403` | As the Knights of Rhodes, still hold Rhodes at the end. They lost it in 1522. |
 | Lepanto | ⛵ | `eliminate OTT` | Take the Ottoman Empire's last settlement. |
 | Le Royaume de Bourgogne | 🍇 | `as BUR; proclaim kingdom-of-burgundy` | As Burgundy, proclaim the kingdom Charles the Bold wanted. |
