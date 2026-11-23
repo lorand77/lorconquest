@@ -83,7 +83,7 @@ for (const b of document.querySelectorAll("#standing-tabs button")) b.addEventLi
 function draw() {
     const now = ownersKey(replayer.state);
     if (now !== owners) { owners = now; map.colourLands(ownerOfLand, landFill(replayer.state, colourOf)); map.setLabels(countryLabels(replayer.state, scenario)); }
-    paintMap(map, replayer.state, nodes, zones, legs, replayer.day, colourOf, {});
+    paintMap(map, replayer.state, nodes, zones, legs, replayer.day, colourOf, { x: built.x });
     $("date").textContent = longDate(replayer.day);
     if (!dragging) $("seek").value = replayer.day;     // not under a hand moving it
     standing();

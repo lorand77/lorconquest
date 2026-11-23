@@ -345,8 +345,19 @@ function onwards(events) {
 }
 
 // ---------- clicks and keys ----------
+// is the army or fleet clicked one of the open stack's (mapdraw.js: its key is where it lies and whose it is)
+function inOpenStack(hit) {
+    const closed = { ...markerOptions(), open: null, selected: null };          // every stack as it is when shut
+    const all = hit.kind === "army" ? drawArmies(state, game.map.nodes, legs, displayDay(), colourOf, closed)
+        : drawFleets(state, game.map.nodes, game.map.zones, displayDay(), colourOf, closed);
+    return all.some((m) => m.stack === openStack && m.ids.includes(hit.id));
+}
+
 function onPick(hit) {
     const mine = sel?.kind === "army" && state.armies[sel.id]?.owner === me && !state.armies[sel.id].retreating ? state.armies[sel.id] : null;
+    // a stack of a country's armies or fleets in one place opens at a click into its column, to pick one; any other click closes it
+    if ((hit.kind === "army" || hit.kind === "fleet") && hit.stack) { openStack = hit.stack; renderMap(); return; }
+    if (openStack && !((hit.kind === "army" || hit.kind === "fleet") && inOpenStack(hit))) openStack = null;
     if (isSelected(sel, hit)) { select(null); return; }                  // a second click on it lets go
     if (hit.kind === "army") { select({ kind: "army", id: hit.id }); return; }
     if (hit.kind === "fleet") { select({ kind: "fleet", id: hit.id }); return; }
@@ -696,7 +707,9 @@ function renderPhoneBar() {
     $("pb-year").classList.toggle("good", year !== null && year > 0);
 }
 
-const markerOptions = () => ({ me, selected: sel });
+// the open stack (one clicked to show its armies or fleets one by one) and the map's scale for the pips (mapdraw.js)
+let openStack = null;
+const markerOptions = () => ({ me, selected: sel, open: openStack, x: game.map.x });
 const armyMarkers = (day) => drawArmies(state, game.map.nodes, legs, day, colourOf, markerOptions());
 
 let empireShown = false;

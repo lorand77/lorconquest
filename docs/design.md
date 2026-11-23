@@ -768,7 +768,14 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
 - **On the map:** lands in their owner's colour, borders redrawn where owners differ, every army
   as a marker in its owner's colour with its men on it — edged in red, as is a fleet's, when its country is at war with the
   player (peasants in arms too; `mapdraw.js`, `enemy`) — a column of them beside a place with
-  several; marching armies glide along the roads between ticks; a ring round each besieged
+  several. A marker shows on its left what most of the army carries (sword, pike, horseshoe for cavalry, gun; a cannonball if it has
+  cannons) and a fleet's best ship by its masts (one for cogs, two for carracks, three for galleons, three and gun ports for men-of-war);
+  under it one pip to three for its size — an army's men under 3,000, under 15,000, or more, a fleet's strength in battle under 20,
+  under 60, or more, the steps times the map's x; on its right what it is doing — an arrow on its heading while marching or sailing,
+  a siege tower besieging, a wall as a garrison in its own town, a chain blockading (and a chain by the port shut), a loop on
+  patrol — and a boat under an army at sea. A country's armies standing in one place, or fleets lying together, are one marker
+  with "×3" over it, their men or ships added up, until a click opens it into its column, or one of them is selected
+  (`mapdraw.js`, `armyMarkers`, `fleetMarkers`; `mapview.js`, `chip`); marching armies glide along the roads between ticks; a ring round each besieged
   settlement fills as the siege runs; each capital's marker with a gold border while its country holds it (`mapdraw.js`, `capitalMarks`: capitals move, so the map's file cannot hold them), and in the panels "★ capital"
   by its name. **A battle** shows for 3 s where it was fought — on a road, where the armies met — as a sign that pops up and
   fades: red crossed swords, ringed in the winner's colour, in three sizes by the men

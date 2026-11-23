@@ -18,6 +18,70 @@ const el = (name, attrs = {}) => {
 // show as a coloured emoji
 const battleGlyph = () => el("path", { class: "lc-battle-glyph", d: "M-6.5 -6.5L6 6M6.5 -6.5L-6 6M2.2 6.8L6.8 2.2M-2.2 6.8L-6.8 2.2" });
 
+// ---------- the markers' signs: drawn, small, about 0,0 ----------
+const path = (d, cls = "lc-sign") => el("path", { class: cls, d });
+// an army's main arm (mapdraw.js, mainArm), and a cannonball beside it if it has cannons
+function armGlyph(arm, cannons) {
+    const d = {
+        swords: "M-3.5 3.5L3.5 -3.5M-3 0L0 3",
+        pikes: "M0 4.5V-1.5M-1.6 -1.2L0 -4.5L1.6 -1.2Z",
+        cavalry: "M-2.8 -3.5V0.5A2.8 2.8 0 0 0 2.8 0.5V-3.5",
+        guns: "M-4 2.5L4 -2M-4 2.5L-2.6 4L-1.5 1.6",
+        unarmed: "M-2 0A2 2 0 1 0 2 0A2 2 0 1 0 -2 0",
+    }[arm] ?? "";
+    const g = el("g", { class: "lc-glyph", transform: "translate(6.5 0)" });
+    g.append(path(d));
+    if (cannons) g.append(el("circle", { class: "lc-sign solid", cx: 4.2, cy: 3.4, r: 1.5 }));
+    return g;
+}
+// a fleet's best ship (mapdraw.js, bestShip): a hull with a mast for cogs, two for carracks, three for galleons, and three with a
+// row of gun ports for men-of-war
+function shipGlyph(best) {
+    const masts = { cogs: [0], carracks: [-2, 2], galleons: [-3, 0, 3], menOfWar: [-3, 0, 3] }[best] ?? [0];
+    const g = el("g", { class: "lc-glyph", transform: "translate(6.5 0)" });
+    g.append(path("M-5 1.5H5L3.4 4.4H-3.4Z", "lc-sign solid"), ...masts.map((m) => path(`M${m} 1.5V-4.5`)));
+    if (best === "menOfWar") g.append(path("M-3.6 3H3.6", "lc-sign ports"));
+    return g;
+}
+// a boat under an army on a sea voyage, on the chip's left
+function boatGlyph() {
+    const g = el("g", { class: "lc-glyph", transform: "translate(-6 1)" });
+    g.append(path("M-4 0H4L2.6 2.6H-2.6Z", "lc-sign solid"), path("M0 0V-4"));
+    return g;
+}
+// what it is doing: an arrow on its heading while marching or sailing, a siege tower, a wall as a garrison, a chain on blockade,
+// a loop on patrol
+function stateGlyph(state, angle) {
+    if (state === "march" || state === "sailing") return [el("path", { class: "lc-sign solid", d: "M-3 -2.6L3 0L-3 2.6Z", transform: `rotate(${angle})` })];
+    if (state === "siege") return [path("M-3 3.5V-2.5H-1.8V-3.8H-0.6V-2.5H0.6V-3.8H1.8V-2.5H3V3.5Z", "lc-sign solid")];
+    if (state === "garrison") return [path("M-4 3V-1H-2.7V-2.4H-1.3V-1H0V-2.4H1.3V-1H2.7V-2.4H4V3Z", "lc-sign solid")];
+    if (state === "blockade") return [el("ellipse", { class: "lc-sign", cx: -1.6, cy: 0, rx: 2.2, ry: 1.4 }), el("ellipse", { class: "lc-sign", cx: 1.6, cy: 0, rx: 2.2, ry: 1.4 })];
+    if (state === "patrol") return [el("circle", { class: "lc-sign dashed", cx: 0, cy: 0, r: 2.8 })];
+    return [];
+}
+// a marker's chip: its colour, its number, its signs, its pips, its state and its stack, the extras drawn again only when they change
+function chip(g, m, w, signs, state) {                 // signs: a function making the signs, called only when they change
+    const [rect, text, extra] = g.children;
+    rect.setAttribute("width", w);
+    rect.setAttribute("fill", m.colour);
+    text.setAttribute("x", 11 + (w - 11) / 2);
+    text.textContent = m.label;
+    const key = JSON.stringify([m.arm ?? m.best, m.cannons, m.atSea, m.pips, state, m.angle, m.count, w]);
+    if (extra.dataset.key !== key) {
+        extra.dataset.key = key;
+        const pips = Array.from({ length: m.pips ?? 0 }, (_, i) => el("circle", { class: "lc-pip", cx: w / 2 + (i - ((m.pips ?? 0) - 1) / 2) * 4, cy: 9.5, r: 1.4 }));
+        const badge = el("g", { class: "lc-badge", transform: `translate(${w + 5} 0)` });
+        badge.append(...stateGlyph(state, m.angle ?? 0));
+        const count = m.count ? [Object.assign(el("text", { class: "lc-stack", x: w + 1, y: -8 }), { textContent: `×${m.count}` })] : [];
+        extra.replaceChildren(...signs(), ...pips, badge, ...count);
+    }
+    if (m.stack) g.dataset.stack = m.stack; else delete g.dataset.stack;
+    g.classList.toggle("mine", m.mine);
+    g.classList.toggle("enemy", Boolean(m.enemy));
+    g.classList.toggle("selected", m.selected);
+    g.setAttribute("transform", `translate(${m.x.toFixed(1)} ${m.y.toFixed(1)})`);
+}
+
 export async function createMapView(container, svgUrl, onPick, onCancel = () => {}) {
     container.innerHTML = await (await fetch(svgUrl)).text();
     const svg = container.querySelector("svg");
@@ -38,7 +102,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     svg.querySelector("#labels")?.setAttribute("display", "none");
     const premoveLayer = layer("lc-premoves");          // marches planned for a war to come (game.js, premoves)
     const siegeLayer = layer("lc-sieges"), routeLayer = layer("lc-route"), postLayer = layer("lc-posts"), fleetLayer = layer("lc-fleets"), armyLayer = layer("lc-armies");
-    const battleLayer = layer("lc-battles");             // battle signs, over everything (mirror.js, addBattleSigns)
+    const blockadeLayer = layer("lc-blockades"), battleLayer = layer("lc-battles");             // battle signs, over everything (mirror.js, addBattleSigns)
     const markers = new Map(), ships = new Map(), battles = new Map();      // army id -> <g>, fleet id -> <g>, battle sign id -> <g>
     let capitalKey = null, capitalsShown = [];                       // the settlement groups marked as capitals now
 
@@ -154,9 +218,9 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
     // what a click hit — the sea with the map's point, for the zone it is in (mirror.js, seaZoneAt)
     function pick(target, clientX, clientY) {
         const army = target.closest("[data-army]");
-        if (army) return { kind: "army", id: Number(army.dataset.army) };
+        if (army) return { kind: "army", id: Number(army.dataset.army), ...(army.dataset.stack ? { stack: army.dataset.stack } : {}) };
         const fleet = target.closest("[data-fleet]");
-        if (fleet) return { kind: "fleet", id: Number(fleet.dataset.fleet) };
+        if (fleet) return { kind: "fleet", id: Number(fleet.dataset.fleet), ...(fleet.dataset.stack ? { stack: fleet.dataset.stack } : {}) };
         const place = target.closest("[id^='settlement-'], [id^='pass-']");
         if (place) return { kind: "place", key: place.id.replace(/^(settlement|pass)-/, "") };
         const land = target.closest("[id^='land-']");
@@ -202,6 +266,8 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         },
 
         // armies: [{ id, x, y, colour, label, mine, enemy, selected, retreating }]; markers are kept by id and moved
+        // armies: the markers of mapdraw.js (armyMarkers) — a chip in the owner's colour, the main arm's sign on its left, the men on it,
+        // pips below, what it is doing on its right, "×3" over a stack
         setArmies(armies) {
             const keep = new Set();
             for (const a of armies) {
@@ -209,21 +275,12 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
                 let g = markers.get(a.id);
                 if (!g) {
                     g = el("g", { class: "lc-army", "data-army": a.id });
-                    g.append(el("rect", { y: -7, height: 14, rx: 3 }), el("text", { y: 3.6 }));
+                    g.append(el("rect", { y: -7, height: 14, rx: 3 }), el("text", { y: 3.6 }), el("g", { class: "lc-extra" }));
                     armyLayer.appendChild(g);
                     markers.set(a.id, g);
                 }
-                const w = 8 + 6 * a.label.length;
-                const [rect, text] = g.children;
-                rect.setAttribute("width", w);
-                rect.setAttribute("fill", a.colour);
-                text.setAttribute("x", w / 2);
-                text.textContent = a.label;
-                g.classList.toggle("mine", a.mine);
-                g.classList.toggle("enemy", Boolean(a.enemy));
-                g.classList.toggle("selected", a.selected);
+                chip(g, a, 14 + 6 * a.label.length, () => [armGlyph(a.arm, a.cannons), ...(a.atSea ? [boatGlyph()] : [])], a.state);
                 g.classList.toggle("retreating", a.retreating);
-                g.setAttribute("transform", `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)})`);
             }
             for (const [id, g] of markers) if (!keep.has(id)) { g.remove(); markers.delete(id); }
         },
@@ -236,23 +293,23 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
                 let g = ships.get(f.id);
                 if (!g) {
                     g = el("g", { class: "lc-fleet", "data-fleet": f.id });
-                    g.append(el("rect", { y: -7, height: 14, rx: 7 }), el("text", { y: 3.6 }));
+                    g.append(el("rect", { y: -7, height: 14, rx: 7 }), el("text", { y: 3.6 }), el("g", { class: "lc-extra" }));
                     fleetLayer.appendChild(g);
                     ships.set(f.id, g);
                 }
-                const w = 20 + 6 * f.label.length;
-                const [rect, text] = g.children;
-                rect.setAttribute("width", w);
-                rect.setAttribute("fill", f.colour);
-                text.setAttribute("x", w / 2);
-                text.textContent = `⛵${f.label}`;
-                g.classList.toggle("mine", f.mine);
-                g.classList.toggle("enemy", Boolean(f.enemy));
-                g.classList.toggle("selected", f.selected);
+                chip(g, f, 14 + 6 * f.label.length, () => [shipGlyph(f.best)], f.state);
                 g.classList.toggle("sailing", f.sailing);
-                g.setAttribute("transform", `translate(${f.x.toFixed(1)} ${f.y.toFixed(1)})`);
             }
             for (const [id, g] of ships) if (!keep.has(id)) { g.remove(); ships.delete(id); }
+        },
+
+        // the ports under blockade: a chain beside each (mapdraw.js, blockadeMarks)
+        setBlockades(list) {
+            blockadeLayer.replaceChildren(...list.map((b) => {
+                const g = el("g", { class: "lc-blockaded", transform: `translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})` });
+                g.append(...stateGlyph("blockade", 0));
+                return g;
+            }));
         },
 
         moveFleet(id, x, y) {
