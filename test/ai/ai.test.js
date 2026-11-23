@@ -880,3 +880,16 @@ test("rebels risen as a state are a computer country: they raise men from their 
     assert.ok(raised.length > 0, "it raised soldiers");
     assert.ok(armySoldiersOf(st, reb) > 100);
 });
+
+test("the levels: a game's computer players at the hard level play as at the normal, for now — the ground #31 builds on", async () => {
+    const { AI_LEVELS, levelOf } = await import("../../src/ai/levels.js");
+    assert.deepEqual(AI_LEVELS, ["normal", "hard"]);
+    assert.equal(levelOf("nonsense").name, "normal");
+    const end = (level) => {
+        const game = tinyGame(3, (s) => { s.victory.settlements = 99; }), ai = createAI({ seed: 3, humans: [], level });
+        game.command({ type: "declareWar", country: "AAA", target: "BBB" });
+        play(game, ai, 2 * 365);
+        return game.snapshot();
+    };
+    assert.equal(end("hard"), end("normal"));
+});

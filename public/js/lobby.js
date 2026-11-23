@@ -8,7 +8,7 @@ import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
 import * as Friends from "./friends.js";
 import { toast as achievementToast } from "./achievements.js";
-import { countryLabel, formatCountdown, gameLine, tableActions } from "./lobbylogic.js";
+import { AI_LEVEL_CHOICE, countryLabel, formatCountdown, gameLine, tableActions } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
@@ -43,12 +43,15 @@ function fillCountries() {
 $("scenario").addEventListener("change", fillCountries);
 fillCountries();
 
+// how strong the computer players are: offered once the hard level plays otherwise (lobbylogic.js, AI_LEVEL_CHOICE)
+$("ai-level-choice").hidden = !AI_LEVEL_CHOICE;
+
 let solo = true;
 for (const b of document.querySelectorAll("#start button[data-solo]")) b.addEventListener("click", () => { solo = b.dataset.solo === "1"; });
 $("start").addEventListener("submit", async (e) => {
     e.preventDefault();
     $("error").textContent = "";
-    const body = { scenario: $("scenario").value, country: $("country").value, solo, visibility: $("visibility").value };
+    const body = { scenario: $("scenario").value, country: $("country").value, solo, visibility: $("visibility").value, ai: AI_LEVEL_CHOICE ? $("ai-level").value : "normal" };
     const r = await post("/api/tables", body);
     if (!r.ok) { $("error").textContent = r.error; return; }
     if (r.started) location.href = `/game.html?id=${r.id}`;

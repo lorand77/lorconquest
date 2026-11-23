@@ -25,6 +25,7 @@
 // which is why a restart brings back only the games with several people.
 import { Worker } from "node:worker_threads";
 import { RULES_VERSION } from "../engine/index.js";
+import { AI_LEVELS } from "../ai/levels.js";
 import { rankHumans } from "./results.js";
 
 const WORKER = new URL("./worker.js", import.meta.url);
@@ -58,7 +59,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         const humans = seatRows.map((s) => s.country);
         const worker = new Worker(WORKER, {
             workerData: {
-                scenario: scenario.data, seed: row.seed, snapshot, log: commands, day: row.day, humans, tickMs, statsEvery, paused: true,
+                scenario: scenario.data, seed: row.seed, snapshot, log: commands, day: row.day, humans, tickMs, statsEvery, paused: true, aiLevel: row.ai_level ?? "normal",
                 // a multiplayer game begins with every player away
                 caretakers: multi ? humans.map((c) => [c, "caretaker"]) : [],
             },
@@ -564,8 +565,9 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         mayWatch: (room, userId) => mayWatch(room, userId),
 
         // a new table, the host in the seat of `country`
-        createTable({ userId, scenario, country, seed, visibility = "public" }) {
+        createTable({ userId, scenario, country, seed, visibility = "public", ai = "normal" }) {
             if (!["public", "friends"].includes(visibility)) return { error: "a room is public or for your friends" };
+            if (!AI_LEVELS.includes(ai)) return { error: `the computer players are ${AI_LEVELS.join(" or ")}` };
             if (!scenarios.has(scenario)) return { error: `no scenario ${scenario}` };
             // every game started is a thread: one person cannot open them without end
             if (db.q.tablesHostedBy.all(userId).length >= MAX_TABLES) return { error: `you have ${MAX_TABLES} rooms open already: start or cancel one` };
@@ -573,11 +575,11 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             if (running >= MAX_RUNNING) return { error: `you have ${MAX_RUNNING} games running: finish or leave one first` };
             if (!validCountry(scenario, country)) return { error: `no country ${country} in ${scenario}` };
             const id = db.tx(() => {
-                const { lastInsertRowid } = db.q.insertGame.run(scenario, seed, RULES_VERSION, country, "lobby", userId, visibility);
+                const { lastInsertRowid } = db.q.insertGame.run(scenario, seed, RULES_VERSION, country, "lobby", userId, visibility, ai);
                 db.q.insertSeat.run(lastInsertRowid, country, userId);
                 return Number(lastInsertRowid);
             });
-            log.info("table.created", { game: id, scenario, host: userId, country, visibility });
+            log.info("table.created", { game: id, scenario, host: userId, country, visibility, ai });
             tellLobby();
             return { id };
         },

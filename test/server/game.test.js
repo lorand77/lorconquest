@@ -371,3 +371,19 @@ test("a game alone runs at ½, 1, 2 or 4 days a tick's time: the player chooses,
         await server.close();
     }
 });
+
+test("a game keeps how strong its computer players are, chosen as the table is made: normal unless asked", async () => {
+    const dbPath = tempDb(), server = await startServer({ dbPath });
+    try {
+        const hard = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV", seed: 5, solo: true, ai: "hard" });
+        assert.equal(hard.status, 201);
+        const plain = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "SAX", seed: 5 });
+        const wrong = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "AUS", seed: 5, ai: "godlike" });
+        assert.match(wrong.body.error, /the computer players are normal or hard/);
+        const db = openDb(dbPath);
+        assert.deepEqual([db.q.game.get(hard.body.id).ai_level, db.q.game.get(plain.body.id).ai_level], ["hard", "normal"]);
+        db.close?.();
+    } finally {
+        await server.close();
+    }
+});

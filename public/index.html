@@ -25,6 +25,12 @@
                     <option value="public">Everyone</option>
                     <option value="friends">My friends only</option>
                 </select></label>
+                <!-- how strong the computer players are (src/ai/levels.js): hidden until the hard level plays otherwise (TODO.md #31;
+                     lobbylogic.js, AI_LEVEL_CHOICE) -->
+                <label id="ai-level-choice" hidden>Computer players <select id="ai-level">
+                    <option value="normal">Normal</option>
+                    <option value="hard">Hard</option>
+                </select></label>
                 <button class="primary" type="submit" data-solo="1">Play alone</button>
                 <button type="submit" data-solo="">Open a room</button>
                 <span id="error" class="error"></span>

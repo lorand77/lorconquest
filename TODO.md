@@ -9,7 +9,8 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 
 ## Next
 
-- [ ] #30 Hard and normal computer players — AI, L
+- [ ] #30 Hard and normal computer players — AI, L. The ground is laid: a game's level (src/ai/levels.js, games.ai_level, `fl.level`,
+  `--level` in simulate.js and strength.js) and the lobby's choice, hidden (lobbylogic.js, AI_LEVEL_CHOICE); the hard level itself with #31
 - [ ] #31 Smarter computer players: more aggressive late in the game, better troop movement with allies — AI, L
 - [ ] #14 Coalitions open to people, not only the computer — rules, screen, M
 - [ ] #32 Increase the win amount — balance, S

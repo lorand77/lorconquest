@@ -6,12 +6,15 @@
 // opponent unchanged.
 //
 //   node tools/strength.js [--baseline HEAD] [--candidate working|<commit>] [--seeds 20] [--seed 101] [--years 210]
-//       [--countries BAV,BRB,...] [--salt S] [--scenario mitteleuropa] [--jobs N] [--label x] [--report]
+//       [--countries BAV,BRB,...] [--salt S] [--level hard] [--scenario mitteleuropa] [--jobs N] [--label x] [--report]
 //
 // Each game is written down as it ends, in experiments/strength/<label>.partial.jsonl — its first line the run's settings — so a
 // run cut short (a restart of the container) loses only the games then being played: the same command again plays only the rest,
 // and refuses if the settings (the versions, uncommitted changes and all) are not the same. --report prints what the games played
 // so far say, playing none. The finished run is written whole, as <date>-<label>.json, and its partial file removed.
+//
+// --level L plays the candidate at that level (src/ai/levels.js) and the baseline at the normal one: --candidate HEAD --level hard
+// asks whether the hard level makes a country stronger than the normal (TODO.md #31).
 //
 // --salt S changes the candidate's dice (its diplomacy's: util.js) and nothing else: with --candidate equal to the baseline it
 // is the A/A test — the same computer players, a small difference in luck — whose spread is the noise any real difference must
@@ -70,11 +73,11 @@ const loadScenario = (name) => {
 
 // one game to its end: `country` on the candidate and every other on the baseline — or, with none, all on the baseline (the
 // control). `ai`: { base, cand }, the two versions' modules. Every country's outcome is kept.
-export function play({ scenario, seed, years, ai, country = null, salt = "" }) {
+export function play({ scenario, seed, years, ai, country = null, salt = "", level = "normal" }) {
     const game = Game.create(scenario, { seed, humans: [] }), st = game.state, codes = Object.keys(st.countries);
     // each version is told every other country is a person's, which it leaves alone (src/ai/index.js)
     const base = { ai: ai.base.createAI({ seed, humans: country ? [country] : [] }), view: game, ms: 0, n: codes.length - (country ? 1 : 0) };
-    const versions = country ? [base, { ai: ai.cand.createAI({ seed, humans: codes.filter((c) => c !== country) }), view: salted(game, salt), ms: 0, n: 1 }] : [base];
+    const versions = country ? [base, { ai: ai.cand.createAI({ seed, humans: codes.filter((c) => c !== country), level }), view: salted(game, salt), ms: 0, n: 1 }] : [base];
     const out = Object.fromEntries(codes.map((c) => [c, { peak: 0, coresLost: 0, refused: 0 }]));
     const end = Math.min(years * 365, 1e9);
     let pending = [], how = null;
@@ -177,7 +180,7 @@ const loadVersions = async (dirs) => {
 if (isMainThread && import.meta.filename === process.argv[1]) {
     const arg = (name, dflt) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1] : dflt; };
     const scenarioName = arg("scenario", "mitteleuropa"), scenario = loadScenario(scenarioName);
-    const years = Number(arg("years", 210)), salt = arg("salt", "");
+    const years = Number(arg("years", 210)), salt = arg("salt", ""), level = arg("level", "normal");
     const seed0 = Number(arg("seed", 101)), seeds = Array.from({ length: Number(arg("seeds", 20)) }, (_, i) => seed0 + i);
     const countries = arg("countries", COUNTRIES.join(",")).split(",");
     for (const c of countries) if (!scenario.countries.some((x) => x.code === c)) throw new Error(`no country ${c} in ${scenarioName}`);
@@ -185,7 +188,7 @@ if (isMainThread && import.meta.filename === process.argv[1]) {
     const jobs = Number(arg("jobs", os.availableParallelism())), label = arg("label", salt ? "aa" : "run");
     // for each seed the control game, then a game for each test country — less those its partial file has played already
     const all = seeds.flatMap((seed) => [null, ...countries].map((country) => ({ seed, country })));
-    const settings = { scenario: scenarioName, years, seeds, countries, salt, candidate: cand.label, baseline: base.label };
+    const settings = { scenario: scenarioName, years, seeds, countries, salt, candidate: cand.label, baseline: base.label, ...(level !== "normal" ? { level } : {}) };
     const partial = partialFile(label), done = readPartial(partial, settings);
     const played = new Set(done.map((r) => `${r.seed}|${r.country}`)), tasks = all.filter((t) => !played.has(`${t.seed}|${t.country}`));
     const order = (rs) => rs.sort((a, b) => a.seed - b.seed || (a.country ?? "").localeCompare(b.country ?? ""));
@@ -194,10 +197,10 @@ if (isMainThread && import.meta.filename === process.argv[1]) {
         process.exit(0);
     }
     startPartial(partial, settings);
-    console.log(`${tasks.length} games of ${years} years on ${scenarioName}${done.length ? ` (${done.length} played already)` : ""}, ${jobs} at a time: candidate ${cand.label}, baseline ${base.label}${salt ? `, the candidate's dice salted "${salt}"` : ""}`);
+    console.log(`${tasks.length} games of ${years} years on ${scenarioName}${done.length ? ` (${done.length} played already)` : ""}, ${jobs} at a time: candidate ${cand.label}${level !== "normal" ? ` at the ${level} level` : ""}, baseline ${base.label}${salt ? `, the candidate's dice salted "${salt}"` : ""}`);
     const t0 = performance.now(), results = [...done];
     const run = (task) => new Promise((resolve, reject) => {
-        const w = new Worker(import.meta.filename, { workerData: { task, scenarioName, years, salt, dirs: { base: base.dir, cand: cand.dir } } });
+        const w = new Worker(import.meta.filename, { workerData: { task, scenarioName, years, salt, level, dirs: { base: base.dir, cand: cand.dir } } });
         w.once("message", resolve);
         w.once("error", reject);
     });
@@ -230,6 +233,6 @@ if (isMainThread && import.meta.filename === process.argv[1]) {
     fs.rmSync(partial, { force: true });
     console.log(`\nwritten to ${path.relative(root, file)}`);
 } else if (!isMainThread) {
-    const { task, scenarioName, years, salt, dirs } = workerData;
-    parentPort.postMessage(play({ scenario: loadScenario(scenarioName), seed: task.seed, years, ai: await loadVersions(dirs), country: task.country, salt }));
+    const { task, scenarioName, years, salt, level, dirs } = workerData;
+    parentPort.postMessage(play({ scenario: loadScenario(scenarioName), seed: task.seed, years, ai: await loadVersions(dirs), country: task.country, salt, level }));
 }

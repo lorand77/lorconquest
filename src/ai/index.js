@@ -13,6 +13,7 @@ import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
 import { forceOrders, tidyOrders } from "./forces.js";
 import { navyOrders } from "./navy.js";
+import { levelOf } from "./levels.js";
 import { endgame, flavorOf, looksOn, racing, reserveOf, standings, thinksOn, threatsOf } from "./util.js";
 import { scores } from "../engine/index.js";
 
@@ -40,7 +41,9 @@ function touched(game, events) {
 
 // `profile` (tools/simulate.js --slow): { now, record } — a clock, passed in so that nothing here reads one, and what each country
 // cost on a day, by part. It changes no order.
-export function createAI({ seed, humans = [], profile = null }) {
+// `level`: how strong the computer players are (levels.js), "normal" if not given
+export function createAI({ seed, humans = [], profile = null, level = "normal" }) {
+    const strength = levelOf(level);
     let parts = null;
     // the mercenaries for hire in the world, less what the countries thinking earlier in this tick have hired (forces.js, war.js)
     let market = null;
@@ -51,9 +54,9 @@ export function createAI({ seed, humans = [], profile = null }) {
         return out;
     };
     const memory = { plans: new Map(), asked: new Map() }, caretaken = new Map(), again = new Set(), flavors = new Map();
-    // a country's character: the scenario's for it, varied by the seed (characters.js)
+    // a country's character: the scenario's for it, varied by the seed (characters.js) — and the game's level, which every layer may read
     const flavor = (game, code) => {
-        if (!flavors.has(code)) flavors.set(code, flavorOf(seed, code, game.map.scenario.countries.find((c) => c.code === code)?.character ?? null));
+        if (!flavors.has(code)) flavors.set(code, { ...flavorOf(seed, code, game.map.scenario.countries.find((c) => c.code === code)?.character ?? null), level: strength });
         return flavors.get(code);
     };
 

@@ -201,6 +201,11 @@ for its player to come back.
 
 **They run inside the game's loop, in the game's worker**, a few countries per tick.
 
+- **A game has a level** (`src/ai/levels.js`): normal or hard, chosen by the host as the table is made, kept with the game
+  (`games.ai_level`) and handed to `createAI` by its worker, the same for every computer country. A level is numbers the layers
+  read from a country's character (`fl.level`), not another AI. For now the two play alike and the lobby does not offer the
+  choice (`lobbylogic.js`, `AI_LEVEL_CHOICE`): the hard level comes with TODO.md #31, measured with `tools/strength.js --level hard`.
+  Commands are logged, so a level changes no replay.
 - **Their dice are their own.** A computer player never draws from the game's random state
   (`state.rng`): its commands are logged and a replay applies them without running it, so if it
   drew from the game's dice, a replay's battles would come out differently. It seeds its own from
