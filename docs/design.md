@@ -769,10 +769,10 @@ right-click, nothing shown only on hover. Small-screen layouts are not built. (`
   as a marker in its owner's colour with its men on it — edged in red, as is a fleet's, when its country is at war with the
   player (peasants in arms too; `mapdraw.js`, `enemy`) — a column of them beside a place with
   several. A marker shows on its left what most of the army carries (sword, pike, horseshoe for cavalry, gun; a cannonball if it has
-  cannons) and a fleet's best ship by its masts (one for cogs, two for carracks, three for galleons, three and gun ports for men-of-war);
-  on its right what it is doing — an arrow on its heading while marching or sailing,
-  a siege tower besieging, a wall as a garrison in its own town, a chain blockading (and a chain by the port shut), a loop on
-  patrol — and a boat under an army at sea. A country's armies standing in one place, or fleets lying together, are one marker
+  cannons) and a fleet's best ship by its square sails (one for cogs, two for carracks, three for galleons, three and gun ports for men-of-war);
+  on its right what it is doing, only when out of the ordinary — a siege tower besieging,
+  a loop on patrol (a blockade is a chain by the port it shuts; a march shows by the marker gliding, a garrison is the usual) — and
+  a boat beside an army at sea. A country's armies standing in one place, or fleets lying together, are one marker
   with "×3" over it, their men or ships added up, until a click opens it into its column, or one of them is selected
   (`mapdraw.js`, `armyMarkers`, `fleetMarkers`; `mapview.js`, `chip`); marching armies glide along the roads between ticks; a ring round each besieged
   settlement fills as the siege runs; each capital's marker with a gold border while its country holds it (`mapdraw.js`, `capitalMarks`: capitals move, so the map's file cannot hold them), and in the panels "★ capital"

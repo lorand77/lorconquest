@@ -34,12 +34,14 @@ function armGlyph(arm, cannons) {
     if (cannons) g.append(el("circle", { class: "lc-sign solid", cx: 4.2, cy: 3.4, r: 1.5 }));
     return g;
 }
-// a fleet's best ship (mapdraw.js, bestShip): a hull with a mast for cogs, two for carracks, three for galleons, and three with a
-// row of gun ports for men-of-war
+// a fleet's best ship (mapdraw.js, bestShip): a hull under square sails — one for cogs, two for carracks, three for galleons, and
+// three with a row of gun ports for men-of-war
 function shipGlyph(best) {
-    const masts = { cogs: [0], carracks: [-2, 2], galleons: [-3, 0, 3], menOfWar: [-3, 0, 3] }[best] ?? [0];
+    const masts = { cogs: [0], carracks: [-2.2, 2.2], galleons: [-3.4, 0, 3.4], menOfWar: [-3.4, 0, 3.4] }[best] ?? [0];
+    const half = masts.length === 3 ? 1.3 : 1.8;                             // each sail's half width, narrower when there are three
+    const sail = (m) => path(`M${m - half} -4.6Q${m} -3.8 ${m + half} -4.6V-0.6Q${m} 0.2 ${m - half} -0.6Z`, "lc-sign sail");
     const g = el("g", { class: "lc-glyph", transform: "translate(6.5 0)" });
-    g.append(path("M-5 1.5H5L3.4 4.4H-3.4Z", "lc-sign solid"), ...masts.map((m) => path(`M${m} 1.5V-4.5`)));
+    g.append(path("M-5 1.5H5L3.4 4.4H-3.4Z", "lc-sign solid"), ...masts.map((m) => path(`M${m} 1.5V-5.4`)), ...masts.map(sail));
     if (best === "menOfWar") g.append(path("M-3.6 3H3.6", "lc-sign ports"));
     return g;
 }
@@ -49,16 +51,14 @@ function boatGlyph() {
     g.append(path("M-4 0H4L2.6 2.6H-2.6Z", "lc-sign solid"), path("M0 0V-4"));
     return g;
 }
-// what it is doing: an arrow on its heading while marching or sailing, a siege tower, a wall as a garrison, a chain on blockade,
-// a loop on patrol
-function stateGlyph(state, angle) {
-    if (state === "march" || state === "sailing") return [el("path", { class: "lc-sign solid", d: "M-3 -2.6L3 0L-3 2.6Z", transform: `rotate(${angle})` })];
+// what it is doing, only when out of the ordinary: a siege tower while besieging, a loop on patrol
+function stateGlyph(state) {
     if (state === "siege") return [path("M-3 3.5V-2.5H-1.8V-3.8H-0.6V-2.5H0.6V-3.8H1.8V-2.5H3V3.5Z", "lc-sign solid")];
-    if (state === "garrison") return [path("M-4 3V-1H-2.7V-2.4H-1.3V-1H0V-2.4H1.3V-1H2.7V-2.4H4V3Z", "lc-sign solid")];
-    if (state === "blockade") return [el("ellipse", { class: "lc-sign", cx: -1.6, cy: 0, rx: 2.2, ry: 1.4 }), el("ellipse", { class: "lc-sign", cx: 1.6, cy: 0, rx: 2.2, ry: 1.4 })];
     if (state === "patrol") return [el("circle", { class: "lc-sign dashed", cx: 0, cy: 0, r: 2.8 })];
     return [];
 }
+// a chain, beside a port under blockade
+const chainGlyph = () => [el("ellipse", { class: "lc-sign", cx: -1.6, cy: 0, rx: 2.2, ry: 1.4 }), el("ellipse", { class: "lc-sign", cx: 1.6, cy: 0, rx: 2.2, ry: 1.4 })];
 // a marker's chip: its colour, its number, its signs, its state and its stack, the extras drawn again only when they change
 function chip(g, m, w, signs, state) {                 // signs: a function making the signs, called only when they change
     const [rect, text, extra] = g.children;
@@ -66,11 +66,11 @@ function chip(g, m, w, signs, state) {                 // signs: a function maki
     rect.setAttribute("fill", m.colour);
     text.setAttribute("x", 11 + (w - 11) / 2);
     text.textContent = m.label;
-    const key = JSON.stringify([m.arm ?? m.best, m.cannons, m.atSea, state, m.angle, m.count, w]);
+    const key = JSON.stringify([m.arm ?? m.best, m.cannons, m.atSea, state, m.count, w]);
     if (extra.dataset.key !== key) {
         extra.dataset.key = key;
         const badge = el("g", { class: "lc-badge", transform: `translate(${w + 5} 0)` });
-        badge.append(...stateGlyph(state, m.angle ?? 0));
+        badge.append(...stateGlyph(state));
         const count = m.count ? [Object.assign(el("text", { class: "lc-stack", x: w + 1, y: -8 }), { textContent: `×${m.count}` })] : [];
         extra.replaceChildren(...signs(), badge, ...count);
     }
@@ -306,7 +306,7 @@ export async function createMapView(container, svgUrl, onPick, onCancel = () => 
         setBlockades(list) {
             blockadeLayer.replaceChildren(...list.map((b) => {
                 const g = el("g", { class: "lc-blockaded", transform: `translate(${b.x.toFixed(1)} ${b.y.toFixed(1)})` });
-                g.append(...stateGlyph("blockade", 0));
+                g.append(...chainGlyph());
                 return g;
             }));
         },

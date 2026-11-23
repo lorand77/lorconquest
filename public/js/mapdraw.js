@@ -3,7 +3,7 @@
 // their own armies marked and one selected) and the replay page (which draws everything). Pure functions of a state and a
 // day, so they are tested in Node against real games.
 import { SHIP_POWER, SHIPS, atWar, menOf, capitalsOf } from "/engine/index.js";
-import { along, armyPoint, fleetPoints, formatMen, progress } from "./mirror.js";
+import { armyPoint, fleetPoints, formatMen } from "./mirror.js";
 
 // ---------- markers (design.md, "The map on screen") ----------
 // what most of an army's men carry: guns (hand cannons, arquebuses, muskets), cavalry, pikes, swords, or nothing; a tie to the first
@@ -17,27 +17,18 @@ export function mainArm(men) {
     return best;
 }
 
-// the heading of a march, in degrees (0 east, 90 south: the map's y grows downwards), where it is on `day`
-function heading(a, day, legs) {
-    const pts = a.march.sea ? legs.voyage?.(a.march.from, a.march.to, a.march.sea) : legs.get(`${a.march.from}>${a.march.to}`);
-    if (!pts || pts.length < 2) return 0;
-    const { at, rest } = along(pts, progress(a.march, day)), next = rest.find((q) => q[0] !== at[0] || q[1] !== at[1]) ?? pts[pts.length - 1];
-    return Math.round(Math.atan2(next[1] - at[1], next[0] - at[0]) * 180 / Math.PI);
-}
-
-// what an army standing at a place is doing: besieging it, holding it as its garrison, or neither (null)
-function standing(state, a) {
+// is an army standing at a place besieging it? Only what is out of the ordinary is marked: a march shows by the marker gliding
+// along its road, a garrison is the usual
+function besieging(state, a) {
     const s = state.settlements[a.at];
-    if (!s) return null;
-    if (s.owner !== a.owner && s.siege && atWar(state, a.owner, s.owner)) return "siege";
-    return s.owner === a.owner && !a.relief ? "garrison" : null;
+    return Boolean(s && s.owner !== a.owner && s.siege && atWar(state, a.owner, s.owner));
 }
 
 // every army as a marker: a country's armies standing in one place as one (a stack: `count` of them, the men added up) — but the
 // stack `open` (a key, game.js) and one holding the army selected, which show each army — in a column beside the place; marching
-// ones where their march has them, with their heading.
-// A marker: { id (the first army's), ids, stack (its key, if a stack), count, x, y, colour, label, arm, cannons, state
-// ("march" | "siege" | "garrison" | null), angle, atSea, mine, enemy, selected, retreating }
+// ones where their march has them.
+// A marker: { id (the first army's), ids, stack (its key, if a stack), count, x, y, colour, label, arm, cannons, state ("siege" | null),
+// atSea, mine, enemy, selected, retreating }
 export function armyMarkers(state, nodes, legs, day, colourOf, { me = null, selected = null, open = null } = {}) {
     const groups = new Map(), out = [], at = new Map();
     for (const a of Object.values(state.armies)) {
@@ -62,7 +53,7 @@ export function armyMarkers(state, nodes, legs, day, colourOf, { me = null, sele
             out.push({
                 id: a.id, ids: part.map((y) => y.id), ...(stacked ? { stack: key, count: part.length } : {}), x: px, y: py, colour: colourOf(a.owner), label: formatMen(total),
                 arm: mainArm(men), cannons: part.some((y) => y.cannons > 0),
-                state: a.at ? standing(state, a) : "march", angle: a.at ? 0 : heading(a, day, legs), atSea: Boolean(a.march?.sea),
+                state: a.at && besieging(state, a) ? "siege" : null, atSea: Boolean(a.march?.sea),
                 mine: a.owner === me, enemy: Boolean(me) && atWar(state, me, a.owner), selected: !stacked && a.id === chosen, retreating: a.retreating,
             });
         }
@@ -74,9 +65,9 @@ export function armyMarkers(state, nodes, legs, day, colourOf, { me = null, sele
 export const bestShip = (ships) => [...SHIPS].sort((p, q) => SHIP_POWER[q] - SHIP_POWER[p]).find((k) => (ships[k] ?? 0) > 0) ?? "cogs";
 
 // every fleet as a marker: a country's fleets lying together — in one port, blockading one port, or at sea in one zone on the same
-// order — as one (a stack, as armies), but the stack `open` and one holding the fleet selected; sailing ones between their zones,
-// with their heading. A marker: { id, ids, stack, count, x, y, colour, label (ships), best, state ("sailing" | "blockade" |
-// "patrol" | null), angle, mine, enemy, selected, sailing }
+// order — as one (a stack, as armies), but the stack `open` and one holding the fleet selected; sailing ones between their zones.
+// A blockade is marked by the port it shuts (blockadeMarks), a patrol on the fleet. A marker: { id, ids, stack, count, x, y, colour,
+// label (ships), best, state ("patrol" | null), mine, enemy, selected, sailing }
 export function fleetMarkers(state, nodes, zones, day, colourOf, { me = null, selected = null, open = null } = {}) {
     const groups = new Map();
     for (const f of Object.values(state.fleets)) {
@@ -97,15 +88,10 @@ export function fleetMarkers(state, nodes, zones, day, colourOf, { me = null, se
         for (const g of part) for (const [k, n] of Object.entries(g.ships)) ships[k] = (ships[k] ?? 0) + n;
         const count = Object.values(ships).reduce((k, v) => k + v, 0);
         const [px, py] = points.get(f.id);
-        let angle = 0;
-        if (f.moving) {
-            const from = zones.get(f.zone)?.label, to = zones.get(f.moving.to)?.label;
-            if (from && to) angle = Math.round(Math.atan2(to.y - from.y, to.x - from.x) * 180 / Math.PI);
-        }
         return {
             id: f.id, ids: part.map((g) => g.id), ...(stack ? { stack, count: part.length } : {}), x: px, y: py, colour: colourOf(f.owner), label: String(count),
             best: bestShip(ships),
-            state: f.moving ? "sailing" : f.order?.type === "blockade" ? "blockade" : f.order?.type === "patrol" ? "patrol" : null, angle,
+            state: !f.moving && f.order?.type === "patrol" ? "patrol" : null,
             mine: f.owner === me, enemy: Boolean(me) && atWar(state, me, f.owner), selected: !stack && f.id === chosen, sailing: Boolean(f.moving),
         };
     });

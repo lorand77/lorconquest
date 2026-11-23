@@ -115,16 +115,16 @@ test("markers: a country's armies in one place as one stack, opened at a click; 
     const army = (id, owner, at, men, extra = {}) => { st.armies[id] = { ...structuredClone(st.armies[37]), id, owner, at, men: { ...st.armies[37].men, swords: 0, ...men }, cannons: 0, ...extra }; };
     army(9001, "BAV", "37", { pikes: 5000 }, { cannons: 2 });
     const at37 = (o = {}) => armyMarkers(st, nodes, legs, st.day, colour, { me: "BAV", ...o }).filter((m) => m.ids.some((id) => [37, 9001].includes(id)));
-    // Munich's garrison and the new army: one stack — pikes most, cannons — a garrison in its own town
+    // Munich's garrison and the new army: one stack — pikes most, cannons — and nothing out of the ordinary to mark
     const [stack] = at37();
-    assert.deepEqual([stack.ids, stack.count, stack.stack, stack.arm, stack.cannons, stack.state], [[37, 9001], 2, "a:37|BAV|0", "pikes", true, "garrison"]);
+    assert.deepEqual([stack.ids, stack.count, stack.stack, stack.arm, stack.cannons, stack.state], [[37, 9001], 2, "a:37|BAV|0", "pikes", true, null]);
     // opened, or one of them selected: each alone
     assert.equal(at37({ open: "a:37|BAV|0" }).length, 2);
     assert.deepEqual(at37({ selected: { kind: "army", id: 9001 } }).map((m) => [m.ids, m.selected]), [[[37], false], [[9001], true]]);
-    // marching: its heading; besieging an enemy's town
+    // marching: no mark (it glides along its road); besieging an enemy's town: the siege
     army(9002, "BAV", null, { cavalry: 900 }, { march: { from: "37", to: "48", start: 0, end: 84 } });
     const marching = armyMarkers(st, nodes, legs, 10, colour, {}).find((m) => m.id === 9002);
-    assert.deepEqual([marching.state, marching.arm, Number.isFinite(marching.angle), marching.atSea], ["march", "cavalry", true, false]);
+    assert.deepEqual([marching.state, marching.arm, marching.atSea], [null, "cavalry", false]);
     st.wars.push("BAV|ULM");
     army(9003, "BAV", "48", { swords: 2000 });
     st.settlements[48].siege = { by: "BAV", start: 0, end: 100 };
@@ -138,9 +138,11 @@ test("markers: a country's armies in one place as one stack, opened at a click; 
     assert.deepEqual([port.ids, port.best], [[first.id, 9101], "menOfWar"]);
     const alone = fleetMarkers(st, nodes, game.map.zones, st.day, colour, { open: port.stack }).find((m) => m.id === first.id);
     assert.equal(alone.best, "cogs");
-    // blockading a port: its state, and the port's chain
+    // blockading a port: no mark on the fleet, a chain by the port; patrolling: the fleet's loop
     Object.assign(st.fleets[9101], { port: null, order: { type: "blockade", port: 48 } });
     const blockading = fleetMarkers(st, nodes, game.map.zones, st.day, colour, {}).find((m) => m.id === 9101);
-    assert.equal(blockading.state, "blockade");
+    assert.equal(blockading.state, null);
     assert.deepEqual(blockadeMarks(st, nodes).map((b) => b.port), [48]);
+    st.fleets[9101].order = { type: "patrol" };
+    assert.equal(fleetMarkers(st, nodes, game.map.zones, st.day, colour, {}).find((m) => m.id === 9101).state, "patrol");
 });
