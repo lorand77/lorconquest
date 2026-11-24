@@ -55,7 +55,7 @@ export function mountShell(user) {
     window.addEventListener("hashchange", markTab);
     rail.append(make("div", { class: "rail-legal" }, make("a", { href: "/terms.html" }, "Terms"), make("a", { href: "/privacy.html" }, "Privacy")));
     const top = make("header", { class: "app-topbar" },
-        make("a", { class: "brand", href: "/" }, "⬡ LorConquest"),
+        make("a", { class: "brand", href: "/" }, make("img", { class: "logo", src: "/img/lorconquest.svg", alt: "" }), "LorConquest"),
         make("div", { class: "userbar" }, make("span", { class: "who" }, user.username), make("button", { onclick: signOut }, "Log out")));
     document.body.prepend(top, rail);
 }

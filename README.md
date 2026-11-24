@@ -1,3 +1,5 @@
+<img src="public/img/lorconquest.svg" alt="LorConquest: a star fort with a red shield" width="96" align="right">
+
 # LorConquest
 
 A real-time grand strategy game on a map of Europe, 1440–1650: up to four people

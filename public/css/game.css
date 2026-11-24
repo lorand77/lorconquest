@@ -356,6 +356,8 @@ body.game { height: 100vh; height: 100dvh; overflow: hidden; overscroll-behavior
 .side > .head, .side > .status { padding: 10px 12px; border-bottom: 1px solid var(--line); }
 .side .head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .brand { color: var(--gold); font-weight: 700; text-decoration: none; font-size: 15px; white-space: nowrap; }
+/* the star fort (public/img/lorconquest.svg) before the name, as tall as the text and a little more */
+.brand .logo { height: 1.4em; width: auto; vertical-align: -0.35em; margin-right: 0.35em; }
 .side .lobby-link { padding: 2px 8px; font-size: 12px; border: 1px solid var(--btn-border); border-radius: 4px; background: var(--btn); color: var(--text); text-decoration: none; }
 .side .lobby-link:hover { background: var(--btn-hover); color: var(--hover-text); }
 .status .me { display: block; font-size: 15px; font-weight: 700; color: var(--gold); }
@@ -643,3 +645,6 @@ body.legal { max-width: 760px; margin: 2em auto; padding: 0 1em; }
 .game-row.even { border-left-color: var(--warn); } .result.even { color: var(--warn); }
 .game-row.playing { border-left-color: var(--accent); } .result.playing { color: var(--accent); }
 .game-row.abandoned, .game-row.outdated { border-left-color: var(--border); } .result.abandoned, .result.outdated { color: var(--text-muted); }
+
+/* the sign-in card's star fort, above the name */
+.login-logo { display: block; width: 96px; height: 96px; margin: 0 auto 10px; }

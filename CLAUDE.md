@@ -88,6 +88,7 @@ dependencies.
   page's head) applies the dark or light colours and keeps the choice in local storage; `js/notices.js` keeps which notices
   pop up in the game, and what a click with an army does, there too (the Customize page and the game's ⚙ edit them) — the only
   things stored in the browser besides the sign-in cookie.
+  `img/lorconquest.svg` is the logo, a star fort: every page's icon, the brand before the name, the sign-in card and the README.
   The browser imports the engine from `/engine/`, the very files in `src/engine/`.
 - `tools/` — the runner, the bench, the map tools (`map.js`, `make-base.js`: a map drawn from latitudes and longitudes, and
   `abbreviations.js`: the short names in the map's markers).
