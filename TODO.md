@@ -11,7 +11,8 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 
 - [ ] #30 Hard and normal computer players — AI, L. The ground is laid: a game's level (src/ai/levels.js, games.ai_level, `fl.level`,
   `--level` in simulate.js and strength.js) and the lobby's choice, hidden (lobbylogic.js, AI_LEVEL_CHOICE); the hard level itself with #31
-- [ ] #31 Smarter computer players: more aggressive late in the game, better troop movement with allies — AI, L
+- [ ] #31 Smarter computer players: more aggressive late in the game — AI, L. Better troop movement with allies is done, as the medium
+  level (src/ai/levels.js), with a level for the Empire's members; to measure: `tools/strength.js --level medium`
 - [ ] #14 Coalitions open to people, not only the computer — rules, screen, M
 - [ ] #32 Increase the win amount — balance, S
 
@@ -21,9 +22,11 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 - [ ] #39 Better replay — replay, M
 - [ ] #49 Support games of previous versions: replays (and what else needs them) of games played under an older RULES_VERSION, which are refused now — keep the old engines — replay, L
 - [ ] #42 A smaller version of the Europe map — map, L
+- [ ] #53 A map of Italy — map, L
 
 ## Ideas
 
+- [ ] #54 An easter egg: play as rebels — start an uprising in a country and lead it — rules, screen, M
 - [ ] #43 A world map — map, L
 - [ ] #44 Music — screen, M
 

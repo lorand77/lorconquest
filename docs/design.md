@@ -201,10 +201,15 @@ for its player to come back.
 
 **They run inside the game's loop, in the game's worker**, a few countries per tick.
 
-- **A game has a level** (`src/ai/levels.js`): normal or hard, chosen by the host as the table is made, kept with the game
-  (`games.ai_level`) and handed to `createAI` by its worker, the same for every computer country. A level is numbers the layers
-  read from a country's character (`fl.level`), not another AI. For now the two play alike and the lobby does not offer the
-  choice (`lobbylogic.js`, `AI_LEVEL_CHOICE`): the hard level comes with TODO.md #31, measured with `tools/strength.js --level hard`.
+- **A game has a level** (`src/ai/levels.js`): normal, medium or hard, chosen by the host as the table is made, kept with the game
+  (`games.ai_level`) and handed to `createAI` by its worker — and, if the host chooses, another for the Empire's members
+  (`games.ai_empire`): a German state's computer player at that one, worked out at each think, as membership changes. A level is
+  switches the layers read from a country's character (`fl.level`), not another AI. **Medium** fights beside its allies
+  (`war.js`, `allies`): the allied armies at war with a place's owner fight there with ours (a storm takes every friendly army
+  besieging the town), so they are counted with its own — those standing there for a storm or a battle on arrival, those on their way
+  too for a siege — and an ally's town an enemy marches on is defended before it is besieged, a little after its own. **Hard** is
+  medium for now; #31's other half is to come. Normal plays as it always has, to the fingerprint. The lobby does not offer the
+  choices yet (`lobbylogic.js`, `AI_LEVEL_CHOICE`); `tools/simulate.js` and `tools/strength.js` take `--level` and `--empire-level`.
   Commands are logged, so a level changes no replay.
 - **Their dice are their own.** A computer player never draws from the game's random state
   (`state.rng`): its commands are logged and a replay applies them without running it, so if it
@@ -492,7 +497,10 @@ has no result.)
   a game of 210 years, a tenth of that compressed. The browser makes the game from the seed with the engine it already has
   and plays the log back (`public/js/replayer.js`): each day its commands, then the day, exactly as the server did. It keeps a
   snapshot every two years to go back to a day quickly, goes forward in chunks so the page stays alive, and at the last day
-  compares its own fingerprint with the server's: "This replay ends exactly as the game did", or a warning that it did not. The
+  compares its own fingerprint with the server's: "This replay ends exactly as the game did", or a warning that it did not. **⏭ End**
+  goes there at once: the game's last saved state (`GET /api/games/:id/final` — a finished game's final state, every command in it;
+  an abandoned one's from the start of a year, played on to the end), restored rather than played, so it is not checked until the
+  game is played through again from before it (`replayer.js`, `jumpTo`). The
   warning matters because the design leans on one engine agreeing with itself: a browser whose arithmetic differs from Node's
   would play the log out differently. The server answers 409 for a game still going, and for one played under another rules
   version, which cannot be replayed exactly.

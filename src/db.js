@@ -124,6 +124,8 @@ export function openDb(file) {
     // a column added since the first databases
     // how strong its computer players are (src/ai/levels.js): chosen by the host as the table is made, for the whole game
     addColumnIfMissing("games", "ai_level", "TEXT NOT NULL DEFAULT 'normal'");
+    // and the Empire's members' computer players', if the host gives them another (src/ai/levels.js); NULL = the game's
+    addColumnIfMissing("games", "ai_empire", "TEXT");
     addColumnIfMissing("games", "winner", "TEXT");
     addColumnIfMissing("games", "host_id", "INTEGER REFERENCES users (id)");
     // how a game ended: the fingerprint of its final state (src/engine/hash.js), and each seat's standing (src/game/results.js)
@@ -189,7 +191,7 @@ export function openDb(file) {
                 (SELECT COUNT(*) FROM chat_messages WHERE user_id = ?1) AS chat`),
         deleteExpiredSessions: db.prepare("DELETE FROM sessions WHERE expires_at <= ?"),
 
-        insertGame: db.prepare("INSERT INTO games (scenario, seed, rules_version, human, status, host_id, visibility, ai_level) VALUES (?, ?, ?, ?, ?, ?, ?, COALESCE(?, 'normal'))"),
+        insertGame: db.prepare("INSERT INTO games (scenario, seed, rules_version, human, status, host_id, visibility, ai_level, ai_empire) VALUES (?, ?, ?, ?, ?, ?, ?, COALESCE(?, 'normal'), ?)"),
         setVisibility: db.prepare("UPDATE games SET visibility = ? WHERE id = ? AND status = 'lobby'"),
         // are two people friends (an accepted friendship either way)
         areFriends: db.prepare("SELECT 1 FROM friendships WHERE status = 'accepted' AND ((requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?))"),

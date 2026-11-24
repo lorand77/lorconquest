@@ -8,7 +8,7 @@
 //
 //   node tools/simulate.js [--games 8] [--years 210] [--seed 1] [--scenario mitteleuropa] [--jobs 4] [--level hard] [--quiet] [--detail] [--by-era]
 //
-// --level plays every computer country at that level (src/ai/levels.js; normal if not given).
+// --level plays every computer country at that level (src/ai/levels.js; normal if not given); --empire-level the German states' at another.
 //
 // --slow N times the computer players by country and part (createAI's profile): where the AI's time went, by part and by why a
 // country acted (its think, woken by an event, a follow-up, a look at its war), and the N slowest days, each with who cost most.
@@ -30,10 +30,10 @@ import { lossSampler, lossSummary } from "./losses.js";
 const root = path.join(import.meta.dirname, "..");
 
 // one game to its end; the figures worth keeping
-export function simulate(scenario, { seed, years, slow = 0, level = "normal" }) {
+export function simulate(scenario, { seed, years, slow = 0, level = "normal", empireLevel = null }) {
     let today = [];
     const profile = slow ? { now: () => performance.now(), record: (x) => today.push(x) } : null, timing = slow ? { parts: {}, why: {}, days: [] } : null;
-    const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [], profile, level }), wars = warSampler(game), losses = lossSampler(game);
+    const game = Game.create(scenario, { seed, humans: [] }), ai = createAI({ seed, humans: [], profile, level, empireLevel }), wars = warSampler(game), losses = lossSampler(game);
     const count = { war: 0, joins: 0, peace: 0, capture: 0, battle: 0, uprising: 0, religious: 0, risen: 0, agreement: 0, subject: 0, empire: 0, bankruptcy: 0, eliminated: 0 };
     const refused = {}, starts = {}, aiMs = [], dayMs = [];
     let lastWar = 0, how = null;
@@ -115,7 +115,7 @@ if (isMainThread) {
     if (import.meta.filename === process.argv[1]) {
         const games = Number(arg("games", 8)), years = Number(arg("years", 210)), seed0 = Number(arg("seed", 1)), jobs = Number(arg("jobs", 1));
         const scenarioName = arg("scenario", "mitteleuropa"), quiet = process.argv.includes("--quiet");
-        const slow = Number(arg("slow", 0)), level = arg("level", "normal"), detail = process.argv.includes("--detail"), byEra = process.argv.includes("--by-era");
+        const slow = Number(arg("slow", 0)), level = arg("level", "normal"), empireLevel = arg("empire-level", null), detail = process.argv.includes("--detail"), byEra = process.argv.includes("--by-era");
         const without = process.argv.flatMap((a, i) => (process.argv[i - 1] === "--without" ? [a] : []));
         const seeds = Array.from({ length: games }, (_, i) => seed0 + i), results = [];
         const t0 = performance.now();
@@ -125,11 +125,11 @@ if (isMainThread) {
                     const seed = seeds.shift();
                     const result = jobs > 1
                         ? await new Promise((resolve, reject) => {
-                            const w = new Worker(import.meta.filename, { workerData: { seed, years, scenarioName, without, slow, level } });
+                            const w = new Worker(import.meta.filename, { workerData: { seed, years, scenarioName, without, slow, level, empireLevel } });
                             w.once("message", resolve);
                             w.once("error", reject);
                         })
-                        : simulate(loadScenario(scenarioName, without), { seed, years, slow, level });
+                        : simulate(loadScenario(scenarioName, without), { seed, years, slow, level, empireLevel });
                     results.push(result);
                     if (!quiet) console.log(`seed ${result.seed}: ${result.over ? `${result.winner} won ${result.how === "time" ? "on time" : "by reaching the target"}` : "no winner"} ${result.date} | ${result.count.war} wars, ${result.count.peace} peaces, ${result.count.capture} captures | top ${result.top.slice(0, 3).map((t) => `${t.code} ${t.settlements}`).join(", ")} | ai ${result.aiMean.toFixed(2)} ms/day (max ${result.aiMax.toFixed(0)})`);
                     if (detail) console.log(`    ${warLine(result.wars)}`);

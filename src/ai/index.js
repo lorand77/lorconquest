@@ -7,7 +7,7 @@
 //               and the tick after a think that split or equipped anything, so what needed an army's new id can follow.
 // Its dice are its own (util.js) and it keeps only what a restart may forget: wars it is preparing and when it last asked a
 // human something. `orders` returns what to apply at the start of the next tick, as { country, source, cmd }.
-import { economyOf, isVassal, withMemo } from "../engine/index.js";
+import { economyOf, isGermanState, isVassal, withMemo } from "../engine/index.js";
 import { caretakerOrders, answerOffers } from "./caretaker.js";
 import { diplomacyOrders } from "./diplomacy.js";
 import { economyOrders } from "./economy.js";
@@ -41,9 +41,9 @@ function touched(game, events) {
 
 // `profile` (tools/simulate.js --slow): { now, record } — a clock, passed in so that nothing here reads one, and what each country
 // cost on a day, by part. It changes no order.
-// `level`: how strong the computer players are (levels.js), "normal" if not given
-export function createAI({ seed, humans = [], profile = null, level = "normal" }) {
-    const strength = levelOf(level);
+// `level`: how strong the computer players are (levels.js), "normal" if not given; `empireLevel`: the German states', if not the game's
+export function createAI({ seed, humans = [], profile = null, level = "normal", empireLevel = null }) {
+    const strength = levelOf(level), empireStrength = empireLevel ? levelOf(empireLevel) : null;
     let parts = null;
     // the mercenaries for hire in the world, less what the countries thinking earlier in this tick have hired (forces.js, war.js)
     let market = null;
@@ -54,11 +54,13 @@ export function createAI({ seed, humans = [], profile = null, level = "normal" }
         return out;
     };
     const memory = { plans: new Map(), asked: new Map() }, caretaken = new Map(), again = new Set(), flavors = new Map();
-    // a country's character: the scenario's for it, varied by the seed (characters.js) — and the game's level, which every layer may read
-    const flavor = (game, code) => {
-        if (!flavors.has(code)) flavors.set(code, { ...flavorOf(seed, code, game.map.scenario.countries.find((c) => c.code === code)?.character ?? null), level: strength });
+    // a country's character: the scenario's for it, varied by the seed (characters.js) — and its level, which every layer may read: the
+    // Empire's members', if the game gives them one, else the game's (levels.js), worked out each time, as membership changes
+    const character = (game, code) => {
+        if (!flavors.has(code)) flavors.set(code, flavorOf(seed, code, game.map.scenario.countries.find((c) => c.code === code)?.character ?? null));
         return flavors.get(code);
     };
+    const flavor = (game, code) => ({ ...character(game, code), level: empireStrength && isGermanState(game, code) ? empireStrength : strength });
 
     // the country thinks in full: forces first, then the economy with what is left, then diplomacy and the war it leads to
     function think(game, code) {

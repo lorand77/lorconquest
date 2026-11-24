@@ -2,7 +2,7 @@
 //
 //   GET  /api/scenarios          the scenarios to play: [{ id, name, countries: [{ code, name, pop }] }]
 //   GET  /api/tables             the tables waiting for people you may see: [{ id, scenario, host, hostId, visibility, seats }]
-//   POST /api/tables             { scenario, country, seed?, solo?, visibility?, ai? } -> { id }   a table with you in the seat of
+//   POST /api/tables             { scenario, country, seed?, solo?, visibility?, ai?, aiEmpire? } -> { id }   a table with you in the seat of
 //                                `country`; with solo, started at once as a single-player game. visibility "public" (anyone sees
 //                                it, joins it and watches its game) or "friends" (the host's friends only); a replay is public
 //   POST /api/tables/:id/visibility  { visibility } -> { ok }   the host changes it while the room waits
@@ -12,6 +12,7 @@
 //   POST /api/tables/:id/start   -> { ok, id }             the host starts the game; seats left open are the computer's
 //   GET  /api/live               the games being played now, to watch: [{ id, scenario, day, multi, paused, people, mine }]
 //   GET  /api/games              the games you have a seat in: [{ id, scenario, status, winner, day, country, people, live }]
+//   GET  /api/games/:id/final    its last saved state — a finished game's final one — for the replay to go to the end at once
 //   GET  /api/games/:id/replay   a finished or abandoned game, to play over in the browser: its seed, humans and every command,
 //                                with the fingerprint its final state must have; 409 while it is going on or if it was played
 //                                under other rules (src/game/rooms.js, replayOf)
@@ -41,7 +42,7 @@ export function gameRoutes(rooms, scenarios) {
         let seed = req.body?.seed;
         if (seed === undefined || seed === null || seed === "") seed = crypto.randomInt(0, 2 ** 32);
         if (!Number.isInteger(seed) || seed < 0 || seed >= 2 ** 32) return fail(res, "the seed must be a whole number from 0 to 4294967295");
-        const made = rooms.createTable({ userId: req.user.id, scenario, country, seed, visibility: req.body?.visibility ?? "public", ai: req.body?.ai ?? "normal" });
+        const made = rooms.createTable({ userId: req.user.id, scenario, country, seed, visibility: req.body?.visibility ?? "public", ai: req.body?.ai ?? "normal", aiEmpire: req.body?.aiEmpire ?? null });
         if (made.error) return fail(res, made.error);
         if (solo) {
             const started = await rooms.startTable(made.id, req.user.id);
@@ -87,6 +88,12 @@ export function gameRoutes(rooms, scenarios) {
         const r = rooms.replayOf(req.params.id);
         if (r.error) return res.status(r.status).json({ error: r.error });
         res.json(r.replay);
+    });
+    // its last saved state, for the replay page to go to the end at once: { day, final, state }
+    router.get("/games/:id/final", (req, res) => {
+        const r = rooms.finalOf(req.params.id);
+        if (r.error) return res.status(r.status).json({ error: r.error });
+        res.json(r.final);
     });
 
     router.get("/leaderboard", (req, res) => res.json(rooms.leaderboard()));

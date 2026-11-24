@@ -146,3 +146,24 @@ test("markers: a country's armies in one place as one stack, opened at a click; 
     st.fleets[9101].order = { type: "patrol" };
     assert.equal(fleetMarkers(st, nodes, game.map.zones, st.day, colour, {}).find((m) => m.id === 9101).state, "patrol");
 });
+
+test("to the end at once: a finished game's final state restored, not checked until played through; an abandoned one's last year played on", () => {
+    const { game, data } = play(3 * 365);
+    // finished: the server's final state, every command in it
+    const r = createReplayer(scenario, data);
+    r.advance(100);
+    r.jumpTo({ day: game.day, final: true, state: game.snapshot() });
+    assert.deepEqual([r.done, r.day, r.jumped, r.verified()], [true, game.day, true, null]);
+    assert.equal(r.game.snapshot(), game.snapshot());
+    // played through from the start, it is checked again
+    r.seek(0);
+    assert.equal(r.jumped, false);
+    r.advance(10 ** 6);
+    assert.equal(r.verified(), true);
+    // abandoned: its last snapshot from the start of a year, as the worker keeps one — the rest played to the same end
+    const year = createReplayer(scenario, data);
+    year.seek(2 * 365);
+    const fresh = createReplayer(scenario, data);
+    fresh.jumpTo({ day: 2 * 365, final: false, state: year.game.snapshot() });
+    assert.deepEqual([fresh.done, fresh.game.snapshot() === game.snapshot()], [true, true]);
+});

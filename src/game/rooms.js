@@ -59,7 +59,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         const humans = seatRows.map((s) => s.country);
         const worker = new Worker(WORKER, {
             workerData: {
-                scenario: scenario.data, seed: row.seed, snapshot, log: commands, day: row.day, humans, tickMs, statsEvery, paused: true, aiLevel: row.ai_level ?? "normal",
+                scenario: scenario.data, seed: row.seed, snapshot, log: commands, day: row.day, humans, tickMs, statsEvery, paused: true, aiLevel: row.ai_level ?? "normal", aiEmpire: row.ai_empire ?? null,
                 // a multiplayer game begins with every player away
                 caretakers: multi ? humans.map((c) => [c, "caretaker"]) : [],
             },
@@ -549,6 +549,14 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
     // who may see a room, take a seat at it and watch its game: anyone if it is public; if it is the host's friends', the host,
     // the host's friends and whoever has a seat (a friendship ended since does not take a seat away)
     const friends = (a, b) => Boolean(db.q.areFriends.get(a, b, b, a));
+    // why a game has no replay (a 404 or a 409, as replayOf answers), or null: it must be over, and played under today's rules
+    const unreplayable = (g) => {
+        if (!g) return { status: 404, error: "no such game" };
+        if (g.status === "outdated") return { status: 409, error: "that game ended unfinished when the rules changed: it has no replay" };
+        if (g.status !== "finished" && g.status !== "abandoned") return { status: 409, error: "that game is still being played" };
+        if (g.rules_version !== RULES_VERSION) return { status: 409, error: "that game was played under rules version " + g.rules_version + ", and this server plays " + RULES_VERSION + ", so it cannot be replayed exactly" };
+        return null;
+    };
     const mayFollow = (visibility, hostId, userId, seated = false) => visibility !== "friends" || userId === hostId || seated || friends(hostId, userId);
     const mayWatch = (room, userId) => mayFollow(room.visibility, room.host, userId, [...room.seats.values()].some((s) => s.userId === userId));
 
@@ -565,9 +573,10 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
         mayWatch: (room, userId) => mayWatch(room, userId),
 
         // a new table, the host in the seat of `country`
-        createTable({ userId, scenario, country, seed, visibility = "public", ai = "normal" }) {
+        createTable({ userId, scenario, country, seed, visibility = "public", ai = "normal", aiEmpire = null }) {
             if (!["public", "friends"].includes(visibility)) return { error: "a room is public or for your friends" };
             if (!AI_LEVELS.includes(ai)) return { error: `the computer players are ${AI_LEVELS.join(" or ")}` };
+            if (aiEmpire !== null && !AI_LEVELS.includes(aiEmpire)) return { error: `the Empire's members' computer players are ${AI_LEVELS.join(" or ")}, or as the others'` };
             if (!scenarios.has(scenario)) return { error: `no scenario ${scenario}` };
             // every game started is a thread: one person cannot open them without end
             if (db.q.tablesHostedBy.all(userId).length >= MAX_TABLES) return { error: `you have ${MAX_TABLES} rooms open already: start or cancel one` };
@@ -575,11 +584,11 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             if (running >= MAX_RUNNING) return { error: `you have ${MAX_RUNNING} games running: finish or leave one first` };
             if (!validCountry(scenario, country)) return { error: `no country ${country} in ${scenario}` };
             const id = db.tx(() => {
-                const { lastInsertRowid } = db.q.insertGame.run(scenario, seed, RULES_VERSION, country, "lobby", userId, visibility, ai);
+                const { lastInsertRowid } = db.q.insertGame.run(scenario, seed, RULES_VERSION, country, "lobby", userId, visibility, ai, aiEmpire);
                 db.q.insertSeat.run(lastInsertRowid, country, userId);
                 return Number(lastInsertRowid);
             });
-            log.info("table.created", { game: id, scenario, host: userId, country, visibility, ai });
+            log.info("table.created", { game: id, scenario, host: userId, country, visibility, ai, aiEmpire });
             tellLobby();
             return { id };
         },
@@ -687,11 +696,8 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
         // a replay: everything a browser needs to play a finished game over with the engine it already has
         replayOf(id) {
-            const g = db.q.replayGame.get(Number(id));
-            if (!g) return { status: 404, error: "no such game" };
-            if (g.status === "outdated") return { status: 409, error: "that game ended unfinished when the rules changed: it has no replay" };
-            if (g.status !== "finished" && g.status !== "abandoned") return { status: 409, error: "that game is still being played" };
-            if (g.rules_version !== RULES_VERSION) return { status: 409, error: "that game was played under rules version " + g.rules_version + ", and this server plays " + RULES_VERSION + ", so it cannot be replayed exactly" };
+            const g = db.q.replayGame.get(Number(id)), why = unreplayable(g);
+            if (why) return why;
             const seats = db.q.seats.all(g.id);
             return {
                 status: 200, replay: {
@@ -700,6 +706,16 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
                     log: db.q.allCommands.all(g.id).map((c) => ({ day: c.day, country: c.country, source: c.source, cmd: JSON.parse(c.cmd) })),
                 },
             };
+        },
+
+        // where a replay may go at once (the replay page's To the end): the game's last snapshot — for a finished game its final state,
+        // every command in it (worker.js, finish); for an abandoned one the last kept, a start of a year, from which the page plays on
+        finalOf(id) {
+            const g = db.q.replayGame.get(Number(id)), why = unreplayable(g);
+            if (why) return why;
+            const snap = db.q.snapshot.get(g.id);
+            if (!snap) return { status: 404, error: "that game has no saved state" };
+            return { status: 200, final: { day: snap.day, final: g.status === "finished" && snap.day === g.day, state: snap.state } };
         },
 
         // everyone, ranked over the games they finished: most firsts among people, then victories, the best average place,

@@ -372,16 +372,18 @@ test("a game alone runs at ½, 1, 2 or 4 days a tick's time: the player chooses,
     }
 });
 
-test("a game keeps how strong its computer players are, chosen as the table is made: normal unless asked", async () => {
+test("a game keeps how strong its computer players are, and the Empire's members', chosen as the table is made: normal unless asked", async () => {
     const dbPath = tempDb(), server = await startServer({ dbPath });
     try {
-        const hard = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV", seed: 5, solo: true, ai: "hard" });
+        const hard = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "BAV", seed: 5, solo: true, ai: "hard", aiEmpire: "medium" });
         assert.equal(hard.status, 201);
         const plain = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "SAX", seed: 5 });
         const wrong = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "AUS", seed: 5, ai: "godlike" });
-        assert.match(wrong.body.error, /the computer players are normal or hard/);
+        assert.match(wrong.body.error, /the computer players are normal or medium or hard/);
+        const wrongEmpire = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "AUS", seed: 5, aiEmpire: "godlike" });
+        assert.match(wrongEmpire.body.error, /the Empire's members' computer players/);
         const db = openDb(dbPath);
-        assert.deepEqual([db.q.game.get(hard.body.id).ai_level, db.q.game.get(plain.body.id).ai_level], ["hard", "normal"]);
+        assert.deepEqual([db.q.game.get(hard.body.id).ai_level, db.q.game.get(hard.body.id).ai_empire, db.q.game.get(plain.body.id).ai_level, db.q.game.get(plain.body.id).ai_empire], ["hard", "medium", "normal", null]);
         db.close?.();
     } finally {
         await server.close();

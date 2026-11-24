@@ -137,6 +137,27 @@ $("play").addEventListener("click", () => {
     draw();
 });
 
+// to the end at once: the game's last saved state from the server (replayer.js, jumpTo) — not played, so not checked; playing it
+// through from the start checks it again
+$("to-end").addEventListener("click", async () => {
+    if (working) return;
+    working = true;
+    playing = false;
+    $("verdict").textContent = "Going to the end…";
+    const r = await fetch(`/api/games/${id}/final`).catch(() => null);
+    const snap = r?.ok ? await r.json() : null;
+    working = false;
+    if (!snap) { $("verdict").textContent = "The end could not be fetched: play on to get there."; return; }
+    $("events").replaceChildren();
+    battles = [];
+    map.setBattles(battles);
+    feed(replayer.jumpTo(snap));
+    $("play").textContent = "▶ Again";
+    draw();
+    $("verdict").textContent = "At the end at once, from the server's state: not checked. Play it through to check it ends as the game did.";
+    $("verdict").className = "verdict";
+});
+
 // going to a day: back is quick (a keyframe), forward plays through in chunks so the page stays alive. A newer seek (the
 // slider moved again, or arrowed) takes over from one still under way: only the last one counts.
 let dragging = false, seeking = 0;

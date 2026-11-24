@@ -149,11 +149,17 @@ test("a replay is given for a finished game only, to anyone signed in, and only 
         assert.deepEqual(r.humans, [{ country: "BAV", username: "alice" }, { country: "ULM", username: "bobby" }]);
         assert.ok(r.log.length > 0 && r.log.every((c) => Number.isInteger(c.day) && c.cmd.type && c.country));
         assert.equal(JSON.stringify(r).includes("password"), false);
+        // its final state, for the replay to go to the end at once: the state whose fingerprint the game ended with
+        const end = (await api(server, "GET", `/api/games/${id}/final`, null, "carol")).body;
+        assert.deepEqual([end.day, end.final, fingerprint(end.state)], [game.day, true, game.result_hash]);
+        assert.equal((await api(server, "GET", `/api/games/${going}/final`, null, "carol")).status, 409);
+        assert.equal((await api(server, "GET", `/api/games/${id}/final`, null, null)).status, 401);
         // played under other rules: it cannot be replayed exactly, and says so
         server.app.db.db.prepare("UPDATE games SET rules_version = rules_version - 1 WHERE id = ?").run(id);
         const old = await api(server, "GET", `/api/games/${id}/replay`, null, "carol");
         assert.equal(old.status, 409);
         assert.match(old.body.error, /played under rules version \d+, and this server plays \d+/);
+        assert.equal((await api(server, "GET", `/api/games/${id}/final`, null, "carol")).status, 409);
         // the games list sends a finished game to its replay
         assert.deepEqual((await api(server, "GET", "/api/games", null, "alice")).body.map((g) => g.status), ["finished"]);
     } finally {

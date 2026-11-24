@@ -44,14 +44,15 @@ $("scenario").addEventListener("change", fillCountries);
 fillCountries();
 
 // how strong the computer players are: offered once the hard level plays otherwise (lobbylogic.js, AI_LEVEL_CHOICE)
-$("ai-level-choice").hidden = !AI_LEVEL_CHOICE;
+$("ai-level-choice").hidden = $("ai-empire-choice").hidden = !AI_LEVEL_CHOICE;
 
 let solo = true;
 for (const b of document.querySelectorAll("#start button[data-solo]")) b.addEventListener("click", () => { solo = b.dataset.solo === "1"; });
 $("start").addEventListener("submit", async (e) => {
     e.preventDefault();
     $("error").textContent = "";
-    const body = { scenario: $("scenario").value, country: $("country").value, solo, visibility: $("visibility").value, ai: AI_LEVEL_CHOICE ? $("ai-level").value : "normal" };
+    const body = { scenario: $("scenario").value, country: $("country").value, solo, visibility: $("visibility").value, ai: AI_LEVEL_CHOICE ? $("ai-level").value : "normal",
+        aiEmpire: AI_LEVEL_CHOICE && $("ai-empire").value ? $("ai-empire").value : null };
     const r = await post("/api/tables", body);
     if (!r.ok) { $("error").textContent = r.error; return; }
     if (r.started) location.href = `/game.html?id=${r.id}`;

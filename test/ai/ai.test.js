@@ -881,15 +881,23 @@ test("rebels risen as a state are a computer country: they raise men from their 
     assert.ok(armySoldiersOf(st, reb) > 100);
 });
 
-test("the levels: a game's computer players at the hard level play as at the normal, for now — the ground #31 builds on", async () => {
+test("the levels: normal, medium and hard — at medium and hard the computer fights beside its allies; at normal as it always has", async () => {
     const { AI_LEVELS, levelOf } = await import("../../src/ai/levels.js");
-    assert.deepEqual(AI_LEVELS, ["normal", "hard"]);
-    assert.equal(levelOf("nonsense").name, "normal");
-    const end = (level) => {
-        const game = tinyGame(3, (s) => { s.victory.settlements = 99; }), ai = createAI({ seed: 3, humans: [], level });
-        game.command({ type: "declareWar", country: "AAA", target: "BBB" });
-        play(game, ai, 2 * 365);
-        return game.snapshot();
+    assert.deepEqual(AI_LEVELS, ["normal", "medium", "hard"]);
+    assert.deepEqual([levelOf("nonsense").name, levelOf("normal").allies, levelOf("medium").allies, levelOf("hard").allies], ["normal", false, true, true]);
+    // AAA and its ally CCC both before BBB's Five: AAA alone is too weak to storm it, the two together are not
+    const { newArmy } = await import("../../src/engine/state.js"), { emptyMen } = await import("../../src/engine/army.js");
+    const orders = (level) => {
+        const game = tinyGame(1), st = game.state;
+        st.wars.push("AAA|BBB", "BBB|CCC");
+        st.wars.sort();
+        addAgreement(game, "military", "AAA", "CCC");
+        const men = (n) => { const m = emptyMen(); m.swords = n; return m; };
+        newArmy(st, "AAA", "5", men(450));
+        newArmy(st, "CCC", "5", men(350));
+        return warOrders(game, "AAA", { ...flavorOf(1, "AAA", null), level: levelOf(level) }, { muster: false }).filter((o) => o.type === "storm" || o.type === "besiege").map((o) => o.type);
     };
-    assert.equal(end("hard"), end("normal"));
+    assert.deepEqual(orders("normal"), ["besiege"]);
+    assert.deepEqual(orders("medium"), ["storm"]);
+    assert.deepEqual(orders("hard"), ["storm"]);
 });

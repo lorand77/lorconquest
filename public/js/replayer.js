@@ -10,6 +10,7 @@ export function createReplayer(scenario, data, { keyEvery = 730 } = {}) {
     const log = data.log, humans = data.humans.map((h) => h.country);
     let game = Game.create(scenario, { seed: data.seed, humans });
     let next = 0;                                   // the first logged command not yet applied
+    let jumpedAt = null;                            // the day of the server's state gone to at once (jumpTo): from it on, nothing is checked
     const keyframes = new Map([[0, game.snapshot()]]);
 
     const firstFrom = (day) => { let i = 0; while (i < log.length && log[i].day < day) i++; return i; };
@@ -61,6 +62,7 @@ export function createReplayer(scenario, data, { keyEvery = 730 } = {}) {
                 const at = Math.max(...[...keyframes.keys()].filter((d) => d <= day));
                 game = Game.restore(scenario, keyframes.get(at));
                 next = firstFrom(game.day);
+                if (jumpedAt !== null && at < jumpedAt) jumpedAt = null;          // played from before the jump: checked again
             }
             const events = [];
             for (let i = 0; i < chunk && game.day < day; i++) events.push(...stepDay());
@@ -68,10 +70,27 @@ export function createReplayer(scenario, data, { keyEvery = 730 } = {}) {
             return events;
         },
 
+        // to the end at once (the page's To the end): the game's last saved state, as GET /api/games/:id/final gives it — a finished
+        // game's final one, with every command in it; an abandoned game's from the start of a year, played on from there. Restored, not
+        // played, so the end is not checked (verified: null) until the game is played through from a day before it. Returns the events
+        // of the days played after it
+        jumpTo(snap) {
+            game = Game.restore(scenario, snap.state);
+            next = snap.final ? log.length : firstFrom(game.day);
+            jumpedAt = game.day;
+            const events = [];
+            while (!replayer.done) events.push(...stepDay());
+            events.push(...lastDay());
+            return events;
+        },
+
+        // whether the replay stands on a state gone to at once rather than played (jumpTo)
+        get jumped() { return jumpedAt !== null; },
+
         // the last day reached: does the state come out as the game's did? null when the server stored no fingerprint
-        // (a game that was abandoned) or the replay is not at the end
+        // (a game that was abandoned), the replay is not at the end, or it went there at once (jumpTo)
         verified() {
-            if (!replayer.done || !data.resultHash) return null;
+            if (!replayer.done || !data.resultHash || jumpedAt !== null) return null;
             return fingerprint(game.snapshot()) === data.resultHash;
         },
     };

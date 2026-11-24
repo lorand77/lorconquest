@@ -24,13 +24,13 @@ import { createAI } from "../ai/index.js";
 import { Changes, splitEvents, viewFor } from "./view.js";
 
 const CATCH_UP = 5;
-const { scenario, seed, snapshot, log, day, humans, tickMs, statsEvery, aiLevel } = workerData;
+const { scenario, seed, snapshot, log, day, humans, tickMs, statsEvery, aiLevel, aiEmpire } = workerData;
 let paused = workerData.paused;
 let dayMs = tickMs;                                     // the wait between days: tickMs at the usual speed (speed)
 
 const game = snapshot ? resume(scenario, snapshot, log, day) : replay(scenario, seed, log, day, humans);
 const changes = new Changes(game.state);
-const ai = createAI({ seed: game.state.seed, humans, level: aiLevel });
+const ai = createAI({ seed: game.state.seed, humans, level: aiLevel, empireLevel: aiEmpire });
 for (const [country, mode] of workerData.caretakers ?? []) ai.setCaretaker(country, mode);       // players away from the start
 const queue = [];
 let toSave = [], snap = null, times = [], next = 0, timer = null, stopping = false, finished = false;

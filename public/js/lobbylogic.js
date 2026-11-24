@@ -1,8 +1,8 @@
 // What the lobby and the game page decide about people, kept apart from the page so it can be tested in Node (there is
 // no browser in the development container): clock text, who is where, and which buttons a table offers a person.
 
-// whether a new game offers the choice of how strong its computer players are (src/ai/levels.js): off until the hard level plays
-// otherwise than the normal (TODO.md #31) — the server takes the choice already, and every game made meanwhile is "normal"
+// whether a new game offers the choice of how strong its computer players are, and the Empire's members' (src/ai/levels.js): off
+// until the hard level is done (TODO.md #31) — the server takes the choice already, and every game made meanwhile is "normal"
 export const AI_LEVEL_CHOICE = false;
 
 // "1:05" for 65,000 ms; a clock that has run out reads "0:00"
