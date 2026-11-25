@@ -9,7 +9,7 @@ import { economyOf, popOf } from "./economy.js";
 import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
 import { faithOpinion, faithRegard, religionOf } from "./religion.js";
 import { armiesOf, atWar, isGermanState, isRebel, warKey } from "./state.js";
-import { scores } from "./victory.js";
+import { scores, victoryOf } from "./victory.js";
 import { memo } from "./memo.js";
 
 const sum = (list, f) => list.reduce((n, x) => n + f(x), 0);
@@ -200,7 +200,7 @@ export const NEAR_VICTORY = 0.75;
 // is `demander` too near victory for `holder` to become its subject (RULES.md §10): at three quarters of the scenario's number,
 // or carried to it by this subject — { count, target } if so, else null
 export function nearVictory(game, holder, demander, kind) {
-    const st = game.state, target = game.map.scenario.victory?.settlements;
+    const st = game.state, target = victoryOf(game)?.settlements;
     if (!target) return null;
     const table = scores(st), count = table[demander]?.settlements ?? 0;
     // what it would gain: the holder's settlements and its subjects', at a vassal's share or a protectorate's — less the half a

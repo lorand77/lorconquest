@@ -2,7 +2,7 @@
 // what the game plays: what wins, what its x makes things cost, how 1440 stands (wars, agreements), the regions to proclaim and
 // the new states they make, the Empire, the faiths, its achievements and its countries. The computer's characters are left out:
 // they are how it plays, not rules. Pure, and tested in Node.
-import { RELIGION_NAMES, SHARPSHOOTERS_PER_PASS, TECHS } from "/engine/index.js";
+import { LONG_HOLD_DAYS, LONG_SHARE, RELIGION_NAMES, SHARPSHOOTERS_PER_PASS, TECHS } from "/engine/index.js";
 import { TECH_NAMES } from "./panels.js";
 
 const fmt = (n) => Math.round(n).toLocaleString("en-US");
@@ -25,7 +25,7 @@ export function scenarioPage(sc, name) {
 
     // what wins
     out.push("## Winning",
-        `Hold **${sc.victory.settlements}** of the map's ${sc.settlements.length} settlements — your vassals' count, a protectorate's half — or have the most at the start of **${sc.victory.endYear}**. ${sc.countries.length} countries; if a computer country wins, every person loses.`);
+        `Hold **${sc.victory.settlements}** of the map's ${sc.settlements.length} settlements — your vassals' count, a protectorate's half — or have the most at the start of **${sc.victory.endYear}**. In a long game, **${Math.ceil(LONG_SHARE * sc.settlements.length)}**, held for ${LONG_HOLD_DAYS / 365} years. ${sc.countries.length} countries; if a computer country wins, every person loses.`);
 
     // what x does here
     out.push(`## Scale: x = ${x}`,

@@ -3,12 +3,12 @@
 // scores — the events that mattered — and, at the end, whether
 // this replay came out exactly as the game did. Everything is drawn by the same code as the game page (mapdraw.js). A picture of
 // the day shown, and a timelapse video of any span of the game (mapcanvas.js), are a click away.
-import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, militaryPowerOf, scores } from "/engine/index.js";
+import { START_YEAR, YEAR_DAYS, buildMap, describeEvent, longDate, militaryPowerOf, scores, victoryOf } from "/engine/index.js";
 import { requireUser } from "./auth.js";
 import { countryColour, countryLabels, inMapCodes, landFill, ownersKey, paintMap } from "./mapdraw.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, exportSpan, framePlan, frameOf, record, videoName, videoType } from "./mapcanvas.js";
-import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, addBattleSigns, buildLegs, formatMen, scoreboard } from "./mirror.js";
+import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, addBattleSigns, buildLegs, formatMen, scoreboard, victoryNote } from "./mirror.js";
 import { isPhone } from "./notices.js";
 import { createReplayer } from "./replayer.js";
 
@@ -25,7 +25,7 @@ const make = (tag, props = {}, ...children) => {
 };
 
 // the events worth a line in the feed
-const WORTHY = new Set(["war", "peace", "capture", "victory", "empire", "integrated", "subject", "freedom", "joins", "uprising", "risen", "bankruptcy", "reformation", "proclaimed", "union", "eliminated"]);
+const WORTHY = new Set(["war", "peace", "capture", "victory", "holding", "holdBroken", "empire", "integrated", "subject", "freedom", "joins", "uprising", "risen", "bankruptcy", "reformation", "proclaimed", "union", "eliminated"]);
 
 // the requests run side by side, not one after another
 const id = Number(new URLSearchParams(location.search).get("id"));
@@ -76,7 +76,7 @@ function standing() {
         make("span", { class: "rank" }, String(r.rank)), make("span", { class: "swatch", style: `background:${colourOf(r.code)}` }),
         make("span", { class: "who" }, `${nameOf(r.code)}${player.has(r.code) ? ` (${player.get(r.code)})` : ""}`),
         make("span", { class: "val" }, show(r)))));
-    $("standing-note").textContent = scoreKey === "settlements" ? `${scenario.victory?.settlements} to win; at the start of ${scenario.victory?.endYear} the most win` : scoreKey === "people" ? "their own and their subjects'" : "the strength of their armies";
+    $("standing-note").textContent = scoreKey === "settlements" ? victoryNote(victoryOf(replayer.game), replayer.state.holding, nameOf, longDate) : scoreKey === "people" ? "their own and their subjects'" : "the strength of their armies";
 }
 for (const b of document.querySelectorAll("#standing-tabs button")) b.addEventListener("click", () => { scoreKey = b.dataset.score; standing(); });
 

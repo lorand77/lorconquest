@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { Game, buildMap } from "../../src/engine/index.js";
-import { BATTLE_MS, addBattleSigns, battlePoint, battleSize, halfArmy, halfFleet, hireAll, recruitAll, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { BATTLE_MS, victoryNote, addBattleSigns, battlePoint, battleSize, halfArmy, halfFleet, hireAll, recruitAll, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -503,4 +503,13 @@ test("split in half: half of every weapon and ship, each cannon with its crew �
     assert.deepEqual(split.ships, { cogs: 2, carracks: 1 });
     assert.ok(game.command({ ...split, country: f.owner }).ok);
     assert.equal(halfFleet({ id: 1, ships: { cogs: 1 } }), null);
+});
+
+test("the scores' note: what wins — in a long game held for 2 years, and who holds it now, until when", () => {
+    const name = (c) => ({ AUS: "Austria" })[c] ?? c, date = (d) => `day ${d}`;
+    assert.equal(victoryNote({ settlements: 45, endYear: 1650, hold: 0 }, null, name, date), "45 to win; at the start of 1650 the most win");
+    assert.equal(victoryNote({ settlements: 53, endYear: 1650, hold: 730 }, null, name, date), "53 to win, held 2 years; at the start of 1650 the most win");
+    assert.equal(victoryNote({ settlements: 53, endYear: 1650, hold: 730 }, { country: "AUS", since: 1000 }, name, date),
+        "53 to win, held 2 years; at the start of 1650 the most win — Austria holds it: it wins on day 1730 if it still does");
+    assert.equal(victoryNote(null, null, name, date), "");
 });

@@ -6,7 +6,7 @@
 import { combine } from "../engine/army.js";
 import { findRoute, stepsOf, waypoint } from "../engine/map.js";
 import { contested, straitClear } from "../engine/naval.js";
-import { YEAR_DAYS, armiesOf, armyList, atWar, canEnter, dayOf, isRebel, power, scores, settlementsOf } from "../engine/index.js";
+import { YEAR_DAYS, armiesOf, armyList, atWar, canEnter, dayOf, isRebel, power, scores, settlementsOf, victoryOf } from "../engine/index.js";
 import { memo } from "../engine/memo.js";
 import { CHARACTERS, NOISE } from "./characters.js";
 
@@ -68,7 +68,7 @@ export function winChance(a, b, tieToA = false) {
 // a front-runner, racing for the win (design.md, "The computer players"): one that holds 60% of the scenario's settlements to
 // win, or, in the last 30 years before its end year, one of the two ahead (as victory counts them: SCENARIO.md, Victory)
 export function racing(game, code) {
-    const v = game.map.scenario.victory, st = game.state;
+    const v = victoryOf(game), st = game.state;
     if (!v) return false;
     const table = scores(st), mine = table[code];
     if (!mine) return false;
@@ -83,7 +83,7 @@ export function racing(game, code) {
 // (memo.js): the same for every country that asks
 export function leaderOf(game) { return memo("leader", "", () => leaderNow(game)); }
 function leaderNow(game) {
-    const v = game.map.scenario.victory, st = game.state;
+    const v = victoryOf(game), st = game.state;
     if (!v) return null;
     const table = scores(st);
     const order = Object.keys(table).filter((c) => st.countries[c].out === null).sort((a, b) => table[b].settlements - table[a].settlements || table[b].pop - table[a].pop || (a < b ? -1 : 1));
@@ -93,7 +93,7 @@ function leaderNow(game) {
 
 // the endgame: the last 25 years before the scenario's end year, when the end-year count decides (SCENARIO.md, Victory)
 export function endgame(game) {
-    const v = game.map.scenario.victory;
+    const v = victoryOf(game);
     return Boolean(v) && game.state.day >= dayOf(v.endYear) - 25 * YEAR_DAYS;
 }
 

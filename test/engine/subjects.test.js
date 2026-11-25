@@ -582,3 +582,31 @@ test("a broken agreement weighed by faith: 40 × (1 + regard for the victim's fa
     // no faiths: the plain 40
     assert.equal(betrayalPenalty(tinyGame(), "CCC", "AAA", "BBB"), 40);
 });
+
+test("a long game: 60% of the map, held for 2 years — dropping below starts the clock again; the end year as ever", async () => {
+    const { Game, victoryFor, victoryOf, replay } = await import("../../src/engine/index.js");
+    const game = tinyGame(1, (sc) => { sc.victory = { settlements: 4, endYear: 1500 }; }), st = game.state;
+    st.victory = victoryFor(game.map.scenario, "long");
+    assert.deepEqual([victoryOf(game).settlements, victoryOf(game).hold, victoryOf(game).endYear], [5, 730, 1500], "60% of 8, rounded up");
+    // AAA holds 5: the clock starts, no winner yet
+    st.settlements[5].owner = "AAA";
+    st.settlements[6].owner = "AAA";
+    let events = runTo(game, 1);
+    assert.deepEqual(ofType(events, "holding").map((e) => [e.country, e.settlements, e.until]), [["AAA", 5, 731]]);
+    assert.equal(st.winner, null);
+    // it drops below: the clock stops; back up, it starts again
+    st.settlements[6].owner = "CCC";
+    events = runTo(game, 100);
+    assert.deepEqual(ofType(events, "holdBroken").map((e) => e.country), ["AAA"]);
+    st.settlements[6].owner = "AAA";
+    runTo(game, 101);
+    assert.equal(st.holding.since, 101);
+    events = runTo(game, 830);
+    assert.equal(st.winner, null);
+    events = runTo(game, 831);
+    assert.deepEqual(ofType(events, "victory").map((e) => [e.country, e.why]), [["AAA", "reached"]]);
+    // a long game made so is replayed so: its length is part of how it is made
+    const long = Game.create(game.map.scenario, { seed: 1, length: "long" });
+    assert.deepEqual([long.state.victory, Game.create(game.map.scenario, { seed: 1 }).state.victory], [{ settlements: 5, hold: 730 }, null]);
+    assert.deepEqual(replay(game.map.scenario, 1, [], 10, [], "long").state.victory, { settlements: 5, hold: 730 });
+});

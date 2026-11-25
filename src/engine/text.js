@@ -110,6 +110,8 @@ export function describeEvent(map, e) {
         case "refused": return `${e.country} refuses ${e.from}'s demand ${e.what}`;
         case "empire": return `${e.country} demands the Empire: ${e.joined} join as protectorates, ${e.refused} refuse${e.asked ? `, ${e.asked} asked` : ""}`;
         case "league": return `${e.members.join(", ")} form the League`;
+        case "holding": return `${e.country} holds ${fmt(e.settlements)} settlements, the target of this long game: it wins on ${longDate(e.until)} if it still does`;
+        case "holdBroken": return `${e.country} no longer holds the target: the clock stops`;
         case "victory": return `${e.country} wins with ${e.settlements} settlements${e.why === "end" ? " at the end date" : ""}`;
         default: return JSON.stringify(e);
     }
@@ -122,6 +124,7 @@ export function eventCountries(e) {
         case "capture": return [e.from, e.to];
         case "siegeStart": case "siegeLifted": return [e.by];
         case "uprising": return [e.country, e.rebels];
+        case "holding": case "holdBroken": return [e.country];
         case "risen": return [e.country, e.of];
         case "joins": case "offer": case "lapsed": case "answer": case "refused": return [e.country, e.enemy ?? e.from];
         case "peace": case "ended": return [e.country, e.with];

@@ -147,6 +147,7 @@ test("a replay is given for a finished game only, to anyone signed in, and only 
         const game = server.app.db.q.game.get(id);
         assert.deepEqual([r.id, r.scenario, r.seed, r.endDay, r.winner, r.resultHash, r.rulesVersion], [id, "mitteleuropa", game.seed, game.day, game.winner, game.result_hash, game.rules_version]);
         assert.deepEqual(r.humans, [{ country: "BAV", username: "alice" }, { country: "ULM", username: "bobby" }]);
+        assert.equal(r.length, "normal", "how long it was played: part of how a replay makes it");
         assert.ok(r.log.length > 0 && r.log.every((c) => Number.isInteger(c.day) && c.cmd.type && c.country));
         assert.equal(JSON.stringify(r).includes("password"), false);
         // its final state, for the replay to go to the end at once: the state whose fingerprint the game ended with

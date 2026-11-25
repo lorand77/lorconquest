@@ -19,6 +19,8 @@ export function applyChanges(state, changes) {
     for (const name of ["agreements", "warInfo", "memory", "empire"]) if (changes[name]) state[name] = changes[name];
     if ("winner" in changes) state.winner = changes.winner;
     if ("mercenaries" in changes) state.mercenaries = changes.mercenaries;
+    if ("victory" in changes) state.victory = changes.victory;
+    if ("holding" in changes) state.holding = changes.holding;
 }
 
 // one's own country's private changes (its treasury)
@@ -708,4 +710,13 @@ export function halfFleet(f) {
     const ships = Object.fromEntries(Object.entries(f.ships).filter(([, n]) => n > 0));
     if (Object.values(ships).reduce((k, n) => k + n, 0) < 2) return null;
     return { type: "splitFleet", fleet: f.id, ships: halve(ships) };
+}
+
+// the scores' line under settlements (the game page, the replay): what wins, and in a long game who holds it now and until when —
+// `v` the victory played to (victoryOf), `holding` the state's, `name` and `date` to write a country and a day
+export function victoryNote(v, holding, name, date) {
+    if (!v) return "";
+    const held = v.hold ? `, held ${Math.round(v.hold / 365)} years` : "";
+    const now = v.hold && holding ? ` — ${name(holding.country)} holds it: it wins on ${date(holding.since + v.hold)} if it still does` : "";
+    return `${v.settlements} to win${held}; at the start of ${v.endYear} the most win${now}`;
 }

@@ -37,7 +37,7 @@ export const marchFor = (choice, enemyTown) => (choice === "ask" ? "ask" : { sto
 
 // each kind, what it covers, and whether it is on unless chosen otherwise, on a computer and on a phone
 export const NOTICE_KINDS = [
-    { key: "war", label: "War", text: "a war declared on you, a siege of one of your settlements, one lost, peasants rising", computer: true, phone: true },
+    { key: "war", label: "War", text: "a war declared on you, a siege of one of your settlements, one lost, peasants rising, a country holding a long game's target", computer: true, phone: true },
     { key: "questions", label: "Questions", text: "an offer, a demand or a call to arms waiting for your answer, and one that lapses; a protectorate's war you may join", computer: true, phone: true },
     { key: "refused", label: "Refused orders", text: "an order the rules do not allow, and why", computer: true, phone: true },
     { key: "research", label: "Research", text: "a technology done", computer: true, phone: true },
@@ -61,6 +61,7 @@ export function kindOf(e, me, who, state) {
     if (!me) return null;
     if (e.type === "siegeStart" && state.settlements[e.settlement]?.owner === me) return "war";
     if (e.type === "capture" && e.from === me) return "war";
+    if (e.type === "holding" || e.type === "holdBroken") return "war";            // someone near winning a long game: everyone's concern
     return who.includes(me) ? KIND_OF_TYPE[e.type] ?? null : null;
 }
 

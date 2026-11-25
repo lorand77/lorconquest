@@ -126,6 +126,8 @@ export function openDb(file) {
     addColumnIfMissing("games", "ai_level", "TEXT NOT NULL DEFAULT 'normal'");
     // and the Empire's members' computer players', if the host gives them another (src/ai/levels.js); NULL = the game's
     addColumnIfMissing("games", "ai_empire", "TEXT");
+    // how long it is played: "normal", the scenario's victory, or "long", 60% of the map held 2 years (src/engine/victory.js)
+    addColumnIfMissing("games", "game_length", "TEXT NOT NULL DEFAULT 'normal'");
     addColumnIfMissing("games", "winner", "TEXT");
     addColumnIfMissing("games", "host_id", "INTEGER REFERENCES users (id)");
     // how a game ended: the fingerprint of its final state (src/engine/hash.js), and each seat's standing (src/game/results.js)
@@ -191,13 +193,13 @@ export function openDb(file) {
                 (SELECT COUNT(*) FROM chat_messages WHERE user_id = ?1) AS chat`),
         deleteExpiredSessions: db.prepare("DELETE FROM sessions WHERE expires_at <= ?"),
 
-        insertGame: db.prepare("INSERT INTO games (scenario, seed, rules_version, human, status, host_id, visibility, ai_level, ai_empire) VALUES (?, ?, ?, ?, ?, ?, ?, COALESCE(?, 'normal'), ?)"),
+        insertGame: db.prepare("INSERT INTO games (scenario, seed, rules_version, human, status, host_id, visibility, ai_level, ai_empire, game_length) VALUES (?, ?, ?, ?, ?, ?, ?, COALESCE(?, 'normal'), ?, COALESCE(?, 'normal'))"),
         setVisibility: db.prepare("UPDATE games SET visibility = ? WHERE id = ? AND status = 'lobby'"),
         // are two people friends (an accepted friendship either way)
         areFriends: db.prepare("SELECT 1 FROM friendships WHERE status = 'accepted' AND ((requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?))"),
         game: db.prepare("SELECT * FROM games WHERE id = ?"),
         // the tables waiting for people, each with its host's name and how many seats are taken
-        tables: db.prepare(`SELECT g.id, g.scenario, g.host_id, h.username AS host, g.created_at, g.visibility,
+        tables: db.prepare(`SELECT g.id, g.scenario, g.host_id, h.username AS host, g.created_at, g.visibility, g.game_length,
                 (SELECT COUNT(*) FROM game_seats WHERE game_id = g.id) AS seated
             FROM games g JOIN users h ON h.id = g.host_id WHERE g.status = 'lobby' ORDER BY g.id DESC`),
         // every game a person has a seat in
@@ -235,7 +237,7 @@ export function openDb(file) {
             ) f ON f.user_id = u.id
             WHERE u.username NOT LIKE 'deleted-%' AND u.deactivated_at IS NULL
             GROUP BY u.id`),
-        replayGame: db.prepare("SELECT id, scenario, seed, rules_version, status, winner, day, result_hash FROM games WHERE id = ?"),
+        replayGame: db.prepare("SELECT id, scenario, seed, rules_version, status, winner, day, result_hash, game_length FROM games WHERE id = ?"),
         allCommands: db.prepare("SELECT day, country, source, cmd FROM commands WHERE game_id = ? ORDER BY seq"),
         // chat of games that ended (or never began) more than N days ago
         deleteOldChat: db.prepare("DELETE FROM chat_messages WHERE game_id IN (SELECT id FROM games WHERE status IN ('finished', 'abandoned', 'aborted', 'outdated') AND updated_at < datetime('now', ?))"),

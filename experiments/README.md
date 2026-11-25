@@ -779,3 +779,48 @@ in the same tick have hired (TODO.md #36; RULES.md §8).
 652,000 — with up to 50,000–100,000 in service at once, late, against companies of 55,000–114,000. Under 1,000 were for hire in
 1.3–2.2% of the months, under a quarter of the companies in 2.3–4.4%: in a general war the companies run out, otherwise there are
 enough. No hire was refused.
+
+## 30. The medium level: fighting beside allies (2026-11-24)
+
+**What changed.** At the medium level (src/ai/levels.js) the computer counts the allied armies at war with a place's owner with its
+own: those standing at a town for a storm or a battle on arrival, those on their way too for a siege; and it defends an ally's
+town an enemy marches on before it is besieged (TODO.md #31). Normal plays as before, to the fingerprint.
+
+**Run.** `node tools/strength.js --candidate working --level medium --seeds 20 --years 210 --jobs 3 --label allies` (Mitteleuropa,
+seeds 101–120; each test country alone at medium, every other country at normal): `strength/2026-11-24-allies.json`.
+
+**What it showed: nothing measurable, at a cost.** −0.10 settlements a country [−1.52, +1.31]; wins 18 against 16 of 120; every
+country within the noise (Austria −2.50, Saxony +1.91, Brandenburg +1.56). Refused orders a little more (0.71 against 0.63 a game).
+The thinking cost 40.5 µs a country-day against 9.1: the allied armies looked for anew for every settlement weighed. Two things to
+do: index them once a think (the same orders, cheaper), and measure the level where it is meant to work — every country at
+medium, or the Empire's members together — since here a medium country's allies play at normal and never come to it.
+
+**The Empire's members at medium (`createAI({ empireLevel: "medium" })`, the rest at normal).** Europe, 3 seeds each way, 210
+years: the German states held 38 of the Empire's 96 towns at the end at medium against 48 at normal, outsiders took 125 against 41 —
+one seed's 256 captures most of it, and three pairs no more than chance. Mitteleuropa, 10 seeds each way: the Empire's 55 towns all
+in German hands in every game (the map has hardly any outsiders), and the battles fought by allies together as rare at either level
+— a storm and a battle a game, medium less normal −0.1 [−1.5, +1.3] and −0.3 [−1.6, +1.0]. The level counts allies who happen to be
+beside it, and they almost never are: to fight together, the computer must go where its allies fight.
+
+**Joining allies' sieges, at medium.** An enemy town an ally besieges now draws a medium army harder (×1.5 more) and from further (its
+worth halving at 80 days, not 40), to storm it together or join the siege — while no town of its own is besieged or marched on.
+Normal unchanged, to the fingerprint. The same 10 Mitteleuropa pairs: storms fought by allies together 1.5 a game against 1.1, +0.4
+[−1.2, +2.0]; battles −0.3 [−1.5, +0.9]; nothing else moved. The right way, and too little to tell: an ally besieging a town within
+reach of a free host of 800 men or more, with nothing of its own threatened, is a rare moment.
+
+**How often there is anything to fight together over** (`/tmp/probe/chances.mjs`: 5 Mitteleuropa games of 210 years, every country
+every 30 days, all at normal). At war: 10,055 checks; alongside an ally against the same enemy, 35% of them; an ally besieging a town
+of an enemy of ours, 2.1%; one of our free hosts (800 men or more, standing, not shut in) within 120 days of it, 0.3% — 33 checks,
+26 of them in one game, and none of our towns besieged in 30. Allies fight the same wars on different fronts: the moment medium
+waits for comes about six times a game, all countries together. To fight together they must choose the same front first.
+
+**The ally's front, at medium.** An enemy town within 120 days of an ally's armies out in the field (at war with its owner) is worth up
+to three times as much to a medium army, and drawn from further (warOrders, `frontOf`); normal unchanged, to the fingerprint. The
+same 10 Mitteleuropa pairs, the Empire's members at medium: storms by allies together 1.2 a game against 1.1, +0.1 [−1.2, +1.4];
+battles 1.6 against 1.3, +0.3 [−1.5, +2.1]. Every country at medium, 5 games: an ally besieging a town of our enemy's, 3.9% of the
+time at war against 2.1% — the front draws allies into each other's wars — but one of our free hosts within 120 days of it, 0.34%
+against 0.33%, as rare as before. On this map allies meet a shared enemy from opposite sides; the computer alone cannot bring them
+together. Kept: it plays no worse by any measure, and costs nothing more.
+
+**Taken out.** None of the three — counting allies, joining their sieges, their front — measured stronger or changed how often
+allies fight together, so the medium level was removed for simplicity: war.js is as before it, and normal plays the same.

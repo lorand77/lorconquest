@@ -19,7 +19,7 @@ import { random } from "./random.js";
 import { WORST_FAITH, faithRegard } from "./religion.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
 import { armyList, atWar, canEnter, isGermanState, isRebel, warKey } from "./state.js";
-import { scores } from "./victory.js";
+import { scores, victoryOf } from "./victory.js";
 
 export const OFFER_DAYS = Math.round(6 * 365 / 12);     // a human has 6 months to answer
 export const TRUCE_DAYS = 5 * YEAR_DAYS;
@@ -613,7 +613,7 @@ export function unionError(game, a, b) {
     if (atWar(st, a, b)) return "not while you are at war with each other";
     const foes = (c) => st.wars.map((w) => w.split("|")).filter((w) => w.includes(c)).map((w) => w.find((x) => x !== c)).filter((x) => !isRebel(st, x)).sort().join(",");
     if (foes(a) !== foes(b)) return "only while you are at war with the same countries, or at peace with all";
-    const target = game.map.scenario.victory?.settlements, table = scores(st);
+    const target = victoryOf(game)?.settlements, table = scores(st);
     if (target && (table[a]?.settlements ?? 0) + (table[b]?.settlements ?? 0) >= NEAR_VICTORY * target) return "too near victory together: what is left must be taken";
     return null;
 }

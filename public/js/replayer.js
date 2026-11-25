@@ -8,7 +8,7 @@ import { Game, fingerprint } from "/engine/index.js";
 // data: what GET /api/games/:id/replay gave — { seed, humans: [{ country }], endDay, resultHash, log: [{ day, cmd }] }
 export function createReplayer(scenario, data, { keyEvery = 730 } = {}) {
     const log = data.log, humans = data.humans.map((h) => h.country);
-    let game = Game.create(scenario, { seed: data.seed, humans });
+    let game = Game.create(scenario, { seed: data.seed, humans, length: data.length ?? "normal" });
     let next = 0;                                   // the first logged command not yet applied
     let jumpedAt = null;                            // the day of the server's state gone to at once (jumpTo): from it on, nothing is checked
     const keyframes = new Map([[0, game.snapshot()]]);

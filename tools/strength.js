@@ -6,7 +6,7 @@
 // opponent unchanged.
 //
 //   node tools/strength.js [--baseline HEAD] [--candidate working|<commit>] [--seeds 20] [--seed 101] [--years 210]
-//       [--countries BAV,BRB,...] [--salt S] [--level hard] [--empire-level medium] [--scenario mitteleuropa] [--jobs N] [--label x] [--report]
+//       [--countries BAV,BRB,...] [--salt S] [--level hard] [--empire-level hard] [--scenario mitteleuropa] [--jobs N] [--label x] [--report]
 //
 // Each game is written down as it ends, in experiments/strength/<label>.partial.jsonl — its first line the run's settings — so a
 // run cut short (a restart of the container) loses only the games then being played: the same command again plays only the rest,

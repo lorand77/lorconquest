@@ -1170,6 +1170,13 @@ Otherwise, at the start of the end year, the most settlements win, then the most
 own and its subjects'), then the lower code. When the game is won it stops: nothing more happens and nothing is accepted. A
 computer country may win, and then every human has lost.
 
+**A long game** is a choice its host makes when opening the table (*Game length*): instead of the scenario's number, **60% of the
+map's settlements** (rounded up: 53 of Mitteleuropa's 87, 101 of Historical's 168, 267 of Europe's 445), counted the same way, and
+**held for 2 years**: the first to reach it wins if it still has it 730 days later — its count may rise and fall above it
+meanwhile. Every player is told when a country reaches it and when it drops below, which stops the clock; reaching it again starts
+the 2 years afresh, and so does another country reaching it ahead. The end year is the same. Everything measured against victory —
+the leader the others gang up on, three quarters of it where nobody bows (§10) — is measured against the long game's number.
+
 **Starting wars, agreements and subjects** of a scenario count as if declared, signed and made in play: the wars are on from
 the first day, the agreements are in force, the subjects are subjects (a vassal counting its years from the start), a pact has the years it has left, an alliance 20 years (or the years the scenario says it has left),
 and every warmonger score is 0.

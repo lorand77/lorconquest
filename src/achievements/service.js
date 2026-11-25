@@ -79,7 +79,7 @@ export function createAchievements({ db, scenarios, io, log }) {
         const quits = new Map(db.q.seatQuits.all(gameId).map((r) => [r.country, r.quit_day]));
         return {
             gameId, replay: {
-                gameId, scenarioId: g.scenario, scenario: scenario.data, seed: g.seed, endDay: g.day, resultHash: g.result_hash,
+                gameId, scenarioId: g.scenario, scenario: scenario.data, seed: g.seed, endDay: g.day, resultHash: g.result_hash, length: g.game_length ?? "normal",
                 humans: db.q.seats.all(gameId).map((s) => s.country),
                 seats: seats.map((s) => ({ country: s.country, quitDay: quits.get(s.country) ?? null })),
                 log: db.q.allCommands.all(gameId).map((c) => ({ day: c.day, cmd: JSON.parse(c.cmd) })),

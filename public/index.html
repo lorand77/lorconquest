@@ -26,17 +26,20 @@
                     <option value="public">Everyone</option>
                     <option value="friends">My friends only</option>
                 </select></label>
+                <!-- how long it is played (src/engine/victory.js): the scenario's target, or 60% of the map held for 2 years -->
+                <label>Game length <select id="length">
+                    <option value="normal">Normal: about half the map</option>
+                    <option value="long">Long: 60% of the map, held 2 years</option>
+                </select></label>
                 <!-- how strong the computer players are (src/ai/levels.js): hidden until the hard level plays otherwise (TODO.md #31;
                      lobbylogic.js, AI_LEVEL_CHOICE) -->
                 <label id="ai-level-choice" hidden>Computer players <select id="ai-level">
                     <option value="normal">Normal</option>
-                    <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                 </select></label>
                 <label id="ai-empire-choice" hidden>The Empire's members <select id="ai-empire">
                     <option value="">As the others</option>
                     <option value="normal">Normal</option>
-                    <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                 </select></label>
                 <button class="primary" type="submit" data-solo="1">Play alone</button>

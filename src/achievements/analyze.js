@@ -15,10 +15,10 @@ import { BY_KEY as A, scenarioAchievements } from "./catalogue.js";
 const SEA = new Set(["naval", "strait"]);
 const LAND = (e) => !SEA.has(e.kind) && e.kind !== "post";
 
-// job: { scenarioId, scenario, seed, humans: [code], log: [{ day, cmd }], endDay, resultHash, seats: [{ country, quitDay }] }
+// job: { scenarioId, scenario, seed, humans: [code], length, log: [{ day, cmd }], endDay, resultHash, seats: [{ country, quitDay }] }
 export function analyzeGame(job) {
     const { scenario, log } = job;
-    const game = Game.create(scenario, { seed: job.seed, humans: job.humans });
+    const game = Game.create(scenario, { seed: job.seed, humans: job.humans, length: job.length ?? "normal" });
     const capitals = new Map(scenario.countries.map((c) => [c.code, c.capital]));
     const goals = scenarioAchievements(job.scenarioId, scenario);
     const allTechs = Object.keys(TECHS);

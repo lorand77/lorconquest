@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { betrayalPenalty, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { victoryOf, betrayalPenalty, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -139,7 +139,7 @@ function empireSection(ctx) {
     const expect = rolled.reduce((k, x) => k + demandChance(game, x, me, "protectorate").chance / 100, 0);
     // near victory nobody bows (RULES.md §10): they roll in turn, and once you hold three quarters of what wins, or the next would
     // carry you to it, the rest refuse — at most this many, were every one before it to join
-    const table = scores(state), target = game.map.scenario.victory?.settlements ?? Infinity;
+    const table = scores(state), target = victoryOf(game)?.settlements ?? Infinity;
     let count = table[me]?.settlements ?? 0, most = 0;
     for (const x of rolled) {
         const gain = 0.5 * (table[x]?.settlements ?? 0);

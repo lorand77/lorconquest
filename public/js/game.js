@@ -2,8 +2,8 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, friendly, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, halfArmy, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { Game, buildMap, describeEvent, friendly, victoryOf, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
+import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, halfArmy, victoryNote, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -182,7 +182,7 @@ async function start() {
     requestAnimationFrame(frame);
     // a game that ended while the page was away: its end screen (the server keeps only who won, or "defeat")
     if (joined.over) {
-        const winner = joined.over === "defeat" ? null : joined.over, target = scenario.victory?.settlements;
+        const winner = joined.over === "defeat" ? null : joined.over, target = victoryOf(game)?.settlements;
         showEnd({ day: state.day, winner, defeated: !winner, why: winner && scores(state)[winner]?.settlements >= target ? "reached" : "end" });
     }
 }
@@ -561,8 +561,7 @@ function renderScores() {
         make("span", { class: "rank" }, String(r.rank)), swatch(r.code),
         make("span", { class: "who" }, `${country(r.code)?.name ?? r.code}${player(r.code) ? ` (${player(r.code)})` : ""}`),
         make("span", { class: "val" }, show(r)))));
-    const target = scenario.victory?.settlements;
-    $("sb-note").textContent = scoreKey === "settlements" ? `${target} to win; at the start of ${scenario.victory?.endYear} the most win` : scoreKey === "people" ? "their own and their subjects'" : "the strength of their armies";
+    $("sb-note").textContent = scoreKey === "settlements" ? victoryNote(victoryOf(game), state.holding, (c) => country(c)?.name ?? c, longDate) : scoreKey === "people" ? "their own and their subjects'" : "the strength of their armies";
 }
 
 // nothing being researched: a banner at the top offering the cheapest tech open now, until one is chosen or put off
@@ -597,7 +596,7 @@ function closeWar() { war = null; $("war").hidden = true; }
 // shown when the game is over, or when the player's country falls while the others play on; Look at the map hides it and
 // Results brings it back
 function showEnd(end) {
-    const v = scenario.victory ?? {};
+    const v = victoryOf(game) ?? {};
     const screen = endScreen({
         me, end, table: scores(state), target: v.settlements, endYear: v.endYear,
         names: Object.fromEntries(Object.values(state.countries).map((c) => [c.code, c.name])),

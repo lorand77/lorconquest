@@ -7,6 +7,7 @@ import { advanceDay } from "./day.js";
 import { applyStart } from "./diplomacy.js";
 import { startEmpire } from "./empire.js";
 import { buildMap } from "./map.js";
+import { victoryFor } from "./victory.js";
 import { FORMAT, RULES_VERSION, initialState } from "./state.js";
 
 export class Game {
@@ -17,9 +18,11 @@ export class Game {
     }
 
     // `humans`: the countries people play; a proposal to one waits for its player, to the others the computer answers
-    static create(scenario, { seed = 1, humans = [] } = {}) {
+    // `length`: "normal", the scenario's victory, or "long" (victory.js)
+    static create(scenario, { seed = 1, humans = [], length = "normal" } = {}) {
         const map = buildMap(scenario);
         const game = new Game(map, initialState(map, seed, humans));
+        game.state.victory = victoryFor(scenario, length);
         game.state.empire = startEmpire(scenario);         // the Emperor of the start, and the first election 25 years on
         applyStart(game);                                  // the wars and agreements the scenario opens with
         return game;
@@ -56,7 +59,7 @@ export class Game {
 
 // a game rebuilt from its seed and command log, up to `untilDay`: each day's commands are applied, then the day
 // is advanced, exactly as when it was played
-export const replay = (scenario, seed, log, untilDay, humans = []) => carryOn(Game.create(scenario, { seed, humans }), log, untilDay);
+export const replay = (scenario, seed, log, untilDay, humans = [], length = "normal") => carryOn(Game.create(scenario, { seed, humans, length }), log, untilDay);
 
 // the same from a snapshot: `log` holds the commands applied on or after the snapshot's day
 export const resume = (scenario, snapshot, log, untilDay) => carryOn(Game.restore(scenario, snapshot), log, untilDay);

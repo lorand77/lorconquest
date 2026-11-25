@@ -6,7 +6,7 @@
 // Everything is read from the state, nothing is remembered: a restarted game plays on as before. An army's id is only
 // known once its split has been applied, so musters take two thinks (the second a tick after the first, see index.js).
 import { mayFight } from "../engine/battle.js";
-import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, hireRoom, mercenaryCapOf, armyList, atWar, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, voyage, wallDefence } from "../engine/index.js";
+import { CREW_PER_CANNON, MERCENARY_DAYS, MERCENARY_PRICE, hireRoom, mercenaryCapOf, armyList, besiegedIn, economyOf, isFriend, isRebel, mercenariesOf, routeFor, situation, siegeDays, voyage, wallDefence } from "../engine/index.js";
 import { WEAPONS, emptyMen } from "../engine/army.js";
 import { legKey } from "../engine/map.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, reserveOf, stagingSettlement, threatsOf, winChance } from "./util.js";
@@ -220,16 +220,6 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
     const alliedAt = new Set(armyList(st).filter((a) => a.owner !== code && isFriend(st, code, a.owner) && !a.retreating)
         .flatMap((a) => (a.march ? [destinationOf(a)] : a.at ? [a.at] : [])));
     const alliedOn = (s) => (s.siege && s.siege.by !== code && isFriend(st, code, s.siege.by)) || alliedAt.has(String(s.id));
-    // medium and up (levels.js): the allied armies at war with a place's owner fight beside ours there — a storm takes every friendly
-    // army besieging the town, a battle every one at the place (fighting.js) — so they are counted with our own where the odds are
-    // weighed: those standing at it for a storm or a battle on arrival, those on their way too for a siege
-    const withAllies = Boolean(fl.level?.allies);
-    const alliedArmies = withAllies ? armyList(st).filter((a) => a.owner !== code && isFriend(st, code, a.owner) && !a.retreating) : [];
-    const alliesAt = (key, foe, coming = false) => alliedArmies.filter((a) => (a.at === key || (coming && a.march && destinationOf(a) === key)) && atWar(st, a.owner, foe));
-    const gunsOf = (armies) => armies.reduce((n, a) => n + a.cannons, 0);
-    // and an ally's town an enemy marches on is defended before it is besieged, as our own are, a little after them
-    const alliedThreats = withAllies ? Object.keys(st.countries).sort().filter((c) => c !== code && isFriend(st, code, c) && !isRebel(st, c) && st.countries[c].out === null && [...foes].some((f) => atWar(st, c, f)))
-        .flatMap((c) => threatenedOwn(game, c, enemyArmies.filter((e) => atWar(st, c, e.owner) && foes.has(e.owner)))) : [];
     let spareGuns = st.countries[code].reserve.cannons;            // cannons in the reserve, for the hosts to take on
     const enemyPost = (k) => { const p = st.posts[k]; return p && p.n > 0 && foes.has(p.owner) ? p : null; };
 
@@ -264,8 +254,8 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
         // at an enemy settlement: hold the siege, or storm if it can be won now
         if (here.s && foes.has(here.s.owner) && here.garrison.length) {
             if (defend) continue;
-            const beside = alliesAt(at, here.s.owner), sees = forcePower(here.garrison) * wallsFactor(game, here.s, guns + gunsOf(beside));
-            if ((beside.length ? forcePower([...group, ...beside]) : ours) >= 1.35 * sees && mayFight(st, group, here.garrison)) out.push({ type: "storm", country: code, army: host.id });
+            const sees = forcePower(here.garrison) * wallsFactor(game, here.s, guns);
+            if (ours >= 1.35 * sees && mayFight(st, group, here.garrison)) out.push({ type: "storm", country: code, army: host.id });
             else if (!here.s.siege) out.push({ type: "besiege", country: code, army: host.id });
             continue;
         }
@@ -289,12 +279,6 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             const against = forcePower(b.hostile), inside = forcePower(b.garrison);
             if (ours + inside >= 1.2 * against) options.push({ key: b.key, score: (30 + b.s.pop / 1000) / (1 + days / 40), storm: false });
         }
-        // an ally's town about to be marched on (medium and up): there before the enemy, enough with its garrison to hold it
-        for (const t of alliedThreats) {
-            const days = reach.get(t.key);
-            if (days === undefined || t.key === at || raider || st.day + days >= t.arrives || covered.has(t.key)) continue;
-            if (ours + t.inside >= 1.2 * t.against) options.push({ key: t.key, score: (35 + t.s.pop / 1000) / (1 + days / 40), storm: false, defends: true });
-        }
         // a town of ours about to be marched on: there before the enemy, and enough with its garrison to hold it — better
         // met there than relieved later
         for (const t of threatened) {
@@ -306,26 +290,21 @@ export function warOrders(game, code, fl, { muster = true, prepare = false, defe
             if (!foes.has(s.owner)) continue;                                // peasants' towns too: theirs to take back, or anyone's
             const key = String(s.id), days = reach.get(key);
             if (days === undefined) continue;
-            const sit = situation(game, key), raw = forcePower(sit.garrison);
-            // with the allies there (to storm on arrival) or on their way (to besiege), medium and up
-            const there = alliesAt(key, s.owner), coming = alliesAt(key, s.owner, true);
-            const stormWith = there.length ? forcePower([...group, ...there]) : ours, siegeWith = coming.length ? forcePower([...group, ...coming]) : ours;
-            const def = raw * wallsFactor(game, s, guns + gunsOf(there));
+            const sit = situation(game, key), raw = forcePower(sit.garrison), def = raw * wallsFactor(game, s, guns);
             // its people in thousands, and 10 for being one more settlement towards victory (as a town's people: diplomacy.js, TOWN_WORTH)
             const value = (s.pop / 1000 + (st.countries[s.owner].capital === s.id ? 15 : 0) + (s.cores.includes(code) ? 10 : 0) + 10) * (alliedOn(s) ? 1.5 : 1);
             const danger = threat(days);
-            if (siegeWith < 1.1 * danger) continue;
+            if (ours < 1.1 * danger) continue;
             if (!sit.garrison.length) options.push({ key, score: value / (1 + days / 40), storm: false, open: !sit.relief.length, days });
-            else if (stormWith >= ratio * def + danger) options.push({ key, score: value / (1 + days / 40), storm: true });
-            else if (siegeWith >= ratio * raw + danger && siegeDays(game, s, guns) <= 500) options.push({ key, score: 0.6 * value / (1 + days / 40), storm: false });
+            else if (ours >= ratio * def + danger) options.push({ key, score: value / (1 + days / 40), storm: true });
+            else if (ours >= ratio * raw + danger && siegeDays(game, s, guns) <= 500) options.push({ key, score: 0.6 * value / (1 + days / 40), storm: false });
         }
         for (const a of enemyArmies) {
             if (!a.at || !inTheOpen(st, a) || a.at === at) continue;
             const days = reach.get(a.at), their = armyPower(a);
             const land = st.settlements[game.map.nodes.get(a.at).land].owner;
             if (defend && land !== code && !isFriend(st, code, land)) continue;
-            const beside = alliesAt(a.at, a.owner), with_ = beside.length ? forcePower([...group, ...beside]) : ours;
-            if (days !== undefined && with_ >= 1.5 * their) options.push({ key: a.at, score: (8 + menIn(a) / 500) / (1 + days / 40), storm: false });
+            if (days !== undefined && ours >= 1.5 * their) options.push({ key: a.at, score: (8 + menIn(a) / 500) / (1 + days / 40), storm: false });
         }
         options.sort((x, y) => y.score - x.score || (x.key < y.key ? -1 : 1));
         if (raider) {

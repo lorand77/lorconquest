@@ -73,8 +73,8 @@ dependencies.
   `view.js` (what a player may see, what changed).
 - `src/ai/` — the computer players: `index.js` (`createAI`: who thinks when, reflexes, the caretaker switch), `economy.js`,
   `forces.js`, `war.js`, `navy.js` (cogs for the straits its armies need, patrols where it is the stronger), `diplomacy.js`, `caretaker.js`, `characters.js` (the six characters a scenario assigns in its SCENARIO.md,
-  with rivalries; `tools/map.js` checks the spread), `util.js` (their own dice, a country's character for the game, distances), `levels.js` (a game's level, normal, medium or hard, and the Empire's
-  members': the switches its layers read — medium fights beside its allies; the lobby's choice hidden until TODO.md #31 is done).
+  with rivalries; `tools/map.js` checks the spread), `util.js` (their own dice, a country's character for the game, distances), `levels.js` (a game's level, normal or hard, and the Empire's
+  members': the switches its layers read; hard as normal until TODO.md #31, the lobby's choice hidden till then).
 - `public/` — the pages: `game.html` with `js/game.js` (the screen), `js/mapview.js` (the SVG map),
   `js/mirror.js` (the state copy and map geometry, tested in Node), `js/panels.js` (the Country, Shop and
   Research tabs, fleets, an army's equipment), `js/diplomacy.js` (the Diplomacy tab); `index.html` is the lobby (`js/lobby.js`, with `js/lobbylogic.js` for what is tested in Node),

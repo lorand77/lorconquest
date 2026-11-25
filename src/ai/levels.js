@@ -5,14 +5,11 @@
 // stronger player is the same code with other switches, not another AI. A game's commands are saved and replayed without the AI,
 // so a level changes no replay.
 //   normal  the computer as it has long been
-//   medium  besides, it fights beside its allies (war.js): an allied army at a town or an enemy army is counted with its own, so it
-//           storms and attacks with them where it would not alone; and a town of an ally's an enemy marches on is defended
-//           before it is besieged, as its own are
-//   hard    as medium, for now; #31's other half (more aggressive late in the game) is to come
-export const AI_LEVELS = ["normal", "medium", "hard"];
+//   hard    as normal, for now; #31 (more aggressive late in the game) is to make it stronger
+// (A medium level that fought beside its allies was tried and taken out: it measured no stronger — experiments/, section 30.)
+export const AI_LEVELS = ["normal", "hard"];
 const LEVELS = {
-    normal: { name: "normal", allies: false },
-    medium: { name: "medium", allies: true },
-    hard: { name: "hard", allies: true },
+    normal: { name: "normal" },
+    hard: { name: "hard" },
 };
 export const levelOf = (name) => LEVELS[name] ?? LEVELS.normal;

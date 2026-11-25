@@ -201,14 +201,12 @@ for its player to come back.
 
 **They run inside the game's loop, in the game's worker**, a few countries per tick.
 
-- **A game has a level** (`src/ai/levels.js`): normal, medium or hard, chosen by the host as the table is made, kept with the game
+- **A game has a level** (`src/ai/levels.js`): normal or hard, chosen by the host as the table is made, kept with the game
   (`games.ai_level`) and handed to `createAI` by its worker — and, if the host chooses, another for the Empire's members
   (`games.ai_empire`): a German state's computer player at that one, worked out at each think, as membership changes. A level is
-  switches the layers read from a country's character (`fl.level`), not another AI. **Medium** fights beside its allies
-  (`war.js`, `allies`): the allied armies at war with a place's owner fight there with ours (a storm takes every friendly army
-  besieging the town), so they are counted with its own — those standing there for a storm or a battle on arrival, those on their way
-  too for a siege — and an ally's town an enemy marches on is defended before it is besieged, a little after its own. **Hard** is
-  medium for now; #31's other half is to come. Normal plays as it always has, to the fingerprint. The lobby does not offer the
+  switches the layers read from a country's character (`fl.level`), not another AI. **Hard** plays as normal for now: #31 is to make
+  it stronger. (A medium level that counted its allies, joined their sieges and fought on their front measured no stronger — allies
+  on these maps meet a shared enemy from opposite sides — and was taken out: experiments/, section 30.) The lobby does not offer the
   choices yet (`lobbylogic.js`, `AI_LEVEL_CHOICE`); `tools/simulate.js` and `tools/strength.js` take `--level` and `--empire-level`.
   Commands are logged, so a level changes no replay.
 - **Their dice are their own.** A computer player never draws from the game's random state
@@ -631,9 +629,12 @@ would break that.
   one day (`day.js`) and returns its events; `snapshot()` is the state as JSON, `Game.restore` and
   `replay` rebuild a game from a snapshot or from its seed and log.
 - **The state is plain JSON:** countries, settlements, armies (by id; the starting garrisons are
-  numbered like their settlements), wars, battle cooldowns, the mercenaries for hire in the world (`mercenaries`), the day and the random state
+  numbered like their settlements), wars, battle cooldowns, the mercenaries for hire in the world (`mercenaries`), a long game's victory (`victory`: 60% of the map, held
+  2 years — null for the scenario's own; who is holding it, `holding`), the day and the random state
   (mulberry32, one 32-bit word). `RULES_VERSION` and `FORMAT` in `state.js` are stamped on every
-  state and checked on restore.
+  state and checked on restore. A game's length is chosen as it is made (`Game.create(scenario, { seed, humans, length })`), so a
+  replay from the seed is given it too (`games.game_length`, the replay data's `length`); every reader of the target asks
+  `victoryOf(game)`, never the scenario's number.
 - **The map** (`map.js`) is the scenario as a graph: settlements and passes are places, keyed
   `"37"` and `"P3"`; land routes are legs, two either side of a pass, one per pair of places. A
   leg takes its route's years × 365 days, rounded to a whole day.
