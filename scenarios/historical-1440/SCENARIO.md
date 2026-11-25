@@ -590,9 +590,9 @@ majority of the votes cast wins; without one, the two leaders face a second roun
 
 The reforms of 1495–1512 were the estates' — pushed by Berthold of Mainz to bind the Emperor as much as to strengthen the Empire,
 and traded to Maximilian for the money he needed. Here the Emperor or the Archbishop of Mainz puts each to the **Diet** — the
-electors, the princes and the cities — and two colleges of the three pass it (RULES.md §10): the **Eternal Public Peace** (binding
-the Emperor too), the **Common Penny** (into a war chest for the Empire's defence, barely collected), the **Imperial Circles** and
-the **Imperial Chamber Court**. Nothing like Charles V's imperial league of 1547, which failed, nor a hereditary crown, is among
+electors, the princes and the cities — and the electors and the princes must both pass it, the cities only advising (RULES.md
+§10): the **Eternal Public Peace** (binding the Emperor too), the **Imperial Chamber Court** to keep it, the **Common Penny** (into a
+war chest for the Empire's defence, barely collected) — all three at Worms in 1495 — and the **Imperial Circles** (1500, 1512). Nothing like Charles V's imperial league of 1547, which failed, nor a hereditary crown, is among
 them.
 
 ## Victory

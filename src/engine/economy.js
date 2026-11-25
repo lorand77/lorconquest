@@ -10,7 +10,7 @@ import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUI
     HIRE_ROOM, MARKET_BONUS, MAX_LIBRARIES, MERCENARY_GROWS, MERCENARY_REFILL, MERCENARY_SHARE, MERCENARY_SHARE_LATE, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
-import { armiesOf, armyList, atWar, capitalsOf, settlementsOf, isCore, isGermanState, isRebel, killPeople, removeArmy } from "./state.js";
+import { armiesOf, armyList, atWar, capitalsOf, reformPassed, settlementsOf, isCore, isGermanState, isRebel, killPeople, removeArmy } from "./state.js";
 import { coringDays } from "./religion.js";
 import { dateOf } from "./calendar.js";
 import { memo, memoTable } from "./memo.js";
@@ -110,7 +110,7 @@ function economyOfNow(game, code) {
         ? DUES * Math.max(0, economyBase(game, c).moneyPerYear) : 0);
     // the Common Penny, once passed (RULES.md §10, Imperial reform): every German state but the Emperor pays 1% of its money, when
     // positive, into the Empire's war chest — no one's tribute (monthly, below, keeps the chest)
-    const penny = (st.empire?.reforms ?? 0) >= 2 && code !== emperor && isGermanState(game, code) ? PENNY * Math.max(0, e.moneyPerYear) : 0;
+    const penny = reformPassed(st, "penny") && code !== emperor && isGermanState(game, code) ? PENNY * Math.max(0, e.moneyPerYear) : 0;
     const paid = share(code) + dues(code) + penny, received = subjectsOf(st, code).reduce((n, c) => n + share(c), 0) + (code === emperor ? cities.reduce((n, c) => n + dues(c), 0) : 0);
     const moneyPerYear = e.moneyPerYear + received - paid;
     const investable = Math.max(0, moneyPerYear);

@@ -9,7 +9,7 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 90;
+export const RULES_VERSION = 91;
 // bump when the shape of the state changes
 export const FORMAT = 24;
 
@@ -175,12 +175,17 @@ export function capitalsOf(state, code) {
 export const isCore = (state, s, code) => s.cores.includes(code) || isRebel(state, code);
 
 // neutral land is closed (RULES.md §10): an army may enter land that is its own country's, its subjects' or
+// the Empire's reforms in the order the Diet must pass them (empire.js, REFORMS, holds the rest of each): has `key` passed? Asked by
+// name, never by how many have passed, so that the order may change
+export const REFORM_ORDER = ["landfriede", "court", "penny", "circles"];
+export const reformPassed = (st, key) => (st.empire?.reforms ?? 0) > REFORM_ORDER.indexOf(key);
+
 // overlord's, its allies' (either kind), a country's that gives it military access, or an enemy's
 export function canEnter(game, country, key) {
     const owner = ownerOf(game, key), st = game.state;
     return owner === country || atWar(st, country, owner) || friendly(st, country, owner) || grantsAccess(st, owner, country)
         // the Imperial Circles: every German state gives the Emperor military access — to each settlement of the Empire's land
-        || (st.empire?.reforms >= 3 && st.empire.emperor === country && game.map.hre.has(game.map.nodes.get(key).land));
+        || (reformPassed(st, "circles") && st.empire.emperor === country && game.map.hre.has(game.map.nodes.get(key).land));
 }
 
 // is `code` a German state (RULES.md §10, The Emperor): where the scenario has an Emperor, one with a capital inside the Empire and

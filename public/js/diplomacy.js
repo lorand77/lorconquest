@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { COALITION_SCORE, coalitionError, victoryOf, betrayalPenalty, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { COALITION_SCORE, coalitionError, reformPassed, victoryOf, betrayalPenalty, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -175,12 +175,12 @@ function crownParts(ctx) {
     // the estates' reforms: those passed, the next with the authority it needs, the war chest; the states under the ban
     const passed = REFORMS.slice(0, emp.reforms).map((r) => r.name), next = REFORMS[emp.reforms];
     out.push(mk("p", {}, `Reforms: ${passed.length ? passed.join(", ") : "none yet"}.${next ? ` Next: the ${next.name}, at authority ${next.authority}.` : ""}`
-        + `${emp.reforms >= 2 ? ` The war chest: ${n(emp.chest)}, paid to the Emperor while he defends the Empire.` : ""}${emp.banned.length ? ` Under the ban: ${emp.banned.map(name).join(", ")}.` : ""}`));
+        + `${reformPassed(state, "penny") ? ` The war chest: ${n(emp.chest)}, paid to the Emperor while he defends the Empire.` : ""}${emp.banned.length ? ` Under the ban: ${emp.banned.map(name).join(", ")}.` : ""}`));
     // putting the next reform to the Diet: the Emperor's or the Archbishop of Mainz's, with how the three colleges would vote
     const why = reformError(game, me);
     if (!why || !/only the Emperor or the Archbishop/.test(why)) {
         const v = !why ? dietVotes(game, me) : null, college = (k) => `${v[k].yes}–${v[k].no}`;
-        out.push(row(ctx, mk("span", { class: "w" }, why ? `Put a reform to the Diet: ${why}.` : `Put the ${next.name} to the Diet: electors ${college("electors")}, princes ${college("princes")}, cities ${college("cities")} — ${v.passed ? "it would pass" : "it would fail"} (two colleges of three).`),
+        out.push(row(ctx, mk("span", { class: "w" }, why ? `Put a reform to the Diet: ${why}.` : `Put the ${next.name} to the Diet: electors ${college("electors")}, princes ${college("princes")}, cities ${college("cities")} — ${v.passed ? "it would pass" : "it would fail"} (the electors and the princes must both agree; the cities only advise).`),
             mk("button", { disabled: why ? "disabled" : undefined, onclick: act(ctx, () => ({ type: "proposeReform" })) }, "Propose")));
     }
     // the Emperor's ban

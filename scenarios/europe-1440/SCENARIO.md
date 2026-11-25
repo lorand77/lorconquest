@@ -54,11 +54,11 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | GOT | Gotland | 19 Visby |  | 19 | 10K | 400 | 10 | — |
 | LIV | Livonian Order | 20 Riga | #c4cce0 | 20, 21, 22, 23 | 50K | 2,000 | 15 | — |
 | TEU | Teutonic Order | 24 Danzig | #d4d4d4 | 24, 25, 26, 27 | 50K | 2,000 | 40 | — |
-| ENG | England | 28 London | #ea9999 | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 83, 84, 85, 86, 87, 88, 89 | 290K | 11,600 | 80 | — |
+| ENG | England | 28 London | #ea9999 | 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45, 83, 84, 85, 86, 87, 88, 89 | 300K | 12,000 | 80 | — |
 | SCO | Scotland | 49 Edinburgh | #b8d8f0 | 49, 50, 51, 52 | 40K | 1,600 | 20 | — |
 | ISL | Lordship of the Isles | 53 Inverness |  | 53 | 10K | 400 | 15 | — |
 | TRN | Tyrone | 46 Dungannon |  | 46 | 10K | 400 | — | — |
-| THO | Thomond | 47 Ennis |  | 45, 47 | 20K | 800 | 10 | — |
+| THO | Thomond | 47 Ennis |  | 47 | 10K | 400 | — | — |
 | DES | Desmond | 48 Tralee |  | 44, 48 | 20K | 800 | 10 | — |
 | FRA | France | 54 Paris | #8fb4ea | 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82 | 320K | 12,800 | 40 | — |
 | BUR | Burgundy | 98 Brussels | #c4a0d8 | 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104 | 180K | 7,200 | 90 | part |
@@ -225,7 +225,7 @@ All of Europe in 1440, from Ireland and Portugal to Muscovy and Anatolia, from t
 | 42 | Dublin | ENG | town | port |  | 610 | 1238 | 43, 45, 46, 47 | 38 |
 | 43 | Waterford | ENG | town | port |  | 555 | 1299 | 42, 44, 47 |  |
 | 44 | Cork | DES | town | port |  | 494 | 1305 | 43, 47, 48 |  |
-| 45 | Galway | THO | town | port |  | 501 | 1205 | 42, 46, 47 |  |
+| 45 | Galway | ENG | town | port |  | 501 | 1205 | 42, 46, 47 |  |
 | 46 | Dungannon | TRN | town |  |  | 613 | 1157 | 42, 45 |  |
 | 47 | Ennis | THO | town |  |  | 494 | 1238 | 42, 43, 44, 45, 48 |  |
 | 48 | Tralee | DES | town | port |  | 453 | 1265 | 44, 47 |  |
@@ -700,7 +700,8 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 | Pop | Countries |
 |---|---|
 | 320K | 2: FRA France · OTT Ottoman Empire |
-| 290K | 2: ENG England · CAS Castile |
+| 300K | 1: ENG England |
+| 290K | 1: CAS Castile |
 | 280K | 1: ARA Aragon |
 | 180K | 1: BUR Burgundy |
 | 170K | 2: VEN Venice · LIT Lithuania |
@@ -714,12 +715,12 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 | 50K | 5: DEN Denmark · LIV Livonian Order · TEU Teutonic Order · BRI Brittany · ANJ Anjou |
 | 40K | 8: NOR Norway · SCO Scotland · GRA Granada · FLO Florence · NAP Naples · SAX Saxony · AUS Austria · TLE Tlemcen |
 | 30K | 9: BRU Brunswick-Lüneburg · BRA Brandenburg · SIL Silesia · TYR Tyrol · STY Inner Austria · BYZ Byzantium · MOR Morea · MOL Moldavia · AQQ Aq Qoyunlu |
-| 20K | 29: THO Thomond · DES Desmond · BOU Bourbon · ARM Armagnac · FOI Foix-Béarn · LIE Liège · FER Ferrara · LUB Lübeck · HAM Hamburg · MEC Mecklenburg · POM Pomerania · MAG Magdeburg · COL Cologne · HES Hesse · NUR Nuremberg · PAL Palatinate · MET Metz · STR Strasbourg · ULM Ulm · AUG Augsburg · SWI Swiss Confederacy · MAZ Masovia · JIS Upper Hungary · BOS Bosnia · WAL Wallachia · CAN Candar · DUL Dulkadir · KRH Knights of Rhodes · TVE Tver |
-| 10K | 45: GOT Gotland · ISL Lordship of the Isles · TRN Tyrone · UTR Utrecht · GEL Guelders · FRI Frisia · LUX Luxembourg · NAV Navarre · SIE Siena · MAN Mantua · MON Montferrat · RIM Rimini · SHO Schleswig-Holstein · BRE Bremen · CLE Cleves-Mark · MUN Münster · JUL Jülich-Berg · LUS Upper Lusatia · OPP Opole · TRI Trier · MAI Mainz · WBG Würzburg · ANS Ansbach-Kulmbach · BAD Baden · WRT Württemberg · BIN Bavaria-Ingolstadt · REG Regensburg · BMU Bavaria-Munich · BLA Bavaria-Landshut · BAS Basel · ZUR Zürich · SAL Salzburg · SER Serbia · HER Herzegovina · RAG Ragusa · ATH Athens · EPI Epirus · LES Lesbos · TRE Trebizond · RAM Ramadan · CYP Cyprus · PSK Pskov · RYA Ryazan · THE Theodoro · GHO Great Horde |
+| 20K | 28: DES Desmond · BOU Bourbon · ARM Armagnac · FOI Foix-Béarn · LIE Liège · FER Ferrara · LUB Lübeck · HAM Hamburg · MEC Mecklenburg · POM Pomerania · MAG Magdeburg · COL Cologne · HES Hesse · NUR Nuremberg · PAL Palatinate · MET Metz · STR Strasbourg · ULM Ulm · AUG Augsburg · SWI Swiss Confederacy · MAZ Masovia · JIS Upper Hungary · BOS Bosnia · WAL Wallachia · CAN Candar · DUL Dulkadir · KRH Knights of Rhodes · TVE Tver |
+| 10K | 46: GOT Gotland · ISL Lordship of the Isles · TRN Tyrone · THO Thomond · UTR Utrecht · GEL Guelders · FRI Frisia · LUX Luxembourg · NAV Navarre · SIE Siena · MAN Mantua · MON Montferrat · RIM Rimini · SHO Schleswig-Holstein · BRE Bremen · CLE Cleves-Mark · MUN Münster · JUL Jülich-Berg · LUS Upper Lusatia · OPP Opole · TRI Trier · MAI Mainz · WBG Würzburg · ANS Ansbach-Kulmbach · BAD Baden · WRT Württemberg · BIN Bavaria-Ingolstadt · REG Regensburg · BMU Bavaria-Munich · BLA Bavaria-Landshut · BAS Basel · ZUR Zürich · SAL Salzburg · SER Serbia · HER Herzegovina · RAG Ragusa · ATH Athens · EPI Epirus · LES Lesbos · TRE Trebizond · RAM Ramadan · CYP Cyprus · PSK Pskov · RYA Ryazan · THE Theodoro · GHO Great Horde |
 
 **Sailing:** 2 months to a neighbouring sea zone (RULES.md §8); the furthest apart, Gulf of Riga and Sea of Azov, are 17 hops (34 months).
 
-**Naval powers:** 48 countries, 1605 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there. A voyage by sea lane, to a port up to three zones off, needs 30 at each end, and no enemy fleet at sea on the way.
+**Naval powers:** 47 countries, 1595 ships. Crossing a strait needs 30 ships (10 × x) in the sea zone the strait lies in (RULES.md §8), so at the start a country can only cross the straits of its own ports' zones; for any other it must first sail 30 ships there. A voyage by sea lane, to a port up to three zones off, needs 30 at each end, and no enemy fleet at sea on the way.
 
 | Country | Ports held | Home zones | Ships | Can cross straits? |
 |---|---|---|---|---|
@@ -728,7 +729,7 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 | ARA Aragon | 159, 160, 163, 164, 165, 218, 219, 222, 223, 224, 225, 226, 227, 228 | Western Mediterranean, Tyrrhenian Sea, Ionian Sea, Adriatic Sea | 120 | yes: 159-165, 190-370, 191-194, 196-229, 222-225 |
 | CAS Castile | 133, 136, 138, 152, 154 | Atlantic, Bay of Biscay, Gulf of Cádiz, Western Mediterranean | 110 | yes: 136-430, 159-165, 196-229 |
 | BUR Burgundy | 96, 99, 102, 103, 104 | North Sea | 90 | no — no strait in its zones |
-| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 80 | yes: 36-83, 38-42 |
+| ENG England | 28, 30, 31, 32, 33, 37, 38, 41, 42, 43, 45, 83, 84, 85, 86, 88, 89 | North Sea, English Channel, Irish Sea, Atlantic, Bay of Biscay | 80 | yes: 36-83, 38-42 |
 | OTT Ottoman Empire | 340, 344, 347, 374, 376, 382, 386 | Aegean Sea, Levantine Sea, Sea of Marmara, Western Black Sea, Eastern Black Sea | 70 | yes: 197-376, 198-391, 340-375, 354-372, 371-375, 403-404 — one zone at a time (30 ships in each) |
 | DEN Denmark | 14, 16, 17, 18 | Kattegat, Belt Sea | 60 | yes: 14-15, 14-16, 16-17 |
 | POR Portugal | 166, 167, 171, 172 | Gulf of Cádiz, Alboran Sea | 60 | yes: 136-430 |
@@ -757,7 +758,6 @@ Decoration only — mountains have no rules effect outside the passes. Apex posi
 | MOL Moldavia | 368 | Western Black Sea | 15 | no — no strait in its zones |
 | CAN Candar | 394 | Eastern Black Sea | 15 | no — no strait in its zones |
 | GOT Gotland | 19 | Northern Baltic | 10 | no — no strait in its zones |
-| THO Thomond | 45 | Atlantic | 10 | no — no strait in its zones |
 | DES Desmond | 44, 48 | Atlantic | 10 | no — no strait in its zones |
 | PAP Papal States | 207 | Adriatic Sea | 10 | no — no strait in its zones |
 | MEC Mecklenburg | 234 | Belt Sea | 10 | no — too few ships for 14-16, 16-17 |
@@ -999,7 +999,8 @@ as if built in play. Every other settlement begins without; walls may be bought 
 ## The Holy Roman Empire
 
 The Empire is every settlement marked **HRE** above. A **German state** is a country with a capital inside it (RULES.md §10, *The
-Emperor*): Milan and Savoy are German states, Burgundy and Anjou are not, and an outsider taking a town of the Empire stays one.
+Emperor*): Savoy and Burgundy are German states, Milan (in Imperial Italy) and Anjou (outside) are not, and an outsider taking a town
+of the Empire stays one. That no outsider stands for the crown is a game's choice, not history's: Francis I and Henry VIII did, in 1519.
 The Empire is a **crown**, worn for life by one German state and won by election; the whole of RULES.md §10's crown is played —
 the Emperor and his electors, Imperial Authority, Defender of the Empire, the free cities' dues, the imperial ban, and the
 estates' four reforms put to the Diet. Two German states think 10 better of each other, and every German state thinks the crown's

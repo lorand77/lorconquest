@@ -75,7 +75,7 @@
   <path id="land-42" class="land ENG" d="M561.01 1194.07 L567.01 1194.07 L572.01 1197.07 L611.01 1197.07 L613.01 1199.07 L629.01 1199.07 L624.01 1208.07 L619.01 1213.07 L617.01 1219.07 L617.01 1224.07 L613.01 1237.07 L613.01 1265.07 L607.01 1271.07 L600.01 1284.07 L586.01 1270.07 L580.01 1268.07 L555.01 1242.07 L552.01 1242.07 L552.01 1232.07 L561.01 1211.07 Z"/>
   <path id="land-43" class="land ENG" d="M552.01 1242.07 L555.01 1242.07 L580.01 1268.07 L586.01 1270.07 L600.01 1284.07 L584.01 1314.07 L560.01 1308.07 L553.01 1308.07 L534.01 1304.07 L526.01 1306.07 L524.01 1301.07 L524.01 1275.07 L522.01 1272.07 Z"/>
   <path id="land-44" class="land DES" d="M487.01 1272.07 L522.01 1272.07 L524.01 1275.07 L524.01 1301.07 L526.01 1306.07 L490.01 1318.07 L444.01 1317.07 L454.01 1307.07 L454.01 1305.07 Z"/>
-  <path id="land-45" class="land THO" d="M542.01 1151.07 L544.01 1158.07 L549.01 1162.07 L549.01 1165.07 L551.01 1167.07 L551.01 1170.07 L553.01 1172.07 L553.01 1175.07 L555.01 1177.07 L561.01 1194.07 L561.01 1211.07 L552.01 1232.07 L522.01 1232.07 L509.01 1225.07 L487.01 1223.07 L485.01 1221.07 L495.01 1213.07 L497.01 1213.07 L500.01 1209.07 L464.01 1188.07 L464.01 1186.07 L469.01 1182.07 L472.01 1150.07 L487.01 1136.07 L509.01 1143.07 L513.01 1143.07 L516.01 1145.07 Z"/>
+  <path id="land-45" class="land ENG" d="M542.01 1151.07 L544.01 1158.07 L549.01 1162.07 L549.01 1165.07 L551.01 1167.07 L551.01 1170.07 L553.01 1172.07 L553.01 1175.07 L555.01 1177.07 L561.01 1194.07 L561.01 1211.07 L552.01 1232.07 L522.01 1232.07 L509.01 1225.07 L487.01 1223.07 L485.01 1221.07 L495.01 1213.07 L497.01 1213.07 L500.01 1209.07 L464.01 1188.07 L464.01 1186.07 L469.01 1182.07 L472.01 1150.07 L487.01 1136.07 L509.01 1143.07 L513.01 1143.07 L516.01 1145.07 Z"/>
   <path id="land-46" class="land TRN" d="M629.01 1199.07 L613.01 1199.07 L611.01 1197.07 L572.01 1197.07 L567.01 1194.07 L561.01 1194.07 L555.01 1177.07 L553.01 1175.07 L553.01 1172.07 L551.01 1170.07 L551.01 1167.07 L549.01 1165.07 L549.01 1162.07 L544.01 1158.07 L542.01 1151.07 L546.01 1149.07 L553.01 1131.07 L551.01 1128.07 L543.01 1126.07 L544.01 1120.07 L548.01 1118.07 L554.01 1111.07 L556.01 1111.07 L563.01 1103.07 L565.01 1103.07 L569.01 1098.07 L597.01 1098.07 L609.01 1093.07 L614.01 1099.07 L616.01 1099.07 L631.01 1113.07 L651.01 1117.07 L656.01 1146.07 L660.01 1156.07 L660.01 1182.07 L632.01 1195.07 Z"/>
   <path id="land-47" class="land THO" d="M485.01 1221.07 L487.01 1223.07 L509.01 1225.07 L522.01 1232.07 L552.01 1232.07 L552.01 1242.07 L522.01 1272.07 L487.01 1272.07 L485.01 1266.07 L476.01 1258.07 L472.01 1246.07 L465.01 1240.07 L480.01 1223.07 Z"/>
   <path id="land-48" class="land DES" d="M465.01 1240.07 L472.01 1246.07 L476.01 1258.07 L485.01 1266.07 L487.01 1272.07 L454.01 1305.07 L454.01 1307.07 L444.01 1317.07 L430.01 1316.07 L422.01 1300.07 L423.01 1277.07 L420.01 1266.07 L447.01 1262.07 L449.01 1260.07 L451.01 1244.07 Z"/>
@@ -571,7 +571,7 @@
   <path id="edge-39-52" class="edge border" d="M688.01 1161.07 L692.01 1158.07 L709.01 1152.07 L713.01 1149.07 L716.01 1149.07 L722.01 1145.07 L725.01 1145.07 L729.01 1142.07 L734.01 1141.07 L737.01 1138.07 L740.01 1138.07 L748.01 1134.07"/>
   <path id="edge-40-41" class="edge province" d="M684.01 1310.07 L687.01 1317.07 L694.01 1323.07 L705.01 1352.07 L711.01 1357.07"/>
   <path id="edge-42-43" class="edge province" d="M552.01 1242.07 L555.01 1242.07 L580.01 1268.07 L586.01 1270.07 L600.01 1284.07"/>
-  <path id="edge-42-45" class="edge border" d="M552.01 1232.07 L561.01 1211.07 L561.01 1194.07"/>
+  <path id="edge-42-45" class="edge province" d="M552.01 1232.07 L561.01 1211.07 L561.01 1194.07"/>
   <path id="edge-42-46" class="edge border" d="M561.01 1194.07 L567.01 1194.07 L572.01 1197.07 L611.01 1197.07 L613.01 1199.07 L629.01 1199.07"/>
   <path id="edge-42-47" class="edge border" d="M552.01 1232.07 L552.01 1242.07"/>
   <path id="edge-43-44" class="edge border" d="M522.01 1272.07 L524.01 1275.07 L524.01 1301.07 L526.01 1306.07"/>
@@ -579,7 +579,7 @@
   <path id="edge-44-47" class="edge border" d="M487.01 1272.07 L522.01 1272.07"/>
   <path id="edge-44-48" class="edge province" d="M444.01 1317.07 L454.01 1307.07 L454.01 1305.07 L487.01 1272.07"/>
   <path id="edge-45-46" class="edge border" d="M542.01 1151.07 L544.01 1158.07 L549.01 1162.07 L549.01 1165.07 L551.01 1167.07 L551.01 1170.07 L553.01 1172.07 L553.01 1175.07 L555.01 1177.07 L561.01 1194.07"/>
-  <path id="edge-45-47" class="edge province" d="M485.01 1221.07 L487.01 1223.07 L509.01 1225.07 L522.01 1232.07 L552.01 1232.07"/>
+  <path id="edge-45-47" class="edge border" d="M485.01 1221.07 L487.01 1223.07 L509.01 1225.07 L522.01 1232.07 L552.01 1232.07"/>
   <path id="edge-47-48" class="edge border" d="M465.01 1240.07 L472.01 1246.07 L476.01 1258.07 L485.01 1266.07 L487.01 1272.07"/>
   <path id="edge-49-50" class="edge province" d="M754.01 1085.07 L779.01 1084.07 L784.01 1087.07"/>
   <path id="edge-49-52" class="edge province" d="M748.01 1134.07 L748.01 1124.07 L753.01 1115.07 L754.01 1085.07"/>
@@ -2976,7 +2976,7 @@
   <g id="settlement-42" class="settlement town ENG"><rect class="marker" x="599.5" y="1231" width="21" height="14" rx="7"/><text class="abbr" x="610" y="1241">Dub</text><text class="name" x="610" y="1254" text-anchor="middle">Dublin</text></g>
   <g id="settlement-43" class="settlement town ENG"><rect class="marker" x="544.5" y="1292" width="21" height="14" rx="7"/><text class="abbr" x="555" y="1302">Wat</text><text class="name" x="555" y="1315" text-anchor="middle">Waterford</text></g>
   <g id="settlement-44" class="settlement town DES"><rect class="marker" x="483.5" y="1298" width="21" height="14" rx="7"/><text class="abbr" x="494" y="1308">Cor</text><text class="name" x="494" y="1321" text-anchor="middle">Cork</text></g>
-  <g id="settlement-45" class="settlement town THO"><rect class="marker" x="490.5" y="1198" width="21" height="14" rx="7"/><text class="abbr" x="501" y="1208">Gal</text><text class="name" x="501" y="1221" text-anchor="middle">Galway</text></g>
+  <g id="settlement-45" class="settlement town ENG"><rect class="marker" x="490.5" y="1198" width="21" height="14" rx="7"/><text class="abbr" x="501" y="1208">Gal</text><text class="name" x="501" y="1221" text-anchor="middle">Galway</text></g>
   <g id="settlement-46" class="settlement town TRN"><rect class="marker" x="602.5" y="1150" width="21" height="14" rx="7"/><text class="abbr" x="613" y="1160">Dun</text><text class="name" x="613" y="1173" text-anchor="middle">Dungannon</text></g>
   <g id="settlement-47" class="settlement town THO"><rect class="marker" x="483.5" y="1231" width="21" height="14" rx="7"/><text class="abbr" x="494" y="1241">Enn</text><text class="name" x="494" y="1254" text-anchor="middle">Ennis</text></g>
   <g id="settlement-48" class="settlement town DES"><rect class="marker" x="442.5" y="1258" width="21" height="14" rx="7"/><text class="abbr" x="453" y="1268">Tra</text><text class="name" x="453" y="1281" text-anchor="middle">Tralee</text></g>
@@ -3385,11 +3385,11 @@
   <text id="label-GOT" class="label" x="1564" y="1031.4">GOT</text>
   <text id="label-LIV" class="label" x="1874" y="937.4">LIV</text>
   <text id="label-TEU" class="label" x="1574" y="1337.4">TEU</text>
-  <text id="label-ENG" class="label" x="836" y="1371.4">ENG</text>
+  <text id="label-ENG" class="label" x="504" y="1175.4">ENG</text>
   <text id="label-SCO" class="label small" x="826" y="1007.6">SCO</text>
   <text id="label-ISL" class="label" x="750" y="965.4">ISL</text>
   <text id="label-TRN" class="label" x="592" y="1131.4">TRN</text>
-  <text id="label-THO" class="label" x="504" y="1175.4">THO</text>
+  <text id="label-THO" class="label small" x="524" y="1249.6">THO</text>
   <text id="label-DES" class="label" x="452" y="1305.4">DES</text>
   <text id="label-FRA" class="label" x="828" y="1735.4">FRA</text>
   <text id="label-BUR" class="label" x="950" y="1553.4">BUR</text>

@@ -80,7 +80,7 @@
    "code": "GOT",
    "name": "Gotland",
    "capital": 19,
-   "colour": "#dcd2a2",
+   "colour": "#b4abdb",
    "settlements": [
     19
    ],
@@ -153,6 +153,7 @@
     41,
     42,
     43,
+    45,
     83,
     84,
     85,
@@ -161,8 +162,8 @@
     88,
     89
    ],
-   "pop": 290000,
-   "army": 11600,
+   "pop": 300000,
+   "army": 12000,
    "ships": 80,
    "hre": "none",
    "character": "conqueror",
@@ -192,7 +193,7 @@
    "code": "ISL",
    "name": "Lordship of the Isles",
    "capital": 53,
-   "colour": "#acdbea",
+   "colour": "#dcd2a2",
    "settlements": [
     53
    ],
@@ -208,7 +209,7 @@
    "code": "TRN",
    "name": "Tyrone",
    "capital": 46,
-   "colour": "#e2abbb",
+   "colour": "#acdbea",
    "settlements": [
     46
    ],
@@ -224,14 +225,13 @@
    "code": "THO",
    "name": "Thomond",
    "capital": 47,
-   "colour": "#d5b3dc",
+   "colour": "#e2abbb",
    "settlements": [
-    45,
     47
    ],
-   "pop": 20000,
-   "army": 800,
-   "ships": 10,
+   "pop": 10000,
+   "army": 400,
+   "ships": 0,
    "hre": "none",
    "character": "defender",
    "religion": "catholic",
@@ -241,7 +241,7 @@
    "code": "DES",
    "name": "Desmond",
    "capital": 48,
-   "colour": "#9fd6c9",
+   "colour": "#d5b3dc",
    "settlements": [
     44,
     48
@@ -383,7 +383,7 @@
    "code": "ARM",
    "name": "Armagnac",
    "capital": 115,
-   "colour": "#f3a9a9",
+   "colour": "#9fd6c9",
    "settlements": [
     115,
     116
@@ -399,7 +399,7 @@
    "code": "FOI",
    "name": "Foix-Béarn",
    "capital": 117,
-   "colour": "#cdcda4",
+   "colour": "#f3a9a9",
    "settlements": [
     117,
     118
@@ -437,7 +437,7 @@
    "code": "LIE",
    "name": "Liège",
    "capital": 126,
-   "colour": "#a7b9f0",
+   "colour": "#cdcda4",
    "settlements": [
     126
    ],
@@ -501,7 +501,7 @@
    "code": "LUX",
    "name": "Luxembourg",
    "capital": 130,
-   "colour": "#b7d9a8",
+   "colour": "#a9c8e8",
    "settlements": [
     130
    ],
@@ -617,7 +617,7 @@
    "code": "NAV",
    "name": "Navarre",
    "capital": 173,
-   "colour": "#a9c8e8",
+   "colour": "#b7d9a8",
    "settlements": [
     173
    ],
@@ -775,7 +775,7 @@
    "code": "FER",
    "name": "Ferrara",
    "capital": 209,
-   "colour": "#e9c4e2",
+   "colour": "#a7b9f0",
    "settlements": [
     209,
     210
@@ -875,7 +875,7 @@
    "code": "LUB",
    "name": "Lübeck",
    "capital": 231,
-   "colour": "#c6e3a4",
+   "colour": "#e9c4e2",
    "settlements": [
     231
    ],
@@ -892,7 +892,7 @@
    "code": "HAM",
    "name": "Hamburg",
    "capital": 232,
-   "colour": "#f1c69d",
+   "colour": "#c6e3a4",
    "settlements": [
     232
    ],
@@ -909,7 +909,7 @@
    "code": "MEC",
    "name": "Mecklenburg",
    "capital": 233,
-   "colour": "#b4abdb",
+   "colour": "#f1c69d",
    "settlements": [
     233,
     234
@@ -926,7 +926,7 @@
    "code": "POM",
    "name": "Pomerania",
    "capital": 235,
-   "colour": "#dcd2a2",
+   "colour": "#b4abdb",
    "settlements": [
     235,
     236
@@ -977,7 +977,7 @@
    "code": "MAG",
    "name": "Magdeburg",
    "capital": 240,
-   "colour": "#acdbea",
+   "colour": "#dcd2a2",
    "settlements": [
     240
    ],
@@ -1057,7 +1057,7 @@
    "code": "COL",
    "name": "Cologne",
    "capital": 247,
-   "colour": "#e2abbb",
+   "colour": "#acdbea",
    "settlements": [
     247
    ],
@@ -1073,7 +1073,7 @@
    "code": "HES",
    "name": "Hesse",
    "capital": 248,
-   "colour": "#bfd8c6",
+   "colour": "#e2abbb",
    "settlements": [
     248,
     249
@@ -1157,7 +1157,7 @@
    "code": "TRI",
    "name": "Trier",
    "capital": 258,
-   "colour": "#acdbea",
+   "colour": "#e2abbb",
    "settlements": [
     258
    ],
@@ -1173,7 +1173,7 @@
    "code": "MAI",
    "name": "Mainz",
    "capital": 259,
-   "colour": "#e5d3b3",
+   "colour": "#bfd8c6",
    "settlements": [
     259
    ],
@@ -1189,7 +1189,7 @@
    "code": "WBG",
    "name": "Würzburg",
    "capital": 260,
-   "colour": "#e2abbb",
+   "colour": "#acdbea",
    "settlements": [
     260
    ],
@@ -1205,7 +1205,7 @@
    "code": "ANS",
    "name": "Ansbach-Kulmbach",
    "capital": 261,
-   "colour": "#bfd8c6",
+   "colour": "#e5d3b3",
    "settlements": [
     261
    ],
@@ -1221,7 +1221,7 @@
    "code": "NUR",
    "name": "Nuremberg",
    "capital": 262,
-   "colour": "#e5d3b3",
+   "colour": "#bfd8c6",
    "settlements": [
     262
    ],
@@ -1237,7 +1237,7 @@
    "code": "PAL",
    "name": "Palatinate",
    "capital": 263,
-   "colour": "#e8b4a0",
+   "colour": "#e5d3b3",
    "settlements": [
     263,
     264
@@ -1274,7 +1274,7 @@
    "code": "MET",
    "name": "Metz",
    "capital": 270,
-   "colour": "#a9c8e8",
+   "colour": "#e8b4a0",
    "settlements": [
     270
    ],
@@ -1289,7 +1289,7 @@
    "code": "STR",
    "name": "Strasbourg",
    "capital": 271,
-   "colour": "#f2d58c",
+   "colour": "#a9c8e8",
    "settlements": [
     271
    ],
@@ -1305,7 +1305,7 @@
    "code": "BAD",
    "name": "Baden",
    "capital": 272,
-   "colour": "#a9c8e8",
+   "colour": "#e8b4a0",
    "settlements": [
     272
    ],
@@ -1320,7 +1320,7 @@
    "code": "WRT",
    "name": "Württemberg",
    "capital": 273,
-   "colour": "#f2d58c",
+   "colour": "#a9c8e8",
    "settlements": [
     273
    ],
@@ -1336,7 +1336,7 @@
    "code": "ULM",
    "name": "Ulm",
    "capital": 274,
-   "colour": "#d5b3dc",
+   "colour": "#f2d58c",
    "settlements": [
     274
    ],
@@ -1352,7 +1352,7 @@
    "code": "AUG",
    "name": "Augsburg",
    "capital": 275,
-   "colour": "#9fd6c9",
+   "colour": "#d5b3dc",
    "settlements": [
     275
    ],
@@ -1383,7 +1383,7 @@
    "code": "REG",
    "name": "Regensburg",
    "capital": 277,
-   "colour": "#d5b3dc",
+   "colour": "#f2d58c",
    "settlements": [
     277
    ],
@@ -1398,7 +1398,7 @@
    "code": "BMU",
    "name": "Bavaria-Munich",
    "capital": 278,
-   "colour": "#e8b4a0",
+   "colour": "#9fd6c9",
    "settlements": [
     278
    ],
@@ -1414,7 +1414,7 @@
    "code": "BLA",
    "name": "Bavaria-Landshut",
    "capital": 279,
-   "colour": "#9fd6c9",
+   "colour": "#d5b3dc",
    "settlements": [
     279
    ],
@@ -1575,7 +1575,7 @@
    "code": "MAZ",
    "name": "Masovia",
    "capital": 306,
-   "colour": "#f3a9a9",
+   "colour": "#9fd6c9",
    "settlements": [
     306,
     307
@@ -1650,7 +1650,7 @@
    "code": "JIS",
    "name": "Upper Hungary",
    "capital": 337,
-   "colour": "#cdcda4",
+   "colour": "#f3a9a9",
    "settlements": [
     337,
     338
@@ -1758,7 +1758,7 @@
    "code": "BOS",
    "name": "Bosnia",
    "capital": 360,
-   "colour": "#a7b9f0",
+   "colour": "#cdcda4",
    "settlements": [
     360,
     361
@@ -1904,7 +1904,7 @@
    "code": "CAN",
    "name": "Candar",
    "capital": 393,
-   "colour": "#e9c4e2",
+   "colour": "#a7b9f0",
    "settlements": [
     393,
     394
@@ -1936,7 +1936,7 @@
    "code": "DUL",
    "name": "Dulkadir",
    "capital": 396,
-   "colour": "#c6e3a4",
+   "colour": "#e9c4e2",
    "settlements": [
     396,
     397
@@ -1999,7 +1999,7 @@
    "code": "KRH",
    "name": "Knights of Rhodes",
    "capital": 403,
-   "colour": "#f1c69d",
+   "colour": "#c6e3a4",
    "settlements": [
     403,
     404
@@ -2076,7 +2076,7 @@
    "code": "TVE",
    "name": "Tver",
    "capital": 422,
-   "colour": "#b4abdb",
+   "colour": "#f1c69d",
    "settlements": [
     422,
     423
@@ -3635,7 +3635,7 @@
     ],
     "near": null
    },
-   "country": "THO",
+   "country": "ENG",
    "type": "town",
    "pop": 10000,
    "port": true,

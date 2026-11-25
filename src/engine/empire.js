@@ -21,7 +21,7 @@ import { opinion } from "./opinion.js";
 import { random } from "./random.js";
 import { REFORMATION_DAY } from "./religion.js";
 import { agreementsBetween } from "./relations.js";
-import { atWar, isGermanState, isRebel } from "./state.js";
+import { atWar, isGermanState, isRebel, reformPassed } from "./state.js";
 
 // who may stand: a German state of this many people — two cities' worth: no single town or free city. An outsider never stands: the
 // Emperor must be a German state, and an outsider holding a secular vote casts it for another
@@ -34,18 +34,19 @@ export const REIGNING = 20, PROMISE_MONEY = 2000, PROMISE_MAX = 30, TOO_BIG = 15
 export const DEATH_CHANCE = 0.04, INTERREGNUM_DAYS = 182, CAPITULATION_DAY = dayOf(1519);
 // the reforms of the estates, in the order they must pass, and the authority each needs before it may be proposed (RULES.md §10,
 // Imperial reform); a proposal voted down may be made again after REFORM_RETRY_DAYS
+// — as at Worms in 1495, the Public Peace with the Chamber Court to keep it and the Common Penny, then the Circles (1500, 1512)
 export const REFORMS = [
     { key: "landfriede", name: "Eternal Public Peace", authority: 40 },
-    { key: "penny", name: "Common Penny", authority: 55 },
-    { key: "circles", name: "Imperial Circles", authority: 70 },
-    { key: "court", name: "Imperial Chamber Court", authority: 85 },
+    { key: "court", name: "Imperial Chamber Court", authority: 55 },
+    { key: "penny", name: "Common Penny", authority: 70 },
+    { key: "circles", name: "Imperial Circles", authority: 85 },
 ];
 export const REFORM_RETRY_DAYS = 5 * YEAR_DAYS;
 // the imperial ban: what it costs the crown, and who may be put under it — a German state with this warmonger score, or one that
 // took a settlement of the Empire from another German state within SEIZED_DAYS
 export const BAN_COST = 10, BAN_WARMONGER = 30, SEIZED_DAYS = 10 * YEAR_DAYS;
 export const reformsPassed = (st) => st.empire?.reforms ?? 0;
-export const hasReform = (st, key) => reformsPassed(st) > REFORMS.findIndex((r) => r.key === key);
+export const hasReform = reformPassed;
 
 // the crown at the start, from the scenario: null on a map without electors
 export function startEmpire(scenario) {
@@ -285,11 +286,13 @@ export function dietVotes(game, proposer) {
         princes: count(german.filter((c) => !cities.has(c))),
         cities: count(german.filter((c) => cities.has(c))),
     };
+    // a reform needs the electors and the princes both; the cities vote, but only advise, as before 1648
     const colleges = ["electors", "princes", "cities"].filter((k) => result[k].yes > result[k].no).length;
-    return { ...result, colleges, passed: colleges >= 2 };
+    const carried = (k) => result[k].yes > result[k].no;
+    return { ...result, colleges, passed: carried("electors") && carried("princes") };
 }
 
-// a reform put to the Diet: it passes for good with two colleges of the three; voted down, it may be proposed again in 5 years
+// a reform put to the Diet: it passes for good with the electors and the princes both, the cities only advising; voted down, it may be proposed again in 5 years
 export function proposeReform(game, code, events) {
     const st = game.state, emp = st.empire, reform = REFORMS[emp.reforms], vote = dietVotes(game, code);
     if (vote.passed) emp.reforms++; else emp.tried = st.day;

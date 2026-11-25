@@ -8,7 +8,7 @@ import { YEAR_DAYS } from "./calendar.js";
 import { economyOf, popOf } from "./economy.js";
 import { alliesOf, overlordOf, subjectsOf } from "./relations.js";
 import { faithOpinion, faithRegard, religionOf } from "./religion.js";
-import { armiesOf, atWar, isGermanState, isRebel, warKey } from "./state.js";
+import { armiesOf, atWar, isGermanState, isRebel, reformPassed, warKey } from "./state.js";
 import { scores, victoryOf } from "./victory.js";
 import { memo } from "./memo.js";
 
@@ -72,7 +72,7 @@ export function opinion(game, holder, other) {
     // a German state's regard for the Emperor: the crown's authority ÷ 5, up to +20 (RULES.md §10, The Emperor)
     if (st.empire?.emperor === other && holdsHre(holder)) o += Math.floor(st.empire.authority / 5);
     // the Imperial Chamber Court: a German state that took land of the Empire from another without the ban, in the last 10 years
-    if ((st.empire?.reforms ?? 0) >= 4 && holdsHre(holder) && within(st, st.empire.seized[other], 10)) o -= 10;
+    if (reformPassed(st, "court") && holdsHre(holder) && within(st, st.empire.seized[other], 10)) o -= 10;
     // a year of peace, +1, up to 20
     o += Math.min(20, Math.floor(daysSinceWar(st, holder, other) / YEAR_DAYS));
     const border = bordering(game, holder, other);

@@ -18,7 +18,7 @@ import { NEAR_VICTORY, agreementAnswer, bordering, demandChance, militaryPowerOf
 import { random } from "./random.js";
 import { WORST_FAITH, faithRegard } from "./religion.js";
 import { agreementsBetween, alliesOf, guarantorsOf, hasAgreement, isVassal, overlordOf, subjectsOf, wouldCycle } from "./relations.js";
-import { armyList, atWar, canEnter, isGermanState, isRebel, warKey } from "./state.js";
+import { armyList, atWar, canEnter, isGermanState, isRebel, reformPassed, warKey } from "./state.js";
 import { scores, victoryOf } from "./victory.js";
 
 export const OFFER_DAYS = Math.round(6 * 365 / 12);     // a human has 6 months to answer
@@ -192,7 +192,6 @@ export function callStands(game, o) {
 
 // Imperial Authority, 0 to 100, the crown's not a country's: what moves it
 export const AUTHORITY = { START: 20, PEACE_YEAR: 1, WAR_YEAR: -1, DEFENDED: 5, EXECUTED: 10, KEPT: -5, REFUSED: -10, ATTACKED: -15, PASSED: -10, BAN: -10, CAPITULATION: -10 };
-const reforms = (st) => st.empire?.reforms ?? 0;                       // how many reforms have passed (empire.js, REFORMS)
 // may `c` join a war on `enemy` at the crown's call: a German state of its own, thinking 0 or better of the Emperor, not yet in it,
 // nobody's vassal, not the enemy's subject or overlord, and bound to it by no pact, truce, alliance or guarantee
 function crownJoiner(game, c, enemy, emp) {
@@ -227,12 +226,12 @@ function crownAtWar(game, a, b, events) {
     const germanB = isGerman(game, b);
     if (a === emp && germanB) addAuthority(game, AUTHORITY.ATTACKED, "attacked", events);
     // the Eternal Public Peace: a German state declaring war on another breaks an agreement, unless the target is under the ban
-    if (reforms(st) >= 1 && germanB && isGerman(game, a) && !st.empire.banned.includes(b)) {
+    if (reformPassed(st, "landfriede") && germanB && isGerman(game, a) && !st.empire.banned.includes(b)) {
         events.push({ type: "landfriede", day: st.day, country: a, target: b });
         punishBreak(game, a, events, b);
     }
     // the Imperial Circles: an outsider attacking a German state brings every German state that thinks 0 or better of the Emperor in
-    if (reforms(st) >= 3 && germanB && !isGerman(game, a)) {
+    if (reformPassed(st, "circles") && germanB && !isGerman(game, a)) {
         for (const c of germanStates(game)) if (c !== b && c !== emp && crownJoiner(game, c, a, emp)) crownCall(game, c, b, a, "circle", events);
     }
     if (!germanB || isGerman(game, a) || emp === a || emp === b || atWar(st, emp, a) || atWar(st, emp, b)) return;

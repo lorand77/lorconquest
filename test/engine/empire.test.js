@@ -4,7 +4,9 @@
 // people) and BBB (40,000) are big enough to stand, AAA the greater. Every capital lies in the Empire: all five are German states.
 import test from "node:test";
 import assert from "node:assert/strict";
-import { CAPITULATION_DAY, INTERREGNUM_DAYS, YEAR_DAYS, candidatesOf, electorsOf, isGermanState, voteOf } from "../../src/engine/index.js";
+import fs from "node:fs";
+import path from "node:path";
+import { CAPITULATION_DAY, Game, INTERREGNUM_DAYS, YEAR_DAYS, candidatesOf, electorsOf, isGermanState, voteOf } from "../../src/engine/index.js";
 import { empireDay, holdElection } from "../../src/engine/empire.js";
 import { random } from "../../src/engine/random.js";
 import { tinyGame, runTo, order, refused } from "../helpers/tiny.js";
@@ -243,27 +245,32 @@ test("taking a settlement of the Empire from a German state marks the taker for 
 
 // ---------- the estates' reforms ----------
 
-test("a reform is put to the Diet by the Emperor or the Archbishop of Mainz; two colleges of three pass it; voted down, 5 years to wait", async () => {
+test("a reform is put to the Diet by the Emperor or the Archbishop of Mainz; the electors and the princes must both pass it, the cities only advise; voted down, 5 years to wait", async () => {
     const { dietVotes, reformError } = await import("../../src/engine/index.js");
     const game = empire(1, (sc) => { sc.empire.freeCities = ["EEE"]; }, ["BBB", "CCC"]), st = game.state;
     assert.match(refused(game, cmd("AAA", "proposeReform")), /needs Imperial Authority 40; it is 20/);
     assert.match(refused(game, cmd("BBB", "proposeReform")), /only the Emperor or the Archbishop of Mainz/);
     st.empire.authority = 45;
-    // BBB and CCC, people, say no: electors 4–3 for (AAA's two, DDD's, EEE's), princes 2–2, the city EEE 1–0 for
+    // BBB and CCC, people, say no: the electors for, 4–3, the city EEE for — but the princes split 2–2: not carried
     order(game, cmd("BBB", "reformVote", { yes: false }));
     order(game, cmd("CCC", "reformVote", { yes: false }));
     const v = dietVotes(game, "AAA");
-    assert.deepEqual([v.electors, v.princes, v.cities, v.passed], [{ yes: 4, no: 3 }, { yes: 2, no: 2 }, { yes: 1, no: 0 }, true]);
+    assert.deepEqual([v.electors, v.princes, v.cities, v.passed], [{ yes: 4, no: 3 }, { yes: 2, no: 2 }, { yes: 1, no: 0 }, false]);
+    // CCC for it: the princes 3–1, and it would pass — the cities against changing nothing, as they only advise
+    order(game, cmd("CCC", "reformVote", { yes: true }));
+    st.humans.push("EEE");
+    order(game, cmd("EEE", "reformVote", { yes: false }));
+    const w = dietVotes(game, "AAA");
+    assert.deepEqual([w.princes, w.cities, w.passed], [{ yes: 3, no: 1 }, { yes: 0, no: 1 }, true]);
     // the Archbishop of Mainz may put it as well as the Emperor (each state then weighs the archbishop, not the Emperor)
     assert.equal(reformError(game, "DDD"), null);
     const up = order(game, cmd("AAA", "proposeReform"));
     assert.deepEqual([ofType(up, "reform")[0].name, ofType(up, "reform")[0].passed, st.empire.reforms], ["Eternal Public Peace", true, 1]);
-    // EEE a person too, saying no: the cities against, the princes split — voted down, and 5 years to wait
-    st.humans.push("EEE");
+    // the next, the Chamber Court: the princes split again — voted down, and 5 years to wait
     st.empire.authority = 60;
-    order(game, cmd("EEE", "reformVote", { yes: false }));
+    order(game, cmd("CCC", "reformVote", { yes: false }));
     const down = order(game, cmd("AAA", "proposeReform"));
-    assert.deepEqual([ofType(down, "reform")[0].passed, st.empire.reforms, st.empire.tried], [false, 1, st.day]);
+    assert.deepEqual([ofType(down, "reform")[0].name, ofType(down, "reform")[0].passed, st.empire.reforms, st.empire.tried], ["Imperial Chamber Court", false, 1, st.day]);
     assert.match(refused(game, cmd("AAA", "proposeReform")), /less than 5 years ago/);
 });
 
@@ -281,7 +288,7 @@ test("the Eternal Public Peace binds every German state, the Emperor too — but
 test("the Common Penny: 1% of every German state's money but the Emperor's into the war chest, paid to the Emperor defending the Empire", async () => {
     const { economyOf } = await import("../../src/engine/index.js");
     const game = outsider(), st = game.state;
-    st.empire.reforms = 2;
+    st.empire.reforms = 3;                                  // the Public Peace, the Chamber Court and the Penny
     const base = economyOf(game, "BBB").moneyPerYear + economyOf(game, "BBB").tributePaid;
     assert.ok(Math.abs(economyOf(game, "BBB").pennyPaid - 0.01 * base) < 1e-6);
     assert.deepEqual([economyOf(game, "AAA").pennyPaid, economyOf(game, "EEE").pennyPaid], [0, 0], "not the Emperor, not an outsider");
@@ -297,7 +304,7 @@ test("the Imperial Circles: the Emperor may enter every settlement of the Empire
     const { canEnter, opinion } = await import("../../src/engine/index.js");
     const game = outsider(), st = game.state;
     assert.equal(canEnter(game, "AAA", "6"), false);
-    st.empire.reforms = 3;
+    st.empire.reforms = 4;                                  // all four: the Circles the last
     assert.deepEqual([canEnter(game, "AAA", "6"), canEnter(game, "AAA", "8")], [true, false]);
     const willing = ["BBB", "CCC"].filter((c) => opinion(game, c, "AAA") >= 0);
     const events = order(game, cmd("EEE", "declareWar", { target: "DDD" }));
@@ -309,7 +316,7 @@ test("the Imperial Chamber Court: a German state that took the Empire's land fro
     const game = empire(), st = game.state;
     st.empire.seized.BBB = st.day;
     const without = opinion(game, "DDD", "BBB");
-    st.empire.reforms = 4;
+    st.empire.reforms = 2;                                                     // the Public Peace and the Court: the second
     assert.equal(opinion(game, "DDD", "BBB"), without - 10);
     st.empire.seized.BBB = st.day - 10 * YEAR_DAYS;
     assert.equal(opinion(game, "DDD", "BBB"), without, "after 10 years, no more");
@@ -367,4 +374,19 @@ test("a region only the Emperor may proclaim (the Kaiserreich): authority enough
     for (const s of Object.values(st.settlements)) if (s.owner === "AAA") s.owner = "BBB";
     empireDay(game, []);
     assert.equal(st.empire.hereditary, false);
+});
+
+test("the reforms in the order of 1495 and after — the Public Peace, the Chamber Court, the Common Penny, the Circles — each asked by name", async () => {
+    const { REFORMS } = await import("../../src/engine/empire.js");
+    const { REFORM_ORDER, reformPassed } = await import("../../src/engine/state.js");
+    assert.deepEqual(REFORMS.map((r) => r.key), REFORM_ORDER);
+    assert.deepEqual(REFORMS.map((r) => r.authority), [40, 55, 70, 85]);
+    const st = { empire: { reforms: 2 } };
+    assert.deepEqual(REFORM_ORDER.map((k) => reformPassed(st, k)), [true, true, false, false]);
+});
+
+test("Europe 1440's German states: a capital inside the Empire and out of Imperial Italy — Burgundy and Savoy are, Milan and Anjou are not", async () => {
+    const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
+    const game = Game.create(europe, { seed: 1 });
+    assert.deepEqual(["BUR", "SAV", "MIL", "ANJ"].map((c) => isGermanState(game, c)), [true, true, false, false]);
 });
