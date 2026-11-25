@@ -89,11 +89,11 @@ export function describeEvent(map, e) {
         case "promised": return `${e.country} promises ${e.to} ${fmt(e.money)} for its vote at the election`;
         case "crossFailed": return `army ${e.army} (${e.owner}) cannot cross the sea in ${place(e.zone)}: ${e.why}`;
         case "joins": return `${e.country} joins the war against ${e.enemy}, on the ${e.side === "att" ? "attacking" : "defending"} side`;
-        case "offer": return `${e.from} asks ${e.country}: ${e.what}`;
+        case "offer": return `${e.from} asks ${e.country}: ${e.what}${e.against ? ` against ${e.against}` : ""}`;
         case "lapsed": return `${e.from}'s ${e.kind === "call" ? "call to arms" : e.kind} to ${e.country} lapses${e.kind === "call" ? ": it joins" : ""}`;
         case "answer": {
             const why = e.what === "peace" ? ` (war score ${e.score}, price ${e.cost})` : e.bar !== undefined ? ` (opinion ${e.opinion} + need ${Math.round(e.need)} against ${e.bar})` : "";
-            return `${e.country} ${e.accepted ? "accepts" : "refuses"} ${e.from}'s proposal: ${e.what}${e.years ? ` for ${e.years} years` : ""}${why}`;
+            return `${e.country} ${e.accepted ? "accepts" : "refuses"} ${e.from}'s proposal: ${e.what}${e.against ? ` against ${e.against}` : ""}${e.years ? ` for ${e.years} years` : ""}${why}`;
         }
         case "agreement": return `${e.a} and ${e.b} sign a ${e.kind === "guarantee" ? `guarantee (${e.a} guarantees ${e.b})` : e.kind === "access" ? `military access (${e.a} gives it to ${e.b})` : e.kind === "pact" ? "non-aggression pact" : `${e.kind} alliance${e.years ? ` for ${e.years} years` : ""}`}${e.why ? ` ${e.why}` : ""}`;
         case "ended": return `${e.country} ends its ${e.kind} with ${e.with}`;

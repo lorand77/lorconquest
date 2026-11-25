@@ -960,14 +960,18 @@ neighbours into each other's arms, not into its own.
 A neighbour is any country whose settlements share a land route with its settlements.
 
 **Coalitions.** At the start of each year, every computer country that borders a country with a
-warmonger score of **30 or more** proposes a **defensive alliance** to every other computer
+warmonger score of **30 or more** proposes a **defensive alliance** to every other
 country that borders the same warmonger **and borders it too** — never to one of a faith the two regard at **−20 or worse**
 (§2, Religion: Christians and Muslims, Catholics and Protestants or Hussites). Each proposal is answered as above — the warmonger
 part of `need` counts for both, since neither is the warmonger. A coalition's alliance is **against that warmonger**: it brings
 the ally into a war **only when the warmonger declares it** — anyone else who attacks one of them meets it alone, or with its
 other allies — and it lapses at the start of a year when the warmonger's score has fallen below 30, or the moment the warmonger
 is out of the game. (An alliance the two had already, or sign for themselves, is not a coalition's and does not lapse.)
-Coalitions are among computer countries only.
+**People in coalitions.** A person's country is **asked**, a question like any proposal (6 months; no answer is a no), and not
+asked by the same country again for 5 years; a yes signs the coalition's alliance, if it still could be. And a person may
+**found one**: in a warmonger's Diplomacy, *Coalition against it*, proposed to every country that borders the warmonger as
+they do — not allied with them already, not at war with them, neither a vassal, of faiths better than −20 to each other (they
+need not border each other). A computer answers as it answers another computer's coalition, once in 5 years; a person is asked.
 
 **Becoming your subject** — mostly size, a little opinion. The HRE vote is rolled the same way
 ([SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md#the-holy-roman-empire)):

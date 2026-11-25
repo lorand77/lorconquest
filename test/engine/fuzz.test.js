@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import docsScenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import fs from "node:fs";
 import path from "node:path";
-import { COMMAND_TYPES, Game, WEAPONS, menOf } from "../../src/engine/index.js";
+import { COMMAND_TYPES, Game, WEAPONS, menOf, neighboursOf } from "../../src/engine/index.js";
 import { check } from "../helpers/invariants.js";
 import { isMonthStart } from "../../src/engine/calendar.js";
 
@@ -131,6 +131,11 @@ function randomCommand(game, r) {
         case "declareWar": return { ...a, target: pick(codes) };
         case "proposePeace": return { ...a, with: pick(codes), terms: {} };
         case "proposeAgreement": return { ...a, with: pick(codes), kind: pick(["defensive", "military", "guarantee", "pact", "access"]) };
+        case "proposeCoalition": {
+            // against a warmonger if there is one, between two of its neighbours: else it could never be accepted
+            const w = codes.filter((c) => (st.countries[c].warmonger ?? 0) >= 30), against = w.length ? pick(w) : pick(codes), near = neighboursOf(game, against);
+            return near.length >= 2 ? { ...a, country: pick(near), with: pick(near), against } : { ...a, with: pick(codes), against };
+        }
         case "breakAgreement": return { ...a, with: pick(codes), kind: pick(["defensive", "military", "guarantee", "pact", "truce"]) };
         case "cancelAccess": return { ...a, with: pick(codes) };
         case "demandSubject": return { ...a, target: pick(codes), kind: pick(["vassal", "protectorate"]) };

@@ -325,3 +325,18 @@ test("the peace form says why land not won in the field is refused: a town asked
     const preview = find(nodes, (e) => e.attrs.class?.startsWith("preview"))[0];
     assert.match(preview.text, /You ask for settlements of [\d,]+ people, and have taken none in this war: land is won in the field, not at the table — it will refuse\./);
 });
+
+test("a warmonger's tab offers a coalition against it to every country that may join it, sent one by one", async () => {
+    // Ulm a warmonger: Bavaria borders it, and so do others
+    const { ctx, sent } = setup((game) => { game.state.countries.ULM.warmonger = 40; }, "ULM");
+    const nodes = diplomacyTab(ctx), text = textOf(nodes);
+    assert.match(text, /Coalition against Ulm/);
+    const propose = button(nodes, "Propose it to all");
+    assert.ok(propose, text);
+    await propose.handlers.click();
+    assert.ok(sent.length > 0 && sent.every((c) => c.type === "proposeCoalition" && c.against === "ULM" && c.with !== "BAV" && c.with !== "ULM"));
+    assert.equal(propose.text, `Propose it to all (${sent.length})`);
+    // no warmonger, no coalition
+    const { ctx: calm } = setup(() => {}, "ULM");
+    assert.doesNotMatch(textOf(diplomacyTab(calm)), /Coalition against/);
+});

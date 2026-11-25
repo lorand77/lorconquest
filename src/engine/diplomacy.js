@@ -717,20 +717,46 @@ export function lapseCoalitions(game, events) {
     evictClosed(game, events);
 }
 
-export const COALITION_FAITH = -20;
+export const COALITION_FAITH = -20, COALITION_SCORE = 30;
+// why `from` and `to` cannot make a coalition's alliance against `against` now, or null (RULES.md §10, Coalitions): a warmonger
+// of 30 or more, neither of the two; both border it; not at war with each other, nor allied already; neither a vassal; and of
+// faiths that regard each other better than −20
+export function coalitionError(game, from, to, against) {
+    const st = game.state, w = st.countries[against];
+    if (!w || !real(st, against)) return `no country ${against}`;
+    if (against === from || against === to) return "a coalition is against a third country";
+    if ((w.warmonger ?? 0) < COALITION_SCORE) return `${against} is no warmonger: its score is under ${COALITION_SCORE}`;
+    if (!real(st, to)) return `no country ${to}`;
+    if (!bordering(game, from, against) || !bordering(game, to, against)) return `a coalition against ${against} is of countries that border it, both of you`;
+    if (atWar(st, from, to)) return `you are at war with ${to}`;
+    if (allied(st, from, to)) return `you and ${to} are allied already`;
+    if (isVassal(st, from) || isVassal(st, to)) return "a vassal has no diplomacy";
+    if (faithRegard(st.countries[from].religion, st.countries[to].religion) <= COALITION_FAITH) return `${to}'s faith and yours are too far apart for a coalition`;
+    return null;
+}
+// a coalition's alliance signed: defensive, for as long as the warmonger is one (lapseCoalitions)
+export function signCoalition(game, a, b, against, events) {
+    addAgreement(game, "defensive", a, b, null, against);
+    events.push({ type: "agreement", day: game.state.day, kind: "defensive", a, b, why: `against ${against}` });
+}
+// at the start of each year: the countries that border the same warmonger — and each other — make coalitions against it. Two computer
+// countries sign at once if the one asked agrees; a computer country asks a person, a question like any proposal, once in five years
+// at most; a person founds one of their own (proposeCoalition)
 export function coalitions(game, events) {
     const st = game.state;
-    const computer = (c) => real(st, c) && !isHuman(st, c) && !st.countries[c].overlord;
+    const party = (c) => real(st, c) && !st.countries[c].overlord;
     for (const w of Object.keys(st.countries).sort()) {
-        if (!real(st, w) || (st.countries[w].warmonger ?? 0) < 30) continue;
-        const near = neighboursOf(game, w).filter(computer);
+        if (!real(st, w) || (st.countries[w].warmonger ?? 0) < COALITION_SCORE) continue;
+        const near = neighboursOf(game, w).filter(party);
         for (const c of near) for (const d of near) {
-            if (c === d || allied(st, c, d) || atWar(st, c, d) || !bordering(game, c, d)) continue;
+            if (c === d || isHuman(st, c) || allied(st, c, d) || atWar(st, c, d) || !bordering(game, c, d)) continue;
             if (faithRegard(st.countries[c].religion, st.countries[d].religion) <= COALITION_FAITH) continue;
-            if (agreementAnswer(game, d, c, "defensive").accept) {
-                addAgreement(game, "defensive", c, d, null, w);
-                events.push({ type: "agreement", day: st.day, kind: "defensive", a: c, b: d, why: `against ${w}` });
-            }
+            if (isHuman(st, d)) {
+                if (st.offers.some((o) => o.kind === "coalition" && o.from === c && o.to === d) || !mayPropose(game, c, d, "coalition")) continue;
+                notePropose(game, c, d, "coalition");
+                st.offers.push({ id: ++st.offerSeq, kind: "coalition", from: c, to: d, against: w, deadline: st.day + OFFER_DAYS });
+                events.push({ type: "offer", day: st.day, country: d, from: c, what: "coalition", against: w });
+            } else if (agreementAnswer(game, d, c, "defensive").accept) signCoalition(game, c, d, w, events);
         }
     }
 }

@@ -5,6 +5,7 @@
 //   declareWar { target }
 //   proposePeace { with, terms: { take, give, money, makeSubject, becomeSubject, release } }
 //   proposeAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "access", years }
+//   proposeCoalition { with, against }   a defensive alliance against a warmonger both border, for as long as it is one
 //       guarantee: you guarantee them; access: they give you military access; an alliance for years 10 (the default) or 20
 //   breakAgreement { with, kind: "defensive" | "military" | "guarantee" | "pact" | "truce" }   cancelAccess { with }
 //   demandSubject { target, kind: "vassal" | "protectorate" }   proposeEmpire {}   integrate { target }   a vassal of 10 years
@@ -18,7 +19,7 @@
 //   ban { target }                   the Emperor puts a German state under the imperial ban: a war of execution (diplomacy.js)
 import { YEAR_DAYS } from "./calendar.js";
 import { done, refuse } from "./command-util.js";
-import { OFFER_DAYS, addAgreement, banWar, defendEmpire, freeSubject, refuseDefence, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
+import { OFFER_DAYS, addAgreement, coalitionError, signCoalition, banWar, defendEmpire, freeSubject, refuseDefence, joinByChoice, callStands, declareWar, demandSubject, withinDemandReach, evictClosed, hreSettlementsOf, integrate, integrateError, makePeace, mayPropose, notePropose, proposeEmpire, removeAgreements, punishBreak,
     setSubject, takeSubject, validateTerms, joinWar, GUARANTEE_DAYS, PACT_DAYS, unionError, unionInto, unite } from "./diplomacy.js";
 import { refuseEmpire } from "./diplomacy-day.js";
 import { banError, candidatesOf, electorsOf, promiseError, proposeReform, reformError } from "./empire.js";
@@ -146,6 +147,22 @@ export const diplomacyCommands = {
         const a = agreementAnswer(game, c, cmd.country, cmd.kind, years), events = [];
         events.push({ type: "answer", day: st.day, country: c, from: cmd.country, what: cmd.kind, ...term, accepted: a.accept, opinion: a.opinion, need: a.need, bar: a.bar });
         if (a.accept) sign(game, cmd.kind, cmd.country, c, events, years);
+        return done(events);
+    },
+
+// a coalition (RULES.md §10, Coalitions): a defensive alliance against a warmonger both border, lapsing when it is one no more —
+    // a computer answers as it answers another computer's, a person is asked
+    proposeCoalition(game, cmd) {
+        const st = game.state, { c, error } = other(game, cmd, cmd.with);
+        if (error) return refuse(error);
+        const why = coalitionError(game, cmd.country, c, cmd.against);
+        if (why) return refuse(why);
+        if (isHuman(st, c)) return asking(game, "coalition", cmd.country, c, { against: cmd.against }, { against: cmd.against });
+        if (!mayPropose(game, cmd.country, c, "coalition")) return refuse(`you proposed a coalition to ${c} less than 5 years ago`);
+        notePropose(game, cmd.country, c, "coalition");
+        const a = agreementAnswer(game, c, cmd.country, "defensive"), events = [];
+        events.push({ type: "answer", day: st.day, country: c, from: cmd.country, what: "coalition", against: cmd.against, accepted: a.accept, opinion: a.opinion, need: a.need, bar: a.bar });
+        if (a.accept) signCoalition(game, cmd.country, c, cmd.against, events);
         return done(events);
     },
 
@@ -294,6 +311,9 @@ export const diplomacyCommands = {
                 events.push({ type: "ended", day: st.day, country: offer.to, with: offer.from, kind: "military" });
                 evictClosed(game, events);
             }
+        } else if (offer.kind === "coalition") {
+            // as things stand now: still a warmonger, still bordering it, not allied meanwhile
+            if (accept && !coalitionError(game, offer.from, offer.to, offer.against)) signCoalition(game, offer.from, offer.to, offer.against, events);
         } else if (offer.kind === "agreement") {
             if (accept && !isVassal(st, offer.from) && !agreementError(game, { country: offer.from }, offer.to, offer.agreement)) sign(game, offer.agreement, offer.from, offer.to, events, offer.years);
         } else if (offer.kind === "peace") {

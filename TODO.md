@@ -13,7 +13,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
   `--level` in simulate.js and strength.js) and the lobby's choice, hidden (lobbylogic.js, AI_LEVEL_CHOICE); the hard level itself with #31
 - [ ] #31 Smarter computer players: more aggressive late in the game, as the hard level (src/ai/levels.js) — AI, L. Better troop
   movement with allies was tried as a medium level and taken out: it measured no stronger (experiments/, 30)
-- [ ] #14 Coalitions open to people, not only the computer — rules, screen, M
 
 ## Later
 

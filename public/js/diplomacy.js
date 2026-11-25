@@ -3,7 +3,7 @@
 // them, agreements with what to expect, demands — and the Empire, a section of its own. Like panels.js it only sends commands; the numbers (opinion,
 // war score, the bar an agreement must reach, the chance of a demand) are the engine's own, worked out in the browser from
 // the state it holds. Nothing here changes the game.
-import { victoryOf, betrayalPenalty, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
+import { COALITION_SCORE, coalitionError, victoryOf, betrayalPenalty, BAN_COST, BAN_WARMONGER, REFORMS, banError, dietVotes, isGermanState, reformError, CANDIDATE_GERMAN, PROMISE_MONEY, candidatesOf, electorsOf, voteOf, ALLIANCE_YEARS, BAR, NEAR_VICTORY, agreementAnswer, areRivals, isAlliance, subjectChance, bordering, demandChance, germanStates, hreSettlementsOf, integrateError, integratePrice, integrateDays, INTEGRATE_DAYS, outOfReach, subjectWarmonger, withinDemandReach, unionError, unionInto, RELIGION_NAMES, faithOpinion, religionOf, isVassal, wouldCycle, longDate, militaryPowerOf, opinion, peaceAnswer, scores, subjectsOf, validateTerms, warJoiners, warScore } from "/engine/index.js";
 import { formatNumber } from "./mirror.js";
 
 // a settlement by its name alone, as peace terms show it (names are unique within a scenario)
@@ -39,6 +39,7 @@ function offerText(ctx, o) {
     if (o.kind === "call" && o.circle) return `${who(o.enemy)}, from outside the Empire, has attacked ${who(o.from)}: the Imperial Circles call you to its defence. Refusing costs nothing; no answer by ${longDate(o.deadline)} is a yes.`;
     if (o.kind === "call" && o.defender) return `${who(o.enemy)}, from outside the Empire, has attacked ${who(o.from)}: as Emperor you are called to defend the Empire. Refusing costs the crown 10 authority; no answer by ${longDate(o.deadline)} is a yes.`;
     if (o.kind === "call") return `${who(o.from)} calls you to arms against ${who(o.enemy)} (${o.side === "att" ? "their attack" : "their defence"}). Refusing ends the alliance; no answer by ${longDate(o.deadline)} is a yes.`;
+    if (o.kind === "coalition") return `${who(o.from)} proposes a coalition against ${who(o.against)}: a defensive alliance that brings each of you into a war only when ${who(o.against)} declares it, and lapses when it is a warmonger no more. No answer by ${longDate(o.deadline)} is a no.`;
     if (o.kind === "agreement") return `${who(o.from)} proposes a ${AGREEMENT_NAMES[o.agreement]}${o.years ? ` for ${o.years} years` : ""}.`;
     if (o.kind === "demand") return `${who(o.from)} demands that you become its ${o.subject}.`;
     if (o.kind === "empire") return `${who(o.from)} demands the Empire: join as its protectorate, or join the League against it.`;
@@ -324,7 +325,7 @@ function dealWith(ctx, t) {
         out.push(section(ctx, "War",
             sidesOf("def").length ? mk("p", {}, `Would join ${them.name}: ${join(sidesOf("def"))}${calls.some((e) => e[2] === "def") ? " (some may refuse)" : ""}.`) : "",
             sidesOf("att").length ? mk("p", {}, `Would join you: ${join(sidesOf("att"))}.`) : "",
-            mk("p", { class: score >= 30 ? "bad" : "hint" }, `Your warmonger score: ${score}. At 30 or more, the computer countries that border you and each other, and do not loathe each other's faith, ally against you each year — those alliances bring them in only when you attack, and end once your score is under 30 again.`),
+            mk("p", { class: score >= 30 ? "bad" : "hint" }, `Your warmonger score: ${score}. At 30 or more, the countries that border you and each other, and do not loathe each other's faith, ally against you each year (a person is asked; anyone bordering you may found one) — those alliances bring them in only when you attack, and end once your score is under 30 again.`),
             bound.length ? mk("p", { class: "bad" }, `This breaks ${bound.map((x) => (x.kind === "truce" ? "your truce" : AGREEMENT_NAMES[x.kind])).join(", ")}: your alliances end, and ${breachText(ctx, t)}.`) : "",
             // your own protectorate: turning on it breaks its protection (RULES.md §10, Subjects)
             state.countries[t].overlord === me ? mk("p", { class: "bad" }, `${them.name} is your protectorate: turning on it ends its protection and breaks faith — your alliances end, and ${breachText(ctx, t)}.`) : "",
@@ -348,6 +349,17 @@ function dealWith(ctx, t) {
             i === 0 ? `${ASK_LABEL[kind]}${y ? `: ${y} years` : ""}` : `${y} years`));
         return row(ctx, ...buttons, mk("span", { class: `hint ${answers.some((a) => a.accept) ? "good" : ""}` }, hint));
     });
+    // a coalition against this country, if it is a warmonger (RULES.md §10, Coalitions): offered to every country that may join it —
+    // bordering it, not allied with you already, not at war with you — the computers answering at once, people asked
+    if ((them.warmonger ?? 0) >= COALITION_SCORE) {
+        const partners = Object.keys(state.countries).filter((c) => c !== me && c !== t && !coalitionError(game, me, c, t)).sort((a, b) => (state.countries[a].name < state.countries[b].name ? -1 : 1));
+        const send = async () => { for (const c of partners) if (!(await ctx.send({ type: "proposeCoalition", with: c, against: t }))?.ok) break; ctx.redraw(); };
+        out.push(section(ctx, `Coalition against ${them.name}`,
+            mk("p", { class: "hint" }, `${them.name} is a warmonger (score ${Math.round(them.warmonger)}). A coalition is a defensive alliance against it alone: it brings each of you into a war only when ${them.name} declares it, and lapses when its score is under ${COALITION_SCORE}.`),
+            !bordering(game, me, t) ? mk("p", { class: "hint" }, `Only countries that border ${them.name} make a coalition against it, and you do not.`)
+                : partners.length ? row(ctx, mk("button", { onclick: send }, `Propose it to all (${partners.length})`), mk("span", { class: "hint" }, partners.map((c) => state.countries[c].name).join(", ")))
+                    : mk("p", { class: "hint" }, `No other country that borders ${them.name} may join one with you now.`)));
+    }
     out.push(section(ctx, "Agreements", ...(atWar ? [mk("p", { class: "hint" }, "Not while at war.")] : rows), mk("p", { class: "hint" }, "The same proposal to the same country once in 5 years.")));
 
     // demands

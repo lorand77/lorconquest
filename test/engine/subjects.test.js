@@ -237,7 +237,7 @@ test("each year the warmonger score falls by 2, and computer countries bordering
     // AAA and CCC both border BBB; CCC's need is 20 for BBB's size and 20 for the warmonger: well over the bar
     assert.ok(hasAgreement(game.state, "defensive", "AAA", "CCC"));
     assert.deepEqual(ofType(events, "agreement").map((e) => [e.kind, e.why]).filter((x) => x[1] === "against BBB").length > 0, true);
-    // no alliance forms against a warmonger under 30, nor with a human or a vassal
+    // no alliance forms against a warmonger under 30; a person is asked, not signed up
     const quiet = neighbours();
     quiet.state.countries.BBB.warmonger = 31;                                   // 29 after the year's fall
     runTo(quiet, 365);
@@ -246,6 +246,42 @@ test("each year the warmonger score falls by 2, and computer countries bordering
     humans.state.countries.BBB.warmonger = 40;
     runTo(humans, 365);
     assert.equal(hasAgreement(humans.state, "defensive", "AAA", "CCC"), false);
+    assert.deepEqual(humans.state.offers.filter((o) => o.kind === "coalition").map((o) => [o.from, o.to, o.against]), [["AAA", "CCC", "BBB"]]);
+});
+
+test("people in coalitions: asked by the computer, a yes signs it; and one of their own, to any that borders the warmonger too", () => {
+    // CCC a person: AAA asks it on 1 January; yes — the coalition's alliance, against BBB
+    const game = neighbours(1, () => {}, ["CCC"]), st = game.state;
+    st.countries.BBB.warmonger = 40;
+    runTo(game, 365);
+    const [offer] = st.offers.filter((o) => o.kind === "coalition");
+    const [answer] = order(game, cmd("CCC", "answerOffer", { id: offer.id, accept: true }));
+    assert.equal(answer.accepted, true);
+    assert.equal(st.agreements.find((x) => x.kind === "defensive" && [x.a, x.b].sort().join() === "AAA,CCC")?.against, "BBB");
+    // not asked again while allied; a yes once BBB is a warmonger no more signs nothing
+    const late = neighbours(1, () => {}, ["CCC"]);
+    late.state.countries.BBB.warmonger = 40;
+    runTo(late, 365);
+    late.state.countries.BBB.warmonger = 10;
+    order(late, cmd("CCC", "answerOffer", { id: late.state.offers.find((o) => o.kind === "coalition").id, accept: true }));
+    assert.equal(hasAgreement(late.state, "defensive", "AAA", "CCC"), false);
+    // founding one: CCC proposes to AAA, a computer, which answers at once as it would another computer
+    const own = neighbours(1, () => {}, ["CCC"]);
+    own.state.countries.BBB.warmonger = 40;
+    const [said] = order(own, cmd("CCC", "proposeCoalition", { with: "AAA", against: "BBB" }));
+    assert.deepEqual([said.type, said.what, said.against], ["answer", "coalition", "BBB"]);
+    assert.equal(hasAgreement(own.state, "defensive", "AAA", "CCC"), said.accepted);
+    // what is refused: a warmonger under 30; a country that does not border it; one of the two themselves
+    const calm = neighbours(1, () => {}, ["CCC"]);
+    assert.match(refused(calm, cmd("CCC", "proposeCoalition", { with: "AAA", against: "BBB" })), /BBB is no warmonger/);
+    calm.state.countries.BBB.warmonger = 40;
+    assert.match(refused(calm, cmd("CCC", "proposeCoalition", { with: "EEE", against: "BBB" })), /border it, both of you/);
+    assert.match(refused(calm, cmd("CCC", "proposeCoalition", { with: "BBB", against: "BBB" })), /against a third country/);
+    // between two people: a question
+    const two = neighbours(1, () => {}, ["AAA", "CCC"]);
+    two.state.countries.BBB.warmonger = 40;
+    order(two, cmd("CCC", "proposeCoalition", { with: "AAA", against: "BBB" }));
+    assert.deepEqual(two.state.offers.map((o) => [o.kind, o.from, o.to, o.against]), [["coalition", "CCC", "AAA", "BBB"]]);
 });
 
 test("a coalition's alliances lapse when the warmonger they were made against is one no more, or is out of the game", () => {
