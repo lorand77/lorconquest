@@ -3935,7 +3935,8 @@
     82,
     92
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 55,
@@ -4356,7 +4357,8 @@
     116,
     118
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 68,
@@ -4483,7 +4485,8 @@
     72,
     115
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 72,
@@ -6166,7 +6169,8 @@
     195,
     212
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 125,
@@ -6818,7 +6822,8 @@
     147,
     168
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 145,
@@ -6916,7 +6921,8 @@
     150,
     168
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 148,
@@ -7273,7 +7279,8 @@
     159,
     160
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 159,
@@ -7520,7 +7527,8 @@
     170,
     171
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 167,
@@ -8033,7 +8041,8 @@
     209,
     284
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 183,
@@ -8582,7 +8591,8 @@
     208,
     213
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 201,
@@ -8685,7 +8695,8 @@
     205,
     206
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 204,
@@ -8715,7 +8726,8 @@
     216,
     223
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 205,
@@ -8779,7 +8791,8 @@
     213,
     216
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 207,
@@ -8839,7 +8852,8 @@
     210,
     213
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 209,
@@ -8873,7 +8887,8 @@
     211,
     213
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 210,
@@ -9028,7 +9043,8 @@
     217,
     223
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 215,
@@ -9642,7 +9658,8 @@
     236,
     241
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 235,
@@ -10058,7 +10075,8 @@
     258,
     259
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 248,
@@ -10189,7 +10207,8 @@
     264,
     266
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 252,
@@ -10570,7 +10589,8 @@
     272,
     273
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 264,
@@ -10632,7 +10652,8 @@
     267,
     281
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 266,
@@ -11104,7 +11125,8 @@
     324
    ],
    "straits": [],
-   "walls": true
+   "walls": true,
+   "university": true
   },
   {
    "id": 281,
@@ -11557,7 +11579,8 @@
     337,
     338
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 295,

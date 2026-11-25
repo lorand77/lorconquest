@@ -356,7 +356,7 @@ test("the Research tab says when nothing is being researched and offers the chea
     ctx.state.countries.BAV.target = "handCannons";                                   // something chosen: no notice
     assert.doesNotMatch(researchTab(ctx).map((n) => n.text).join(" | "), /Nothing is being researched/);
     ctx.state.countries.BAV.target = null;
-    ctx.state.countries.BAV.techs.push("handCannons", "arquebuses", "muskets", "sharpshooters", "carracks", "galleons", "menOfWar");
+    ctx.state.countries.BAV.techs.push("handCannons", "arquebuses", "muskets", "sharpshooters", "carracks", "galleons", "menOfWar", "fortifications");
     nodes = researchTab(ctx);
     assert.match(nodes.map((n) => n.text).join(" | "), /Every technology is researched/);
 });

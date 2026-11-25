@@ -12,7 +12,7 @@ import { legKey } from "../engine/map.js";
 import { armyPower, enemiesOf, forcePower, garrisonFloor, garrisons, inland, ownArmies, ownSettlements, reachFrom, reserveOf, stagingSettlement, threatsOf, winChance } from "./util.js";
 
 // a garrison's defence in a storm against `guns` cannons (RULES.md §5): ×1.2, or behind walls ×1.8 less 0.3 a hundred × x
-const wallsFactor = (game, s, guns = 0) => wallDefence(s.walls, guns, game.map.x);
+const wallsFactor = (game, s, guns = 0) => wallDefence(s, guns, game.map.x);
 // the strength of an enemy sharpshooter post at a pass, as a storm of it weighs it (passes.js): its men × 2.5 × 2
 const postPower = (post) => post.n * 5;
 // raiding parties: a host of RAID_FROM men or more splits off RAID armed men for an undefended enemy town it is not going to

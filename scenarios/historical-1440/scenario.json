@@ -2354,7 +2354,8 @@
     38,
     52
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 38,
@@ -3240,7 +3241,8 @@
     146,
     147
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 65,
@@ -3849,7 +3851,8 @@
     82,
     102
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 84,
@@ -4043,7 +4046,8 @@
     91,
     92
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 90,
@@ -4141,7 +4145,8 @@
     91,
     107
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 93,
@@ -4720,7 +4725,8 @@
     123,
     124
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 111,
@@ -4790,7 +4796,8 @@
     115,
     118
    ],
-   "straits": []
+   "straits": [],
+   "university": true
   },
   {
    "id": 113,
@@ -5592,7 +5599,8 @@
     139
    ],
    "straits": [],
-   "walls": true
+   "walls": true,
+   "university": true
   },
   {
    "id": 138,

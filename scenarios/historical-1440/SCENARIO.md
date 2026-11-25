@@ -526,6 +526,23 @@ as if built in play. Every other settlement begins without; walls may be bought 
 | 109 Nuremberg | The imperial city's double ring of walls, never taken by an enemy. |
 | 157 Salzburg | The fortress of Hohensalzburg, which the peasants besieged in vain in 1525. |
 
+### Universities
+
+The universities of 1440 begin with a **University** and its **Library** (RULES.md §3 and §4: +10% research each, up to three a
+country, beside the libraries' +5% each), as if founded in play — three a country at most. Every other may found one in a city or
+its capital, beside a library, as the game goes on.
+
+| Settlements | Why |
+|---|---|
+| 112 Prague | The Charles University, founded by Charles IV in 1348, the first north of the Alps. |
+| 137 Vienna | Rudolf IV's foundation of 1365. |
+| 64 Kraków | Casimir the Great's of 1364, refounded in 1400. |
+| 110 Heidelberg | The Palatinate's, of 1386. |
+| 89 Leipzig | Founded in 1409 by the masters who left Prague. |
+| 92 Erfurt | The city's own, of 1392. |
+| 37 Rostock | The Baltic's first, of 1419. |
+| 83 Cologne | The city's, of 1388. |
+
 ## The Holy Roman Empire
 
 The Empire is every settlement marked **HRE** above (listed in the *Overview*). A **German state** is a country with a capital

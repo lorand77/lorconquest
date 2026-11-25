@@ -88,18 +88,26 @@ test("losses come in whole men, shared over the weapons", () => {
     assert.deepEqual([sick.dead, sick.cannons, sick.crew], [10, 0, 0]);
 });
 
-test("walls: ×1.8, less 0.3 per 100 × x cannons, never below the plain ×1.2", () => {
-    assert.equal(wallDefence(false, 500, 1), 1.2);
-    assert.equal(wallDefence(true, 0, 1), 1.8);
-    assert.equal(wallDefence(true, 99, 1), 1.8);
-    assert.ok(Math.abs(wallDefence(true, 100, 1) - 1.5) < 1e-9);
-    assert.ok(Math.abs(wallDefence(true, 200, 1) - 1.2) < 1e-9);
-    assert.equal(wallDefence(true, 900, 1), 1.2);
-    assert.equal(wallDefence(true, 100, 2), 1.8);                          // with x = 2 a step takes 200 cannons
+test("walls: ×1.8, less 0.3 per 100 × x cannons, never below the plain ×1.2 — a star fort ×2.2, less only 0.15", () => {
+    const open = { walls: false }, walled = { walls: true }, fort = { walls: true, starFort: true };
+    assert.equal(wallDefence(open, 500, 1), 1.2);
+    assert.equal(wallDefence(walled, 0, 1), 1.8);
+    assert.equal(wallDefence(walled, 99, 1), 1.8);
+    assert.ok(Math.abs(wallDefence(walled, 100, 1) - 1.5) < 1e-9);
+    assert.ok(Math.abs(wallDefence(walled, 200, 1) - 1.2) < 1e-9);
+    assert.equal(wallDefence(walled, 900, 1), 1.2);
+    assert.equal(wallDefence(walled, 100, 2), 1.8);                         // with x = 2 a step takes 200 cannons
+    // a star fort: the cannons that bring walls down to the plain ×1.2 leave it at ×1.9
+    assert.equal(wallDefence(fort, 0, 1), 2.2);
+    assert.ok(Math.abs(wallDefence(fort, 200, 1) - 1.9) < 1e-9);
+    assert.equal(wallDefence(fort, 900, 1), 1.2);
 });
 
 test("siege length: pop ÷ 20000 years, walls double it, cannons cut it to no less than 40%", () => {
     const game = { map: { x: 1 } };
+    // a star fort: 2.5 times, and 100 cannons cut it by 10%, not 20%
+    assert.equal(siegeDays(game, { pop: 20000, walls: true, starFort: true }, 0), Math.round(2.5 * 365));
+    assert.equal(siegeDays(game, { pop: 20000, walls: true, starFort: true }, 100), Math.round(2.5 * 0.9 * 365));
     assert.equal(siegeDays(game, { pop: 10000, walls: false }, 0), 183);    // half a year
     assert.equal(siegeDays(game, { pop: 20000, walls: false }, 0), 365);
     assert.equal(siegeDays(game, { pop: 20000, walls: true }, 0), 730);

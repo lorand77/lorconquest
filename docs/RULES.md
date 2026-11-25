@@ -233,6 +233,8 @@ country's lowest-numbered port.
 | **Workshop** | 0.075M | — | +7000 money from settlement |
 | **Market** | 0.075M | — | +15% money from settlement — its Workshop's 7000 included |
 | **Courthouse** | 0.05M | — | Makes the settlement core at once · only once its people are 100% compliant (20 years held), and not where it is your core already |
+| **University** | 0.2M | — | +10% of total R · only in a city or a capital, beside its Library · three a country count (see §4) |
+| **Star fort** | 0.25M | Trace italienne (x2.5MR, from 1520) | Built over Walls: ×2.2 defence, cannons wear it half as fast; sieges 2.5 times as long (§5, §6) |
 | **1000 soldiers** | **free** | — | Men only — weapons bought separately · trained in 3–6 months, a tenth of a settlement's people at once, a capital's fifth (§8) |
 | **1000 mercenaries** | 0.05M | — | Hired, not raised — come with pikes · arrive in 1 month · 15 upkeep each (§8) |
 | **Swords** (1000) | 0.025M | unlocked | ×1 |
@@ -255,7 +257,7 @@ New ships appear in a port you own, of your
 choice. People you buy are spread over your settlements in proportion to their pop.
 
 A settlement holds **one** of each building. A **Library** beyond the tenth adds nothing, so you
-cannot buy it. **Cannon crew and soldiers over the cap:** if the law changes to a lower one, or
+cannot buy it; nor a **University** beyond the third. **Cannon crew and soldiers over the cap:** if the law changes to a lower one, or
 people are lost, men already raised stay; only raising more is refused (§9).
 
 **Every cannon is manned by 10 crewmen**, taken from the army's own soldiers when the cannon is added to it: the unarmed
@@ -279,7 +281,8 @@ navy cap with the crew already at sea.
 ```
 Swords, Pikes, Cavalry, Cannons (unlocked)
 Swords ──▶ Hand cannons ──▶ Arquebuses ──┬──▶ Muskets
-                                         └──▶ Sharpshooters
+                                         ├──▶ Sharpshooters
+                                         └──▶ Trace italienne (x2.5MR, from 1520: the Star fort)
 
 Cogs (unlocked) ──▶ Carracks ──▶ Galleons ──▶ Men-of-war
 ```
@@ -290,8 +293,8 @@ at **50%**, and you may move it at any time.
 ```
 investable = max(0, money per year − bank interest)        (§2, plus tribute you receive and
                                                              minus tribute you pay, §10)
-R per year = (2 × slider × investable + x10K) × (1 + 0.05 × libraries)
-                                                             libraries counts at most 10
+R per year = (2 × slider × investable + x10K) × (1 + 0.05 × libraries + 0.10 × universities)
+                                                             libraries counts at most 10, universities 3
 treasury gets money per year + (1 − 2 × slider) × investable
 ```
 
@@ -315,7 +318,13 @@ x10K.
 do not multiply — and the total is **capped at +50%** (10 Libraries). A settlement can hold only
 one Library.
 
-**Naming the tech.** A tech needs its parent unlocked first (the tree above). Choosing another tech
+**Universities.** Each University you own adds **+10%** to your R per year, beside the Libraries' and adding up with them,
+**up to three** (+30%): libraries and universities together, at most **+80%**. A University is founded only in a **city or a
+capital** that has its **Library**. The universities of 1440 begin founded where the scenario says (its SCENARIO.md,
+*Universities*: Prague, Vienna, Kraków, Heidelberg, Leipzig and more), each with its Library.
+
+**Naming the tech.** A tech needs its parent unlocked first (the tree above). The **Trace italienne** may be chosen only
+**from 1520**, however far the research has come: it belongs to its age, the Italian Wars. Choosing another tech
 while one is being researched replaces it; the R already in store stays.
 
 ---
@@ -400,12 +409,14 @@ nowhere to retreat and **the whole losing army dies**.
 | Defending a mountain pass (§8) | ×2 |
 | Defending a settlement | ×1.2 |
 | Settlement with walls | ×1.8 |
+| Settlement with a star fort | ×2.2 |
 
 The mountain ×2 applies **only at mountain passes**. A pass has no settlement, so the pass and
 settlement bonuses never stack. **Walls replace the settlement bonus** — a walled settlement
 defends at ×1.8, not 1.2 × 1.8.
 
-Every **100 × x** cannons the attacker brings lowers the wall multiplier by **0.3**, floored at **1.2**.
+Every **100 × x** cannons the attacker brings lowers the wall multiplier by **0.3**, floored at **1.2** — a star fort's by only
+**0.15**: its low bastions, the *trace italienne*, were built to stand cannon.
 
 ### Sharpshooters
 Sharpshooters are **bought and stationed only at a mountain pass your country owns** (§8). They cannot
@@ -451,8 +462,8 @@ everything.
 
 **Siege** —
 ```
-n = pop ÷ 20000 years      ×2 if walls
-                           × (1 − 0.2 per full 100 × x cannons the besieger brings), at least × 0.4
+n = pop ÷ 20000 years      ×2 if walls, ×2.5 if a star fort
+                           × (1 − 0.2 per full 100 × x cannons the besieger brings — 0.1 against a star fort), at least × 0.4
 ```
 **The siege length is fixed when the siege begins and cannot change while it runs** — cannons
 that arrive later do not shorten it.

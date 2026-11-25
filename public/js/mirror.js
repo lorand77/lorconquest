@@ -464,8 +464,9 @@ export function protectorateNews(events, state, me) {
 
 // the tech a country is offered at one click when it researches nothing: the cheapest it may research now (its prerequisite
 // held, itself not), by `costOf(id)`; null if there is none. `techs` is the engine's TECHS, `owned` the country's techs.
-export function cheapestOpenTech(techs, owned, costOf) {
-    const open = Object.entries(techs).filter(([id, t]) => !owned.includes(id) && owned.includes(t.needs)).map(([id]) => id);
+// (`year`: today's — a tech with a year `from` opens only then)
+export function cheapestOpenTech(techs, owned, costOf, year = Infinity) {
+    const open = Object.entries(techs).filter(([id, t]) => !owned.includes(id) && owned.includes(t.needs) && !(t.from > year)).map(([id]) => id);
     return open.sort((a, b) => costOf(a) - costOf(b))[0] ?? null;
 }
 

@@ -16,8 +16,6 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 
 ## Later
 
-- [ ] #37 More buildings, such as a university — rules, M
-- [ ] #39 Better replay — replay, M
 - [ ] #49 Support games of previous versions: replays (and what else needs them) of games played under an older RULES_VERSION, which are refused now — keep the old engines — replay, L
 - [ ] #42 A smaller version of the Europe map — map, L
 - [ ] #53 A map of Italy — map, L

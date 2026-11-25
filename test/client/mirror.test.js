@@ -194,6 +194,10 @@ test("the tech offered at one click when nothing is researched: the cheapest ope
     assert.equal(cheapestOpenTech(techs, ["swords", "cogs", "handCannons"], cost), "arquebuses");      // now open, and cheaper than carracks
     assert.equal(cheapestOpenTech(techs, ["cogs"], cost), "carracks");
     assert.equal(cheapestOpenTech(techs, ["swords", "cogs", "handCannons", "arquebuses", "carracks"], cost), null);
+    // a tech with a year opens only then: the trace italienne from 1520
+    const later = { ...techs, fortifications: { cost: 1, needs: "arquebuses", from: 1520 } }, all = ["swords", "cogs", "handCannons", "arquebuses", "carracks"];
+    assert.equal(cheapestOpenTech(later, all, (id) => later[id].cost, 1519), null);
+    assert.equal(cheapestOpenTech(later, all, (id) => later[id].cost, 1520), "fortifications");
 });
 
 test("a press in the panel holds the days' rebuilds, but a click's own redraw goes through at once (the Split… form)", () => {

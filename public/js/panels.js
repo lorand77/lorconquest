@@ -3,7 +3,7 @@
 // Research tab, the panel of a selected fleet, and an army's equipment. Every control sends a command to the server,
 // whose engine decides; the numbers shown come from the browser's copy of the engine (economyOf and its friends),
 // run on the mirrored state, so they are the server's own formulas. Nothing here changes the game.
-import { BUILDING_PRICE, CANNON_PRICE, LAWS, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
+import { BUILDING_PRICE, CANNON_PRICE, LAWS, dateOf, capitalsOf, proclaimCheck, reformationError, RELIGION_NAMES, coringDays, faithGap, landReligion, MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTERS_PER_PASS, SHARPSHOOTER_PRICE, SHIPS, SHIP_PRICE,
     TECHS, TRAIN_CAPITAL_DAYS, TRAIN_OTHER_DAYS, WEAPONS, WEAPON_PRICE, economyOf, hireRoom, isCore, lawChangeDay, longDate, techCost, trainingRoom } from "/engine/index.js";
 import { FAITH_COLOURS } from "./mapdraw.js";
 import { BEST_FIRST, armingCost, fleetStrength, bestArming, cheapestOpenTech, compliance, formatNumber, halfFleet, hireAll, modernising, pikesToMuskets, recruitAll } from "./mirror.js";
@@ -13,7 +13,9 @@ export const money = (x) => (Math.abs(x) >= 1e6 ? `${(x / 1e6).toFixed(2)}M` : n
 const pct = (x) => `${Math.round(x * 100)}%`;
 const WEAPON_NAMES = { cannons: "cannons", unarmed: "unarmed", swords: "swords", pikes: "pikes", cavalry: "cavalry", handCannons: "hand cannons", arquebuses: "arquebuses", muskets: "muskets" };
 const SHIP_NAMES = { cogs: "cogs", carracks: "carracks", galleons: "galleons", menOfWar: "men-of-war" };
-export const TECH_NAMES = { handCannons: "Hand cannons", arquebuses: "Arquebuses", muskets: "Muskets", sharpshooters: "Sharpshooters", carracks: "Carracks", galleons: "Galleons", menOfWar: "Men-of-war" };
+export const TECH_NAMES = { handCannons: "Hand cannons", arquebuses: "Arquebuses", muskets: "Muskets", sharpshooters: "Sharpshooters", carracks: "Carracks", galleons: "Galleons", menOfWar: "Men-of-war", fortifications: "Trace italienne" };
+// the buildings as the Shop names them (the rest by their key)
+const BUILDING_NAMES = { university: "university", starFort: "star fort" };
 
 const section = (ctx, title, ...children) => ctx.make("section", { class: "block" }, ctx.make("h3", {}, title), ...children);
 const line = (ctx, label, value, cls = "") => ctx.make("div", { class: `kv ${cls}` }, ctx.make("span", {}, label), ctx.make("b", {}, value));
@@ -69,7 +71,7 @@ export function countryTab(ctx) {
         row(ctx, make("label", {}, "Research ", sliderLabel), slider),
         line(ctx, "Research a year", `${money(e.rPerYear)} R${e.libraries ? ` (${e.libraries} libraries: +${e.libraries * 5}%)` : ""}`),
         // with every tech done the slider only costs money: under 50% it adds to it instead (RULES.md §4)
-        !c.target && c.slider > 0 && !cheapestOpenTech(TECHS, c.techs, (t) => techCost(game, t)) ? make("p", { class: "bad" }, "Nothing is left to research: at 0% the slider adds to your money instead.") : ""));
+        !c.target && c.slider > 0 && !cheapestOpenTech(TECHS, c.techs, (t) => techCost(game, t), dateOf(state.day).year) ? make("p", { class: "bad" }, "Nothing is left to research: at 0% the slider adds to your money instead.") : ""));
 
     // the law: caps and the income it costs
     // the harshest two cost growth and peace at home too (RULES.md §9)
@@ -170,6 +172,7 @@ export function shopTab(ctx) {
     const capitals = capitalsOf(state, me);
     const settlementOptions = (list) => list.map((s) => [s.id, `${ctx.name(String(s.id))}${capitals.includes(s.id) ? " ★ capital" : ""}`]);
     const capital = capitals.includes(c.capital) ? c.capital : null;
+    const cityOf = (s) => game.map.scenario.settlements.find((x) => x.id === s.id)?.type === "city";
 
     // buildings, in the settlement selected on the map
     const sel = ctx.sel?.kind === "place" ? state.settlements[ctx.sel.key] : null;
@@ -179,9 +182,12 @@ export function shopTab(ctx) {
         // its people first: the settlement selected is the player's own, and this is the panel it opens (mirror.js, tabForSelection)
         out.push(section(ctx, `Buildings in ${ctx.name(String(sel.id))}${capitals.includes(sel.id) ? " ★ capital" : ""}`, make("p", {}, `${n(sel.pop)} people${sel.cores.includes(me) ? ", core" : ", not core"}.`),
             complianceBlock(ctx, sel), make("div", { class: "buttons" },
-            ...Object.keys(BUILDING_PRICE).filter((b) => b !== "courthouse" || sel.courthouse || !sel.cores.includes(me)).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${b}`)
+            ...Object.keys(BUILDING_PRICE).filter((b) => b !== "courthouse" || sel.courthouse || !sel.cores.includes(me)).map((b) => (sel[b] ? make("span", { class: "owned" }, `✓ ${BUILDING_NAMES[b] ?? b}`)
                 : b === "courthouse" && !ready ? make("span", { class: "hint" }, "courthouse: once compliant")
-                    : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${b} ${money(BUILDING_PRICE[b])}`))))));
+                    // a university: beside a library, in a city or a capital; a star fort: over walls, after the trace italienne
+                    : b === "university" && (!sel.library || !(cityOf(sel) || capitals.includes(sel.id))) ? make("span", { class: "hint" }, "university: a city or capital, with a library")
+                    : b === "starFort" && (!sel.walls || !c.techs.includes("fortifications")) ? make("span", { class: "hint" }, "star fort: over walls, after the trace italienne")
+                    : make("button", { onclick: act(ctx, () => ({ type: "buyBuilding", building: b, settlement: sel.id })) }, `${BUILDING_NAMES[b] ?? b} ${money(BUILDING_PRICE[b])}`))))));
     } else out.push(make("p", { class: "hint" }, "Select one of your settlements on the map to build walls, a library, workshop, market or courthouse there."));
 
     // raising soldiers (who also man cannons: an army's own soldiers become their crew), armed at once: with the weapon the
@@ -298,7 +304,7 @@ export function researchTab(ctx) {
         make("p", { class: "hint" }, "Choose one tech at a time. It unlocks the moment your R covers its cost, which is taken from the store; unspent R banks."))];
     // nothing being researched: say so, and offer the cheapest tech open now at one click (R only piles up meanwhile)
     if (!c.target) {
-        const next = cheapestOpenTech(TECHS, c.techs, (id) => techCost(game, id)), open = next && [next];
+        const next = cheapestOpenTech(TECHS, c.techs, (id) => techCost(game, id), dateOf(state.day).year), open = next && [next];
         out.unshift(open
             ? make("div", { class: "notice" },
                 make("p", {}, make("b", {}, "Nothing is being researched."), " R piles up meanwhile."),
@@ -306,10 +312,11 @@ export function researchTab(ctx) {
             : make("div", { class: "notice done" }, make("p", {}, make("b", {}, "Every technology is researched."), " R still banks, for nothing.")));
     }
     const rows = Object.entries(TECHS).map(([id, t]) => {
-        const cost = techCost(game, id), have = c.techs.includes(id), open = !have && c.techs.includes(t.needs), target = c.target === id;
+        const year = dateOf(state.day).year, early = t.from > year;
+        const cost = techCost(game, id), have = c.techs.includes(id), open = !have && c.techs.includes(t.needs) && !early, target = c.target === id;
         const bar = make("div", { class: "bar" }, make("i", { style: `width:${Math.min(100, (c.r / cost) * 100).toFixed(1)}%` }));
         return make("div", { class: `tech${have ? " done" : ""}${target ? " target" : ""}` },
-            make("div", { class: "row" }, make("b", {}, TECH_NAMES[id]), make("span", { class: "hint" }, have ? "unlocked" : `${money(cost)} R · needs ${TECH_NAMES[t.needs] ?? t.needs}`)),
+            make("div", { class: "row" }, make("b", {}, TECH_NAMES[id]), make("span", { class: "hint" }, have ? "unlocked" : `${money(cost)} R · needs ${TECH_NAMES[t.needs] ?? t.needs}${t.from ? ` · from ${t.from}` : ""}`)),
             ...(target ? [bar] : []),
             ...(open && !target ? [make("button", { onclick: act(ctx, () => ({ type: "research", tech: id })) }, "Research")] : []),
             ...(target ? [make("span", { class: "hint" }, "being researched")] : []));

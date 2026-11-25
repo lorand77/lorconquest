@@ -428,3 +428,39 @@ test("mercenaries for hire: 1% of the world's people, taken by hiring, given bac
     // the companies grow with the age: 1% to 1490, 2% from 1600
     assert.deepEqual([mercenaryShare(dayOf(1450)), mercenaryShare(dayOf(1545)), mercenaryShare(dayOf(1620))], [0.01, 0.015, 0.02]);
 });
+
+test("a university: in a city or a capital beside its library, three a country, +10% of the R each; a star fort over walls, after the trace italienne", () => {
+    const game = tinyGame(), st = game.state, c = AAA(game);
+    rich(game);
+    assert.match(refused(game, cmd("buyBuilding", { building: "university", settlement: 2 })), /needs a library in 2 first/);
+    order(game, cmd("buyBuilding", { building: "library", settlement: 2 }));
+    assert.match(refused(game, cmd("buyBuilding", { building: "university", settlement: 2 })), /in a city or a capital/);
+    order(game, cmd("buyBuilding", { building: "library", settlement: 1 }));
+    const before = economyOf(game, "AAA").rPerYear;
+    order(game, cmd("buyBuilding", { building: "university", settlement: 1 }));
+    assert.equal(c.treasury, 5000000 - 2 * 75000 - 200000);
+    // two libraries and a university: 1 + 0.10 + 0.10 against 1 + 0.10
+    assert.ok(Math.abs(economyOf(game, "AAA").rPerYear - before * 1.2 / 1.1) < 1e-6);
+    // the fourth university counts for nothing
+    for (const id of [2, 3]) Object.assign(st.settlements[id], { library: true, university: true });
+    st.settlements[4].owner = "AAA";
+    Object.assign(st.settlements[4], { library: true, university: true });
+    assert.equal(economyOf(game, "AAA").universities, 3);
+    // a star fort: over walls, once the trace italienne is researched
+    assert.match(refused(game, cmd("buyBuilding", { building: "starFort", settlement: 1 })), /built over walls/);
+    order(game, cmd("buyBuilding", { building: "walls", settlement: 1 }));
+    assert.match(refused(game, cmd("buyBuilding", { building: "starFort", settlement: 1 })), /needs the trace italienne/);
+    c.techs.push("handCannons", "arquebuses", "fortifications");
+    order(game, cmd("buyBuilding", { building: "starFort", settlement: 1 }));
+    assert.deepEqual([st.settlements[1].walls, st.settlements[1].starFort], [true, true]);
+});
+
+test("the trace italienne may be researched from 1520, whatever the research", async () => {
+    const { dayOf } = await import("../../src/engine/calendar.js");
+    const game = tinyGame(), c = AAA(game);
+    c.techs.push("handCannons", "arquebuses");
+    assert.match(refused(game, cmd("research", { tech: "fortifications" })), /fortifications may be researched from 1520/);
+    game.state.day = dayOf(1520);
+    order(game, cmd("research", { tech: "fortifications" }));
+    assert.equal(c.target, "fortifications");
+});

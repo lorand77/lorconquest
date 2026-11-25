@@ -42,17 +42,22 @@ export function besiegedIn(game, army) {
 
 // siege length (RULES.md §6): pop ÷ 20000 years, ×2 with walls, less 20% per full 100 × x cannons, at least 40%
 export function siegeDays(game, s, cannons) {
-    const years = s.pop / 20000 * (s.walls ? 2 : 1) * Math.max(0.4, 1 - 0.2 * Math.floor(cannons / (100 * game.map.x)));
+    // a star fort: 2.5 times as long, and cannons shorten it half as much as they do behind walls
+    const wear = s.starFort ? 0.1 : 0.2, walls = s.starFort ? 2.5 : s.walls ? 2 : 1;
+    const years = s.pop / 20000 * walls * Math.max(0.4, 1 - wear * Math.floor(cannons / (100 * game.map.x)));
     return Math.max(1, Math.round(years * YEAR_DAYS));
 }
 
-// a garrison's defence in a storm (RULES.md §5): ×1.2, or ×1.8 behind walls less 0.3 for every 100 × x cannons
-// the attacker brings, never below 1.2
-export const wallDefence = (walls, cannons, x) => (walls ? Math.max(1.2, 1.8 - 0.3 * Math.floor(cannons / (100 * x))) : 1.2);
+// a garrison's defence in a storm (RULES.md §5) in settlement `s`: ×1.2, or ×1.8 behind walls less 0.3 for every 100 × x cannons
+// the attacker brings — behind a star fort ×2.2 less 0.15 — never below 1.2
+export const wallDefence = (s, cannons, x) => {
+    const steps = Math.floor(cannons / (100 * x));
+    return s?.starFort ? Math.max(1.2, 2.2 - 0.15 * steps) : s?.walls ? Math.max(1.2, 1.8 - 0.3 * steps) : 1.2;
+};
 
 // a settlement falls (RULES.md §6, §8): it is held from today, loses its courthouse, the training and hires queued in
 // it are cancelled, sharpshooters of a pass in its land die, and the old owner's fleets in its port slip out — or, if it
-// was the old owner's last port, all its fleets are paid off (§7). It keeps its walls, library, workshop and market,
+// was the old owner's last port, all its fleets are paid off (§7). It keeps its walls, library, workshop, market, university and star fort,
 // and stays core for every country that had it core, so retaking it makes it core again.
 export function capture(game, s, country, events, how) {
     const from = s.owner, st0 = game.state;
@@ -125,7 +130,7 @@ export function settle(game, key, events) {
 export function storm(game, country, key, events) {
     const st = game.state, { s, garrison, hostile } = situation(game, key);
     const attackers = hostile.filter((a) => isFriend(st, a.owner, country));
-    const defence = wallDefence(s.walls, attackers.reduce((n, a) => n + a.cannons, 0), game.map.x);
+    const defence = wallDefence(s, attackers.reduce((n, a) => n + a.cannons, 0), game.map.x);
     const ev = fight(game, { kind: "storm", place: key, a: attackers, b: garrison, defenceB: defence, plainCavalry: true, tie: "b" });
     events.push(ev);
     if (ev.winner === "a") {

@@ -5,7 +5,7 @@
 // sends home the soldiers its law no longer allows (forces.js), and after a year of it defaults on its loans, which the
 // rules allow once in 20 years, rather than sit in debt until the bankers' interest has eaten it. A vassal of 10 years it
 // integrates when it can pay.
-import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, lawChangeDay, coringDays, reformationError, religionOf,
+import { BUILDING_PRICE, LAWS, LOAN_CHUNK, MAX_LIBRARIES, MAX_UNIVERSITIES, dayOf, SOLDIER_UPKEEP, TECHS, YEAR_DAYS, economyOf, integrateError, integratePrice, lawChangeDay, coringDays, reformationError, religionOf,
     manpowerOf, militaryPowerOf, neighboursOf, subjectsOf, capitalsOf, proclaimCheck } from "../engine/index.js";
 import { navalNeed } from "./navy.js";
 import { dice, exposed, hash, nextToEnemy, ownSettlements, reserveOf, threatsOf } from "./util.js";
@@ -55,10 +55,12 @@ export function threatRatio(game, code) {
 
 // the tech to research next: the guns, then — only for a country facing a stronger fleet where it has a port, the only one
 // that builds anything but cogs (navy.js) — the ships
-const LAND = ["handCannons", "arquebuses", "sharpshooters", "muskets"], SEA = ["carracks", "galleons", "menOfWar"];
+// the star forts a computer country builds at most: its capital and two great fortresses
+const MAX_FORTS = 3;
+const LAND = ["handCannons", "arquebuses", "sharpshooters", "muskets", "fortifications"], SEA = ["carracks", "galleons", "menOfWar"];
 function nextTech(game, code) {
     const c = game.state.countries[code];
-    const open = (t) => !c.techs.includes(t) && c.techs.includes(TECHS[t].needs);
+    const open = (t) => !c.techs.includes(t) && c.techs.includes(TECHS[t].needs) && !(TECHS[t].from && game.state.day < dayOf(TECHS[t].from));
     return LAND.find(open) ?? (navalNeed(game, code) ? SEA.find(open) : undefined);
 }
 
@@ -180,6 +182,13 @@ export function economyOrders(game, code, fl, ctx) {
     for (const s of own) if (bought < 2 && !s.workshop && buy("workshop", s)) { bought++; break; }
     for (const s of own) if (bought < 2 && s.workshop && !s.market && buy("market", s)) { bought++; break; }
     for (const s of own) if (bought < 2 && !s.walls && exposed(game, code, String(s.id)) && s.pop >= 20000 && fl.builder > 0.6 && buy("walls", s)) { bought++; break; }
+    // a university where a city or a capital has its library, up to three — a builder's — and a star fort, once the trace italienne
+    // is known: over the capital's walls, or in war over those of a city of 20,000 or more by the enemy — three a country, the great
+    // fortresses, not every wall
+    const city = (s) => game.map.scenario.settlements.find((x) => x.id === s.id)?.type === "city" || capitalsOf(st, code).includes(s.id);
+    if (own.filter((s) => s.university).length < MAX_UNIVERSITIES && fl.builder > 0.5) for (const s of own) if (bought < 2 && s.library && !s.university && city(s) && buy("university", s)) { bought++; break; }
+    const forts = own.filter((s) => s.starFort).length;
+    if (c.techs.includes("fortifications") && forts < MAX_FORTS) for (const s of own) if (bought < 2 && s.walls && !s.starFort && (s.id === c.capital || (atWarNow && s.pop >= 20000 && nextToEnemy(game, code, String(s.id)))) && buy("starFort", s)) { bought++; break; }
     // a first holding its lead in the endgame walls every exposed settlement of 10,000 or more
     if (fl.defending) for (const s of own) if (bought < 2 && !s.walls && exposed(game, code, String(s.id)) && s.pop >= 10000 && buy("walls", s)) bought++;
 

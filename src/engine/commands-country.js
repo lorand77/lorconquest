@@ -10,9 +10,9 @@
 //   equip { army, from, to, n }  equipCannons { army, n }  (n < 0 returns them)  disband { army, men, cannons, crew }
 //   dismissMercenaries { army, n }  proclaim { region }  adoptReformation {}
 import { CREW_PER_CANNON, WEAPONS, menOf, takeMen } from "./army.js";
-import { YEAR_DAYS, longDate } from "./calendar.js";
+import { YEAR_DAYS, dayOf, longDate } from "./calendar.js";
 import { afford, done, money, ownArmy, positive, refuse, whole } from "./command-util.js";
-import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_CHUNK, lawChangeDay, MAX_LIBRARIES, MERCENARY_DAYS,
+import { BUILDINGS, BUILDING_PRICE, CANNON_PRICE, DEFAULT_BAN_DAYS, LAWS, LOAN_CHUNK, lawChangeDay, MAX_LIBRARIES, MAX_UNIVERSITIES, MERCENARY_DAYS,
     MERCENARY_PRICE, PEOPLE_PRICE, SHARPSHOOTER_PRICE, SHARPSHOOTERS_PER_PASS, SHIPS, SHIP_PRICE, TECHS, TRAIN_CAPITAL_DAYS,
     TRAIN_OTHER_DAYS, WEAPON_PRICE } from "./costs.js";
 import { armyCapOf, armySoldiersOf, desert, economyOf, hireRoom, mercenariesOf, mercenaryCapOf, ownedBy, techCost, trainingRoom, unlockTech } from "./economy.js";
@@ -67,6 +67,7 @@ export const countryCommands = {
         if (!Object.hasOwn(TECHS, tech)) return refuse(`no tech ${tech}`);
         if (unlocked(c, tech)) return refuse(`${tech} is already unlocked`);
         if (!unlocked(c, TECHS[tech].needs)) return refuse(`${tech} needs ${TECHS[tech].needs} first`);
+        if (TECHS[tech].from && game.state.day < dayOf(TECHS[tech].from)) return refuse(`${tech} may be researched from ${TECHS[tech].from}`);
         c.target = tech;
         const events = [];
         unlockTech(game, c.code, events);
@@ -171,6 +172,18 @@ export const countryCommands = {
             return refuse(`the people of ${cmd.settlement} are not compliant yet: ${pct}% — a courthouse once they are, after ${Math.round(coring / YEAR_DAYS)} years held`);
         }
         if (cmd.building === "library" && ownedBy(game.state, c.code).filter((x) => x.library).length >= MAX_LIBRARIES) return refuse(`${MAX_LIBRARIES} libraries are the most that count`);
+        // a university: in a city or a capital, beside its library, three a country at most (RULES.md §3)
+        if (cmd.building === "university") {
+            if (!s.library) return refuse(`a university needs a library in ${cmd.settlement} first`);
+            const city = game.map.scenario.settlements.find((x) => x.id === s.id)?.type === "city";
+            if (!city && !capitalsOf(game.state, c.code).includes(s.id)) return refuse("a university is founded in a city or a capital");
+            if (ownedBy(game.state, c.code).filter((x) => x.university).length >= MAX_UNIVERSITIES) return refuse(`${MAX_UNIVERSITIES} universities are the most that count`);
+        }
+        // a star fort: over walls, once the trace italienne is researched (RULES.md §3)
+        if (cmd.building === "starFort") {
+            if (!s.walls) return refuse(`a star fort is built over walls: ${cmd.settlement} has none`);
+            if (!c.techs.includes("fortifications")) return refuse("a star fort needs the trace italienne researched");
+        }
         const why = afford(c, BUILDING_PRICE[cmd.building]);
         if (why) return refuse(why);
         c.treasury -= BUILDING_PRICE[cmd.building];

@@ -105,12 +105,16 @@ test("a scenario's fleets: the sea powers above the rule, with a navy cap raised
     assert.equal(st.countries.FRA.navy, 1);
 });
 
-test("the great fortresses begin walled where the scenario says, and nothing else has a building", async () => {
+test("the great fortresses begin walled and the universities of 1440 founded, with their libraries, where the scenario says; nothing else has a building", async () => {
     const fs = await import("node:fs"), path = await import("node:path");
     const europe = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "..", "scenarios", "europe-1440", "scenario.json"), "utf8"));
     const { Game: G } = await import("../../src/engine/index.js");
     const st = G.create(europe, { seed: 1, humans: [] }).state, named = (name) => st.settlements[europe.settlements.find((s) => s.name === name).id];
     assert.deepEqual(["Belgrade", "Constantinople", "Rhodes", "Buda", "Szeged"].map((n) => named(n).walls), [true, true, true, false, false]);
     assert.equal(Object.values(st.settlements).filter((s) => s.walls).length, 18);
-    assert.equal(Object.values(st.settlements).some((s) => s.library || s.workshop || s.market || s.courthouse), false);
+    // the universities, each with its library — and no other library, workshop, market, courthouse or star fort
+    assert.deepEqual(["Prague", "Bologna", "Paris", "Buda"].map((n) => [named(n).university, named(n).library]), [[true, true], [true, true], [true, true], [false, false]]);
+    assert.equal(Object.values(st.settlements).filter((s) => s.university).length, 23);
+    assert.ok(Object.values(st.settlements).every((s) => s.library === s.university));
+    assert.equal(Object.values(st.settlements).some((s) => s.workshop || s.market || s.courthouse || s.starFort), false);
 });

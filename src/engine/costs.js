@@ -2,7 +2,7 @@
 // unit as the rules' "M": 0.1M is 100,000. Durations are in whole game days.
 import { MONTH, YEAR_DAYS } from "./calendar.js";
 
-export const BUILDING_PRICE = { walls: 100000, library: 75000, workshop: 75000, market: 75000, courthouse: 50000 };
+export const BUILDING_PRICE = { walls: 100000, library: 75000, workshop: 75000, market: 75000, courthouse: 50000, university: 200000, starFort: 250000 };
 export const BUILDINGS = Object.keys(BUILDING_PRICE);
 
 // weapons bought by the thousand, into the reserve
@@ -25,6 +25,9 @@ export const TECHS = {
     carracks: { cost: 3, needs: "cogs" },
     galleons: { cost: 8, needs: "carracks" },
     menOfWar: { cost: 12, needs: "galleons" },
+    // the trace italienne: bastions that cannon cannot batter down as they do old walls — a Star fort (RULES.md §3, §6). `from`: the
+    // year it may be researched from, whatever the research: its age, not its price, holds it back
+    fortifications: { cost: 2.5, needs: "arquebuses", from: 1520 },
 };
 export const START_TECHS = ["swords", "pikes", "cavalry", "cannons", "cogs"];
 
@@ -51,6 +54,8 @@ export const LOAN_CHUNK = 50000;
 export const LOAN_RATE = 0.08;
 export const BANK_RATE_MONTHLY = 0.0025;
 export const MAX_LIBRARIES = 10;
+// a university (RULES.md §3, §4): +10% of the R a year each, up to three a country, beside the libraries' +50%
+export const MAX_UNIVERSITIES = 3, UNIVERSITY_BONUS = 0.10;
 export const LIBRARY_BONUS = 0.05;
 export const SHARPSHOOTERS_PER_PASS = 500;        // times x
 

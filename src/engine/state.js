@@ -9,9 +9,9 @@ import { seedRandom } from "./random.js";
 import { friendly, grantsAccess } from "./relations.js";
 
 // bump when the same commands on the same seed would play out differently, or replays of older games break
-export const RULES_VERSION = 91;
+export const RULES_VERSION = 92;
 // bump when the shape of the state changes
-export const FORMAT = 24;
+export const FORMAT = 25;
 
 export function emptyReserve() {
     return { swords: 0, pikes: 0, cavalry: 0, handCannons: 0, arquebuses: 0, muskets: 0, cannons: 0 };
@@ -70,7 +70,9 @@ export function initialState(map, seed, humans = []) {
             // faith: its people's (RULES.md §2, Religion) — the scenario's for them if it gives one, else their 1440 ruler's; changed only
             // by the Reformation of the land's own ruler
             id: s.id, owner: s.country, pop: s.pop, cores: [s.country], heldSince: 0, siege: null, faith: s.faith ?? faithOf.get(s.country) ?? null,
-            walls: s.walls === true, library: false, workshop: false, market: false, courthouse: false,
+            walls: s.walls === true, library: s.university === true, workshop: false, market: false, courthouse: false,
+            // a university (with its library: a scenario's of 1440), a star fort (bought over walls: the trace italienne)
+            university: s.university === true, starFort: false,
         };
         state.nextId = Math.max(state.nextId, s.id + 1);
     }

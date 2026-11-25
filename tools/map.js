@@ -322,7 +322,8 @@ const VICTORY = {}, EMPIRE = {};
 // Why) lists the settlements that begin walled: the great fortresses of the day, not every town with a wall round it. "### Fleets"
 // (Country, Ships, Why) gives a coastal country its own fleet in place of people ÷ 2000 — the sea powers their navies, the rest
 // what they really had — and one given more than the formula a navy cap raised in the same proportion (RULES.md §9).
-const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map();
+// "### Universities" (Settlements, Why) lists the universities of the day, each with its library — three a country at most (RULES.md §3).
+const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map(), UNIVERSITIES = new Set();
 {
     const codesIn = (text) => [...new Set([...text.matchAll(/\b([A-Z]{2,4})\b/g)].map((m) => m[1]).filter((c) => CN.has(c)))];
     const sub = (heading) => {
@@ -400,6 +401,17 @@ const START = { wars: [], agreements: [] }, WALLS = new Set(), FLEETS = new Map(
             else WALLS.add(id);
         }
     }
+    for (const r of sub("Universities")) {
+        for (const raw of (r.Settlements ?? "").split(",").map((x) => x.trim()).filter(Boolean)) {
+            const id = Number(/^\d+/.exec(raw)?.[0]);
+            if (!S.has(id)) err(`Universities line ${r._line}: '${raw}' is no settlement number`);
+            else if (UNIVERSITIES.has(id)) err(`Universities line ${r._line}: settlement ${id} is listed twice`);
+            else UNIVERSITIES.add(id);
+        }
+    }
+    const perCountry = new Map();
+    for (const id of UNIVERSITIES) { const c = S.get(id)?.country; perCountry.set(c, (perCountry.get(c) ?? 0) + 1); }
+    for (const [c, n] of perCountry) if (n > 3) err(`Universities: ${c} has ${n}, and three is the most that count`);
 }
 
 // how the computer plays each country, and whom it holds a grudge against (design.md, Characters and rivalries), if the
@@ -1698,7 +1710,7 @@ const json = {
         const s = S.get(id);
         return { id, name: s.name, abbr: ABBR.get(id), label: LANDLABEL.get(id), country: s.country, type: s.city ? "city" : "town", pop: s.pop, port: s.port, river: s.river, hre: s.hre, ...(s.italy ? { italy: true } : {}),
             x: s.x, y: s.y, land: `land-${id}`, seaZone: s.zone ? s.zone.id : null, borders: s.nb.map(Number).sort(num), straits: s.st.map(Number).sort(num),
-            ...(FAITH.has(id) ? { faith: FAITH.get(id) } : {}), ...(WALLS.has(id) ? { walls: true } : {}) };
+            ...(FAITH.has(id) ? { faith: FAITH.get(id) } : {}), ...(WALLS.has(id) ? { walls: true } : {}), ...(UNIVERSITIES.has(id) ? { university: true } : {}) };
     }),
     routes: [...LAND, ...STRAIT].sort(byKey).map((e) => {
         const [a, b] = e.split("-").map(Number), strait = STRAIT.has(e), legs = RLEGS.get(e);

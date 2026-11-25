@@ -39,9 +39,9 @@ export function scenarioPage(sc, name) {
         `- A mountain pass holds at most **${fmt(SHARPSHOOTERS_PER_PASS * x)}** sharpshooters; every **${fmt(100 * x)}** cannons a besieger brings weaken the walls.`);
 
     // 1440
-    const wars = sc.start?.wars ?? [], agreements = sc.start?.agreements ?? [], subjects = sc.start?.subjects ?? [], walled = sc.settlements.filter((s) => s.walls);
+    const wars = sc.start?.wars ?? [], agreements = sc.start?.agreements ?? [], subjects = sc.start?.subjects ?? [], walled = sc.settlements.filter((s) => s.walls), learned = sc.settlements.filter((s) => s.university);
     const seaPowers = sc.countries.filter((c) => c.navy > 1).sort((a, b) => b.ships - a.ships || (a.code < b.code ? -1 : 1));
-    if (wars.length || agreements.length || subjects.length || walled.length || seaPowers.length) {
+    if (wars.length || agreements.length || subjects.length || walled.length || learned.length || seaPowers.length) {
         out.push("## The situation at the start");
         if (wars.length) out.push("**Wars**", "", ...wars.map((w) => `- ${w.name}: ${list(w.attackers, countryName)} against ${list(w.defenders, countryName)}`), "");
         if (agreements.length) out.push("**Agreements**", "", ...agreements.map((a) => a.kind === "guarantee"
@@ -49,6 +49,7 @@ export function scenarioPage(sc, name) {
             : `- ${AGREEMENTS[a.kind] ?? a.kind}: ${countryName(a.a)} and ${countryName(a.b)}${a.yearsLeft ? `, ${a.yearsLeft} years left` : ""}`), "");
         if (subjects.length) out.push("**Subjects**", "", ...subjects.map((x) => `- ${countryName(x.subject)}, ${x.kind} of ${countryName(x.overlord)}`), "");
         if (walled.length) out.push(`**Walled from the start:** ${walled.map((s) => s.name).join(", ")}.`, "");
+        if (learned.length) out.push(`**Universities from the start**, each with its library: ${learned.map((s) => s.name).join(", ")}.`, "");
         // the sea powers: their fleets, and a navy cap to sail them (RULES.md §9)
         if (seaPowers.length) out.push(`**Sea powers**, with a navy cap raised to sail their fleets ([the rules](#rules-9)): ${seaPowers.map((c) => `${c.name} (${c.ships} ships)`).join(", ")}.`);
     }

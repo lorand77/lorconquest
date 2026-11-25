@@ -2,7 +2,7 @@
 // draws it, and turns clicks into commands. The page never changes the game itself: every order goes to the
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
-import { Game, buildMap, describeEvent, friendly, victoryOf, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
+import { Game, buildMap, dateOf, describeEvent, friendly, victoryOf, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
 import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, halfArmy, victoryNote, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
@@ -567,7 +567,7 @@ function renderScores() {
 // nothing being researched: a banner at the top offering the cheapest tech open now, until one is chosen or put off
 function renderAsk() {
     const c = me ? country(me) : null;
-    const tech = c?.techs && !c.target && !askLater && !state.winner ? cheapestOpenTech(TECHS, c.techs, (id) => techCost(game, id)) : null;
+    const tech = c?.techs && !c.target && !askLater && !state.winner ? cheapestOpenTech(TECHS, c.techs, (id) => techCost(game, id), dateOf(state.day).year) : null;
     const key = tech ? `${tech}|${Math.floor(c.r / 1000)}` : "";
     if (key === asked) return;
     asked = key;

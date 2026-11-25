@@ -120,7 +120,7 @@ export function rebelOrders(game, events) {
             // a siege of its own: stormed once it is strong enough, waited out otherwise
             if (here && here.owner === rebel.of && here.siege?.by === code) {
                 const { garrison, hostile } = situation(game, army.at);
-                const theirs = garrison.reduce((n, g) => n + militaryPower(g), 0) * wallDefence(here.walls, 0, game.map.x);
+                const theirs = garrison.reduce((n, g) => n + militaryPower(g), 0) * wallDefence(here, 0, game.map.x);
                 if (garrison.length && mine >= STORM_ODDS * theirs && mayFight(st, hostile.filter((h) => h.owner === code), garrison)) storm(game, code, army.at, events);
                 continue;
             }
@@ -131,7 +131,7 @@ export function rebelOrders(game, events) {
                 const key = String(s.id);
                 if (key === army.at || (rebel.faith && s.faith !== rebel.faith)) continue;
                 const garrison = armiesAt(st, key).filter((g) => g.owner === rebel.of && !g.relief);
-                const theirs = garrison.reduce((n, g) => n + militaryPower(g), 0) * wallDefence(s.walls, 0, game.map.x);
+                const theirs = garrison.reduce((n, g) => n + militaryPower(g), 0) * wallDefence(s, 0, game.map.x);
                 if (garrison.length && mine < MARCH_ODDS * theirs) continue;
                 const route = routeFor(game, army, key);
                 if (!route || strongerOn(route.path)) continue;

@@ -6,7 +6,7 @@
 // and R keep their fractions inside the engine.
 
 import { WEAPONS, isEmpty, menOf, takeMen } from "./army.js";
-import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE,
+import { BANK_RATE_MONTHLY, CAPITAL_MONEY, CAPITAL_SOLDIERS, BUILDING_PRICE, BUILDINGS, CANNON_PRICE, DEBT_DAYS, LAWS, LIBRARY_BONUS, LOAN_RATE, MAX_UNIVERSITIES, UNIVERSITY_BONUS,
     HIRE_ROOM, MARKET_BONUS, MAX_LIBRARIES, MERCENARY_GROWS, MERCENARY_REFILL, MERCENARY_SHARE, MERCENARY_SHARE_LATE, MERCENARY_UPKEEP, SOLDIER_UPKEEP, TECHS, WEAPON_PRICE, WORKSHOP_MONEY } from "./costs.js";
 import { blockaded, crewAtSea } from "./naval.js";
 import { subjectKind, subjectsOf } from "./relations.js";
@@ -66,6 +66,9 @@ export function hireRoom(game, code, s) {
     return Math.max(0, HIRE_ROOM[kind] - sum(game.state.countries[code].hires.filter((h) => h.settlement === s.id), (h) => h.n));
 }
 export const librariesOf = (state, code) => Math.min(MAX_LIBRARIES, ownedBy(state, code).filter((s) => s.library).length);
+export const universitiesOf = (state, code) => Math.min(MAX_UNIVERSITIES, ownedBy(state, code).filter((s) => s.university).length);
+// what a country's libraries and universities add to its R (RULES.md §4): × 1.05 a library, up to ten, and 1.10 a university, up to three
+export const learning = (e) => 1 + LIBRARY_BONUS * e.libraries + UNIVERSITY_BONUS * (e.universities ?? 0);
 
 // men on the army cap: regular soldiers, cannon crew, sharpshooters, and men in training — not mercenaries
 export function armySoldiersOf(state, code) {
@@ -115,7 +118,7 @@ function economyOfNow(game, code) {
     const moneyPerYear = e.moneyPerYear + received - paid;
     const investable = Math.max(0, moneyPerYear);
     const slider = (st.countries[code].slider ?? 50) / 100;
-    return { ...e, tributePaid: paid, tributeReceived: received, pennyPaid: penny, moneyPerYear, investable, rPerYear: (2 * slider * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * e.libraries) };
+    return { ...e, tributePaid: paid, tributeReceived: received, pennyPaid: penny, moneyPerYear, investable, rPerYear: (2 * slider * investable + game.map.x * 10000) * learning(e) };
 }
 
 // (remembered while the computer players think: memo.js)
@@ -145,11 +148,11 @@ function economyBaseNow(game, code) {
     const upkeep = soldiers * SOLDIER_UPKEEP, mercenaryUpkeep = mercenaries * MERCENARY_UPKEEP, interest = c.loans * LOAN_RATE;
     const moneyPerYear = settlementMoney - upkeep - mercenaryUpkeep - interest;
     const investable = Math.max(0, moneyPerYear);
-    const libraries = librariesOf(st, code), armyCap = armyCapOf(st, code), armySoldiers = soldiers - crewAtSea(st, code);
-    const rPerYear = (2 * (c.slider / 100) * investable + game.map.x * 10000) * (1 + LIBRARY_BONUS * libraries);
+    const libraries = librariesOf(st, code), universities = universitiesOf(st, code), armyCap = armyCapOf(st, code), armySoldiers = soldiers - crewAtSea(st, code);
+    const rPerYear = (2 * (c.slider / 100) * investable + game.map.x * 10000) * learning({ libraries, universities });
     return {
         pop, soldiers, armySoldiers, crewAtSea: crewAtSea(st, code), mercenaries, rebels, civilians,
-        settlementMoney, capitalMoney, upkeep, mercenaryUpkeep, interest, moneyPerYear, investable, rPerYear, libraries,
+        settlementMoney, capitalMoney, upkeep, mercenaryUpkeep, interest, moneyPerYear, investable, rPerYear, libraries, universities,
         // how many men may still be raised: room under the army cap, and civilians to raise them from (RULES.md §8)
         armyCap, mercenaryCap: mercenaryCapOf(game, code), raiseRoom: Math.max(0, Math.min(armyCap - armySoldiers, civilians)), navyCap: navyCapOf(st, code), loanLimit: 2 * settlementMoney,
     };
@@ -242,7 +245,7 @@ export function monthly(game, events) {
         c.treasury += m + (1 - 2 * c.slider / 100) * invest;
         if (st.empire && e.pennyPaid) st.empire.chest += e.pennyPaid / 12;          // the Common Penny into the war chest
         c.bank += c.bank * BANK_RATE_MONTHLY;
-        c.r += (2 * (c.slider / 100) * invest + x * 10000 / 12) * (1 + LIBRARY_BONUS * e.libraries);
+        c.r += (2 * (c.slider / 100) * invest + x * 10000 / 12) * learning(e);
         unlockTech(game, code, events);
         // debt: the clock starts when the treasury first goes below zero and stops once it is repaid
         if (c.treasury < 0 && c.debtSince === null) c.debtSince = st.day;

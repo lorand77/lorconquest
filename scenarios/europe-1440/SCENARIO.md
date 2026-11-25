@@ -996,6 +996,38 @@ as if built in play. Every other settlement begins without; walls may be bought 
 | 19 Visby | Gotland's ring wall, which still stands whole. |
 | 69 Carcassonne | La Cité, the double-walled fortress of Languedoc. |
 
+### Universities
+
+The universities of 1440 begin with a **University** and its **Library** (RULES.md §3 and §4: +10% research each, up to three a
+country, beside the libraries' +5% each), as if founded in play — three a country at most. Every other may found one in a city or
+its capital, beside a library, as the game goes on.
+
+| Settlements | Why |
+|---|---|
+| 265 Prague | The Charles University, of 1348. |
+| 280 Vienna | Rudolf IV's, of 1365. |
+| 294 Kraków | Of 1364, refounded in 1400. |
+| 263 Heidelberg | Of 1386. |
+| 251 Leipzig | Of 1409. |
+| 234 Rostock | Of 1419. |
+| 247 Cologne | Of 1388. |
+| 54 Paris | The Sorbonne, the mother of the northern universities. |
+| 71 Montpellier | Its school of medicine, of 1289. |
+| 67 Toulouse | Of 1229. |
+| 208 Bologna | The oldest, from 1088. |
+| 182 Padua | Of 1222, Venice's university. |
+| 144 Salamanca | Of 1218. |
+| 147 Valladolid | Castile's second. |
+| 203 Siena | Of 1240. |
+| 206 Perugia | Of 1308. |
+| 204 Rome | The Sapienza, of 1303. |
+| 214 Naples | Frederick II's, of 1224. |
+| 200 Florence | The Studium, of 1321. |
+| 209 Ferrara | Of 1391. |
+| 124 Turin | Of 1404. |
+| 166 Lisbon | Portugal's, in Lisbon from 1377 to 1537. |
+| 158 Lleida | The Crown of Aragon's, of 1300. |
+
 ## The Holy Roman Empire
 
 The Empire is every settlement marked **HRE** above. A **German state** is a country with a capital inside it (RULES.md §10, *The
