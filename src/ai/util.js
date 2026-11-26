@@ -9,6 +9,7 @@ import { contested, straitClear } from "../engine/naval.js";
 import { YEAR_DAYS, armiesOf, armyList, atWar, canEnter, dayOf, isRebel, power, scores, settlementsOf, victoryOf } from "../engine/index.js";
 import { memo } from "../engine/memo.js";
 import { CHARACTERS, NOISE } from "./characters.js";
+import { LATE_FROM } from "./levels.js";
 
 export function hash(text) {
     let h = 2166136261;
@@ -79,16 +80,25 @@ export function racing(game, code) {
 }
 
 // the leader the others gang up on (design.md, "The computer players"): the country with the most settlements as victory
-// counts them, once it holds 75% of those to win — before that a front-runner is let run; null if none. Worked out once a think
-// (memo.js): the same for every country that asks
-export function leaderOf(game) { return memo("leader", "", () => leaderNow(game)); }
-function leaderNow(game) {
+// counts them, once it holds `share` of those to win — 75%, the hard level's 60% (levels.js) — before that a front-runner is let
+// run; null if none. Worked out once a think for each share (memo.js): the same for every country that asks
+export function leaderOf(game, share = 0.75) { return memo("leader", share, () => leaderNow(game, share)); }
+function leaderNow(game, share) {
     const v = victoryOf(game), st = game.state;
     if (!v) return null;
     const table = scores(st);
     const order = Object.keys(table).filter((c) => st.countries[c].out === null).sort((a, b) => table[b].settlements - table[a].settlements || table[b].pop - table[a].pop || (a < b ? -1 : 1));
     if (!order.length) return null;
-    return table[order[0]].settlements >= 0.75 * v.settlements ? order[0] : null;
+    return table[order[0]].settlements >= share * v.settlements ? order[0] : null;
+}
+
+// how much bolder a country of `level` has grown with the age (levels.js): nothing until LATE_FROM, then up to its
+// `lateAggression` at the scenario's end year
+export function lateAggression(game, level) {
+    const v = victoryOf(game);
+    if (!level?.lateAggression || !v || v.endYear <= LATE_FROM) return 0;          // a game over by then has no late age
+    const t = (game.state.day - dayOf(LATE_FROM)) / (dayOf(v.endYear) - dayOf(LATE_FROM));
+    return level.lateAggression * Math.min(1, Math.max(0, t));
 }
 
 // the endgame: the last 25 years before the scenario's end year, when the end-year count decides (SCENARIO.md, Victory)
@@ -125,8 +135,8 @@ export function restlessOf(game, code) {
 
 // whom `code` gangs up on: the leader (leaderOf) if it is someone else; in the endgame, for the second to the fifth, the first,
 // whatever its lead — they go for what closes the gap
-export function leaderFor(game, code) {
-    const leader = leaderOf(game);
+export function leaderFor(game, code, fl = null) {
+    const leader = leaderOf(game, fl?.level?.leaderShare ?? 0.75);
     if (leader && leader !== code) return leader;
     if (!endgame(game)) return null;
     const order = standings(game), rank = order.indexOf(code);

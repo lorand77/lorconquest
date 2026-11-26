@@ -14,7 +14,7 @@ import { economyOrders } from "./economy.js";
 import { forceOrders, tidyOrders } from "./forces.js";
 import { navyOrders } from "./navy.js";
 import { levelOf } from "./levels.js";
-import { endgame, flavorOf, looksOn, racing, reserveOf, standings, thinksOn, threatsOf } from "./util.js";
+import { endgame, flavorOf, lateAggression, looksOn, racing, reserveOf, standings, thinksOn, threatsOf } from "./util.js";
 import { scores } from "../engine/index.js";
 
 // the first by settlements, ahead of the second by less than a quarter: it holds what it has in the endgame; a bigger lead it
@@ -60,7 +60,12 @@ export function createAI({ seed, humans = [], profile = null, level = "normal", 
         if (!flavors.has(code)) flavors.set(code, flavorOf(seed, code, game.map.scenario.countries.find((c) => c.code === code)?.character ?? null));
         return flavors.get(code);
     };
-    const flavor = (game, code) => ({ ...character(game, code), level: empireStrength && isGermanState(game, code) ? empireStrength : strength });
+    const flavor = (game, code) => {
+        const base = character(game, code), level = empireStrength && isGermanState(game, code) ? empireStrength : strength;
+        // the hard level grows bolder with the age (util.js, lateAggression); normal adds nothing
+        const late = lateAggression(game, level);
+        return { ...base, level, ...(late ? { aggression: Math.min(1, base.aggression + late) } : {}) };
+    };
 
     // the country thinks in full: forces first, then the economy with what is left, then diplomacy and the war it leads to
     function think(game, code) {

@@ -126,7 +126,7 @@ export function bestTarget(game, code, fl) {
     const st = game.state, own = new Set(ownSettlements(st, code).map((s) => String(s.id))), rivals = rivalsOf(game, code);
     // the leader (util.js, leaderFor) is worth twice as much, and fought at worse odds: everyone must stop it winning. A first
     // holding its lead in the endgame fights only at overwhelming odds
-    const leader = leaderFor(game, code);
+    const leader = leaderFor(game, code, fl);
     let best = null;
     for (const t of neighboursOf(game, code)) {
         if (!st.countries[t] || bound(st, code, t)) continue;
@@ -149,7 +149,7 @@ export function bestTarget(game, code, fl) {
 export function protectorateWar(game, code, fl, limit = 1) {
     const st = game.state, power = (c) => militaryPowerOf(st, c), foes = realFoes(st, code);
     if (st.countries[code].treasury <= 0) return null;
-    const leader = leaderFor(game, code);
+    const leader = leaderFor(game, code, fl);
     const candidates = (ally) => realFoes(st, ally).filter((e) => st.countries[e].out === null && !foes.includes(e) && !bound(st, code, e)).sort();
     const against = (ally) => realFoes(st, ally).reduce((n, e) => n + power(e), 0);
     const mine = subjectsOf(st, code).filter((p) => st.countries[p].subjectKind === "protectorate" && st.countries[p].out === null).sort();
@@ -201,7 +201,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     const calm = foes.length < limit && c.treasury > 0 && (c.warmonger ?? 0) < 12 + 30 * fl.aggression;
     if (plan) {
         const target = st.countries[plan.target], { ours, theirs } = sideOf(game, code, plan.target);
-        const odds = fl.defending ? 2.5 : (plan.target === leaderFor(game, code) ? 1.0 - 0.3 * fl.aggression : 1.3 - 0.4 * fl.aggression) * spur(game, code, plan.target, fl).odds;
+        const odds = fl.defending ? 2.5 : (plan.target === leaderFor(game, code, fl) ? 1.0 - 0.3 * fl.aggression : 1.3 - 0.4 * fl.aggression) * spur(game, code, plan.target, fl).odds;
         // and nothing binds us to it now: it may have signed a pact or an alliance with us while we mustered (the engine answers
         // for the computer), and declaring through it would end every alliance we have
         const valid = calm && target && target.out === null && !enemiesOf(st, code).includes(plan.target) && !bound(st, code, plan.target) && ours >= odds * Math.max(theirs, 1);
@@ -256,7 +256,7 @@ export function diplomacyOrders(game, code, fl, { plans, asked }, cash = game.st
     const given = st.agreements.filter((x) => x.kind === "guarantee" && x.a === code).length;
     if (fl.friendliness > 0.6 && given < 2) for (const n of neighbours) if (militaryPowerOf(st, n) <= 0.4 * mine && [...rivals].some((rv) => bordering(game, n, rv))) tries.push(["guarantee", n]);
     // the leader: nothing proposed to it, and its neighbours stand together — two that both border it ally even unthreatened
-    const leader = leaderFor(game, code);
+    const leader = leaderFor(game, code, fl);
     const againstLeader = (n) => leader !== null && n !== leader && bordering(game, code, leader) && bordering(game, n, leader);
     for (const [kind, n] of tries) {
         if (rivals.has(n) || n === leader) continue;                                   // never with a rival, nor the leader

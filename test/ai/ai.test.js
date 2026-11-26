@@ -880,15 +880,30 @@ test("rebels risen as a state are a computer country: they raise men from their 
     assert.ok(armySoldiersOf(st, reb) > 100);
 });
 
-test("the levels: normal and hard — the hard level plays as the normal, for now; the ground #31 builds on", async () => {
+test("the levels: hard grows bolder from 1550 to the end year and gangs up on a leader at 60% of victory; normal as ever", async () => {
     const { AI_LEVELS, levelOf } = await import("../../src/ai/levels.js");
+    const { lateAggression, leaderOf } = await import("../../src/ai/util.js");
+    const { dayOf } = await import("../../src/engine/calendar.js");
     assert.deepEqual(AI_LEVELS, ["normal", "hard"]);
     assert.equal(levelOf("nonsense").name, "normal");
+    const game = Game.create(docsScenario, { seed: 1 }), st = game.state, hard = levelOf("hard"), normal = levelOf("normal");
+    const at = (year) => { st.day = dayOf(year); return [lateAggression(game, normal), lateAggression(game, hard)]; };
+    assert.deepEqual(at(1540), [0, 0]);
+    assert.deepEqual(at(1600).map((x) => Math.round(x * 100) / 100), [0, 0.15]);
+    assert.deepEqual(at(1650), [0, 0.3]);
+    // a leader at two thirds of the 45 settlements that win: one for the hard level, not yet for the normal
+    st.day = 0;
+    const lead = Object.keys(st.countries)[0];
+    let n = 0;
+    for (const s of Object.values(st.settlements)) if (n < 30 && s.owner !== lead) { s.owner = lead; n++; }
+    assert.deepEqual([leaderOf(game, 0.75), leaderOf(game, 0.6)], [null, lead]);
+    // the tiny map's game ends in 1500: no late age, and hard plays as normal there
     const end = (level) => {
-        const game = tinyGame(3, (s) => { s.victory.settlements = 99; }), ai = createAI({ seed: 3, humans: [], level });
-        game.command({ type: "declareWar", country: "AAA", target: "BBB" });
-        play(game, ai, 2 * 365);
-        return game.snapshot();
+        const g = tinyGame(3, (s) => { s.victory.settlements = 99; }), ai = createAI({ seed: 3, humans: [], level });
+        g.command({ type: "declareWar", country: "AAA", target: "BBB" });
+        play(g, ai, 2 * 365);
+        return g.snapshot();
     };
     assert.equal(end("hard"), end("normal"));
 });
+

@@ -11,8 +11,9 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 
 - [ ] #30 Hard and normal computer players — AI, L. The ground is laid: a game's level (src/ai/levels.js, games.ai_level, `fl.level`,
   `--level` in simulate.js and strength.js) and the lobby's choice, hidden (lobbylogic.js, AI_LEVEL_CHOICE); the hard level itself with #31
-- [ ] #31 Smarter computer players: more aggressive late in the game, as the hard level (src/ai/levels.js) — AI, L. Better troop
-  movement with allies was tried as a medium level and taken out: it measured no stronger (experiments/, 30)
+- [ ] #31 Smarter computer players, as the hard level (src/ai/levels.js) — AI, L. Bolder from 1550 and ganging up at 60% are in,
+  and measured no stronger; harder peace terms were tried and taken out (experiments/, 30–31). Strength needs better choices —
+  which wars, where to march — not bolder settings; the lobby's choice stays hidden till then (#30)
 
 ## Later
 

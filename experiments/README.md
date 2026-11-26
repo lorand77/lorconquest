@@ -824,3 +824,31 @@ together. Kept: it plays no worse by any measure, and costs nothing more.
 
 **Taken out.** None of the three — counting allies, joining their sieges, their front — measured stronger or changed how often
 allies fight together, so the medium level was removed for simplicity: war.js is as before it, and normal plays the same.
+
+## 31. The hard level: bolder late, ganging up sooner (2026-11-25)
+
+**What changed.** At the hard level (src/ai/levels.js) a country's aggression rises from 1550 to +0.3 at the end year, and the leader
+everyone gangs up on is the one at 60% of the victory target, not 75% (TODO.md #31). Normal unchanged, to the fingerprint.
+
+**Run.** `node tools/strength.js --candidate working --level hard --seeds 20 --years 210 --jobs 3 --label hard` (Mitteleuropa, seeds
+101–120; each test country alone at hard): `strength/2026-11-25-hard.json`.
+
+**What it showed: no stronger.** +0.13 settlements a country [−0.51, +0.77]; wins 14 against 15 of 120; every country within the
+noise (Saxony −1.54 [−3.29, +0.21], Prussia +1.28). Refused orders a little fewer (0.74 against 0.81). Both changes act late, when
+most games are decided, and boldness late wins about what it loses. The cost the tool reports, 39.8 µs a country-day against 8.4, is
+the same as section 30's with almost nothing added to the thinking: it is the tool's — the candidate's AI thinks for its one country
+alone, and shares none of the work the others' memo saves — not the level's, and section 30's cost was most likely that too.
+
+**Harder in a peace (G).** At the hard level a country winning a war (score 20 or more) fights on a year and a half before it offers
+terms, unless a siege of its is about to end the war, and asks three settlements more (9, 12 when racing); losing, it holds out two
+years before it buys peace, not one (levels.js: `winOn`, `moreLand`, `holdOn`). Normal unchanged, to the fingerprint. The same run
+(`--label hardpeace`, `strength/2026-11-26-hardpeace.json`): +2.08 settlements a country [−0.92, +5.08]; wins **22 against 15** of
+120; five countries of six ahead (Brandenburg +3.64, Austria +3.62), Prussia behind (−1.45, surviving in 0 games against 2). The first
+level that looks stronger, though the interval still holds 0: to confirm on 20 more seeds before the lobby offers it.
+
+**Confirmed on 20 more seeds: not stronger, and riskier.** Seeds 121–140 (`--label hardpeace2`, `strength/2026-11-26-hardpeace2.json`):
+−1.54 [−3.86, +0.79], wins 10 against 13. All 40 seeds together: **+0.32 settlements a country [−1.50, +2.14]**, wins 32 against 28
+of 240 — no gain — but **survived 106 against 129**, worse for every test country. Fighting on and holding out longer win a war or two
+more and lose many countries. The first run's +2.08 was luck; bolder is not stronger for this computer.
+**Taken out:** the harder peace terms (G) — the hard level keeps only its late boldness and its earlier ganging up, which cost no
+countries. What would make the computer stronger is better choices (which wars, where to march), not bolder settings.

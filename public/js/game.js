@@ -3,7 +3,7 @@
 // server, whose engine decides; the copy of the engine here only previews (routes and their days). Between ticks
 // marching armies glide, from their march's start and end days.
 import { Game, buildMap, dateOf, describeEvent, friendly, victoryOf, eventCountries, economyOf, longDate, menOf, militaryPowerOf, placeName, routeFor, scores, techCost, RELIGION_NAMES, capitalsOf, landReligion, CREW_PER_CANNON, TECHS, WEAPONS } from "/engine/index.js";
-import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, halfArmy, victoryNote, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
+import { BATTLE_MAX, BATTLE_MAX_PHONE, BATTLE_MS, HOTKEYS, SPEEDS, addBattleSigns, halfArmy, integrateTarget, victoryNote, holdLine, pauseButton, protectorateNews, speedAfter, speedName, armyPoint, fleetOrder, premovesDue, routeAsAtWar, seaZoneAt, hotkey, shortDate, shortMoney, sheetAfter, applyChanges, applyPrivate, armyStrength, buildLegs, cheapestOpenTech, endScreen, formatMen, formatNumber, isSelected, outdatedMen, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "./mirror.js";
 import { createMapView } from "./mapview.js";
 import { canvasFor, createMapCanvas, download, frameOf } from "./mapcanvas.js";
 import { isPhone, kindOf, loadMarch, loadNotices, marchChoice, marchFor, noticeChecklist, pushNotice, resetNotices } from "./notices.js";
@@ -479,6 +479,13 @@ function onKey(e) {
         case "storm": if (mine) dispatch({ type: "storm", army: mine.id }); return done();
         case "sortie": if (mine) dispatch({ type: "sortie", army: mine.id }); return done();
         case "split": if (mine && mine.at) { splitOpen = !splitOpen; renderPanel(true); } return done();
+        // the vassal selected on the map, integrated at once (the engine says why not, as the Diplomacy tab's button would)
+        case "integrate": {
+            const t = me ? integrateTarget(sel, state, game.map.nodes, me) : null;
+            if (t) send({ type: "integrate", target: t });
+            else if (me) notice("Select one of your vassals on the map — its land or a settlement — and press I to integrate it.", "refused");
+            return done();
+        }
         case "merge": {
             const into = mine?.at && armiesAt(mine.at).find((x) => x.owner === me && x.id !== mine.id && x.relief === mine.relief && !x.retreating);
             if (into) send({ type: "merge", army: mine.id, into: into.id });

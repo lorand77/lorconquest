@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import scenario from "../../scenarios/mitteleuropa/scenario.json" with { type: "json" };
 import { Game, buildMap } from "../../src/engine/index.js";
-import { BATTLE_MS, victoryNote, addBattleSigns, battlePoint, battleSize, halfArmy, halfFleet, hireAll, recruitAll, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
+import { BATTLE_MS, hotkey, integrateTarget, victoryNote, addBattleSigns, battlePoint, battleSize, halfArmy, halfFleet, hireAll, recruitAll, holdLine, pauseButton, protectorateNews, sheetAfter, applyChanges, applyPrivate, along, armingCost, armyPoint, bestArming, modernising, outdatedMen, pikesToMuskets, buildLegs, cheapestOpenTech, compliance, endScreen, fitView, formatMen, isSelected, pinchView, pressGuard, routeLine, scoreboard, tabForSelection, warAlert } from "../../public/js/mirror.js";
 
 test("a day's changes and private parts go into the copy of the state", () => {
     const state = { day: 3, countries: { BAV: { code: "BAV", name: "Bavaria" } }, settlements: { 48: { owner: "ULM" } }, armies: { 37: { id: 37 }, 48: { id: 48 } }, wars: [] };
@@ -516,4 +516,18 @@ test("the scores' note: what wins — in a long game held for 2 years, and who h
     assert.equal(victoryNote({ settlements: 53, endYear: 1650, hold: 730 }, { country: "AUS", since: 1000 }, name, date),
         "53 to win, held 2 years; at the start of 1650 the most win — Austria holds it: it wins on day 1730 if it still does");
     assert.equal(victoryNote(null, null, name, date), "");
+});
+
+test("the I key integrates the vassal selected on the map — its land or a settlement of its — and nothing else", () => {
+    assert.equal(hotkey({ key: "i" }), "integrate");
+    assert.equal(hotkey({ key: "I", shiftKey: true }), "integrate");
+    const state = { countries: { BAV: {}, ULM: { overlord: "BAV", subjectKind: "vassal" }, AUG: { overlord: "BAV", subjectKind: "protectorate" }, SAX: {} },
+        settlements: { 48: { owner: "ULM" }, 50: { owner: "SAX" } } };
+    const nodes = new Map([["48", { land: 48 }], ["50", { land: 50 }], ["P1", { land: 50 }]]);
+    assert.equal(integrateTarget({ kind: "country", code: "ULM" }, state, nodes, "BAV"), "ULM");
+    assert.equal(integrateTarget({ kind: "place", key: "48" }, state, nodes, "BAV"), "ULM");
+    assert.equal(integrateTarget({ kind: "country", code: "AUG" }, state, nodes, "BAV"), null, "a protectorate is not integrated");
+    assert.equal(integrateTarget({ kind: "country", code: "SAX" }, state, nodes, "BAV"), null);
+    assert.equal(integrateTarget({ kind: "army", id: 3 }, state, nodes, "BAV"), null);
+    assert.equal(integrateTarget(null, state, nodes, "BAV"), null);
 });

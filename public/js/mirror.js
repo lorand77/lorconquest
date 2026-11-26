@@ -215,13 +215,13 @@ export const HOTKEYS = [
     ["+  −", "zoom in / out"], ["arrows", "pan the map"], ["W", "the whole map"],
     ["A or Tab", "your next army (Shift: the one before)"], ["F", "your next fleet"],
     ["Enter", "march, once a destination is picked"], ["Shift+Enter", "march and storm"], ["T", "storm"], ["B", "sortie"],
-    ["S", "split the army…"], ["M", "merge it into another of yours there"],
+    ["S", "split the army…"], ["M", "merge it into another of yours there"], ["I", "integrate the vassal selected on the map"],
     ["C", "chat (with other people)"], ["N", "which notices pop up"], ["P", "save a picture of the map"],
     ["?", "this card"], ["Escape", "close, cancel a march, let go of what is selected"],
 ];
 const TABS = ["selection", "country", "shop", "research", "diplomacy", "events"];
 // what a key press asks for, or null: "pause", "slower", "faster", "tab:<tab>", "zoomIn", "zoomOut", "pan:<dx>,<dy>", "whole", "army:<±1>",
-// "fleet", "march", "marchStorm", "storm", "sortie", "split", "merge", "chat", "notices", "picture", "help", "escape"
+// "fleet", "march", "marchStorm", "storm", "sortie", "split", "merge", "integrate", "chat", "notices", "picture", "help", "escape"
 export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false, metaKey = false }) {
     if (ctrlKey || altKey || metaKey) return null;
     const k = key.length === 1 ? key.toLowerCase() : key;
@@ -242,6 +242,7 @@ export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false,
         case "b": return "sortie";
         case "s": return "split";
         case "m": return "merge";
+        case "i": return "integrate";
         case "d": return "tab:diplomacy";
         case "c": return "chat";
         case "n": return "notices";
@@ -250,6 +251,14 @@ export function hotkey({ key, shiftKey = false, ctrlKey = false, altKey = false,
         case "Escape": return "escape";
         default: return null;
     }
+}
+
+// the vassal the I key integrates: the country whose land is selected, or the owner of the settlement selected — if it is a vassal
+// of `me`'s; else null (`nodes`: the map's, for a settlement's land)
+export function integrateTarget(sel, state, nodes, me) {
+    const code = sel?.kind === "country" ? sel.code : sel?.kind === "place" ? state.settlements[nodes.get(sel.key)?.land]?.owner : null;
+    const c = code ? state.countries[code] : null;
+    return c && c.overlord === me && c.subjectKind === "vassal" ? code : null;
 }
 
 // The speeds a game alone may run at (RULES.md §1; socket.js's SPEEDS): days in the time one usually takes. speedAfter: the next

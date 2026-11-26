@@ -204,8 +204,8 @@ for its player to come back.
 - **A game has a level** (`src/ai/levels.js`): normal or hard, chosen by the host as the table is made, kept with the game
   (`games.ai_level`) and handed to `createAI` by its worker — and, if the host chooses, another for the Empire's members
   (`games.ai_empire`): a German state's computer player at that one, worked out at each think, as membership changes. A level is
-  switches the layers read from a country's character (`fl.level`), not another AI. **Hard** plays as normal for now: #31 is to make
-  it stronger. (A medium level that counted its allies, joined their sieges and fought on their front measured no stronger — allies
+  switches the layers read from a country's character (`fl.level`), not another AI. **Hard** grows bolder with the age — its aggression up to +0.3 from 1550 to the end
+  year (`util.js`, `lateAggression`) — and gangs up on a leader at 60% of the victory target, not 75% (`leaderOf`). (A medium level that counted its allies, joined their sieges and fought on their front measured no stronger — allies
   on these maps meet a shared enemy from opposite sides — and was taken out: experiments/, section 30.) The lobby does not offer the
   choices yet (`lobbylogic.js`, `AI_LEVEL_CHOICE`); `tools/simulate.js` and `tools/strength.js` take `--level` and `--empire-level`.
   Commands are logged, so a level changes no replay.
