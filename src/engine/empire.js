@@ -28,7 +28,8 @@ import { atWar, isGermanState, isRebel, reformPassed } from "./state.js";
 export const CANDIDATE_GERMAN = 40000;
 // a computer elector's score of a candidate (electorScore): +20 for the reigning or late Emperor's country, 1 for each 2,000 × x
 // promised up to +30, −20 for one of 150,000 people or more, −50 for one at war with it, −20 for one of another faith
-export const REIGNING = 20, PROMISE_MONEY = 2000, PROMISE_MAX = 30, TOO_BIG = 150000, TOO_BIG_MALUS = 20, AT_WAR_MALUS = 50, FAITH_MALUS = 20;
+// PROTECTOR: what a protectorate's elector adds for its overlord (a vassal's is the overlord's: boundTo)
+export const PROTECTOR = 30, REIGNING = 20, PROMISE_MONEY = 2000, PROMISE_MAX = 30, TOO_BIG = 150000, TOO_BIG_MALUS = 20, AT_WAR_MALUS = 50, FAITH_MALUS = 20;
 // the Emperor rules for life: the chance each year that he dies; the interregnum before the electors meet; and the day from which
 // every Emperor elected signs a capitulation (AUTHORITY.CAPITULATION)
 export const DEATH_CHANCE = 0.04, INTERREGNUM_DAYS = 182, CAPITULATION_DAY = dayOf(1519);
@@ -107,16 +108,26 @@ export function electorScore(game, elector, candidate, settlement) {
     if (popOf(st, candidate) >= TOO_BIG) score -= TOO_BIG_MALUS;
     if (atWar(st, elector, candidate)) score -= AT_WAR_MALUS;
     if (a.religion && b.religion && a.religion !== b.religion) score -= FAITH_MALUS;
+    if (a.overlord === candidate && a.subjectKind === "protectorate") score += PROTECTOR;
     return score;
 }
 
-// whom the vote of an elector goes to: a person's as they chose, if their choice stands; a computer's — or a person's who has not
+// the candidate a vassal's vote is bound to: its overlord, if it stands (a vassal has no diplomacy of its own, and no vote of its own
+// either: RULES.md §10, The Emperor) — a person's as a computer's; else null
+export function boundTo(game, holder, candidates) {
+    const c = game.state.countries[holder];
+    return c?.subjectKind === "vassal" && candidates.includes(c.overlord) ? c.overlord : null;
+}
+
+// whom the vote of an elector goes to: a vassal's to its overlord, if it stands (boundTo); a person's as they chose, if their choice stands; a computer's — or a person's who has not
 // chosen — to the other candidate it scores highest (the first by code among equals), or to itself if it stands and is the known
 // house, or has more people than that candidate: the electors mostly chose another, and one of their own only when it was the
 // greater. Null with no one to cast it
 export function voteOf(game, elector, candidates = candidatesOf(game)) {
     const st = game.state, holder = elector.holder;
     if (!holder || !candidates.length) return null;
+    const bound = boundTo(game, holder, candidates);
+    if (bound) return bound;
     const chosen = st.empire?.choices[holder];
     if (st.humans.includes(holder) && chosen && candidates.includes(chosen)) return chosen;
     let best = null, bestScore = -Infinity;
@@ -134,6 +145,8 @@ export function voteOf(game, elector, candidates = candidatesOf(game)) {
 export function voteBetween(game, elector, pair) {
     const st = game.state, holder = elector.holder;
     if (!holder) return null;
+    const bound = boundTo(game, holder, pair);
+    if (bound) return bound;
     const chosen = st.empire?.choices[holder];
     if (st.humans.includes(holder) && pair.includes(chosen)) return chosen;
     if (pair.includes(holder)) return holder;

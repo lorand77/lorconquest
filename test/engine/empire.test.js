@@ -7,7 +7,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { CAPITULATION_DAY, Game, INTERREGNUM_DAYS, YEAR_DAYS, candidatesOf, electorsOf, isGermanState, voteOf } from "../../src/engine/index.js";
-import { empireDay, holdElection } from "../../src/engine/empire.js";
+import { PROTECTOR, electorScore, empireDay, holdElection, voteBetween } from "../../src/engine/empire.js";
+import { freeSubject, setSubject } from "../../src/engine/diplomacy.js";
+import { opinion } from "../../src/engine/opinion.js";
 import { random } from "../../src/engine/random.js";
 import { tinyGame, runTo, order, refused } from "../helpers/tiny.js";
 
@@ -121,6 +123,26 @@ test("no majority of the votes cast: a second round between the two leaders, eac
     holdElection(game, events, "due");
     const [e] = ofType(events, "elected");
     assert.deepEqual([e.votes, e.runoff, e.country], [{ AAA: 3, BBB: 3, CCC: 1 }, { AAA: 4, BBB: 3 }, "AAA"]);
+});
+
+test("a vassal's vote is its overlord's while it stands, in both rounds, a person's too; a protectorate leans +30 but is free", () => {
+    const game = empire(1, () => {}, ["CCC"]), st = game.state, six = electorsOf(game).find((e) => e.settlement === 6);
+    order(game, cmd("CCC", "electorVote", { candidate: "AAA" }));
+    assert.equal(voteOf(game, six), "AAA", "free, CCC votes as it chose");
+    setSubject(game, "CCC", "BBB", "vassal", []);
+    assert.deepEqual([voteOf(game, six), voteBetween(game, six, ["AAA", "BBB"])], ["BBB", "BBB"], "bound to BBB, whatever CCC chose");
+    assert.equal(voteBetween(game, six, ["AAA", "DDD"]), "AAA", "BBB not in the second round: CCC's choice again");
+    freeSubject(game, "CCC", []);
+    setSubject(game, "CCC", "DDD", "vassal", []);
+    assert.equal(voteOf(game, six), "AAA", "DDD does not stand: free");
+    const lean = () => electorScore(game, "CCC", "BBB", 6) - opinion(game, "CCC", "BBB");
+    freeSubject(game, "CCC", []);
+    setSubject(game, "CCC", "AAA", "vassal", []);
+    const unbound = lean();
+    freeSubject(game, "CCC", []);
+    setSubject(game, "CCC", "BBB", "protectorate", []);
+    assert.equal(lean(), unbound + PROTECTOR);
+    assert.equal(voteOf(game, six), "AAA", "a protectorate still votes as it chose");
 });
 
 test("from 1519 every Emperor elected signs a capitulation: −10; the crown passing to another country −10 more", () => {

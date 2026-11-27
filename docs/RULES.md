@@ -1104,6 +1104,8 @@ Emperor's country while it is a German state, and every German state of **40,000
 town or free city — none of them anyone's vassal, and on a map with religions **only Catholics — and, after 31 October 1517,
 Protestants**. **An outsider never stands** (a game's choice: Francis I and Henry VIII stood in 1519): the Emperor must be a German state; an outsider holding a secular vote casts it for
 another.
+- **A vassal's electors** vote for its **overlord** whenever the overlord stands, in both rounds — a person's as a computer's: a
+  vassal has no diplomacy of its own, and no vote of its own either. If the overlord does not stand, the vassal votes freely.
 - **A person's electors** all vote as the person chooses (in the Diplomacy tab), or, if they have not chosen, as a computer's would.
 - **A computer's** vote goes to the other candidate it scores highest — or to itself, if it stands and is the reigning or late
   Emperor's country, or has more people than that candidate:
@@ -1114,12 +1116,13 @@ another.
                   − 20 for a candidate of 150,000 people or more
                   − 50 for one at war with it
                   − 20 for one of another faith (on a map with religions)
+                  + 30 for its protector, if it is a protectorate       leaning, but free
   ```
 - **Promises.** Once the throne is empty, a candidate may promise money for the vote of an elector cast by another — no more in
   all than its treasury holds then — and change or take it back until the vote. Every promise is **paid when the votes are cast,
   whoever wins**, as far as the candidate's treasury goes, to whoever casts that vote then. Promises and choices are public.
 
-**A majority of the votes cast wins.** Without one, the electors **vote again between the two leaders**: a person's electors as
+**A majority of the votes cast wins.** Without one, the electors **vote again between the two leaders**: a vassal's for its overlord if it is one of the two; a person's electors as
 the person chose if it is one of the two, else as a computer's would; one of the two votes for itself; the rest for the one they
 score higher. The more votes then win. A tie — for the lead, or in the second round — goes to the reigning or late Emperor's
 country if it is tied, then to the larger people, then the lower code. **From 1519 every Emperor elected signs a capitulation** to
