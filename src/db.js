@@ -126,7 +126,8 @@ export function openDb(file) {
     addColumnIfMissing("games", "ai_level", "TEXT NOT NULL DEFAULT 'normal'");
     // and the Empire's members' computer players', if the host gives them another (src/ai/levels.js); NULL = the game's
     addColumnIfMissing("games", "ai_empire", "TEXT");
-    // how long it is played: "normal", the scenario's victory, or "long", 60% of the map held 2 years (src/engine/victory.js)
+    // how long it is played: "normal", the scenario's victory, "long", 60% of the map held 2 years, or "short", a third of it
+    // (src/engine/victory.js)
     addColumnIfMissing("games", "game_length", "TEXT NOT NULL DEFAULT 'normal'");
     addColumnIfMissing("games", "winner", "TEXT");
     addColumnIfMissing("games", "host_id", "INTEGER REFERENCES users (id)");

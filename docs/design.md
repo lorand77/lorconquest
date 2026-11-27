@@ -629,8 +629,8 @@ would break that.
   one day (`day.js`) and returns its events; `snapshot()` is the state as JSON, `Game.restore` and
   `replay` rebuild a game from a snapshot or from its seed and log.
 - **The state is plain JSON:** countries, settlements, armies (by id; the starting garrisons are
-  numbered like their settlements), wars, battle cooldowns, the mercenaries for hire in the world (`mercenaries`), a long game's victory (`victory`: 60% of the map, held
-  2 years — null for the scenario's own; who is holding it, `holding`), the day and the random state
+  numbered like their settlements), wars, battle cooldowns, the mercenaries for hire in the world (`mercenaries`), a long or short game's victory (`victory`: 60% of the map, held
+  2 years, or a third of it — null for the scenario's own; who is holding it, `holding`), the day and the random state
   (mulberry32, one 32-bit word). `RULES_VERSION` and `FORMAT` in `state.js` are stamped on every
   state and checked on restore. A game's length is chosen as it is made (`Game.create(scenario, { seed, humans, length })`), so a
   replay from the seed is given it too (`games.game_length`, the replay data's `length`); every reader of the target asks

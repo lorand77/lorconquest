@@ -645,6 +645,9 @@ test("a long game: 60% of the map, held for 2 years — dropping below starts th
     const long = Game.create(game.map.scenario, { seed: 1, length: "long" });
     assert.deepEqual([long.state.victory, Game.create(game.map.scenario, { seed: 1 }).state.victory], [{ settlements: 5, hold: 730 }, null]);
     assert.deepEqual(replay(game.map.scenario, 1, [], 10, [], "long").state.victory, { settlements: 5, hold: 730 });
+    // a short game: a third of the map, rounded up, won at once — or the scenario's own number, if that is less
+    assert.deepEqual([victoryFor(game.map.scenario, "short"), victoryFor({ ...game.map.scenario, victory: { settlements: 2, endYear: 1500 } }, "short")], [{ settlements: 3, hold: 0 }, { settlements: 2, hold: 0 }]);
+    assert.deepEqual(Game.create(game.map.scenario, { seed: 1, length: "short" }).state.victory, { settlements: 3, hold: 0 });
     // a scenario whose own number is more than 60% keeps it in a long game too, held 2 years
     assert.deepEqual(victoryFor({ ...game.map.scenario, victory: { settlements: 6, endYear: 1500 } }, "long"), { settlements: 6, hold: 730 });
 });

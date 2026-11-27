@@ -392,7 +392,11 @@ test("a game keeps how strong its computer players are, and the Empire's members
         assert.deepEqual(joined.view.victory, { settlements: Math.ceil(0.6 * scenario.settlements.length), hold: 730 });
         s.disconnect();
         assert.equal((await api(server, "GET", "/api/tables")).body.find((t) => t.id === plain.body.id).length, "normal");
-        assert.match((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "PRU", seed: 5, length: "forever" })).body.error, /a game is normal or long/);
+        assert.match((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "PRU", seed: 5, length: "forever" })).body.error, /a game is normal, long or short/);
+        // a short one plays to a third of the map, won at once, and the room list says so
+        const short = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "PRU", seed: 5, length: "short" });
+        assert.equal(db.q.game.get(short.body.id).game_length, "short");
+        assert.equal((await api(server, "GET", "/api/tables")).body.find((t) => t.id === short.body.id).length, "short");
         db.close?.();
     } finally {
         await server.close();

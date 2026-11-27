@@ -574,7 +574,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
 
         // a new table, the host in the seat of `country`
         createTable({ userId, scenario, country, seed, visibility = "public", ai = "normal", aiEmpire = null, length = "normal" }) {
-            if (!GAME_LENGTHS.includes(length)) return { error: `a game is ${GAME_LENGTHS.join(" or ")}` };
+            if (!GAME_LENGTHS.includes(length)) return { error: `a game is ${GAME_LENGTHS.slice(0, -1).join(", ")} or ${GAME_LENGTHS.at(-1)}` };
             if (!["public", "friends"].includes(visibility)) return { error: "a room is public or for your friends" };
             if (!AI_LEVELS.includes(ai)) return { error: `the computer players are ${AI_LEVELS.join(" or ")}` };
             if (aiEmpire !== null && !AI_LEVELS.includes(aiEmpire)) return { error: `the Empire's members' computer players are ${AI_LEVELS.join(" or ")}, or as the others'` };

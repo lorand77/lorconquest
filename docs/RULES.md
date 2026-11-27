@@ -1199,6 +1199,11 @@ meanwhile. Every player is told when a country reaches it and when it drops belo
 the 2 years afresh, and so does another country reaching it ahead. The end year is the same. Everything measured against victory —
 the leader the others gang up on, three quarters of it where nobody bows (§10) — is measured against the long game's number.
 
+**A short game**, the host's other choice, is won sooner: **a third of the map's settlements** (rounded up: 29 of Mitteleuropa's 87,
+56 of Historical's 168, 149 of Europe's 445, 24 of Italy's 71) — or the scenario's own number, where that is less — counted the same
+way and won the day it is reached, as a normal game is. The end year is the same, and everything measured against victory is
+measured against the short game's number.
+
 **Starting wars, agreements and subjects** of a scenario count as if declared, signed and made in play: the wars are on from
 the first day, the agreements are in force, the subjects are subjects (a vassal counting its years from the start), a pact has the years it has left, an alliance 20 years (or the years the scenario says it has left),
 and every warmonger score is 0.

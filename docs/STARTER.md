@@ -7,7 +7,8 @@ rest. The full rules are in the other tabs — this page is what you need for yo
 
 Hold the number of settlements your scenario asks for (see **Scenarios**), counting your vassals' — a protectorate's count
 half. If nobody gets there by the end year, the country with the most wins. If a computer country wins, every person loses.
-In a **long game** (the host's choice) it is 60% of the map, and you must still hold it 2 years after you first reach it.
+In a **long game** (the host's choice) it is 60% of the map, and you must still hold it 2 years after you first reach it; in a
+**short game**, a third of the map.
 
 ## Time
 

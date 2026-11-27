@@ -26,10 +26,11 @@
                     <option value="public">Everyone</option>
                     <option value="friends">My friends only</option>
                 </select></label>
-                <!-- how long it is played (src/engine/victory.js): the scenario's target, or 60% of the map held for 2 years -->
+                <!-- how long it is played (src/engine/victory.js): the scenario's target, 60% of the map held for 2 years, or a third of it -->
                 <label>Game length <select id="length">
                     <option value="normal">Normal: about half the map</option>
                     <option value="long">Long: 60% of the map, held 2 years</option>
+                    <option value="short">Short: a third of the map</option>
                 </select></label>
                 <!-- how strong the computer players are (src/ai/levels.js): hidden until the hard level plays otherwise (TODO.md #31;
                      lobbylogic.js, AI_LEVEL_CHOICE) -->

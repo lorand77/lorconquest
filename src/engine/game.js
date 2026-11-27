@@ -18,7 +18,7 @@ export class Game {
     }
 
     // `humans`: the countries people play; a proposal to one waits for its player, to the others the computer answers
-    // `length`: "normal", the scenario's victory, or "long" (victory.js)
+    // `length`: "normal", the scenario's victory, "long" or "short" (victory.js)
     static create(scenario, { seed = 1, humans = [], length = "normal" } = {}) {
         const map = buildMap(scenario);
         const game = new Game(map, initialState(map, seed, humans));

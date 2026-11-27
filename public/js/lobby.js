@@ -65,7 +65,7 @@ function tableItem(t) {
     if (!scenario) return make("li", { class: "table" }, `${t.host}'s room, on a scenario this server no longer has`);
     const a = tableActions(t, me, scenario);
     const li = make("li", { class: "table" });
-    li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), t.visibility === "friends" ? make("span", { class: "tag friend", title: "only the host's friends see it and may join" }, " 👥 friends only ") : "", t.length === "long" ? make("span", { class: "tag", title: "60% of the map to win, held for 2 years" }, " ⏳ long game ") : "", ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} ${popOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
+    li.append(make("b", {}, `${scenario.name}, ${t.host}'s room`), t.visibility === "friends" ? make("span", { class: "tag friend", title: "only the host's friends see it and may join" }, " 👥 friends only ") : "", t.length === "long" ? make("span", { class: "tag", title: "60% of the map to win, held for 2 years" }, " ⏳ long game ") : t.length === "short" ? make("span", { class: "tag", title: "a third of the map to win" }, " ⚡ short game ") : "", ` — ${t.seats.map((s) => `${nameOf(t.scenario, s.country)} ${popOf(t.scenario, s.country)} (${s.username})`).join(", ")}`);
     const row = make("div", { class: "row" });
     const err = make("span", { class: "error" });
     const act = async (url, body) => { const r = await post(url, body); if (!r.ok) err.textContent = r.error; else if (r.id !== undefined && url.endsWith("/start")) location.href = `/game.html?id=${r.id}`; else refresh(); };
