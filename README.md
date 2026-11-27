@@ -12,8 +12,8 @@ war, trade, diplomacy and the politics of the Holy Roman Empire.
 
 ## Features
 
-- Three maps: Mitteleuropa balanced, Mitteleuropa as it was in 1440, and all of
-  Europe with 118 countries
+- Four maps: Mitteleuropa balanced, Mitteleuropa as it was in 1440, all of
+  Europe with 118 countries, and a battle of Italy for who reunites it
 - Armies, sieges and storms, fleets, blockades and landings by sea; mercenaries,
   research from swords to muskets, laws, taxes, loans and buildings
 - Diplomacy with the computer and with people: alliances, vassals and

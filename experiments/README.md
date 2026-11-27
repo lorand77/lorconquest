@@ -852,3 +852,46 @@ of 240 — no gain — but **survived 106 against 129**, worse for every test co
 more and lose many countries. The first run's +2.08 was luck; bolder is not stronger for this computer.
 **Taken out:** the harder peace terms (G) — the hard level keeps only its late boldness and its earlier ganging up, which cost no
 countries. What would make the computer stronger is better choices (which wars, where to march), not bolder settings.
+
+## 32. Italy 1440's first games: who reunites Italy? (2026-11-27)
+
+**What it is.** The first Italy map (a draft, later taken out for the smaller one of section 33; TODO.md #53): 148 settlements, 25 countries, every one Italian but
+Aragon (and Orléans' Asti); won by two thirds of the map, 99. The question: does one country win too often, and does the outsider?
+
+**Run.** `node tools/simulate.js --scenario italy-1440 --games 20 --years 210 --jobs 3` (seeds 1–20), twice: as first drawn, with
+Aragon holding Gaeta, Salerno and Calabria beside Sicily and Sardinia (18 settlements, the rule's 100 ships), then with Salerno,
+Cosenza, Catanzaro and Crotone given to Naples and Aragon's fleet set to 60 (14 settlements). About 5 minutes a run; the AI 0.3 ms a day.
+
+| | As drawn | Aragon trimmed |
+|---|---|---|
+| Wins | ARA 7, VEN 5, MIL 3, FLO 2, NAP 1, PAP 1, SIE 1 | VEN 6, ARA 4, FLO 3, MIL 2, NAP 2, PAP 2, SFO 1 |
+| Won by reaching 99 / on time | 0 / 20 | 0 / 20 |
+| Leaders' settlements in 1650 | 27–78 | 27–85 |
+| Wars declared, captures a game | 19.1, 298 | 17.1, 259 |
+
+**What it showed.** As drawn, the one outsider won a third of the games: Aragon's islands are reached only across a strait, and it had
+the largest fleet, so it lost little and kept what it took. Trimmed, seven countries win, none more than 6 of 20, Aragon 4. Nobody
+reaches 99 — as on the Historical and Europe maps, the computer wins on time — and only twice did a leader pass half the map; the
+target is a person's to reach. **Kept:** the trimmed start.
+
+## 33. Italy 1440, small: 71 settlements (2026-11-27)
+
+**What it is.** A smaller version of the Italy map (scenarios/italy-1440, as it was kept): 71 settlements and 20 states at about one
+for 110,000 people, 1.1 km a map unit (901 × 1119 units) — smaller than the Mitteleuropa map in both. Won by two thirds, 48. The large
+map's coasts, seas and countries, less Saluzzo, Asti, Trent, Faenza and Ravenna.
+
+**Run.** `node tools/simulate.js --scenario italy-1440 --games 20 --years 210 --jobs 3` (seeds 1–20), about 3 minutes, the
+AI 0.15 ms a day; five times, moving the south's towns between Naples (N), Aragon (A) and Taranto (T):
+
+| Start | Wins | By reaching 48 |
+|---|---|---|
+| A: Gaeta, the islands (9); N: Salerno, Calabria, Bari (11) | NAP 8, VEN 3, PAP 3, MIL 3, ARA 2, FLO 1 | 1 |
+| A also Catanzaro and Reggio (11) | ARA 11, MIL 4, NAP 3, PAP 1, VEN 1 | 6 |
+| A also Reggio (10) | ARA 11, VEN 4, PAP 3, MIL 2 | 7 |
+| A also Salerno (10); T also Bari (4) | ARA 8, PAP 6, NAP 2, FER 1, FLO 1, MIL 1, VEN 1 | 7 |
+| **A: Gaeta, the islands (9); N (10); T also Bari (4)** | **ARA 5, VEN 5, MIL 4, NAP 2, PAP 2, GEN 1, SIE 1** | 7 |
+
+**What it showed.** Reggio decides Aragon: a foothold on the mainland at the strait, joined to Sicily, and it wins more than half the
+games; without one, two to five. Naples, the largest at the start, wins too often with Bari; given to the Prince of Taranto, seven
+countries win and none more than 5. Unlike the large map, a third of the games end by reaching the target: 48 of 71 is within the
+computer's reach, 99 of 148 was not. **Kept:** the last start — and this map, as scenarios/italy-1440; the large one is taken out.

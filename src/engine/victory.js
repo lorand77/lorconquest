@@ -6,8 +6,8 @@
 // A vassal never beats its overlord (who counts all its settlements and has its own); a protectorate may. A computer
 // country may win.
 //
-// A game may be a long one (RULES.md, Victory; chosen by its host): 60% of the map's settlements, rounded up, instead of the
-// scenario's number, and held for 2 years — the first to reach it must still have it 730 days later (the count may rise and fall
+// A game may be a long one (RULES.md, Victory; chosen by its host): 60% of the map's settlements, rounded up (or the scenario's
+// number, if that is more), instead of the scenario's number, and held for 2 years — the first to reach it must still have it 730 days later (the count may rise and fall
 // above it meanwhile); dropping below starts the clock again, as does another reaching it ahead. The end year is the same.
 import { dayOf } from "./calendar.js";
 import { isRebel } from "./state.js";
@@ -38,8 +38,11 @@ function scoresNow(state) {
 // the game's lengths: the scenario's number, at once; or the long one, 60% of the map held for 2 years
 export const GAME_LENGTHS = ["normal", "long"];
 export const LONG_SHARE = 0.6, LONG_HOLD_DAYS = 730;
+// a long game's number: 60% of the map, rounded up — or the scenario's own, where that is more (Italy 1440's two thirds), so that a
+// long game is never won with less than a normal one
+export const longTarget = (scenario) => Math.max(Math.ceil(LONG_SHARE * scenario.settlements.length), scenario.victory?.settlements ?? 0);
 // what a game of `length` keeps in its state (state.victory): null for the scenario's own
-export const victoryFor = (scenario, length) => (length === "long" ? { settlements: Math.ceil(LONG_SHARE * scenario.settlements.length), hold: LONG_HOLD_DAYS } : null);
+export const victoryFor = (scenario, length) => (length === "long" ? { settlements: longTarget(scenario), hold: LONG_HOLD_DAYS } : null);
 // the victory a game is played to: the scenario's, with the game's own target and hold if it is a long one — every reader asks this
 export function victoryOf(game) {
     const v = game.map.scenario.victory;

@@ -308,3 +308,13 @@ invariants every month, exact replay, the time per day) and simulations of whole
 well in a browser — played by hand. Since then, on it and the historical map, the Empire's crown in stages (design.md, *Open
 questions*), all three stages built: the Emperor, the seven electors and the elections with promises; Imperial Authority, Defender
 of the Empire and the free cities' dues; the ban and the five reforms.
+
+## After the milestones: Italy 1440
+
+**Released.** A fourth scenario, a battle of Italy in 1440 (scenarios/italy-1440): 71 settlements and 20 states, every one Italian but
+Aragon, on a map smaller than Mitteleuropa's, drawn by `tools/make-base.js` from Europe's coasts with Italy's drawn finer. Won by
+reuniting Italy: two thirds of it, 48 — and a long game needs the same, held 2 years (a long game's number is now the larger of 60% and
+the scenario's). Two wars of 1440 open it (Lombardy, Naples), 4 regions to proclaim (the Kingdom of Italy with half the peninsula, Rome
+and Milan), 9 achievements of its own. A first version of 148 settlements was taken out as too big. Balanced by experiment
+(experiments/README.md, 32–33): seven different winners in 20 computer games, none more than 5. Not checked by machine: that it plays
+well in a browser — played by hand.

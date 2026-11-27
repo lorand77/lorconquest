@@ -1192,7 +1192,8 @@ own and its subjects'), then the lower code. When the game is won it stops: noth
 computer country may win, and then every human has lost.
 
 **A long game** is a choice its host makes when opening the table (*Game length*): instead of the scenario's number, **60% of the
-map's settlements** (rounded up: 53 of Mitteleuropa's 87, 101 of Historical's 168, 267 of Europe's 445), counted the same way, and
+map's settlements** (rounded up: 53 of Mitteleuropa's 87, 101 of Historical's 168, 267 of Europe's 445) — or the scenario's own
+number, where that is more (Italy's two thirds, 48 of 71), so a long game is never won with less — counted the same way, and
 **held for 2 years**: the first to reach it wins if it still has it 730 days later — its count may rise and fall above it
 meanwhile. Every player is told when a country reaches it and when it drops below, which stops the clock; reaching it again starts
 the 2 years afresh, and so does another country reaching it ahead. The end year is the same. Everything measured against victory —

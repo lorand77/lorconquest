@@ -16,7 +16,7 @@ test("scenarios, and starting a game", async () => {
     const server = await startServer({ dbPath: tempDb() });
     try {
         const scenarios = (await api(server, "GET", "/api/scenarios")).body;
-        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Mitteleuropa: Balanced"], ["europe-1440", "Europe 1440"], ["historical-1440", "Mitteleuropa: Historical 1440"]]);
+        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Mitteleuropa: Balanced"], ["europe-1440", "Europe 1440"], ["historical-1440", "Mitteleuropa: Historical 1440"], ["italy-1440", "Italy 1440"]]);
         assert.equal(scenarios[0].countries.length, 45);
         // a scenario still being made (a DRAFT file in its folder) is offered only with DRAFT_SCENARIOS=1: two of them, one a draft
         const { loadScenarios } = await import("../../src/game/scenarios.js");
@@ -306,12 +306,13 @@ test("a player's country is played by the computer while it is handed over, and 
         await emitAck(s, "join", { gameId: id });
         const room = server.app.rooms.get(id);
         // handed over and back while the game stands paused, on the days it stopped at — not the days asked for, which a busy
-        // machine overshoots (TODO.md #29)
+        // machine overshoots (TODO.md #29); and each stretch 300 days from where the last one stopped, so an overshoot past 400 leaves
+        // the computer its 300 days all the same
         from = await runUntil(s, 100);                                     // the player's country does nothing by itself
         server.app.rooms.setCaretaker(room, "BAV", "full");
-        back = await runUntil(s, 400);
+        back = await runUntil(s, from + 300);
         server.app.rooms.setCaretaker(room, "BAV", null);
-        await runUntil(s, 700);
+        await runUntil(s, back + 300);
     } finally {
         await server.close();
     }
