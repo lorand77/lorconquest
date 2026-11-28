@@ -16,8 +16,10 @@ test("scenarios, and starting a game", async () => {
     const server = await startServer({ dbPath: tempDb() });
     try {
         const scenarios = (await api(server, "GET", "/api/scenarios")).body;
-        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Mitteleuropa: Balanced"], ["europe-1440", "Europe 1440"], ["historical-1440", "Mitteleuropa: Historical 1440"], ["italy-1440", "Italy 1440"]]);
+        assert.deepEqual(scenarios.map((s) => [s.id, s.name]), [["mitteleuropa", "Central Europe: Balanced"], ["europe-1440", "Europe 1440"], ["historical-1440", "Central Europe 1440"], ["italy-1440", "Italy 1440"]]);
         assert.equal(scenarios[0].countries.length, 45);
+        // and how many settlements each map has, shown beside its name in the lobby
+        assert.deepEqual(scenarios.map((s) => s.settlements), [87, 445, 168, 71]);
         // a scenario still being made (a DRAFT file in its folder) is offered only with DRAFT_SCENARIOS=1: two of them, one a draft
         const { loadScenarios } = await import("../../src/game/scenarios.js");
         const root = fs.mkdtempSync(path.join(os.tmpdir(), "lc-drafts-"));

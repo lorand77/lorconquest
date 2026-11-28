@@ -4,7 +4,7 @@
 > **Scenario scaling.** `x` is a per-scenario cost multiplier. `x1.5MR` means `x × 1.5M` R.
 > `x` applies to **tech costs, starting treasury, the flat R bonus, the sharpshooter and cannon
 > counts in combat and the ships needed to cross a strait** (§5, §6, §8) — never to shop prices.
-> Each scenario sets its own `x`; the Mitteleuropa scenario is in [SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md).
+> Each scenario sets its own `x`; the Central Europe: Balanced scenario is in [SCENARIO.md](../scenarios/mitteleuropa/SCENARIO.md).
 > **Money and R** are in the same unit as `M`: 0.1M is 100,000.
 > Town and city populations (10K / 20K) are the same in every scenario; what changes between
 > scenarios is the map, country sizes, costs, coring, and the victory condition.
@@ -1192,7 +1192,7 @@ own and its subjects'), then the lower code. When the game is won it stops: noth
 computer country may win, and then every human has lost.
 
 **A long game** is a choice its host makes when opening the table (*Game length*): instead of the scenario's number, **60% of the
-map's settlements** (rounded up: 53 of Mitteleuropa's 87, 101 of Historical's 168, 267 of Europe's 445) — or the scenario's own
+map's settlements** (rounded up: 53 of Central Europe: Balanced's 87, 101 of Central Europe 1440's 168, 267 of Europe's 445) — or the scenario's own
 number, where that is more (Italy's two thirds, 48 of 71), so a long game is never won with less — counted the same way, and
 **held for 2 years**: the first to reach it wins if it still has it 730 days later — its count may rise and fall above it
 meanwhile. Every player is told when a country reaches it and when it drops below, which stops the clock; reaching it again starts

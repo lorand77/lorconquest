@@ -1,6 +1,7 @@
 // The game's REST routes, under /api. Everything but the scenarios needs a signed-in user (src/auth).
 //
-//   GET  /api/scenarios          the scenarios to play: [{ id, name, countries: [{ code, name, pop }], lengths }]  lengths: the game lengths
+//   GET  /api/scenarios          the scenarios to play: [{ id, name, settlements, countries: [{ code, name, pop }], lengths }]  settlements:
+//                                how many the map has, shown beside its name in the lobby; lengths: the game lengths
 //                                it may be played to (a short game only on a large map: src/engine/victory.js)
 //   GET  /api/tables             the tables waiting for people you may see: [{ id, scenario, host, hostId, visibility, seats }]
 //   POST /api/tables             { scenario, country, seed?, solo?, visibility?, ai?, aiEmpire?, length? } -> { id }   a table with you in the seat of
@@ -31,7 +32,7 @@ export function gameRoutes(rooms, scenarios) {
 
     router.get("/scenarios", (req, res) => {
         res.json([...scenarios.values()].map((s) => ({
-            id: s.id, name: s.name, countries: s.data.countries.map((c) => ({ code: c.code, name: c.name, pop: c.pop })), lengths: lengthsFor(s.data),
+            id: s.id, name: s.name, settlements: s.data.settlements.length, countries: s.data.countries.map((c) => ({ code: c.code, name: c.name, pop: c.pop })), lengths: lengthsFor(s.data),
         })));
     });
 

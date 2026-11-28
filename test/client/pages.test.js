@@ -5,7 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { DEFAULT_DIR, formatCountdown, freeCountries, gameLine, presenceText, sortBoard, statsOf, tableActions } from "../../public/js/lobbylogic.js";
+import { DEFAULT_DIR, formatCountdown, freeCountries, gameLine, presenceText, scenarioLabel, sortBoard, statsOf, tableActions } from "../../public/js/lobbylogic.js";
 
 const publicDir = path.join(import.meta.dirname, "..", "..", "public");
 const read = (f) => fs.readFileSync(path.join(publicDir, f), "utf8");
@@ -196,4 +196,9 @@ test("My Games: each game's result at a glance — won, lost, even, playing, ove
     assert.deepEqual([lost.what, lost.when, lost.detail, lost.open, lost.replay], ["Mitteleuropa, Bavaria, 2 people", "1 January 1500", "won by Austria", false, true]);
     assert.equal(gameRow(done({ winner: "BAV" }), "M", "B", "d").detail, "", "a win needs no more said");
     assert.deepEqual([gameRow({ status: "active", people: 1 }, "M", "B", "d").open, gameRow({ status: "outdated", people: 1 }, "M", "B", "d").detail], [true, "unfinished: the rules changed"]);
+});
+
+test("the lobby offers a map by its name and how many settlements it has", () => {
+    assert.equal(scenarioLabel({ name: "Central Europe 1440", settlements: 168 }), "Central Europe 1440 — 168 settlements");
+    assert.equal(scenarioLabel({ name: "Italy 1440" }), "Italy 1440", "an older server's list, without the count: the name alone");
 });

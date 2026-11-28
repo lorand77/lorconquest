@@ -5,6 +5,9 @@
 // until the hard level is done (TODO.md #31) — the server takes the choice already, and every game made meanwhile is "normal"
 export const AI_LEVEL_CHOICE = false;
 
+// a map as the lobby offers it: its name and how many settlements it has, so its size is seen at a glance (TODO.md #58)
+export const scenarioLabel = (s) => (s.settlements ? `${s.name} — ${s.settlements} settlements` : s.name);
+
 // "1:05" for 65,000 ms; a clock that has run out reads "0:00"
 export function formatCountdown(ms) {
     const s = Math.max(0, Math.ceil(ms / 1000));

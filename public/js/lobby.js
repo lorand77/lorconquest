@@ -8,7 +8,7 @@ import { requireUser } from "./auth.js";
 import { mountShell } from "./shell.js";
 import * as Friends from "./friends.js";
 import { toast as achievementToast } from "./achievements.js";
-import { AI_LEVEL_CHOICE, countryLabel, formatCountdown, gameLine, tableActions } from "./lobbylogic.js";
+import { AI_LEVEL_CHOICE, countryLabel, scenarioLabel, formatCountdown, gameLine, tableActions } from "./lobbylogic.js";
 
 const $ = (id) => document.getElementById(id);
 const make = (tag, props = {}, ...children) => {
@@ -35,7 +35,7 @@ const nameOf = (id, code) => scenarioOf(id)?.countries.find((c) => c.code === co
 const popOf = (id, code) => `${(scenarioOf(id)?.countries.find((c) => c.code === code)?.pop ?? 0) / 1000}K`;
 
 // ---------- a new game ----------
-$("scenario").replaceChildren(...scenarios.map((s) => new Option(s.name, s.id)));
+$("scenario").replaceChildren(...scenarios.map((s) => new Option(scenarioLabel(s), s.id)));
 function fillCountries() {
     const countries = [...scenarioOf($("scenario").value).countries].sort((a, b) => a.name.localeCompare(b.name));
     $("country").replaceChildren(...countries.map((c) => new Option(`${c.name} (${c.code}, ${c.pop / 1000}K)`, c.code)));
