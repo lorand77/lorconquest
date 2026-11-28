@@ -1,6 +1,7 @@
 // The game's REST routes, under /api. Everything but the scenarios needs a signed-in user (src/auth).
 //
-//   GET  /api/scenarios          the scenarios to play: [{ id, name, countries: [{ code, name, pop }] }]
+//   GET  /api/scenarios          the scenarios to play: [{ id, name, countries: [{ code, name, pop }], lengths }]  lengths: the game lengths
+//                                it may be played to (a short game only on a large map: src/engine/victory.js)
 //   GET  /api/tables             the tables waiting for people you may see: [{ id, scenario, host, hostId, visibility, seats }]
 //   POST /api/tables             { scenario, country, seed?, solo?, visibility?, ai?, aiEmpire?, length? } -> { id }   a table with you in the seat of
 //                                `country`; with solo, started at once as a single-player game. visibility "public" (anyone sees
@@ -22,6 +23,7 @@
 import crypto from "node:crypto";
 import express from "express";
 import { requireAuth } from "../auth/session.js";
+import { lengthsFor } from "../engine/index.js";
 
 export function gameRoutes(rooms, scenarios) {
     const router = express.Router();
@@ -29,7 +31,7 @@ export function gameRoutes(rooms, scenarios) {
 
     router.get("/scenarios", (req, res) => {
         res.json([...scenarios.values()].map((s) => ({
-            id: s.id, name: s.name, countries: s.data.countries.map((c) => ({ code: c.code, name: c.name, pop: c.pop })),
+            id: s.id, name: s.name, countries: s.data.countries.map((c) => ({ code: c.code, name: c.name, pop: c.pop })), lengths: lengthsFor(s.data),
         })));
     });
 

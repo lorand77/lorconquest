@@ -24,7 +24,7 @@
 // game saved where it stood, and it is brought back from its snapshot and log when they open it again — as after a restart,
 // which is why a restart brings back only the games with several people.
 import { Worker } from "node:worker_threads";
-import { GAME_LENGTHS, RULES_VERSION } from "../engine/index.js";
+import { GAME_LENGTHS, RULES_VERSION, SHORT_FROM, lengthsFor } from "../engine/index.js";
 import { AI_LEVELS } from "../ai/levels.js";
 import { rankHumans } from "./results.js";
 
@@ -579,6 +579,7 @@ export function createRooms({ db, scenarios, io, log, tickMs, statsEvery, setupM
             if (!AI_LEVELS.includes(ai)) return { error: `the computer players are ${AI_LEVELS.join(" or ")}` };
             if (aiEmpire !== null && !AI_LEVELS.includes(aiEmpire)) return { error: `the Empire's members' computer players are ${AI_LEVELS.join(" or ")}, or as the others'` };
             if (!scenarios.has(scenario)) return { error: `no scenario ${scenario}` };
+            if (!lengthsFor(scenarios.get(scenario).data).includes(length)) return { error: `a short game is for a map of ${SHORT_FROM} settlements or more` };
             // every game started is a thread: one person cannot open them without end
             if (db.q.tablesHostedBy.all(userId).length >= MAX_TABLES) return { error: `you have ${MAX_TABLES} rooms open already: start or cancel one` };
             const running = [...live.values()].filter((r) => !r.over && !r.ending && [...r.seats.values()].some((x) => x.userId === userId)).length;

@@ -9,8 +9,8 @@
 // A game may be a long one (RULES.md, Victory; chosen by its host): 60% of the map's settlements, rounded up (or the scenario's
 // number, if that is more), instead of the scenario's number, and held for 2 years — the first to reach it must still have it 730 days later (the count may rise and fall
 // above it meanwhile); dropping below starts the clock again, as does another reaching it ahead. The end year is the same.
-// Or a short one: a third of the map's settlements, rounded up (or the scenario's number, if that is less), won as soon as reached;
-// the end year the same.
+// Or, on a map of 300 settlements or more, a short one: a third of the map's settlements, rounded up (or the scenario's number, if
+// that is less), won as soon as reached; the end year the same.
 import { dayOf } from "./calendar.js";
 import { isRebel } from "./state.js";
 import { memo } from "./memo.js";
@@ -39,13 +39,16 @@ function scoresNow(state) {
 
 // the game's lengths: the scenario's number, at once; the long one, 60% of the map held for 2 years; or the short one, a third of it
 export const GAME_LENGTHS = ["normal", "long", "short"];
-export const LONG_SHARE = 0.6, LONG_HOLD_DAYS = 730, SHORT_SHARE = 1 / 3;
+export const LONG_SHARE = 0.6, LONG_HOLD_DAYS = 730, SHORT_SHARE = 1 / 3, SHORT_FROM = 300;
 // a long game's number: 60% of the map, rounded up — or the scenario's own, where that is more (Italy 1440's two thirds), so that a
 // long game is never won with less than a normal one
 export const longTarget = (scenario) => Math.max(Math.ceil(LONG_SHARE * scenario.settlements.length), scenario.victory?.settlements ?? 0);
 // a short game's number: a third of the map, rounded up — or the scenario's own, where that is less, so that a short game is never
 // harder to win than a normal one
 export const shortTarget = (scenario) => Math.min(Math.ceil(SHORT_SHARE * scenario.settlements.length), scenario.victory?.settlements ?? Infinity);
+// the lengths a scenario may be played to: a short game only on a map of 300 settlements or more (Europe 1440), where a normal one
+// takes a whole evening; on the smaller maps a normal game is short enough
+export const lengthsFor = (scenario) => GAME_LENGTHS.filter((l) => l !== "short" || scenario.settlements.length >= SHORT_FROM);
 // what a game of `length` keeps in its state (state.victory): null for the scenario's own
 export const victoryFor = (scenario, length) => (length === "long" ? { settlements: longTarget(scenario), hold: LONG_HOLD_DAYS }
     : length === "short" ? { settlements: shortTarget(scenario), hold: 0 } : null);

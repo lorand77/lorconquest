@@ -393,8 +393,11 @@ test("a game keeps how strong its computer players are, and the Empire's members
         s.disconnect();
         assert.equal((await api(server, "GET", "/api/tables")).body.find((t) => t.id === plain.body.id).length, "normal");
         assert.match((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "PRU", seed: 5, length: "forever" })).body.error, /a game is normal, long or short/);
-        // a short one plays to a third of the map, won at once, and the room list says so
-        const short = await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "PRU", seed: 5, length: "short" });
+        // a short one plays to a third of the map, won at once, and the room list says so — on a map of 300 settlements or more only
+        assert.match((await api(server, "POST", "/api/tables", { scenario: "mitteleuropa", country: "PRU", seed: 5, length: "short" })).body.error, /a short game is for a map of 300 settlements or more/);
+        const offered = (await api(server, "GET", "/api/scenarios")).body;
+        assert.deepEqual(["mitteleuropa", "europe-1440"].map((id) => offered.find((x) => x.id === id).lengths), [["normal", "long"], ["normal", "long", "short"]]);
+        const short = await api(server, "POST", "/api/tables", { scenario: "europe-1440", country: "FRA", seed: 5, length: "short" });
         assert.equal(db.q.game.get(short.body.id).game_length, "short");
         assert.equal((await api(server, "GET", "/api/tables")).body.find((t) => t.id === short.body.id).length, "short");
         db.close?.();

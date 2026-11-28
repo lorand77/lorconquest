@@ -42,6 +42,14 @@ function fillCountries() {
 }
 $("scenario").addEventListener("change", fillCountries);
 fillCountries();
+// the lengths the map may be played to: a short game only on a large one (src/engine/victory.js, lengthsFor)
+function fillLengths() {
+    const lengths = scenarioOf($("scenario").value).lengths ?? ["normal"];
+    for (const o of $("length").options) o.hidden = o.disabled = !lengths.includes(o.value);
+    if ($("length").selectedOptions[0]?.disabled) $("length").value = "normal";
+}
+$("scenario").addEventListener("change", fillLengths);
+fillLengths();
 
 // how strong the computer players are: offered once the hard level plays otherwise (lobbylogic.js, AI_LEVEL_CHOICE)
 $("ai-level-choice").hidden = $("ai-empire-choice").hidden = !AI_LEVEL_CHOICE;

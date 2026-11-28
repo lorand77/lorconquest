@@ -648,6 +648,9 @@ test("a long game: 60% of the map, held for 2 years — dropping below starts th
     // a short game: a third of the map, rounded up, won at once — or the scenario's own number, if that is less
     assert.deepEqual([victoryFor(game.map.scenario, "short"), victoryFor({ ...game.map.scenario, victory: { settlements: 2, endYear: 1500 } }, "short")], [{ settlements: 3, hold: 0 }, { settlements: 2, hold: 0 }]);
     assert.deepEqual(Game.create(game.map.scenario, { seed: 1, length: "short" }).state.victory, { settlements: 3, hold: 0 });
+    // offered only on a map of 300 settlements or more
+    const { lengthsFor } = await import("../../src/engine/index.js");
+    assert.deepEqual([lengthsFor(game.map.scenario), lengthsFor({ settlements: Array(300) })], [["normal", "long"], ["normal", "long", "short"]]);
     // a scenario whose own number is more than 60% keeps it in a long game too, held 2 years
     assert.deepEqual(victoryFor({ ...game.map.scenario, victory: { settlements: 6, endYear: 1500 } }, "long"), { settlements: 6, hold: 730 });
 });

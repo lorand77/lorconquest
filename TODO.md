@@ -19,6 +19,9 @@ number. Moved here from GitHub issue #1 (its open items only) on 2026-11-21.
 
 - [ ] #49 Support games of previous versions: replays (and what else needs them) of games played under an older RULES_VERSION, which are refused now — keep the old engines — replay, L
 - [ ] #42 A smaller version of the Europe map — map, L
+- [ ] #60 Bug: a peace deal with a rival cannot make it a vassal (found on Europe 1440: Compact) — rules, S
+- [ ] #58 Better names for every map and scenario: Mitteleuropa: Balanced, Mitteleuropa: Historical 1440, Europe 1440, Europe 1440: Compact, Italy 1440 — names a player understands at a glance in the lobby (the first line of each SCENARIO.md; a folder rename changes the scenario's id) — maps, S
+- [ ] #57 Armies stranded at a strait: an army waiting to cross should get ships sailed to the crossing's sea zone, and give up the move after a few refusals — in one Compact game an English army in Calais asked to cross 2,189 times (experiments/README.md, 34) — AI, M
 
 ## Ideas
 
